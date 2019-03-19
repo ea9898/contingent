@@ -1,0 +1,145 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://emias2.gov.ru/contingent/v1/nsi/types/"
+            xmlns:tns="http://emias2.gov.ru/contingent/v1/nsi/types/"
+            elementFormDefault="qualified"
+            version="1.1">
+
+    <xsd:simpleType name="NsiKey">
+        <xsd:restriction base="xsd:normalizedString"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AreaTypeKey">
+        <xsd:annotation>
+            <xsd:documentation>Идентификатор типа участка</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="DisabilityKey">
+        <xsd:annotation>
+            <xsd:documentation>Справочник инвалидность</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="DisabilityDegreeKey">
+        <xsd:annotation>
+            <xsd:documentation>Справочник степень инвалидности</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="InsuranceCompanyKey">
+        <xsd:annotation>
+            <xsd:documentation>Справочник страховая компания</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="SocialStatusKey">
+        <xsd:annotation>
+            <xsd:documentation>Справочник социальный статус</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AgeGroupKey">
+        <xsd:annotation>
+            <xsd:documentation>Идентификатор возрастной группы</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AttachmentTypeKey">
+        <xsd:annotation>
+            <xsd:documentation>Вид прикрепления</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AttachmentRequestStatusKey">
+        <xsd:annotation>
+            <xsd:documentation>Статус запроса на прикрепление</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="AttachmentRequestErzlStatusKey">
+        <xsd:annotation>
+            <xsd:documentation>Статус заявления в РС ЕРЗЛ</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="AttachmentCategoryKey">
+        <xsd:annotation>
+            <xsd:documentation>Тип прикрепления: 0,1,2</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="AttachmentReasonKey">
+        <xsd:annotation>
+            <xsd:documentation>Причина прикрепления. Возможные значения: 1 – Выбор/смена МО, 2 – Смена жительства/пребывания
+			</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>    
+
+    <xsd:simpleType name="AttachmentCloseReasonKey">
+        <xsd:annotation>
+            <xsd:documentation>Причина закрытия прикрепления</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AttachmentProcessKey">
+        <xsd:annotation>
+            <xsd:documentation>Причина закрытия прикрепления</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AttachmentChangeReasonKey">
+        <xsd:annotation>
+            <xsd:documentation>Причина изменения прикрепления</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AttachmentRejectReasonKey">
+        <xsd:annotation>
+            <xsd:documentation>Причина отказа прикрепления</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="SpecialityKey">
+        <xsd:annotation>
+            <xsd:documentation>Идентификатор специальности</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="AppointmentSourceKey">
+        <xsd:annotation>
+            <xsd:documentation>Справочник 'Вид источника записи на прием'</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="DocTypeKey">
+        <xsd:annotation>
+            <xsd:documentation>Идентификатор документа</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="LpuTypeKey">
+        <xsd:annotation>
+            <xsd:documentation>Идентификатор типа МУ</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="tns:NsiKey"/>
+    </xsd:simpleType>
+
+</xsd:schema>

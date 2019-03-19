@@ -1,5 +1,6 @@
-package moscow.ptnl.contingent.ws;
+package moscow.ptnl.contingent.ws.v5;
 
+import moscow.ptnl.contingent.ws.BaseService;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -70,9 +71,11 @@ import ru.gov.emias2.contingent.v5._public.area.SearchAreaResponse;
  *
  * @author m.kachalov
  */
-@Service("AreaServiceV5") //
+@Service(AreaServiceImpl.SERVICE_NAME) 
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
 public class AreaServiceImpl extends BaseService implements AreaPT {
+    
+    public static final String SERVICE_NAME = "V5";
     
     public AreaServiceImpl(){}
 

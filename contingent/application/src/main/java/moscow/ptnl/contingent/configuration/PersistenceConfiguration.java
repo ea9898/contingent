@@ -9,10 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -25,10 +24,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *
  * @author m.kachalov
  */
-@ComponentScan("moscow.ptnl")
-@EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "moscow.ptnl")
 @Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(
+        basePackages = "moscow.ptnl.contingent.repository",
+        entityManagerFactoryRef = "contingentManagerFactory", 
+        transactionManagerRef = "contingentTransactionManager"
+)
+@PropertySource("classpath:/application.properties")
 public class PersistenceConfiguration {
     
     private static final Logger logger = LoggerFactory.getLogger(PersistenceConfiguration.class);
@@ -45,13 +48,15 @@ public class PersistenceConfiguration {
             JndiTemplate jndi = new JndiTemplate();
             dataSource = jndi.lookup(contingentDataSourceJNDIName, DataSource.class);
             logger.info("DataSource init " + PersistenceConfiguration.class);
+            System.out.println("DataSource created");
         } catch (NamingException e) {
             logger.error("Error DataSource init " + PersistenceConfiguration.class);
+            System.err.println(e);
         }
         return dataSource;
     }
     
-    @Bean(name = "contingentManagerFactory")
+    @Bean(name = "contingentManagerFactory") 
     public EntityManagerFactory entityManagerFactory(@Qualifier("contingentDataSource") DataSource dataSource) {
         ResourceBundle bundle = ResourceBundle.getBundle("application");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -69,7 +74,7 @@ public class PersistenceConfiguration {
         return factory.getObject();
     }
     
-    @Bean
+    @Bean (name = "contingentTransactionManager")
     public PlatformTransactionManager transactionManager(@Qualifier("contingentManagerFactory") EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager txManager = new JpaTransactionManager();
         txManager.setEntityManagerFactory(entityManagerFactory);

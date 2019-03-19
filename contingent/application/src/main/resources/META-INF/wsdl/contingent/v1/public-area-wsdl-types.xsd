@@ -14,8 +14,8 @@
 
     <xsd:import namespace="http://emias2.gov.ru/contingent/v1/public/common/" schemaLocation="public-common-types.xsd"></xsd:import>
     <xsd:import namespace="http://emias2.gov.ru/contingent/v1/area/types/" schemaLocation="area-types.xsd"></xsd:import>
-    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/rmu/types/" schemaLocation="../rmu-types.xsd"></xsd:import>
-    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/nsi/types/" schemaLocation="../nsi-types.xsd"></xsd:import>
+    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/rmu/types/" schemaLocation="rmu-types.xsd"></xsd:import>
+    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/nsi/types/" schemaLocation="nsi-types.xsd"></xsd:import>
     <xsd:import namespace="http://emias2.gov.ru/contingent/v1/common/types/" schemaLocation="common-types.xsd"></xsd:import>
 
     <xsd:element name="GetLpuAreaTypeByIdResponse">

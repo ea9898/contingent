@@ -11,7 +11,9 @@ import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -19,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
  * @author m.kachalov
  */
 @Configuration
+@ComponentScan("moscow.ptnl")
 public class WebServiceConfiguration {
     
     @Autowired
@@ -27,10 +30,11 @@ public class WebServiceConfiguration {
     @Autowired
     private SoapVersionInterceptor soapVersionInterceptor;
     
+
     @Bean(name = Bus.DEFAULT_BUS_ID)
-    SpringBus springBus() {
+    SpringBus springBus(LoggingFeature loggingFeature) {
         SpringBus bus = new SpringBus();
-        bus.setFeatures(new ArrayList<>(Arrays.asList(loggingFeature())));
+        bus.setFeatures(new ArrayList<>(Arrays.asList(loggingFeature)));
         return bus;
     }
     
@@ -39,29 +43,37 @@ public class WebServiceConfiguration {
         LoggingFeature loggingFeature = new LoggingFeature();          
         loggingFeature.setLimit(-1); //The default is 48 * 1024 https://redmine.ptnl.moscow/issues/30432
         return loggingFeature;
-    }
+    }    
     
     @Bean
-    UserContextInterceptor schoolWsCredentialsValidator() { 
+    UserContextInterceptor credentialsValidator() { 
         return new UserContextInterceptor(); 
     }
     
-    @Bean @Autowired
-    public Endpoint AreaService(ru.gov.emias2.contingent.v5._public.area.AreaPT areaService) {
-        EndpointImpl endpoint = new EndpointImpl(springBus(), areaService);
-        initSchoolWS(endpoint, "");
+    @Bean 
+    public Endpoint AreaServiceV1(@Qualifier(moscow.ptnl.contingent.ws.v1.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v1._public.area.AreaPT areaService, SpringBus cxfBus) {
+        EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
+        initAreaService(endpoint, "v1");
         return endpoint;
     }
     
-    private void initSchoolWS(EndpointImpl endpoint, String version) {
+    @Bean 
+    public Endpoint AreaServiceV5(@Qualifier(moscow.ptnl.contingent.ws.v5.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v5._public.area.AreaPT areaService, SpringBus cxfBus) {
+        EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
+        initAreaService(endpoint, "v5");
+        return endpoint;
+    }
+    
+    //http://localhost:8080/contingent/area/v5/AreaService?wsdl
+    private void initAreaService(EndpointImpl endpoint, String version) {
         String pathPart = (version != null && !version.isEmpty()) ? version + "/" : "";
-        endpoint.setServiceName(new QName("http://ptnl.moscow/contingent/school/" + pathPart + "soap/", "School"));
-        endpoint.setWsdlLocation("classpath:META-INF/wsdl/school/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "school-soap.wsdl");
-        endpoint.setAddress("/" + pathPart + "School");
+        endpoint.setServiceName(new QName("http://emias2.gov.ru/contingent/" + pathPart + "public/area/", "AreaService"));
+        endpoint.setWsdlLocation("classpath:META-INF/wsdl/contingent/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "public-area-soap.wsdl");
+        endpoint.setAddress("/" + pathPart + "AreaService");
         endpoint.publish();
 
     	endpoint.getInInterceptors().add(soapVersionInterceptor);
-        endpoint.getInInterceptors().add(schoolWsCredentialsValidator());
+        endpoint.getInInterceptors().add(credentialsValidator());
         interceptorService.setupInterceptors(endpoint);
     }
     
