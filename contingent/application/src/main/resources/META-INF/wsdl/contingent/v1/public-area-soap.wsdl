@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="area"
+             targetNamespace="http://emias2.gov.ru/contingent/v1/public/area/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:tns="http://emias2.gov.ru/contingent/v1/public/area/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:area="http://emias2.gov.ru/contingent/v1/area/"
+             xmlns:cmn="http://emias2.gov.ru/contingent/v1/common/types/"
+             xmlns:cmnwsdl="http://emias2.gov.ru/contingent/v1/public/common/"
+             xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+        >
+    <documentation>
+        Version: 1.1.12.${buildNumber}
+    </documentation>
+    <import namespace="http://emias2.gov.ru/contingent/v1/public/common/" location="common.wsdl"/>
+    <types>
+        <xsd:schema targetNamespace="http://emias2.gov.ru/contingent/v1/">
+            <xsd:import namespace="http://emias2.gov.ru/contingent/v1/public/area/" schemaLocation="public-area-wsdl-types.xsd"/>
+            <xsd:import namespace="http://emias2.gov.ru/contingent/v1/area/" schemaLocation="area-wsdl-types.xsd"/>
+            <xsd:import namespace="http://emias2.gov.ru/contingent/v1/common/types/" schemaLocation="common-types.xsd"/>
+        </xsd:schema>
+    </types>
+
+    <message name="CreateLpuAreaTypeInput">
+        <part name="body" element="area:CreateLpuAreaTypeRequest"/>
+    </message>
+
+    <message name="CreateLpuAreaTypeOutput">
+        <part name="body" element="area:CreateLpuAreaTypeResponse"/>
+    </message>
+
+    <message name="GetLpuAreaTypesInput">
+        <part name="body" element="area:GetLpuAreaTypesRequest"/>
+    </message>
+
+    <message name="GetLpuAreaTypesOutput">
+        <part name="body" element="tns:GetLpuAreaTypesResponse"/>
+    </message>
+
+    <message name="SearchAreaInput">
+        <part name="body" element="tns:SearchAreaRequest"/>
+    </message>
+
+    <message name="SearchAreaOutput">
+        <part name="body" element="tns:SearchAreaResponse"/>
+    </message>
+
+    <message name="CreateAreaInput">
+        <part name="body" element="area:CreateAreaRequest"/>
+    </message>
+
+    <message name="CreateAreaOutput">
+        <part name="body" element="area:CreateAreaResponse"/>
+    </message>
+
+    <message name="ArchiveAreaInput">
+        <part name="body" element="area:ArchiveAreaRequest"/>
+    </message>
+
+    <message name="ArchiveAreaOutput">
+        <part name="body" element="area:ArchiveAreaResponse"/>
+    </message>
+
+    <message name="UpdateAreaInput">
+        <part name="body" element="area:UpdateAreaRequest"/>
+    </message>
+
+    <message name="UpdateAreaOutput">
+        <part name="body" element="area:UpdateAreaResponse"/>
+    </message>
+
+    <message name="RestoreAreaInput">
+        <part name="body" element="area:RestoreAreaRequest"/>
+    </message>
+
+    <message name="RestoreAreaOutput">
+        <part name="body" element="area:RestoreAreaResponse"/>
+    </message>
+
+    <message name="GetAreaByIdInput">
+        <part name="body" element="area:GetAreaByIdRequest"/>
+    </message>
+
+    <message name="GetAreaByIdOutput">
+        <part name="body" element="tns:GetAreaByIdResponse"/>
+    </message>
+
+    <message name="ArchiveLpuAreaTypeInput">
+        <part name="body" element="area:ArchiveLpuAreaTypeRequest"/>
+    </message>
+
+    <message name="ArchiveLpuAreaTypeOutput">
+        <part name="body" element="area:ArchiveLpuAreaTypeResponse"/>
+    </message>
+
+    <message name="GetAddressByLpuInput">
+        <part name="body" element="tns:GetAddressByLpuRequest"/>
+    </message>
+
+    <message name="GetAddressByLpuOutput">
+        <part name="body" element="tns:GetAddressByLpuResponse"/>
+    </message>
+
+    <message name="GetAreaTypesInput">
+        <part name="body" element="tns:GetAreaTypesRequest"/>
+    </message>
+
+    <message name="GetAreaTypesOutput">
+        <part name="body" element="tns:GetAreaTypesResponse"/>
+    </message>
+
+    <message name="GetAgeGroupsInput">
+        <part name="body" element="tns:GetAgeGroupsRequest"/>
+    </message>
+
+    <message name="GetAgeGroupsOutput">
+        <part name="body" element="tns:GetAgeGroupsResponse"/>
+    </message>
+
+    <message name="GetLpusInput">
+        <part name="body" element="tns:GetLpusRequest"/>
+    </message>
+
+    <message name="GetLpusOutput">
+        <part name="body" element="tns:GetLpusResponse"/>
+    </message>
+
+    <message name="GetOmkUmsInput">
+        <part name="body" element="tns:GetOmkUmsRequest"/>
+    </message>
+
+    <message name="GetOmkUmsOutput">
+        <part name="body" element="tns:GetOmkUmsResponse"/>
+    </message>
+
+    <message name="GetOmkTesInput">
+        <part name="body" element="tns:GetOmkTesRequest"/>
+    </message>
+
+    <message name="GetOmkTesOutput">
+        <part name="body" element="tns:GetOmkTesResponse"/>
+    </message>
+
+    <message name="GetBuildingRegistryInput">
+        <part name="body" element="tns:GetBuildingRegistryRequest"/>
+    </message>
+
+    <message name="GetBuildingRegistryOutput">
+        <part name="body" element="tns:GetBuildingRegistryResponse"/>
+    </message>
+
+    <message name="GetEmployeesInput">
+        <part name="body" element="tns:GetEmployeesRequest"/>
+    </message>
+
+    <message name="GetEmployeesOutput">
+        <part name="body" element="tns:GetEmployeesResponse"/>
+    </message>
+
+    <message name="GetAreaDetailsInput">
+        <part name="body" element="tns:GetAreaDetailsRequest"/>
+    </message>
+
+    <message name="GetAreaDetailsOutput">
+        <part name="body" element="tns:GetAreaDetailsResponse"/>
+    </message>
+
+
+    <portType name="AreaPT">
+        <operation name="createLpuAreaType">
+            <documentation>
+                (К_УУ_1)	Добавление типа участка обслуживания для МО
+            </documentation>
+            <input message="tns:CreateLpuAreaTypeInput"/>
+            <output message="tns:CreateLpuAreaTypeOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getLpuAreaTypes">
+            <documentation>
+                (К_УУ_2)	Предоставление типов участков обслуживания
+            </documentation>
+            <input message="tns:GetLpuAreaTypesInput"/>
+            <output message="tns:GetLpuAreaTypesOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="searchArea">
+            <documentation>
+                (К_УУ_3)	Предоставление списка участков МО
+            </documentation>
+            <input message="tns:SearchAreaInput"/>
+            <output message="tns:SearchAreaOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="createArea">
+            <documentation>
+                (К_УУ_4)	Создание участка обслуживания МО
+            </documentation>
+            <input message="tns:CreateAreaInput"/>
+            <output message="tns:CreateAreaOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="archiveArea">
+            <documentation>
+                (К_УУ_5)	Архивирование участка обслуживания МО
+            </documentation>
+            <input message="tns:ArchiveAreaInput"/>
+            <output message="tns:ArchiveAreaOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="updateArea">
+            <documentation>
+                (К_УУ_6)	Изменение участка обслуживания МО
+            </documentation>
+            <input message="tns:UpdateAreaInput"/>
+            <output message="tns:UpdateAreaOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="restoreArea">
+            <documentation>
+                (К_УУ_7)	Восстановление архивного участка
+            </documentation>
+            <input message="tns:RestoreAreaInput"/>
+            <output message="tns:RestoreAreaOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getAreaById">
+            <documentation>
+                (К_УУ_8)	Получение подробной информации о участке МО
+            </documentation>
+            <input message="tns:GetAreaByIdInput"/>
+            <output message="tns:GetAreaByIdOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="archiveLpuAreaType">
+            <documentation>
+                (К_УУ_9)	Архивирование типа участка обслуживания для МО
+            </documentation>
+            <input message="tns:ArchiveLpuAreaTypeInput"/>
+            <output message="tns:ArchiveLpuAreaTypeOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getAddressByLpu">
+            <documentation>
+                (К_УУ_10) Получение адресов обслуживания МО
+            </documentation>
+            <input message="tns:GetAddressByLpuInput"/>
+            <output message="tns:GetAddressByLpuOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getAreaTypes">
+            <documentation>
+                (К_СИ_1)	Предоставление справочника «Типы участков»
+            </documentation>
+            <input message="tns:GetAreaTypesInput"/>
+            <output message="tns:GetAreaTypesOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getAgeGroups">
+            <documentation>
+                (К_СИ_2)	Предоставление справочника «Возрастные контингенты»
+            </documentation>
+            <input message="tns:GetAgeGroupsInput"/>
+            <output message="tns:GetAgeGroupsOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getLpus">
+            <documentation>
+                (К_СИ_3)	Предоставление перечня филиалов МО
+            </documentation>
+            <input message="tns:GetLpusInput"/>
+            <output message="tns:GetLpusOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getOmkUms">
+            <documentation>
+                (К_СИ_6) Предоставление справочника «ОМК УМ» (Общемосковский классификатор улиц Москвы)
+            </documentation>
+            <input message="tns:GetOmkUmsInput"/>
+            <output message="tns:GetOmkUmsOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getOmkTes">
+            <documentation>
+                (К_СИ_8) Предоставление справочника «ОМК ТЕ» (Общемосковский классификатор территориальных единиц Москвы)
+            </documentation>
+            <input message="tns:GetOmkTesInput"/>
+            <output message="tns:GetOmkTesOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getBuildingRegistry">
+            <documentation>
+                (К_СИ_10) Предоставление справочника «Реестр домов (БТИ)»
+            </documentation>
+            <input message="tns:GetBuildingRegistryInput"/>
+            <output message="tns:GetBuildingRegistryOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getEmployees">
+            <documentation>
+                Метод возвращает врачей
+            </documentation>
+            <input message="tns:GetEmployeesInput"/>
+            <output message="tns:GetEmployeesOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+        <operation name="getAreaDetails">
+            <documentation>
+                Получение информации о типе участка для создания участка
+            </documentation>
+            <input message="tns:GetAreaDetailsInput"/>
+            <output message="tns:GetAreaDetailsOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+    </portType>
+
+    <binding name="AreaPTB" type="tns:AreaPT">
+        <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsp:Policy xmlns:wsp="http://www.w3.org/ns/ws-policy/" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+            <sp:SupportingTokens>
+                <wsp:Policy>
+                    <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                        <wsp:Policy>
+                            <sp:NoPassword/>
+                        </wsp:Policy>
+                    </sp:UsernameToken>
+                </wsp:Policy>
+            </sp:SupportingTokens>
+        </wsp:Policy>
+
+        <operation name="createLpuAreaType">
+            <soap12:operation soapAction="createLpuAreaType"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getLpuAreaTypes">
+            <soap12:operation soapAction="getLpuAreaTypes"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="searchArea">
+            <soap12:operation soapAction="searchArea"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="createArea">
+            <soap12:operation soapAction="createArea"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="archiveArea">
+            <soap12:operation soapAction="archiveArea"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="updateArea">
+            <soap12:operation soapAction="updateArea"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="restoreArea">
+            <soap12:operation soapAction="restoreArea"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getAreaById">
+            <soap12:operation soapAction="getAreaById"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="archiveLpuAreaType">
+            <soap12:operation soapAction="archiveLpuAreaType"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getAddressByLpu">
+            <soap12:operation soapAction="getAddressByLpu"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getAreaTypes">
+            <soap12:operation soapAction="getAreaTypes"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getAgeGroups">
+            <soap12:operation soapAction="getAgeGroups"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getLpus">
+            <soap12:operation soapAction="getLpus"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getOmkUms">
+            <soap12:operation soapAction="getOmkUms"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getOmkTes">
+            <soap12:operation soapAction="getOmkTes"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getBuildingRegistry">
+            <soap12:operation soapAction="getBuildingRegistry"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getEmployees">
+            <soap12:operation soapAction="getEmployees"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="getAreaDetails">
+            <soap12:operation soapAction="getAreaDetails"/>
+            <input>
+            <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+    </binding>
+
+    <service name="AreaService">
+        <port name="Area" binding="tns:AreaPTB">
+            <soap12:address location="http://localhost:8181/Area"/>
+        </port>
+    </service>
+</definitions>

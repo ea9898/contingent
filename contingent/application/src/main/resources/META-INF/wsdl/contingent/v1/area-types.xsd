@@ -1,0 +1,498 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://emias2.gov.ru/contingent/v1/area/types/"
+            xmlns:tns="http://emias2.gov.ru/contingent/v1/area/types/"
+            xmlns:rmu="http://emias2.gov.ru/contingent/v1/rmu/types/"
+            xmlns:nsi="http://emias2.gov.ru/contingent/v1/nsi/types/"
+            xmlns:common="http://emias2.gov.ru/contingent/v1/common/types/"
+            elementFormDefault="qualified"
+            version="1.0">
+    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/rmu/types/" schemaLocation="../rmu-types.xsd"/>
+    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/nsi/types/" schemaLocation="../nsi-types.xsd"/>
+    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/common/types/" schemaLocation="common-types.xsd"/>
+
+    <xsd:simpleType name="LpuAreaTypeKey">
+        <xsd:annotation>
+            <xsd:documentation>Идентификатор типа участка в МО</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:long"/>
+    </xsd:simpleType>
+
+    <xsd:complexType name="LpuAreaType">
+        <xsd:annotation>
+            <xsd:documentation>Тип участка обслуживания МО</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="id" type="tns:LpuAreaTypeKey">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="lpu" type="rmu:LpuKey">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="areaType" type="nsi:AreaTypeKey">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор типа участка (справочник ЕМИАС)</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ageGroup" type="nsi:AgeGroupKey">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор возрастной группы (справочник ЕМИАС)</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="gender" type="tns:GenderType">
+                <xsd:annotation>
+                    <xsd:documentation>Пол</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="active" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Участок не архивирован</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="AreaKey">
+        <xsd:annotation>
+            <xsd:documentation>Идентификатор участка</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:long"/>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Area">
+        <xsd:annotation>
+            <xsd:documentation>Участок</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="id" type="tns:AreaKey">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор участка обслуживания МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="lpu" type="rmu:LpuKey">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="number" type="xsd:int">
+                <xsd:annotation>
+                    <xsd:documentation>Номер участка обслуживания</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Название участка обслуживания</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="autoAssignForAttachment" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Признак «Назначать автоматически для прикрепления»</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="status" type="tns:AreaStatus">
+                <xsd:annotation>
+                    <xsd:documentation>Статус</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="lpuAreaType" type="tns:LpuAreaType">
+                <xsd:annotation>
+                    <xsd:documentation>Тип участка обслуживания МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="inResidentsBindRate" type="xsd:int" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Норма прикрепления в рамках участка, чел</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="outResidentsBindRate" type="xsd:int" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Норма прикрепления за пределами участка, чел</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="mainEmployee" type="rmu:EmployeeKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Основные участковые врачи</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="replacementEmployees" type="rmu:EmployeeKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Замещающие участковые врачи</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="addresses" type="rmu:Address" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Территория обслуживания участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="attachedCount" type="xsd:int" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Количество прикрепленных к участку</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="AreaShort">
+        <xsd:annotation>
+            <xsd:documentation>Участок для списка</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="id" type="tns:AreaKey" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор участка обслуживания МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="number" type="xsd:int">
+                <xsd:annotation>
+                    <xsd:documentation>Номер участка обслуживания</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Название участка обслуживания</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="autoAssignForAttachment" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Признак «Назначать автоматически для прикрепления»</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="status" type="tns:AreaStatus">
+                <xsd:annotation>
+                    <xsd:documentation>Статус</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="lpuAreaType" type="tns:LpuAreaType">
+                <xsd:annotation>
+                    <xsd:documentation>Тип участка обслуживания МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="inResidentsBindRate" type="xsd:int" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Норма прикрепления в рамках участка, чел</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="outResidentsBindRate" type="xsd:int" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Норма прикрепления за пределами участка, чел</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="employees" type="rmu:EmployeeKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Основные участковые врачи</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="attachedCount" type="xsd:int" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Количество прикрепленных к участку</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="AreaUpdateParams">
+        <xsd:sequence>
+            <xsd:element name="number">
+                <xsd:annotation>
+                    <xsd:documentation>Номер участка</xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:int">
+                        <xsd:minInclusive value="0"></xsd:minInclusive>
+                        <xsd:maxExclusive value="100000"></xsd:maxExclusive>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="name">
+                <xsd:annotation>
+                    <xsd:documentation>Название участка</xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="255"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="lpuAreaTypeId" type="xsd:long">
+                <xsd:annotation>
+                    <xsd:documentation>Тип участка обслуживания в МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="mainEmployees" type="rmu:EmployeeKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Участковый врач</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="replacementEmployees" type="rmu:EmployeeKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Замещающие врачи</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="addresses" type="rmu:Address" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Ардеса обслуживания</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="autoAssignForAttachment" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Назначать автоматически для прикрепления</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="inResidentsBindRate" type="xsd:int" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Норма прикрепления</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="outResidentsBindRate" type="xsd:int" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Норма прикрепления</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="skipChecks" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Не выполнять проверки на «Назначать автоматически для прикрепления»</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="LpuAreaTypeParams">
+        <xsd:sequence>
+            <xsd:element name="lpu" type="rmu:LpuKey">
+                <xsd:annotation>
+                    <xsd:documentation>ЛПУ</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="areaType" type="nsi:AreaTypeKey">
+                <xsd:annotation>
+                    <xsd:documentation>Код типа участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ageGroup" type="nsi:AgeGroupKey">
+                <xsd:annotation>
+                    <xsd:documentation>Код возрастной группы</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="gender" type="tns:GenderType">
+                <xsd:annotation>
+                    <xsd:documentation>Пол</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="AreaSearchParams">
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Наименование участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="statuses" type="tns:AreaStatus" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Статус участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="employeeKeys" type="rmu:EmployeeKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Список медработников</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="number" type="xsd:int" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Номер участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="addresses" type="rmu:Address" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Территория обслуживания участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="lpuKeys" type="rmu:LpuKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>ИД МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="areaTypeKeys" type="nsi:AreaTypeKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Типы участков</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="lpuAreaTypeIds" type="xsd:long" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Типы участков обслуживания МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="paging" type="common:RequestPageInfo" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Типы участков обслуживания МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="LpuForAttachmentParams">
+        <xsd:sequence>
+            <xsd:element name="addresses" type="rmu:Address" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Территория обслуживания участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="lpuKeys" type="rmu:LpuKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="areaTypeKey" type="nsi:AreaTypeKey" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Тип участков</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ageGroups" type="nsi:AgeGroupKey" minOccurs="1" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификаторы возрастной группы (справочник ЕМИАС)</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="LpuForAttachment">
+        <xsd:sequence>
+            <xsd:element name="lpuKey" type="rmu:LpuKey" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="attachedToLpu" type="xsd:int" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Прикреплений у МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="areas" type="tns:AreaForAttachment" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Участки</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="recommended" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Рекомендуемый МО</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="AreaForAttachment">
+        <xsd:sequence>
+            <xsd:element name="id" type="xsd:long" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="number" type="xsd:int" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Номер участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="name" type="xsd:string" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Название участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="attachedToArea" type="xsd:int" minOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation>Прикреплений у участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="areaType" type="nsi:AreaTypeKey">
+                <xsd:annotation>
+                    <xsd:documentation>Идентификатор типа участка (справочник ЕМИАС)</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="mainEmployees" type="rmu:EmployeeKey" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Список основных участковых сотрудников</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="AreaCreateParams">
+        <xsd:complexContent>
+            <xsd:extension base="tns:AreaUpdateParams">
+                <xsd:sequence>
+                    <xsd:element name="lpu" type="rmu:LpuKey">
+                        <xsd:annotation>
+                            <xsd:documentation>ИД МО</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AreaInfo">
+        <xsd:complexContent>
+            <xsd:extension base="tns:Area"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="AreaStatus">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Active">
+                <xsd:annotation>
+                    <xsd:documentation>Активен</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="Archived">
+                <xsd:annotation>
+                    <xsd:documentation>Заархивирован</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="Deleted">
+                <xsd:annotation>
+                    <xsd:documentation>Удален</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="GenderType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ANY">
+                <xsd:annotation>
+                    <xsd:documentation>Любой</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="WOMAN">
+                <xsd:annotation>
+                    <xsd:documentation>Женский</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="MAN">
+                <xsd:annotation>
+                    <xsd:documentation>Мужской</xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+	<xsd:complexType name="AttachedForEntity">
+        <xsd:sequence>
+            <xsd:element name="id" type="xsd:long">
+                <xsd:annotation>
+                    <xsd:documentation>id участка</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="count" type="xsd:int">
+                <xsd:annotation>
+                    <xsd:documentation>Количество прикреплений</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

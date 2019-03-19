@@ -1,0 +1,280 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://emias2.gov.ru/contingent/v1/area/"
+            xmlns:tns="http://emias2.gov.ru/contingent/v1/area/"
+            xmlns:area="http://emias2.gov.ru/contingent/v1/area/types/"
+            xmlns:rmu="http://emias2.gov.ru/contingent/v1/rmu/types/"
+            xmlns:nsi="http://emias2.gov.ru/contingent/v1/nsi/types/"
+            xmlns:common="http://emias2.gov.ru/contingent/v1/common/types/"
+            elementFormDefault="qualified"
+            version="1.0">
+    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/area/types/" schemaLocation="area-types.xsd"/>
+    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/rmu/types/" schemaLocation="../rmu-types.xsd"/>
+    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/nsi/types/" schemaLocation="../nsi-types.xsd"/>
+    <xsd:import namespace="http://emias2.gov.ru/contingent/v1/common/types/" schemaLocation="common-types.xsd"/>
+
+    <xsd:element name="CreateLpuAreaTypeRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="params" type="area:LpuAreaTypeParams" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="CreateLpuAreaTypeResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="result" type="xsd:long"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ArchiveLpuAreaTypeRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="lpuAreaTypeId" type="xsd:long" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ArchiveLpuAreaTypeResponse">
+        <xsd:complexType>
+            <xsd:sequence/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetLpuAreaTypeByIdRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="lpuAreaTypeId" type="xsd:long" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetLpuAreaTypeByIdResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="result" type="area:LpuAreaType"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetLpuAreaTypesRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="lpuKey" type="rmu:LpuKey" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetLpuAreaTypesResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="results" type="area:LpuAreaType" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetAreasByLpuRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="lpuKey" type="rmu:LpuKey" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetAreasByLpuResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="results" type="area:Area" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="SearchAreaRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="areaSearchParams" type="area:AreaSearchParams" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="SearchAreaResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="results" type="area:AreaShort" maxOccurs="unbounded" minOccurs="0"/>
+                <xsd:element name="paging" type="common:ResponsePageInfo" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetAreaByIdRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="id" type="xsd:long" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetAreaByIdResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="result" type="area:Area"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetAddressByLpuRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="lpuKey" type="rmu:LpuKey" />
+                <xsd:element name="areaTypes" type="nsi:AreaTypeKey" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetAddressByLpuResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="results" type="rmu:Address" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetUsedAddressesRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="lpuAreaTypeId" type="xsd:long" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetUsedAddressesResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="results" type="rmu:Address" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetNextAreaNumberRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="lpuAreaTypeId" type="xsd:long" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetNextAreaNumberResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="result" type="xsd:int"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="CreateAreaRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="params" type="area:AreaCreateParams" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="CreateAreaResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="result" type="xsd:long"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ArchiveAreaRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="id" type="xsd:long" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ArchiveAreaResponse">
+        <xsd:complexType>
+            <xsd:sequence/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="UpdateAreaRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="areaId" type="xsd:long" />
+    <xsd:element name="params" type="area:AreaUpdateParams" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="UpdateAreaResponse">
+        <xsd:complexType>
+            <xsd:sequence/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="RestoreAreaRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="id" type="xsd:long" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="RestoreAreaResponse">
+        <xsd:complexType>
+            <xsd:sequence/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetAreaAttachedCountRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetAreaAttachedCountResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="results" type="area:AttachedForEntity" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetLpuAttachedCountRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetLpuAttachedCountResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="results" type="area:AttachedForEntity" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetLpusForAttachmentMpguRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+    <xsd:element name="params" type="area:LpuForAttachmentParams" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetLpusForAttachmentMpguResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="results" type="area:LpuForAttachment" maxOccurs="unbounded" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
