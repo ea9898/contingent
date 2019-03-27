@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.entity.settings;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Cacheable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "AD_CONFIG")
+@Cacheable
 public class Setting implements Serializable {
 
 	private static final long serialVersionUID = -7504397229834601830L;

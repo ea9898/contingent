@@ -43,6 +43,7 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <metrics.version>3.1.2</metrics.version>
         <mapstruct.version>1.2.0.Final</mapstruct.version>
+        <fasterxml-jackson.version>2.9.8</fasterxml-jackson.version>
     </properties>
 
     <repositories>
