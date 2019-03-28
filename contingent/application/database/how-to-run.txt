@@ -1,7 +1,8 @@
 #how to run
 
 ### Установка в схему
-mvn liquibase:update -Ddb.target.driver=oracle.jdbc.driver.OracleDriver -Ddb.target.master=changelog/area/versions/master.xml -Ddb.target.url=jdbc:oracle:thin:@X.X.X.X:1521:emiasdb -Ddb.target.username=CONTINGENT -Ddb.target.password=CONTINGENT -Dliquibase.databaseChangeLogTableName=AREA_CHANGELOG -Dliquibase.databaseChangeLogLockTableName=AREA_CHANGELOGLOCK
+mvn liquibase:update -Poracle -Ddb.target.master=changelog/area/versions/master.xml -Ddb.target.url=jdbc:oracle:thin:@X.X.X.X:1521:emiasdb -Ddb.target.username=CONTINGENT -Ddb.target.password=CONTINGENT -Dliquibase.databaseChangeLogTableName=AREA_CHANGELOG -Dliquibase.databaseChangeLogLockTableName=AREA_CHANGELOGLOCK
+mvn liquibase:update -Ppostgresql -Ddb.target.master=changelog/area/versions/master.xml -Ddb.target.url=jdbc:postgresql://X.X.X.X:5740/emiasdb -Ddb.target.username=CONTINGENT -Ddb.target.password=CONTINGENT -Dliquibase.databaseChangeLogTableName=AREA_CHANGELOG -Dliquibase.databaseChangeLogLockTableName=AREA_CHANGELOGLOCK
 
 # В блоке rollback нужно указывать тег, к которому откатываемся. В нашем случае это будет версия, к которой нужно откатиться
 java -jar liquibase.jar --driver=oracle.jdbc.OracleDriver
@@ -13,4 +14,4 @@ java -jar liquibase.jar --driver=oracle.jdbc.OracleDriver
 rollback 0.0.0
 
 ### Для разработки
-mvn liquibase:update -Ddb.target.driver=oracle.jdbc.driver.OracleDriver -Ddb.target.master=changelog/area/versions/master.xml -Ddb.target.url=jdbc:oracle:thin:@192.168.1.2:1521:conting2 -Ddb.target.username=CONTINGENT -Ddb.target.password=CONTINGENT -Dliquibase.databaseChangeLogTableName=AREA_CHANGELOG -Dliquibase.databaseChangeLogLockTableName=AREA_CHANGELOGLOCK
+mvn liquibase:update -Poracle -Ddb.target.master=changelog/area/versions/master.xml -Ddb.target.url=jdbc:oracle:thin:@192.168.1.2:1521:conting2 -Ddb.target.username=CONTINGENT -Ddb.target.password=CONTINGENT -Dliquibase.databaseChangeLogTableName=AREA_CHANGELOG -Dliquibase.databaseChangeLogLockTableName=AREA_CHANGELOGLOCK
