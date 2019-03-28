@@ -66,6 +66,12 @@ public class PersistenceConfiguration {
         factory.setJpaVendorAdapter(vendorAdapter);
         Properties jpaProperties = new Properties();        
         jpaProperties.setProperty("hibernate.jdbc.fetch_size", bundle.getString("org.hibernate.fetchSize"));
+        jpaProperties.setProperty("javax.persistence.sharedCache.mode", bundle.getString("spring.jpa.properties.javax.persistence.sharedCache.mode"));
+        jpaProperties.setProperty("hibernate.cache.use_second_level_cache", bundle.getString("spring.jpa.properties.hibernate.cache.use_second_level_cache"));
+        jpaProperties.setProperty("hibernate.cache.use_query_cache", bundle.getString("spring.jpa.properties.hibernate.cache.use_query_cache"));
+        jpaProperties.setProperty("hibernate.cache.region.factory_class", bundle.getString("spring.jpa.properties.hibernate.cache.region.factory_class"));        
+        jpaProperties.setProperty("hibernate.cache.infinispan.statistics", bundle.getString("spring.jpa.properties.hibernate.cache.infinispan.statistics"));
+        jpaProperties.setProperty("hibernate.generate_statistics", bundle.getString("spring.jpa.properties.hibernate.generate_statistics"));
         factory.setJpaProperties(jpaProperties);
         factory.setPackagesToScan("moscow.ptnl");
         factory.setDataSource(dataSource);

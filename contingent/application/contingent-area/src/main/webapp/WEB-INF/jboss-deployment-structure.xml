@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+    <deployment>
+        <dependencies>
+            <module name="org.infinispan" export="true" services="import"/>
+            <module name="org.infinispan.commons" export="true" services="import"/>
+        </dependencies>
+        <exclude-subsystems>
+            <subsystem name="webservices"/>
+            <subsystem name="jaxrs"/>
+            <subsystem name="weld"/>
+        </exclude-subsystems>
+    </deployment>
+</jboss-deployment-structure>
