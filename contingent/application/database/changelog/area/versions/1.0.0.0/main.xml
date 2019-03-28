@@ -8,6 +8,578 @@
         <tagDatabase tag="1.0.0.0"/>
     </changeSet>
 
+    <changeSet id="EMIASUPK-7594-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы ADDRESS_FORMING_ELEMENT</comment>
+        <createTable tableName="ADDRESS_FORMING_ELEMENT"
+                     remarks="Адресообразующий элемент">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TYPE" type="VARCHAR2(50)" />
+            <column name="NAME" type="VARCHAR2(350)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="ADDRESS_FORMING_ELEMENT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_COUNT_LIMIT"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_COUNT_LIMIT</comment>
+        <createTable tableName="AREA_COUNT_LIMIT"
+                     remarks="Лимиты по кличеству участков">
+            <column name="CODE" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="VALUE" type="VARCHAR2(50)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_COUNT_LIMIT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="CLASS_AREA_TYPES"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы CLASS_AREA_TYPES</comment>
+        <createTable tableName="CLASS_AREA_TYPES">
+            <column name="CODE" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="VALUE" type="VARCHAR2(255)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="CLASS_AREA_TYPES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="KIND_AREA_TYPES"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы KIND_AREA_TYPES</comment>
+        <createTable tableName="KIND_AREA_TYPES">
+            <column name="CODE" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="VALUE" type="VARCHAR2(255)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="KIND_AREA_TYPES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="SPECIALIZATION"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы SPECIALIZATION</comment>
+        <createTable tableName="SPECIALIZATION">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ARCHIVED" type="NUMBER(1)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="SPECIALIZATION"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-6" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPES"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPES</comment>
+        <createTable tableName="AREA_TYPES"
+                     remarks="Тип участка">
+            <column name="CODE" type="VARCHAR2(370)" remarks="Код типа участка">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="NAME" type="VARCHAR2(100)" />
+            <column name="KIND_AREA_TYPE_CODE" type="NUMBER(20)" />
+            <column name="CLASS_AREA_TYPE_CODE" type="NUMBER(20)" remarks="Класс типа участка. Код" />
+            <column name="GENDER" type="VARCHAR2(1)" remarks="Пол, 0 - любой, 1 - м, 2- ж" />
+            <column name="AGE_MIN" type="NUMBER(8)" remarks="Возраст мин" />
+            <column name="AGE_MAX" type="NUMBER(8)" remarks="Возраст макс" />
+            <column name="AGE_M_MIN" type="NUMBER(8)" remarks="Возраст М мин" />
+            <column name="AGE_M_MAX" type="NUMBER(8)" remarks="Возраст М макс" />
+            <column name="AGE_W_MIN" type="NUMBER(8)" remarks="Возраст Ж мин" />
+            <column name="AGE_W_MAX" type="NUMBER(8)" remarks="Возраст Ж макс" />
+            <column name="ACTUAL" type="NUMBER(1)" remarks="Статус" />
+            <column name="SPECIALIZATION_ID" type="NUMBER(20)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-6-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPES_CLASS_ARE01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки CLASS_AREA_TYPE_CODE таблицы AREA_TYPES</comment>
+        <createIndex indexName="IXFK_AREA_TYPES_CLASS_ARE01"
+                     tableName="AREA_TYPES"
+                     unique="false">
+            <column name="CLASS_AREA_TYPE_CODE" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-6-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPES_KIND_AREA01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки KIND_AREA_TYPE_CODE таблицы AREA_TYPES</comment>
+        <createIndex indexName="IXFK_AREA_TYPES_KIND_AREA01"
+                     tableName="AREA_TYPES"
+                     unique="false">
+            <column name="KIND_AREA_TYPE_CODE" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-6-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPES_SPECIALIZATION"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки SPECIALIZATION_ID таблицы AREA_TYPES</comment>
+        <createIndex indexName="IXFK_AREA_TYPES_SPECIALIZATION"
+                     tableName="AREA_TYPES"
+                     unique="false">
+            <column name="SPECIALIZATION_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-6-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPES" columnName="CLASS_AREA_TYPE_CODE" />
+            <columnExists tableName="CLASS_AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPES_CLASS_AREA_TYPES</comment>
+        <addForeignKeyConstraint baseColumnNames="CLASS_AREA_TYPE_CODE"
+                                 baseTableName="AREA_TYPES"
+                                 constraintName="FK_AREA_TYPES_CLASS_AREA_TYPES"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="CLASS_AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-6-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPES" columnName="KIND_AREA_TYPE_CODE" />
+            <columnExists tableName="KIND_AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPES_KIND_AREA_TYPES</comment>
+        <addForeignKeyConstraint baseColumnNames="KIND_AREA_TYPE_CODE"
+                                 baseTableName="AREA_TYPES"
+                                 constraintName="FK_AREA_TYPES_KIND_AREA_TYPES"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="KIND_AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-6-6" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPES" columnName="SPECIALIZATION_ID" />
+            <columnExists tableName="SPECIALIZATION" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPES_SPECIALIZATION</comment>
+        <addForeignKeyConstraint baseColumnNames="SPECIALIZATION_ID"
+                                 baseTableName="AREA_TYPES"
+                                 constraintName="FK_AREA_TYPES_SPECIALIZATION"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="SPECIALIZATION"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-7" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
+        <createTable tableName="AREA_TYPE_MEDICAL_POSITIONS"
+                     remarks="Должности МР на типе участка">
+            <column name="CODE" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="MEDICAL_POSITION_ID" type="NUMBER(20)" />
+            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-7-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_MEDI_AREA_01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_MEDI_AREA_01"
+                     tableName="AREA_TYPE_MEDICAL_POSITIONS"
+                     unique="false">
+            <column name="AREA_TYPE_CODE" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-7-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_MEDI_AREA_TYPE</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
+                                 constraintName="FK_AREA_TYPE_MEDI_AREA_TYPE"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-8" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPE_RELATIONS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPE_RELATIONS</comment>
+        <createTable tableName="AREA_TYPE_RELATIONS"
+                     remarks="Связь зависимых и первичных">
+            <column name="DEPENDENT_AREA_TYPE_ID" type="VARCHAR2(370)" remarks="Код зависимого типа участка" />
+            <column name="PRIMARY_AREA_TYPE_ID" type="VARCHAR2(370)" remarks="Код первичного типа участка" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPE_RELATIONS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-8-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_RELA_AREA_DEP"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки DEPENDENT_AREA_TYPE_ID таблицы AREA_TYPE_RELATIONS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_RELA_AREA_DEP"
+                     tableName="AREA_TYPE_RELATIONS"
+                     unique="false">
+            <column name="DEPENDENT_AREA_TYPE_ID" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-8-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_RELA_AREA_PRIM"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки PRIMARY_AREA_TYPE_ID таблицы AREA_TYPE_RELATIONS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_RELA_AREA_PRIM"
+                     tableName="AREA_TYPE_RELATIONS"
+                     unique="false">
+            <column name="PRIMARY_AREA_TYPE_ID" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-8-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="DEPENDENT_AREA_TYPE_ID" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_REL_AREA_TYPE_DEP</comment>
+        <addForeignKeyConstraint baseColumnNames="DEPENDENT_AREA_TYPE_ID"
+                                 baseTableName="AREA_TYPE_RELATIONS"
+                                 constraintName="FK_AREA_TYPE_REL_AREA_TYPE_DEP"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-8-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="PRIMARY_AREA_TYPE_ID" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_REL_AREA_TYPE_PRI</comment>
+        <addForeignKeyConstraint baseColumnNames="PRIMARY_AREA_TYPE_ID"
+                                 baseTableName="AREA_TYPE_RELATIONS"
+                                 constraintName="FK_AREA_TYPE_REL_AREA_TYPE_PRI"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-9" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="MU_PROFILE_TEMPLATES"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы MU_PROFILE_TEMPLATES</comment>
+        <createTable tableName="MU_PROFILE_TEMPLATES"
+                     remarks="Шаблон профиля МУ">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="MU_TYPE_ID" type="NUMBER(8)" />
+            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" />
+            <column name="AVAILABLE_TO_CREATE" type="NUMBER(1)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="MU_PROFILE_TEMPLATES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-9-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_MU_TEMPLATE_PR_AREA_01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_PROFILE_TEMPLATES</comment>
+        <createIndex indexName="IXFK_MU_TEMPLATE_PR_AREA_01"
+                     tableName="MU_PROFILE_TEMPLATES"
+                     unique="false">
+            <column name="AREA_TYPE_CODE" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-9-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MU_PROFILE_TEMPLATES" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_MU_TEMPLATE_PR_AREA_TYPE</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="MU_PROFILE_TEMPLATES"
+                                 constraintName="FK_MU_TEMPLATE_PR_AREA_TYPE"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-10" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="POSITION_NOM"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы POSITION_NOM</comment>
+        <createTable tableName="POSITION_NOM">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(1000)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ARCHIVED" type="NUMBER(1)">
+                <constraints nullable="false" />
+            </column>
+            <column name="RESOURCE_TYPE_CODE" type="NUMBER(20)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="POSITION_NOM"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-11" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="PR_AREA_TYPE_ATTRS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы PR_AREA_TYPE_ATTRS</comment>
+        <createTable tableName="PR_AREA_TYPE_ATTRS"
+                     remarks="Доп. атрибуты первичного участка">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Код типа участка" />
+            <column name="HEAD_FINANCE" type="NUMBER(1)" remarks="Участвует в подушевом финансировании" />
+            <column name="HAS_SERVICE_TERRITORY" type="NUMBER(1)" remarks="Обслуживает территорию" />
+            <column name="ATTACH_BY_REQUEST" type="NUMBER(1)" remarks="Прикрепление по заявлению" />
+            <column name="ATTACH_BY_MEDICAL_REASON" type="NUMBER(1)" remarks="По мед. показаниям" />
+            <column name="MPGU_AVAILABLE" type="NUMBER(1)" remarks="Возможно прикрепление через МПГУ" />
+            <column name="AREA_COUNT_LIMIT_CODE" type="NUMBER(20)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="PR_AREA_TYPE_ATTRS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-11-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_ATTRS_AREA_TYPE"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы PR_AREA_TYPE_ATTRS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_ATTRS_AREA_TYPE"
+                     tableName="PR_AREA_TYPE_ATTRS"
+                     unique="false">
+            <column name="AREA_TYPE_CODE" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-11-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_PR_AREA_TYPE_AREA_COUNT"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_COUNT_LIMIT_CODE таблицы PR_AREA_TYPE_ATTRS</comment>
+        <createIndex indexName="IXFK_PR_AREA_TYPE_AREA_COUNT"
+                     tableName="PR_AREA_TYPE_ATTRS"
+                     unique="false">
+            <column name="AREA_COUNT_LIMIT_CODE" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-11-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="PR_AREA_TYPE_ATTRS" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_ATTRS_AREA_TYPE</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="PR_AREA_TYPE_ATTRS"
+                                 constraintName="FK_AREA_TYPE_ATTRS_AREA_TYPE"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-11-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="PR_AREA_TYPE_ATTRS" columnName="AREA_COUNT_LIMIT_CODE" />
+            <columnExists tableName="AREA_COUNT_LIMIT" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_PR_AREA_TYPE_AREA_COUNT</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_COUNT_LIMIT_CODE"
+                                 baseTableName="PR_AREA_TYPE_ATTRS"
+                                 constraintName="FK_PR_AREA_TYPE_AREA_COUNT"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_COUNT_LIMIT"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-12" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="REGISTRY_BUILDING"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы REGISTRY_BUILDING</comment>
+        <createTable tableName="REGISTRY_BUILDING"
+                     remarks="Реестр зданий и сооружений">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="ADDRESS_ELEMENT" type="VARCHAR2(500)" remarks="Адресообразующий элемент" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="REGISTRY_BUILDING"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-13" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="SPECIALIZATION_TO_POSITION_NOM"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы SPECIALIZATION_TO_POSITION_NOM</comment>
+        <createTable tableName="SPECIALIZATION_TO_POSITION_NOM">
+            <column name="SPECIALIZATION_ID" type="NUMBER(20)">
+                <constraints nullable="false" />
+            </column>
+            <column name="POSITION_NOM_ID" type="NUMBER(20)">
+                <constraints nullable="false" />
+            </column>
+            <column name="ARCHIVED" type="NUMBER(1)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="SPECIALIZATION_TO_POSITION_NOM"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-13-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_SPEC_SPEC_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки SPECIALIZATION_ID таблицы SPECIALIZATION_TO_POSITION_NOM</comment>
+        <createIndex indexName="IXFK_SPEC_SPEC_ID"
+                     tableName="SPECIALIZATION_TO_POSITION_NOM"
+                     unique="false">
+            <column name="SPECIALIZATION_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-13-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_SPECIALIZATI_POSITIO01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки POSITION_NOM_ID таблицы SPECIALIZATION_TO_POSITION_NOM</comment>
+        <createIndex indexName="IXFK_SPECIALIZATI_POSITIO01"
+                     tableName="SPECIALIZATION_TO_POSITION_NOM"
+                     unique="false">
+            <column name="POSITION_NOM_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-13-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="SPECIALIZATION_TO_POSITION_NOM" columnName="POSITION_NOM_ID" />
+            <columnExists tableName="POSITION_NOM" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_SPECIALIZATI_POSITION_NO_01</comment>
+        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_ID"
+                                 baseTableName="SPECIALIZATION_TO_POSITION_NOM"
+                                 constraintName="FK_SPECIALIZATI_POSITION_NO_01"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="POSITION_NOM"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7594-13-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="SPECIALIZATION_TO_POSITION_NOM" columnName="SPECIALIZATION_ID" />
+            <columnExists tableName="SPECIALIZATION" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_SPEC_SPEC_ID</comment>
+        <addForeignKeyConstraint baseColumnNames="SPECIALIZATION_ID"
+                                 baseTableName="SPECIALIZATION_TO_POSITION_NOM"
+                                 constraintName="FK_SPEC_SPEC_ID"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="SPECIALIZATION"/>
+    </changeSet>
+
 </databaseChangeLog>
-
-
