@@ -50,6 +50,22 @@ public class WebServiceConfiguration {
         return new UserContextInterceptor(); 
     }
     
+    @Bean //http://localhost:8080/area/receive_changes?wsdl
+    public Endpoint NSIReceiveService(@Qualifier(moscow.ptnl.contingent.area.ws.nsi.ReceiveChangesImpl.SERVICE_NAME) ru.mos.op.receive_changes.ReceiveChangesPort receiveService, SpringBus cxfBus) {
+        EndpointImpl endpoint = new EndpointImpl(cxfBus, receiveService);
+        
+        endpoint.setServiceName(new QName("http://op.mos.ru/receive_changes", "receive_changes"));
+        endpoint.setWsdlLocation("classpath:META-INF/wsdl/nsi/ReceiveChangesWS.wsdl");
+        endpoint.setAddress("/receive_changes");
+        endpoint.publish();
+
+    	//endpoint.getInInterceptors().add(soapVersionInterceptor);
+        endpoint.getInInterceptors().add(credentialsValidator());
+        interceptorService.setupInterceptors(endpoint);
+        
+        return endpoint;
+    }
+    
     @Bean 
     public Endpoint AreaServiceV1(@Qualifier(moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v1._public.area.AreaPT areaService, SpringBus cxfBus) {
         EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
