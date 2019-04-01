@@ -97,7 +97,7 @@
             <column name="TITLE" type="VARCHAR2(100)">
                 <constraints nullable="false" />
             </column>
-            <column name="ARCHIVED" type="NUMBER(1)">
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
         </createTable>
@@ -226,7 +226,7 @@
         <comment>Создание таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
         <createTable tableName="AREA_TYPE_MEDICAL_POSITIONS"
                      remarks="Должности МР на типе участка">
-            <column name="CODE" type="NUMBER(20)">
+            <column name="ID" type="NUMBER(20)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="MEDICAL_POSITION_ID" type="NUMBER(20)" />
@@ -397,7 +397,7 @@
             <column name="TITLE" type="VARCHAR2(1000)">
                 <constraints nullable="false" />
             </column>
-            <column name="ARCHIVED" type="NUMBER(1)">
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
             <column name="RESOURCE_TYPE_CODE" type="NUMBER(20)" />
@@ -519,7 +519,7 @@
             <column name="POSITION_NOM_ID" type="NUMBER(20)">
                 <constraints nullable="false" />
             </column>
-            <column name="ARCHIVED" type="NUMBER(1)">
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
         </createTable>
