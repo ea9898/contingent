@@ -244,7 +244,7 @@
                                 <sources>
                                     <source>src/main/resources/META-INF/xsd/nsi</source>
                                 </sources>
-                                <generatePackage>moscow.ptnl.contingent.area.nsi</generatePackage>                                                 
+                                <packageName>moscow.ptnl.contingent.area.nsi</packageName>                                           
                             </configuration>
                         </execution>
                     </executions>

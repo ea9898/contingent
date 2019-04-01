@@ -38,7 +38,7 @@ public class ReceiveChangesImpl extends BaseService implements ReceiveChangesPor
         
         if (!Strings.isNullOrEmpty(request)) {
             try {
-                generated.Package packageObject = jaxbUnmarshall(generated.Package.class, request);                
+                moscow.ptnl.contingent.area.nsi.Package packageObject = jaxbUnmarshall(moscow.ptnl.contingent.area.nsi.Package.class, request);                
                 packageId = packageObject.getId();
                 if (packageObject.getCatalog() != null && packageObject.getCatalog().getData() != null) {
                     dataAction = DATA_ACTION.valueOf(packageObject.getCatalog().getData().getAction());
