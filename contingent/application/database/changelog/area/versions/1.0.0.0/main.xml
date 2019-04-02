@@ -582,4 +582,502 @@
                                  referencedTableName="SPECIALIZATION"/>
     </changeSet>
 
+    <changeSet id="EMIASUPK-7598-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREAS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREAS</comment>
+        <createTable tableName="AREAS"
+                     remarks="Участок">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="MO_ID" type="NUMBER(20)" remarks="ИД МО" />
+            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код" />
+            <column name="NAME" type="VARCHAR2(255)" remarks="Наименование" />
+            <column name="NUMBER" type="NUMBER(5)" remarks="Номер" />
+            <column name="OMS" type="NUMBER(1)" remarks="ОМС" />
+            <column name="DMS" type="NUMBER(1)" remarks="ДМС" />
+            <column name="PAID" type="NUMBER(1)" remarks="Платный" />
+            <column name="IS_AUTO_ASSIGN_FOR_ATTACH" type="NUMBER(1)" remarks="Для автоприкрепления" />
+            <column name="ACTUAL" type="NUMBER(1)" />
+            <column name="DESCRIPTION" type="VARCHAR2(370)" />
+            <column name="ATTACH_BY_MEDICAL_REASON" type="NUMBER(1)" />
+            <column name="AGE_MIN" type="NUMBER(8)" remarks="Возраст мин" />
+            <column name="AGE_MAX" type="NUMBER(8)" remarks="Возраст макс" />
+            <column name="AGE_M_MIN" type="NUMBER(8)" remarks="Возраст М мин" />
+            <column name="AGE_M_MAX" type="NUMBER(8)" remarks="Возраст М макс" />
+            <column name="AGE_W_MIN" type="NUMBER(8)" remarks="Возраст Ж мин" />
+            <column name="AGE_W_MAX" type="NUMBER(8)" remarks="Возраст Ж макс" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREAS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-1-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_AREA_TYPE"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы AREAS</comment>
+        <createIndex indexName="IXFK_AREA_AREA_TYPE"
+                     tableName="AREAS"
+                     unique="false">
+            <column name="AREA_TYPE_CODE" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-1-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREAS" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_AREA_TYPE01</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="AREAS"
+                                 constraintName="FK_AREA_AREA_TYPE01"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_MEDICAL_EMPLOYEE"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <createTable tableName="AREA_MEDICAL_EMPLOYEE"
+                     remarks="МР на участке">
+            <column name="ID" type="VARCHAR2(50)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="MEDICAL_EMPLOYEE_JOB_INFO_ID" type="NUMBER(20)" remarks="ИД Исполнения должности" />
+            <column name="AREA_ID" type="NUMBER(20)" />
+            <column name="IS_REPLACEMENT" type="NUMBER(1)" remarks="Роль МУ на участке (тип обслуживнаия)" />
+            <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала работы на участке" />
+            <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
+            <column name="MEDICAL_EMPLOYEE_ID" type="NUMBER(20)" />
+            <column name="MEDICAL_POSITION_ID" type="NUMBER(20)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_MEDICAL_EMPLOYEE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-2-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_MEDICAL_EMPLOYEE"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_ID таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <createIndex indexName="IXFK_AREA_MEDICAL_EMPLOYEE"
+                     tableName="AREA_MEDICAL_EMPLOYEE"
+                     unique="false">
+            <column name="AREA_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-2-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="AREA_ID" />
+            <columnExists tableName="AREAS" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_MEDICAL_EMPLOYEE_ARE02</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_ID"
+                                 baseTableName="AREA_MEDICAL_EMPLOYEE"
+                                 constraintName="FK_AREA_MEDICAL_EMPLOYEE_ARE02"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="AREAS"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TO_AREA_TYPE"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TO_AREA_TYPE</comment>
+        <createTable tableName="AREA_TO_AREA_TYPE"
+                     remarks="МР на участке">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="AREA_ID" type="NUMBER(20)">
+                <constraints nullable="false" />
+            </column>
+            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TO_AREA_TYPE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-3-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TO_AREA_TYPE_AREAS"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_ID таблицы AREA_TO_AREA_TYPE</comment>
+        <createIndex indexName="IXFK_AREA_TO_AREA_TYPE_AREAS"
+                     tableName="AREA_TO_AREA_TYPE"
+                     unique="false">
+            <column name="AREA_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-3-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TO_AREA__AREA_T01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы AREA_TO_AREA_TYPE</comment>
+        <createIndex indexName="IXFK_AREA_TO_AREA__AREA_T01"
+                     tableName="AREA_TO_AREA_TYPE"
+                     unique="false">
+            <column name="AREA_TYPE_CODE" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-3-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TO_AREA_TYPE" columnName="AREA_ID" />
+            <columnExists tableName="AREAS" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TO_AREA_TYPE_AREAS</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_ID"
+                                 baseTableName="AREA_TO_AREA_TYPE"
+                                 constraintName="FK_AREA_TO_AREA_TYPE_AREAS"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="AREAS"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-3-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TO_AREA_TYPE" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TO_AREA_AREA_TYPES_01</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="AREA_TO_AREA_TYPE"
+                                 constraintName="FK_AREA_TO_AREA_AREA_TYPES_01"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="MU_PROFILES"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы MU_PROFILES</comment>
+        <createTable tableName="MU_PROFILES"
+                     remarks="Профиль МУ">
+            <column name="MU_ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="MU_PROFILES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-4-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_PROFILE_MU_AREA_TYPE"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_PROFILES</comment>
+        <createIndex indexName="IXFK_PROFILE_MU_AREA_TYPE"
+                     tableName="MU_PROFILES"
+                     unique="false">
+            <column name="AREA_TYPE_CODE" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-4-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MU_PROFILES" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_PROFILE_MU_AREA_TYPE</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="MU_PROFILES"
+                                 constraintName="FK_PROFILE_MU_AREA_TYPE"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ORDER_ADDRESS_ALLOCATION"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы ORDER_ADDRESS_ALLOCATION</comment>
+        <createTable tableName="ORDER_ADDRESS_ALLOCATION"
+                     remarks="Распоряжение о распределении территории">
+            <column name="ID" type="NUMBER(20)" remarks="ИД распоряжения">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="NUMBER" type="VARCHAR2(255)" remarks="Номер">
+                <constraints nullable="false" />
+            </column>
+            <column name="NAME" type="VARCHAR2(255)" remarks="Наименование" />
+            <column name="DATE" type="TIMESTAMP(6)" remarks="Дата распоряжения" />
+            <column name="MO_ID" type="NUMBER(20)" remarks="ИД МО" />
+            <column name="OUZ" type="VARCHAR2(50)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="ORDER_ADDRESS_ALLOCATION"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ADDRESS_ALLOCATION_TO_MO"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы ADDRESS_ALLOCATION_TO_MO</comment>
+        <createTable tableName="ADDRESS_ALLOCATION_TO_MO"
+                     remarks="Распределение к МО">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="MO_ID" type="NUMBER(20)" remarks="ИД МО" />
+            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код" />
+            <column name="ORDER_ID" type="NUMBER(20)" remarks="ИД распоряжения о распределении" />
+            <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала распределения" />
+            <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания распределения" />
+            <column name="REJECT_ORDER_ID" type="NUMBER(20)" remarks="ИД распоряжения об отмене распределения" />
+            <column name="ARCHIVE_REASON" type="VARCHAR2(255)" remarks="Причина архивирования" />
+            <column name="ADDRESS_FORMING_ELEMENT_ID" type="NUMBER(20)" />
+            <column name="REGISTRY_BUILDING_ID" type="NUMBER(20)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="ADDRESS_ALLOCATION_TO_MO"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_ADDRESS_ALLO_ORDER"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки ORDER_ID таблицы ADDRESS_ALLOCATION_TO_MO</comment>
+        <createIndex indexName="IXFK_ADDRESS_ALLO_ORDER"
+                     tableName="ADDRESS_ALLOCATION_TO_MO"
+                     unique="false">
+            <column name="ORDER_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_ADDRESS_ALLO_ORDER_REJECT"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки REJECT_ORDER_ID таблицы ADDRESS_ALLOCATION_TO_MO</comment>
+        <createIndex indexName="IXFK_ADDRESS_ALLO_ORDER_REJECT"
+                     tableName="ADDRESS_ALLOCATION_TO_MO"
+                     unique="false">
+            <column name="REJECT_ORDER_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_DISTRIBUTION_ADDRESS"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки ADDRESS_FORMING_ELEMENT_ID таблицы ADDRESS_ALLOCATION_TO_MO</comment>
+        <createIndex indexName="IXFK_DISTRIBUTION_ADDRESS"
+                     tableName="ADDRESS_ALLOCATION_TO_MO"
+                     unique="false">
+            <column name="ADDRESS_FORMING_ELEMENT_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_DISTRIBUTION_REGISTR"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки REGISTRY_BUILDING_ID таблицы ADDRESS_ALLOCATION_TO_MO</comment>
+        <createIndex indexName="IXFK_DISTRIBUTION_REGISTR"
+                     tableName="ADDRESS_ALLOCATION_TO_MO"
+                     unique="false">
+            <column name="REGISTRY_BUILDING_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_ADDRESS_ALLO_TYPE"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы ADDRESS_ALLOCATION_TO_MO</comment>
+        <createIndex indexName="IXFK_ADDRESS_ALLO_TYPE"
+                     tableName="ADDRESS_ALLOCATION_TO_MO"
+                     unique="false">
+            <column name="AREA_TYPE_CODE" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-6" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESS_ALLOCATION_TO_MO" columnName="ORDER_ID" />
+            <columnExists tableName="ORDER_ADDRESS_ALLOCATION" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_ADDRESS_ALLO_ORDER_ADDR_ORDER</comment>
+        <addForeignKeyConstraint baseColumnNames="ORDER_ID"
+                                 baseTableName="ADDRESS_ALLOCATION_TO_MO"
+                                 constraintName="FK_ADDRESS_ALLO_ORDER_ADDR_ORDER"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="ORDER_ADDRESS_ALLOCATION"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-7" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESS_ALLOCATION_TO_MO" columnName="REJECT_ORDER_ID" />
+            <columnExists tableName="ORDER_ADDRESS_ALLOCATION" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_ADDRESS_ALLO_ORDER_ADDR_REJECT</comment>
+        <addForeignKeyConstraint baseColumnNames="REJECT_ORDER_ID"
+                                 baseTableName="ADDRESS_ALLOCATION_TO_MO"
+                                 constraintName="FK_ADDRESS_ALLO_ORDER_ADDR_REJECT"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="ORDER_ADDRESS_ALLOCATION"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-8" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESS_ALLOCATION_TO_MO" columnName="ADDRESS_FORMING_ELEMENT_ID" />
+            <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_DISTRIBUTION_ADDRESS_FORM</comment>
+        <addForeignKeyConstraint baseColumnNames="ADDRESS_FORMING_ELEMENT_ID"
+                                 baseTableName="ADDRESS_ALLOCATION_TO_MO"
+                                 constraintName="FK_DISTRIBUTION_ADDRESS_FORM"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="ADDRESS_FORMING_ELEMENT"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-9" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESS_ALLOCATION_TO_MO" columnName="REGISTRY_BUILDING_ID" />
+            <columnExists tableName="REGISTRY_BUILDING" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_DISTRIBUTION_REGISTRY_BUILDING</comment>
+        <addForeignKeyConstraint baseColumnNames="REGISTRY_BUILDING_ID"
+                                 baseTableName="ADDRESS_ALLOCATION_TO_MO"
+                                 constraintName="FK_DISTRIBUTION_REGISTRY_BUILDING"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="REGISTRY_BUILDING"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-6-10" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESS_ALLOCATION_TO_MO" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_DISTRIBUTION_AREA_TYPE</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="ADDRESS_ALLOCATION_TO_MO"
+                                 constraintName="FK_DISTRIBUTION_AREA_TYPE"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-7" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ADDRESS_ALLOCATION_TO_AREA"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы ADDRESS_ALLOCATION_TO_AREA</comment>
+        <createTable tableName="ADDRESS_ALLOCATION_TO_AREA"
+                     remarks="Распределение к участку">
+            <column name="DISTRIBUTION_TO_MO_ID" type="NUMBER(20)" />
+            <column name="AREA_ID" type="NUMBER(20)" remarks="ИД участка" />
+            <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала" />
+            <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="ADDRESS_ALLOCATION_TO_AREA"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-7-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_DISTRIBUTION_DISTRIB01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки DISTRIBUTION_TO_MO_ID таблицы ADDRESS_ALLOCATION_TO_AREA</comment>
+        <createIndex indexName="IXFK_DISTRIBUTION_DISTRIB01"
+                     tableName="ADDRESS_ALLOCATION_TO_AREA"
+                     unique="false">
+            <column name="DISTRIBUTION_TO_MO_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-7-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_DISTRIBUTION_TO_AREA_AREA"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_ID таблицы ADDRESS_ALLOCATION_TO_AREA</comment>
+        <createIndex indexName="IXFK_DISTRIBUTION_TO_AREA_AREA"
+                     tableName="ADDRESS_ALLOCATION_TO_AREA"
+                     unique="false">
+            <column name="AREA_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-7-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESS_ALLOCATION_TO_AREA" columnName="DISTRIBUTION_TO_MO_ID" />
+            <columnExists tableName="ADDRESS_ALLOCATION_TO_MO" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_DISTRIBUTION_DISTRIBUTIO_01</comment>
+        <addForeignKeyConstraint baseColumnNames="DISTRIBUTION_TO_MO_ID"
+                                 baseTableName="ADDRESS_ALLOCATION_TO_AREA"
+                                 constraintName="FK_DISTRIBUTION_DISTRIBUTIO_01"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="ADDRESS_ALLOCATION_TO_MO"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-7-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESS_ALLOCATION_TO_AREA" columnName="AREA_ID" />
+            <columnExists tableName="AREAS" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_DISTRIBUTION_TO_AREA_AREA</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_ID"
+                                 baseTableName="ADDRESS_ALLOCATION_TO_AREA"
+                                 constraintName="FK_DISTRIBUTION_TO_AREA_AREA"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="AREAS"/>
+    </changeSet>
+
 </databaseChangeLog>
