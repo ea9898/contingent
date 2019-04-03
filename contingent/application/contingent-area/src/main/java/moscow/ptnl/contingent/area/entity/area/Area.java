@@ -38,15 +38,6 @@ public class Area implements Serializable {
     @Column(name = "NUMBER")
     private Integer number;
 
-    @Column(name = "OMS")
-    private Boolean oms;
-
-    @Column(name = "DMS")
-    private Boolean dms;
-
-    @Column(name = "PAID")
-    private Boolean paid;
-
     @Column(name = "IS_AUTO_ASSIGN_FOR_ATTACH")
     private Boolean autoAssignForAttach;
 
@@ -116,30 +107,6 @@ public class Area implements Serializable {
 
     public void setNumber(Integer number) {
         this.number = number;
-    }
-
-    public Boolean getOms() {
-        return oms;
-    }
-
-    public void setOms(Boolean oms) {
-        this.oms = oms;
-    }
-
-    public Boolean getDms() {
-        return dms;
-    }
-
-    public void setDms(Boolean dms) {
-        this.dms = dms;
-    }
-
-    public Boolean getPaid() {
-        return paid;
-    }
-
-    public void setPaid(Boolean paid) {
-        this.paid = paid;
     }
 
     public Boolean getAutoAssignForAttach() {

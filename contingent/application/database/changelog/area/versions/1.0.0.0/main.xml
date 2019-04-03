@@ -598,9 +598,6 @@
             <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код" />
             <column name="NAME" type="VARCHAR2(255)" remarks="Наименование" />
             <column name="NUMBER" type="NUMBER(5)" remarks="Номер" />
-            <column name="OMS" type="NUMBER(1)" remarks="ОМС" />
-            <column name="DMS" type="NUMBER(1)" remarks="ДМС" />
-            <column name="PAID" type="NUMBER(1)" remarks="Платный" />
             <column name="IS_AUTO_ASSIGN_FOR_ATTACH" type="NUMBER(1)" remarks="Для автоприкрепления" />
             <column name="ACTUAL" type="NUMBER(1)" />
             <column name="DESCRIPTION" type="VARCHAR2(370)" />
