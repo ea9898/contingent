@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions name="area"
-             targetNamespace="http://emias2.gov.ru/contingent/v1/public/common/"
+             targetNamespace="http://emias2.gov.ru/contingent/v1/common/"
              xmlns="http://schemas.xmlsoap.org/wsdl/"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:faults="http://emias.mos.ru/system/v1/faults/"
              xmlns:cmn="http://emias2.gov.ru/contingent/v1/common/types/"
         >
+
     <types>
         <xsd:schema targetNamespace="http://emias2.gov.ru/contingent/v1/">
+            <xsd:import namespace="http://emias.mos.ru/system/v1/faults/" schemaLocation="../emias/emias.system.v1.faults.xsd"/>
             <xsd:import namespace="http://emias2.gov.ru/contingent/v1/common/types/" schemaLocation="common-types.xsd"/>
         </xsd:schema>
     </types>
 
     <message name="ContingentFault">
-        <part name="fault" element="cmn:FaultInfo"/>
+        <part name="fault" element="faults:fault"/>
     </message>
 
 </definitions>

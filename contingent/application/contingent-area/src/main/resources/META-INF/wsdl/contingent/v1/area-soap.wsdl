@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="area"
+             targetNamespace="http://emias2.gov.ru/contingent/v1/area/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://emias2.gov.ru/contingent/v1/area/"
+             xmlns:cmnwsdl="http://emias2.gov.ru/contingent/v1/common/"
+             xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+        >
+    <documentation>
+        Version: 1.1.12.${buildNumber}
+    </documentation>
+
+    <import namespace="http://emias2.gov.ru/contingent/v1/common/" location="common.wsdl"/>
+
+    <types>
+        <xsd:schema targetNamespace="http://emias2.gov.ru/contingent/v1/">
+            <xsd:import namespace="http://emias2.gov.ru/contingent/v1/area/" schemaLocation="area-wsdl-types.xsd"/>
+            <xsd:import namespace="http://emias2.gov.ru/contingent/v1/common/types/" schemaLocation="common-types.xsd"/>
+        </xsd:schema>
+    </types>
+
+    <message name="GetProfileMUInput">
+        <part name="body" element="tns:GetProfileMURequest"/>
+    </message>
+
+    <message name="GetProfileMUOutput">
+        <part name="body" element="tns:GetProfileMUResponse"/>
+    </message>
+
+    <portType name="AreaPT">
+        <operation name="getProfileMU">
+            <documentation>
+                Предоставление сведений профиля МУ (К_УУ_2)
+            </documentation>
+            <input message="tns:GetProfileMUInput"/>
+            <output message="tns:GetProfileMUOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+
+    </portType>
+
+    <binding name="AreaPTB" type="tns:AreaPT">
+        <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsp:Policy xmlns:wsp="http://www.w3.org/ns/ws-policy/" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+            <sp:SupportingTokens>
+                <wsp:Policy>
+                    <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                        <wsp:Policy>
+                            <sp:NoPassword/>
+                        </wsp:Policy>
+                    </sp:UsernameToken>
+                </wsp:Policy>
+            </sp:SupportingTokens>
+        </wsp:Policy>
+
+        <operation name="getProfileMU">
+            <soap12:operation soapAction="getProfileMU"/>
+            <input>
+                <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+    </binding>
+
+    <service name="AreaService">
+        <port name="Area" binding="tns:AreaPTB">
+            <soap12:address location="http://localhost:8181/Area"/>
+        </port>
+    </service>
+</definitions>

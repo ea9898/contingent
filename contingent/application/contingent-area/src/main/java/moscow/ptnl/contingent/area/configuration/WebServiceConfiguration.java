@@ -67,7 +67,7 @@ public class WebServiceConfiguration {
     }
     
     @Bean 
-    public Endpoint AreaServiceV1(@Qualifier(moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v1._public.area.AreaPT areaService, SpringBus cxfBus) {
+    public Endpoint AreaServiceV1(@Qualifier(moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v1.area.AreaPT areaService, SpringBus cxfBus) {
         EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
         initAreaService(endpoint, "v1");
         return endpoint;
@@ -83,8 +83,8 @@ public class WebServiceConfiguration {
     //http://localhost:8080/contingent/area/v5/AreaService?wsdl
     private void initAreaService(EndpointImpl endpoint, String version) {
         String pathPart = (version != null && !version.isEmpty()) ? version + "/" : "";
-        endpoint.setServiceName(new QName("http://emias2.gov.ru/contingent/" + pathPart + "public/area/", "AreaService"));
-        endpoint.setWsdlLocation("classpath:META-INF/wsdl/contingent/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "public-area-soap.wsdl");
+        endpoint.setServiceName(new QName("http://emias2.gov.ru/contingent/" + pathPart + "area/", "AreaService"));
+        endpoint.setWsdlLocation("classpath:META-INF/wsdl/contingent/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "area-soap.wsdl");
         endpoint.setAddress("/" + pathPart + "AreaService");
         endpoint.publish();
 

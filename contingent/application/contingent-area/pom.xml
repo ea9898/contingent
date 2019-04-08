@@ -214,7 +214,7 @@
                                         <serviceName>AreaService</serviceName>                                                                                                                                               
                                     </wsdlOption>
                                     <wsdlOption>
-                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent/v1/public-area-soap.wsdl</wsdl>
+                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent/v1/area-soap.wsdl</wsdl>
                                         <bindingFiles>
                                             <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
                                         </bindingFiles>
