@@ -1077,19 +1077,6 @@
                                  referencedTableName="AREAS"/>
     </changeSet>
 
-    <changeSet id="EMIASUPK-7598-7-4" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="ADDRESS_ALLOCATION_TO_AREA" columnName="AREA_ID" />
-            <columnExists tableName="AREAS" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_DISTRIBUTION_TO_AREA_AREA</comment>
-        <addForeignKeyConstraint baseColumnNames="AREA_ID"
-                                 baseTableName="ADDRESS_ALLOCATION_TO_AREA"
-                                 constraintName="FK_DISTRIBUTION_TO_AREA_AREA"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="AREAS"/>
-    </changeSet>
-
     <changeSet id="EMIASUPK-7598-8" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -1117,6 +1104,46 @@
                      tableName="AREAS"
                      unique="false">
             <column name="MO_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-10-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="MU_PROFILES"/>
+        </preConditions>
+        <comment>Изменение таблицы MU_PROFILES - удаление первичного ключа MU_ID</comment>
+        <dropPrimaryKey constraintName="MU_PROFILES_PKEY"
+                        tableName="MU_PROFILES"/>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-10-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="MU_PROFILES"/>
+        </preConditions>
+        <comment>Изменение таблицы MU_PROFILES - создание первичного ключа ID</comment>
+        <addColumn tableName="MU_PROFILES">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="MU_PROFILES" columnName="ID" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-10-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IX_MU_PROFILES_MU_ID"/>
+            </not>
+        </preConditions>
+        <comment>Изменение таблицы MU_PROFILES - создание индекса MU_ID</comment>
+        <createIndex indexName="IX_MU_PROFILES_MU_ID"
+                     tableName="MU_PROFILES"
+                     unique="false">
+            <column name="MU_ID" type="number"/>
         </createIndex>
     </changeSet>
 
