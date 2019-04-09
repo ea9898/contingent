@@ -73,12 +73,12 @@ public class WebServiceConfiguration {
         return endpoint;
     }
     
-    @Bean 
-    public Endpoint AreaServiceV5(@Qualifier(moscow.ptnl.contingent.area.ws.v5.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v5._public.area.AreaPT areaService, SpringBus cxfBus) {
-        EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
-        initAreaService(endpoint, "v5");
-        return endpoint;
-    }
+//    @Bean
+//    public Endpoint AreaServiceV5(@Qualifier(moscow.ptnl.contingent.area.ws.v5.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v5._public.area.AreaPT areaService, SpringBus cxfBus) {
+//        EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
+//        initAreaService(endpoint, "v5");
+//        return endpoint;
+//    }
     
     //http://localhost:8080/contingent/area/v5/AreaService?wsdl
     private void initAreaService(EndpointImpl endpoint, String version) {

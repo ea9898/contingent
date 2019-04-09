@@ -7,7 +7,7 @@
 
     <xsd:import namespace="http://emias2.gov.ru/contingent/v1/common/types/" schemaLocation="common-types.xsd" />
 
-    <xsd:complexType name="ProfileAreaType">
+    <xsd:complexType name="AreaType">
         <xsd:annotation>
             <xsd:documentation>Типа участка в профиле МУ</xsd:documentation>
         </xsd:annotation>

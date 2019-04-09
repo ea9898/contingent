@@ -4,203 +4,29 @@
             elementFormDefault="qualified"
             version="1.0">
 
-    <xsd:complexType name="RequestPageInfo">
+    <xsd:complexType name="KeyValuePair">
         <xsd:sequence>
-            <xsd:element name="page" type="xsd:int" minOccurs="1" default="0">
+            <xsd:element name="key" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:documentation>Номер страницы</xsd:documentation>
+                    <xsd:documentation>Параметр</xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
-            <xsd:element name="pageSize" type="xsd:int" minOccurs="1" default="0">
+            <xsd:element name="value" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:documentation>Размер страницы</xsd:documentation>
+                    <xsd:documentation>Значение</xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
 
-    <xsd:complexType name="ResponsePageInfo">
-        <xsd:complexContent>
-            <xsd:extension base="tns:RequestPageInfo">
-                <xsd:sequence>
-                    <xsd:element name="total" type="xsd:long" minOccurs="1" default="0">
-                        <xsd:annotation>
-                            <xsd:documentation>Всего записей</xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:element>
-                </xsd:sequence>
-            </xsd:extension>
-        </xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="FullName">
-        <xsd:annotation>
-            <xsd:documentation>Полное имя</xsd:documentation>
-        </xsd:annotation>
+    <xsd:complexType name="Options">
         <xsd:sequence>
-            <xsd:element name="firstName" minOccurs="0">
+            <xsd:element name="entry" type="tns:KeyValuePair" minOccurs="0" maxOccurs="unbounded">
                 <xsd:annotation>
-                    <xsd:documentation>Имя</xsd:documentation>
-                </xsd:annotation>
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:string">
-                        <xsd:maxLength value="50"/>
-                    </xsd:restriction>
-                </xsd:simpleType>
-            </xsd:element>
-            <xsd:element name="secondName" minOccurs="0">
-                <xsd:annotation>
-                    <xsd:documentation>Отчество</xsd:documentation>
-                </xsd:annotation>
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:string">
-                        <xsd:maxLength value="50"/>
-                    </xsd:restriction>
-                </xsd:simpleType>
-            </xsd:element>
-            <xsd:element name="lastName" minOccurs="0">
-                <xsd:annotation>
-                    <xsd:documentation>Фамилия</xsd:documentation>
-                </xsd:annotation>
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:string">
-                        <xsd:maxLength value="50"/>
-                    </xsd:restriction>
-                </xsd:simpleType>
-            </xsd:element>
-        </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:simpleType name="PatientKey">
-        <xsd:annotation>
-            <xsd:documentation>Идентификатор пациента</xsd:documentation>
-        </xsd:annotation>
-        <xsd:restriction base="xsd:long"/>
-    </xsd:simpleType>
-
-    <xsd:complexType name="Validation">
-        <xsd:annotation>
-            <xsd:documentation>Результат выполнения валидации</xsd:documentation>
-        </xsd:annotation>
-        <xsd:sequence>
-            <xsd:element name="success" type="xsd:boolean">
-                <xsd:annotation>
-                    <xsd:documentation>Признак - ошибки валидации отсутствуют</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="messages" maxOccurs="unbounded" minOccurs="0" type="tns:ValidationMessage">
-                <xsd:annotation>
-                    <xsd:documentation>Список сообщений валидации</xsd:documentation>
+                    <xsd:documentation>Набор опциональных параметров</xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
-
-    <xsd:complexType name="ValidationMessage">
-        <xsd:annotation>
-            <xsd:documentation>Сообщение валидации</xsd:documentation>
-        </xsd:annotation>
-        <xsd:sequence>
-            <xsd:element name="code" type="xsd:string">
-                <xsd:annotation>
-                    <xsd:documentation>Код сообщения</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="message" type="xsd:string" minOccurs="0">
-                <xsd:annotation>
-                    <xsd:documentation>Текст сообщения</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="parameters" minOccurs="0" maxOccurs="unbounded" type="tns:ValidationParameter">
-                <xsd:annotation>
-                    <xsd:documentation>Параметры сообщения</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="type" type="tns:ValidationMessageType">
-                <xsd:annotation>
-                    <xsd:documentation>Тип сообщения</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:complexType name="ValidationParameter">
-        <xsd:annotation>
-            <xsd:documentation>Параметр валидации</xsd:documentation>
-        </xsd:annotation>
-        <xsd:sequence>
-            <xsd:element name="code" type="xsd:string">
-                <xsd:annotation>
-                    <xsd:documentation>Код параметра</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="value" type="xsd:string" minOccurs="0">
-                <xsd:annotation>
-                    <xsd:documentation>Значение параметра</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
-    </xsd:complexType>
-
-    <xsd:simpleType name="ValidationMessageType">
-        <xsd:annotation>
-            <xsd:documentation>Тип сообщения</xsd:documentation>
-        </xsd:annotation>
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="ERROR">
-                <xsd:annotation>
-                    <xsd:documentation>Сообщение о ошибке</xsd:documentation>
-                </xsd:annotation>
-            </xsd:enumeration>
-            <xsd:enumeration value="WARNING">
-                <xsd:annotation>
-                    <xsd:documentation>Предупреждение</xsd:documentation>
-                </xsd:annotation>
-            </xsd:enumeration>
-            <xsd:enumeration value="INFO">
-                <xsd:annotation>
-                    <xsd:documentation>Информационное сообщение</xsd:documentation>
-                </xsd:annotation>
-            </xsd:enumeration>
-        </xsd:restriction>
-    </xsd:simpleType>
-
-    <xsd:element name="PrincipalInfo">
-        <xsd:complexType>
-            <xsd:annotation>
-                <xsd:documentation>Контекст пользователя для аутентификации</xsd:documentation>
-            </xsd:annotation>
-            <xsd:sequence>
-                <xsd:element name="accountId" type="xsd:long" minOccurs="0">
-                    <xsd:annotation>
-                        <xsd:documentation>Идентификатор пользователя</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="lpuId" type="xsd:long" minOccurs="0">
-                    <xsd:annotation>
-                        <xsd:documentation>Текущий ЛПУ пользователя</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="ip" type="xsd:string" minOccurs="0">
-                    <xsd:annotation>
-                        <xsd:documentation>IP адрес пользователя</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="fullName" type="xsd:string" minOccurs="0">
-                    <xsd:annotation>
-                        <xsd:documentation>ФИО пользователя</xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
-
-    <xsd:element name="ApplicationKey">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="key" type="xsd:string" nillable="false"/>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
 
 </xsd:schema>

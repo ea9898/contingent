@@ -12,7 +12,8 @@
     <xsd:element name="GetProfileMURequest">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="muId" type="xsd:long"/>
+                <xsd:element name="muId" type="xsd:long" />
+                <xsd:element name="options" type="common:Options" minOccurs="0" />
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
@@ -20,7 +21,38 @@
     <xsd:element name="GetProfileMUResponse">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="profileAreaType" type="area:ProfileAreaType" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="profileAreaType" type="area:AreaType" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="SetProfileMURequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="muId" type="xsd:long" />
+                <xsd:element name="muTypeId" type="xsd:string" />
+                <xsd:element name="areaTypesAdd" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="areaTypeCode" type="xsd:string" maxOccurs="unbounded" />
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="areaTypesDel" minOccurs="0">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="areaTypeCode" type="xsd:string" maxOccurs="unbounded" />
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="options" type="common:Options" minOccurs="0" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="SetProfileMUResponse">
+        <xsd:complexType>
+            <xsd:sequence>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>

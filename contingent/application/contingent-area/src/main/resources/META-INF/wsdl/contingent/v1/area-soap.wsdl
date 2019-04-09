@@ -28,6 +28,14 @@
         <part name="body" element="tns:GetProfileMUResponse"/>
     </message>
 
+    <message name="SetProfileMUInput">
+        <part name="body" element="tns:SetProfileMURequest"/>
+    </message>
+
+    <message name="SetProfileMUOutput">
+        <part name="body" element="tns:SetProfileMUResponse"/>
+    </message>
+
     <portType name="AreaPT">
         <operation name="getProfileMU">
             <documentation>
@@ -35,6 +43,14 @@
             </documentation>
             <input message="tns:GetProfileMUInput"/>
             <output message="tns:GetProfileMUOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+        <operation name="setProfileMU">
+            <documentation>
+                Настройка профиля МУ (К_УУ_1)
+            </documentation>
+            <input message="tns:SetProfileMUInput"/>
+            <output message="tns:SetProfileMUOutput"/>
             <fault message="cmnwsdl:ContingentFault" name="fault" />
         </operation>
 
@@ -56,6 +72,20 @@
 
         <operation name="getProfileMU">
             <soap12:operation soapAction="getProfileMU"/>
+            <input>
+                <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+
+        </operation>
+
+        <operation name="setProfileMU">
+            <soap12:operation soapAction="setProfileMU"/>
             <input>
                 <soap12:body use="literal"/>
             </input>
