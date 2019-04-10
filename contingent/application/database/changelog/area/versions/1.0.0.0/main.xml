@@ -1147,4 +1147,17 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="EMIASUPK-7598-11-1" author="sorlov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_MU_PROFILES"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы MU_PROFILES</comment>
+        <createSequence sequenceName="SEQ_MU_PROFILES"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_MU_PROFILES"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
