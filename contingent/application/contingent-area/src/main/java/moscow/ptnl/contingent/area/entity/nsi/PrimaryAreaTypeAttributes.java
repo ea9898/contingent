@@ -1,14 +1,16 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
+import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
@@ -27,18 +29,23 @@ public class PrimaryAreaTypeAttributes implements Serializable {
     private AreaTypes areaType;
 
     @Column(name = "HEAD_FINANCE")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean headFinance;
 
     @Column(name = "HAS_SERVICE_TERRITORY")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean hasServiceTerritory;
 
     @Column(name = "ATTACH_BY_REQUEST")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean attachByRequest;
 
     @Column(name = "ATTACH_BY_MEDICAL_REASON")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean attachByMedicalReason;
 
     @Column(name = "MPGU_AVAILABLE")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean mpguAvailable;
 
     @JoinColumn(name = "AREA_COUNT_LIMIT_CODE")

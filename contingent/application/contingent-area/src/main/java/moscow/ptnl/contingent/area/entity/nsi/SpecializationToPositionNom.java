@@ -1,7 +1,10 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -28,6 +31,7 @@ public class SpecializationToPositionNom implements Serializable {
 	private PositionNom positionNom;
 
     @Column(name = "ARCHIVED", nullable = false)
+    @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
     public Specialization getSpecialization() {

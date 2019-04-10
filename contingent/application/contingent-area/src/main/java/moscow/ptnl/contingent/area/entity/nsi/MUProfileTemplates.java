@@ -1,7 +1,10 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
+import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -29,6 +32,7 @@ public class MUProfileTemplates implements Serializable {
     private AreaTypes areaType;
 
     @Column(name = "AVAILABLE_TO_CREATE")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean availableToCreate;
 
     public Long getId() {

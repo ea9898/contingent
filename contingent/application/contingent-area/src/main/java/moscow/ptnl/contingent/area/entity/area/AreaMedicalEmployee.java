@@ -1,7 +1,10 @@
 package moscow.ptnl.contingent.area.entity.area;
 
+import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -32,6 +35,7 @@ public class AreaMedicalEmployee implements Serializable {
     private Area area;
 
     @Column(name = "IS_REPLACEMENT")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean replacement;
 
     @Column(name = "START_DATE")

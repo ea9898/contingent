@@ -1,9 +1,11 @@
 package moscow.ptnl.contingent.area.entity.area;
 
+import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -39,9 +41,11 @@ public class Area implements Serializable {
     private Integer number;
 
     @Column(name = "IS_AUTO_ASSIGN_FOR_ATTACH")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean autoAssignForAttach;
 
     @Column(name = "ACTUAL")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean actual;
 
     @Size(max = 370)
@@ -49,6 +53,7 @@ public class Area implements Serializable {
     private String description;
 
     @Column(name = "ATTACH_BY_MEDICAL_REASON")
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean attachByMedicalReason;
 
 	@Column(name = "AGE_MIN")
