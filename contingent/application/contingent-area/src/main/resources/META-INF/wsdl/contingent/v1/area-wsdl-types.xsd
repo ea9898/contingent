@@ -21,7 +21,7 @@
     <xsd:element name="GetProfileMUResponse">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="profileAreaType" type="area:AreaType" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element name="profileAreaType" type="area:AreaTypeShort" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>

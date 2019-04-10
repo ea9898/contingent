@@ -4,20 +4,7 @@
             elementFormDefault="qualified"
             version="1.0">
 
-    <xsd:complexType name="KeyValuePair">
-        <xsd:sequence>
-            <xsd:element name="key" type="xsd:string">
-                <xsd:annotation>
-                    <xsd:documentation>Параметр</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-            <xsd:element name="value" type="xsd:string">
-                <xsd:annotation>
-                    <xsd:documentation>Значение</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
-    </xsd:complexType>
+    <xsd:include schemaLocation="../emias/emias.system.v1.xsd"/>
 
     <xsd:complexType name="Options">
         <xsd:sequence>

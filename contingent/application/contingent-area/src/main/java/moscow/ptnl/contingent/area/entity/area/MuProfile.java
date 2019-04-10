@@ -20,12 +20,23 @@ public class MuProfile implements Serializable {
     private static final long serialVersionUID = 8725459806418462906L;
 
     @Id
-	@Column(name = "MU_ID", unique = true, nullable = false)
+	@Column(name = "ID", unique = true, nullable = false)
+	private Long id;
+
+	@Column(name = "MU_ID", nullable = false)
 	private Long muId;
 
     @JoinColumn(name = "AREA_TYPE_CODE", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaTypes areaType;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getMuId() {
         return muId;
