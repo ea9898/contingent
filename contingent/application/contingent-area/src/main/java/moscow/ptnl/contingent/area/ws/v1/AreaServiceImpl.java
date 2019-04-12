@@ -12,6 +12,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.gov.emias2.contingent.v1.area.AreaPT;
+import ru.gov.emias2.contingent.v1.area.CreateDependantAreaRequest;
+import ru.gov.emias2.contingent.v1.area.CreateDependantAreaResponse;
+import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaRequest;
+import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaResponse;
 import ru.gov.emias2.contingent.v1.area.GetProfileMURequest;
 import ru.gov.emias2.contingent.v1.area.GetProfileMUResponse;
 import ru.gov.emias2.contingent.v1.area.SetProfileMURequest;
@@ -61,6 +65,40 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.getAreaTypesAdd() == null ? null : body.getAreaTypesAdd().getAreaTypeCodes(),
                     body.getAreaTypesDel() == null ? null : body.getAreaTypesDel().getAreaTypeCodes());
             return new SetProfileMUResponse();
+        }
+        catch (Exception ex) {
+            throw SoapExceptionMapper.map(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws ContingentFault {
+        try {
+            CreatePrimaryAreaResponse response = new CreatePrimaryAreaResponse();
+            Long id = areaService.createPrimaryArea(body.getMoId(), body.getMuId(), body.getName(), body.getNumber(), body.getAreaTypeCode(),
+                    body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
+                    body.isAutoAssignForAttachment(), body.isAttachByMedicalReason());
+
+            response.setId(id);
+            return response;
+        }
+        catch (Exception ex) {
+            throw SoapExceptionMapper.map(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public CreateDependantAreaResponse createDependantArea(CreateDependantAreaRequest body) throws ContingentFault {
+        try {
+            CreateDependantAreaResponse response = new CreateDependantAreaResponse();
+            Long id = areaService.createDependantArea(body.getMoId(), body.getMuId(), body.getName(), body.getNumber(), body.getAreaTypeCode(),
+                    body.getPrimaryAreaTypeCodes(), body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(),
+                    body.getAgeMinW(), body.getAgeMaxW(), body.isAutoAssignForAttachment());
+
+            response.setId(id);
+            return response;
         }
         catch (Exception ex) {
             throw SoapExceptionMapper.map(ex);

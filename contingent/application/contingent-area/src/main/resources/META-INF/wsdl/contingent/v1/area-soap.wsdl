@@ -36,6 +36,22 @@
         <part name="body" element="tns:SetProfileMUResponse"/>
     </message>
 
+    <message name="CreateDependantAreaInput">
+        <part name="body" element="tns:CreateDependantAreaRequest"/>
+    </message>
+
+    <message name="CreateDependantAreaOutput">
+        <part name="body" element="tns:CreateDependantAreaResponse"/>
+    </message>
+
+    <message name="CreatePrimaryAreaInput">
+        <part name="body" element="tns:CreatePrimaryAreaRequest"/>
+    </message>
+
+    <message name="CreatePrimaryAreaOutput">
+        <part name="body" element="tns:CreatePrimaryAreaResponse"/>
+    </message>
+
     <portType name="AreaPT">
         <operation name="getProfileMU">
             <documentation>
@@ -51,6 +67,22 @@
             </documentation>
             <input message="tns:SetProfileMUInput"/>
             <output message="tns:SetProfileMUOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+        <operation name="createPrimaryArea">
+            <documentation>
+                Создание участка первичного типа (К_УУ_3)
+            </documentation>
+            <input message="tns:CreatePrimaryAreaInput"/>
+            <output message="tns:CreatePrimaryAreaOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+        <operation name="createDependantArea">
+            <documentation>
+                Создание участка зависимого типа (К_УУ_4)
+            </documentation>
+            <input message="tns:CreateDependantAreaInput"/>
+            <output message="tns:CreateDependantAreaOutput"/>
             <fault message="cmnwsdl:ContingentFault" name="fault" />
         </operation>
 
@@ -81,7 +113,6 @@
             <fault name="fault">
                 <soap12:fault name="ContingentFault" use="literal" />
             </fault>
-
         </operation>
 
         <operation name="setProfileMU">
@@ -95,7 +126,32 @@
             <fault name="fault">
                 <soap12:fault name="ContingentFault" use="literal" />
             </fault>
+        </operation>
 
+        <operation name="createPrimaryArea">
+            <soap12:operation soapAction="createPrimaryArea"/>
+            <input>
+                <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+        </operation>
+
+        <operation name="createDependantArea">
+            <soap12:operation soapAction="createDependantArea"/>
+            <input>
+                <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
         </operation>
 
     </binding>

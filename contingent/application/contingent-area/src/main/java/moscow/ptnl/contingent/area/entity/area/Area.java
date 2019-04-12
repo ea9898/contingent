@@ -8,26 +8,34 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "AREAS")
+@SequenceGenerator(name = "SEQ_AREAS", sequenceName = "SEQ_AREAS", allocationSize=1)
 @Cacheable
 public class Area implements Serializable {
 
     private static final long serialVersionUID = 4575089048144449304L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_AREAS")
 	@Column(name = "ID", unique = true, nullable = false)
 	private Long id;
 
 	@Column(name = "MO_ID")
 	private Long moId;
+
+	@Column(name = "MU_ID", nullable = false)
+	private Long muId;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -88,6 +96,14 @@ public class Area implements Serializable {
 
     public void setMoId(Long moId) {
         this.moId = moId;
+    }
+
+    public Long getMuId() {
+        return muId;
+    }
+
+    public void setMuId(Long muId) {
+        this.muId = muId;
     }
 
     public AreaTypes getAreaType() {

@@ -39,4 +39,30 @@ public class AreaChecker {
             validation.error(AreaErrorReason.CANT_CHANGE_AREA_TYPE, new ValidationParameter(parameterCode, areaType));
         }
     }
+
+    public void checkAreaTypeAgeSetups(AreaTypes areaType, Integer ageMin, Integer ageMax,
+                                       Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW, Validation validation) {
+        if (!checkAgeSetupFilling(ageMin, ageMax, areaType.getAgeMin(), areaType.getAgeMax()) ||
+                !checkAgeSetupFilling(ageMinM, ageMaxM, areaType.getAgeMMin(), areaType.getAgeMMax()) ||
+                !checkAgeSetupFilling(ageMinW, ageMaxW, areaType.getAgeWMin(), areaType.getAgeWMax())) {
+            validation.error(AreaErrorReason.INCORRECT_AREA_AGE_SETUPS);
+            return;
+        }
+        checkAgeSetupRange(ageMin, ageMax, areaType.getAgeMin(), areaType.getAgeMax(), "ageMin", "ageMax", validation);
+        checkAgeSetupRange(ageMinM, ageMaxM, areaType.getAgeMMin(), areaType.getAgeMMax(), "ageMinM", "ageMaxM", validation);
+        checkAgeSetupRange(ageMinW, ageMaxW, areaType.getAgeWMin(), areaType.getAgeWMax(), "ageMinW", "ageMaxW", validation);
+    }
+
+    private boolean checkAgeSetupFilling(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType) {
+        return (ageMin == null || ageMinAreaType != null) && (ageMax == null || ageMaxAreaType != null);
+    }
+
+    private void checkAgeSetupRange(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType,
+                                       String paramMinCode, String paramMaxCode, Validation validation) {
+        if (!(ageMin == null || ageMin >= ageMinAreaType) && (ageMax == null || ageMax <= ageMaxAreaType)) {
+            validation.error(AreaErrorReason.AREA_AGE_SETUP_EXCEEDED,
+                    new ValidationParameter(paramMinCode, ageMin), new ValidationParameter(paramMaxCode, ageMax),
+                    new ValidationParameter(paramMinCode, ageMinAreaType), new ValidationParameter(paramMaxCode, ageMaxAreaType));
+        }
+    }
 }

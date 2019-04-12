@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -67,6 +68,9 @@ public class AreaTypes implements Serializable {
     @JoinColumn(name = "SPECIALIZATION_ID")
     @ManyToOne(fetch = FetchType.LAZY)
 	private Specialization specialization;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "areaType")
+    private PrimaryAreaTypeAttributes attributes;
 
     public String getCode() {
         return code;
@@ -170,5 +174,13 @@ public class AreaTypes implements Serializable {
 
     public void setSpecialization(Specialization specialization) {
         this.specialization = specialization;
+    }
+
+    public PrimaryAreaTypeAttributes getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(PrimaryAreaTypeAttributes attributes) {
+        this.attributes = attributes;
     }
 }

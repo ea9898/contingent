@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -25,7 +26,7 @@ public class PrimaryAreaTypeAttributes implements Serializable {
 	private Long id;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private AreaTypes areaType;
 
     @Column(name = "HEAD_FINANCE")
