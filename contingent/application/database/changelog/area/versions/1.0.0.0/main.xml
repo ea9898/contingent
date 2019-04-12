@@ -1077,36 +1077,6 @@
                                  referencedTableName="AREAS"/>
     </changeSet>
 
-    <changeSet id="EMIASUPK-7598-8" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREAS" columnName="MO_ID" />
-            </not>
-        </preConditions>
-        <addColumn tableName="AREAS">
-            <column name="MO_ID" type="number(20)">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREAS" columnName="MO_ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="EMIASUPK-7598-9" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IX_AREAS_MO_ID"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки MO_ID таблицы AREAS</comment>
-        <createIndex indexName="IX_AREAS_MO_ID"
-                     tableName="AREAS"
-                     unique="false">
-            <column name="MO_ID" type="number"/>
-        </createIndex>
-    </changeSet>
-
     <changeSet id="EMIASUPK-7598-10-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="MU_PROFILES"/>
@@ -1158,6 +1128,49 @@
         <rollback>
             <dropSequence sequenceName="SEQ_MU_PROFILES"/>
         </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-11-2" author="sorlov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AREAS"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы AREAS</comment>
+        <createSequence sequenceName="SEQ_AREAS"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_AREAS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-12" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREAS" columnName="MU_ID" />
+            </not>
+        </preConditions>
+        <addColumn tableName="AREAS">
+            <column name="MU_ID" type="number(20)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREAS" columnName="MU_ID" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7598-13" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IX_AREAS_MU_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки MU_ID таблицы AREAS</comment>
+        <createIndex indexName="IX_AREAS_MU_ID"
+                     tableName="AREAS"
+                     unique="false">
+            <column name="MU_ID" type="number"/>
+        </createIndex>
     </changeSet>
 
 </databaseChangeLog>
