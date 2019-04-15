@@ -1143,6 +1143,19 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="EMIASUPK-7598-11-3" author="sorlov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AREA_TO_AREA_TYPE"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы AREA_TO_AREA_TYPE</comment>
+        <createSequence sequenceName="SEQ_AREA_TO_AREA_TYPE"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_AREA_TO_AREA_TYPE"/>
+        </rollback>
+    </changeSet>
+
     <changeSet id="EMIASUPK-7598-12" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>

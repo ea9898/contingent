@@ -6,20 +6,25 @@ import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "AREA_TO_AREA_TYPE")
+@SequenceGenerator(name = "SEQ_AREA_TO_AREA_TYPE", sequenceName = "SEQ_AREA_TO_AREA_TYPE", allocationSize=1)
 @Cacheable
 public class AreaToAreaType implements Serializable {
 
     private static final long serialVersionUID = 3586944486563837581L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_AREA_TO_AREA_TYPE")
 	@Column(name = "ID", unique = true, nullable = false)
 	private Long id;
 
