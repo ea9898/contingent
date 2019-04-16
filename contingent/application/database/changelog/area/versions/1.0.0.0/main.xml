@@ -1199,9 +1199,9 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="ESU_ID" type="VARCHAR2(255)" remarks="Идентификатор записи в сервисе ЕСУ" />
-            <column name="OFFSET" type="NUMBER(8)" remarks="Оффсет отправленного сообщения" />
+            <column name="OFFSET" type="NUMBER(20)" remarks="Оффсет отправленного сообщения" />
             <column name="PARTITION" type="NUMBER(8)" remarks="Раздел, в которое было отправленно сообщение" />
-            <column name="SENT_TIME" type="DATE" remarks="timestamp отправленного сообщения">
+            <column name="SENT_TIME" type="TIMESTAMP(6)" remarks="timestamp отправленного сообщения">
                 <constraints nullable="false" />
             </column>
             <column name="TOPIC" type="VARCHAR2(255)" remarks="Название топика отправленно сообщение">
