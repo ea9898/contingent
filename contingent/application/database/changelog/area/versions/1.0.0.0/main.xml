@@ -1186,4 +1186,78 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="EMIASUPK-7645-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ESU_OUTPUT"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы ESU_OUTPUT</comment>
+        <createTable tableName="ESU_OUTPUT"
+                     remarks="Журнал отправленных сообщений в сервис ЕСУ">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="ESU_ID" type="VARCHAR2(255)" remarks="Идентификатор записи в сервисе ЕСУ" />
+            <column name="OFFSET" type="NUMBER(8)" remarks="Оффсет отправленного сообщения" />
+            <column name="PARTITION" type="NUMBER(8)" remarks="Раздел, в которое было отправленно сообщение" />
+            <column name="SENT_TIME" type="DATE" remarks="timestamp отправленного сообщения">
+                <constraints nullable="false" />
+            </column>
+            <column name="TOPIC" type="VARCHAR2(255)" remarks="Название топика отправленно сообщение">
+                <constraints nullable="false" />
+            </column>
+            <column name="MESSAGE" type="CLOB" remarks="Текст сообщения">
+                <constraints nullable="false" />
+            </column>
+            <column name="STATUS" type="NUMBER(1)" remarks="Признак синхроназации: 0-не успешно, 1-успешно, 2-в процессе">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ESU_OUTPUT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7645-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_ESU_OUTPUT_ESU_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки ESU_ID таблицы ESU_OUTPUT</comment>
+        <createIndex indexName="IDX_ESU_OUTPUT_ESU_ID"
+                     tableName="ESU_OUTPUT"
+                     unique="false">
+            <column name="ESU_ID" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7645-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ESU_OUTPUT" columnName="STATUS"/>
+        </preConditions>
+        <comment>Создание ограничения столбца STATUS таблицы ESU_OUTPUT</comment>
+        <sql>
+            alter table ESU_OUTPUT add constraint "ESU_OUTPUT_CK1" check (STATUS in ('0','1','2'));
+        </sql>
+        <rollback>
+            <dropUniqueConstraint constraintName="ESU_OUTPUT_CK1"
+                                  tableName="ESU_OUTPUT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7645-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="ESU_OUTPUT_SEQ_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы ESU_OUTPUT</comment>
+        <createSequence sequenceName="ESU_OUTPUT_SEQ_ID" remarks="сиквенс для таблицы ESU_OUTPUT"/>
+        <rollback>
+            <dropSequence sequenceName="ESU_OUTPUT_SEQ_ID"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
