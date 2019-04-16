@@ -10,6 +10,7 @@ import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.area.repository.area.MuProfileCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuProfileRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
@@ -52,7 +53,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaToAreaTypeCRUDRepository areaToAreaTypeCRUDRepository;
 
     @Autowired
+    private AreaToAreaTypeRepository areaToAreaTypeRepository;
+
+    @Autowired
     private AreaChecker areaChecker;
+
+    @Autowired
+    private EsuService esuService;
 
     @Override
     public List<MuProfile> getProfileMU(Long muId) throws ContingentException {
@@ -123,7 +130,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Override
     public Long createPrimaryArea(long moId, long muId, String name, Integer number, String areaTypeCode,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                             boolean autoAssignForAttachment, Boolean attachByMedicalReason) throws ContingentException {
+                             boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
@@ -190,44 +197,29 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAgeWMin(ageMinW);
         area.setAutoAssignForAttach(autoAssignForAttachment);
         area.setAttachByMedicalReason(attachByMedicalReason);
+        area.setDescription(description);
         areaCRUDRepository.save(area);
+
+        resetAutoAssignForAttachment(area);
+        esuService.saveAndPublishToESU(area);
 
         return area.getId();
     }
 
     @Override
-    public Long createDependantArea(long moId, long muId, String name, Integer number, String areaTypeCode, List<String> primaryAreaTypeCodes,
+    public Long createDependentArea(long moId, long muId, String name, Integer number, String areaTypeCode, List<String> primaryAreaTypeCodes,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                             boolean autoAssignForAttachment) throws ContingentException {
+                             boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+        Map<String, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muId, primaryAreaTypeCodes, validation);
 
-        List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
-        Map<String, AreaTypes> primaryAreaTypes = muProfiles.stream()
-                .filter(p -> p.getAreaType() != null)
-                .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuProfile::getAreaType));
-
-        primaryAreaTypeCodes.forEach(c -> {
-            if (!primaryAreaTypes.keySet().contains(c)) {
-                validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", c));
-            }
-        });
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        StringBuilder primaryAreaTypesMissing = new StringBuilder();
-        List<Area> areas = areaRepository.findAreas(null, muId, primaryAreaTypeCodes, null, true);
+        areaChecker.checkPrimaryAreasInMU(muId, primaryAreaTypeCodes, validation);
 
-        primaryAreaTypeCodes.forEach(c -> {
-            if (areas.stream().noneMatch(a -> a.getAreaType() != null && Objects.equals(c, a.getAreaType().getCode()))) {
-                primaryAreaTypesMissing.append(c).append(", ");
-            }
-        });
-        if (primaryAreaTypesMissing.length() > 0) {
-            validation.error(AreaErrorReason.NO_PRIMARY_AREA, new ValidationParameter("primaryAreaTypeCode",
-                    primaryAreaTypesMissing.substring(0, primaryAreaTypesMissing.length() - 2)));
-        }
         if (!areaRepository.findAreas(moId, null, areaTypeCode, null, null).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
         }
@@ -257,6 +249,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAgeWMax(ageMaxW);
         area.setAgeWMin(ageMinW);
         area.setAutoAssignForAttach(autoAssignForAttachment);
+        area.setDescription(description);
         areaCRUDRepository.save(area);
         //Сохранение привязки к первичным типам участка
         primaryAreaTypeCodes.forEach(c -> {
@@ -265,6 +258,149 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
+        esuService.saveAndPublishToESU(area);
+
         return area.getId();
+    }
+
+    @Override
+    public void updatePrimaryArea(long areaId, String name, Integer number,
+                           Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                           boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
+        Validation validation = new Validation();
+        Area area = areaChecker.checkAndGetArea(areaId, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        Boolean mpguAvailable = area.getAreaType().getAttributes() == null ? null : area.getAreaType().getAttributes().getMpguAvailable();
+        Boolean areaTypeAttachByMedicalReason = area.getAreaType().getAttributes() == null ? null : area.getAreaType().getAttributes().getAttachByMedicalReason();
+
+        if (number != null && !number.equals(area.getNumber())) {
+            List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), number, true);
+
+            if (!areas.isEmpty()) {
+                validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO,
+                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()),
+                        new ValidationParameter("number", number));
+            }
+        }
+        if (autoAssignForAttachment) {
+            if (!Boolean.TRUE.equals(mpguAvailable)) {
+                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
+                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+            }
+            if (Boolean.TRUE.equals(attachByMedicalReason)) {
+                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
+            }
+        }
+        if (attachByMedicalReason != null && areaTypeAttachByMedicalReason != null &&
+                !Objects.equals(attachByMedicalReason, areaTypeAttachByMedicalReason)) {
+            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
+                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
+                    new ValidationParameter("attachByMedicalReason", areaTypeAttachByMedicalReason));
+        }
+        areaChecker.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        area.setName(name == null ? area.getName() : name);
+        area.setNumber(number == null ? area.getNumber() : number);
+        area.setAgeMax(ageMax == null ? area.getAgeMax() : ageMax);
+        area.setAgeMin(ageMin == null ? area.getAgeMin() : ageMin);
+        area.setAgeMMax(ageMaxM == null ? area.getAgeMMax() : ageMaxM);
+        area.setAgeMMin(ageMinM == null ? area.getAgeMMin() : ageMinM);
+        area.setAgeWMax(ageMaxW == null ? area.getAgeWMax() : ageMaxW);
+        area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
+        area.setAutoAssignForAttach(autoAssignForAttachment);
+        area.setAttachByMedicalReason(attachByMedicalReason == null ? area.getAttachByMedicalReason() : attachByMedicalReason);
+        area.setDescription(description == null ? area.getDescription() : description);
+
+        resetAutoAssignForAttachment(area);
+        esuService.saveAndPublishToESU(area);
+    }
+
+    @Override
+    public void updateDependentArea(long areaId, Long muId, String name, Integer number, List<String> primaryAreaTypeCodesAdd,
+                                    List<String> primaryAreaTypeCodesDel,
+                                    Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                    boolean autoAssignForAttachment, String description) throws ContingentException {
+        Validation validation = new Validation();
+        Area area = areaChecker.checkAndGetArea(areaId, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        Long muIdFinal = muId == null ? area.getMuId() : muId;
+
+        if (number != null && !number.equals(area.getNumber())) {
+            List<Area> areas = areaRepository.findAreas(null, muIdFinal, area.getAreaType().getCode(), number, true);
+
+            if (!areas.isEmpty()) {
+                validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO,
+                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()),
+                        new ValidationParameter("number", number));
+            }
+        }
+        if (muId != null && !muId.equals(area.getMuId())) {
+            if (area.getAreaType().getKindAreaType() != null &&
+                    //Todo уточнить код вида участка «Ассоциированный со специализированным кабинетом» и вынести в настройки
+                    !Objects.equals(area.getAreaType().getKindAreaType().getCode(), 2L)) {
+                validation.error(AreaErrorReason.AREA_NOT_REALTED_TO_SPECIAL_OFFICE);
+            }
+        }
+        Map<String, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        areaChecker.checkPrimaryAreasInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
+        areaChecker.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //Обновление участка
+        area.setMuId(muIdFinal);
+        area.setName(name == null ? area.getName() : name);
+        area.setNumber(number == null ? area.getNumber() : number);
+        area.setAgeMax(ageMax == null ? area.getAgeMax() : ageMax);
+        area.setAgeMin(ageMin == null ? area.getAgeMin() : ageMin);
+        area.setAgeMMax(ageMaxM == null ? area.getAgeMMax() : ageMaxM);
+        area.setAgeMMin(ageMinM == null ? area.getAgeMMin() : ageMinM);
+        area.setAgeWMax(ageMaxW == null ? area.getAgeWMax() : ageMaxW);
+        area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
+        area.setAutoAssignForAttach(autoAssignForAttachment);
+        area.setDescription(description == null ? area.getDescription() : description);
+
+        resetAutoAssignForAttachment(area);
+        //Обновление привязки к первичным типам участка
+        List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId());
+
+        primaryAreaTypeCodesAdd.stream()
+                .filter(c -> areaToAreaTypes.stream().noneMatch(a -> Objects.equals(c, a.getAreaType().getCode())))
+                .forEach(c -> {
+            AreaToAreaType areaToAreaType = new AreaToAreaType();
+            areaToAreaType.setArea(area);
+            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
+            areaToAreaTypeCRUDRepository.save(areaToAreaType);
+        });
+        List<AreaToAreaType> areaToAreaTypesToRemove = areaToAreaTypes.stream()
+                .filter(a -> a.getAreaType() != null &&
+                        !primaryAreaTypeCodesAdd.contains(a.getAreaType().getCode()) &&
+                        primaryAreaTypeCodesDel.contains(a.getAreaType().getCode()))
+                .collect(Collectors.toList());
+
+        areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypesToRemove);
+
+        esuService.saveAndPublishToESU(area);
+    }
+
+    private void resetAutoAssignForAttachment(Area area) {
+        if (area.getAutoAssignForAttach()) {
+            List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), null, null);
+            areas.stream().filter(a -> !Objects.equals(area.getId(), a.getId())).forEach(a -> a.setAutoAssignForAttach(false));
+        }
     }
 }

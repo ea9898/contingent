@@ -1,17 +1,25 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.AreaRepository;
+import moscow.ptnl.contingent.area.repository.area.MuProfileRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuProfileTemplatesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class AreaChecker {
@@ -21,6 +29,15 @@ public class AreaChecker {
 
     @Autowired
     private MuProfileTemplatesRepository muProfileTemplatesRepository;
+
+    @Autowired
+    private MuProfileRepository muProfileRepository;
+
+    @Autowired
+    private AreaRepository areaRepository;
+
+    @Autowired
+    private AreaCRUDRepository areaCRUDRepository;
 
     public void checkAreaTypesExist(List<String> areaTypes, Validation validation, String parameterCode) {
         areaTypes.forEach(a -> {
@@ -64,5 +81,46 @@ public class AreaChecker {
                     new ValidationParameter(paramMinCode, ageMin), new ValidationParameter(paramMaxCode, ageMax),
                     new ValidationParameter(paramMinCode, ageMinAreaType), new ValidationParameter(paramMaxCode, ageMaxAreaType));
         }
+    }
+
+    public Map<String, AreaTypes> checkAndGetPrimaryAreaTypesInMU(long muId, List<String> primaryAreaTypeCodes, Validation validation) {
+        List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
+        Map<String, AreaTypes> primaryAreaTypes = muProfiles.stream()
+                .filter(p -> p.getAreaType() != null)
+                .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuProfile::getAreaType));
+
+        primaryAreaTypeCodes.forEach(c -> {
+            if (!primaryAreaTypes.keySet().contains(c)) {
+                validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", c));
+            }
+        });
+        return primaryAreaTypes;
+    }
+
+    public void checkPrimaryAreasInMU(long muId, List<String> primaryAreaTypeCodes, Validation validation) {
+        StringBuilder primaryAreaTypesMissing = new StringBuilder();
+        List<Area> areas = areaRepository.findAreas(null, muId, primaryAreaTypeCodes, null, true);
+
+        primaryAreaTypeCodes.forEach(c -> {
+            if (areas.stream().noneMatch(a -> a.getAreaType() != null && Objects.equals(c, a.getAreaType().getCode()))) {
+                primaryAreaTypesMissing.append(c).append(", ");
+            }
+        });
+        if (primaryAreaTypesMissing.length() > 0) {
+            validation.error(AreaErrorReason.NO_PRIMARY_AREA, new ValidationParameter("primaryAreaTypeCode",
+                    primaryAreaTypesMissing.substring(0, primaryAreaTypesMissing.length() - 2)));
+        }
+    }
+
+    public Area checkAndGetArea(long areaId, Validation validation) {
+        Area area = areaCRUDRepository.findById(areaId).orElse(null);
+
+        if (area == null) {
+            validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
+        }
+        else if (!area.getActual()) {
+            validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
+        }
+        return area;
     }
 }

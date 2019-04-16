@@ -286,6 +286,32 @@
             <artifactId>common</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>1.0.1</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.mos.emias.esu</groupId>
+            <artifactId>esu-producer-lib</artifactId>
+            <version>1.1.1</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.mos.emias.esu</groupId>
+            <artifactId>esu-consumer-lib</artifactId>
+            <version>1.0.3</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${spring-kafka.version}</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>

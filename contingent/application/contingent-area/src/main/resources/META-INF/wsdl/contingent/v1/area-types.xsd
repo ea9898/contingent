@@ -25,4 +25,10 @@
         </xsd:sequence>
     </xsd:complexType>
 
+    <xsd:complexType name="PrimaryAreaTypeCodes">
+        <xsd:sequence>
+            <xsd:element name="primaryAreaTypeCode" type="xsd:string" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
 </xsd:schema>

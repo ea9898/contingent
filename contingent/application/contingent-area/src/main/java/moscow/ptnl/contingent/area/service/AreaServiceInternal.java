@@ -13,10 +13,19 @@ public interface AreaServiceInternal {
 
     Long createPrimaryArea(long moId, long muId, String name, Integer number, String areaTypeCode,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                           boolean autoAssignForAttachment, Boolean attachByMedicalReason) throws ContingentException;
+                           boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
-    Long createDependantArea(long moId, long muId, String name, Integer number, String areaTypeCode, List<String> primaryAreaTypeCodes,
+    Long createDependentArea(long moId, long muId, String name, Integer number, String areaTypeCode, List<String> primaryAreaTypeCodes,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                             boolean autoAssignForAttachment) throws ContingentException;
+                             boolean autoAssignForAttachment, String description) throws ContingentException;
+
+    void updatePrimaryArea(long areaId, String name, Integer number,
+                           Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                           boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
+
+    void updateDependentArea(long areaId, Long muId, String name, Integer number, List<String> primaryAreaTypeCodesAdd,
+                             List<String> primaryAreaTypeCodesDel,
+                             Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                             boolean autoAssignForAttachment, String description) throws ContingentException;
 
 }

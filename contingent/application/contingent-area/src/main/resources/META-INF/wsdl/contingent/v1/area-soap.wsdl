@@ -36,12 +36,12 @@
         <part name="body" element="tns:SetProfileMUResponse"/>
     </message>
 
-    <message name="CreateDependantAreaInput">
-        <part name="body" element="tns:CreateDependantAreaRequest"/>
+    <message name="CreateDependentAreaInput">
+        <part name="body" element="tns:CreateDependentAreaRequest"/>
     </message>
 
-    <message name="CreateDependantAreaOutput">
-        <part name="body" element="tns:CreateDependantAreaResponse"/>
+    <message name="CreateDependentAreaOutput">
+        <part name="body" element="tns:CreateDependentAreaResponse"/>
     </message>
 
     <message name="CreatePrimaryAreaInput">
@@ -50,6 +50,22 @@
 
     <message name="CreatePrimaryAreaOutput">
         <part name="body" element="tns:CreatePrimaryAreaResponse"/>
+    </message>
+
+    <message name="UpdatePrimaryAreaInput">
+        <part name="body" element="tns:UpdatePrimaryAreaRequest"/>
+    </message>
+
+    <message name="UpdatePrimaryAreaOutput">
+        <part name="body" element="tns:UpdatePrimaryAreaResponse"/>
+    </message>
+
+    <message name="UpdateDependentAreaInput">
+        <part name="body" element="tns:UpdateDependentAreaRequest"/>
+    </message>
+
+    <message name="UpdateDependentAreaOutput">
+        <part name="body" element="tns:UpdateDependentAreaResponse"/>
     </message>
 
     <portType name="AreaPT">
@@ -77,12 +93,28 @@
             <output message="tns:CreatePrimaryAreaOutput"/>
             <fault message="cmnwsdl:ContingentFault" name="fault" />
         </operation>
-        <operation name="createDependantArea">
+        <operation name="createDependentArea">
             <documentation>
                 Создание участка зависимого типа (К_УУ_4)
             </documentation>
-            <input message="tns:CreateDependantAreaInput"/>
-            <output message="tns:CreateDependantAreaOutput"/>
+            <input message="tns:CreateDependentAreaInput"/>
+            <output message="tns:CreateDependentAreaOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+        <operation name="updatePrimaryArea">
+            <documentation>
+                Изменение участка первичного типа (К_УУ_5)
+            </documentation>
+            <input message="tns:UpdatePrimaryAreaInput"/>
+            <output message="tns:UpdatePrimaryAreaOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+        <operation name="updateDependentArea">
+            <documentation>
+                Изменение участка зависимого типа (К_УУ_6)
+            </documentation>
+            <input message="tns:UpdateDependentAreaInput"/>
+            <output message="tns:UpdateDependentAreaOutput"/>
             <fault message="cmnwsdl:ContingentFault" name="fault" />
         </operation>
 
@@ -141,8 +173,34 @@
             </fault>
         </operation>
 
-        <operation name="createDependantArea">
-            <soap12:operation soapAction="createDependantArea"/>
+        <operation name="createDependentArea">
+            <soap12:operation soapAction="createDependentArea"/>
+            <input>
+                <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+        </operation>
+
+        <operation name="updatePrimaryArea">
+            <soap12:operation soapAction="updatePrimaryArea"/>
+            <input>
+                <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+        </operation>
+
+        <operation name="updateDependentArea">
+            <soap12:operation soapAction="updateDependentArea"/>
             <input>
                 <soap12:body use="literal"/>
             </input>
