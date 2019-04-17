@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.area.model.esu.AreaCreateEvent;
 import moscow.ptnl.contingent.area.model.esu.AreaUpdateEvent;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
@@ -202,7 +203,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         resetAutoAssignForAttachment(area);
-        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, null));
+        esuService.saveAndPublishToESU(new AreaCreateEvent(area, null));
 
         return area.getId();
     }
@@ -259,7 +260,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
-        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
+        esuService.saveAndPublishToESU(new AreaCreateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
 
         return area.getId();
     }
