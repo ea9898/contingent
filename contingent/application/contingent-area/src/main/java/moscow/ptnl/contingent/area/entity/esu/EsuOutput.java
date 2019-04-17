@@ -29,7 +29,7 @@ public class EsuOutput implements Serializable {
 	@Column(name = "ESU_ID")
 	private String esuId;
 
-	@Column(name = "OFFSET")
+	@Column(name = "\"OFFSET\"")
 	private Long offset;
 
 	@Column(name = "PARTITION")

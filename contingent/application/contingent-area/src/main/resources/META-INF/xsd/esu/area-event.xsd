@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://ptnl.moscow/contingent/event/type/area/"
+            xmlns:tns="http://ptnl.moscow/contingent/event/type/area/">
+
+    <xs:element name="areaEvent">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="operationType">
+                    <xs:annotation>
+                        <xs:documentation>Тип операции</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="update" />
+                            <xs:enumeration value="create" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="operationDate" type="xs:dateTime">
+                    <xs:annotation>
+                        <xs:documentation>Дата изменения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="areaId" type="xs:long">
+                    <xs:annotation>
+                        <xs:documentation>ИД участка</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="moId" type="xs:long" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>ИД МО</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="muId" type="xs:long" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>ИД МУ</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="areaTypeCode" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>ИД типа участка</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="classAreaTypeCode" type="xs:long" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Код класс участка</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="kindAreaTypeCode" type="xs:long" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Вид типа участка</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="areaName" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Наименование участка обслуживания</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="areaNumber" type="xs:int" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Номер участка обслуживания</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ageMin" type="xs:int" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Возраст, минимальное значение</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ageMax" type="xs:int" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Возраст, максимальное значение</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ageMinM" type="xs:int" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Возраст М, минимальное значение</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ageMaxM" type="xs:int" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Возраст М, максимальное значение</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ageMinW" type="xs:int" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Возраст Ж, минимальное значение</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ageMaxW" type="xs:int" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Возраст Ж, максимальное значение</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="isAutoAssignForAttach" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>Признак «Назначать автоматически для прикрепления»</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="attachByMedicalReason" type="xs:boolean" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Признак «Необходимость мед. показаний»</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="primaryAreaTypes" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Список первичных типов участков</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="primaryAreaTypeCode" type="xs:string" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

@@ -1260,4 +1260,12 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="EMIASUPK-7645-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+                <tableExists tableName="ESU_OUTPUT"/>
+        </preConditions>
+        <comment>Удаление ограничения NOT NULL поля SENT_TIME</comment>
+        <dropNotNullConstraint tableName="ESU_OUTPUT" columnName="SENT_TIME" />
+    </changeSet>
+
 </databaseChangeLog>

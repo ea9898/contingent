@@ -239,12 +239,27 @@
                             <goals>
                                 <goal>xjc</goal>
                             </goals>
-                            <configuration>                    
+                            <configuration>
                                 <encoding>UTF-8</encoding>
                                 <sources>
                                     <source>src/main/resources/META-INF/xsd/nsi</source>
                                 </sources>
-                                <packageName>moscow.ptnl.contingent.area.nsi</packageName>                                           
+                                <packageName>moscow.ptnl.contingent.area.nsi</packageName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>xjc2</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>xjc</goal>
+                            </goals>
+                            <configuration>
+                                <clearOutputDir>false</clearOutputDir>
+                                <encoding>UTF-8</encoding>
+                                <sources>
+                                    <source>src/main/resources/META-INF/xsd/esu</source>
+                                </sources>
+                                <packageName>moscow.ptnl.contingent.area.event</packageName>
                             </configuration>
                         </execution>
                     </executions>

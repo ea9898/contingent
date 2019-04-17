@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.area.model.esu.AreaUpdateEvent;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeCRUDRepository;
@@ -201,7 +202,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         resetAutoAssignForAttachment(area);
-        esuService.saveAndPublishToESU(area);
+        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, null));
 
         return area.getId();
     }
@@ -258,7 +259,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
-        esuService.saveAndPublishToESU(area);
+        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
 
         return area.getId();
     }
@@ -318,7 +319,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setDescription(description == null ? area.getDescription() : description);
 
         resetAutoAssignForAttachment(area);
-        esuService.saveAndPublishToESU(area);
+
+        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, null));
     }
 
     @Override
@@ -394,7 +396,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypesToRemove);
 
-        esuService.saveAndPublishToESU(area);
+        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
     }
 
     private void resetAutoAssignForAttachment(Area area) {
