@@ -1,7 +1,10 @@
 package moscow.ptnl.contingent.area.entity.area;
 
+import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -10,9 +13,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "AREA_MEDICAL_EMPLOYEE")
+@Table(name = "ADDRESS_ALLOCATION_ORDER")
 @Cacheable
-public class OrderAddressAllocation implements Serializable {
+public class AddressAllocationOrder implements Serializable {
 
     private static final long serialVersionUID = -8116611274341177299L;
 
@@ -31,12 +34,19 @@ public class OrderAddressAllocation implements Serializable {
     @Column(name = "DATE")
     private Date date;
 
-    @Column(name = "MO_ID")
-    private Long moId;
-
     @Size(max = 50)
     @Column(name = "OUZ")
     private String ouz;
+
+    @Column(name = "ARCHIVED", nullable = false)
+    @Convert(converter = BooleanIntegerConverter.class)
+    private Boolean archived;
+
+    @Column(name = "CREATE_DATE", nullable = false)
+    private Date createDate;
+
+    @Column(name = "UPDATE_DATE", nullable = false)
+    private Date updateDate;
 
     public Long getId() {
         return id;
@@ -70,19 +80,35 @@ public class OrderAddressAllocation implements Serializable {
         this.date = date;
     }
 
-    public Long getMoId() {
-        return moId;
-    }
-
-    public void setMoId(Long moId) {
-        this.moId = moId;
-    }
-
     public String getOuz() {
         return ouz;
     }
 
     public void setOuz(String ouz) {
         this.ouz = ouz;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }

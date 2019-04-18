@@ -1268,4 +1268,70 @@
         <dropNotNullConstraint tableName="ESU_OUTPUT" columnName="SENT_TIME" />
     </changeSet>
 
+    <changeSet id="EMIASUPK-7670-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ORDER_ADDRESS_ALLOCATION"/>
+        </preConditions>
+        <comment>Переименование таблицы ORDER_ADDRESS_ALLOCATION</comment>
+        <renameTable newTableName="ADDRESS_ALLOCATION_ORDER"
+                     oldTableName="ORDER_ADDRESS_ALLOCATION" />
+        <rollback>
+            <renameTable newTableName="ORDER_ADDRESS_ALLOCATION"
+                         oldTableName="ADDRESS_ALLOCATION_ORDER" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7670-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESS_ALLOCATION_ORDER" columnName="MO_ID" />
+        </preConditions>
+        <comment>Удаление колонки MO_ID таблицы ADDRESS_ALLOCATION_ORDER</comment>
+        <dropColumn tableName="ADDRESS_ALLOCATION_ORDER" columnName="MO_ID" />
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7670-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESS_ALLOCATION_ORDER" />
+        </preConditions>
+        <comment>Добавление колонки ARCHIVED таблицы ADDRESS_ALLOCATION_ORDER</comment>
+        <addColumn tableName="ADDRESS_ALLOCATION_ORDER">
+            <column name="ARCHIVED" type="NUMBER(1)" remarks="Признак архивности" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESS_ALLOCATION_ORDER" columnName="ARCHIVED" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7670-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESS_ALLOCATION_ORDER" />
+        </preConditions>
+        <comment>Добавление колонки CREATE_DATE таблицы ADDRESS_ALLOCATION_ORDER</comment>
+        <addColumn tableName="ADDRESS_ALLOCATION_ORDER">
+            <column name="CREATE_DATE" type="TIMESTAMP(6)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESS_ALLOCATION_ORDER" columnName="CREATE_DATE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7670-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESS_ALLOCATION_ORDER" />
+        </preConditions>
+        <comment>Добавление колонки UPDATE_DATE таблицы ADDRESS_ALLOCATION_ORDER</comment>
+        <addColumn tableName="ADDRESS_ALLOCATION_ORDER">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESS_ALLOCATION_ORDER" columnName="UPDATE_DATE" />
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
