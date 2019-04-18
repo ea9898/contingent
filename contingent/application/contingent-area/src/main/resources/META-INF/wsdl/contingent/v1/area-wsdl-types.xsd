@@ -34,14 +34,14 @@
                 <xsd:element name="areaTypesAdd" minOccurs="0">
                     <xsd:complexType>
                         <xsd:sequence>
-                            <xsd:element name="areaTypeCode" type="xsd:string" maxOccurs="unbounded" />
+                            <xsd:element name="areaTypeCode" type="xsd:long" maxOccurs="unbounded" />
                         </xsd:sequence>
                     </xsd:complexType>
                 </xsd:element>
                 <xsd:element name="areaTypesDel" minOccurs="0">
                     <xsd:complexType>
                         <xsd:sequence>
-                            <xsd:element name="areaTypeCode" type="xsd:string" maxOccurs="unbounded" />
+                            <xsd:element name="areaTypeCode" type="xsd:long" maxOccurs="unbounded" />
                         </xsd:sequence>
                     </xsd:complexType>
                 </xsd:element>
@@ -64,8 +64,8 @@
                 <xsd:element name="muId" type="xsd:long" />
                 <xsd:element name="number" type="xsd:int" minOccurs="0" />
                 <xsd:element name="description" type="xsd:string" minOccurs="0" />
-                <xsd:element name="areaTypeCode" type="xsd:string" />
-                <xsd:element name="primaryAreaTypeCode" type="xsd:string" maxOccurs="unbounded" />
+                <xsd:element name="areaTypeCode" type="xsd:long" />
+                <xsd:element name="primaryAreaTypeCode" type="xsd:long" maxOccurs="unbounded" />
                 <xsd:element name="ageMin" type="xsd:int" minOccurs="0" />
                 <xsd:element name="ageMax" type="xsd:int" minOccurs="0" />
                 <xsd:element name="ageMinM" type="xsd:int" minOccurs="0" />
@@ -93,7 +93,7 @@
                 <xsd:element name="muId" type="xsd:long" />
                 <xsd:element name="number" type="xsd:int" minOccurs="0" />
                 <xsd:element name="description" type="xsd:string" minOccurs="0" />
-                <xsd:element name="areaTypeCode" type="xsd:string" />
+                <xsd:element name="areaTypeCode" type="xsd:long" />
                 <xsd:element name="ageMin" type="xsd:int" minOccurs="0" />
                 <xsd:element name="ageMax" type="xsd:int" minOccurs="0" />
                 <xsd:element name="ageMinM" type="xsd:int" minOccurs="0" />

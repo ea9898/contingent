@@ -19,7 +19,7 @@ import java.util.List;
 public class AreaRepositoryImpl extends BaseRepository implements AreaRepository {
 
     @Override
-    public List<Area> findAreas(Long moId, Long muId, List<String> areaTypeCodes, Integer number, Boolean actual) {
+    public List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean actual) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Area> criteria = criteriaBuilder.createQuery(Area.class);
         Root<Area> profile = criteria.from(Area.class);
@@ -41,7 +41,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     @Override
-    public List<Area> findAreas(Long moId, Long muId, String areaTypeCode, Integer number, Boolean actual) {
+    public List<Area> findAreas(Long moId, Long muId, Long areaTypeCode, Integer number, Boolean actual) {
         return findAreas(moId, muId, Collections.singletonList(areaTypeCode), number, actual);
     }
 }

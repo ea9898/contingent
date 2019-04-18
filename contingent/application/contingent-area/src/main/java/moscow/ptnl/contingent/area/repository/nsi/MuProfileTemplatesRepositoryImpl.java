@@ -18,7 +18,7 @@ import java.util.List;
 public class MuProfileTemplatesRepositoryImpl extends BaseRepository implements MuProfileTemplatesRepository {
 
     @Override
-    public MUProfileTemplates findMuProfileTemplate(int muTypeId, String areaTypeCode) {
+    public MUProfileTemplates findMuProfileTemplate(int muTypeId, Long areaTypeCode) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<MUProfileTemplates> criteria = criteriaBuilder.createQuery(MUProfileTemplates.class);
         Root<MUProfileTemplates> template = criteria.from(MUProfileTemplates.class);

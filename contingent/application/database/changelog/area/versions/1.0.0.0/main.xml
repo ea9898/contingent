@@ -115,7 +115,7 @@
         <comment>Создание таблицы AREA_TYPES</comment>
         <createTable tableName="AREA_TYPES"
                      remarks="Тип участка">
-            <column name="CODE" type="VARCHAR2(370)" remarks="Код типа участка">
+            <column name="CODE" type="NUMBER(20)" remarks="Код типа участка">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="NAME" type="VARCHAR2(100)" />
@@ -230,7 +230,7 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="MEDICAL_POSITION_ID" type="NUMBER(20)" />
-            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код" />
+            <column name="AREA_TYPE_CODE" type="NUMBER(20)" remarks="Тип участка. Код" />
         </createTable>
         <rollback>
             <dropTable tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
@@ -247,7 +247,7 @@
         <createIndex indexName="IXFK_AREA_TYPE_MEDI_AREA_01"
                      tableName="AREA_TYPE_MEDICAL_POSITIONS"
                      unique="false">
-            <column name="AREA_TYPE_CODE" type="string"/>
+            <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -273,8 +273,8 @@
         <comment>Создание таблицы AREA_TYPE_RELATIONS</comment>
         <createTable tableName="AREA_TYPE_RELATIONS"
                      remarks="Связь зависимых и первичных">
-            <column name="DEPENDENT_AREA_TYPE_ID" type="VARCHAR2(370)" remarks="Код зависимого типа участка" />
-            <column name="PRIMARY_AREA_TYPE_ID" type="VARCHAR2(370)" remarks="Код первичного типа участка" />
+            <column name="DEPENDENT_AREA_TYPE_ID" type="NUMBER(20)" remarks="Код зависимого типа участка" />
+            <column name="PRIMARY_AREA_TYPE_ID" type="NUMBER(20)" remarks="Код первичного типа участка" />
         </createTable>
         <rollback>
             <dropTable tableName="AREA_TYPE_RELATIONS"/>
@@ -291,7 +291,7 @@
         <createIndex indexName="IXFK_AREA_TYPE_RELA_AREA_DEP"
                      tableName="AREA_TYPE_RELATIONS"
                      unique="false">
-            <column name="DEPENDENT_AREA_TYPE_ID" type="string"/>
+            <column name="DEPENDENT_AREA_TYPE_ID" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -305,7 +305,7 @@
         <createIndex indexName="IXFK_AREA_TYPE_RELA_AREA_PRIM"
                      tableName="AREA_TYPE_RELATIONS"
                      unique="false">
-            <column name="PRIMARY_AREA_TYPE_ID" type="string"/>
+            <column name="PRIMARY_AREA_TYPE_ID" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -348,7 +348,7 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="MU_TYPE_ID" type="NUMBER(8)" />
-            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" />
+            <column name="AREA_TYPE_CODE" type="NUMBER(20)" />
             <column name="AVAILABLE_TO_CREATE" type="NUMBER(1)" />
         </createTable>
         <rollback>
@@ -366,7 +366,7 @@
         <createIndex indexName="IXFK_MU_TEMPLATE_PR_AREA_01"
                      tableName="MU_PROFILE_TEMPLATES"
                      unique="false">
-            <column name="AREA_TYPE_CODE" type="string"/>
+            <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -419,7 +419,7 @@
             <column name="ID" type="NUMBER(20)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Код типа участка" />
+            <column name="AREA_TYPE_CODE" type="NUMBER(20)" remarks="Код типа участка" />
             <column name="HEAD_FINANCE" type="NUMBER(1)" remarks="Участвует в подушевом финансировании" />
             <column name="HAS_SERVICE_TERRITORY" type="NUMBER(1)" remarks="Обслуживает территорию" />
             <column name="ATTACH_BY_REQUEST" type="NUMBER(1)" remarks="Прикрепление по заявлению" />
@@ -442,7 +442,7 @@
         <createIndex indexName="IXFK_AREA_TYPE_ATTRS_AREA_TYPE"
                      tableName="PR_AREA_TYPE_ATTRS"
                      unique="false">
-            <column name="AREA_TYPE_CODE" type="string"/>
+            <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -595,7 +595,7 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="MO_ID" type="NUMBER(20)" remarks="ИД МО" />
-            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код" />
+            <column name="AREA_TYPE_CODE" type="NUMBER(20)" remarks="Тип участка. Код" />
             <column name="NAME" type="VARCHAR2(255)" remarks="Наименование" />
             <column name="NUMBER" type="NUMBER(5)" remarks="Номер" />
             <column name="IS_AUTO_ASSIGN_FOR_ATTACH" type="NUMBER(1)" remarks="Для автоприкрепления" />
@@ -624,7 +624,7 @@
         <createIndex indexName="IXFK_AREA_AREA_TYPE"
                      tableName="AREAS"
                      unique="false">
-            <column name="AREA_TYPE_CODE" type="string"/>
+            <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -708,7 +708,7 @@
             <column name="AREA_ID" type="NUMBER(20)">
                 <constraints nullable="false" />
             </column>
-            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код">
+            <column name="AREA_TYPE_CODE" type="NUMBER(20)" remarks="Тип участка. Код">
                 <constraints nullable="false" />
             </column>
         </createTable>
@@ -741,7 +741,7 @@
         <createIndex indexName="IXFK_AREA_TO_AREA__AREA_T01"
                      tableName="AREA_TO_AREA_TYPE"
                      unique="false">
-            <column name="AREA_TYPE_CODE" type="string"/>
+            <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -783,7 +783,7 @@
             <column name="MU_ID" type="NUMBER(20)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код" />
+            <column name="AREA_TYPE_CODE" type="NUMBER(20)" remarks="Тип участка. Код" />
         </createTable>
         <rollback>
             <dropTable tableName="MU_PROFILES"/>
@@ -800,7 +800,7 @@
         <createIndex indexName="IXFK_PROFILE_MU_AREA_TYPE"
                      tableName="MU_PROFILES"
                      unique="false">
-            <column name="AREA_TYPE_CODE" type="string"/>
+            <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -855,7 +855,7 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="MO_ID" type="NUMBER(20)" remarks="ИД МО" />
-            <column name="AREA_TYPE_CODE" type="VARCHAR2(370)" remarks="Тип участка. Код" />
+            <column name="AREA_TYPE_CODE" type="NUMBER(20)" remarks="Тип участка. Код" />
             <column name="ORDER_ID" type="NUMBER(20)" remarks="ИД распоряжения о распределении" />
             <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала распределения" />
             <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания распределения" />
@@ -935,7 +935,7 @@
         <createIndex indexName="IXFK_ADDRESS_ALLO_TYPE"
                      tableName="ADDRESS_ALLOCATION_TO_MO"
                      unique="false">
-            <column name="AREA_TYPE_CODE" type="string"/>
+            <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
     </changeSet>
 

@@ -10,13 +10,13 @@ public interface AreaServiceInternal {
 
     List<MuProfile> getProfileMU(Long muId) throws ContingentException;
 
-    void setProfileMU(Long muId, String muTypeId, List<String> areaTypesAdd, List<String> areaTypesDel) throws ContingentException;
+    void setProfileMU(Long muId, String muTypeId, List<Long> areaTypesAdd, List<Long> areaTypesDel) throws ContingentException;
 
-    Long createPrimaryArea(long moId, long muId, String name, Integer number, String areaTypeCode,
+    Long createPrimaryArea(long moId, long muId, String name, Integer number, Long areaTypeCode,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
-    Long createDependentArea(long moId, long muId, String name, Integer number, String areaTypeCode, List<String> primaryAreaTypeCodes,
+    Long createDependentArea(long moId, long muId, String name, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, String description) throws ContingentException;
 
@@ -24,8 +24,8 @@ public interface AreaServiceInternal {
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
-    void updateDependentArea(long areaId, Long muId, String name, Integer number, List<String> primaryAreaTypeCodesAdd,
-                             List<String> primaryAreaTypeCodesDel,
+    void updateDependentArea(long areaId, Long muId, String name, Integer number, List<Long> primaryAreaTypeCodesAdd,
+                             List<Long> primaryAreaTypeCodesDel,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, String description) throws ContingentException;
 

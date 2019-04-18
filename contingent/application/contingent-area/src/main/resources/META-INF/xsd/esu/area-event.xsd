@@ -37,7 +37,7 @@
                         <xs:documentation>ИД МУ</xs:documentation>
                     </xs:annotation>
                 </xs:element>
-                <xs:element name="areaTypeCode" type="xs:string" minOccurs="0">
+                <xs:element name="areaTypeCode" type="xs:long" minOccurs="0">
                     <xs:annotation>
                         <xs:documentation>ИД типа участка</xs:documentation>
                     </xs:annotation>
@@ -108,7 +108,7 @@
                     </xs:annotation>
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="primaryAreaTypeCode" type="xs:string" maxOccurs="unbounded" />
+                            <xs:element name="primaryAreaTypeCode" type="xs:long" maxOccurs="unbounded" />
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>

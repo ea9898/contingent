@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.time.temporal.ChronoUnit;
 
 @Component
 public class AreaChecker {
@@ -42,7 +41,7 @@ public class AreaChecker {
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
 
-    public void checkAreaTypesExist(List<String> areaTypes, Validation validation, String parameterCode) {
+    public void checkAreaTypesExist(List<Long> areaTypes, Validation validation, String parameterCode) {
         areaTypes.forEach(a -> {
             Optional<AreaTypes> areaType = areaTypesCRUDRepository.findById(a);
 
@@ -52,7 +51,7 @@ public class AreaChecker {
         });
     }
 
-    public void checkMuProfileChangePossible(int muTypeId, String areaType, Validation validation, String parameterCode) {
+    public void checkMuProfileChangePossible(int muTypeId, Long areaType, Validation validation, String parameterCode) {
         MUProfileTemplates template = muProfileTemplatesRepository.findMuProfileTemplate(muTypeId, areaType);
 
         if (template == null || !Boolean.TRUE.equals(template.getAvailableToCreate())) {
@@ -86,9 +85,9 @@ public class AreaChecker {
         }
     }
 
-    public Map<String, AreaTypes> checkAndGetPrimaryAreaTypesInMU(long muId, List<String> primaryAreaTypeCodes, Validation validation) {
+    public Map<Long, AreaTypes> checkAndGetPrimaryAreaTypesInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
         List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
-        Map<String, AreaTypes> primaryAreaTypes = muProfiles.stream()
+        Map<Long, AreaTypes> primaryAreaTypes = muProfiles.stream()
                 .filter(p -> p.getAreaType() != null)
                 .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuProfile::getAreaType));
 
@@ -100,7 +99,7 @@ public class AreaChecker {
         return primaryAreaTypes;
     }
 
-    public void checkPrimaryAreasInMU(long muId, List<String> primaryAreaTypeCodes, Validation validation) {
+    public void checkPrimaryAreasInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
         StringBuilder primaryAreaTypesMissing = new StringBuilder();
         List<Area> areas = areaRepository.findAreas(null, muId, primaryAreaTypeCodes, null, true);
 

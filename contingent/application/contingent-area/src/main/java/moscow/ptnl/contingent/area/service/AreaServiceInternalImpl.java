@@ -81,9 +81,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public void setProfileMU(Long muId, String muTypeId, List<String> areaTypesAdd, List<String> areaTypesDel) throws ContingentException {
-        List<String> typesAdd = areaTypesAdd == null ? new ArrayList<>() : areaTypesAdd;
-        List<String> typesDel = areaTypesDel == null ? new ArrayList<>() : areaTypesDel;
+    public void setProfileMU(Long muId, String muTypeId, List<Long> areaTypesAdd, List<Long> areaTypesDel) throws ContingentException {
+        List<Long> typesAdd = areaTypesAdd == null ? new ArrayList<>() : areaTypesAdd;
+        List<Long> typesDel = areaTypesDel == null ? new ArrayList<>() : areaTypesDel;
 
         Validation validation = new Validation();
 
@@ -98,7 +98,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
-        List<String> attachedAreaTypes = muProfiles.stream()
+        List<Long> attachedAreaTypes = muProfiles.stream()
                 .filter(m -> m.getAreaType() != null)
                 .map(m -> m.getAreaType().getCode())
                 .collect(Collectors.toList());
@@ -142,7 +142,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public Long createPrimaryArea(long moId, long muId, String name, Integer number, String areaTypeCode,
+    public Long createPrimaryArea(long moId, long muId, String name, Integer number, Long areaTypeCode,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
@@ -221,13 +221,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public Long createDependentArea(long moId, long muId, String name, Integer number, String areaTypeCode, List<String> primaryAreaTypeCodes,
+    public Long createDependentArea(long moId, long muId, String name, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
-        Map<String, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muId, primaryAreaTypeCodes, validation);
+        Map<Long, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muId, primaryAreaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -337,8 +337,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public void updateDependentArea(long areaId, Long muId, String name, Integer number, List<String> primaryAreaTypeCodesAdd,
-                                    List<String> primaryAreaTypeCodesDel,
+    public void updateDependentArea(long areaId, Long muId, String name, Integer number, List<Long> primaryAreaTypeCodesAdd,
+                                    List<Long> primaryAreaTypeCodesDel,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                     boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
@@ -365,7 +365,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 validation.error(AreaErrorReason.AREA_NOT_REALTED_TO_SPECIAL_OFFICE);
             }
         }
-        Map<String, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
+        Map<Long, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);

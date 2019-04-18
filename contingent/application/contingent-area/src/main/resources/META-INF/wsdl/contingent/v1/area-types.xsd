@@ -12,7 +12,7 @@
             <xsd:documentation>Типы участка в профиле МУ</xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="code" type="xsd:string">
+            <xsd:element name="code" type="xsd:long">
                 <xsd:annotation>
                     <xsd:documentation>Код типа участка</xsd:documentation>
                 </xsd:annotation>
@@ -27,7 +27,7 @@
 
     <xsd:complexType name="PrimaryAreaTypeCodes">
         <xsd:sequence>
-            <xsd:element name="primaryAreaTypeCode" type="xsd:string" maxOccurs="unbounded" />
+            <xsd:element name="primaryAreaTypeCode" type="xsd:long" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
 

@@ -23,9 +23,8 @@ public class AreaTypes implements Serializable {
     private static final long serialVersionUID = -1047920239396677745L;
 
     @Id
-    @Size(max = 370)
 	@Column(name = "CODE", unique = true, nullable = false)
-	private String code;
+	private Long code;
 
     @Size(max = 100)
 	@Column(name = "NAME")
@@ -72,11 +71,11 @@ public class AreaTypes implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "areaType")
     private PrimaryAreaTypeAttributes attributes;
 
-    public String getCode() {
+    public Long getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(Long code) {
         this.code = code;
     }
 

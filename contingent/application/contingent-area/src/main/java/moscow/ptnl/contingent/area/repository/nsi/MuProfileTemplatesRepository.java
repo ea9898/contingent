@@ -8,5 +8,5 @@ import java.util.List;
 @NoRepositoryBean
 public interface MuProfileTemplatesRepository {
 
-	MUProfileTemplates findMuProfileTemplate(int muTypeId, String areaTypeCode);
+	MUProfileTemplates findMuProfileTemplate(int muTypeId, Long areaTypeCode);
 }

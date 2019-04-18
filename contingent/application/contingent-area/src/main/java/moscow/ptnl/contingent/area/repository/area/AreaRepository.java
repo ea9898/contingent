@@ -8,7 +8,7 @@ import java.util.List;
 @NoRepositoryBean
 public interface AreaRepository {
 
-	List<Area> findAreas(Long moId, Long muId, String areaTypeCode, Integer number, Boolean actual);
+	List<Area> findAreas(Long moId, Long muId, Long areaTypeCode, Integer number, Boolean actual);
 
-	List<Area> findAreas(Long moId, Long muId, List<String> areaTypeCodes, Integer number, Boolean actual);
+	List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean actual);
 }
