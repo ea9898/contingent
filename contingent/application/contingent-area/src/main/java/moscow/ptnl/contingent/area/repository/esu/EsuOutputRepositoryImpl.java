@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -18,7 +18,7 @@ import java.util.List;
 public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutputRepository {
 
     @Override
-    public List<EsuOutput> findEsuOutputsToResend(Date olderThan) {
+    public List<EsuOutput> findEsuOutputsToResend(LocalDateTime olderThan) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<EsuOutput> criteria = criteriaBuilder.createQuery(EsuOutput.class);
         Root<EsuOutput> template = criteria.from(EsuOutput.class);

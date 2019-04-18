@@ -57,7 +57,7 @@ public class EsuPublishScheduler {
         try {
             long esuResendTimeout = Long.parseLong(esuResendTimeoutValue);
             LocalDateTime date = LocalDateTime.now().minusSeconds(esuResendTimeout);
-            esuService.periodicalPublishUnsuccessMessagesToESU(Date.from(date.atZone(ZoneId.systemDefault()).toInstant()));
+            esuService.periodicalPublishUnsuccessMessagesToESU(date);
         } catch (Exception e) {
             LOG.error("Ошибка выполнения периодического задания по переотправке сообщений в ЕСУ", e);
         }

@@ -19,10 +19,13 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -64,7 +67,7 @@ public class EsuServiceImpl implements EsuService {
         return false;
     }
 
-    public void periodicalPublishUnsuccessMessagesToESU(Date olderThen) {
+    public void periodicalPublishUnsuccessMessagesToESU(LocalDateTime olderThen) {
         List<EsuOutput> records = esuOutputRepository.findEsuOutputsToResend(olderThen);
 
         for (EsuOutput record : records) {
@@ -92,7 +95,7 @@ public class EsuServiceImpl implements EsuService {
         esuOutput.setEsuId(esuAnswer.getKey());
         esuOutput.setOffset(esuAnswer.getOffset());
         esuOutput.setPartition(esuAnswer.getPartition());
-        esuOutput.setSentTime(new Date(esuAnswer.getTimestamp()));
+        esuOutput.setSentTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(esuAnswer.getTimestamp()), TimeZone.getDefault().toZoneId()));
         esuOutput.setStatus(1);
     }
 

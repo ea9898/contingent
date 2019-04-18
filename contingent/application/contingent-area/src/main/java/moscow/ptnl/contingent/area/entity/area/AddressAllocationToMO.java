@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "ADDRESS_ALLOCATION_TO_MO")
@@ -38,10 +38,10 @@ public class AddressAllocationToMO implements Serializable {
     private Long orderId;
 
     @Column(name = "START_DATE")
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "END_DATE")
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(name = "REJECT_ORDER_ID")
     private Long rejectOrderId;
@@ -90,19 +90,19 @@ public class AddressAllocationToMO implements Serializable {
         this.orderId = orderId;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 

@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.entity.settings;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.persistence.Cacheable;
 
 import javax.persistence.Column;
@@ -26,7 +26,7 @@ public class Setting implements Serializable {
 	private String description;
 
 	@Column(name = "LAST_CHANGE")
-	private Date lastChange;
+	private LocalDateTime lastChange;
 
 	@Column(name = "USER_ID")
 	private String iserId;
@@ -61,11 +61,11 @@ public class Setting implements Serializable {
 		this.description = description;
 	}
 
-	public Date getLastChange() {
+	public LocalDateTime getLastChange() {
 		return lastChange;
 	}
 
-	public void setLastChange(Date lastChange) {
+	public void setLastChange(LocalDateTime lastChange) {
 		this.lastChange = lastChange;
 	}
 

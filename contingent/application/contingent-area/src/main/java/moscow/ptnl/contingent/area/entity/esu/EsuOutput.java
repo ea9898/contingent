@@ -10,7 +10,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ESU_OUTPUT")
@@ -36,7 +36,7 @@ public class EsuOutput implements Serializable {
 	private Integer partition;
 
     @Column(name = "SENT_TIME", nullable = false)
-    private Date sentTime;
+    private LocalDateTime sentTime;
 
     @Size(max = 255)
     @Column(name = "TOPIC", nullable = false)
@@ -80,11 +80,11 @@ public class EsuOutput implements Serializable {
         this.partition = partition;
     }
 
-    public Date getSentTime() {
+    public LocalDateTime getSentTime() {
         return sentTime;
     }
 
-    public void setSentTime(Date sentTime) {
+    public void setSentTime(LocalDateTime sentTime) {
         this.sentTime = sentTime;
     }
 
