@@ -62,7 +62,6 @@
             <xsd:sequence>
                 <xsd:element name="moId" type="xsd:long" />
                 <xsd:element name="muId" type="xsd:long" />
-                <xsd:element name="name" type="xsd:string" minOccurs="0" />
                 <xsd:element name="number" type="xsd:int" minOccurs="0" />
                 <xsd:element name="description" type="xsd:string" minOccurs="0" />
                 <xsd:element name="areaTypeCode" type="xsd:string" />
@@ -92,7 +91,6 @@
             <xsd:sequence>
                 <xsd:element name="moId" type="xsd:long" />
                 <xsd:element name="muId" type="xsd:long" />
-                <xsd:element name="name" type="xsd:string" minOccurs="0" />
                 <xsd:element name="number" type="xsd:int" minOccurs="0" />
                 <xsd:element name="description" type="xsd:string" minOccurs="0" />
                 <xsd:element name="areaTypeCode" type="xsd:string" />
@@ -121,7 +119,6 @@
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element name="areaId" type="xsd:long" />
-                <xsd:element name="name" type="xsd:string" minOccurs="0" />
                 <xsd:element name="number" type="xsd:int" minOccurs="0" />
                 <xsd:element name="description" type="xsd:string" minOccurs="0" />
                 <xsd:element name="ageMin" type="xsd:int" minOccurs="0" />
@@ -149,7 +146,6 @@
             <xsd:sequence>
                 <xsd:element name="areaId" type="xsd:long" />
                 <xsd:element name="muId" type="xsd:long" minOccurs="0" />
-                <xsd:element name="name" type="xsd:string" minOccurs="0" />
                 <xsd:element name="number" type="xsd:int" minOccurs="0" />
                 <xsd:element name="description" type="xsd:string" minOccurs="0" />
                 <xsd:element name="primaryAreaTypesAdd" type="area:PrimaryAreaTypeCodes" minOccurs="0" />

@@ -153,7 +153,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (muProfile.getAreaType().getKindAreaType() != null &&
                 //Todo уточнить код вида участка «Мягко - ассоциированный» и вынести в настройки
                 Objects.equals(muProfile.getAreaType().getKindAreaType().getCode(), 1L)) {
-            if (Strings.isNullOrEmpty(name) || number == null ||
+            if (Strings.isNullOrEmpty(description) || number == null ||
                     (ageMin == null && ageMax == null && ageMinM == null && ageMaxM == null && ageMinW == null && ageMaxW == null)) {
                 validation.error(AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED);
             }
