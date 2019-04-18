@@ -68,6 +68,14 @@
         <part name="body" element="tns:UpdateDependentAreaResponse"/>
     </message>
 
+    <message name="createOrderInput">
+        <part name="body" element="tns:createOrderRequest"/>
+    </message>
+
+    <message name="createOrderOutput">
+        <part name="body" element="tns:createOrderResponse"/>
+    </message>
+
     <portType name="AreaPT">
         <operation name="getProfileMU">
             <documentation>
@@ -115,6 +123,14 @@
             </documentation>
             <input message="tns:UpdateDependentAreaInput"/>
             <output message="tns:UpdateDependentAreaOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+        <operation name="createOrder">
+            <documentation>
+                Создание распоряжения (К_УУ_15)
+            </documentation>
+            <input message="tns:createOrderInput"/>
+            <output message="tns:createOrderOutput"/>
             <fault message="cmnwsdl:ContingentFault" name="fault" />
         </operation>
 
@@ -201,6 +217,19 @@
 
         <operation name="updateDependentArea">
             <soap12:operation soapAction="updateDependentArea"/>
+            <input>
+                <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+        </operation>
+
+        <operation name="createOrder">
+            <soap12:operation soapAction="createOrder"/>
             <input>
                 <soap12:body use="literal"/>
             </input>

@@ -6,20 +6,26 @@ import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ADDRESS_ALLOCATION_ORDER")
+@SequenceGenerator(name = "SEQ_ADDRESS_ALLOCATION_ORDER", sequenceName = "SEQ_ADDRESS_ALLOCATION_ORDER", allocationSize=1)
 @Cacheable
 public class AddressAllocationOrder implements Serializable {
 
     private static final long serialVersionUID = -8116611274341177299L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_ADDRESS_ALLOCATION_ORDER")
 	@Column(name = "ID", unique = true, nullable = false)
 	private Long id;
 
@@ -32,7 +38,7 @@ public class AddressAllocationOrder implements Serializable {
     private String name;
 
     @Column(name = "DATE")
-    private Date date;
+    private LocalDate date;
 
     @Size(max = 50)
     @Column(name = "OUZ")
@@ -43,10 +49,10 @@ public class AddressAllocationOrder implements Serializable {
     private Boolean archived;
 
     @Column(name = "CREATE_DATE", nullable = false)
-    private Date createDate;
+    private LocalDateTime createDate;
 
     @Column(name = "UPDATE_DATE", nullable = false)
-    private Date updateDate;
+    private LocalDateTime updateDate;
 
     public Long getId() {
         return id;
@@ -72,11 +78,11 @@ public class AddressAllocationOrder implements Serializable {
         this.name = name;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -96,19 +102,19 @@ public class AddressAllocationOrder implements Serializable {
         this.archived = archived;
     }
 
-    public Date getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
-    public Date getUpdateDate() {
+    public LocalDateTime getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
+    public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
     }
 }

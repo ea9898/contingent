@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -18,7 +18,7 @@ import java.util.List;
 public class AddressAllocationOrderRepositoryImpl extends BaseRepository implements AddressAllocationOrderRepository {
 
     @Override
-    public List<AddressAllocationOrder> findAddressAllocationOrders(String number, Date date, String ouz, String name, Boolean archived) {
+    public List<AddressAllocationOrder> findAddressAllocationOrders(String number, LocalDate date, String ouz, String name, Boolean archived) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AddressAllocationOrder> criteria = criteriaBuilder.createQuery(AddressAllocationOrder.class);
         Root<AddressAllocationOrder> profile = criteria.from(AddressAllocationOrder.class);

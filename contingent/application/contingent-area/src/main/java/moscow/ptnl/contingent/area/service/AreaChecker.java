@@ -15,11 +15,14 @@ import moscow.ptnl.contingent.area.repository.nsi.MuProfileTemplatesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.time.temporal.ChronoUnit;
 
 @Component
 public class AreaChecker {
@@ -122,5 +125,12 @@ public class AreaChecker {
             validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;
+    }
+
+    public void checkDateTillToday(LocalDate date, Validation validation) {
+        if (date.isBefore(LocalDate.of(1970, Month.JANUARY, 1)) ||
+                date.isAfter(LocalDate.now())) {
+            validation.error(AreaErrorReason.DATE_IN_INCORRECT_PERIOD);
+        }
     }
 }

@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.gov.emias2.contingent.v1.area.AreaPT;
 import ru.gov.emias2.contingent.v1.area.CreateDependentAreaRequest;
 import ru.gov.emias2.contingent.v1.area.CreateDependentAreaResponse;
+import ru.gov.emias2.contingent.v1.area.CreateOrderRequest;
+import ru.gov.emias2.contingent.v1.area.CreateOrderResponse;
 import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaRequest;
 import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaResponse;
 import ru.gov.emias2.contingent.v1.area.GetProfileMURequest;
@@ -143,6 +145,22 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.isAutoAssignForAttachment(), body.getDescription());
 
             return new UpdateDependentAreaResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public CreateOrderResponse createOrder(CreateOrderRequest body) throws ContingentFault {
+        try {
+            Long id = areaService.createOrder(body.getNumber(), body.getDate(), body.getOuz(), body.getName());
+
+            CreateOrderResponse response = new CreateOrderResponse();
+            response.setId(id);
+
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

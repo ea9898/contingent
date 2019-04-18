@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.service;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.error.ContingentException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AreaServiceInternal {
@@ -28,4 +29,5 @@ public interface AreaServiceInternal {
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, String description) throws ContingentException;
 
+    Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException;
 }

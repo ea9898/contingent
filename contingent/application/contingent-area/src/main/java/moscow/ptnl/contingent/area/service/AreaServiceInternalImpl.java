@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
@@ -9,6 +10,8 @@ import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.esu.AreaCreateEvent;
 import moscow.ptnl.contingent.area.model.esu.AreaUpdateEvent;
+import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeCRUDRepository;
@@ -23,8 +26,11 @@ import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,6 +62,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private AreaToAreaTypeRepository areaToAreaTypeRepository;
+
+    @Autowired
+    private AddressAllocationOrderCRUDRepository addressAllocationOrderCRUDRepository;
+
+    @Autowired
+    private AddressAllocationOrderRepository addressAllocationOrderRepository;
 
     @Autowired
     private AreaChecker areaChecker;
@@ -405,5 +417,28 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), null, null);
             areas.stream().filter(a -> !Objects.equals(area.getId(), a.getId())).forEach(a -> a.setAutoAssignForAttach(false));
         }
+    }
+
+    @Override
+    public Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException {
+        Validation validation = new Validation();
+        areaChecker.checkDateTillToday(date, validation);
+
+        if (!addressAllocationOrderRepository.findAddressAllocationOrders(number, date, ouz, name, false).isEmpty()) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_EXISTS);
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        AddressAllocationOrder order = new AddressAllocationOrder();
+        order.setCreateDate(LocalDateTime.now());
+        order.setUpdateDate(LocalDateTime.now());
+        order.setArchived(false);
+        order.setNumber(number);
+        order.setDate(date);
+        order.setOuz(ouz);
+        order.setName(name);
+
+        return addressAllocationOrderCRUDRepository.save(order).getId();
     }
 }
