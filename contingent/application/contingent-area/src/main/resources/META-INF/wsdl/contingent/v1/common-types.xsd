@@ -4,16 +4,12 @@
             elementFormDefault="qualified"
             version="1.0">
 
-    <xsd:include schemaLocation="../emias/emias.system.v1.xsd"/>
+    <xsd:include schemaLocation="../emias/emias.core.v1.xsd"/>
 
-    <xsd:complexType name="Options">
-        <xsd:sequence>
-            <xsd:element name="entry" type="tns:KeyValuePair" minOccurs="0" maxOccurs="unbounded">
-                <xsd:annotation>
-                    <xsd:documentation>Набор опциональных параметров</xsd:documentation>
-                </xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
+    <xsd:complexType name="PagingResult">
+        <xsd:complexContent>
+            <xsd:extension base="tns:PagingResults" />
+        </xsd:complexContent>
     </xsd:complexType>
 
 </xsd:schema>

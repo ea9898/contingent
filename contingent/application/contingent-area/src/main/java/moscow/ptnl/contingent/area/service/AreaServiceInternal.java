@@ -1,7 +1,10 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.error.ContingentException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,4 +35,6 @@ public interface AreaServiceInternal {
     Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException;
 
     void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException;
+
+    Page<AddressAllocationOrder> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException;
 }

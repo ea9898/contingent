@@ -1,8 +1,10 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
+import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
+import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.SoapCustomMapper;
 import moscow.ptnl.contingent.area.transform.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
@@ -10,6 +12,8 @@ import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,8 @@ import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaRequest;
 import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaResponse;
 import ru.gov.emias2.contingent.v1.area.GetProfileMURequest;
 import ru.gov.emias2.contingent.v1.area.GetProfileMUResponse;
+import ru.gov.emias2.contingent.v1.area.SearchOrderRequest;
+import ru.gov.emias2.contingent.v1.area.SearchOrderResponse;
 import ru.gov.emias2.contingent.v1.area.SetProfileMURequest;
 import ru.gov.emias2.contingent.v1.area.SetProfileMUResponse;
 import ru.gov.emias2.contingent.v1.area.UpdateDependentAreaRequest;
@@ -56,6 +62,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private SoapCustomMapper soapCustomMapper;
+
+    @Autowired
+    private AddressAllocationOrderMapper addressAllocationOrderMapper;
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -176,6 +185,23 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             areaService.updateOrder(body.getId(), body.getNumber(), body.getDate(), body.getOuz(), body.getName());
 
             return new UpdateOrderResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public SearchOrderResponse searchOrder(SearchOrderRequest body) throws ContingentFault {
+        try {
+            Page<AddressAllocationOrder> results = areaService.searchOrder(body.getId(), body.getNumber(), body.getDate(),
+                    body.getName(), PageRequest.of(body.getPagingOptions().getPageNumber(), body.getPagingOptions().getPageSize()));
+            SearchOrderResponse response = new SearchOrderResponse();
+            response.setPagingResponse(soapCustomMapper.mapPageToPagingResult(results));
+            response.getResults().addAll(results.get().map(addressAllocationOrderMapper::entityToDtoTransform).collect(Collectors.toList()));
+
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

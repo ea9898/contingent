@@ -24,6 +24,8 @@ import moscow.ptnl.contingent.area.error.ContingentException;
 
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -443,8 +445,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public
-    void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException {
+    public void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException {
         Validation validation = new Validation();
         AddressAllocationOrder order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
 
@@ -477,5 +478,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         order.setDate(dateNew);
         order.setOuz(ouzNew);
         order.setName(nameNew);
+    }
+
+    @Override
+    public Page<AddressAllocationOrder> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+
+        if (id == null && number == null && date == null && name == null) {
+            validation.error(AreaErrorReason.NO_SEARCH_PARAMETERS);
+            throw new ContingentException(validation);
+        }
+        return addressAllocationOrderRepository.findAddressAllocationOrdersOverlapped(id, number, date, name, paging);
     }
 }
