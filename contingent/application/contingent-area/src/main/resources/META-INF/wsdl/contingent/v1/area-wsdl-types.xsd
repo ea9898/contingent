@@ -189,4 +189,24 @@
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:element name="updateOrderRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="id" type="xsd:long" />
+                <xsd:element name="number" type="xsd:string" minOccurs="0" />
+                <xsd:element name="date" type="xsd:date" minOccurs="0" />
+                <xsd:element name="ouz" type="xsd:string" minOccurs="0" />
+                <xsd:element name="name" type="xsd:string" minOccurs="0" />
+                <xsd:element name="options" type="common:Options" minOccurs="0" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="updateOrderResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
 </xsd:schema>

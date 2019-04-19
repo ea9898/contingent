@@ -30,4 +30,6 @@ public interface AreaServiceInternal {
                              boolean autoAssignForAttachment, String description) throws ContingentException;
 
     Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException;
+
+    void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException;
 }

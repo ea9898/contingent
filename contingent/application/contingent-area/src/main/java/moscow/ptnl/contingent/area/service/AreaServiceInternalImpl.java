@@ -362,7 +362,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (area.getAreaType().getKindAreaType() != null &&
                     //Todo уточнить код вида участка «Ассоциированный со специализированным кабинетом» и вынести в настройки
                     !Objects.equals(area.getAreaType().getKindAreaType().getCode(), 2L)) {
-                validation.error(AreaErrorReason.AREA_NOT_REALTED_TO_SPECIAL_OFFICE);
+                validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
             }
         }
         Map<Long, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
@@ -440,5 +440,42 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         order.setName(name);
 
         return addressAllocationOrderCRUDRepository.save(order).getId();
+    }
+
+    @Override
+    public
+    void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException {
+        Validation validation = new Validation();
+        AddressAllocationOrder order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
+
+        if (order == null) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
+                    new ValidationParameter("id", id));
+            throw new ContingentException(validation);
+        }
+        if (Boolean.TRUE.equals(order.getArchived())) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
+                    new ValidationParameter("id", id));
+        }
+        if (date != null) {
+            areaChecker.checkDateTillToday(date, validation);
+        }
+        String numberNew = number == null ? order.getNumber() : number;
+        LocalDate dateNew = date == null ? order.getDate() : date;
+        String ouzNew = ouz == null ? order.getOuz() : ouz;
+        String nameNew = name == null ? order.getName() : name;
+
+        if (addressAllocationOrderRepository.findAddressAllocationOrders(numberNew, dateNew, ouzNew, nameNew, false).stream()
+                .anyMatch(o -> !Objects.equals(o.getId(), id))) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_EXISTS);
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        order.setUpdateDate(LocalDateTime.now());
+        order.setNumber(numberNew);
+        order.setDate(dateNew);
+        order.setOuz(ouzNew);
+        order.setName(nameNew);
     }
 }

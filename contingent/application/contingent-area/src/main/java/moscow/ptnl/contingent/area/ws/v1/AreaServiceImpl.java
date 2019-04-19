@@ -27,6 +27,8 @@ import ru.gov.emias2.contingent.v1.area.SetProfileMURequest;
 import ru.gov.emias2.contingent.v1.area.SetProfileMUResponse;
 import ru.gov.emias2.contingent.v1.area.UpdateDependentAreaRequest;
 import ru.gov.emias2.contingent.v1.area.UpdateDependentAreaResponse;
+import ru.gov.emias2.contingent.v1.area.UpdateOrderRequest;
+import ru.gov.emias2.contingent.v1.area.UpdateOrderResponse;
 import ru.gov.emias2.contingent.v1.area.UpdatePrimaryAreaRequest;
 import ru.gov.emias2.contingent.v1.area.UpdatePrimaryAreaResponse;
 import ru.gov.emias2.contingent.v1.common.ContingentFault;
@@ -161,6 +163,19 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             response.setId(id);
 
             return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws ContingentFault {
+        try {
+            areaService.updateOrder(body.getId(), body.getNumber(), body.getDate(), body.getOuz(), body.getName());
+
+            return new UpdateOrderResponse();
         }
         catch (Exception ex) {
             throw mapException(ex);

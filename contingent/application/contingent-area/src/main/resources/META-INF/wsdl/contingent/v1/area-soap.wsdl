@@ -76,6 +76,14 @@
         <part name="body" element="tns:createOrderResponse"/>
     </message>
 
+    <message name="updateOrderInput">
+        <part name="body" element="tns:updateOrderRequest"/>
+    </message>
+
+    <message name="updateOrderOutput">
+        <part name="body" element="tns:updateOrderResponse"/>
+    </message>
+
     <portType name="AreaPT">
         <operation name="getProfileMU">
             <documentation>
@@ -131,6 +139,14 @@
             </documentation>
             <input message="tns:createOrderInput"/>
             <output message="tns:createOrderOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+        <operation name="updateOrder">
+            <documentation>
+                Изменение распоряжения (К_УУ_16)
+            </documentation>
+            <input message="tns:updateOrderInput"/>
+            <output message="tns:updateOrderOutput"/>
             <fault message="cmnwsdl:ContingentFault" name="fault" />
         </operation>
 
@@ -230,6 +246,19 @@
 
         <operation name="createOrder">
             <soap12:operation soapAction="createOrder"/>
+            <input>
+                <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+        </operation>
+
+        <operation name="updateOrder">
+            <soap12:operation soapAction="updateOrder"/>
             <input>
                 <soap12:body use="literal"/>
             </input>
