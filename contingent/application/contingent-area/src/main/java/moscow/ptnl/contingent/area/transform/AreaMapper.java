@@ -32,7 +32,7 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.e
         area.setAgeMaxW(entityObject.getAgeWMax());
         area.setAutoAssignForAttachment(entityObject.getAutoAssignForAttach());
         area.setAttachByMedicalReason(entityObject.getAttachByMedicalReason());
-        area.setArchive(!Boolean.TRUE.equals(entityObject.getActual()));
+        area.setArchive(Boolean.TRUE.equals(entityObject.getArchived()));
 
         if (!entityObject.getActualMedicalEmployees().isEmpty()) {
             Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();

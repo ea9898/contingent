@@ -45,7 +45,7 @@ public class AreaChecker {
         areaTypes.forEach(a -> {
             Optional<AreaTypes> areaType = areaTypesCRUDRepository.findById(a);
 
-            if (!areaType.isPresent() || !Boolean.TRUE.equals(areaType.get().getActual())) {
+            if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchived())) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter(parameterCode, a));
             }
         });
@@ -120,7 +120,7 @@ public class AreaChecker {
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
         }
-        else if (!area.getActual()) {
+        else if (area.getArchived()) {
             validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;

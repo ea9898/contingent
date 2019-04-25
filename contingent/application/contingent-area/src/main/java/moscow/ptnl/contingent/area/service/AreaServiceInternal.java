@@ -16,19 +16,19 @@ public interface AreaServiceInternal {
 
     void setProfileMU(Long muId, String muTypeId, List<Long> areaTypesAdd, List<Long> areaTypesDel) throws ContingentException;
 
-    Long createPrimaryArea(long moId, long muId, String name, Integer number, Long areaTypeCode,
+    Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
-    Long createDependentArea(long moId, long muId, String name, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
+    Long createDependentArea(long moId, long muId, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, String description) throws ContingentException;
 
-    void updatePrimaryArea(long areaId, String name, Integer number,
+    void updatePrimaryArea(long areaId, Integer number,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
-    void updateDependentArea(long areaId, Long muId, String name, Integer number, List<Long> primaryAreaTypeCodesAdd,
+    void updateDependentArea(long areaId, Long muId, Integer number, List<Long> primaryAreaTypeCodesAdd,
                              List<Long> primaryAreaTypeCodesDel,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, String description) throws ContingentException;

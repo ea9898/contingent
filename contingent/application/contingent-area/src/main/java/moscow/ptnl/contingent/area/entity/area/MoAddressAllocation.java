@@ -15,11 +15,12 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ADDRESS_ALLOCATION_TO_MO")
 @Cacheable
-public class AddressAllocationToMO implements Serializable {
+public class MoAddressAllocation implements Serializable {
 
     private static final long serialVersionUID = -786212687627911093L;
 
@@ -50,13 +51,17 @@ public class AddressAllocationToMO implements Serializable {
     @Column(name = "ARCHIVE_REASON")
     private String archiveReason;
 
-    @JoinColumn(name = "ADDRESS_FORMING_ELEMENT_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AddressFormingElement addressFormingElement;
+    @Column(name = "CREATE_DATE", nullable = false)
+    private LocalDateTime createDate;
 
-    @JoinColumn(name = "REGISTRY_BUILDING_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private RegistryBuilding registryBuilding;
+    @Column(name = "UPDATE_DATE", nullable = false)
+    private LocalDateTime updateDate;
+
+    @Column(name = "ADDRESS_ID")
+    //Todo исправить после доработки БД
+//    @JoinColumn(name = "ADDRESS_ID")
+//    @ManyToOne(fetch = FetchType.LAZY)
+    private Long addressId;
 
     public Long getId() {
         return id;
@@ -122,19 +127,19 @@ public class AddressAllocationToMO implements Serializable {
         this.archiveReason = archiveReason;
     }
 
-    public AddressFormingElement getAddressFormingElement() {
-        return addressFormingElement;
+    public LocalDateTime getCreateDate() {
+        return createDate;
     }
 
-    public void setAddressFormingElement(AddressFormingElement addressFormingElement) {
-        this.addressFormingElement = addressFormingElement;
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
-    public RegistryBuilding getRegistryBuilding() {
-        return registryBuilding;
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
     }
 
-    public void setRegistryBuilding(RegistryBuilding registryBuilding) {
-        this.registryBuilding = registryBuilding;
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 }

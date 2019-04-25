@@ -9,11 +9,11 @@ public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, mos
     @Override
     public MedicalEmployee entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee entityObject) {
         MedicalEmployee employee = new MedicalEmployee();
-        employee.setId(entityObject.getMedicalEmployeeId());
+        //Todo разобраться где брать ИД
+//        employee.setId(entityObject.getId());
         employee.setMedicalEmployeeJobInfoId(entityObject.getMedicalEmployeeJobInfoId());
         employee.setPositionId(entityObject.getMedicalPositionId());
-        //Todo разобраться где взять СИЛС
-//        employee.setSnils(entityObject.getNumber());
+        employee.setSnils(entityObject.getSnils());
         employee.setIsReplacement(entityObject.getReplacement());
         employee.setStartDate(entityObject.getStartDate());
         employee.setEndDate(entityObject.getEndDate());

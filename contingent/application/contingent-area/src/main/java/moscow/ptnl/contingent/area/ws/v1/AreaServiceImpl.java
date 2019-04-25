@@ -108,7 +108,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws ContingentFault {
         try {
             CreatePrimaryAreaResponse response = new CreatePrimaryAreaResponse();
-            Long id = areaService.createPrimaryArea(body.getMoId(), body.getMuId(), null, body.getNumber(), body.getAreaTypeCode(),
+            Long id = areaService.createPrimaryArea(body.getMoId(), body.getMuId(), body.getNumber(), body.getAreaTypeCode(),
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
                     body.isAutoAssignForAttachment(), body.isAttachByMedicalReason(), body.getDescription());
 
@@ -125,7 +125,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws ContingentFault {
         try {
             CreateDependentAreaResponse response = new CreateDependentAreaResponse();
-            Long id = areaService.createDependentArea(body.getMoId(), body.getMuId(), null, body.getNumber(), body.getAreaTypeCode(),
+            Long id = areaService.createDependentArea(body.getMoId(), body.getMuId(), body.getNumber(), body.getAreaTypeCode(),
                     body.getPrimaryAreaTypeCodes(), body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(),
                     body.getAgeMinW(), body.getAgeMaxW(), body.isAutoAssignForAttachment(), body.getDescription());
 
@@ -141,7 +141,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws ContingentFault {
         try {
-            areaService.updatePrimaryArea(body.getAreaId(), null, body.getNumber(),
+            areaService.updatePrimaryArea(body.getAreaId(), body.getNumber(),
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
                     body.isAutoAssignForAttachment(), body.isAttachByMedicalReason(), body.getDescription());
 
@@ -156,7 +156,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws ContingentFault {
         try {
-            areaService.updateDependentArea(body.getAreaId(), body.getMuId(), null, body.getNumber(),
+            areaService.updateDependentArea(body.getAreaId(), body.getMuId(), body.getNumber(),
                     body.getPrimaryAreaTypesAdd() == null ? Collections.EMPTY_LIST : body.getPrimaryAreaTypesAdd().getPrimaryAreaTypeCodes(),
                     body.getPrimaryAreaTypesDel() == null ? Collections.EMPTY_LIST : body.getPrimaryAreaTypesDel().getPrimaryAreaTypeCodes(),
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),

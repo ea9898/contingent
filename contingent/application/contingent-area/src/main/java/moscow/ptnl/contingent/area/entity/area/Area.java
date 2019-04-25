@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,10 +47,6 @@ public class Area implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaTypes areaType;
 
-    @Size(max = 255)
-    @Column(name = "NAME")
-    private String name;
-
     @Column(name = "NUMBER")
     private Integer number;
 
@@ -57,9 +54,9 @@ public class Area implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean autoAssignForAttach;
 
-    @Column(name = "ACTUAL")
+    @Column(name = "ARCHIVED")
     @Convert(converter = BooleanIntegerConverter.class)
-    private Boolean actual;
+    private Boolean archived;
 
     @Size(max = 370)
     @Column(name = "DESCRIPTION")
@@ -86,6 +83,12 @@ public class Area implements Serializable {
 
 	@Column(name = "AGE_W_MAX")
 	private Integer ageWMax;
+
+    @Column(name = "CREATE_DATE", nullable = false)
+    private LocalDateTime createDate;
+
+    @Column(name = "UPDATE_DATE", nullable = false)
+    private LocalDateTime updateDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaMedicalEmployee> medicalEmployees;
@@ -122,14 +125,6 @@ public class Area implements Serializable {
         this.areaType = areaType;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Integer getNumber() {
         return number;
     }
@@ -146,12 +141,12 @@ public class Area implements Serializable {
         this.autoAssignForAttach = autoAssignForAttach;
     }
 
-    public Boolean getActual() {
-        return actual;
+    public Boolean getArchived() {
+        return archived;
     }
 
-    public void setActual(Boolean actual) {
-        this.actual = actual;
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
     }
 
     public String getDescription() {
@@ -226,5 +221,21 @@ public class Area implements Serializable {
         return medicalEmployees.stream()
                 .filter(e -> e.getEndDate() == null || e.getEndDate().isAfter(LocalDate.now()))
                 .collect(Collectors.toSet());
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 }

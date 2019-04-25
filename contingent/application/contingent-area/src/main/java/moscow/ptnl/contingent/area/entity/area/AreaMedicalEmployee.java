@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "AREA_MEDICAL_EMPLOYEE")
@@ -44,11 +46,21 @@ public class AreaMedicalEmployee implements Serializable {
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
-    @Column(name = "MEDICAL_EMPLOYEE_ID")
-    private Long medicalEmployeeId;
+    @Column(name = "SNILS")
+    private String snils;
 
     @Column(name = "MEDICAL_POSITION_ID")
     private Long medicalPositionId;
+
+    @JoinColumn(name = "POSITION_NOM_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PositionNom positionNom;
+
+    @Column(name = "CREATE_DATE", nullable = false)
+    private LocalDateTime createDate;
+
+    @Column(name = "UPDATE_DATE", nullable = false)
+    private LocalDateTime updateDate;
 
     public String getId() {
         return id;
@@ -98,12 +110,12 @@ public class AreaMedicalEmployee implements Serializable {
         this.endDate = endDate;
     }
 
-    public Long getMedicalEmployeeId() {
-        return medicalEmployeeId;
+    public String getSnils() {
+        return snils;
     }
 
-    public void setMedicalEmployeeId(Long medicalEmployeeId) {
-        this.medicalEmployeeId = medicalEmployeeId;
+    public void setSnils(String snils) {
+        this.snils = snils;
     }
 
     public Long getMedicalPositionId() {
@@ -112,5 +124,29 @@ public class AreaMedicalEmployee implements Serializable {
 
     public void setMedicalPositionId(Long medicalPositionId) {
         this.medicalPositionId = medicalPositionId;
+    }
+
+    public PositionNom getPositionNom() {
+        return positionNom;
+    }
+
+    public void setPositionNom(PositionNom positionNom) {
+        this.positionNom = positionNom;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 }

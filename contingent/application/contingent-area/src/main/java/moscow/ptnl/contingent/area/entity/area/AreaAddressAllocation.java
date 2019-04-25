@@ -14,14 +14,14 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "ADDRESS_ALLOCATION_TO_AREA")
 @Cacheable
-public class AddressAllocationToArea implements Serializable {
+public class AreaAddressAllocation implements Serializable {
 
     private static final long serialVersionUID = 5982770527711526102L;
 
     @Id
     @JoinColumn(name = "DISTRIBUTION_TO_MO_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-	private AddressAllocationToMO distributionToMo;
+	private MoAddressAllocation distributionToMo;
 
     @Id
     @JoinColumn(name = "AREA_ID")
@@ -34,11 +34,17 @@ public class AddressAllocationToArea implements Serializable {
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
-    public AddressAllocationToMO getDistributionToMo() {
+    @Column(name = "ADDRESS_ID")
+    //Todo исправить после доработки БД
+//    @JoinColumn(name = "ADDRESS_ID")
+//    @ManyToOne(fetch = FetchType.LAZY)
+    private Long addressId;
+
+    public MoAddressAllocation getDistributionToMo() {
         return distributionToMo;
     }
 
-    public void setDistributionToMo(AddressAllocationToMO distributionToMo) {
+    public void setDistributionToMo(MoAddressAllocation distributionToMo) {
         this.distributionToMo = distributionToMo;
     }
 

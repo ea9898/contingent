@@ -145,7 +145,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public Long createPrimaryArea(long moId, long muId, String name, Integer number, Long areaTypeCode,
+    public Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
@@ -202,10 +202,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Area area = new Area();
         area.setMoId(moId);
         area.setMuId(muId);
-        area.setName(name);
         area.setNumber(number);
         area.setAreaType(muProfile.getAreaType());
-        area.setActual(true);
+        area.setArchived(false);
         area.setAgeMax(ageMax);
         area.setAgeMin(ageMin);
         area.setAgeMMax(ageMaxM);
@@ -224,7 +223,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public Long createDependentArea(long moId, long muId, String name, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
+    public Long createDependentArea(long moId, long muId, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
@@ -255,10 +254,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Area area = new Area();
         area.setMoId(moId);
         area.setMuId(muId);
-        area.setName(name);
         area.setNumber(number);
         area.setAreaType(areaType);
-        area.setActual(true);
+        area.setArchived(false);
         area.setAgeMax(ageMax);
         area.setAgeMin(ageMin);
         area.setAgeMMax(ageMaxM);
@@ -281,7 +279,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public void updatePrimaryArea(long areaId, String name, Integer number,
+    public void updatePrimaryArea(long areaId, Integer number,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
@@ -322,7 +320,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        area.setName(name == null ? area.getName() : name);
         area.setNumber(number == null ? area.getNumber() : number);
         area.setAgeMax(ageMax == null ? area.getAgeMax() : ageMax);
         area.setAgeMin(ageMin == null ? area.getAgeMin() : ageMin);
@@ -340,7 +337,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public void updateDependentArea(long areaId, Long muId, String name, Integer number, List<Long> primaryAreaTypeCodesAdd,
+    public void updateDependentArea(long areaId, Long muId, Integer number, List<Long> primaryAreaTypeCodesAdd,
                                     List<Long> primaryAreaTypeCodesDel,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                     boolean autoAssignForAttachment, String description) throws ContingentException {
@@ -381,7 +378,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         //Обновление участка
         area.setMuId(muIdFinal);
-        area.setName(name == null ? area.getName() : name);
         area.setNumber(number == null ? area.getNumber() : number);
         area.setAgeMax(ageMax == null ? area.getAgeMax() : ageMax);
         area.setAgeMin(ageMin == null ? area.getAgeMin() : ageMin);

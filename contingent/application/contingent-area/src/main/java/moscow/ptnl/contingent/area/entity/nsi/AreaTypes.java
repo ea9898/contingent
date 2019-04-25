@@ -60,9 +60,9 @@ public class AreaTypes implements Serializable {
 	@Column(name = "AGE_W_MAX")
 	private Integer ageWMax;
 
-	@Column(name = "ACTUAL")
+    @Column(name = "ARCHIVED")
     @Convert(converter = BooleanIntegerConverter.class)
-	private Boolean actual;
+    private Boolean archived;
 
     @JoinColumn(name = "SPECIALIZATION_ID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -159,12 +159,12 @@ public class AreaTypes implements Serializable {
         this.ageWMax = ageWMax;
     }
 
-    public Boolean getActual() {
-        return actual;
+    public Boolean getArchived() {
+        return archived;
     }
 
-    public void setActual(Boolean actual) {
-        this.actual = actual;
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
     }
 
     public Specialization getSpecialization() {

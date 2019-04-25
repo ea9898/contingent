@@ -110,7 +110,6 @@ public class EsuServiceImpl implements EsuService {
         areaEvent.setMoId(area.getMoId());
         areaEvent.setMuId(area.getMuId());
         areaEvent.setAreaTypeCode(area.getAreaType() == null ? null : area.getAreaType().getCode());
-        areaEvent.setAreaName(area.getName());
         areaEvent.setAreaNumber(area.getNumber());
         areaEvent.setKindAreaTypeCode(area.getAreaType() == null || area.getAreaType().getKindAreaType() == null
                 ? null : area.getAreaType().getKindAreaType().getCode());
