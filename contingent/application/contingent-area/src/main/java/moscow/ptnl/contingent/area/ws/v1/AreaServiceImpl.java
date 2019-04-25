@@ -1,10 +1,12 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder;
+import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
+import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.SoapCustomMapper;
 import moscow.ptnl.contingent.area.transform.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
@@ -25,6 +27,8 @@ import ru.gov.emias2.contingent.v1.area.CreateOrderRequest;
 import ru.gov.emias2.contingent.v1.area.CreateOrderResponse;
 import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaRequest;
 import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaResponse;
+import ru.gov.emias2.contingent.v1.area.GetAreaByIdRequest;
+import ru.gov.emias2.contingent.v1.area.GetAreaByIdResponse;
 import ru.gov.emias2.contingent.v1.area.GetProfileMURequest;
 import ru.gov.emias2.contingent.v1.area.GetProfileMUResponse;
 import ru.gov.emias2.contingent.v1.area.SearchOrderRequest;
@@ -65,6 +69,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AddressAllocationOrderMapper addressAllocationOrderMapper;
+
+    @Autowired
+    private AreaMapper areaMapper;
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -200,6 +207,21 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             SearchOrderResponse response = new SearchOrderResponse();
             response.setPagingResponse(soapCustomMapper.mapPageToPagingResult(results));
             response.getResults().addAll(results.get().map(addressAllocationOrderMapper::entityToDtoTransform).collect(Collectors.toList()));
+
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws ContingentFault {
+        try {
+            Area area = areaService.getAreaById(body.getAreaId());
+            GetAreaByIdResponse response = new GetAreaByIdResponse();
+            response.setResult(areaMapper.entityToDtoTransform(area));
 
             return response;
         }

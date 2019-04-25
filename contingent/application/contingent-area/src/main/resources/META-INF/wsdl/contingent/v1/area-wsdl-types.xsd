@@ -233,4 +233,21 @@
         </xsd:complexType>
     </xsd:element>
 
+    <xsd:element name="getAreaByIdRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="areaId" type="xsd:long" />
+                <xsd:element name="options" type="tns:Options" minOccurs="0" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="getAreaByIdResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="result" type="area:Area" minOccurs="0" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
 </xsd:schema>

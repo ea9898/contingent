@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -489,5 +490,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         return addressAllocationOrderRepository.findAddressAllocationOrdersOverlapped(id, number, date, name, paging);
+    }
+
+    @Override
+    public Area getAreaById(Long id) throws ContingentException {
+        Optional<Area> area = areaCRUDRepository.findById(id);
+
+        return area.orElseThrow(() -> new ContingentException(
+                new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", id))));
     }
 }

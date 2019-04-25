@@ -92,6 +92,14 @@
         <part name="body" element="tns:searchOrderResponse"/>
     </message>
 
+    <message name="getAreaByIdInput">
+        <part name="body" element="tns:getAreaByIdRequest"/>
+    </message>
+
+    <message name="getAreaByIdOutput">
+        <part name="body" element="tns:getAreaByIdResponse"/>
+    </message>
+
     <portType name="AreaPT">
         <operation name="getProfileMU">
             <documentation>
@@ -163,6 +171,14 @@
             </documentation>
             <input message="tns:searchOrderInput"/>
             <output message="tns:searchOrderOutput"/>
+            <fault message="cmnwsdl:ContingentFault" name="fault" />
+        </operation>
+        <operation name="getAreaById">
+            <documentation>
+                Получение подробной информации об участке (К_УУ_11)
+            </documentation>
+            <input message="tns:getAreaByIdInput"/>
+            <output message="tns:getAreaByIdOutput"/>
             <fault message="cmnwsdl:ContingentFault" name="fault" />
         </operation>
 
@@ -288,6 +304,19 @@
 
         <operation name="searchOrder">
             <soap12:operation soapAction="searchOrder"/>
+            <input>
+                <soap12:body use="literal"/>
+            </input>
+            <output>
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="ContingentFault" use="literal" />
+            </fault>
+        </operation>
+
+        <operation name="getAreaById">
+            <soap12:operation soapAction="getAreaById"/>
             <input>
                 <soap12:body use="literal"/>
             </input>
