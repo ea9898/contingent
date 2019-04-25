@@ -1347,4 +1347,273 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="EMIASUPK-7578-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESS_ALLOCATION_TO_AREA"/>
+        </preConditions>
+        <comment>Переименование таблицы ADDRESS_ALLOCATION_TO_AREA</comment>
+        <renameTable newTableName="AREA_ADDRESS_ALLOCATION"
+                     oldTableName="ADDRESS_ALLOCATION_TO_AREA" />
+        <rollback>
+            <renameTable newTableName="ADDRESS_ALLOCATION_TO_AREA"
+                         oldTableName="AREA_ADDRESS_ALLOCATION" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESS_ALLOCATION_TO_MO"/>
+        </preConditions>
+        <comment>Переименование таблицы ADDRESS_ALLOCATION_TO_MO</comment>
+        <renameTable newTableName="MO_ADDRESS_ALLOCATION"
+                     oldTableName="ADDRESS_ALLOCATION_TO_MO" />
+        <rollback>
+            <renameTable newTableName="ADDRESS_ALLOCATION_TO_MO"
+                         oldTableName="MO_ADDRESS_ALLOCATION" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREAS" columnName="NAME" />
+        </preConditions>
+        <comment>Удаление колонки NAME таблицы AREAS</comment>
+        <dropColumn tableName="AREAS" columnName="NAME" />
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREAS" columnName="ACTUAL"/>
+        </preConditions>
+        <comment>Переименование столбца ACTUAL таблицы AREAS</comment>
+        <renameColumn tableName="AREAS"
+                      columnDataType="NUMBER(1)"
+                      newColumnName="ARCHIVED"
+                      oldColumnName="ACTUAL" />
+        <rollback>
+            <renameColumn tableName="AREAS"
+                          columnDataType="NUMBER(1)"
+                          newColumnName="ACTUAL"
+                          oldColumnName="ARCHIVED" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPES" columnName="ACTUAL"/>
+        </preConditions>
+        <comment>Переименование столбца ACTUAL таблицы AREA_TYPES</comment>
+        <renameColumn tableName="AREA_TYPES"
+                      columnDataType="NUMBER(1)"
+                      newColumnName="ARCHIVED"
+                      oldColumnName="ACTUAL" />
+        <rollback>
+            <renameColumn tableName="AREA_TYPES"
+                          columnDataType="NUMBER(1)"
+                          newColumnName="ACTUAL"
+                          oldColumnName="ARCHIVED" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-6" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREAS" />
+        </preConditions>
+        <comment>Добавление колонки CREATE_DATE таблицы AREAS</comment>
+        <addColumn tableName="AREAS">
+            <column name="CREATE_DATE" type="TIMESTAMP(6)" defaultValue="NOW()">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREAS" columnName="CREATE_DATE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-7" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREAS" />
+        </preConditions>
+        <comment>Добавление колонки UPDATE_DATE таблицы AREAS</comment>
+        <addColumn tableName="AREAS">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValue="NOW()">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREAS" columnName="UPDATE_DATE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-8" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEE" />
+        </preConditions>
+        <comment>Добавление колонки CREATE_DATE таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <addColumn tableName="AREA_MEDICAL_EMPLOYEE">
+            <column name="CREATE_DATE" type="TIMESTAMP(6)" defaultValue="NOW()">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_MEDICAL_EMPLOYEE" columnName="CREATE_DATE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-9" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEE" />
+        </preConditions>
+        <comment>Добавление колонки UPDATE_DATE таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <addColumn tableName="AREA_MEDICAL_EMPLOYEE">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValue="NOW()">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_MEDICAL_EMPLOYEE" columnName="UPDATE_DATE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-10" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="MO_ADDRESS_ALLOCATION" />
+        </preConditions>
+        <comment>Добавление колонки CREATE_DATE таблицы MO_ADDRESS_ALLOCATION</comment>
+        <addColumn tableName="MO_ADDRESS_ALLOCATION">
+            <column name="CREATE_DATE" type="TIMESTAMP(6)" defaultValue="NOW()">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="MO_ADDRESS_ALLOCATION" columnName="CREATE_DATE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-11" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="MO_ADDRESS_ALLOCATION" />
+        </preConditions>
+        <comment>Добавление колонки UPDATE_DATE таблицы MO_ADDRESS_ALLOCATION</comment>
+        <addColumn tableName="MO_ADDRESS_ALLOCATION">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValue="NOW()">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="MO_ADDRESS_ALLOCATION" columnName="UPDATE_DATE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-12" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MO_ADDRESS_ALLOCATION" columnName="ADDRESS_FORMING_ELEMENT_ID" />
+        </preConditions>
+        <comment>Удаление колонки ADDRESS_FORMING_ELEMENT_ID таблицы MO_ADDRESS_ALLOCATION</comment>
+        <dropColumn tableName="MO_ADDRESS_ALLOCATION" columnName="ADDRESS_FORMING_ELEMENT_ID" />
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-13" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MO_ADDRESS_ALLOCATION" columnName="REGISTRY_BUILDING_ID" />
+        </preConditions>
+        <comment>Удаление колонки REGISTRY_BUILDING_ID таблицы MO_ADDRESS_ALLOCATION</comment>
+        <dropColumn tableName="MO_ADDRESS_ALLOCATION" columnName="REGISTRY_BUILDING_ID" />
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-14" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="MO_ADDRESS_ALLOCATION" columnName="ADDRESS_ID"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки ADDRESS_ID таблицы MO_ADDRESS_ALLOCATION</comment>
+        <addColumn tableName="MO_ADDRESS_ALLOCATION">
+            <column name="ADDRESS_ID" type="NUMBER(20)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="MO_ADDRESS_ALLOCATION" columnName="ADDRESS_ID" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-15" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_ADDRESS_ALLOCATION" columnName="ADDRESS_ID"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки ADDRESS_ID таблицы AREA_ADDRESS_ALLOCATION</comment>
+        <addColumn tableName="AREA_ADDRESS_ALLOCATION">
+            <column name="ADDRESS_ID" type="NUMBER(20)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_ADDRESS_ALLOCATION" columnName="ADDRESS_ID" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-16" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="MEDICAL_EMPLOYEE_ID" />
+        </preConditions>
+        <comment>Удаление колонки MEDICAL_EMPLOYEE_ID таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <dropColumn tableName="AREA_MEDICAL_EMPLOYEE" columnName="MEDICAL_EMPLOYEE_ID" />
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-17" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="SNILS"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки SNILS таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <addColumn tableName="AREA_MEDICAL_EMPLOYEE">
+            <column name="SNILS" type="VARCHAR2(50)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_MEDICAL_EMPLOYEE" columnName="SNILS" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-18" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="POSITION_NOM_ID"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки POSITION_NOM_ID таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <addColumn tableName="AREA_MEDICAL_EMPLOYEE">
+            <column name="POSITION_NOM_ID" type="NUMBER(20)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_MEDICAL_EMPLOYEE" columnName="POSITION_NOM_ID" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-18-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_MEDICAL_EMPLOYEE_POS_NOM"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки POSITION_NOM_ID таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <createIndex indexName="IXFK_AREA_MEDICAL_EMPLOYEE_POS_NOM"
+                     tableName="AREA_MEDICAL_EMPLOYEE"
+                     unique="false">
+            <column name="POSITION_NOM_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-18-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="POSITION_NOM_ID" />
+            <columnExists tableName="POSITION_NOM" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_MEDICAL_EMPLOYEE_POS_NOM</comment>
+        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_ID"
+                                 baseTableName="AREA_MEDICAL_EMPLOYEE"
+                                 constraintName="FK_AREA_MEDICAL_EMPLOYEE_POS_NOM"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="POSITION_NOM"/>
+    </changeSet>
+
 </databaseChangeLog>
