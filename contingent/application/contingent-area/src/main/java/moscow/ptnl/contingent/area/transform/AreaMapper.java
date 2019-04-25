@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
+import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.gov.emias2.contingent.v1.area.types.Area;
@@ -41,8 +42,14 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.e
                     .collect(Collectors.toList()));
             area.setMedicalEmployees(medicalEmployees);
         }
-//        area.setPrimaryAreaTypeCodes();
-
+        if (!entityObject.getPrimaryAreaTypes().isEmpty()) {
+            Area.PrimaryAreaTypeCodes areaTypeCodes = new Area.PrimaryAreaTypeCodes();
+            areaTypeCodes.getAreaTypes().addAll(entityObject.getPrimaryAreaTypes().stream()
+                    .map(AreaToAreaType::getAreaType)
+                    .map(areaTypeShortMapper::entityToDtoTransform)
+                    .collect(Collectors.toList()));
+            area.setPrimaryAreaTypeCodes(areaTypeCodes);
+        }
         return area;
     }
 

@@ -93,6 +93,9 @@ public class Area implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaMedicalEmployee> medicalEmployees;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
+    private Set<AreaToAreaType> primaryAreaTypes;
+
     public Long getId() {
         return id;
     }
@@ -237,5 +240,9 @@ public class Area implements Serializable {
 
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Set<AreaToAreaType> getPrimaryAreaTypes() {
+        return primaryAreaTypes;
     }
 }

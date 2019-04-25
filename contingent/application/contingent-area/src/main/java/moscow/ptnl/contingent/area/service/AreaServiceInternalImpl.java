@@ -32,7 +32,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -214,6 +213,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAutoAssignForAttach(autoAssignForAttachment);
         area.setAttachByMedicalReason(attachByMedicalReason);
         area.setDescription(description);
+        area.setCreateDate(LocalDateTime.now());
+        area.setUpdateDate(area.getCreateDate());
         areaCRUDRepository.save(area);
 
         resetAutoAssignForAttachment(area);
@@ -265,6 +266,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAgeWMin(ageMinW);
         area.setAutoAssignForAttach(autoAssignForAttachment);
         area.setDescription(description);
+        area.setCreateDate(LocalDateTime.now());
+        area.setUpdateDate(area.getCreateDate());
         areaCRUDRepository.save(area);
         //Сохранение привязки к первичным типам участка
         primaryAreaTypeCodes.forEach(c -> {
@@ -330,6 +333,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAutoAssignForAttach(autoAssignForAttachment);
         area.setAttachByMedicalReason(attachByMedicalReason == null ? area.getAttachByMedicalReason() : attachByMedicalReason);
         area.setDescription(description == null ? area.getDescription() : description);
+        area.setUpdateDate(LocalDateTime.now());
 
         resetAutoAssignForAttachment(area);
 
@@ -387,6 +391,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
         area.setAutoAssignForAttach(autoAssignForAttachment);
         area.setDescription(description == null ? area.getDescription() : description);
+        area.setUpdateDate(LocalDateTime.now());
 
         resetAutoAssignForAttachment(area);
         //Обновление привязки к первичным типам участка
