@@ -1616,4 +1616,216 @@
                                  referencedTableName="POSITION_NOM"/>
     </changeSet>
 
+    <changeSet id="EMIASUPK-7578-19" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы ADDRESS</comment>
+        <createTable tableName="ADDRESS"
+                     remarks="Адрес">
+            <column name="ID" type="NUMBER(20)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TYPE_ADDRESS" type="VARCHAR2(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="GLOBAL_ID" type="NUMBER(20)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ADDRESS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-20" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="TYPE"/>
+            <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="NAME"/>
+        </preConditions>
+        <comment>Удаление таблицы ADDRESS_FORMING_ELEMENT</comment>
+        <dropTable tableName="ADDRESS_FORMING_ELEMENT" />
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-21" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы ADDRESS_FORMING_ELEMENT</comment>
+        <createTable tableName="ADDRESS_FORMING_ELEMENT"
+                     remarks="Адресообразующий элемент">
+            <column name="GLOBAL_ID" type="NUMBER(20)" remarks="Уникальный идентификатор объекта">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="REGION_TE_CODE" type="VARCHAR2(4)" remarks="Код округа ОМК ТЕ"/>
+            <column name="AREACODE_OMK_TE" type="VARCHAR2(4000)" remarks="Код района ОМК ТЕ"/>
+            <column name="AREACODE" type="VARCHAR2(3)" remarks="Код района"/>
+            <column name="CITYCODE" type="VARCHAR2(3)" remarks="Код города"/>
+            <column name="PLACECODE" type="VARCHAR2(3)" remarks="Код населенного пункта"/>
+            <column name="PLANCODE" type="VARCHAR2(4)" remarks="Код элемента планировочной структуры"/>
+            <column name="STREETCODE" type="VARCHAR2(4)" remarks="Код улицы"/>
+            <column name="AOLEVEL" type="VARCHAR2(2)" remarks="Уровень адресного объекта"/>
+            <column name="ADDRESS" type="VARCHAR2(4000)" remarks="Полное наименование адресообразующего элемента">
+                <constraints nullable="false" />
+            </column>
+            <column name="REGION_TE_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование округа"/>
+            <column name="AREA_TE_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование муниципального образования"/>
+            <column name="AREA_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование района"/>
+            <column name="CITY_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование города"/>
+            <column name="PLACE_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование населѐнного пункта"/>
+            <column name="PLAN_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование элемента планировочной структуры"/>
+            <column name="STREET_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование улицы"/>
+            <column name="STREET_OMK_UM" type="VARCHAR2(10)" remarks="Код ОМК УМ улицы"/>
+            <column name="STREET_ID" type="NUMBER(20)" remarks="global_id ЕМИАС.НСИ улицы"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ADDRESS_FORMING_ELEMENT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-22" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="REGISTRY_BUILDING" columnName="ADDRESS_ELEMENT"/>
+        </preConditions>
+        <comment>Удаление таблицы REGISTRY_BUILDING</comment>
+        <dropTable tableName="REGISTRY_BUILDING" />
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-23" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="REGISTRY_BUILDING"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы REGISTRY_BUILDING</comment>
+        <createTable tableName="REGISTRY_BUILDING"
+                     remarks="Сведения по отдельным зданиям, сооружениям">
+            <column name="GLOBAL_ID" type="NUMBER(20)" remarks="Уникальный идентификатор объекта">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="ADDR_ID" type="NUMBER(20)" remarks="Уникальный идентификатор объекта реестра адресообразующих элементов">
+                <constraints nullable="false" />
+            </column>
+            <column name="REGION_TE_CODE" type="VARCHAR2(32)" remarks="Код округа ОМК ТЕ"/>
+            <column name="AREACODE_OMK_TE" type="VARCHAR2(32)" remarks="Код района ОМК ТЕ"/>
+            <column name="AREACODE" type="VARCHAR2(3)" remarks="Код района"/>
+            <column name="CITYCODE" type="VARCHAR2(3)" remarks="Код города"/>
+            <column name="PLACECODE" type="VARCHAR2(3)" remarks="Код населенного пункта"/>
+            <column name="PLANCODE" type="VARCHAR2(4)" remarks="Код элемента планировочной структуры"/>
+            <column name="STREETCODE" type="VARCHAR2(4)" remarks="Код улицы"/>
+            <column name="L1_TYPE" type="VARCHAR2(256)" remarks="Тип номера дома, владения"/>
+            <column name="L1_VALUE" type="VARCHAR2(256)" remarks="Номер дома, владения"/>
+            <column name="L2_TYPE" type="VARCHAR2(256)" remarks="Тип номера корпуса"/>
+            <column name="L2_VALUE" type="VARCHAR2(256)" remarks="Номер корпуса"/>
+            <column name="L3_TYPE" type="VARCHAR2(256)" remarks="Тип номера строения, сооружения"/>
+            <column name="L3_VALUE" type="VARCHAR2(256)" remarks="Номер строения, сооружения"/>
+            <column name="ADDRESS" type="VARCHAR2(4000)" remarks="Адрес">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ADDRESS_FORMING_ELEMENT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-26" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_REGISTRY_BUILDING_ADDR_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки ADDR_ID таблицы REGISTRY_BUILDING</comment>
+        <createIndex indexName="IDX_REGISTRY_BUILDING_ADDR_ID"
+                     tableName="REGISTRY_BUILDING"
+                     unique="false">
+            <column name="ADDR_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-27-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_ADDRESS_ALLOCATION" />
+        </preConditions>
+        <comment>Добавление колонки ADDRESS_FORMING_ELEMENT_ID таблицы AREA_ADDRESS_ALLOCATION</comment>
+        <addColumn tableName="AREA_ADDRESS_ALLOCATION">
+            <column name="ADDRESS_FORMING_ELEMENT_ID" type="NUMBER(20)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_ADDRESS_ALLOCATION" columnName="ADDRESS_FORMING_ELEMENT_ID" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-27-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_ADDRESS_ALLOCATION" />
+        </preConditions>
+        <comment>Добавление колонки REGISTRY_BUILDING_ID таблицы AREA_ADDRESS_ALLOCATION</comment>
+        <addColumn tableName="AREA_ADDRESS_ALLOCATION">
+            <column name="REGISTRY_BUILDING_ID" type="NUMBER(20)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_ADDRESS_ALLOCATION" columnName="REGISTRY_BUILDING_ID" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-27-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_AREA_ADDRESS_AL_A_F_E_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки ADDRESS_FORMING_ELEMENT_ID таблицы AREA_ADDRESS_ALLOCATION</comment>
+        <createIndex indexName="IDX_AREA_ADDRESS_AL_A_F_E_ID"
+                     tableName="AREA_ADDRESS_ALLOCATION"
+                     unique="false">
+            <column name="ADDRESS_FORMING_ELEMENT_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-27-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_AREA_ADDRESS_AL_REG_B_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки REGISTRY_BUILDING_ID таблицы AREA_ADDRESS_ALLOCATION</comment>
+        <createIndex indexName="IDX_AREA_ADDRESS_AL_REG_B_ID"
+                     tableName="AREA_ADDRESS_ALLOCATION"
+                     unique="false">
+            <column name="REGISTRY_BUILDING_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-27-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_ADDRESS_ALLOCATION" columnName="ADDRESS_FORMING_ELEMENT_ID" />
+            <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="GLOBAL_ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_ADDRESS_ALLOC_A_F_E_ID</comment>
+        <addForeignKeyConstraint baseColumnNames="ADDRESS_FORMING_ELEMENT_ID"
+                                 baseTableName="AREA_ADDRESS_ALLOCATION"
+                                 constraintName="FK_AREA_ADDRESS_ALLOC_A_F_E_ID"
+                                 referencedColumnNames="GLOBAL_ID"
+                                 referencedTableName="ADDRESS_FORMING_ELEMENT"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-27-6" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_ADDRESS_ALLOCATION" columnName="REGISTRY_BUILDING_ID" />
+            <columnExists tableName="REGISTRY_BUILDING" columnName="GLOBAL_ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_ADDRESS_ALLOC_REG_B_ID</comment>
+        <addForeignKeyConstraint baseColumnNames="REGISTRY_BUILDING_ID"
+                                 baseTableName="AREA_ADDRESS_ALLOCATION"
+                                 constraintName="FK_AREA_ADDRESS_ALLOC_REG_B_ID"
+                                 referencedColumnNames="GLOBAL_ID"
+                                 referencedTableName="REGISTRY_BUILDING"/>
+    </changeSet>
+
 </databaseChangeLog>
