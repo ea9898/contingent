@@ -1828,4 +1828,100 @@
                                  referencedTableName="REGISTRY_BUILDING"/>
     </changeSet>
 
+    <changeSet id="EMIASUPK-7578-28" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="PR_AREA_TYPE_ATTRS" />
+        </preConditions>
+        <comment>Добавление колонки ATTACHMENT_NORM таблицы PR_AREA_TYPE_ATTRS</comment>
+        <addColumn tableName="PR_AREA_TYPE_ATTRS">
+            <column name="ATTACHMENT_NORM" type="NUMBER(20)" remarks="Норма прикрепления" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="PR_AREA_TYPE_ATTRS" columnName="ATTACHMENT_NORM" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-29-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="DEPENDENT_AREA_TYPE_ID"/>
+        </preConditions>
+        <comment>Удаление таблицы AREA_TYPE_RELATIONS</comment>
+        <dropTable tableName="AREA_TYPE_RELATIONS" />
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-29-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPE_RELATIONS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPE_RELATIONS</comment>
+        <createTable tableName="AREA_TYPE_RELATIONS"
+                     remarks="Связь зависимых и первичных">
+            <column name="DEPENDENT_MU_PROFILE_ID" type="NUMBER(20)">
+                <constraints nullable="false" />
+            </column>
+            <column name="PRIMARY_MU_PROFILE_ID" type="NUMBER(20)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPE_RELATIONS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-29-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_RELA_MU_DEP"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки DEPENDENT_MU_PROFILE_ID таблицы AREA_TYPE_RELATIONS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_RELA_MU_DEP"
+                     tableName="AREA_TYPE_RELATIONS"
+                     unique="false">
+            <column name="DEPENDENT_MU_PROFILE_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-29-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_RELA_MU_PRIM"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки PRIMARY_MU_PROFILE_ID таблицы AREA_TYPE_RELATIONS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_RELA_MU_PRIM"
+                     tableName="AREA_TYPE_RELATIONS"
+                     unique="false">
+            <column name="PRIMARY_MU_PROFILE_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-29-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="DEPENDENT_MU_PROFILE_ID" />
+            <columnExists tableName="MU_PROFILES" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_REL_MU_DEP</comment>
+        <addForeignKeyConstraint baseColumnNames="DEPENDENT_MU_PROFILE_ID"
+                                 baseTableName="AREA_TYPE_RELATIONS"
+                                 constraintName="FK_AREA_TYPE_REL_MU_DEP"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="MU_PROFILES"/>
+    </changeSet>
+
+    <changeSet id="EMIASUPK-7578-29-6" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="PRIMARY_MU_PROFILE_ID" />
+            <columnExists tableName="MU_PROFILES" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_REL_MU_PRIM</comment>
+        <addForeignKeyConstraint baseColumnNames="PRIMARY_MU_PROFILE_ID"
+                                 baseTableName="AREA_TYPE_RELATIONS"
+                                 constraintName="FK_AREA_TYPE_REL_MU_PRIM"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="MU_PROFILES"/>
+    </changeSet>
+
 </databaseChangeLog>
