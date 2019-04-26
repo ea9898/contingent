@@ -1619,7 +1619,7 @@
     <changeSet id="EMIASUPK-7578-19" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
+                <tableExists tableName="ADDRESS"/>
             </not>
         </preConditions>
         <comment>Создание таблицы ADDRESS</comment>

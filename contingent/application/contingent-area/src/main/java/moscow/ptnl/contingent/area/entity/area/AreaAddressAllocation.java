@@ -1,5 +1,9 @@
 package moscow.ptnl.contingent.area.entity.area;
 
+import moscow.ptnl.contingent.area.entity.nsi.Address;
+import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,11 +38,17 @@ public class AreaAddressAllocation implements Serializable {
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
-    @Column(name = "ADDRESS_ID")
-    //Todo исправить после доработки БД
-//    @JoinColumn(name = "ADDRESS_ID")
-//    @ManyToOne(fetch = FetchType.LAZY)
-    private Long addressId;
+    @JoinColumn(name = "ADDRESS_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Address address;
+
+    @JoinColumn(name = "ADDRESS_FORMING_ELEMENT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AddressFormingElement addressFormingElement;
+
+    @JoinColumn(name = "REGISTRY_BUILDING_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private RegistryBuilding registryBuilding;
 
     public MoAddressAllocation getDistributionToMo() {
         return distributionToMo;
@@ -70,5 +80,29 @@ public class AreaAddressAllocation implements Serializable {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public AddressFormingElement getAddressFormingElement() {
+        return addressFormingElement;
+    }
+
+    public void setAddressFormingElement(AddressFormingElement addressFormingElement) {
+        this.addressFormingElement = addressFormingElement;
+    }
+
+    public RegistryBuilding getRegistryBuilding() {
+        return registryBuilding;
+    }
+
+    public void setRegistryBuilding(RegistryBuilding registryBuilding) {
+        this.registryBuilding = registryBuilding;
     }
 }

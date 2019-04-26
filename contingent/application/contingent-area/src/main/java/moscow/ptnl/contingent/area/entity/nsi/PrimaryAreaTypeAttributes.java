@@ -49,6 +49,9 @@ public class PrimaryAreaTypeAttributes implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean mpguAvailable;
 
+    @Column(name = "ATTACHMENT_NORM")
+    private Long attachmentNorm;
+
     @JoinColumn(name = "AREA_COUNT_LIMIT_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaCountLimit areaCountLimit;
@@ -107,6 +110,14 @@ public class PrimaryAreaTypeAttributes implements Serializable {
 
     public void setMpguAvailable(Boolean mpguAvailable) {
         this.mpguAvailable = mpguAvailable;
+    }
+
+    public Long getAttachmentNorm() {
+        return attachmentNorm;
+    }
+
+    public void setAttachmentNorm(Long attachmentNorm) {
+        this.attachmentNorm = attachmentNorm;
     }
 
     public AreaCountLimit getAreaCountLimit() {

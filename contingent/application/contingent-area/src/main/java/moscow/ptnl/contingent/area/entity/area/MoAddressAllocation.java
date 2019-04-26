@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.entity.area;
 
+import moscow.ptnl.contingent.area.entity.nsi.Address;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding;
@@ -57,11 +58,9 @@ public class MoAddressAllocation implements Serializable {
     @Column(name = "UPDATE_DATE", nullable = false)
     private LocalDateTime updateDate;
 
-    @Column(name = "ADDRESS_ID")
-    //Todo исправить после доработки БД
-//    @JoinColumn(name = "ADDRESS_ID")
-//    @ManyToOne(fetch = FetchType.LAZY)
-    private Long addressId;
+    @JoinColumn(name = "ADDRESS_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Address address;
 
     public Long getId() {
         return id;
@@ -141,5 +140,13 @@ public class MoAddressAllocation implements Serializable {
 
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
