@@ -63,14 +63,16 @@
                             <exportAntProperties>true</exportAntProperties>
                             <target>
                                 <exec dir="${basedir}" executable="git"
-                                        outputProperty="scmCurrentBranch">
-                                        <arg value="identify" />
-                                        <arg value="-b" />
+                                      outputProperty="scmCurrentBranch">
+                                    <arg value="rev-parse" />
+                                    <arg value="--abbrev-ref" />
+                                    <arg value="HEAD" />
                                 </exec>
                                 <exec dir="${basedir}" executable="git"
-                                        outputProperty="scmUrl">
-                                        <arg value="paths" />
-                                        <arg value="default" />
+                                      outputProperty="scmUrl">
+                                    <arg value="config" />
+                                    <arg value="--get" />
+                                    <arg value="remote.origin.url" />
                                 </exec>
                             </target>
                         </configuration>
