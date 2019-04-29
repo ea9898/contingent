@@ -7,7 +7,7 @@ import java.util.List;
 
 public class AreaUpdateEvent extends AreaEvent {
 
-    public AreaUpdateEvent(Area area, List<AreaToAreaType> primaryAreaTypes) {
-        super(OperationType.UPDATE, area, primaryAreaTypes);
+    public AreaUpdateEvent(Area area, Area oldArea, List<AreaToAreaType> addPrimaryAreaTypes, List<AreaToAreaType> delPrimaryAreaTypes) {
+        super(OperationType.UPDATE, area, oldArea, addPrimaryAreaTypes, delPrimaryAreaTypes);
     }
 }

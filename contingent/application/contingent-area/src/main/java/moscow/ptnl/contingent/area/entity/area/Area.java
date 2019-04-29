@@ -96,6 +96,28 @@ public class Area implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaToAreaType> primaryAreaTypes;
 
+    public Area() {
+    }
+
+    public Area(Area copy) {
+        setMoId(copy.getMoId());
+        setMuId(copy.getMuId());
+        setAreaType(copy.getAreaType());
+        setArchived(copy.getArchived());
+        setCreateDate(copy.getCreateDate());
+        setUpdateDate(copy.getUpdateDate());
+        setAutoAssignForAttach(copy.getAutoAssignForAttach());
+        setDescription(copy.getDescription());
+        setAttachByMedicalReason(copy.getAttachByMedicalReason());
+        setAgeMin(copy.getAgeMin());
+        setAgeMax(copy.getAgeMax());
+        setAgeMMin(copy.getAgeMMin());
+        setAgeMMax(copy.getAgeMMax());
+        setAgeWMin(copy.getAgeWMin());
+        setAgeWMax(copy.getAgeWMax());
+        setNumber(copy.getNumber());
+    }
+
     public Long getId() {
         return id;
     }

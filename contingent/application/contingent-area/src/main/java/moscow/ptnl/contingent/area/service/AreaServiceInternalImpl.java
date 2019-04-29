@@ -287,6 +287,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
         Area area = areaChecker.checkAndGetArea(areaId, validation);
+        Area oldArea = new Area(area);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -337,7 +338,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         resetAutoAssignForAttachment(area);
 
-        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, null));
+        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, null, null));
     }
 
     @Override
@@ -347,6 +348,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                                     boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
         Area area = areaChecker.checkAndGetArea(areaId, validation);
+        Area oldArea = new Area(area);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -397,6 +399,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         //Обновление привязки к первичным типам участка
         List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId());
 
+        List<AreaToAreaType> areaToAreaTypesToAdd = new ArrayList<>();
+
         primaryAreaTypeCodesAdd.stream()
                 .filter(c -> areaToAreaTypes.stream().noneMatch(a -> Objects.equals(c, a.getAreaType().getCode())))
                 .forEach(c -> {
@@ -404,6 +408,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaToAreaType.setArea(area);
             areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
+            areaToAreaTypesToAdd.add(areaToAreaType);
         });
         List<AreaToAreaType> areaToAreaTypesToRemove = areaToAreaTypes.stream()
                 .filter(a -> a.getAreaType() != null &&
@@ -413,7 +418,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypesToRemove);
 
-        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
+        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
     }
 
     private void resetAutoAssignForAttachment(Area area) {

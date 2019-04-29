@@ -9,12 +9,21 @@ public abstract class AreaEvent {
 
     private final OperationType operationType;
     private final Area area;
-    private final List<AreaToAreaType> primaryAreaTypes;
+    private final Area oldArea;
+    private final List<AreaToAreaType> addPrimaryAreaTypes;
+    private final List<AreaToAreaType> delPrimaryAreaTypes;
 
-    AreaEvent(OperationType operationType, Area area, List<AreaToAreaType> primaryAreaTypes) {
+    AreaEvent(OperationType operationType, Area area, Area oldArea, List<AreaToAreaType> addPrimaryAreaTypes,
+            List<AreaToAreaType> delPrimaryAreaTypes) {
         this.operationType = operationType;
         this.area = area;
-        this.primaryAreaTypes = primaryAreaTypes;
+        this.oldArea = oldArea;
+        this.addPrimaryAreaTypes = addPrimaryAreaTypes;
+        this.delPrimaryAreaTypes = delPrimaryAreaTypes;
+    }
+
+    AreaEvent(OperationType operationType, Area area, List<AreaToAreaType> addPrimaryAreaTypes) {
+        this(operationType, area, null, addPrimaryAreaTypes, null);
     }
 
     public OperationType getOperationType() {
@@ -25,7 +34,15 @@ public abstract class AreaEvent {
         return area;
     }
 
-    public List<AreaToAreaType> getPrimaryAreaTypes() {
-        return primaryAreaTypes;
+    public Area getOldArea() {
+        return oldArea;
+    }
+
+    public List<AreaToAreaType> getAddPrimaryAreaTypes() {
+        return addPrimaryAreaTypes;
+    }
+
+    public List<AreaToAreaType> getDelPrimaryAreaTypes() {
+        return delPrimaryAreaTypes;
     }
 }

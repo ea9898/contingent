@@ -1,33 +1,28 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.esu.EsuOutput;
+import moscow.ptnl.contingent.area.event.AreaEvent;
 import moscow.ptnl.contingent.area.repository.esu.EsuOutputCRUDRepository;
-import moscow.ptnl.contingent.area.model.esu.AreaEvent;
 import moscow.ptnl.contingent.area.repository.esu.EsuOutputRepository;
+import moscow.ptnl.contingent.area.transform.model.esu.AreaEventMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.esu.lib.producer.EsuProducer;
 
+import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Component
 public class EsuServiceImpl implements EsuService {
@@ -45,6 +40,9 @@ public class EsuServiceImpl implements EsuService {
     @Autowired
     private EsuOutputRepository esuOutputRepository;
 
+    @Autowired
+    private AreaEventMapper areaEventMapper;
+
     /**
      * Сохраняет информацию о событии в БД и пытается отправить ее в ЕСУ.
      * В случае успеха отправки в ЕСУ, ответ сохраняется в БД.
@@ -54,8 +52,12 @@ public class EsuServiceImpl implements EsuService {
      */
     public boolean saveAndPublishToESU(moscow.ptnl.contingent.area.model.esu.AreaEvent event) {
         String publishTopic = AREA_TOPIC;
-        String message = getMessage(event);
+        AreaEvent publishObject = areaEventMapper.entityToDtoTransform(event);
+        String message = convertEventObjectToMessage(publishObject);
         EsuOutput record = saveBeforePublishToESU(publishTopic, message);
+        //Обновим ИД сообщения
+        publishObject.setId(record.getId());
+        message = convertEventObjectToMessage(publishObject);
 
         try {
             EsuProducer.MessageMetadata esuAnswer = publishToESU(publishTopic, message);
@@ -103,54 +105,6 @@ public class EsuServiceImpl implements EsuService {
         return esuProducer.publish(publishTopic, message);
     }
 
-    private moscow.ptnl.contingent.area.event.AreaEvent mapAreaEvent(AreaEvent event) {
-        Area area = event.getArea();
-        moscow.ptnl.contingent.area.event.AreaEvent areaEvent = new moscow.ptnl.contingent.area.event.AreaEvent();
-        areaEvent.setAreaId(area.getId());
-        areaEvent.setMoId(area.getMoId());
-        areaEvent.setMuId(area.getMuId());
-        areaEvent.setAreaTypeCode(area.getAreaType() == null ? null : area.getAreaType().getCode());
-        areaEvent.setAreaNumber(area.getNumber());
-        areaEvent.setKindAreaTypeCode(area.getAreaType() == null || area.getAreaType().getKindAreaType() == null
-                ? null : area.getAreaType().getKindAreaType().getCode());
-        areaEvent.setClassAreaTypeCode(area.getAreaType() == null || area.getAreaType().getClassAreaType() == null
-                ? null : area.getAreaType().getClassAreaType().getCode());
-        areaEvent.setAgeMin(area.getAgeMin());
-        areaEvent.setAgeMax(area.getAgeMax());
-        areaEvent.setAgeMinM(area.getAgeMMin());
-        areaEvent.setAgeMaxM(area.getAgeMMax());
-        areaEvent.setAgeMinW(area.getAgeWMin());
-        areaEvent.setAgeMaxW(area.getAgeWMax());
-        areaEvent.setIsAutoAssignForAttach(area.getAutoAssignForAttach());
-        areaEvent.setAttachByMedicalReason(area.getAttachByMedicalReason());
-
-        areaEvent.setPrimaryAreaTypes(mapPrimaryAreaTypes(event));
-
-        areaEvent.setOperationDate(getCurrentDate());
-        areaEvent.setOperationType(event.getOperationType().getValue());
-
-        return areaEvent;
-    }
-
-    private moscow.ptnl.contingent.area.event.AreaEvent.PrimaryAreaTypes mapPrimaryAreaTypes(AreaEvent event) {
-        if (event.getPrimaryAreaTypes() != null && !event.getPrimaryAreaTypes().isEmpty()) {
-            moscow.ptnl.contingent.area.event.AreaEvent.PrimaryAreaTypes areaTypes =
-                    new moscow.ptnl.contingent.area.event.AreaEvent.PrimaryAreaTypes();
-            areaTypes.getPrimaryAreaTypeCode().addAll(event.getPrimaryAreaTypes().stream()
-                    .filter(a -> a.getAreaType() != null)
-                    .map(a -> a.getAreaType().getCode())
-                    .collect(Collectors.toList()));
-            return areaTypes;
-        }
-        return null;
-    }
-
-    private String getMessage(AreaEvent event) {
-        Object publishObject = mapAreaEvent(event);
-
-        return convertEventObjectToMessage(publishObject);
-    }
-
     private static String convertEventObjectToMessage(Object o) {
         String xmlContent = null;
 
@@ -165,17 +119,5 @@ public class EsuServiceImpl implements EsuService {
             LOG.error("Ошибка конвертации объекта в XML", e);
         }
         return xmlContent;
-    }
-
-    private static XMLGregorianCalendar getCurrentDate() {
-        GregorianCalendar gcal = new GregorianCalendar();
-        XMLGregorianCalendar xgcal = null;
-
-        try {
-            xgcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
-        } catch (DatatypeConfigurationException e) {
-            LOG.error("Ошибка получения даты", e);
-        }
-        return xgcal;
     }
 }
