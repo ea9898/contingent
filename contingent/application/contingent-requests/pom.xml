@@ -44,7 +44,7 @@
                         <phase>validate</phase>
                         <goals>
                             <goal>create</goal>
-                            <goal>hgchangeset</goal>
+                            <!--<goal>hgchangeset</goal>-->
                         </goals>
                     </execution>
                 </executions>
@@ -62,12 +62,12 @@
                         <configuration>
                             <exportAntProperties>true</exportAntProperties>
                             <target>
-                                <exec dir="${basedir}" executable="hg"
+                                <exec dir="${basedir}" executable="git"
                                         outputProperty="scmCurrentBranch">
                                         <arg value="identify" />
                                         <arg value="-b" />
                                 </exec>
-                                <exec dir="${basedir}" executable="hg"
+                                <exec dir="${basedir}" executable="git"
                                         outputProperty="scmUrl">
                                         <arg value="paths" />
                                         <arg value="default" />

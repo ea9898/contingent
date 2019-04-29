@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
 
     <scm>
-        <developerConnection>scm:hg:http://127.0.0.1/dummy</developerConnection>
+        <developerConnection>scm:git:http://127.0.0.1/dummy</developerConnection>
     </scm>
 
     <modules>
