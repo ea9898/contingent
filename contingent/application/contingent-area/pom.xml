@@ -207,16 +207,25 @@
                                             <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
                                         </bindingFiles>
                                         <serviceName>receive_changes</serviceName>                                                                                                                                               
-                                    </wsdlOption>                                                         
+                                    </wsdlOption>
                                     <wsdlOption>
-                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent/v5/public-area-soap.wsdl</wsdl>
+                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v1/emias.contingent2.v1.wsdl</wsdl>
                                         <bindingFiles>
                                             <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
                                         </bindingFiles>
-                                        <serviceName>AreaService</serviceName>                                                                                                                                               
+                                        <serviceName>AreaService</serviceName>
+                                        <extraargs>
+                                            <extraarg>-verbose</extraarg>
+                                            <extraarg>-p</extraarg>
+                                            <extraarg>http://emias.mos.ru/contingent2/core/v1/=ru.mos.emias.contingent2.core</extraarg>
+                                            <extraarg>-p</extraarg>
+                                            <extraarg>http://emias.mos.ru/contingent2/area/v1/=ru.mos.emias.contingent2.area</extraarg>
+                                            <extraarg>-p</extraarg>
+                                            <extraarg>http://emias.mos.ru/contingent2/area/v1/types/=ru.mos.emias.contingent2.area.types</extraarg>
+                                        </extraargs>
                                     </wsdlOption>
                                     <wsdlOption>
-                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent/v1/area-soap.wsdl</wsdl>
+                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v2/emias.contingent2.v2.wsdl</wsdl>
                                         <bindingFiles>
                                             <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
                                         </bindingFiles>

@@ -19,29 +19,31 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mos.emias.contingent2.area.Fault;
+import ru.mos.emias.contingent2.area.types.AddressAllocationOrderListResultPage;
+import ru.mos.emias.contingent2.area.types.CreateDependentAreaRequest;
+import ru.mos.emias.contingent2.area.types.CreateDependentAreaResponse;
+import ru.mos.emias.contingent2.area.types.CreateOrderRequest;
+import ru.mos.emias.contingent2.area.types.CreateOrderResponse;
+import ru.mos.emias.contingent2.area.types.CreatePrimaryAreaRequest;
+import ru.mos.emias.contingent2.area.types.CreatePrimaryAreaResponse;
+import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
+import ru.mos.emias.contingent2.area.types.GetAreaByIdResponse;
+import ru.mos.emias.contingent2.area.types.GetProfileMURequest;
+import ru.mos.emias.contingent2.area.types.GetProfileMUResponse;
+import ru.mos.emias.contingent2.area.types.SearchOrderRequest;
+import ru.mos.emias.contingent2.area.types.SearchOrderResponse;
+import ru.mos.emias.contingent2.area.types.SetProfileMURequest;
+import ru.mos.emias.contingent2.area.types.SetProfileMUResponse;
+import ru.mos.emias.contingent2.area.types.UpdateDependentAreaRequest;
+import ru.mos.emias.contingent2.area.types.UpdateDependentAreaResponse;
+import ru.mos.emias.contingent2.area.types.UpdateOrderRequest;
+import ru.mos.emias.contingent2.area.types.UpdateOrderResponse;
+import ru.mos.emias.contingent2.area.types.UpdatePrimaryAreaRequest;
+import ru.mos.emias.contingent2.area.types.UpdatePrimaryAreaResponse;
+import ru.mos.emias.contingent2.area.AreaPT;
+import ru.mos.emias.system.v1.faults.BaseFault;
 
-import ru.gov.emias2.contingent.v1.area.AreaPT;
-import ru.gov.emias2.contingent.v1.area.CreateDependentAreaRequest;
-import ru.gov.emias2.contingent.v1.area.CreateDependentAreaResponse;
-import ru.gov.emias2.contingent.v1.area.CreateOrderRequest;
-import ru.gov.emias2.contingent.v1.area.CreateOrderResponse;
-import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaRequest;
-import ru.gov.emias2.contingent.v1.area.CreatePrimaryAreaResponse;
-import ru.gov.emias2.contingent.v1.area.GetAreaByIdRequest;
-import ru.gov.emias2.contingent.v1.area.GetAreaByIdResponse;
-import ru.gov.emias2.contingent.v1.area.GetProfileMURequest;
-import ru.gov.emias2.contingent.v1.area.GetProfileMUResponse;
-import ru.gov.emias2.contingent.v1.area.SearchOrderRequest;
-import ru.gov.emias2.contingent.v1.area.SearchOrderResponse;
-import ru.gov.emias2.contingent.v1.area.SetProfileMURequest;
-import ru.gov.emias2.contingent.v1.area.SetProfileMUResponse;
-import ru.gov.emias2.contingent.v1.area.UpdateDependentAreaRequest;
-import ru.gov.emias2.contingent.v1.area.UpdateDependentAreaResponse;
-import ru.gov.emias2.contingent.v1.area.UpdateOrderRequest;
-import ru.gov.emias2.contingent.v1.area.UpdateOrderResponse;
-import ru.gov.emias2.contingent.v1.area.UpdatePrimaryAreaRequest;
-import ru.gov.emias2.contingent.v1.area.UpdatePrimaryAreaResponse;
-import ru.gov.emias2.contingent.v1.common.ContingentFault;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws ContingentFault {
+    public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
         try {
             List<MuProfile> profiles = areaService.getProfileMU(body.getMuId());
             GetProfileMUResponse response = new GetProfileMUResponse();
@@ -91,7 +93,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public SetProfileMUResponse setProfileMU(SetProfileMURequest body) throws ContingentFault {
+    public SetProfileMUResponse setProfileMU(SetProfileMURequest body) throws Fault {
         try {
             areaService.setProfileMU(body.getMuId(), body.getMuTypeId(),
                     body.getAreaTypesAdd() == null ? null : body.getAreaTypesAdd().getAreaTypeCodes(),
@@ -105,7 +107,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws ContingentFault {
+    public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
             CreatePrimaryAreaResponse response = new CreatePrimaryAreaResponse();
             Long id = areaService.createPrimaryArea(body.getMoId(), body.getMuId(), body.getNumber(), body.getAreaTypeCode(),
@@ -122,7 +124,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws ContingentFault {
+    public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         try {
             CreateDependentAreaResponse response = new CreateDependentAreaResponse();
             Long id = areaService.createDependentArea(body.getMoId(), body.getMuId(), body.getNumber(), body.getAreaTypeCode(),
@@ -139,7 +141,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws ContingentFault {
+    public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws Fault {
         try {
             areaService.updatePrimaryArea(body.getAreaId(), body.getNumber(),
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
@@ -154,7 +156,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws ContingentFault {
+    public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws Fault {
         try {
             areaService.updateDependentArea(body.getAreaId(), body.getMuId(), body.getNumber(),
                     body.getPrimaryAreaTypesAdd() == null ? Collections.EMPTY_LIST : body.getPrimaryAreaTypesAdd().getPrimaryAreaTypeCodes(),
@@ -171,7 +173,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public CreateOrderResponse createOrder(CreateOrderRequest body) throws ContingentFault {
+    public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
         try {
             Long id = areaService.createOrder(body.getNumber(), body.getDate(), body.getOuz(), body.getName());
 
@@ -187,7 +189,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws ContingentFault {
+    public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws Fault {
         try {
             areaService.updateOrder(body.getId(), body.getNumber(), body.getDate(), body.getOuz(), body.getName());
 
@@ -200,14 +202,18 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public SearchOrderResponse searchOrder(SearchOrderRequest body) throws ContingentFault {
+    public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         try {
             Page<AddressAllocationOrder> results = areaService.searchOrder(body.getId(), body.getNumber(), body.getDate(),
                     body.getName(), PageRequest.of(body.getPagingOptions().getPageNumber(), body.getPagingOptions().getPageSize()));
             SearchOrderResponse response = new SearchOrderResponse();
-            response.setPagingResponse(soapCustomMapper.mapPageToPagingResult(results));
-            response.getResults().addAll(results.get().map(addressAllocationOrderMapper::entityToDtoTransform).collect(Collectors.toList()));
-
+            AddressAllocationOrderListResultPage resultPage = new AddressAllocationOrderListResultPage();
+            resultPage.setMorePagesAvailable(results.getNumber() < results.getTotalPages() - 1);
+            resultPage.setPageNumber(results.getNumber());
+            resultPage.setPageSize(results.getSize());
+            resultPage.setPageTotal(results.getTotalPages());
+            resultPage.getAddressAllocationOrders().addAll(results.get().map(addressAllocationOrderMapper::entityToDtoTransform).collect(Collectors.toList()));
+            response.setResult(resultPage);
             return response;
         }
         catch (Exception ex) {
@@ -217,7 +223,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws ContingentFault {
+    public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
             Area area = areaService.getAreaById(body.getAreaId());
             GetAreaByIdResponse response = new GetAreaByIdResponse();
@@ -230,7 +236,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    private ContingentFault mapException(Exception ex) {
+    private Fault mapException(Exception ex) {
         if (!(ex instanceof ContingentException)) {
             LOG.error(ex.getMessage(), ex);
         }

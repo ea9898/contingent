@@ -67,24 +67,24 @@ public class WebServiceConfiguration {
     }
     
     @Bean 
-    public Endpoint AreaServiceV1(@Qualifier(moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v1.area.AreaPT areaService, SpringBus cxfBus) {
+    public Endpoint AreaServiceV1(@Qualifier(moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl.SERVICE_NAME) ru.mos.emias.contingent2.area.AreaPT areaService, SpringBus cxfBus) {
         EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
         initAreaService(endpoint, "v1");
         return endpoint;
     }
     
 //    @Bean
-//    public Endpoint AreaServiceV5(@Qualifier(moscow.ptnl.contingent.area.ws.v5.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v5._public.area.AreaPT areaService, SpringBus cxfBus) {
+//    public Endpoint AreaServiceV5(@Qualifier(moscow.ptnl.contingent.area.ws.v2.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v2._public.area.AreaPT areaService, SpringBus cxfBus) {
 //        EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
-//        initAreaService(endpoint, "v5");
+//        initAreaService(endpoint, "v2");
 //        return endpoint;
 //    }
     
-    //http://localhost:8080/contingent/area/v5/AreaService?wsdl
     private void initAreaService(EndpointImpl endpoint, String version) {
         String pathPart = (version != null && !version.isEmpty()) ? version + "/" : "";
-        endpoint.setServiceName(new QName("http://emias2.gov.ru/contingent/" + pathPart + "area/", "AreaService"));
-        endpoint.setWsdlLocation("classpath:META-INF/wsdl/contingent/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "area-soap.wsdl");
+        endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/" + pathPart, "AreaService"));
+        String wsdlLocation = "classpath:META-INF/wsdl/contingent2/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "emias.contingent2." + (version == null ? "v1" : version) + ".wsdl";
+        endpoint.setWsdlLocation(wsdlLocation);
         endpoint.setAddress("/" + pathPart + "AreaService");
         endpoint.publish();
 

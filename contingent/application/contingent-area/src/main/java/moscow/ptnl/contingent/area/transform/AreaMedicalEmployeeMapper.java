@@ -1,9 +1,10 @@
 package moscow.ptnl.contingent.area.transform;
 
 import org.springframework.stereotype.Component;
-import ru.gov.emias2.contingent.v1.area.types.MedicalEmployee;
+import ru.mos.emias.contingent2.core.MedicalEmployee;
 
 @Component
+
 public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee> {
 
     @Override

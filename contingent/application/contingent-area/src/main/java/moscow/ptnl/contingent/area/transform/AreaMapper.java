@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.area.transform;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.gov.emias2.contingent.v1.area.types.Area;
+import ru.mos.emias.contingent2.core.Area;
 
 import java.util.stream.Collectors;
 

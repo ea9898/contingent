@@ -5,7 +5,7 @@ import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationMessage;
 import moscow.ptnl.contingent.area.error.ValidationMessageType;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
-import ru.gov.emias2.contingent.v1.common.ContingentFault;
+import ru.mos.emias.contingent2.area.Fault;
 import ru.mos.emias.system.v1.faults.BusinessFault;
 import ru.mos.emias.system.v1.faults.ErrorMessage;
 import ru.mos.emias.system.v1.faults.ErrorMessageCollection;
@@ -19,14 +19,14 @@ import java.util.stream.Collectors;
 
 public class SoapExceptionMapper {
 
-    public static ContingentFault map(Exception e) {
+    public static Fault map(Exception e) {
         if (e instanceof ContingentException) {
             BusinessFault fault = new BusinessFault();
             fault.setType(fault.getType());
             fault.setMessages(map(((ContingentException) e).getValidation()));
             fault.setHasErrors(!((ContingentException) e).getValidation().isSuccess());
 
-            return new ContingentFault(e.getMessage(), fault);
+            return new Fault(e.getMessage(), fault);
         }
         UnexpectedFault fault = new UnexpectedFault();
         fault.setType(fault.getType());
@@ -35,7 +35,7 @@ public class SoapExceptionMapper {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         fault.setStackTrace(map(stackTrace));
 
-        return new ContingentFault((e.getMessage() != null ? e.getMessage() + " | " : "") + e.toString(), fault, e);
+        return new Fault((e.getMessage() != null ? e.getMessage() + " | " : "") + e.toString(), fault, e);
     }
 
     private static UnexpectedFault.StackTrace map(StackTraceElement[] stackTrace) {

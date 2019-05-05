@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.transform;
 
 import org.springframework.stereotype.Component;
-import ru.gov.emias2.contingent.v1.area.types.AddressAllocationOrder;
+import ru.mos.emias.contingent2.core.AddressAllocationOrder;
 
 @Component
 public class AddressAllocationOrderMapper implements Transform<AddressAllocationOrder, moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder> {

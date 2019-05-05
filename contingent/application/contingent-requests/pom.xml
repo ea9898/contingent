@@ -211,7 +211,7 @@
                                     <!--
                                     <wsdlOptions>                                                            
                                         <wsdlOption>
-                                            <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent/v5/public-area-soap.wsdl</wsdl>
+                                            <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent/v2/public-area-soap.wsdl</wsdl>
                                             <bindingFiles>
                                                 <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
                                             </bindingFiles>
