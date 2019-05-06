@@ -106,4 +106,66 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="addMedicalEmployees">
+        <xs:annotation>
+            <xs:documentation>Сведения медработников для добавления на участок</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="addMedicalEmployee" type="tns:addMedicalEmployee" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="addMedicalEmployee">
+        <xs:annotation>
+            <xs:documentation>Сведения медработника для добавления на участок</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="medicalEmployeeJobInfoId" type="xs:long"/>
+            <xs:element name="snils" type="xs:string"/>
+            <xs:element name="positionId" type="xs:long"/>
+            <xs:element name="subdivisionId" type="xs:long"/>
+            <xs:element name="isReplacement" type="xs:boolean"/>
+            <xs:element name="startDate" type="xs:date"/>
+            <xs:element name="endDate" type="xs:date" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="changeMedicalEmployees">
+        <xs:annotation>
+            <xs:documentation>Сведения медработников для изменения</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="changeMedicalEmployee" type="tns:changeMedicalEmployee" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="changeMedicalEmployee">
+        <xs:annotation>
+            <xs:documentation>Сведения медработника для изменения</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="assignmentId" type="xs:long"/>
+            <xs:element name="startDate" type="xs:date" minOccurs="0"/>
+            <xs:element name="endDate" type="xs:date" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="deleteMedicalEmployees">
+        <xs:annotation>
+            <xs:documentation>Сведения медработников для удаления</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="assignmentId" type="xs:long" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="fault">
+        <xs:annotation>
+            <xs:documentation>Перечень сообщений об ошибках валидации</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="dummy" type="xs:string" maxOccurs="unbounded" default="Описание уточняется"/>
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>

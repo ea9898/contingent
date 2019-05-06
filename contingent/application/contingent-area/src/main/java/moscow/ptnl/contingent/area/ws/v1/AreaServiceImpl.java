@@ -33,6 +33,8 @@ import ru.mos.emias.contingent2.area.types.GetProfileMURequest;
 import ru.mos.emias.contingent2.area.types.GetProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.SearchOrderRequest;
 import ru.mos.emias.contingent2.area.types.SearchOrderResponse;
+import ru.mos.emias.contingent2.area.types.SetMedicalEmployeeOnAreaRequest;
+import ru.mos.emias.contingent2.area.types.SetMedicalEmployeeOnAreaResponse;
 import ru.mos.emias.contingent2.area.types.SetProfileMURequest;
 import ru.mos.emias.contingent2.area.types.SetProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.UpdateDependentAreaRequest;
@@ -42,11 +44,9 @@ import ru.mos.emias.contingent2.area.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.types.UpdatePrimaryAreaResponse;
 import ru.mos.emias.contingent2.area.AreaPT;
-import ru.mos.emias.system.v1.faults.BaseFault;
 
 
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -229,6 +229,23 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             GetAreaByIdResponse response = new GetAreaByIdResponse();
             response.setResult(areaMapper.entityToDtoTransform(area));
 
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public SetMedicalEmployeeOnAreaResponse setMedicalEmployeeOnArea(SetMedicalEmployeeOnAreaRequest body) throws Fault {
+        try {
+            List<Long> assignmentIds = areaService.setMedicalEmployeeOnArea(body.getAreaId(),
+                    body.getAddMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getAddMedicalEmployees().getAddMedicalEmployees(),
+                    body.getChangeMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getChangeMedicalEmployees().getChangeMedicalEmployees(),
+                    body.getDeleteMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getDeleteMedicalEmployees().getAssignmentIds());
+            SetMedicalEmployeeOnAreaResponse response = new SetMedicalEmployeeOnAreaResponse();
+            response.getAssignmentIds().addAll(assignmentIds);
             return response;
         }
         catch (Exception ex) {

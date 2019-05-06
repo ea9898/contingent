@@ -2,10 +2,13 @@ package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder;
 import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
+import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.esu.AreaCreateEvent;
@@ -13,6 +16,7 @@ import moscow.ptnl.contingent.area.model.esu.AreaUpdateEvent;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeRepository;
@@ -20,13 +24,13 @@ import moscow.ptnl.contingent.area.repository.area.MuProfileCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuProfileRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuProfileTemplatesRepository;
-import moscow.ptnl.contingent.area.error.ContingentException;
-
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import ru.mos.emias.contingent2.core.AddMedicalEmployee;
+import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -70,6 +74,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private AddressAllocationOrderRepository addressAllocationOrderRepository;
+
+    @Autowired
+    private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
 
     @Autowired
     private AreaChecker areaChecker;
@@ -504,5 +511,48 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         return area.orElseThrow(() -> new ContingentException(
                 new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", id))));
+    }
+
+    @Override
+    public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addMedicalEmployees,
+                                               List<ChangeMedicalEmployee> changeMedicalEmployees,
+                                               List<Long> deleteMedicalEmployees) throws ContingentException {
+
+        //1 Система выполняет поиск в БД (AREAS) участка с переданным ИД. Участок найден, иначе возвращает ошибку
+        Area area = areaCRUDRepository.findById(areaId).orElseThrow(() -> new ContingentException(
+                new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId))));
+
+        //2 Система проверяет, что участок не находится в архиве (AREAS.ARCHIVE = 0), иначе возвращает ошибку
+        if (!area.getArchived()) {
+            throw new ContingentException(new Validation().error(
+                    AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId)));
+        }
+
+        //3 Если вид участка отличен от «Мягко-ассоциированный» и «Ассоциированного со специализированным кабинетом»
+        // (AREA_TYPES.KIND_AREA_TYPE_CODE <> MILDLY_ASSOCIATED, TREATMENT_ROOM_ASSOCIATED), то Система проверяет,
+        // что ни в одном из блоков не передан основной медработник. Иначе возвращает ошибку
+        if (area.getAreaType().getCode() != AreaTypeEnum.MILDLY_ASSOCIATED.getCode()
+                && area.getAreaType().getCode() != AreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
+            ContingentException exception = new ContingentException(new Validation().error(
+                    AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED_OR_TREATMENT_ROOM_ASSOCIATED));
+            if (addMedicalEmployees.stream().anyMatch(AddMedicalEmployee::isIsReplacement)) {
+                throw exception;
+            }
+
+            List<String> assignmentIds = changeMedicalEmployees.stream().map(empl -> String.valueOf(empl.getAssignmentId())).collect(Collectors.toList());
+            assignmentIds.addAll(deleteMedicalEmployees.stream().map(String::valueOf).collect(Collectors.toList()));
+            Iterable<AreaMedicalEmployee> emloyees = areaMedicalEmployeeCRUDRepository.findAllById(assignmentIds);
+            for (AreaMedicalEmployee empl : emloyees) {
+                if (!empl.getReplacement()) {
+                    throw exception;
+                }
+            }
+        }
+
+        //4
+        if (!changeMedicalEmployees.isEmpty()) {
+
+        }
+        return null;
     }
 }

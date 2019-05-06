@@ -6,6 +6,8 @@ import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import ru.mos.emias.contingent2.core.AddMedicalEmployee;
+import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,4 +42,8 @@ public interface AreaServiceInternal {
     Page<AddressAllocationOrder> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException;
 
     Area getAreaById(Long id) throws ContingentException;
+
+    List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addMedicalEmployees,
+                                        List<ChangeMedicalEmployee> changeMedicalEmployees,
+                                        List<Long> deleteMedicalEmployees) throws ContingentException;
 }
