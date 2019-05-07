@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.contingent2.area.Fault;
+import ru.mos.emias.contingent2.area.types.AddProfileMURequest;
+import ru.mos.emias.contingent2.area.types.AddProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.AddressAllocationOrderListResultPage;
 import ru.mos.emias.contingent2.area.types.CreateDependentAreaRequest;
 import ru.mos.emias.contingent2.area.types.CreateDependentAreaResponse;
@@ -27,14 +29,14 @@ import ru.mos.emias.contingent2.area.types.CreateOrderRequest;
 import ru.mos.emias.contingent2.area.types.CreateOrderResponse;
 import ru.mos.emias.contingent2.area.types.CreatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.types.CreatePrimaryAreaResponse;
+import ru.mos.emias.contingent2.area.types.DelProfileMURequest;
+import ru.mos.emias.contingent2.area.types.DelProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdResponse;
 import ru.mos.emias.contingent2.area.types.GetProfileMURequest;
 import ru.mos.emias.contingent2.area.types.GetProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.SearchOrderRequest;
 import ru.mos.emias.contingent2.area.types.SearchOrderResponse;
-import ru.mos.emias.contingent2.area.types.SetProfileMURequest;
-import ru.mos.emias.contingent2.area.types.SetProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.UpdateDependentAreaRequest;
 import ru.mos.emias.contingent2.area.types.UpdateDependentAreaResponse;
 import ru.mos.emias.contingent2.area.types.UpdateOrderRequest;
@@ -93,14 +95,22 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public SetProfileMUResponse setProfileMU(SetProfileMURequest body) throws Fault {
+    public AddProfileMUResponse addProfileMU(AddProfileMURequest body) throws Fault {
         try {
-            areaService.setProfileMU(body.getMuId(), body.getMuTypeId(),
-                    body.getAreaTypesAdd() == null ? null : body.getAreaTypesAdd().getAreaTypeCodes(),
-                    body.getAreaTypesDel() == null ? null : body.getAreaTypesDel().getAreaTypeCodes());
-            return new SetProfileMUResponse();
+            areaService.addProfileMU(body.getMuId(), body.getMuTypeId(), body.getAreaTypeCodes());
+            return new AddProfileMUResponse();
+        } catch (ContingentException ex) {
+            throw mapException(ex);
         }
-        catch (Exception ex) {
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public DelProfileMUResponse delProfileMU(DelProfileMURequest body) throws Fault {
+        try {
+            areaService.delProfileMU(body.getMuId(), body.getMuTypeId(), body.getAreaTypeCodes());
+            return new DelProfileMUResponse();
+        } catch (ContingentException ex) {
             throw mapException(ex);
         }
     }

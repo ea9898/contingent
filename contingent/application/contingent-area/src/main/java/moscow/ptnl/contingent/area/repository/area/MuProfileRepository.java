@@ -9,4 +9,6 @@ import java.util.List;
 public interface MuProfileRepository {
 
 	List<MuProfile> getMuProfilesByMuId(long muId);
+
+    List<MuProfile> findMuProfilesByMuIdAndAreaTypes(long muId, List<Long> areaTypes);
 }

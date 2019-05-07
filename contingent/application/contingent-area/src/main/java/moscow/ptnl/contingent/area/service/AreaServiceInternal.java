@@ -14,7 +14,9 @@ public interface AreaServiceInternal {
 
     List<MuProfile> getProfileMU(Long muId) throws ContingentException;
 
-    void setProfileMU(Long muId, String muTypeId, List<Long> areaTypesAdd, List<Long> areaTypesDel) throws ContingentException;
+    void addProfileMU(Long muId, Long muTypeId, List<Long> areaTypeCodes) throws ContingentException;
+
+    void delProfileMU(Long muId, Long muTypeId, List<Long> areaTypeCodes) throws ContingentException;
 
     Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,

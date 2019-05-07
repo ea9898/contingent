@@ -25,4 +25,20 @@ public class MuProfileRepositoryImpl extends BaseRepository implements MuProfile
 
         return entityManager.createQuery(criteria).getResultList();
     }
+
+    @Override
+    public List<MuProfile> findMuProfilesByMuIdAndAreaTypes(long muId, List<Long> areaTypes) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<MuProfile> criteria = criteriaBuilder.createQuery(MuProfile.class);
+        Root<MuProfile> profile = criteria.from(MuProfile.class);
+        criteria.where(
+            criteriaBuilder.and(
+                    criteriaBuilder.equal(profile.get(MuProfile_.muId.getName()), muId),
+                    profile.get(MuProfile_.areaType.getName()).in(areaTypes)
+            )
+        );
+
+        return entityManager.createQuery(criteria).getResultList();
+    }
+
 }

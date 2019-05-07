@@ -99,6 +99,25 @@ public class Area implements Serializable {
     public Area() {
     }
 
+    public Area(Long moId, Long muId, AreaTypes areaType, Integer number, Boolean autoAssignForAttach, Boolean archived, String description, Boolean attachByMedicalReason, Integer ageMin, Integer ageMax, Integer ageMMin, Integer ageMMax, Integer ageWMin, Integer ageWMax, LocalDateTime createDate) {
+        this.moId = moId;
+        this.muId = muId;
+        this.areaType = areaType;
+        this.number = number;
+        this.autoAssignForAttach = autoAssignForAttach;
+        this.archived = archived;
+        this.description = description;
+        this.attachByMedicalReason = attachByMedicalReason;
+        this.ageMin = ageMin;
+        this.ageMax = ageMax;
+        this.ageMMin = ageMMin;
+        this.ageMMax = ageMMax;
+        this.ageWMin = ageWMin;
+        this.ageWMax = ageWMax;
+        this.createDate = createDate;
+        this.updateDate = getCreateDate();
+    }
+
     public Area(Area copy) {
         setMoId(copy.getMoId());
         setMuId(copy.getMuId());

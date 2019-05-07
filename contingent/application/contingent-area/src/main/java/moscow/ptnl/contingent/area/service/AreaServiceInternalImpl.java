@@ -82,65 +82,77 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return muProfileRepository.getMuProfilesByMuId(muId);
     }
 
+    /**
+     *
+     * @param muId
+     * @param muTypeId
+     * @param areaTypeCodes
+     * @return
+     * @throws ContingentException
+     */
     @Override
-    public void setProfileMU(Long muId, String muTypeId, List<Long> areaTypesAdd, List<Long> areaTypesDel) throws ContingentException {
-        List<Long> typesAdd = areaTypesAdd == null ? new ArrayList<>() : areaTypesAdd;
-        List<Long> typesDel = areaTypesDel == null ? new ArrayList<>() : areaTypesDel;
-
+    public void addProfileMU(Long muId, Long muTypeId, List<Long> areaTypeCodes) throws ContingentException {
         Validation validation = new Validation();
 
-        if (typesAdd.isEmpty() && typesDel.isEmpty()) {
-            validation.error(AreaErrorReason.NO_INFO_TO_CHANGE);
-            throw new ContingentException(validation);
-        }
-        areaChecker.checkAreaTypesExist(typesAdd, validation, "areaTypesAdd");
-        areaChecker.checkAreaTypesExist(typesDel, validation, "areaTypesDel");
+        areaChecker.checkAreaTypesExist(areaTypeCodes, validation, "areaTypesAdd");
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+
+        areaChecker.checkProfileExist(muId, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        areaChecker.checkMuProfileCreateAvailableByMuType(muTypeId, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        for (Long areaTypeCode: areaTypeCodes) {
+            AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+            MuProfile muProfile = new MuProfile(muId, areaType);
+            muProfileCRUDRepository.save(muProfile);
+        }
+
+        return;
+    }
+
+    @Override
+    public void delProfileMU(Long muId, Long muTypeId, List<Long> areaTypeCodes) throws ContingentException {
+        Validation validation = new Validation();
+
+        areaChecker.checkMuProfilesHasAreaTypes(muId, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        areaChecker.checkMuActiveAreasNotExist(muId, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        areaChecker.checkMuProfileCreateAvailableByMuType(muTypeId, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
         List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
-        List<Long> attachedAreaTypes = muProfiles.stream()
-                .filter(m -> m.getAreaType() != null)
-                .map(m -> m.getAreaType().getCode())
-                .collect(Collectors.toList());
-
-        typesAdd.forEach(a -> {
-            if (attachedAreaTypes.contains(a)) {
-                validation.error(AreaErrorReason.MU_PROFILE_EXISTS, new ValidationParameter("muId", muId),
-                        new ValidationParameter("areaTypesAdd", a));
-                return;
-            }
-            areaChecker.checkMuProfileChangePossible(Integer.valueOf(muTypeId), a, validation, "areaTypesAdd");
-        });
-        typesDel.forEach(a -> {
-            if (!areaRepository.findAreas(null, muId, a, null, true).isEmpty()) {
-                validation.error(AreaErrorReason.CANT_DELETE_AREA_TYPE, new ValidationParameter("areaTypesDel", a));
-                return;
-            }
-            areaChecker.checkMuProfileChangePossible(Integer.valueOf(muTypeId), a, validation, "areaTypesDel");
-        });
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        //Удаляем прифили МУ
         List<MuProfile> profilesToDelete = muProfiles.stream()
                 .filter(m -> m.getAreaType() != null
-                        && typesDel.contains(m.getAreaType().getCode())
-                        && !typesAdd.contains(m.getAreaType().getCode()))
+                        && areaTypeCodes.contains(m.getAreaType().getCode()))
                 .collect(Collectors.toList());
 
         if (!profilesToDelete.isEmpty()) {
             muProfileCRUDRepository.deleteAll(profilesToDelete);
         }
-        //Добавляем профили МУ
-        typesAdd.forEach(a -> {
-            AreaTypes areaType = areaTypesCRUDRepository.findById(a).get();
-            MuProfile muProfile = new MuProfile();
-            muProfile.setAreaType(areaType);
-            muProfile.setMuId(muId);
-            muProfileCRUDRepository.save(muProfile);
-        });
+
     }
 
     @Override
@@ -198,23 +210,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         //Создание новго первичного участка
-        Area area = new Area();
-        area.setMoId(moId);
-        area.setMuId(muId);
-        area.setNumber(number);
-        area.setAreaType(muProfile.getAreaType());
-        area.setArchived(false);
-        area.setAgeMax(ageMax);
-        area.setAgeMin(ageMin);
-        area.setAgeMMax(ageMaxM);
-        area.setAgeMMin(ageMinM);
-        area.setAgeWMax(ageMaxW);
-        area.setAgeWMin(ageMinW);
-        area.setAutoAssignForAttach(autoAssignForAttachment);
-        area.setAttachByMedicalReason(attachByMedicalReason);
-        area.setDescription(description);
-        area.setCreateDate(LocalDateTime.now());
-        area.setUpdateDate(area.getCreateDate());
+        Area area = new Area(moId, muId, muProfile.getAreaType(), number, autoAssignForAttachment, false, description,
+                attachByMedicalReason, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 
         resetAutoAssignForAttachment(area);
@@ -252,22 +249,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         //Создание новго зависимого участка
-        Area area = new Area();
-        area.setMoId(moId);
-        area.setMuId(muId);
-        area.setNumber(number);
-        area.setAreaType(areaType);
-        area.setArchived(false);
-        area.setAgeMax(ageMax);
-        area.setAgeMin(ageMin);
-        area.setAgeMMax(ageMaxM);
-        area.setAgeMMin(ageMinM);
-        area.setAgeWMax(ageMaxW);
-        area.setAgeWMin(ageMinW);
-        area.setAutoAssignForAttach(autoAssignForAttachment);
-        area.setDescription(description);
-        area.setCreateDate(LocalDateTime.now());
-        area.setUpdateDate(area.getCreateDate());
+        Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
+                null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
         //Сохранение привязки к первичным типам участка
         primaryAreaTypeCodes.forEach(c -> {

@@ -42,30 +42,33 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:element name="setProfileMURequest">
+    <xs:element name="addProfileMURequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="muId" type="xs:long" />
-                <xs:element name="muTypeId" type="xs:string" />
-                <xs:element name="areaTypesAdd" minOccurs="0">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="areaTypesDel" minOccurs="0">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
+                <xs:element name="muTypeId" type="xs:long" />
+                <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
                 <xs:element name="options" type="core:Options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:element name="setProfileMUResponse">
+    <xs:element name="addProfileMUResponse">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="delProfileMURequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="muId" type="xs:long" />
+                <xs:element name="muTypeId" type="xs:long" />
+                <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                <xs:element name="options" type="core:Options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="delProfileMUResponse">
         <xs:complexType>
             <xs:sequence>
             </xs:sequence>

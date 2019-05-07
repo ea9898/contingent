@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Component
@@ -41,6 +42,9 @@ public class AreaChecker {
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
 
+    /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
+    «ИД типа участка» с признаком архивности = 0.
+    Иначе возвращает ошибку */
     public void checkAreaTypesExist(List<Long> areaTypes, Validation validation, String parameterCode) {
         areaTypes.forEach(a -> {
             Optional<AreaTypes> areaType = areaTypesCRUDRepository.findById(a);
@@ -51,11 +55,71 @@ public class AreaChecker {
         });
     }
 
-    public void checkMuProfileChangePossible(int muTypeId, Long areaType, Validation validation, String parameterCode) {
-        MUProfileTemplates template = muProfileTemplatesRepository.findMuProfileTemplate(muTypeId, areaType);
+    /* Система проверяет, что в базе данных нет записи в таблице «Профиль МУ» (PROFILE_MU)
+    со значениями из входных параметров:
+   •	ИД МУ (MU_ID) = input ИД МУ;
+   •	ИД типа участка (AREA_TYPE_CODE) = input ИД типа участка.
+   Иначе возвращает ошибку */
+    public void checkProfileExist(Long muId, List<Long> areaTypes, Validation validation) {
+        List<MuProfile> muProfiles = muProfileRepository.findMuProfilesByMuIdAndAreaTypes(muId, areaTypes);
 
-        if (template == null || !Boolean.TRUE.equals(template.getAvailableToCreate())) {
-            validation.error(AreaErrorReason.CANT_CHANGE_AREA_TYPE, new ValidationParameter(parameterCode, areaType));
+        if (muProfiles != null && !muProfiles.isEmpty()) {
+            for (MuProfile muProfile: muProfiles) {
+                validation.error(AreaErrorReason.MU_PROFILE_EXISTS,
+                        new ValidationParameter("muId", muProfile.getMuId()),
+                        new ValidationParameter("areatype", muProfile.getAreaType().getName()));
+            }
+        }
+    }
+
+    /* Система проверяет в шаблоне профиля МУ (MU_PROFILE_TEMPLATES) возможность добавления:
+    •	ИД типа МУ (MU_TYPE_ID) = ИД типа МУ;
+    •	ИД типа участка (AREA_TYPE_CODE) = ИД типа участка;
+    •	Допустимость создания (AVAILABLE_TO_CREATE) = «Возможно» .
+    Если запись с типом участка не найдена или AVAILABLE_TO_CREATE <> «Возможно» , то Система возвращает ошибку */
+    public void checkMuProfileCreateAvailableByMuType(Long muTypeId, List<Long> areaTypes, Validation validation) {
+        List<MUProfileTemplates> templates = muProfileTemplatesRepository.findMuProfileTemplates(muTypeId, areaTypes);
+
+        if (templates != null && !templates.isEmpty()) {
+            templates.forEach(temp -> {
+                if (!temp.getAvailableToCreate()) {
+                    validation.error(AreaErrorReason.CANT_CHANGE_AREA_TYPE,
+                            new ValidationParameter("areaType", temp.getAreaType().getName()));
+                }
+            });
+        }
+    }
+
+    /* Система проверяет наличие в профиле МУ переданных типов участка. */
+    public void checkMuProfilesHasAreaTypes(Long muId, List<Long> areaTypes, Validation validation) {
+        List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
+
+        List<Long> areaTypesProfiles = muProfiles.stream().map(MuProfile::getAreaType).map(AreaTypes::getCode).collect(Collectors.toList());
+        List<Long> areaTypesDiff =
+                areaTypes.stream().filter(areaType -> !areaTypesProfiles.contains(areaType))
+                .collect(Collectors.toList());
+
+        if (!areaTypesDiff.isEmpty()) {
+            validation.error(AreaErrorReason.AREA_TYPES_NOT_EXISTS_IN_PROFILE,
+                new ValidationParameter("areaType", areaTypesDiff.stream().map(String::valueOf).collect(Collectors.joining(", "))));
+        }
+    }
+
+    /* Система проверяет, что у данной МУ отсутствуют активные участки данного типа (AREAS):
+    •	ИД МУ (MU_ID) = input ИД МУ;
+    •	ИД типа участка (AREA_TYPE_CODE) = input ИД тип участка;
+    •	Архивность (ARCHIVE) = 0.
+     */
+    public void checkMuActiveAreasNotExist(Long muId, List<Long> areaTypes, Validation validation) {
+        List<Area> areas = areaRepository.findAreas(null, muId, areaTypes, null,true);
+
+        if (!areas.isEmpty()) {
+            for (Area area: areas) {
+                validation.error(AreaErrorReason.CANT_DELETE_AREA_TYPE,
+                        new ValidationParameter("areaType", area.getAreaType().getName()),
+                        new ValidationParameter("areaNumber", area.getNumber()));
+            }
+
         }
     }
 

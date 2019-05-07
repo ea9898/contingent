@@ -9,4 +9,6 @@ import java.util.List;
 public interface MuProfileTemplatesRepository {
 
 	MUProfileTemplates findMuProfileTemplate(int muTypeId, Long areaTypeCode);
+
+    List<MUProfileTemplates> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes);
 }

@@ -32,4 +32,23 @@ public class MuProfileTemplatesRepositoryImpl extends BaseRepository implements 
 
         return results.isEmpty() ? null : results.get(0);
     }
+
+    @Override
+    public List<MUProfileTemplates> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<MUProfileTemplates> criteria = criteriaBuilder.createQuery(MUProfileTemplates.class);
+        Root<MUProfileTemplates> template = criteria.from(MUProfileTemplates.class);
+        criteria.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(template.get(MUProfileTemplates_.muTypeId.getName()), muTypeId),
+                        template.get(MUProfileTemplates_.areaType.getName()).get(AreaTypes_.code.getName()).in(areaTypeCodes)
+                )
+        );
+        List<MUProfileTemplates> results = entityManager.createQuery(criteria).getResultList();
+
+        return results;
+    }
+
+
+
 }

@@ -35,6 +35,13 @@ public class MuProfile implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaTypes areaType;
 
+    public MuProfile() {}
+
+    public MuProfile(Long muId, AreaTypes areaType) {
+        this.muId = muId;
+        this.areaType = areaType;
+    }
+
     public Long getId() {
         return id;
     }
