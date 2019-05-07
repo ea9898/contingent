@@ -115,6 +115,6 @@ public class Setting implements Serializable {
 
     @Override
     public int hashCode() {        
-        return (this.name != null) ? Objects.hashCode(this.name) : 0;
+        return Objects.hashCode(this.name);
     }
 }

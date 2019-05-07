@@ -78,6 +78,6 @@ public class PositionNom implements Serializable {
 
     @Override
     public int hashCode() {        
-        return (this.id != null) ? Objects.hashCode(this.id) : 0;
+        return Objects.hashCode(this.id);
     }
 }

@@ -255,6 +255,6 @@ public class AddressFormingElement implements Serializable {
 
     @Override
     public int hashCode() {        
-        return (this.globalId != null) ? Objects.hashCode(this.globalId) : 0;
+        return Objects.hashCode(this.globalId);
     }
 }

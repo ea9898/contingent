@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "CLASS_AREA_TYPES")
@@ -37,5 +38,20 @@ public class ClassAreaTypes implements Serializable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+    
+    @Override
+    public int hashCode() {        
+        return Objects.hashCode(this.code);
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof ClassAreaTypes) {
+            return ((ClassAreaTypes) obj).getCode().equals(this.code);
+        }
+        return false;
     }
 }

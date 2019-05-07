@@ -52,6 +52,6 @@ public class KindAreaTypes implements Serializable {
 
     @Override
     public int hashCode() {        
-        return (this.code != null) ? Objects.hashCode(this.code) : 0;
+        return Objects.hashCode(this.code);
     }
 }

@@ -14,8 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
+import javax.persistence.IdClass;
 
 @Entity
+@IdClass(AreaAddressAllocation.Key.class)
 @Table(name = "ADDRESS_ALLOCATION_TO_AREA")
 @Cacheable
 public class AreaAddressAllocation implements Serializable {
@@ -49,6 +52,10 @@ public class AreaAddressAllocation implements Serializable {
     @JoinColumn(name = "REGISTRY_BUILDING_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private RegistryBuilding registryBuilding;
+    
+    public Key getKey() {
+        return new Key(this.distributionToMo, this.area);
+    }
 
     public MoAddressAllocation getDistributionToMo() {
         return distributionToMo;
@@ -104,5 +111,72 @@ public class AreaAddressAllocation implements Serializable {
 
     public void setRegistryBuilding(RegistryBuilding registryBuilding) {
         this.registryBuilding = registryBuilding;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof AreaAddressAllocation) {
+            return ((AreaAddressAllocation) obj).getKey().equals(this.getKey());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return this.getKey().hashCode();
+    }
+    
+    
+    /**
+     * Композитный ключ.
+     */
+    public static class Key implements Serializable {
+        
+        private MoAddressAllocation distributionToMo;
+        private Area area;
+        
+        public Key(){}
+        
+        public Key(MoAddressAllocation distributionToMo, Area area) {
+            this.distributionToMo = distributionToMo;
+            this.area = area;
+        }
+        
+        public MoAddressAllocation getDistributionToMo() {
+            return distributionToMo;
+        }
+        
+        public void setDistributionToMo(MoAddressAllocation distributionToMo) {
+            this.distributionToMo = distributionToMo;
+        }
+        
+        public Area getArea() {
+            return area;
+        }
+        
+        public void setArea(Area area) {
+            this.area = area;
+        }
+        
+        @Override
+        public boolean equals(Object obj) {
+            if(this == obj)
+                return true;
+            if (obj != null && obj instanceof Key) {
+                Key other = (Key) obj;
+                if (other.getDistributionToMo() == null || other.getArea() == null)
+                    return false;
+                return  other.getDistributionToMo().equals(this.distributionToMo) && other.getArea().equals(this.area);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.distributionToMo, this.area);
+        }
+        
     }
 }
