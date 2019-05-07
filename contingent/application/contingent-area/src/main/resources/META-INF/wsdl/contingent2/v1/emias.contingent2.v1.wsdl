@@ -101,6 +101,14 @@
         <wsdl:part name="body" element="ns1:getAreaByIdResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="setMedicalEmployeeOnAreaInput">
+        <wsdl:part name="body" element="ns1:setMedicalEmployeeOnAreaRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="setMedicalEmployeeOnAreaOutput">
+        <wsdl:part name="body" element="ns1:setMedicalEmployeeOnAreaResponse"/>
+    </wsdl:message>
+
     <wsdl:message name="addProfileMUInput">
         <wsdl:part name="body" element="ns1:addProfileMURequest"/>
     </wsdl:message>
@@ -204,6 +212,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:getAreaByIdInput"/>
             <wsdl:output message="tns:getAreaByIdOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="setMedicalEmployeeOnArea">
+            <wsdl:documentation>
+                Изменение медицинских работников на участке обслуживания (К_УУ_8)
+            </wsdl:documentation>
+            <wsdl:input message="tns:setMedicalEmployeeOnAreaInput"/>
+            <wsdl:output message="tns:setMedicalEmployeeOnAreaOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -325,6 +341,20 @@
 
         <wsdl:operation name="getAreaById">
             <soap:operation soapAction="getAreaById"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="setMedicalEmployeeOnArea">
+            <soap:operation soapAction="setMedicalEmployeeOnArea"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>
