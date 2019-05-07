@@ -6,7 +6,9 @@ import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeEnum;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
@@ -22,8 +24,10 @@ import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.area.repository.area.MuProfileCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuProfileRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuProfileTemplatesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.SpecializationToPositionNomRepository;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -77,6 +81,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
+
+    @Autowired
+    private SpecializationToPositionNomRepository specializationToPositionNomRepository;
+
+    @Autowired
+    private AreaTypeMedicalPositionsRepository areaTypeMedicalPositionsRepository;
 
     @Autowired
     private AreaChecker areaChecker;
@@ -506,36 +516,99 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId))));
 
         //2 Система проверяет, что участок не находится в архиве (AREAS.ARCHIVE = 0), иначе возвращает ошибку
-        if (!area.getArchived()) {
+        if (area.getArchived()) {
             throw new ContingentException(new Validation().error(
                     AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId)));
         }
 
-        //3 Если вид участка отличен от «Мягко-ассоциированный» и «Ассоциированного со специализированным кабинетом»
-        // (AREA_TYPES.KIND_AREA_TYPE_CODE <> MILDLY_ASSOCIATED, TREATMENT_ROOM_ASSOCIATED), то Система проверяет,
-        // что ни в одном из блоков не передан основной медработник. Иначе возвращает ошибку
+
+        List<String> changeIds = changeMedicalEmployees.stream().map(empl -> String.valueOf(empl.getAssignmentId())).collect(Collectors.toList());
+        Iterable<AreaMedicalEmployee> changeEmployees = areaMedicalEmployeeCRUDRepository.findAllById(changeIds);
+
+        //3
         if (area.getAreaType().getCode() != AreaTypeEnum.MILDLY_ASSOCIATED.getCode()
                 && area.getAreaType().getCode() != AreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
-            ContingentException exception = new ContingentException(new Validation().error(
-                    AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED_OR_TREATMENT_ROOM_ASSOCIATED));
             if (addMedicalEmployees.stream().anyMatch(AddMedicalEmployee::isIsReplacement)) {
-                throw exception;
+                throwException(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED);
+            }
+            List<String> deleteIds = deleteMedicalEmployees.stream().map(String::valueOf).collect(Collectors.toList());
+            Iterable<AreaMedicalEmployee> deleteEmployees = areaMedicalEmployeeCRUDRepository.findAllById(deleteIds);
+            for (AreaMedicalEmployee empl : deleteEmployees) {
+                if (!empl.getReplacement()) {
+                    throwException(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED);
+                }
             }
 
-            List<String> assignmentIds = changeMedicalEmployees.stream().map(empl -> String.valueOf(empl.getAssignmentId())).collect(Collectors.toList());
-            assignmentIds.addAll(deleteMedicalEmployees.stream().map(String::valueOf).collect(Collectors.toList()));
-            Iterable<AreaMedicalEmployee> emloyees = areaMedicalEmployeeCRUDRepository.findAllById(assignmentIds);
-            for (AreaMedicalEmployee empl : emloyees) {
+            for (AreaMedicalEmployee empl : changeEmployees) {
                 if (!empl.getReplacement()) {
-                    throw exception;
+                    throwException(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED);
                 }
             }
         }
 
         //4
         if (!changeMedicalEmployees.isEmpty()) {
+            for (AreaMedicalEmployee empl : changeEmployees) {
 
+                //4.1
+                if (empl.getEndDate()!= null && empl.getEndDate().isBefore(LocalDate.now()) || empl.getArea().getId() != areaId || empl.isDeleted()) {
+                    throwException(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
+                            new ValidationParameter("id",empl.getId()));
+                }
+
+                //4.2
+                ChangeMedicalEmployee inputEmpl = changeMedicalEmployees.stream().filter(
+                        em -> empl.getId().equals(String.valueOf(em.getAssignmentId()))).findFirst().get();
+                if (inputEmpl.getEndDate() == null && inputEmpl.getStartDate() == null) {
+                    throwException(AreaErrorReason.NOTHING_TO_CHANGE);
+                }
+
+                //4.3
+                LocalDate startDate = inputEmpl.getStartDate() != null ? inputEmpl.getStartDate() : empl.getStartDate();
+                LocalDate endDate = inputEmpl.getEndDate() != null ? inputEmpl.getEndDate() : empl.getEndDate();
+                if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+                    throwException(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
+                            new ValidationParameter("endDate",endDate),
+                            new ValidationParameter("startDate", startDate));
+                }
+            }
         }
+
+        //5
+        if (!addMedicalEmployees.isEmpty()) {
+            for (AddMedicalEmployee empl : addMedicalEmployees) {
+                //5.1
+                if (empl.getStartDate().isBefore(LocalDate.now())) {
+                    throwException(AreaErrorReason.START_DATE_IN_PAST, new ValidationParameter("startDate", empl.getStartDate()));
+                }
+
+                //5.2
+                Specialization specialization = specializationToPositionNomRepository.getSpecializationIdByPositionNomId(empl.getPositionId());
+
+                //5.3
+                if (specialization!= null && area.getAreaType().getSpecialization().getId().equals(specialization.getId())) {
+                    throwException(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
+                            new ValidationParameter("InputSpecialization",specialization.getTitle()),
+                            new ValidationParameter("id", empl.getMedicalEmployeeJobInfoId()),
+                            new ValidationParameter("AreaSpecialization", area.getAreaType().getSpecialization().getTitle()));
+                }
+
+                //5.4
+                List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
+                if (positions != null && positions.stream().noneMatch(pos -> pos.getMedicalPositionId() == empl.getPositionId())) {
+                    throwException(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
+                            new ValidationParameter("specialization", specialization.getTitle()),
+                            new ValidationParameter("id", empl.getMedicalEmployeeJobInfoId()),
+                            new ValidationParameter("areaType", area.getAreaType().getName()));
+                }
+            }
+        }
+
+        //6
         return null;
+    }
+
+    private void throwException(AreaErrorReason e, ValidationParameter... params) throws ContingentException {
+        throw new ContingentException(new Validation().error(e,params));
     }
 }

@@ -63,6 +63,12 @@ public class AreaMedicalEmployee implements Serializable {
     @Column(name = "UPDATE_DATE", nullable = false)
     private LocalDateTime updateDate;
 
+    @Column(name = "deleted", nullable = false)
+    private Boolean isDeleted;
+
+    @Column(name = "subdivision_id", nullable = false)
+    private Long subdivisionId;
+
     public String getId() {
         return id;
     }
@@ -150,7 +156,23 @@ public class AreaMedicalEmployee implements Serializable {
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
     }
-    
+
+    public Boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Long getSubdivisionId() {
+        return subdivisionId;
+    }
+
+    public void setSubdivisionId(Long subdivisionId) {
+        this.subdivisionId = subdivisionId;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -162,7 +184,7 @@ public class AreaMedicalEmployee implements Serializable {
     }
 
     @Override
-    public int hashCode() {        
+    public int hashCode() {
         return Objects.hashCode(this.id);
     }
 }

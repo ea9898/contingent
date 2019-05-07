@@ -1924,4 +1924,40 @@
                                  referencedTableName="MU_PROFILES"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-32-1" author="ashnaider" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="area_medical_employee"/>
+            <not>
+                <columnExists tableName="area_medical_employee" columnName="deleted"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки deleted таблицы area_medical_employee</comment>
+        <addColumn tableName="area_medical_employee">
+            <column name="deleted" type="NUMBER(1)" remarks="Работник удалён" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="area_medical_employee" columnName="deleted"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-32-2" author="ashnaider" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="area_medical_employee"/>
+            <not>
+                <columnExists tableName="area_medical_employee" columnName="SUBDIVISION_ID"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки SUBDIVISION_ID таблицы area_medical_employee</comment>
+        <addColumn tableName="area_medical_employee">
+            <column name="SUBDIVISION_ID" type="NUMBER(20)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="area_medical_employee" columnName="SUBDIVISION_ID"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
