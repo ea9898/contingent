@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "AREA_TYPES")
@@ -23,42 +24,42 @@ public class AreaTypes implements Serializable {
     private static final long serialVersionUID = -1047920239396677745L;
 
     @Id
-	@Column(name = "CODE", unique = true, nullable = false)
-	private Long code;
+    @Column(name = "CODE", unique = true, nullable = false)
+    private Long code;
 
     @Size(max = 100)
-	@Column(name = "NAME")
-	private String name;
+    @Column(name = "NAME")
+    private String name;
 
     @JoinColumn(name = "KIND_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-	private KindAreaTypes kindAreaType;
+    private KindAreaTypes kindAreaType;
 
     @JoinColumn(name = "CLASS_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-	private ClassAreaTypes classAreaType;
+    private ClassAreaTypes classAreaType;
 
     @Size(max = 1)
-	@Column(name = "GENDER")
-	private String gender;
+    @Column(name = "GENDER")
+    private String gender;
 
-	@Column(name = "AGE_MIN")
-	private Integer ageMin;
+    @Column(name = "AGE_MIN")
+    private Integer ageMin;
 
-	@Column(name = "AGE_MAX")
-	private Integer ageMax;
+    @Column(name = "AGE_MAX")
+    private Integer ageMax;
 
-	@Column(name = "AGE_M_MIN")
-	private Integer ageMMin;
+    @Column(name = "AGE_M_MIN")
+    private Integer ageMMin;
 
-	@Column(name = "AGE_M_MAX")
-	private Integer ageMMax;
+    @Column(name = "AGE_M_MAX")
+    private Integer ageMMax;
 
-	@Column(name = "AGE_W_MIN")
-	private Integer ageWMin;
+    @Column(name = "AGE_W_MIN")
+    private Integer ageWMin;
 
-	@Column(name = "AGE_W_MAX")
-	private Integer ageWMax;
+    @Column(name = "AGE_W_MAX")
+    private Integer ageWMax;
 
     @Column(name = "ARCHIVED")
     @Convert(converter = BooleanIntegerConverter.class)
@@ -66,7 +67,7 @@ public class AreaTypes implements Serializable {
 
     @JoinColumn(name = "SPECIALIZATION_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-	private Specialization specialization;
+    private Specialization specialization;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "areaType")
     private PrimaryAreaTypeAttributes attributes;
@@ -181,5 +182,20 @@ public class AreaTypes implements Serializable {
 
     public void setAttributes(PrimaryAreaTypeAttributes attributes) {
         this.attributes = attributes;
+    }
+    
+    @Override
+    public int hashCode() {        
+        return (this.code != null) ? Objects.hashCode(this.code) : 0;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof AreaTypes) {
+            return ((AreaTypes) obj).getCode().equals(this.code);
+        }
+        return false;
     }
 }

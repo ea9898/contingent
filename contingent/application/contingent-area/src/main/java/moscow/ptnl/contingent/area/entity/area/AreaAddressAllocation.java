@@ -25,7 +25,7 @@ public class AreaAddressAllocation implements Serializable {
     @Id
     @JoinColumn(name = "DISTRIBUTION_TO_MO_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-	private MoAddressAllocation distributionToMo;
+    private MoAddressAllocation distributionToMo;
 
     @Id
     @JoinColumn(name = "AREA_ID")

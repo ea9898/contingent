@@ -15,6 +15,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "ADDRESS_ALLOCATION_ORDER")
@@ -26,8 +27,8 @@ public class AddressAllocationOrder implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_ADDRESS_ALLOCATION_ORDER")
-	@Column(name = "ID", unique = true, nullable = false)
-	private Long id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
 
     @Size(max = 255)
     @Column(name = "NUMBER", nullable = false)
@@ -116,5 +117,20 @@ public class AddressAllocationOrder implements Serializable {
 
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof AddressAllocationOrder) {
+            return ((AddressAllocationOrder) obj).getId().equals(this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.id != null) ? Objects.hashCode(this.id) : 0;
     }
 }

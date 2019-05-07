@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "ESU_OUTPUT")
@@ -22,18 +23,18 @@ public class EsuOutput implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="ESU_OUTPUT_SEQ_ID")
-	@Column(name = "ID", unique = true, nullable = false)
-	private Long id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
 
     @Size(max = 255)
-	@Column(name = "ESU_ID")
-	private String esuId;
+    @Column(name = "ESU_ID")
+    private String esuId;
 
-	@Column(name = "\"OFFSET\"")
-	private Long offset;
+    @Column(name = "\"OFFSET\"")
+    private Long offset;
 
-	@Column(name = "PARTITION")
-	private Integer partition;
+    @Column(name = "PARTITION")
+    private Integer partition;
 
     @Column(name = "SENT_TIME", nullable = false)
     private LocalDateTime sentTime;
@@ -110,5 +111,20 @@ public class EsuOutput implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof EsuOutput) {
+            return ((EsuOutput) obj).getId().equals(this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.id != null) ? Objects.hashCode(this.id) : 0;
     }
 }

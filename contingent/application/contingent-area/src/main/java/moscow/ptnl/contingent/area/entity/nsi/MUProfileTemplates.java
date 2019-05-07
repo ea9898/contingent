@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "MU_PROFILE_TEMPLATES")
@@ -21,11 +22,11 @@ public class MUProfileTemplates implements Serializable {
     private static final long serialVersionUID = -6543198512394189025L;
 
     @Id
-	@Column(name = "ID", unique = true, nullable = false)
-	private Long id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
 
-	@Column(name = "MU_TYPE_ID")
-	private Integer muTypeId;
+    @Column(name = "MU_TYPE_ID")
+    private Integer muTypeId;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -65,5 +66,20 @@ public class MUProfileTemplates implements Serializable {
 
     public void setAvailableToCreate(Boolean availableToCreate) {
         this.availableToCreate = availableToCreate;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof MUProfileTemplates) {
+            return ((MUProfileTemplates) obj).getId().equals(this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.id != null) ? Objects.hashCode(this.id) : 0;
     }
 }

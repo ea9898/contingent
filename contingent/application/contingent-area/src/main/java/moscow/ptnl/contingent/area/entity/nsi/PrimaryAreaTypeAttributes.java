@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "PR_AREA_TYPE_ATTRS")
@@ -22,8 +23,8 @@ public class PrimaryAreaTypeAttributes implements Serializable {
     private static final long serialVersionUID = 6377158523177395350L;
 
     @Id
-	@Column(name = "ID", unique = true, nullable = false)
-	private Long id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @OneToOne(fetch = FetchType.LAZY)
@@ -126,5 +127,20 @@ public class PrimaryAreaTypeAttributes implements Serializable {
 
     public void setAreaCountLimit(AreaCountLimit areaCountLimit) {
         this.areaCountLimit = areaCountLimit;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof PrimaryAreaTypeAttributes) {
+            return ((PrimaryAreaTypeAttributes) obj).getId().equals(this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.id != null) ? Objects.hashCode(this.id) : 0;
     }
 }

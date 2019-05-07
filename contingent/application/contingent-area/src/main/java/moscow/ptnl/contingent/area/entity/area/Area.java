@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,14 +34,14 @@ public class Area implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_AREAS")
-	@Column(name = "ID", unique = true, nullable = false)
-	private Long id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
 
-	@Column(name = "MO_ID")
-	private Long moId;
+    @Column(name = "MO_ID")
+    private Long moId;
 
-	@Column(name = "MU_ID", nullable = false)
-	private Long muId;
+    @Column(name = "MU_ID", nullable = false)
+    private Long muId;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -66,23 +66,23 @@ public class Area implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean attachByMedicalReason;
 
-	@Column(name = "AGE_MIN")
-	private Integer ageMin;
+    @Column(name = "AGE_MIN")
+    private Integer ageMin;
 
-	@Column(name = "AGE_MAX")
-	private Integer ageMax;
+    @Column(name = "AGE_MAX")
+    private Integer ageMax;
 
-	@Column(name = "AGE_M_MIN")
-	private Integer ageMMin;
+    @Column(name = "AGE_M_MIN")
+    private Integer ageMMin;
 
-	@Column(name = "AGE_M_MAX")
-	private Integer ageMMax;
+    @Column(name = "AGE_M_MAX")
+    private Integer ageMMax;
 
-	@Column(name = "AGE_W_MIN")
-	private Integer ageWMin;
+    @Column(name = "AGE_W_MIN")
+    private Integer ageWMin;
 
-	@Column(name = "AGE_W_MAX")
-	private Integer ageWMax;
+    @Column(name = "AGE_W_MAX")
+    private Integer ageWMax;
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
@@ -285,5 +285,20 @@ public class Area implements Serializable {
 
     public Set<AreaToAreaType> getPrimaryAreaTypes() {
         return primaryAreaTypes;
+    }
+    
+    @Override
+    public int hashCode() {        
+        return (this.id != null) ? Objects.hashCode(this.id) : 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {        
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof Area) {
+            return ((Area) obj).getId().equals(this.id);
+        }
+        return false;
     }
 }

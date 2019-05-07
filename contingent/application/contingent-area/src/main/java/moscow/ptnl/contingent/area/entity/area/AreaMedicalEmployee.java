@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "AREA_MEDICAL_EMPLOYEE")
@@ -26,11 +27,11 @@ public class AreaMedicalEmployee implements Serializable {
 
     @Id
     @Size(max = 50)
-	@Column(name = "ID", unique = true, nullable = false)
-	private String id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private String id;
 
-	@Column(name = "MEDICAL_EMPLOYEE_JOB_INFO_ID")
-	private Long medicalEmployeeJobInfoId;
+    @Column(name = "MEDICAL_EMPLOYEE_JOB_INFO_ID")
+    private Long medicalEmployeeJobInfoId;
 
     @JoinColumn(name = "AREA_ID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -148,5 +149,20 @@ public class AreaMedicalEmployee implements Serializable {
 
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof AreaMedicalEmployee) {
+            return ((AreaMedicalEmployee) obj).getId().equals(this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.id != null) ? Objects.hashCode(this.id) : 0;
     }
 }

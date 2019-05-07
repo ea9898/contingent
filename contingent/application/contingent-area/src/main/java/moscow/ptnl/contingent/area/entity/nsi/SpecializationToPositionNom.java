@@ -23,12 +23,12 @@ public class SpecializationToPositionNom implements Serializable {
     @Id
     @JoinColumn(name = "SPECIALIZATION_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-	private Specialization specialization;
+    private Specialization specialization;
 
     @Id
     @JoinColumn(name = "POSITION_NOM_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-	private PositionNom positionNom;
+    private PositionNom positionNom;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)

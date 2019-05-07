@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "ADDRESS_FORMING_ELEMENT")
@@ -16,76 +17,76 @@ public class AddressFormingElement implements Serializable {
     private static final long serialVersionUID = 5085904638016789913L;
 
     @Id
-	@Column(name = "GLOBAL_ID", unique = true, nullable = false)
-	private Long globalId;
+    @Column(name = "GLOBAL_ID", unique = true, nullable = false)
+    private Long globalId;
 
     @Size(max = 4)
-	@Column(name = "REGION_TE_CODE")
-	private String regionTeCode;
+    @Column(name = "REGION_TE_CODE")
+    private String regionTeCode;
 
     @Size(max = 4000)
-	@Column(name = "AREACODE_OMK_TE")
-	private String areaCodeOmkTe;
+    @Column(name = "AREACODE_OMK_TE")
+    private String areaCodeOmkTe;
 
     @Size(max = 3)
-	@Column(name = "AREACODE")
-	private String areaCode;
+    @Column(name = "AREACODE")
+    private String areaCode;
 
     @Size(max = 3)
-	@Column(name = "CITYCODE")
-	private String cityCode;
+    @Column(name = "CITYCODE")
+    private String cityCode;
 
     @Size(max = 3)
-	@Column(name = "PLACECODE")
-	private String placeCode;
+    @Column(name = "PLACECODE")
+    private String placeCode;
 
     @Size(max = 4)
-	@Column(name = "PLANCODE")
-	private String planCode;
+    @Column(name = "PLANCODE")
+    private String planCode;
 
     @Size(max = 4)
-	@Column(name = "STREETCODE")
-	private String streetCode;
+    @Column(name = "STREETCODE")
+    private String streetCode;
 
     @Size(max = 2)
-	@Column(name = "AOLEVEL")
-	private String aoLevel;
+    @Column(name = "AOLEVEL")
+    private String aoLevel;
 
     @Size(max = 4000)
-	@Column(name = "ADDRESS", nullable = false)
-	private String address;
+    @Column(name = "ADDRESS", nullable = false)
+    private String address;
 
     @Size(max = 4000)
-	@Column(name = "REGION_TE_NAME")
-	private String regionTeName;
+    @Column(name = "REGION_TE_NAME")
+    private String regionTeName;
 
     @Size(max = 4000)
-	@Column(name = "AREA_TE_NAME")
-	private String areaTeName;
+    @Column(name = "AREA_TE_NAME")
+    private String areaTeName;
 
     @Size(max = 4000)
-	@Column(name = "AREA_NAME")
-	private String areaName;
+    @Column(name = "AREA_NAME")
+    private String areaName;
 
     @Size(max = 4000)
-	@Column(name = "CITY_NAME")
-	private String cityName;
+    @Column(name = "CITY_NAME")
+    private String cityName;
 
     @Size(max = 4000)
-	@Column(name = "PLACE_NAME")
-	private String placeName;
+    @Column(name = "PLACE_NAME")
+    private String placeName;
 
     @Size(max = 4000)
-	@Column(name = "PLAN_NAME")
-	private String planName;
+    @Column(name = "PLAN_NAME")
+    private String planName;
 
     @Size(max = 4000)
-	@Column(name = "STREET_NAME")
-	private String streetName;
+    @Column(name = "STREET_NAME")
+    private String streetName;
 
     @Size(max = 10)
-	@Column(name = "STREET_OMK_UM")
-	private String streetOmkUm;
+    @Column(name = "STREET_OMK_UM")
+    private String streetOmkUm;
 
     @Column(name = "STREET_ID")
     private Long streetId;
@@ -240,5 +241,20 @@ public class AddressFormingElement implements Serializable {
 
     public void setStreetId(Long streetId) {
         this.streetId = streetId;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof AddressFormingElement) {
+            return ((AddressFormingElement) obj).getGlobalId().equals(this.globalId);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.globalId != null) ? Objects.hashCode(this.globalId) : 0;
     }
 }

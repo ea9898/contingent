@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "REGISTRY_BUILDING")
@@ -204,5 +205,20 @@ public class RegistryBuilding implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof RegistryBuilding) {
+            return ((RegistryBuilding) obj).getGlobalId().equals(this.globalId);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.globalId != null) ? Objects.hashCode(this.globalId) : 0;
     }
 }

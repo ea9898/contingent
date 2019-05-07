@@ -1,9 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.nsi.Address;
-import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
-import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -17,6 +15,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "ADDRESS_ALLOCATION_TO_MO")
@@ -26,11 +25,11 @@ public class MoAddressAllocation implements Serializable {
     private static final long serialVersionUID = -786212687627911093L;
 
     @Id
-	@Column(name = "ID", unique = true, nullable = false)
-	private Long id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
 
-	@Column(name = "MO_ID")
-	private Long moId;
+    @Column(name = "MO_ID")
+    private Long moId;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -148,5 +147,20 @@ public class MoAddressAllocation implements Serializable {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof MoAddressAllocation) {
+            return ((MoAddressAllocation) obj).getId().equals(this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.id != null) ? Objects.hashCode(this.id) : 0;
     }
 }

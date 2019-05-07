@@ -21,12 +21,12 @@ public class AreaTypeRelations implements Serializable {
     @Id
     @JoinColumn(name = "DEPENDENT_MU_PROFILE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-	private MuProfile dependentMuProfile;
+    private MuProfile dependentMuProfile;
 
     @Id
     @JoinColumn(name = "PRIMARY_MU_PROFILE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-	private MuProfile primaryMuProfile;
+    private MuProfile primaryMuProfile;
 
     public MuProfile getDependentMuProfile() {
         return dependentMuProfile;

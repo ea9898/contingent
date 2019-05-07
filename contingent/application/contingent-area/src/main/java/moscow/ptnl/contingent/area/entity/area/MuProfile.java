@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "MU_PROFILES")
@@ -25,11 +26,11 @@ public class MuProfile implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_MU_PROFILES")
-	@Column(name = "ID", unique = true, nullable = false)
-	private Long id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
 
-	@Column(name = "MU_ID", nullable = false)
-	private Long muId;
+    @Column(name = "MU_ID", nullable = false)
+    private Long muId;
 
     @JoinColumn(name = "AREA_TYPE_CODE", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -64,5 +65,20 @@ public class MuProfile implements Serializable {
 
     public void setAreaType(AreaTypes areaType) {
         this.areaType = areaType;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof MuProfile) {
+            return ((MuProfile) obj).getId().equals(this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.id != null) ? Objects.hashCode(this.id) : 0;
     }
 }

@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "POSITION_NOM")
@@ -19,12 +20,12 @@ public class PositionNom implements Serializable {
     private static final long serialVersionUID = -5823017631401518492L;
 
     @Id
-	@Column(name = "ID", unique = true, nullable = false)
-	private Long id;
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
 
     @Size(max = 1000)
-	@Column(name = "TITLE", nullable = false)
-	private String title;
+    @Column(name = "TITLE", nullable = false)
+    private String title;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
@@ -63,5 +64,20 @@ public class PositionNom implements Serializable {
 
     public void setResourceTypeCode(Long resourceTypeCode) {
         this.resourceTypeCode = resourceTypeCode;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof PositionNom) {
+            return ((PositionNom) obj).getId().equals(this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return (this.id != null) ? Objects.hashCode(this.id) : 0;
     }
 }
