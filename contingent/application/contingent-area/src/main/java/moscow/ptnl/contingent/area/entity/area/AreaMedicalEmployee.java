@@ -69,6 +69,25 @@ public class AreaMedicalEmployee implements Serializable {
     @Column(name = "subdivision_id", nullable = false)
     private Long subdivisionId;
 
+    public AreaMedicalEmployee() {
+    }
+
+    public AreaMedicalEmployee(Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
+                               LocalDate endDate, String snils, Long medicalPositionId, LocalDateTime createDate,
+                               LocalDateTime updateDate, Boolean isDeleted, Long subdivisionId) {
+        this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
+        this.area = area;
+        this.replacement = replacement;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.snils = snils;
+        this.medicalPositionId = medicalPositionId;
+        this.createDate = createDate;
+        this.updateDate = updateDate;
+        this.isDeleted = isDeleted;
+        this.subdivisionId = subdivisionId;
+    }
+
     public String getId() {
         return id;
     }

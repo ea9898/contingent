@@ -10,20 +10,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
-@Transactional(propagation= Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY)
 public class SpecializationToPositionNomRepositoryImpl extends BaseRepository implements SpecializationToPositionNomRepository {
     @Override
     public Specialization getSpecializationIdByPositionNomId(long positionNomId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<SpecializationToPositionNom> criteria = criteriaBuilder.createQuery(SpecializationToPositionNom.class);
-        Root<SpecializationToPositionNom> template = criteria.from(SpecializationToPositionNom.class);
+        Root<SpecializationToPositionNom> root = criteria.from(SpecializationToPositionNom.class);
+        root.fetch(SpecializationToPositionNom_.specialization, JoinType.LEFT);
         criteria.where(
-                criteriaBuilder.equal(template.get(SpecializationToPositionNom_.positionNom.getName()), positionNomId)
-        );
+                criteriaBuilder.equal(root.get(SpecializationToPositionNom_.positionNom), positionNomId));
         List<SpecializationToPositionNom> results = entityManager.createQuery(criteria).getResultList();
 
         return results.isEmpty() ? null : results.get(0).getSpecialization();
