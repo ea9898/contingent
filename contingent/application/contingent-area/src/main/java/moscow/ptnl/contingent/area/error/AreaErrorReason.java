@@ -9,6 +9,7 @@ public enum AreaErrorReason implements ErrorReason {
     AREA_TYPE_NOT_FOUND("Е002", "Тип участка с ИД: %s не найден в системе"),
     AREA_NOT_FOUND("E006", "Участок обслуживания МО с ИД %s не найден в системе"),
     AREA_IS_ARCHIVED("E012", "Участок с ИД %s находится в статусе «Архивный»"),
+    AREA_IS_NOT_ARCHIVED("E014", "Участок с ИД %s находится в статусе «Активный»"),
     NO_SEARCH_PARAMETERS("E024", "Не заданы критерии поиска"),
     AREA_TYPES_NOT_EXISTS_IN_PROFILE("E026", "Тип(ы) участка с ИД %s отсутствует(ют) в профиле"),
     MU_PROFILE_EXISTS("E027", "Для МУ %s участок с типом %s уже задан"),
@@ -38,6 +39,7 @@ public enum AreaErrorReason implements ErrorReason {
         START_DATE_IS_AFTER_END_DATE("UE063", "Дата окончания назначения на участок (%s) не может быть раньше даты начала назначения (%s)"),
     CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT("UE065", "Невозможно установить признак для автоматического прикрепления, т.к. для данного типа участка (%s) не разрешено прикрепление через МПГУ"),
     NOTHING_TO_CHANGE("UE066", "Отсутствуют сведения для изменения"),
+    CANT_RESTORE_PERSONAL_KIND_AREA("UE069", "Восстановление из архива невозможно, т.к. вид участка «Именной»"),
     ;
 
     private final String description;

@@ -279,4 +279,20 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="restoreAreaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element name="options" type="core:Options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="restoreAreaResponse">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

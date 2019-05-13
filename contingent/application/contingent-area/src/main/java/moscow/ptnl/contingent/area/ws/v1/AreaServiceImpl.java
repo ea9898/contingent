@@ -35,6 +35,8 @@ import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdResponse;
 import ru.mos.emias.contingent2.area.types.GetProfileMURequest;
 import ru.mos.emias.contingent2.area.types.GetProfileMUResponse;
+import ru.mos.emias.contingent2.area.types.RestoreAreaRequest;
+import ru.mos.emias.contingent2.area.types.RestoreAreaResponse;
 import ru.mos.emias.contingent2.area.types.SearchOrderRequest;
 import ru.mos.emias.contingent2.area.types.SearchOrderResponse;
 import ru.mos.emias.contingent2.area.types.SetMedicalEmployeeOnAreaRequest;
@@ -257,6 +259,19 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             SetMedicalEmployeeOnAreaResponse response = new SetMedicalEmployeeOnAreaResponse();
             response.getAssignmentIds().addAll(assignmentIds);
             return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
+        try {
+            areaService.restoreArea(body.getAreaId());
+
+            return new RestoreAreaResponse();
         }
         catch (Exception ex) {
             throw mapException(ex);
