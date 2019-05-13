@@ -226,7 +226,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         resetAutoAssignForAttachment(area);
-        esuService.saveAndPublishToESU(new AreaCreateEvent(area, null));
 
         return area.getId();
     }
@@ -323,8 +322,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setUpdateDate(LocalDateTime.now());
 
         resetAutoAssignForAttachment(area);
-
-        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, null, null));
     }
 
     @Override
