@@ -13,7 +13,5 @@ public interface AreaMedicalEmployeeRepository {
 
     List<AreaMedicalEmployee> getMainEmployees(long areaId, List<Long> deleteIds);
 
-    List<Long> getJobIds(long areaId, List<Long> deleteIds);
-
-    List<AreaMedicalEmployee> getEmployeesByJobInfoId(long medicalEmployeeJobInfoId, List<Long> deleteIds);
+    List<AreaMedicalEmployee> getEmployeesByAreaId(long areaId, List<Long> deleteIds);
 }

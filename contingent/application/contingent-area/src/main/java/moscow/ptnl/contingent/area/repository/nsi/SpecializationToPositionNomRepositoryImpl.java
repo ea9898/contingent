@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
@@ -22,11 +21,16 @@ public class SpecializationToPositionNomRepositoryImpl extends BaseRepository im
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<SpecializationToPositionNom> criteria = criteriaBuilder.createQuery(SpecializationToPositionNom.class);
         Root<SpecializationToPositionNom> root = criteria.from(SpecializationToPositionNom.class);
-        root.fetch(SpecializationToPositionNom_.specialization, JoinType.LEFT);
+        //Join<SpecializationToPositionNom, Specialization> join = root.join(SpecializationToPositionNom_.specialization, JoinType.LEFT);
+        criteria.select(root);
         criteria.where(
                 criteriaBuilder.equal(root.get(SpecializationToPositionNom_.positionNom), positionNomId));
         List<SpecializationToPositionNom> results = entityManager.createQuery(criteria).getResultList();
 
-        return results.isEmpty() ? null : results.get(0).getSpecialization();
+        if (results.isEmpty()) {
+            return null;
+        } else {
+            return results.get(0).getSpecialization(); //TODO не получается зделать FetchType.EAGER
+        }
     }
 }

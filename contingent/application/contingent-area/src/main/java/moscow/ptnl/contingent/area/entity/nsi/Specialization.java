@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "SPECIALIZATION")
-@Cacheable
+//@Cacheable
 public class Specialization implements Serializable {
 
     private static final long serialVersionUID = -3935499028862334002L;

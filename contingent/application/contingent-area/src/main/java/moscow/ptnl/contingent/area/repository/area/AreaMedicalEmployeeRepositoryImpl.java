@@ -26,7 +26,8 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
                 criteriaBuilder.equal(root.get(AreaMedicalEmployee_.area).get(Area_.id), areaId),
                 criteriaBuilder.equal(root.get(AreaMedicalEmployee_.replacement), false),
                 criteriaBuilder.equal(root.get(AreaMedicalEmployee_.isDeleted), false),
-                criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds)),
+                deleteIds.isEmpty() ? criteriaBuilder.conjunction() :
+                        criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds)),
                 criteriaBuilder.lessThanOrEqualTo(root.get(AreaMedicalEmployee_.startDate), LocalDate.now()),
                 criteriaBuilder.or(
                         criteriaBuilder.greaterThan(root.get(AreaMedicalEmployee_.endDate), LocalDate.now()),
@@ -42,40 +43,29 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
         Root<AreaMedicalEmployee> root = criteria.from(AreaMedicalEmployee.class);
         criteria.where(criteriaBuilder.and(
                 criteriaBuilder.equal(root.get(AreaMedicalEmployee_.area).get(Area_.id), areaId),
-                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.replacement), false),
-                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.isDeleted), false),
-                criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds))))
+                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.replacement), 0),
+                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.isDeleted), 0),
+                deleteIds.isEmpty() ? criteriaBuilder.conjunction() :
+                        criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds))))
                 .orderBy(criteriaBuilder.asc(root.get(AreaMedicalEmployee_.startDate)));
 
         return entityManager.createQuery(criteria).getResultList();
     }
 
-    @Override
-    public List<Long> getJobIds(long areaId, List<Long> deleteIds) {
-/*        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<AreaMedicalEmployee> criteria = criteriaBuilder.createQuery(AreaMedicalEmployee.class);
-        Root<AreaMedicalEmployee> root = criteria.from(AreaMedicalEmployee.class);
-        criteria.where(criteriaBuilder.and(
-                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.medicalEmployeeJobInfoId), medicalEmployeeJobInfoId),
-                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.isDeleted), false),
-                criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds))))
-                .orderBy(criteriaBuilder.asc(root.get(AreaMedicalEmployee_.startDate)));
-
-        return entityManager.createQuery(criteria).getResultList();*/
-        return null;
-    }
 
     @Override
-    public List<AreaMedicalEmployee> getEmployeesByJobInfoId(long medicalEmployeeJobInfoId, List<Long> deleteIds) {
+    public List<AreaMedicalEmployee> getEmployeesByAreaId(long areaId, List<Long> deleteIds) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AreaMedicalEmployee> criteria = criteriaBuilder.createQuery(AreaMedicalEmployee.class);
         Root<AreaMedicalEmployee> root = criteria.from(AreaMedicalEmployee.class);
         criteria.where(criteriaBuilder.and(
-                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.medicalEmployeeJobInfoId), medicalEmployeeJobInfoId),
-                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.isDeleted), false),
-                criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds))))
-                .orderBy(criteriaBuilder.asc(root.get(AreaMedicalEmployee_.startDate)));
-
+                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.area).get(Area_.id), areaId),
+                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.isDeleted), 0),
+                deleteIds.isEmpty() ? criteriaBuilder.conjunction() :
+                        criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds))))
+                .orderBy(criteriaBuilder.asc(root.get(AreaMedicalEmployee_.medicalEmployeeJobInfoId)),
+                        criteriaBuilder.asc(root.get(AreaMedicalEmployee_.startDate)));
         return entityManager.createQuery(criteria).getResultList();
     }
+
 }
