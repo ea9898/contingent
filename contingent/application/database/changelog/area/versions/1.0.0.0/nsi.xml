@@ -490,30 +490,6 @@
                                  referencedTableName="AREA_TYPES"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-11" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="POSITION_NOM"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы POSITION_NOM</comment>
-        <createTable tableName="POSITION_NOM">
-            <column name="ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="TITLE" type="VARCHAR2(1000)">
-                <constraints nullable="false" />
-            </column>
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-            <column name="RESOURCE_TYPE_CODE" type="BIGINT" />
-        </createTable>
-        <rollback>
-            <dropTable tableName="POSITION_NOM"/>
-        </rollback>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-57-12" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -664,7 +640,7 @@
             <column name="SPECIALIZATION_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
-            <column name="POSITION_NOM_ID" type="BIGINT">
+            <column name="POSITION_NOM_CLINIC_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
@@ -696,25 +672,25 @@
                 <indexExists indexName="IXFK_SPECIALIZATI_POSITIO01"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки POSITION_NOM_ID таблицы SPECIALIZATION_TO_POSITION_NOM</comment>
+        <comment>Создание индекса колонки POSITION_NOM_CLINIC_ID таблицы SPECIALIZATION_TO_POSITION_NOM</comment>
         <createIndex indexName="IXFK_SPECIALIZATI_POSITIO01"
                      tableName="SPECIALIZATION_TO_POSITION_NOM"
                      unique="false">
-            <column name="POSITION_NOM_ID" type="number"/>
+            <column name="POSITION_NOM_CLINIC_ID" type="number"/>
         </createIndex>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-14-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="SPECIALIZATION_TO_POSITION_NOM" columnName="POSITION_NOM_ID" />
-            <columnExists tableName="POSITION_NOM" columnName="ID" />
+            <columnExists tableName="SPECIALIZATION_TO_POSITION_NOM" columnName="POSITION_NOM_CLINIC_ID" />
+            <columnExists tableName="POSITION_NOM_CLINIC" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_SPECIALIZATI_POSITION_NO_01</comment>
-        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_ID"
+        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_CLINIC_ID"
                                  baseTableName="SPECIALIZATION_TO_POSITION_NOM"
                                  constraintName="FK_SPECIALIZATI_POSITION_NO_01"
                                  referencedColumnNames="ID"
-                                 referencedTableName="POSITION_NOM"/>
+                                 referencedTableName="POSITION_NOM_CLINIC"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-14-4" author="sorlov" labels="1.0.0.0">
