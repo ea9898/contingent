@@ -31,14 +31,14 @@ public class SpecializationToPositionNom implements Serializable {
     @Id
     @JoinColumn(name = "POSITION_NOM_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private PositionNom positionNom;
+    private PositionNomClinic positionNomClinic;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
     
     public Key getKey() {
-        return new Key(specialization, positionNom);
+        return new Key(specialization, positionNomClinic);
     }
 
     public Specialization getSpecialization() {
@@ -49,12 +49,12 @@ public class SpecializationToPositionNom implements Serializable {
         this.specialization = specialization;
     }
 
-    public PositionNom getPositionNom() {
-        return positionNom;
+    public PositionNomClinic getPositionNomClinic() {
+        return positionNomClinic;
     }
 
-    public void setPositionNom(PositionNom positionNom) {
-        this.positionNom = positionNom;
+    public void setPositionNomClinic(PositionNomClinic positionNomClinic) {
+        this.positionNomClinic = positionNomClinic;
     }
 
     public Boolean getArchived() {
@@ -86,13 +86,13 @@ public class SpecializationToPositionNom implements Serializable {
     public static class Key implements Serializable {
         
         private Specialization specialization;
-        private PositionNom positionNom;
+        private PositionNomClinic positionNomClinic;
         
         public Key(){}
         
-        public Key(Specialization specialization, PositionNom positionNom) {
+        public Key(Specialization specialization, PositionNomClinic positionNomClinic) {
             this.specialization = specialization;
-            this.positionNom = positionNom;
+            this.positionNomClinic = positionNomClinic;
         }
 
         public Specialization getSpecialization() {
@@ -103,12 +103,12 @@ public class SpecializationToPositionNom implements Serializable {
             this.specialization = specialization;
         }
 
-        public PositionNom getPositionNom() {
-            return positionNom;
+        public PositionNomClinic getPositionNom() {
+            return positionNomClinic;
         }
 
-        public void setPositionNom(PositionNom positionNom) {
-            this.positionNom = positionNom;
+        public void setPositionNom(PositionNomClinic positionNomClinic) {
+            this.positionNomClinic = positionNomClinic;
         }    
         
         @Override

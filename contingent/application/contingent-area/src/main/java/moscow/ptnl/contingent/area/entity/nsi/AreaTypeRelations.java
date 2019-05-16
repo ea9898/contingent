@@ -33,22 +33,22 @@ public class AreaTypeRelations implements Serializable {
         return new Key(dependentAreaType, primaryAreaType);
     }
 
-    public AreaTypes getDependentMuProfile() {
+    public AreaTypes getDependentAreaType() {
         return dependentAreaType;
     }
 
-    public void setDependentMuProfile(AreaTypes dependentMuProfile) {
-        this.dependentAreaType = dependentMuProfile;
+    public void setDependentAreaType(AreaTypes dependentAreaType) {
+        this.dependentAreaType = dependentAreaType;
     }
 
-    public AreaTypes getPrimaryMuProfile() {
+    public AreaTypes getPrimaryAreaType() {
         return primaryAreaType;
     }
 
-    public void setPrimaryMuProfile(AreaTypes primaryMuProfile) {
-        this.primaryAreaType = primaryMuProfile;
+    public void setPrimaryAreaType(AreaTypes primaryAreaType) {
+        this.primaryAreaType = primaryAreaType;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -69,49 +69,48 @@ public class AreaTypeRelations implements Serializable {
      */
     public static class Key implements Serializable {
         
-        private AreaTypes dependentMuProfile;
-        private AreaTypes primaryMuProfile;
+        private AreaTypes dependentAreaType;
+        private AreaTypes primaryAreaType;
         
-        public Key(){}
+        public Key() {}
         
-        public Key(AreaTypes dependentMuProfile, AreaTypes primaryMuProfile) {
-            this.dependentMuProfile = dependentMuProfile;
-            this.primaryMuProfile = primaryMuProfile;
-        }
-        
-
-        public AreaTypes getDependentMuProfile() {
-            return dependentMuProfile;
+        public Key(AreaTypes dependentAreaType, AreaTypes primaryAreaType) {
+            this.dependentAreaType = dependentAreaType;
+            this.primaryAreaType = primaryAreaType;
         }
 
-        public void setDependentMuProfile(AreaTypes dependentMuProfile) {
-            this.dependentMuProfile = dependentMuProfile;
+        public AreaTypes getDependentAreaType() {
+            return dependentAreaType;
         }
 
-        public AreaTypes getPrimaryMuProfile() {
-            return primaryMuProfile;
+        public void setDependentAreaType(AreaTypes dependentAreaType) {
+            this.dependentAreaType = dependentAreaType;
         }
 
-        public void setPrimaryMuProfile(AreaTypes primaryMuProfile) {
-            this.primaryMuProfile = primaryMuProfile;
-        }        
-        
+        public AreaTypes getPrimaryAreaType() {
+            return primaryAreaType;
+        }
+
+        public void setPrimaryAreaType(AreaTypes primaryAreaType) {
+            this.primaryAreaType = primaryAreaType;
+        }
+
         @Override
         public boolean equals(Object obj) {
             if(this == obj)
                 return true;
             if (obj != null && obj instanceof Key) {
                 Key other = (Key) obj;
-                if (other.getDependentMuProfile() == null || other.getPrimaryMuProfile() == null)
+                if (other.getDependentAreaType() == null || other.getPrimaryAreaType() == null)
                     return false;
-                return  other.getDependentMuProfile().equals(this.getDependentMuProfile()) && other.getPrimaryMuProfile().equals(this.getPrimaryMuProfile());
+                return other.getDependentAreaType().equals(this.getDependentAreaType()) && other.getPrimaryAreaType().equals(this.getPrimaryAreaType());
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(this.getDependentMuProfile(), this.getPrimaryMuProfile());
+            return Objects.hash(this.getDependentAreaType(), this.getPrimaryAreaType());
         }
         
     }

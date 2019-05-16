@@ -17,12 +17,12 @@ import java.util.List;
 @Transactional(propagation= Propagation.MANDATORY)
 public class SpecializationToPositionNomRepositoryImpl extends BaseRepository implements SpecializationToPositionNomRepository {
     @Override
-    public Specialization getSpecializationIdByPositionNomId(long positionNomId) {
+    public Specialization getSpecializationIdByPositionNomId(long positionNomClinicId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<SpecializationToPositionNom> criteria = criteriaBuilder.createQuery(SpecializationToPositionNom.class);
         Root<SpecializationToPositionNom> template = criteria.from(SpecializationToPositionNom.class);
         criteria.where(
-                criteriaBuilder.equal(template.get(SpecializationToPositionNom_.positionNom.getName()), positionNomId)
+                criteriaBuilder.equal(template.get(SpecializationToPositionNom_.positionNomClinic.getName()), positionNomClinicId)
         );
         List<SpecializationToPositionNom> results = entityManager.createQuery(criteria).getResultList();
 
