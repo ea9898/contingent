@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -62,7 +62,7 @@ public class AreaTypes implements Serializable {
     private Integer ageWMax;
 
     @Column(name = "ARCHIVED")
-    @Convert(converter = BooleanIntegerConverter.class)
+    @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
     @JoinColumn(name = "SPECIALIZATION_ID")

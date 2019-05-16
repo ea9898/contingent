@@ -23,7 +23,7 @@
             <column name="REGION_TE_NAME" type="VARCHAR2(4000)" />
             <column name="REGION_TE_TYPE_NAME" type="VARCHAR2(256)" />
             <column name="AREA_TE_ID" type="BIGINT" />
-            <column name="AREA_CODE_OMK_TE" type="VARCHAR2(4000)" remarks="Код района ОМК ТЕ"/>
+            <column name="AREA_CODE_OMK_TE" type="VARCHAR2(50)" remarks="Код района ОМК ТЕ"/>
             <column name="AREA_TE_NAME" type="VARCHAR2(4000)" />
             <column name="AREA_TE_TYPE_NAME" type="VARCHAR2(128)" />
             <column name="AREA_ID" type="BIGINT" />
