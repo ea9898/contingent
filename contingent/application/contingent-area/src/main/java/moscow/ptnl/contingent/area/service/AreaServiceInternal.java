@@ -48,4 +48,6 @@ public interface AreaServiceInternal {
     List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addMedicalEmployees,
                                         List<ChangeMedicalEmployee> changeMedicalEmployees,
                                         List<Long> deleteMedicalEmployees) throws ContingentException;
+
+    void restoreArea(Long id) throws ContingentException;
 }

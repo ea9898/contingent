@@ -50,12 +50,12 @@ public class PrimaryAreaTypeAttributes implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean mpguAvailable;
 
-    @Column(name = "ATTACHMENT_NORM")
-    private Long attachmentNorm;
-
     @JoinColumn(name = "AREA_COUNT_LIMIT_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaCountLimit areaCountLimit;
+
+    @Column(name = "RESIDENTS_BIND_RATE")
+    private Integer residentsBindRate;
 
     public Long getId() {
         return id;
@@ -113,14 +113,6 @@ public class PrimaryAreaTypeAttributes implements Serializable {
         this.mpguAvailable = mpguAvailable;
     }
 
-    public Long getAttachmentNorm() {
-        return attachmentNorm;
-    }
-
-    public void setAttachmentNorm(Long attachmentNorm) {
-        this.attachmentNorm = attachmentNorm;
-    }
-
     public AreaCountLimit getAreaCountLimit() {
         return areaCountLimit;
     }
@@ -128,7 +120,15 @@ public class PrimaryAreaTypeAttributes implements Serializable {
     public void setAreaCountLimit(AreaCountLimit areaCountLimit) {
         this.areaCountLimit = areaCountLimit;
     }
-    
+
+    public Integer getResidentsBindRate() {
+        return residentsBindRate;
+    }
+
+    public void setResidentsBindRate(Integer residentsBindRate) {
+        this.residentsBindRate = residentsBindRate;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

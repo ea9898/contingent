@@ -1,7 +1,5 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
-import moscow.ptnl.contingent.area.entity.area.MuProfile;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,33 +20,33 @@ public class AreaTypeRelations implements Serializable {
     private static final long serialVersionUID = -8346464667577347303L;
 
     @Id
-    @JoinColumn(name = "DEPENDENT_MU_PROFILE_ID")
+    @JoinColumn(name = "DEPENDENT_AREA_TYPE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private MuProfile dependentMuProfile;
+    private AreaTypes dependentAreaType;
 
     @Id
-    @JoinColumn(name = "PRIMARY_MU_PROFILE_ID")
+    @JoinColumn(name = "PRIMARY_AREA_TYPE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private MuProfile primaryMuProfile;
+    private AreaTypes primaryAreaType;
     
     public Key getKey() {
-        return new Key(dependentMuProfile, primaryMuProfile);
+        return new Key(dependentAreaType, primaryAreaType);
     }
 
-    public MuProfile getDependentMuProfile() {
-        return dependentMuProfile;
+    public AreaTypes getDependentMuProfile() {
+        return dependentAreaType;
     }
 
-    public void setDependentMuProfile(MuProfile dependentMuProfile) {
-        this.dependentMuProfile = dependentMuProfile;
+    public void setDependentMuProfile(AreaTypes dependentMuProfile) {
+        this.dependentAreaType = dependentMuProfile;
     }
 
-    public MuProfile getPrimaryMuProfile() {
-        return primaryMuProfile;
+    public AreaTypes getPrimaryMuProfile() {
+        return primaryAreaType;
     }
 
-    public void setPrimaryMuProfile(MuProfile primaryMuProfile) {
-        this.primaryMuProfile = primaryMuProfile;
+    public void setPrimaryMuProfile(AreaTypes primaryMuProfile) {
+        this.primaryAreaType = primaryMuProfile;
     }
     
     @Override
@@ -71,30 +69,30 @@ public class AreaTypeRelations implements Serializable {
      */
     public static class Key implements Serializable {
         
-        private MuProfile dependentMuProfile;
-        private MuProfile primaryMuProfile;
+        private AreaTypes dependentMuProfile;
+        private AreaTypes primaryMuProfile;
         
         public Key(){}
         
-        public Key(MuProfile dependentMuProfile, MuProfile primaryMuProfile) {
+        public Key(AreaTypes dependentMuProfile, AreaTypes primaryMuProfile) {
             this.dependentMuProfile = dependentMuProfile;
             this.primaryMuProfile = primaryMuProfile;
         }
         
 
-        public MuProfile getDependentMuProfile() {
+        public AreaTypes getDependentMuProfile() {
             return dependentMuProfile;
         }
 
-        public void setDependentMuProfile(MuProfile dependentMuProfile) {
+        public void setDependentMuProfile(AreaTypes dependentMuProfile) {
             this.dependentMuProfile = dependentMuProfile;
         }
 
-        public MuProfile getPrimaryMuProfile() {
+        public AreaTypes getPrimaryMuProfile() {
             return primaryMuProfile;
         }
 
-        public void setPrimaryMuProfile(MuProfile primaryMuProfile) {
+        public void setPrimaryMuProfile(AreaTypes primaryMuProfile) {
             this.primaryMuProfile = primaryMuProfile;
         }        
         

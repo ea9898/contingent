@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.service;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
@@ -190,10 +191,42 @@ public class AreaChecker {
         return area;
     }
 
+    public Area checkAndGetArchivedArea(long areaId, Validation validation) {
+        Area area = areaCRUDRepository.findById(areaId).orElse(null);
+
+        if (area == null) {
+            validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
+        }
+        else if (!area.getArchived()) {
+            validation.error(AreaErrorReason.AREA_IS_NOT_ARCHIVED, new ValidationParameter("areaId", areaId));
+        }
+        return area;
+    }
+
     public void checkDateTillToday(LocalDate date, Validation validation) {
         if (date.isBefore(LocalDate.of(1970, Month.JANUARY, 1)) ||
                 date.isAfter(LocalDate.now())) {
             validation.error(AreaErrorReason.DATE_IN_INCORRECT_PERIOD);
+        }
+    }
+
+    /*
+    Система проверяет, что вид участка отличен от «Именной»
+     */
+    public void checkAreaTypeIsNotPersonal(AreaTypes areaType, Validation validation) {
+        if (areaType.getKindAreaType() != null &&
+                Objects.equals(areaType.getKindAreaType().getCode(), KindAreaTypeEnum.PERSONAL.getCode())) {
+            validation.error(AreaErrorReason.CANT_RESTORE_PERSONAL_KIND_AREA);
+        }
+    }
+
+    public void checkAreaExistsInMU(long muId, long areaTypeCode, int number, Long excludeAreaId, Validation validation) {
+        List<Area> areas = areaRepository.findAreas(null, muId, areaTypeCode, number, true);
+
+        if (areas.stream().anyMatch(a -> excludeAreaId == null || !Objects.equals(a.getId(), excludeAreaId))) {
+            validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO,
+                    new ValidationParameter("areaTypeCode", areaTypeCode),
+                    new ValidationParameter("number", number));
         }
     }
 }

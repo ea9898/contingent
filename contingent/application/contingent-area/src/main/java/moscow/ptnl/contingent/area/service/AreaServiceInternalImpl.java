@@ -5,7 +5,7 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeEnum;
+import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
@@ -198,19 +198,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Boolean areaTypeAttachByMedicalReason = muProfile.getAreaType().getAttributes() == null ? null : muProfile.getAreaType().getAttributes().getAttachByMedicalReason();
         //Todo сделать проерку AREA_COUNT_LIMIT после разработки НСИ
         if (muProfile.getAreaType().getKindAreaType() != null &&
-                //Todo уточнить код вида участка «Мягко - ассоциированный» и вынести в настройки
-                Objects.equals(muProfile.getAreaType().getKindAreaType().getCode(), 1L)) {
+                Objects.equals(muProfile.getAreaType().getKindAreaType().getCode(), KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode())) {
             if (Strings.isNullOrEmpty(description) || number == null ||
                     (ageMin == null && ageMax == null && ageMinM == null && ageMaxM == null && ageMinW == null && ageMaxW == null)) {
                 validation.error(AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED);
             }
         }
-        List<Area> areas = areaRepository.findAreas(null, muId, areaTypeCode, number, true);
-
-        if (!areas.isEmpty()) {
-            validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode),
-                    new ValidationParameter("number", number));
-        }
+        areaChecker.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
         areaChecker.checkAreaTypeAgeSetups(muProfile.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
         if (autoAssignForAttachment) {
@@ -236,7 +230,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         resetAutoAssignForAttachment(area);
-        esuService.saveAndPublishToESU(new AreaCreateEvent(area, null));
 
         return area.getId();
     }
@@ -258,10 +251,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!areaRepository.findAreas(moId, null, areaTypeCode, null, null).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
         }
-        if (number != null &&
-                !areaRepository.findAreas(null, muId, areaTypeCode, number, true).isEmpty()) {
-            validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode),
-                    new ValidationParameter("number", number));
+        if (number != null) {
+            areaChecker.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
         }
         AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
         areaChecker.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
@@ -299,14 +290,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Boolean mpguAvailable = area.getAreaType().getAttributes() == null ? null : area.getAreaType().getAttributes().getMpguAvailable();
         Boolean areaTypeAttachByMedicalReason = area.getAreaType().getAttributes() == null ? null : area.getAreaType().getAttributes().getAttachByMedicalReason();
 
-        if (number != null && !number.equals(area.getNumber())) {
-            List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), number, true);
-
-            if (!areas.isEmpty()) {
-                validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO,
-                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()),
-                        new ValidationParameter("number", number));
-            }
+        if (number != null) {
+            areaChecker.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), number, area.getId(), validation);
         }
         if (autoAssignForAttachment) {
             if (!Boolean.TRUE.equals(mpguAvailable)) {
@@ -341,8 +326,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setUpdateDate(LocalDateTime.now());
 
         resetAutoAssignForAttachment(area);
-
-        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, null, null));
     }
 
     @Override
@@ -359,19 +342,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         Long muIdFinal = muId == null ? area.getMuId() : muId;
 
-        if (number != null && !number.equals(area.getNumber())) {
-            List<Area> areas = areaRepository.findAreas(null, muIdFinal, area.getAreaType().getCode(), number, true);
-
-            if (!areas.isEmpty()) {
-                validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO,
-                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()),
-                        new ValidationParameter("number", number));
-            }
+        if (number != null) {
+            areaChecker.checkAreaExistsInMU(muIdFinal, area.getAreaType().getCode(), number, area.getId(), validation);
         }
         if (muId != null && !muId.equals(area.getMuId())) {
             if (area.getAreaType().getKindAreaType() != null &&
-                    //Todo уточнить код вида участка «Ассоциированный со специализированным кабинетом» и вынести в настройки
-                    !Objects.equals(area.getAreaType().getKindAreaType().getCode(), 2L)) {
+                    !Objects.equals(area.getAreaType().getKindAreaType().getCode(), KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode())) {
                 validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
             }
         }
@@ -533,8 +509,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Iterable<AreaMedicalEmployee> deleteEmployees = areaMedicalEmployeeCRUDRepository.findAllById(deleteIds);
 
         //3
-        if (area.getAreaType().getCode() != AreaTypeEnum.MILDLY_ASSOCIATED.getCode()
-                && area.getAreaType().getCode() != AreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
+        if (area.getAreaType().getKindAreaType() == null
+                || area.getAreaType().getKindAreaType().getCode() != KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()
+                && area.getAreaType().getKindAreaType().getCode() != KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
             if (addMedicalEmployees.stream().anyMatch(AddMedicalEmployee::isIsReplacement)) {
                 throwException(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED);
             }
@@ -652,6 +629,21 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
         }
         return null;
+    }
+
+    @Override
+    public void restoreArea(Long id) throws ContingentException {
+        Validation validation = new Validation();
+
+        Area area = areaChecker.checkAndGetArchivedArea(id, validation);
+        areaChecker.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
+        areaChecker.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        area.setArchived(false);
+        area.setAutoAssignForAttach(false);
     }
 
     private void throwException(AreaErrorReason e, ValidationParameter... params) throws ContingentException {

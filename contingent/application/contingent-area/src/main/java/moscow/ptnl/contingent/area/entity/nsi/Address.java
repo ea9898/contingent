@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Deprecated
 @Entity
 @Table(name = "ADDRESS")
 @Cacheable

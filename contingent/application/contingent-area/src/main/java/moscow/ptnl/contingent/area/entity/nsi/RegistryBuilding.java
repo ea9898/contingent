@@ -3,7 +3,10 @@ package moscow.ptnl.contingent.area.entity.nsi;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -17,39 +20,18 @@ public class RegistryBuilding implements Serializable {
     private static final long serialVersionUID = 5017009667346896559L;
 
     @Id
-    @Column(name = "GLOBAL_ID", unique = true, nullable = false)
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
+
+    @Column(name = "GLOBAL_ID")
     private Long globalId;
 
-    @Column(name = "ADDR_ID", nullable = false)
+    @Column(name = "ADDR_ID")
     private Long addrId;
 
-    @Size(max = 32)
-    @Column(name = "REGION_TE_CODE")
-    private String regionTeCode;
-
-    @Size(max = 32)
-    @Column(name = "AREACODE_OMK_TE")
-    private String areaCodeOmkTe;
-
-    @Size(max = 3)
-    @Column(name = "AREACODE")
-    private String areaCode;
-
-    @Size(max = 3)
-    @Column(name = "CITYCODE")
-    private String cityCode;
-
-    @Size(max = 3)
-    @Column(name = "PLACECODE")
-    private String placeCode;
-
-    @Size(max = 4)
-    @Column(name = "PLANCODE")
-    private String planCode;
-
-    @Size(max = 4)
-    @Column(name = "STREETCODE")
-    private String streetCode;
+    @JoinColumn(name = "ADDRESS_FORMING_ELEMENT_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AddressFormingElement addressFormingElement;
 
     @Size(max = 256)
     @Column(name = "L1_TYPE")
@@ -76,8 +58,16 @@ public class RegistryBuilding implements Serializable {
     private String l3Value;
 
     @Size(max = 4000)
-    @Column(name = "ADDRESS")
+    @Column(name = "ADDRESS", nullable = false)
     private String address;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getGlobalId() {
         return globalId;
@@ -95,60 +85,12 @@ public class RegistryBuilding implements Serializable {
         this.addrId = addrId;
     }
 
-    public String getRegionTeCode() {
-        return regionTeCode;
+    public AddressFormingElement getAddressFormingElement() {
+        return addressFormingElement;
     }
 
-    public void setRegionTeCode(String regionTeCode) {
-        this.regionTeCode = regionTeCode;
-    }
-
-    public String getAreaCodeOmkTe() {
-        return areaCodeOmkTe;
-    }
-
-    public void setAreaCodeOmkTe(String areaCodeOmkTe) {
-        this.areaCodeOmkTe = areaCodeOmkTe;
-    }
-
-    public String getAreaCode() {
-        return areaCode;
-    }
-
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
-    }
-
-    public String getCityCode() {
-        return cityCode;
-    }
-
-    public void setCityCode(String cityCode) {
-        this.cityCode = cityCode;
-    }
-
-    public String getPlaceCode() {
-        return placeCode;
-    }
-
-    public void setPlaceCode(String placeCode) {
-        this.placeCode = placeCode;
-    }
-
-    public String getPlanCode() {
-        return planCode;
-    }
-
-    public void setPlanCode(String planCode) {
-        this.planCode = planCode;
-    }
-
-    public String getStreetCode() {
-        return streetCode;
-    }
-
-    public void setStreetCode(String streetCode) {
-        this.streetCode = streetCode;
+    public void setAddressFormingElement(AddressFormingElement addressFormingElement) {
+        this.addressFormingElement = addressFormingElement;
     }
 
     public String getL1Type() {
@@ -206,19 +148,19 @@ public class RegistryBuilding implements Serializable {
     public void setAddress(String address) {
         this.address = address;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj != null && obj instanceof RegistryBuilding) {
-            return ((RegistryBuilding) obj).getGlobalId().equals(this.globalId);
+            return ((RegistryBuilding) obj).getId().equals(this.id);
         }
         return false;
     }
 
     @Override
     public int hashCode() {        
-        return Objects.hashCode(this.globalId);
+        return Objects.hashCode(this.id);
     }
 }
