@@ -1,8 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -20,7 +19,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "ADDRESS_ALLOCATION_ORDER")
 @SequenceGenerator(name = "SEQ_ADDRESS_ALLOCATION_ORDER", sequenceName = "SEQ_ADDRESS_ALLOCATION_ORDER", allocationSize=1)
-@Cacheable
 public class AddressAllocationOrder implements Serializable {
 
     private static final long serialVersionUID = -8116611274341177299L;
@@ -41,18 +39,14 @@ public class AddressAllocationOrder implements Serializable {
     @Column(name = "DATE")
     private LocalDate date;
 
-    @Size(max = 50)
-    @Column(name = "OUZ")
-    private String ouz;
-
     @Column(name = "ARCHIVED", nullable = false)
-    @Convert(converter = BooleanIntegerConverter.class)
+    @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
-    @Column(name = "UPDATE_DATE", nullable = false)
+    @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 
     public Long getId() {
@@ -85,14 +79,6 @@ public class AddressAllocationOrder implements Serializable {
 
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public String getOuz() {
-        return ouz;
-    }
-
-    public void setOuz(String ouz) {
-        this.ouz = ouz;
     }
 
     public Boolean getArchived() {

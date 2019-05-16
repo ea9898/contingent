@@ -1,9 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.nsi.Address;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,16 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ADDRESS_ALLOCATION_TO_MO")
-@Cacheable
-public class MoAddressAllocation implements Serializable {
+@Table(name = "MO_ADDRESSES")
+public class MoAddress implements Serializable {
 
     private static final long serialVersionUID = -786212687627911093L;
 
@@ -47,19 +43,15 @@ public class MoAddressAllocation implements Serializable {
     @Column(name = "REJECT_ORDER_ID")
     private Long rejectOrderId;
 
-    @Size(max = 255)
-    @Column(name = "ARCHIVE_REASON")
-    private String archiveReason;
-
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
-    @Column(name = "UPDATE_DATE", nullable = false)
+    @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 
     @JoinColumn(name = "ADDRESS_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Address address;
+    private Addresses addresses;
 
     public Long getId() {
         return id;
@@ -117,14 +109,6 @@ public class MoAddressAllocation implements Serializable {
         this.rejectOrderId = rejectOrderId;
     }
 
-    public String getArchiveReason() {
-        return archiveReason;
-    }
-
-    public void setArchiveReason(String archiveReason) {
-        this.archiveReason = archiveReason;
-    }
-
     public LocalDateTime getCreateDate() {
         return createDate;
     }
@@ -141,20 +125,20 @@ public class MoAddressAllocation implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public Address getAddress() {
-        return address;
+    public Addresses getAddresses() {
+        return addresses;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddresses(Addresses addresses) {
+        this.addresses = addresses;
     }
     
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof MoAddressAllocation) {
-            return ((MoAddressAllocation) obj).getId().equals(this.id);
+        if (obj != null && obj instanceof MoAddress) {
+            return ((MoAddress) obj).getId().equals(this.id);
         }
         return false;
     }

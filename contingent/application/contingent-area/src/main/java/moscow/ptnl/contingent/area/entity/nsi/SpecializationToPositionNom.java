@@ -7,12 +7,12 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.IdClass;
 
 @Entity
 @IdClass(SpecializationToPositionNom.Key.class)
@@ -30,14 +30,14 @@ public class SpecializationToPositionNom implements Serializable {
     @Id
     @JoinColumn(name = "POSITION_NOM_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private PositionNom positionNom;
+    private PositionNomClinic positionNomClinic;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
-
+    
     public Key getKey() {
-        return new Key(specialization, positionNom);
+        return new Key(specialization, positionNomClinic);
     }
 
     public Specialization getSpecialization() {
@@ -48,12 +48,12 @@ public class SpecializationToPositionNom implements Serializable {
         this.specialization = specialization;
     }
 
-    public PositionNom getPositionNom() {
-        return positionNom;
+    public PositionNomClinic getPositionNomClinic() {
+        return positionNomClinic;
     }
 
-    public void setPositionNom(PositionNom positionNom) {
-        this.positionNom = positionNom;
+    public void setPositionNomClinic(PositionNomClinic positionNomClinic) {
+        this.positionNomClinic = positionNomClinic;
     }
 
     public Boolean getArchived() {
@@ -63,7 +63,7 @@ public class SpecializationToPositionNom implements Serializable {
     public void setArchived(Boolean archived) {
         this.archived = archived;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -75,24 +75,23 @@ public class SpecializationToPositionNom implements Serializable {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode() {        
         return this.getKey().hashCode();
     }
-
+    
     /**
      * Композитный ключ.
      */
     public static class Key implements Serializable {
-
+        
         private Specialization specialization;
-        private PositionNom positionNom;
+        private PositionNomClinic positionNomClinic;
 
-        public Key() {
-        }
+        public Key(){}
 
-        public Key(Specialization specialization, PositionNom positionNom) {
+        public Key(Specialization specialization, PositionNomClinic positionNomClinic) {
             this.specialization = specialization;
-            this.positionNom = positionNom;
+            this.positionNomClinic = positionNomClinic;
         }
 
         public Specialization getSpecialization() {
@@ -103,23 +102,23 @@ public class SpecializationToPositionNom implements Serializable {
             this.specialization = specialization;
         }
 
-        public PositionNom getPositionNom() {
-            return positionNom;
+        public PositionNomClinic getPositionNom() {
+            return positionNomClinic;
         }
 
-        public void setPositionNom(PositionNom positionNom) {
-            this.positionNom = positionNom;
-        }
-
+        public void setPositionNom(PositionNomClinic positionNomClinic) {
+            this.positionNomClinic = positionNomClinic;
+        }    
+        
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if(this == obj)
                 return true;
-            if (obj instanceof Key) {
+            if (obj != null && obj instanceof Key) {
                 Key other = (Key) obj;
                 if (other.getSpecialization() == null || other.getPositionNom() == null)
                     return false;
-                return other.getSpecialization().equals(this.getSpecialization()) && other.getPositionNom().equals(this.getPositionNom());
+                return  other.getSpecialization().equals(this.getSpecialization()) && other.getPositionNom().equals(this.getPositionNom());
             }
             return false;
         }
@@ -128,6 +127,6 @@ public class SpecializationToPositionNom implements Serializable {
         public int hashCode() {
             return Objects.hash(this.getSpecialization(), this.getPositionNom());
         }
-
+        
     }
 }

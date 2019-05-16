@@ -173,7 +173,7 @@ public class PositionNomClinic implements Serializable {
     }
 
     @Override
-    public int hashCode() {        
+    public int hashCode() {
         return Objects.hashCode(this.id);
     }
 }

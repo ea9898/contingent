@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "AREAS")
 @SequenceGenerator(name = "SEQ_AREAS", sequenceName = "SEQ_AREAS", allocationSize=1)
-@Cacheable
 public class Area implements Serializable {
 
     private static final long serialVersionUID = 4575089048144449304L;
@@ -37,10 +36,10 @@ public class Area implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "MO_ID")
+    @Column(name = "MO_ID", nullable = false)
     private Long moId;
 
-    @Column(name = "MU_ID", nullable = false)
+    @Column(name = "MU_ID")
     private Long muId;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
@@ -55,7 +54,7 @@ public class Area implements Serializable {
     private Boolean autoAssignForAttach;
 
     @Column(name = "ARCHIVED")
-    @Convert(converter = BooleanIntegerConverter.class)
+    @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
     @Size(max = 370)

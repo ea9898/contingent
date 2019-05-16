@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
-import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -20,15 +20,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "AREA_MEDICAL_EMPLOYEE")
-@Cacheable
 public class AreaMedicalEmployee implements Serializable {
 
     private static final long serialVersionUID = 4435222693561566689L;
 
     @Id
-    @Size(max = 50)
     @Column(name = "ID", unique = true, nullable = false)
-    private String id;
+    private Long id;
 
     @Column(name = "MEDICAL_EMPLOYEE_JOB_INFO_ID")
     private Long medicalEmployeeJobInfoId;
@@ -41,6 +39,10 @@ public class AreaMedicalEmployee implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean replacement;
 
+    @Column(name = "OUZ")
+    @Size(max = 50)
+    private String ouz;
+
     @Column(name = "START_DATE")
     private LocalDate startDate;
 
@@ -48,33 +50,35 @@ public class AreaMedicalEmployee implements Serializable {
     private LocalDate endDate;
 
     @Column(name = "SNILS")
+    @Size(max = 20)
     private String snils;
 
     @Column(name = "MEDICAL_POSITION_ID")
     private Long medicalPositionId;
 
-    @JoinColumn(name = "POSITION_NOM_ID")
+    @JoinColumn(name = "POSITION_NOM_CLINIC_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private PositionNom positionNom;
+    private PositionNomClinic positionNomClinic;
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
-    @Column(name = "UPDATE_DATE", nullable = false)
+    @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 
-    @Column(name = "deleted", nullable = false)
-    private Boolean isDeleted;
-
-    @Column(name = "subdivision_id", nullable = false)
+    @Column(name = "SUBDIVISION_ID")
     private Long subdivisionId;
+
+    @Column(name = "ARCHIVED")
+    @Convert(converter = BooleanStrictIntegerConverter.class)
+    private Boolean archived;
 
     public AreaMedicalEmployee() {
     }
 
     public AreaMedicalEmployee(Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
                                LocalDate endDate, String snils, Long medicalPositionId, LocalDateTime createDate,
-                               LocalDateTime updateDate, Boolean isDeleted, Long subdivisionId) {
+                               LocalDateTime updateDate, Boolean archived, Long subdivisionId) {
         this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
         this.area = area;
         this.replacement = replacement;
@@ -84,15 +88,15 @@ public class AreaMedicalEmployee implements Serializable {
         this.medicalPositionId = medicalPositionId;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.isDeleted = isDeleted;
+        this.archived = archived;
         this.subdivisionId = subdivisionId;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -152,12 +156,12 @@ public class AreaMedicalEmployee implements Serializable {
         this.medicalPositionId = medicalPositionId;
     }
 
-    public PositionNom getPositionNom() {
-        return positionNom;
+    public PositionNomClinic getPositionNomClinic() {
+        return positionNomClinic;
     }
 
-    public void setPositionNom(PositionNom positionNom) {
-        this.positionNom = positionNom;
+    public void setPositionNomClinic(PositionNomClinic positionNomClinic) {
+        this.positionNomClinic = positionNomClinic;
     }
 
     public LocalDateTime getCreateDate() {
@@ -176,20 +180,28 @@ public class AreaMedicalEmployee implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public Boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
-    }
-
     public Long getSubdivisionId() {
         return subdivisionId;
     }
 
     public void setSubdivisionId(Long subdivisionId) {
         this.subdivisionId = subdivisionId;
+    }
+
+    public String getOuz() {
+        return ouz;
+    }
+
+    public void setOuz(String ouz) {
+        this.ouz = ouz;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
     }
 
     @Override

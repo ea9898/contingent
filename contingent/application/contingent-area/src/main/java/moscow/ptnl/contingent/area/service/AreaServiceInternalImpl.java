@@ -534,7 +534,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             for (AreaMedicalEmployee empl : changeEmployees) {
 
                 //4.1
-                if (empl.getEndDate()!= null && empl.getEndDate().isBefore(LocalDate.now()) || empl.getArea().getId() != areaId || empl.isDeleted()) {
+                if (empl.getEndDate()!= null && empl.getEndDate().isBefore(LocalDate.now()) || empl.getArea().getId() != areaId || empl.getArchived()) {
                     throwException(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
                             new ValidationParameter("id",empl.getId()));
                 }

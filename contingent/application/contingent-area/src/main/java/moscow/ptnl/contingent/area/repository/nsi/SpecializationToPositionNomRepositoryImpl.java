@@ -14,17 +14,17 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
-@Transactional(propagation = Propagation.MANDATORY)
+@Transactional(propagation= Propagation.MANDATORY)
 public class SpecializationToPositionNomRepositoryImpl extends BaseRepository implements SpecializationToPositionNomRepository {
     @Override
-    public Specialization getSpecializationIdByPositionNomId(long positionNomId) {
+    public Specialization getSpecializationIdByPositionNomId(long positionNomClinicId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<SpecializationToPositionNom> criteria = criteriaBuilder.createQuery(SpecializationToPositionNom.class);
         Root<SpecializationToPositionNom> root = criteria.from(SpecializationToPositionNom.class);
         //Join<SpecializationToPositionNom, Specialization> join = root.join(SpecializationToPositionNom_.specialization, JoinType.LEFT);
         criteria.select(root);
         criteria.where(
-                criteriaBuilder.equal(root.get(SpecializationToPositionNom_.positionNom), positionNomId));
+                criteriaBuilder.equal(root.get(SpecializationToPositionNom_.positionNom), positionNomClinicId));
         List<SpecializationToPositionNom> results = entityManager.createQuery(criteria).getResultList();
 
         if (results.isEmpty()) {

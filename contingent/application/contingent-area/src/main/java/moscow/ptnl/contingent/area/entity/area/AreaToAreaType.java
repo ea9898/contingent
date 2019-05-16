@@ -1,8 +1,5 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
-
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,7 +16,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "AREA_TO_AREA_TYPE")
 @SequenceGenerator(name = "SEQ_AREA_TO_AREA_TYPE", sequenceName = "SEQ_AREA_TO_AREA_TYPE", allocationSize=1)
-@Cacheable
 public class AreaToAreaType implements Serializable {
 
     private static final long serialVersionUID = 3586944486563837581L;
@@ -33,9 +29,9 @@ public class AreaToAreaType implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
 
-    @JoinColumn(name = "AREA_TYPE_CODE", nullable = false)
+    @JoinColumn(name = "MU_PROFILES_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypes areaType;
+    private MuProfile muProfile;
 
     public Long getId() {
         return id;
@@ -53,14 +49,14 @@ public class AreaToAreaType implements Serializable {
         this.area = area;
     }
 
-    public AreaTypes getAreaType() {
-        return areaType;
+    public MuProfile getMuProfile() {
+        return muProfile;
     }
 
-    public void setAreaType(AreaTypes areaType) {
-        this.areaType = areaType;
+    public void setMuProfile(MuProfile muProfile) {
+        this.muProfile = muProfile;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
