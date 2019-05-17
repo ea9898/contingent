@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://ptnl.moscow/contingent/event/type/attachment/"
+            xmlns:tns="http://ptnl.moscow/contingent/event/type/attachment/">
+
+    <xs:element name="createCloseAttachmentEvent">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long">
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор сообщения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="operationDate" type="xs:dateTime">
+                    <xs:annotation>
+                        <xs:documentation>Дата и время наступления события, инициировавшего отправку сообщения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="patientEmiasId" type="xs:long">
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор пациента ЕМИАС (emiasId)</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="simiDocumentId" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор документа СИМИ documentId</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="createAttachment" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Информация по операции с прикреплением. В одном сообщении может быть указана только одна операция</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="moId" type="xs:long">
+                                <xs:annotation>
+                                    <xs:documentation>Идентификатор Медицинской организации</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="areaId" type="xs:long">
+                                <xs:annotation>
+                                    <xs:documentation>Идентификатор участка</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="notForSelfAppointment" type="xs:boolean">
+                                <xs:annotation>
+                                    <xs:documentation>Поле актуально для создания прикрепления.
+                                        Признак, разрешающий самостоятельную запись к врачу специалисту.
+                                        Если признак не указан, то право самозаписи есть</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="closeAttachment" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Информация по операции с прикреплением. В одном сообщении может быть указана только одна операция</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaId" type="xs:long">
+                                <xs:annotation>
+                                    <xs:documentation>Идентификатор участка</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
