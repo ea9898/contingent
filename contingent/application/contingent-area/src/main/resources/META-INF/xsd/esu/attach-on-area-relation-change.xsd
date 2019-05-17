@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://ptnl.moscow/contingent/event/type/attachment/"
+            xmlns:tns="http://ptnl.moscow/contingent/event/type/attachment/"
+            xmlns:common="http://ptnl.moscow/contingent/event/type/common/">
+
+    <xs:import namespace="http://ptnl.moscow/contingent/event/type/common/" schemaLocation="common.xsd"/>
+
+    <xs:element name="attachOnAreaRelationChangeEvent">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long">
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор сообщения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="operationDate" type="xs:dateTime">
+                    <xs:annotation>
+                        <xs:documentation>Дата и время наступления события, инициировавшего отправку сообщения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="dependentArea">
+                    <xs:annotation>
+                        <xs:documentation>Зависимый участок</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="moId" type="xs:long">
+                                <xs:annotation>
+                                    <xs:documentation>Идентификатор Медицинской организации</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="muId" type="xs:long" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Идентификатор Медицинского учреждения</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="areaId" type="xs:long">
+                                <xs:annotation>
+                                    <xs:documentation>Идентификатор участка</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="areaRestriction" type="common:AreaRestriction" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Ограничения контингента для прикрепления на участок</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="policyType" type="xs:long">
+                                <xs:annotation>
+                                    <xs:documentation>Тип полиса первичного прикрепления (ОМС, ДМС, Платный...). Изначально в Контингент0 все прикрепления с типом ОМС</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="primaryAreaAdd" type="xs:long" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>Идентификаторы первичных участков для создания прикреплений к зависимым.
+                            В одном сообщении указываются только те участки,
+                            которые соответствуют dependendAreaId.policyType тип полиса (ОМС, ДМС, Платный...).
+                            Если указан хоть один primaryAreaAdd, то не должны быть указаны primaryAreaDel</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="primaryAreaDel" type="xs:long" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>Идентификаторы первичных участков для удаления прикреплений к зависимым.
+                            В одном сообщении указываются только те участки,
+                            которые соответствуют dependendAreaId.policyType тип полиса (ОМС, ДМС, Платный...).
+                            Если указан хоть один primaryAreaAdd, то не должны быть указаны primaryAreaDel</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

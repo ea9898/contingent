@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://ptnl.moscow/contingent/event/type/attachment/"
+            xmlns:tns="http://ptnl.moscow/contingent/event/type/attachment/">
+
+    <xs:element name="attachPatientEvent">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long">
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор сообщения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="operationDate" type="xs:dateTime">
+                    <xs:annotation>
+                        <xs:documentation>Дата и время наступления события, инициировавшего отправку сообщения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="patientEmiasId" type="xs:long" >
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор пациента ЕМИАС (emiasId)</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="policyType" type="xs:long">
+                    <xs:annotation>
+                        <xs:documentation>Тип полиса первичного прикрепления (ОМС, ДМС, Платный...). Изначально в Контингент0 все прикрепления с типом ОМС</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="primaryAreaId" type="xs:long">
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор первичного участка, к которому прикреплен пациент.
+                            Может быть передан зависимый участок. В этом случае Контингент-2.Участки проигнорирует такое сообщение</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
