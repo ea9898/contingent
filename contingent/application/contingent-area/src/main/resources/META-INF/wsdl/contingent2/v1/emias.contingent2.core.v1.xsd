@@ -150,15 +150,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="deleteMedicalEmployees">
-        <xs:annotation>
-            <xs:documentation>Сведения медработников для удаления</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="assignmentId" type="xs:long" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
     <xs:complexType name="fault">
         <xs:annotation>
             <xs:documentation>Перечень сообщений об ошибках валидации</xs:documentation>

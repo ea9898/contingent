@@ -5,9 +5,9 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
-import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -491,9 +491,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addMedicalEmployees,
-                                               List<ChangeMedicalEmployee> changeMedicalEmployees,
-                                               List<Long> deleteMedicalEmployees) throws ContingentException {
+    //TODO накапливать ошибки для всего списка а не выбрасывать первую попавшуюся
+    public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
+                                               List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
 
         //1 Система выполняет поиск в БД (AREAS) участка с переданным ИД. Участок найден, иначе возвращает ошибку
         Area area = areaCRUDRepository.findById(areaId).orElseThrow(() -> new ContingentException(
@@ -506,44 +506,33 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
 
-        List<String> changeIds = changeMedicalEmployees.stream().map(empl -> String.valueOf(empl.getAssignmentId())).collect(Collectors.toList());
-        Iterable<AreaMedicalEmployee> changeEmployees = areaMedicalEmployeeCRUDRepository.findAllById(changeIds);
-
-        List<String> deleteIds = deleteMedicalEmployees.stream().map(String::valueOf).collect(Collectors.toList());
-        Iterable<AreaMedicalEmployee> deleteEmployees = areaMedicalEmployeeCRUDRepository.findAllById(deleteIds);
+        List<String> changeIds = changeEmployeesInput.stream().map(empl -> String.valueOf(empl.getAssignmentId())).collect(Collectors.toList());
+        List<AreaMedicalEmployee> changeEmployeesDb = new ArrayList<>();
+        areaMedicalEmployeeCRUDRepository.findAllById(changeIds).forEach(changeEmployeesDb::add);
 
         //3
         if (area.getAreaType().getCode() != KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()
-                && area.getAreaType().getCode() != KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
-            if (addMedicalEmployees.stream().anyMatch(AddMedicalEmployee::isIsReplacement)) {
-                throwException(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED);
-            }
-            for (AreaMedicalEmployee empl : deleteEmployees) {
-                if (!empl.getReplacement()) {
-                    throwException(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED);
-                }
-            }
-
-            for (AreaMedicalEmployee empl : changeEmployees) {
-                if (!empl.getReplacement()) {
-                    throwException(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED);
-                }
-            }
+                && area.getAreaType().getCode() != KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()
+                && (addEmployeesInput.stream().anyMatch(empl -> !empl.isIsReplacement())
+                || changeEmployeesDb.stream().anyMatch(empl -> !empl.getReplacement()))) {
+            throwException(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED);
         }
 
+        List<AreaMedicalEmployee> employees = areaMedicalEmployeeRepository.getEmployeesByAreaId(areaId);
         //4
-        if (!changeMedicalEmployees.isEmpty()) {
-            for (AreaMedicalEmployee empl : changeEmployees) {
+        if (!changeEmployeesInput.isEmpty()) {
+            for (AreaMedicalEmployee empl : changeEmployeesDb) {
 
                 //4.1
-                if (empl.getEndDate()!= null && empl.getEndDate().isBefore(LocalDate.now()) || empl.getArea().getId() != areaId || empl.getArchived()) {
+                if (empl.getEndDate() != null && empl.getEndDate().isBefore(LocalDate.now())
+                        || empl.getArea().getId() != areaId || !employees.contains(empl)) {
                     throwException(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
-                            new ValidationParameter("id",empl.getId()));
+                            new ValidationParameter("id", empl.getId()));
                 }
 
                 //4.2
-                ChangeMedicalEmployee inputEmpl = changeMedicalEmployees.stream().filter(
-                        em -> empl.getId().equals(String.valueOf(em.getAssignmentId()))).findFirst().get();
+                ChangeMedicalEmployee inputEmpl = changeEmployeesInput.stream().filter(
+                        em -> empl.getId().equals(em.getAssignmentId())).findFirst().get();
                 if (inputEmpl.getEndDate() == null && inputEmpl.getStartDate() == null) {
                     throwException(AreaErrorReason.NOTHING_TO_CHANGE);
                 }
@@ -553,15 +542,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 LocalDate endDate = inputEmpl.getEndDate() != null ? inputEmpl.getEndDate() : empl.getEndDate();
                 if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
                     throwException(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
-                            new ValidationParameter("endDate",endDate),
+                            new ValidationParameter("endDate", endDate),
                             new ValidationParameter("startDate", startDate));
                 }
             }
         }
 
         //5
-        if (!addMedicalEmployees.isEmpty()) {
-            for (AddMedicalEmployee empl : addMedicalEmployees) {
+        if (!addEmployeesInput.isEmpty()) {
+            for (AddMedicalEmployee empl : addEmployeesInput) {
                 //5.1
                 if (empl.getStartDate().isBefore(LocalDate.now())) {
                     throwException(AreaErrorReason.START_DATE_IN_PAST, new ValidationParameter("startDate", empl.getStartDate()));
@@ -571,48 +560,28 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 Specialization specialization = specializationToPositionNomRepository.getSpecializationIdByPositionNomId(empl.getPositionId());
 
                 //5.3
-                if (specialization!= null && !area.getAreaType().getSpecialization().getId().equals(specialization.getId())) {
+                if (specialization != null && !area.getAreaType().getSpecialization().getId().equals(specialization.getId())) {
                     throwException(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
-                            new ValidationParameter("InputSpecialization",specialization.getTitle()),
+                            new ValidationParameter("InputSpecialization", specialization.getTitle()),
                             new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                             new ValidationParameter("AreaSpecialization", area.getAreaType().getSpecialization().getTitle()));
                 }
 
                 //5.4
                 List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
-                if (positions != null && positions.stream().noneMatch(pos -> pos.getMedicalPositionId() == empl.getPositionId())) {
+                if (positions != null && positions.stream().anyMatch(pos -> pos.getMedicalPositionId() != empl.getPositionId())) {
                     throwException(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
-                            new ValidationParameter("specialization", specialization!= null ? specialization.getTitle() : null),
+                            new ValidationParameter("specialization", specialization != null ? specialization.getTitle() : null),
                             new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                             new ValidationParameter("areaType", area.getAreaType().getName()));
                 }
             }
         }
 
-        //6
-        if (!deleteMedicalEmployees.isEmpty()) {
-            for (AreaMedicalEmployee empl : deleteEmployees) {
-
-                //6.1
-                // TODO проверить
-                if ((empl.getArchived() != null && empl.getArchived()) || empl.getArea().getId() != areaId) {
-                    throwException(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA, new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()));
-                }
-
-                //6.2
-                if ((area.getAreaType().getCode() == KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()
-                        || area.getAreaType().getCode() == KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode())
-                        && !areaMedicalEmployeeRepository.isOtherMainEmployeeExist(areaId, deleteMedicalEmployees)) {
-                    throwException(AreaErrorReason.CANT_DELETE_EMPLOYEE);
-                }
-            }
-        }
-
         //7.1
-        List<AreaMedicalEmployee> employees = areaMedicalEmployeeRepository.getEmployeesByAreaId(areaId, deleteMedicalEmployees);
         if (employees.size() > 1) {
-            applyChanges(employees, changeMedicalEmployees);
-            addNew(employees, addMedicalEmployees, area, false);
+            applyChanges(employees, changeEmployeesInput);
+            addNew(employees, addEmployeesInput, area);
             for (int i = 0; i < employees.size() - 1; i++) {
                 AreaMedicalEmployee current = employees.get(i);
                 AreaMedicalEmployee next = employees.get(i + 1);
@@ -631,15 +600,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         //7.2
-        List<AreaMedicalEmployee> mainEmployees = areaMedicalEmployeeRepository.getMainEmployees(areaId, deleteMedicalEmployees);
-        applyChanges(mainEmployees, changeMedicalEmployees);
-        addNew(mainEmployees, addMedicalEmployees, area, true);
+        List<AreaMedicalEmployee> mainEmployees = areaMedicalEmployeeRepository.getMainEmployees(areaId);
+        applyChanges(mainEmployees, changeEmployeesInput);
+        addNew(mainEmployees, addEmployeesInput.stream()
+                .filter(empl -> !empl.isIsReplacement()).collect(Collectors.toList()), area);
         if (area.getAreaType().getCode() == KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()) {
             Integer overlappingIndex = getEmployeeIndexWithOverlappingDates(mainEmployees);
             if (overlappingIndex != null) {
                 throwException(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP,
-                        new ValidationParameter("specialization", mainEmployees.get(overlappingIndex).getMedicalEmployeeJobInfoId()),
-                        new ValidationParameter("specialization", mainEmployees.get(overlappingIndex + 1).getMedicalEmployeeJobInfoId()));
+                        new ValidationParameter("specialization1", mainEmployees.get(overlappingIndex).getMedicalEmployeeJobInfoId()),
+                        new ValidationParameter("specialization2", mainEmployees.get(overlappingIndex + 1).getMedicalEmployeeJobInfoId()));
 
             }
         }
@@ -651,10 +621,29 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             List<Period> periodsWithoutMainEmpl = getPeriodsWithoutMainEmployee(mainEmployees);
             if (periodsWithoutMainEmpl.size() > 0) {
                 //7.5
-                System.out.println(periodsWithoutMainEmpl);
+                List<AreaMedicalEmployee> replacementEmployees = areaMedicalEmployeeRepository.getReplacementEmployees(areaId);
+                applyChanges(replacementEmployees, changeEmployeesInput);
+                addNew(replacementEmployees, addEmployeesInput.stream()
+                        .filter(AddMedicalEmployee::isIsReplacement).collect(Collectors.toList()), area);
+                for (Period period : periodsWithoutMainEmpl) {
+                    for (AreaMedicalEmployee empl : replacementEmployees) {
+                        if (period.isInterceptWith(empl.getStartDate(), empl.getEndDate())) {
+                            throwException(AreaErrorReason.REPLACEMENT_WITHOUT_MAIN_EMPLOYEE,
+                                    new ValidationParameter("startDate", period.getStartDate()),
+                                    new ValidationParameter("endDate", period.getEndDate()));
+                        }
+                    }
+                }
             }
         }
-        return null;
+
+        //8.2
+        applyChanges(changeEmployeesDb, changeEmployeesInput);
+        //8.1
+        addNew(changeEmployeesDb, addEmployeesInput, area);
+        List<Long> result = new ArrayList<>();
+        areaMedicalEmployeeCRUDRepository.saveAll(changeEmployeesDb).forEach(saved -> result.add(saved.getId()));
+        return result;
     }
 
     @Override
@@ -704,13 +693,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     private void throwException(AreaErrorReason e, ValidationParameter... params) throws ContingentException {
-        throw new ContingentException(new Validation().error(e,params));
+        throw new ContingentException(new Validation().error(e, params));
     }
 
     private Integer getEmployeeIndexWithOverlappingDates(List<AreaMedicalEmployee> sortedEmpl) {
         if (sortedEmpl.size() > 1) {
             for (int i = 0; i < sortedEmpl.size() - 1; i++) {
-                if (sortedEmpl.get(i).getEndDate()!= null
+                if (sortedEmpl.get(i).getEndDate() != null
                         && sortedEmpl.get(i + 1).getStartDate().isBefore(sortedEmpl.get(i).getEndDate())) {
                     return i;
                 }
@@ -719,10 +708,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return null;
     }
 
-    private void applyChanges(List<AreaMedicalEmployee> emloyees, List<ChangeMedicalEmployee> changeEmloyees) {
-        for (AreaMedicalEmployee empl : emloyees) {
-            Optional<ChangeMedicalEmployee> optionalChangeEmpl = changeEmloyees.stream().filter(
-                    ch -> empl.getId().equals(String.valueOf(ch.getAssignmentId()))).findFirst();
+    private void applyChanges(List<AreaMedicalEmployee> employees, List<ChangeMedicalEmployee> changeEmployees) {
+        for (AreaMedicalEmployee empl : employees) {
+            Optional<ChangeMedicalEmployee> optionalChangeEmpl = changeEmployees.stream().filter(
+                    ch -> empl.getId().equals(ch.getAssignmentId())).findFirst();
             if (!optionalChangeEmpl.isPresent()) {
                 continue;
             }
@@ -737,13 +726,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
     }
 
-    private void addNew(List<AreaMedicalEmployee> employees, List<AddMedicalEmployee> addEmployees, Area area, boolean onlyMain) {
-        addEmployees.forEach(empl -> {
-                    if (!(onlyMain && empl.isIsReplacement()))
-                        employees.add(new AreaMedicalEmployee(empl.getMedicalEmployeeJobInfoId(), area, empl.isIsReplacement(),
-                                empl.getStartDate(), empl.getEndDate(), empl.getSnils(), empl.getPositionId(), LocalDateTime.now(),
-                                LocalDateTime.now(), false, empl.getSubdivisionId()));
-                }
-        );
+    private void addNew(List<AreaMedicalEmployee> employees, List<AddMedicalEmployee> addEmployees, Area area) {
+        addEmployees.forEach(empl -> employees.add(new AreaMedicalEmployee(empl.getMedicalEmployeeJobInfoId(), area,
+                empl.isIsReplacement(), empl.getStartDate(), empl.getEndDate(), empl.getSnils(), empl.getPositionId(),
+                LocalDateTime.now(), LocalDateTime.now(), false, empl.getSubdivisionId())));
     }
 }

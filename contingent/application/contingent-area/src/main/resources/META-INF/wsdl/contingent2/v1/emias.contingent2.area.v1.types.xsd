@@ -264,7 +264,6 @@
                 <xs:element name="areaId" type="xs:long"/>
                 <xs:element name="addMedicalEmployees" type="core:addMedicalEmployees" minOccurs="0"/>
                 <xs:element name="changeMedicalEmployees" type="core:changeMedicalEmployees" minOccurs="0"/>
-                <xs:element name="deleteMedicalEmployees" type="core:deleteMedicalEmployees" minOccurs="0"/>
                 <xs:element name="options" type="core:Options" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>

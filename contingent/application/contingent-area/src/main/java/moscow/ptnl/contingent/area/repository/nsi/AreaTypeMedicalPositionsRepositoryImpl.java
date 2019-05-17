@@ -20,9 +20,7 @@ public class AreaTypeMedicalPositionsRepositoryImpl extends BaseRepository imple
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AreaTypeMedicalPositions> criteria = criteriaBuilder.createQuery(AreaTypeMedicalPositions.class);
         Root<AreaTypeMedicalPositions> template = criteria.from(AreaTypeMedicalPositions.class);
-        criteria.where(
-                criteriaBuilder.equal(template.get(AreaTypeMedicalPositions_.areaType.getName()), areaTypeId)
-        );
+        criteria.where(criteriaBuilder.equal(template.get(AreaTypeMedicalPositions_.areaType), areaTypeId));
         List<AreaTypeMedicalPositions> results = entityManager.createQuery(criteria).getResultList();
 
         return results.isEmpty() ? null : results;

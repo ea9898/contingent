@@ -254,8 +254,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             List<Long> assignmentIds = areaService.setMedicalEmployeeOnArea(body.getAreaId(),
                     body.getAddMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getAddMedicalEmployees().getAddMedicalEmployees(),
-                    body.getChangeMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getChangeMedicalEmployees().getChangeMedicalEmployees(),
-                    body.getDeleteMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getDeleteMedicalEmployees().getAssignmentIds());
+                    body.getChangeMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getChangeMedicalEmployees().getChangeMedicalEmployees());
             SetMedicalEmployeeOnAreaResponse response = new SetMedicalEmployeeOnAreaResponse();
             response.getAssignmentIds().addAll(assignmentIds);
             return response;

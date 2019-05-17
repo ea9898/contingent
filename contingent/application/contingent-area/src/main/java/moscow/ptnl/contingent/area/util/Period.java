@@ -29,6 +29,13 @@ public class Period {
         this.endDate = endDate;
     }
 
+    public boolean isInterceptWith(LocalDate otherStartDate, LocalDate otherEndDate) {
+        if (this.endDate == null || otherEndDate == null || otherStartDate.isBefore(this.endDate)) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
