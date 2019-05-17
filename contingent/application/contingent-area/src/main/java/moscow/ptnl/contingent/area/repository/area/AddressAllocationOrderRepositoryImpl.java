@@ -37,8 +37,8 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
                                 criteriaBuilder.equal(order.get(AddressAllocationOrder_.number.getName()), number ),
                         date == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(order.get(AddressAllocationOrder_.date.getName()), date),
-                        ouz == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(order.get(AddressAllocationOrder_.ouz.getName()), ouz),
+//                        ouz == null ? criteriaBuilder.conjunction() :
+//                                criteriaBuilder.equal(order.get(AddressAllocationOrder_.ouz.getName()), ouz),
                         name == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(order.get(AddressAllocationOrder_.name.getName()), name),
                         archived == null ? criteriaBuilder.conjunction() :

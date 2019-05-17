@@ -270,7 +270,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         primaryAreaTypeCodes.forEach(c -> {
             AreaToAreaType areaToAreaType = new AreaToAreaType();
             areaToAreaType.setArea(area);
-            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
+//            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
         esuService.saveAndPublishToESU(new AreaCreateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
@@ -383,20 +383,22 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         List<AreaToAreaType> areaToAreaTypesToAdd = new ArrayList<>();
 
-        primaryAreaTypeCodesAdd.stream()
-                .filter(c -> areaToAreaTypes.stream().noneMatch(a -> Objects.equals(c, a.getAreaType().getCode())))
-                .forEach(c -> {
-            AreaToAreaType areaToAreaType = new AreaToAreaType();
-            areaToAreaType.setArea(area);
-            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
-            areaToAreaTypeCRUDRepository.save(areaToAreaType);
-            areaToAreaTypesToAdd.add(areaToAreaType);
-        });
-        List<AreaToAreaType> areaToAreaTypesToRemove = areaToAreaTypes.stream()
-                .filter(a -> a.getAreaType() != null &&
-                        !primaryAreaTypeCodesAdd.contains(a.getAreaType().getCode()) &&
-                        primaryAreaTypeCodesDel.contains(a.getAreaType().getCode()))
-                .collect(Collectors.toList());
+//        primaryAreaTypeCodesAdd.stream()
+//                .filter(c -> areaToAreaTypes.stream().noneMatch(a -> Objects.equals(c, a.getAreaType().getCode())))
+//                .forEach(c -> {
+//            AreaToAreaType areaToAreaType = new AreaToAreaType();
+//            areaToAreaType.setArea(area);
+//            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
+//            areaToAreaTypeCRUDRepository.save(areaToAreaType);
+//            areaToAreaTypesToAdd.add(areaToAreaType);
+//        });
+        List<AreaToAreaType> areaToAreaTypesToRemove = new ArrayList<>();
+
+//                areaToAreaTypes.stream()
+//                .filter(a -> a.getAreaType() != null &&
+//                        !primaryAreaTypeCodesAdd.contains(a.getAreaType().getCode()) &&
+//                        primaryAreaTypeCodesDel.contains(a.getAreaType().getCode()))
+//                .collect(Collectors.toList());
 
         areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypesToRemove);
 
@@ -427,7 +429,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         order.setArchived(false);
         order.setNumber(number);
         order.setDate(date);
-        order.setOuz(ouz);
+//        order.setOuz(ouz);
         order.setName(name);
 
         return addressAllocationOrderCRUDRepository.save(order).getId();
@@ -452,7 +454,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         String numberNew = number == null ? order.getNumber() : number;
         LocalDate dateNew = date == null ? order.getDate() : date;
-        String ouzNew = ouz == null ? order.getOuz() : ouz;
+        String ouzNew = ""; //ouz == null ? order.getOuz() : ouz;
         String nameNew = name == null ? order.getName() : name;
 
         if (addressAllocationOrderRepository.findAddressAllocationOrders(numberNew, dateNew, ouzNew, nameNew, false).stream()
@@ -465,7 +467,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         order.setUpdateDate(LocalDateTime.now());
         order.setNumber(numberNew);
         order.setDate(dateNew);
-        order.setOuz(ouzNew);
+//        order.setOuz(ouzNew);
         order.setName(nameNew);
     }
 
@@ -592,7 +594,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             for (AreaMedicalEmployee empl : deleteEmployees) {
 
                 //6.1
-                if (empl.isDeleted() || empl.getArea().getId() != areaId) {
+                // TODO проверить
+                if ((empl.getArchived() != null && empl.getArchived()) || empl.getArea().getId() != areaId) {
                     throwException(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA, new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()));
                 }
 

@@ -25,7 +25,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
         criteria.where(criteriaBuilder.and(
                 criteriaBuilder.equal(root.get(AreaMedicalEmployee_.area).get(Area_.id), areaId),
                 criteriaBuilder.equal(root.get(AreaMedicalEmployee_.replacement), false),
-                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.isDeleted), false),
+                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.archived), false),
                 deleteIds.isEmpty() ? criteriaBuilder.conjunction() :
                         criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds)),
                 criteriaBuilder.lessThanOrEqualTo(root.get(AreaMedicalEmployee_.startDate), LocalDate.now()),
@@ -44,7 +44,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
         criteria.where(criteriaBuilder.and(
                 criteriaBuilder.equal(root.get(AreaMedicalEmployee_.area).get(Area_.id), areaId),
                 criteriaBuilder.equal(root.get(AreaMedicalEmployee_.replacement), 0),
-                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.isDeleted), 0),
+                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.archived), 0),
                 deleteIds.isEmpty() ? criteriaBuilder.conjunction() :
                         criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds))))
                 .orderBy(criteriaBuilder.asc(root.get(AreaMedicalEmployee_.startDate)));
@@ -60,7 +60,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
         Root<AreaMedicalEmployee> root = criteria.from(AreaMedicalEmployee.class);
         criteria.where(criteriaBuilder.and(
                 criteriaBuilder.equal(root.get(AreaMedicalEmployee_.area).get(Area_.id), areaId),
-                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.isDeleted), 0),
+                criteriaBuilder.equal(root.get(AreaMedicalEmployee_.archived), 0),
                 deleteIds.isEmpty() ? criteriaBuilder.conjunction() :
                         criteriaBuilder.not(root.get(AreaMedicalEmployee_.id).in(deleteIds))))
                 .orderBy(criteriaBuilder.asc(root.get(AreaMedicalEmployee_.medicalEmployeeJobInfoId)),

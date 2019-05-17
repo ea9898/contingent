@@ -24,7 +24,7 @@ public class SpecializationToPositionNomRepositoryImpl extends BaseRepository im
         //Join<SpecializationToPositionNom, Specialization> join = root.join(SpecializationToPositionNom_.specialization, JoinType.LEFT);
         criteria.select(root);
         criteria.where(
-                criteriaBuilder.equal(root.get(SpecializationToPositionNom_.positionNom), positionNomClinicId));
+                criteriaBuilder.equal(root.get(SpecializationToPositionNom_.positionNomClinic), positionNomClinicId));
         List<SpecializationToPositionNom> results = entityManager.createQuery(criteria).getResultList();
 
         if (results.isEmpty()) {
