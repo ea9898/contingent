@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
             targetNamespace="http://ptnl.moscow/contingent/event/type/attachment/"
-            xmlns:tns="http://ptnl.moscow/contingent/event/type/attachment/">
+            xmlns:tns="http://ptnl.moscow/contingent/event/type/attachment/"
+            xmlns:common="http://ptnl.moscow/contingent/event/type/common/">
 
-    <xs:include schemaLocation="common.xsd" />
+    <xs:import namespace="http://ptnl.moscow/contingent/event/type/common/" schemaLocation="common.xsd"/>
 
     <xs:element name="attachOnAreaRelationChangeEvent">
         <xs:complexType>
@@ -39,7 +40,7 @@
                                     <xs:documentation>Идентификатор участка</xs:documentation>
                                 </xs:annotation>
                             </xs:element>
-                            <xs:element name="areaRestriction" type="tns:AreaRestriction" minOccurs="0">
+                            <xs:element name="areaRestriction" type="common:AreaRestriction" minOccurs="0">
                                 <xs:annotation>
                                     <xs:documentation>Ограничения контингента для прикрепления на участок</xs:documentation>
                                 </xs:annotation>
