@@ -8,5 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
-public interface AreaMedicalEmployeeCRUDRepository extends CommonRepository<AreaMedicalEmployee, String> {
+public interface AreaMedicalEmployeeCRUDRepository extends CommonRepository<AreaMedicalEmployee, Long> {
 }

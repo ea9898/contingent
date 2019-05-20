@@ -304,7 +304,6 @@
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="MEDICAL_POSITION_ID" type="BIGINT" />
             <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка. Код" />
             <column name="POSITION_NOM_CLINIC_ID" type="BIGINT" />
         </createTable>
