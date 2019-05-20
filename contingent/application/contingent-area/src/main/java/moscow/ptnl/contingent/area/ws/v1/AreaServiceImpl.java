@@ -33,6 +33,8 @@ import ru.mos.emias.contingent2.area.types.DelProfileMURequest;
 import ru.mos.emias.contingent2.area.types.DelProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdResponse;
+import ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest;
+import ru.mos.emias.contingent2.area.types.GetNewAreaIdResponse;
 import ru.mos.emias.contingent2.area.types.GetProfileMURequest;
 import ru.mos.emias.contingent2.area.types.GetProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.RestoreAreaRequest;
@@ -271,6 +273,20 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             areaService.restoreArea(body.getAreaId());
 
             return new RestoreAreaResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
+        try {
+            GetNewAreaIdResponse response = new GetNewAreaIdResponse();
+            response.setNewAreaId(areaService.getNewAreaId());
+
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

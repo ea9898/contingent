@@ -294,4 +294,19 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="getNewAreaIdRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getNewAreaIdResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="newAreaId" type="xs:long" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

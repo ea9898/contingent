@@ -11,4 +11,6 @@ public interface AreaRepository {
 	List<Area> findAreas(Long moId, Long muId, Long areaTypeCode, Integer number, Boolean actual);
 
 	List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean actual);
+
+	Long getNextAreaId();
 }

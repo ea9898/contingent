@@ -133,6 +133,14 @@
         <wsdl:part name="body" element="ns1:restoreAreaResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="getNewAreaIdInput">
+        <wsdl:part name="body" element="ns1:getNewAreaIdRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getNewAreaIdOutput">
+        <wsdl:part name="body" element="ns1:getNewAreaIdResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="addProfileMU">
             <wsdl:documentation>
@@ -236,6 +244,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:restoreAreaInput"/>
             <wsdl:output message="tns:restoreAreaOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getNewAreaId">
+            <wsdl:documentation>
+                Предоставления значения сиквенса для ИД участка
+            </wsdl:documentation>
+            <wsdl:input message="tns:getNewAreaIdInput"/>
+            <wsdl:output message="tns:getNewAreaIdOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -413,6 +429,20 @@
 
         <wsdl:operation name="restoreArea">
             <soap:operation soapAction="restoreArea"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getNewAreaId">
+            <soap:operation soapAction="getNewAreaId"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

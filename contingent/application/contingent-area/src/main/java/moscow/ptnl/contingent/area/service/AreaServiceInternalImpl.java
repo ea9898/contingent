@@ -661,6 +661,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAutoAssignForAttach(false);
     }
 
+    @Override
+    public Long getNewAreaId() throws ContingentException {
+        return areaRepository.getNextAreaId();
+    }
+
     private List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployee> mainEmployees) {
         mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
         LocalDate currentDate = LocalDate.now();
