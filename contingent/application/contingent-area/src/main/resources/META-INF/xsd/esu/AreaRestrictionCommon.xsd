@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://ptnl.moscow/contingent/event/type/common/">
+           targetNamespace="http://ptnl.moscow/contingent2/event/type/attachment/">
 
     <xs:complexType name="AreaRestriction">
         <xs:sequence>
