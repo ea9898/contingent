@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
-import moscow.ptnl.contingent.area.event.AreaUpdateEvent;
+import moscow.ptnl.contingent2.area.event.AreaUpdateEvent;
 import moscow.ptnl.contingent.area.model.esu.AreaEvent;
 import moscow.ptnl.contingent.area.transform.Transform;
 import org.springframework.beans.factory.annotation.Autowired;

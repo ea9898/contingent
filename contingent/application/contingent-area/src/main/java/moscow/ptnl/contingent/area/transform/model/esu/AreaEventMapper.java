@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
-import moscow.ptnl.contingent.area.event.AreaEvent;
+import moscow.ptnl.contingent2.area.event.AreaEvent;
 import moscow.ptnl.contingent.area.model.esu.OperationType;
 import moscow.ptnl.contingent.area.transform.Transform;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;

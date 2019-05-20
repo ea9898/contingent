@@ -255,7 +255,7 @@
                                 <sources>
                                     <source>src/main/resources/META-INF/xsd/nsi</source>
                                 </sources>
-                                <packageName>moscow.ptnl.contingent.area.nsi</packageName>
+                                <packageName>moscow.ptnl.contingent2.nsi</packageName>
                             </configuration>
                         </execution>
                         <execution>
@@ -268,9 +268,54 @@
                                 <clearOutputDir>false</clearOutputDir>
                                 <encoding>UTF-8</encoding>
                                 <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu</source>
+                                    <source>src/main/resources/META-INF/xsd/esu/AreaEvent.xsd</source>
                                 </sources>
-                                <packageName>moscow.ptnl.contingent.area.event</packageName>
+                                <packageName>moscow.ptnl.contingent2.area.event</packageName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>xjc3</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>xjc</goal>
+                            </goals>
+                            <configuration>
+                                <clearOutputDir>false</clearOutputDir>
+                                <encoding>UTF-8</encoding>
+                                <sources>
+                                    <source>src/main/resources/META-INF/xsd/esu/CreateСloseAttachment.xsd</source>
+                                </sources>
+                                <packageName>moscow.ptnl.contingent2.attachment.disp.event</packageName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>xjc4</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>xjc</goal>
+                            </goals>
+                            <configuration>
+                                <clearOutputDir>false</clearOutputDir>
+                                <encoding>UTF-8</encoding>
+                                <sources>
+                                    <source>src/main/resources/META-INF/xsd/esu/AttachToDependentArea.xsd</source>
+                                </sources>
+                                <packageName>moscow.ptnl.contingent2.attachment.deparea.event</packageName>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>xjc5</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>xjc</goal>
+                            </goals>
+                            <configuration>
+                                <clearOutputDir>false</clearOutputDir>
+                                <encoding>UTF-8</encoding>
+                                <sources>
+                                    <source>src/main/resources/META-INF/xsd/esu/AttachOnAreaRelationChange.xsd</source>
+                                </sources>
+                                <packageName>moscow.ptnl.contingent2.attachment.changedeparea.event</packageName>
                             </configuration>
                         </execution>
                     </executions>

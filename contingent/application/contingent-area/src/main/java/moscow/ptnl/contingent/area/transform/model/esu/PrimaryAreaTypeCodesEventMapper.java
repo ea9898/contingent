@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
-import moscow.ptnl.contingent.area.event.PrimaryAreaTypeCodesEvent;
+import moscow.ptnl.contingent2.area.event.PrimaryAreaTypeCodesEvent;
 import moscow.ptnl.contingent.area.transform.Transform;
 import org.springframework.stereotype.Component;
 
