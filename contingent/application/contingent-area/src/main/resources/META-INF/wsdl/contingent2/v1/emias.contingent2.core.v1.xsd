@@ -106,16 +106,16 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="addMedicalEmployees">
+    <xs:complexType name="AddMedicalEmployees">
         <xs:annotation>
             <xs:documentation>Сведения медработников для добавления на участок</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="addMedicalEmployee" type="tns:addMedicalEmployee" maxOccurs="unbounded"/>
+            <xs:element name="addMedicalEmployee" type="tns:AddMedicalEmployee" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="addMedicalEmployee">
+    <xs:complexType name="AddMedicalEmployee">
         <xs:annotation>
             <xs:documentation>Сведения медработника для добавления на участок</xs:documentation>
         </xs:annotation>
@@ -130,16 +130,16 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="changeMedicalEmployees">
+    <xs:complexType name="ChangeMedicalEmployees">
         <xs:annotation>
             <xs:documentation>Сведения медработников для изменения</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="changeMedicalEmployee" type="tns:changeMedicalEmployee" maxOccurs="unbounded"/>
+            <xs:element name="changeMedicalEmployee" type="tns:ChangeMedicalEmployee" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="changeMedicalEmployee">
+    <xs:complexType name="ChangeMedicalEmployee">
         <xs:annotation>
             <xs:documentation>Сведения медработника для изменения</xs:documentation>
         </xs:annotation>
@@ -150,12 +150,12 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="fault">
+    <xs:complexType name="Fault">
         <xs:annotation>
             <xs:documentation>Перечень сообщений об ошибках валидации</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="dummy" type="xs:string" maxOccurs="unbounded" default="Описание уточняется"/>
+            <xs:element name="fault" type="xs:string" maxOccurs="unbounded" default="Описание уточняется"/>
         </xs:sequence>
     </xs:complexType>
 

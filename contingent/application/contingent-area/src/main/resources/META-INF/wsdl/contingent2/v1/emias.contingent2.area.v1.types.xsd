@@ -262,8 +262,8 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long"/>
-                <xs:element name="addMedicalEmployees" type="core:addMedicalEmployees" minOccurs="0"/>
-                <xs:element name="changeMedicalEmployees" type="core:changeMedicalEmployees" minOccurs="0"/>
+                <xs:element name="addMedicalEmployees" type="core:AddMedicalEmployees" minOccurs="0"/>
+                <xs:element name="changeMedicalEmployees" type="core:ChangeMedicalEmployees" minOccurs="0"/>
                 <xs:element name="options" type="core:Options" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
@@ -273,7 +273,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="assignmentId" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="fault" type="core:fault" minOccurs="0"/>
+                <xs:element name="fault" type="core:Fault" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
