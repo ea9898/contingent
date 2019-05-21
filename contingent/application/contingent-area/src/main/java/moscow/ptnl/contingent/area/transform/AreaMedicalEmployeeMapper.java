@@ -13,7 +13,7 @@ public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, mos
         //Todo разобраться где брать ИД
 //        employee.setId(entityObject.getId());
         employee.setMedicalEmployeeJobInfoId(entityObject.getMedicalEmployeeJobInfoId());
-        employee.setPositionId(entityObject.getMedicalPositionId());
+        employee.setPositionId(entityObject.getPositionNomClinic().getId());
         employee.setSnils(entityObject.getSnils());
         employee.setIsReplacement(entityObject.getReplacement());
         employee.setStartDate(entityObject.getStartDate());

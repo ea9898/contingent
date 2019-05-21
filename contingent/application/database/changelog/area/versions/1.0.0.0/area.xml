@@ -458,16 +458,12 @@
             <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала работы на участке" />
             <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
             <column name="SNILS" type="VARCHAR2(20)" />
-            <column name="MEDICAL_POSITION_ID" type="BIGINT" />
             <column name="POSITION_NOM_CLINIC_ID" type="BIGINT" />
             <column name="SUBDIVISION_ID" type="BIGINT" />
             <column name="CREATE_DATE" type="TIMESTAMP(6)">
                 <constraints nullable="false" />
             </column>
             <column name="UPDATE_DATE" type="TIMESTAMP(6)" />
-            <column name="ARCHIVED" type="NUMBER(1)" remarks="Признак архивности" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
         </createTable>
         <rollback>
             <dropTable tableName="AREA_MEDICAL_EMPLOYEE"/>
@@ -687,5 +683,17 @@
         </sql>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-32" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AREA_MEDICAL_EMPLOYEE"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы area_medical_employee</comment>
+        <createSequence sequenceName="SEQ_AREA_MEDICAL_EMPLOYEE"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_AREA_MEDICAL_EMPLOYEE"/>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

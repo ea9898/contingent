@@ -1,16 +1,18 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -20,11 +22,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "AREA_MEDICAL_EMPLOYEE")
+@SequenceGenerator(name = "seq_area_medical_employee", sequenceName = "seq_area_medical_employee", allocationSize=1)
 public class AreaMedicalEmployee implements Serializable {
 
     private static final long serialVersionUID = 4435222693561566689L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="seq_area_medical_employee")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
@@ -53,9 +57,6 @@ public class AreaMedicalEmployee implements Serializable {
     @Size(max = 20)
     private String snils;
 
-    @Column(name = "MEDICAL_POSITION_ID")
-    private Long medicalPositionId;
-
     @JoinColumn(name = "POSITION_NOM_CLINIC_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private PositionNomClinic positionNomClinic;
@@ -69,26 +70,21 @@ public class AreaMedicalEmployee implements Serializable {
     @Column(name = "SUBDIVISION_ID")
     private Long subdivisionId;
 
-    @Column(name = "ARCHIVED")
-    @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archived;
-
     public AreaMedicalEmployee() {
     }
 
     public AreaMedicalEmployee(Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
-                               LocalDate endDate, String snils, Long medicalPositionId, LocalDateTime createDate,
-                               LocalDateTime updateDate, Boolean archived, Long subdivisionId) {
+                               LocalDate endDate, String snils, PositionNomClinic positionNomClinic,
+                               LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
         this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
         this.area = area;
         this.replacement = replacement;
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
-        this.medicalPositionId = medicalPositionId;
+        this.positionNomClinic = positionNomClinic;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.archived = archived;
         this.subdivisionId = subdivisionId;
     }
 
@@ -148,14 +144,6 @@ public class AreaMedicalEmployee implements Serializable {
         this.snils = snils;
     }
 
-    public Long getMedicalPositionId() {
-        return medicalPositionId;
-    }
-
-    public void setMedicalPositionId(Long medicalPositionId) {
-        this.medicalPositionId = medicalPositionId;
-    }
-
     public PositionNomClinic getPositionNomClinic() {
         return positionNomClinic;
     }
@@ -194,14 +182,6 @@ public class AreaMedicalEmployee implements Serializable {
 
     public void setOuz(String ouz) {
         this.ouz = ouz;
-    }
-
-    public Boolean getArchived() {
-        return archived;
-    }
-
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
     }
 
     @Override
