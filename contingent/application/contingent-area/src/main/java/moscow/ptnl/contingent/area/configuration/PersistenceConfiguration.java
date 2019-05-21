@@ -48,10 +48,8 @@ public class PersistenceConfiguration {
             JndiTemplate jndi = new JndiTemplate();
             dataSource = jndi.lookup(contingentDataSourceJNDIName, DataSource.class);
             logger.info("DataSource init " + PersistenceConfiguration.class);
-            System.out.println("DataSource created");
         } catch (NamingException e) {
             logger.error("Error DataSource init " + PersistenceConfiguration.class);
-            System.err.println(e);
         }
         return dataSource;
     }
@@ -64,14 +62,13 @@ public class PersistenceConfiguration {
         vendorAdapter.setGenerateDdl(false);
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        Properties jpaProperties = new Properties();        
+        Properties jpaProperties = new Properties();
         jpaProperties.setProperty("hibernate.jdbc.fetch_size", bundle.getString("org.hibernate.fetchSize"));
-        jpaProperties.setProperty("javax.persistence.sharedCache.mode", bundle.getString("spring.jpa.properties.javax.persistence.sharedCache.mode"));
-        jpaProperties.setProperty("hibernate.cache.use_second_level_cache", bundle.getString("spring.jpa.properties.hibernate.cache.use_second_level_cache"));
-        jpaProperties.setProperty("hibernate.cache.use_query_cache", bundle.getString("spring.jpa.properties.hibernate.cache.use_query_cache"));
-        jpaProperties.setProperty("hibernate.cache.region.factory_class", bundle.getString("spring.jpa.properties.hibernate.cache.region.factory_class"));        
-        jpaProperties.setProperty("hibernate.cache.infinispan.statistics", bundle.getString("spring.jpa.properties.hibernate.cache.infinispan.statistics"));
-        jpaProperties.setProperty("hibernate.generate_statistics", bundle.getString("spring.jpa.properties.hibernate.generate_statistics"));
+        final String prefix = "spring.jpa.properties.";
+        bundle.keySet().stream()
+                .filter(k -> k.startsWith(prefix))
+                .map(k -> k.substring(prefix.length()))
+                .forEach(k -> jpaProperties.setProperty(k, bundle.getString(prefix + k)));        
         factory.setJpaProperties(jpaProperties);
         factory.setPackagesToScan("moscow.ptnl");
         factory.setDataSource(dataSource);
