@@ -765,9 +765,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     private void addNew(List<AreaMedicalEmployee> employees, List<AddMedicalEmployee> addEmployees, Area area) {
-        addEmployees.forEach(empl -> employees.add(new AreaMedicalEmployee(empl.getMedicalEmployeeJobInfoId(), area,
-                empl.isIsReplacement(), empl.getStartDate(), empl.getEndDate(), empl.getSnils(),
+        addEmployees.forEach(empl -> employees.add(new AreaMedicalEmployee(
+                empl.getMedicalEmployeeJobInfoId(),
+                area,
+                empl.isIsReplacement(),
+                empl.getStartDate(),
+                empl.getEndDate(),
+                empl.getSnils(),
                 positionNomClinicRepository.getPositionProxy(empl.getPositionId()),
-                LocalDateTime.now(), LocalDateTime.now(), empl.getSubdivisionId())));
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                empl.getSubdivisionId())));
     }
 }
