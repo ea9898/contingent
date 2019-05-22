@@ -27,10 +27,6 @@ public class MoAddress implements Serializable {
     @Column(name = "MO_ID")
     private Long moId;
 
-    @JoinColumn(name = "AREA_TYPE_CODE")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypes areaType;
-
     @Column(name = "ORDER_ID")
     private Long orderId;
 
@@ -67,14 +63,6 @@ public class MoAddress implements Serializable {
 
     public void setMoId(Long moId) {
         this.moId = moId;
-    }
-
-    public AreaTypes getAreaType() {
-        return areaType;
-    }
-
-    public void setAreaType(AreaTypes areaType) {
-        this.areaType = areaType;
     }
 
     public Long getOrderId() {

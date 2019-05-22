@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="CONTINGENT2-57-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-15" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ADDRESS_ALLOCATION_ORDER"/>
@@ -34,7 +34,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-1-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-15-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SEQ_ADDRESS_ALLOCATION_ORDER"/>
@@ -47,7 +47,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-2" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-16" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREAS"/>
@@ -87,7 +87,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-2-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-16-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_AREA_TYPE"/>
@@ -114,7 +114,7 @@
                                  referencedTableName="AREA_TYPES"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-2-3" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-16-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IX_AREAS_MU_ID"/>
@@ -128,7 +128,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-2-4" author="sorlov">
+    <changeSet id="CONTINGENT2-57-16-4" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SEQ_AREAS"/>
@@ -141,7 +141,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-3" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-17" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ADDRESSES"/>
@@ -156,7 +156,7 @@
             <column name="LEVEL" type="SMALLINT">
                 <constraints nullable="false" />
             </column>
-            <column name="ADDRESS_FORMING_ELEMENT_ID" type="BIGINT" />
+            <column name="AFE_ID" type="BIGINT" />
             <column name="REGISTRY_BUILDING_ID" type="BIGINT" />
         </createTable>
         <rollback>
@@ -164,21 +164,21 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-3-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-17-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_ADDRESSES_AFE_ID"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки ADDRESS_FORMING_ELEMENT_ID таблицы ADDRESSES</comment>
+        <comment>Создание индекса колонки AFE_ID таблицы ADDRESSES</comment>
         <createIndex indexName="IXFK_ADDRESSES_AFE_ID"
                      tableName="ADDRESSES"
                      unique="false">
-            <column name="ADDRESS_FORMING_ELEMENT_ID" type="number"/>
+            <column name="AFE_ID" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-3-2" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-17-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_ADDRESSES_REGISTRY_B_ID"/>
@@ -192,20 +192,20 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-3-3" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-17-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="ADDRESSES" columnName="ADDRESS_FORMING_ELEMENT_ID" />
+            <columnExists tableName="ADDRESSES" columnName="AFE_ID" />
             <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_ADDRESSES_AFE</comment>
-        <addForeignKeyConstraint baseColumnNames="ADDRESS_FORMING_ELEMENT_ID"
+        <addForeignKeyConstraint baseColumnNames="AFE_ID"
                                  baseTableName="ADDRESSES"
                                  constraintName="FK_ADDRESSES_AFE"
                                  referencedColumnNames="ID"
                                  referencedTableName="ADDRESS_FORMING_ELEMENT"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-3-4" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-17-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="ADDRESSES" columnName="REGISTRY_BUILDING_ID" />
             <columnExists tableName="REGISTRY_BUILDING" columnName="ID" />
@@ -218,7 +218,7 @@
                                  referencedTableName="REGISTRY_BUILDING"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-4" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-18" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="MO_ADDRESSES"/>
@@ -231,7 +231,6 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="MO_ID" type="BIGINT" />
-            <column name="AREA_TYPE_CODE" type="BIGINT" />
             <column name="ORDER_ID" type="BIGINT" />
             <column name="REJECT_ORDER_ID" type="BIGINT" />
             <column name="ADDRESS_ID" type="BIGINT" />
@@ -247,7 +246,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-4-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-18-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_MO_ADDRESSES_ORDER_ID"/>
@@ -261,7 +260,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-4-2" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-18-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_MO_ADDRESSES_REJECT_O_ID"/>
@@ -275,21 +274,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-4-3" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_MO_ADDRESSES_AREA_TYPE"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MO_ADDRESSES</comment>
-        <createIndex indexName="IXFK_MO_ADDRESSES_AREA_TYPE"
-                     tableName="MO_ADDRESSES"
-                     unique="false">
-            <column name="AREA_TYPE_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-4-4" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-18-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="MO_ADDRESSES" columnName="ORDER_ID" />
             <columnExists tableName="ADDRESS_ALLOCATION_ORDER" columnName="ID" />
@@ -302,7 +287,7 @@
                                  referencedTableName="ADDRESS_ALLOCATION_ORDER"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-4-5" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-18-5" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="MO_ADDRESSES" columnName="REJECT_ORDER_ID" />
             <columnExists tableName="ADDRESS_ALLOCATION_ORDER" columnName="ID" />
@@ -315,7 +300,7 @@
                                  referencedTableName="ADDRESS_ALLOCATION_ORDER"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-4-6" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-18-6" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="MO_ADDRESSES" columnName="AREA_TYPE_CODE" />
             <columnExists tableName="AREA_TYPES" columnName="CODE" />
@@ -328,7 +313,7 @@
                                  referencedTableName="AREA_TYPES"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-5" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-19" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREA_ADDRESSES"/>
@@ -349,16 +334,13 @@
                 <constraints nullable="false" />
             </column>
             <column name="UPDATE_DATE" type="TIMESTAMP(6)" />
-            <column name="ARCHIVED" type="NUMBER(1)" remarks="Признак архивности" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
         </createTable>
         <rollback>
             <dropTable tableName="AREA_ADDRESSES"/>
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-5-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-19-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_ADDRESSES_MO_ADDR_ID"/>
@@ -372,7 +354,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-5-2" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-19-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_ADDRESSES_AREA_ID"/>
@@ -386,7 +368,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-5-3" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-19-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_ADDRESSES_ADDRESS_ID"/>
@@ -400,7 +382,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-5-4" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-19-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_ADDRESSES" columnName="MO_ADDRESS_ID" />
             <columnExists tableName="MO_ADDRESSES" columnName="ID" />
@@ -413,7 +395,7 @@
                                  referencedTableName="MO_ADDRESSES"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-5-5" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-19-5" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_ADDRESSES" columnName="AREA_ID" />
             <columnExists tableName="AREAS" columnName="ID" />
@@ -426,7 +408,7 @@
                                  referencedTableName="AREAS"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-5-6" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-19-6" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_ADDRESSES" columnName="ADDRESS_ID" />
             <columnExists tableName="ADDRESSES" columnName="ID" />
@@ -439,7 +421,7 @@
                                  referencedTableName="ADDRESSES"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-6" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-20" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREA_MEDICAL_EMPLOYEE"/>
@@ -458,8 +440,7 @@
             <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала работы на участке" />
             <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
             <column name="SNILS" type="VARCHAR2(20)" />
-            <column name="MEDICAL_POSITION_ID" type="BIGINT" />
-            <column name="POSITION_NOM_CLINIC_ID" type="BIGINT" />
+            <column name="POSITION_NOM_ID" type="BIGINT" />
             <column name="SUBDIVISION_ID" type="BIGINT" />
             <column name="CREATE_DATE" type="TIMESTAMP(6)">
                 <constraints nullable="false" />
@@ -474,7 +455,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-6-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-20-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AME_AREA"/>
@@ -488,21 +469,21 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-6-2" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-20-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AME_POSITION_NOM_CLINIC"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки POSITION_NOM_CLINIC_ID таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <comment>Создание индекса колонки POSITION_NOM_ID таблицы AREA_MEDICAL_EMPLOYEE</comment>
         <createIndex indexName="IXFK_AME_POSITION_NOM_CLINIC"
                      tableName="AREA_MEDICAL_EMPLOYEE"
                      unique="false">
-            <column name="POSITION_NOM_CLINIC_ID" type="number"/>
+            <column name="POSITION_NOM_ID" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-6-3" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-20-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="AREA_ID" />
             <columnExists tableName="AREAS" columnName="ID" />
@@ -515,20 +496,20 @@
                                  referencedTableName="AREAS"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-6-4" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-20-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="POSITION_NOM_CLINIC_ID" />
+            <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="POSITION_NOM_ID" />
             <columnExists tableName="POSITION_NOM_CLINIC" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AME_POSITION_NOM_CLINIC</comment>
-        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_CLINIC_ID"
+        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_ID"
                                  baseTableName="AREA_MEDICAL_EMPLOYEE"
                                  constraintName="FK_AME_POSITION_NOM_CLINIC"
                                  referencedColumnNames="ID"
                                  referencedTableName="POSITION_NOM_CLINIC"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-7" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-21" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="MU_PROFILES"/>
@@ -550,7 +531,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-7-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-21-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_PROFILE_MU_AREA_TYPE"/>
@@ -564,7 +545,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-7-2" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-21-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="MU_PROFILES" columnName="AREA_TYPE_CODE" />
             <columnExists tableName="AREA_TYPES" columnName="CODE" />
@@ -577,7 +558,7 @@
                                  referencedTableName="AREA_TYPES"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-7-3" author="sorlov">
+    <changeSet id="CONTINGENT2-57-21-3" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SEQ_MU_PROFILES"/>
@@ -590,7 +571,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-8" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-22" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREA_TO_AREA_TYPE"/>
@@ -614,7 +595,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-8-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-22-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_TO_AREA_TYPE_AREAS"/>
@@ -628,7 +609,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-8-2" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-22-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_TO_AREA_MU_PR_ID"/>
@@ -642,7 +623,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-8-3" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-22-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TO_AREA_TYPE" columnName="AREA_ID" />
             <columnExists tableName="AREAS" columnName="ID" />
@@ -655,7 +636,7 @@
                                  referencedTableName="AREAS"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-8-4" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-57-22-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TO_AREA_TYPE" columnName="MU_PROFILES_ID" />
             <columnExists tableName="MU_PROFILES" columnName="ID" />
@@ -668,7 +649,7 @@
                                  referencedTableName="MU_PROFILES"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-8-5" author="sorlov">
+    <changeSet id="CONTINGENT2-57-22-5" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SEQ_AREA_TO_AREA_TYPE"/>

@@ -28,7 +28,7 @@ public class SpecializationToPositionNom implements Serializable {
     private Specialization specialization;
 
     @Id
-    @JoinColumn(name = "position_nom_clinic_id", nullable = false)
+    @JoinColumn(name = "POSITION_NOM_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private PositionNomClinic positionNomClinic;
 

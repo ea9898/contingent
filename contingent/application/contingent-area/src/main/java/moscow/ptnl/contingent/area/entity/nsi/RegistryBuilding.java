@@ -29,7 +29,7 @@ public class RegistryBuilding implements Serializable {
     @Column(name = "ADDR_ID")
     private Long addrId;
 
-    @JoinColumn(name = "ADDRESS_FORMING_ELEMENT_ID", nullable = false)
+    @JoinColumn(name = "AFE_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private AddressFormingElement addressFormingElement;
 

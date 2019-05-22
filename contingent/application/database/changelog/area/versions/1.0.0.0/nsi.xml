@@ -582,7 +582,7 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="GLOBAL_ID" type="BIGINT" remarks="Уникальный идентификатор объекта" />
-            <column name="ADDRESS_FORMING_ELEMENT_ID" type="BIGINT">
+            <column name="AFE_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
             <column name="ADDR_ID" type="BIGINT" />
@@ -611,7 +611,7 @@
         <createIndex indexName="IDX_REGISTRY_BUILDING_AFE_ID"
                      tableName="REGISTRY_BUILDING"
                      unique="false">
-            <column name="ADDRESS_FORMING_ELEMENT_ID" type="number"/>
+            <column name="AFE_ID" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -621,7 +621,7 @@
             <columnExists tableName="AREA_COUNT_LIMIT" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_REGISTRY_BUILDING_AFE</comment>
-        <addForeignKeyConstraint baseColumnNames="ADDRESS_FORMING_ELEMENT_ID"
+        <addForeignKeyConstraint baseColumnNames="AFE_ID"
                                  baseTableName="REGISTRY_BUILDING"
                                  constraintName="FK_REGISTRY_BUILDING_AFE"
                                  referencedColumnNames="ID"
@@ -639,7 +639,7 @@
             <column name="SPECIALIZATION_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
-            <column name="POSITION_NOM_CLINIC_ID" type="BIGINT">
+            <column name="POSITION_NOM_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
@@ -671,21 +671,21 @@
                 <indexExists indexName="IXFK_SPECIALIZATI_POSITIO01"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки POSITION_NOM_CLINIC_ID таблицы SPECIALIZATION_TO_POSITION_NOM</comment>
+        <comment>Создание индекса колонки POSITION_NOM_ID таблицы SPECIALIZATION_TO_POSITION_NOM</comment>
         <createIndex indexName="IXFK_SPECIALIZATI_POSITIO01"
                      tableName="SPECIALIZATION_TO_POSITION_NOM"
                      unique="false">
-            <column name="POSITION_NOM_CLINIC_ID" type="number"/>
+            <column name="POSITION_NOM_ID" type="number"/>
         </createIndex>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-14-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="SPECIALIZATION_TO_POSITION_NOM" columnName="POSITION_NOM_CLINIC_ID" />
+            <columnExists tableName="SPECIALIZATION_TO_POSITION_NOM" columnName="POSITION_NOM_ID" />
             <columnExists tableName="POSITION_NOM_CLINIC" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_SPECIALIZATI_POSITION_NO_01</comment>
-        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_CLINIC_ID"
+        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_ID"
                                  baseTableName="SPECIALIZATION_TO_POSITION_NOM"
                                  constraintName="FK_SPECIALIZATI_POSITION_NO_01"
                                  referencedColumnNames="ID"

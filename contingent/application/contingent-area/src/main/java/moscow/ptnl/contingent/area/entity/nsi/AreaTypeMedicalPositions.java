@@ -26,7 +26,7 @@ public class AreaTypeMedicalPositions implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaTypes areaType;
 
-    @JoinColumn(name = "POSITION_NOM_CLINIC_ID")
+    @JoinColumn(name = "POSITION_NOM_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private PositionNomClinic positionNomClinic;
 

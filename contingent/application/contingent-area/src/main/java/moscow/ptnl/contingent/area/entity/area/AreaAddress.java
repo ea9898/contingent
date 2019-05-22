@@ -50,10 +50,6 @@ public class AreaAddress implements Serializable {
     @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 
-    @Column(name = "ARCHIVED")
-    @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archived;
-
     public MoAddress getDistributionToMo() {
         return moAddress;
     }
@@ -124,14 +120,6 @@ public class AreaAddress implements Serializable {
 
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
-    }
-
-    public Boolean getArchived() {
-        return archived;
-    }
-
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
     }
 
     @Override

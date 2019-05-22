@@ -53,10 +53,7 @@ public class AreaMedicalEmployee implements Serializable {
     @Size(max = 20)
     private String snils;
 
-    @Column(name = "MEDICAL_POSITION_ID")
-    private Long medicalPositionId;
-
-    @JoinColumn(name = "POSITION_NOM_CLINIC_ID")
+    @JoinColumn(name = "POSITION_NOM_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private PositionNomClinic positionNomClinic;
 
@@ -77,7 +74,8 @@ public class AreaMedicalEmployee implements Serializable {
     }
 
     public AreaMedicalEmployee(Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
-                               LocalDate endDate, String snils, Long medicalPositionId, LocalDateTime createDate,
+                               LocalDate endDate, String snils,  Long positionNomClinic,
+                               LocalDateTime createDate,
                                LocalDateTime updateDate, Boolean archived, Long subdivisionId) {
         this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
         this.area = area;
@@ -85,7 +83,6 @@ public class AreaMedicalEmployee implements Serializable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
-        this.medicalPositionId = medicalPositionId;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.archived = archived;
@@ -146,14 +143,6 @@ public class AreaMedicalEmployee implements Serializable {
 
     public void setSnils(String snils) {
         this.snils = snils;
-    }
-
-    public Long getMedicalPositionId() {
-        return medicalPositionId;
-    }
-
-    public void setMedicalPositionId(Long medicalPositionId) {
-        this.medicalPositionId = medicalPositionId;
     }
 
     public PositionNomClinic getPositionNomClinic() {

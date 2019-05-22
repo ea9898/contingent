@@ -28,7 +28,7 @@ public class Addresses implements Serializable {
     @Column(name = "LEVEL", nullable = false)
     private Integer level;
 
-    @JoinColumn(name = "ADDRESS_FORMING_ELEMENT_ID")
+    @JoinColumn(name = "AFE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private AddressFormingElement addressFormingElement;
 
