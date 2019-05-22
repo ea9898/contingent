@@ -30,6 +30,7 @@ import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsReposi
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuProfileTemplatesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicCRUDRepository;
+import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
 import moscow.ptnl.contingent.area.repository.nsi.SpecializationToPositionNomRepository;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.util.Strings;
@@ -100,6 +101,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private PositionNomClinicCRUDRepository positionNomClinicCRUDRepository;
 
     @Autowired
+    private PositionNomClinicRepository positionNomClinicRepository;
+
+    @Autowired
     private AreaChecker areaChecker;
 
     @Autowired
@@ -111,7 +115,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     /**
-     *
      * @param muId
      * @param muTypeId
      * @param areaTypeCodes
@@ -140,7 +143,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        for (Long areaTypeCode: areaTypeCodes) {
+        for (Long areaTypeCode : areaTypeCodes) {
             AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
             MuProfile muProfile = new MuProfile(muId, areaType);
             muProfileCRUDRepository.save(muProfile);
@@ -185,8 +188,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Override
     public Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
-                             Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                             boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
+                                  Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                  boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
@@ -243,8 +246,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Override
     public Long createDependentArea(long moId, long muId, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
-                             Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                             boolean autoAssignForAttachment, String description) throws ContingentException {
+                                    Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                    boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
@@ -285,8 +288,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Override
     public void updatePrimaryArea(long areaId, Integer number,
-                           Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                           boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
+                                  Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                  boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
         Area area = areaChecker.checkAndGetArea(areaId, validation);
         Area oldArea = new Area(area);
@@ -607,6 +610,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (areaEmployeesDb.size() > 1) {
             applyChanges(areaEmployeesDb, changeEmployeesInput);
             addNew(areaEmployeesDb, addEmployeesInput, area);
+            areaEmployeesDb.sort(Comparator.comparing(
+                    AreaMedicalEmployee::getMedicalEmployeeJobInfoId)
+                    .thenComparing(AreaMedicalEmployee::getStartDate));
             for (int i = 0; i < areaEmployeesDb.size() - 1; i++) {
                 AreaMedicalEmployee current = areaEmployeesDb.get(i);
                 AreaMedicalEmployee next = areaEmployeesDb.get(i + 1);
@@ -760,7 +766,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     private void addNew(List<AreaMedicalEmployee> employees, List<AddMedicalEmployee> addEmployees, Area area) {
         addEmployees.forEach(empl -> employees.add(new AreaMedicalEmployee(empl.getMedicalEmployeeJobInfoId(), area,
-                empl.isIsReplacement(), empl.getStartDate(), empl.getEndDate(), empl.getSnils(), empl.getPositionId(),
-                LocalDateTime.now(), LocalDateTime.now(), false, empl.getSubdivisionId())));
+                empl.isIsReplacement(), empl.getStartDate(), empl.getEndDate(), empl.getSnils(),
+                positionNomClinicRepository.getPositionProxy(empl.getPositionId()),
+                LocalDateTime.now(), LocalDateTime.now(), empl.getSubdivisionId())));
     }
 }

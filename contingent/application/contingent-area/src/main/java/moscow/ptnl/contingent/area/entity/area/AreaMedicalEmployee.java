@@ -1,16 +1,18 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -20,11 +22,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "AREA_MEDICAL_EMPLOYEE")
+@SequenceGenerator(name = "seq_area_medical_employee", sequenceName = "seq_area_medical_employee", allocationSize=1)
 public class AreaMedicalEmployee implements Serializable {
 
     private static final long serialVersionUID = 4435222693561566689L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="seq_area_medical_employee")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
@@ -66,10 +70,6 @@ public class AreaMedicalEmployee implements Serializable {
     @Column(name = "SUBDIVISION_ID")
     private Long subdivisionId;
 
-    @Column(name = "ARCHIVED")
-    @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archived;
-
     public AreaMedicalEmployee() {
     }
 
@@ -85,7 +85,6 @@ public class AreaMedicalEmployee implements Serializable {
         this.snils = snils;
         this.createDate = createDate;
         this.updateDate = updateDate;
-        this.archived = archived;
         this.subdivisionId = subdivisionId;
     }
 
@@ -183,14 +182,6 @@ public class AreaMedicalEmployee implements Serializable {
 
     public void setOuz(String ouz) {
         this.ouz = ouz;
-    }
-
-    public Boolean getArchived() {
-        return archived;
-    }
-
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
     }
 
     @Override

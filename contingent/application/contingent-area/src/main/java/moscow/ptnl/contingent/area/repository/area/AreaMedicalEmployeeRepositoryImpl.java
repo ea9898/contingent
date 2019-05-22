@@ -49,9 +49,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AreaMedicalEmployee> criteria = criteriaBuilder.createQuery(AreaMedicalEmployee.class);
         Root<AreaMedicalEmployee> root = criteria.from(AreaMedicalEmployee.class);
-        criteria.where(criteriaBuilder.equal(root.get(AreaMedicalEmployee_.area), areaId))
-                .orderBy(criteriaBuilder.asc(root.get(AreaMedicalEmployee_.medicalEmployeeJobInfoId)),
-                        criteriaBuilder.asc(root.get(AreaMedicalEmployee_.startDate)));
+        criteria.where(criteriaBuilder.equal(root.get(AreaMedicalEmployee_.area), areaId));
         return entityManager.createQuery(criteria).getResultList();
     }
 
