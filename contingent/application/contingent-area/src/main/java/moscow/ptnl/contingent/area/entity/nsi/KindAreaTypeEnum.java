@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.entity.nsi;
 /**
  * Вид участка
  */
+//TODO коды заданы произвольно, после заполнения справочника area_types необходимо скорректировать
 public enum KindAreaTypeEnum {
 
     MILDLY_ASSOCIATED(1),

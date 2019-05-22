@@ -5,6 +5,10 @@ import java.util.Objects;
 
 public class Period {
 
+    public static final LocalDate MIN_DATE = LocalDate.of(1900, 1, 1);
+    public static final LocalDate MAX_DATE = LocalDate.of(2999, 1, 1);
+    public static final Period ALL_TIME = new Period(MIN_DATE, MAX_DATE);
+
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -30,7 +34,9 @@ public class Period {
     }
 
     public boolean isInterceptWith(LocalDate otherStartDate, LocalDate otherEndDate) {
-        if (this.endDate == null || otherEndDate == null || otherStartDate.isBefore(this.endDate)) {
+        if (this.endDate == null && otherEndDate == null
+                || otherEndDate != null && this.startDate.isBefore(otherEndDate)
+                || this.endDate != null && otherStartDate.isBefore(this.endDate)) {
             return true;
         }
         return false;

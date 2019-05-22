@@ -8,9 +8,5 @@ import java.util.List;
 @NoRepositoryBean
 public interface AreaMedicalEmployeeRepository {
 
-    List<AreaMedicalEmployee> getMainEmployees(long areaId);
-
-    List<AreaMedicalEmployee> getReplacementEmployees(long areaId);
-
     List<AreaMedicalEmployee> getEmployeesByAreaId(long areaId);
 }

@@ -305,7 +305,7 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка. Код" />
-            <column name="POSITION_NOM_CLINIC_ID" type="BIGINT" />
+            <column name="POSITION_NOM_ID" type="BIGINT" />
         </createTable>
         <rollback>
             <dropTable tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
@@ -318,11 +318,11 @@
                 <indexExists indexName="IXFK_AREA_TYPE_ME_POSITIO01"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки POSITION_NOM_CLINIC_ID таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
+        <comment>Создание индекса колонки POSITION_NOM_ID таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
         <createIndex indexName="IXFK_AREA_TYPE_ME_POSITIO01"
                      tableName="AREA_TYPE_MEDICAL_POSITIONS"
                      unique="false">
-            <column name="POSITION_NOM_CLINIC_ID" type="number"/>
+            <column name="POSITION_NOM_ID" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -346,7 +346,7 @@
             <columnExists tableName="POSITION_NOM_CLINIC" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AREA_TYPE_ME_POSITION_NO_01</comment>
-        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_CLINIC_ID"
+        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_ID"
                                  baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
                                  constraintName="FK_AREA_TYPE_ME_POSITION_NO_01"
                                  referencedColumnNames="ID"
