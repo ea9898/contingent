@@ -5,7 +5,6 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
-import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.SoapCustomMapper;
@@ -23,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.contingent2.area.Fault;
 import ru.mos.emias.contingent2.area.types.AddAreaAddressRequest;
 import ru.mos.emias.contingent2.area.types.AddAreaAddressResponse;
+import ru.mos.emias.contingent2.area.types.AddMoAddressRequest;
+import ru.mos.emias.contingent2.area.types.AddMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.AddProfileMURequest;
 import ru.mos.emias.contingent2.area.types.AddProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.AddressAllocationOrderListResultPage;
@@ -300,6 +301,24 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             GetNewAreaIdResponse response = new GetNewAreaIdResponse();
             response.setNewAreaId(areaService.getNewAreaId());
+
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public AddMoAddressResponse addMoAddress(AddMoAddressRequest body) throws Fault {
+        try {
+            AddMoAddressResponse response = new AddMoAddressResponse();
+            response.getMoAddressIds().addAll(
+                    areaService.addMoAddress(body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
+                            body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses(),
+                    body.getNotNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNotNsiAddresses()));
+
             return response;
         }
         catch (Exception ex) {

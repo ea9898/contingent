@@ -328,4 +328,25 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="addMoAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="areaTypeCode" type="xs:long" />
+                <xs:element name="orderId" type="xs:long" />
+                <xs:element name="nsiAddress" type="core:NsiAddress" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="notNsiAddress" type="core:NotNsiAddress" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="options" type="core:Options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addMoAddressResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moAddressId" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
