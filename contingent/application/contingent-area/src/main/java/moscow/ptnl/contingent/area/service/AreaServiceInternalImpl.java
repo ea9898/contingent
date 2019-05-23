@@ -668,7 +668,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         //8
         List<Long> result = new ArrayList<>();
-        areaMedicalEmployeeCRUDRepository.saveAll(allEmployees).forEach(saved -> {
+        applyChanges(changeEmployeesDb, changeEmployeesInput);
+        addNew(changeEmployeesDb, addEmployeesInput, area);
+        areaMedicalEmployeeCRUDRepository.saveAll(changeEmployeesDb).forEach(saved -> {
             if (!areaEmployeesDb.contains(saved)) {
                 result.add(saved.getId());
             }
