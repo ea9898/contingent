@@ -140,6 +140,23 @@
     <wsdl:message name="getNewAreaIdOutput">
         <wsdl:part name="body" element="ns1:getNewAreaIdResponse"/>
     </wsdl:message>
+    
+    <wsdl:message name="addAreaAddressInput">
+        <wsdl:part name="body" element="ns1:addAreaAddressRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="addAreaAddressOutput">
+        <wsdl:part name="body" element="ns1:addAreaAddressResponse"/>
+    </wsdl:message>
+
+
+    <wsdl:message name="addMoAddressInput">
+        <wsdl:part name="body" element="ns1:addMoAddressRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="addMoAddressOutput">
+        <wsdl:part name="body" element="ns1:addMoAddressResponse"/>
+    </wsdl:message>
 
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="addProfileMU">
@@ -252,6 +269,22 @@
             </wsdl:documentation>
             <wsdl:input message="tns:getNewAreaIdInput"/>
             <wsdl:output message="tns:getNewAreaIdOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="addMoAddress">
+            <wsdl:documentation>
+                Распределение жилых домов к территории обслуживания МО (К_УУ_18)
+            </wsdl:documentation>
+            <wsdl:input message="tns:addMoAddressInput"/>
+            <wsdl:output message="tns:addMoAddressOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="addAreaAddress">
+            <wsdl:documentation>
+                Добавление адресов на участок обслуживания (К_УУ_10)
+            </wsdl:documentation>
+            <wsdl:input message="tns:addAreaAddressInput"/>
+            <wsdl:output message="tns:addAreaAddressOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -443,6 +476,34 @@
 
         <wsdl:operation name="getNewAreaId">
             <soap:operation soapAction="getNewAreaId"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="addAreaAddress">
+            <soap:operation soapAction="addAreaAddress"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="addMoAddress">
+            <soap:operation soapAction="addMoAddress"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

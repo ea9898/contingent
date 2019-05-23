@@ -8,5 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
-public interface MoAddressAllocationCRUDRepository extends CommonRepository<MoAddress, Long> {
+public interface MoAddressCRUDRepository extends CommonRepository<MoAddress, Long> {
 }

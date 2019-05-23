@@ -20,6 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.contingent2.area.Fault;
+import ru.mos.emias.contingent2.area.types.AddAreaAddressRequest;
+import ru.mos.emias.contingent2.area.types.AddAreaAddressResponse;
+import ru.mos.emias.contingent2.area.types.AddMoAddressRequest;
+import ru.mos.emias.contingent2.area.types.AddMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.AddProfileMURequest;
 import ru.mos.emias.contingent2.area.types.AddProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.AddressAllocationOrderListResultPage;
@@ -61,7 +65,8 @@ import java.util.stream.Collectors;
  *
  * @author mkachalov
  */
-@Service(AreaServiceImpl.SERVICE_NAME) 
+@Service(AreaServiceImpl.SERVICE_NAME)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
 public class AreaServiceImpl extends BaseService implements AreaPT {
 
@@ -81,7 +86,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private AreaMapper areaMapper;
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
         try {
@@ -97,7 +101,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public AddProfileMUResponse addProfileMU(AddProfileMURequest body) throws Fault {
         try {
@@ -108,7 +111,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public DelProfileMUResponse delProfileMU(DelProfileMURequest body) throws Fault {
         try {
@@ -119,7 +121,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
@@ -136,7 +137,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         try {
@@ -153,7 +153,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws Fault {
         try {
@@ -168,7 +167,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws Fault {
         try {
@@ -185,7 +183,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
         try {
@@ -201,7 +198,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws Fault {
         try {
@@ -214,7 +210,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         try {
@@ -235,7 +230,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
@@ -250,7 +244,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public SetMedicalEmployeeOnAreaResponse setMedicalEmployeeOnArea(SetMedicalEmployeeOnAreaRequest body) throws Fault {
         try {
@@ -266,7 +259,18 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
+        try {
+            AddAreaAddressResponse response = new AddAreaAddressResponse();
+            response.getAreaAddressIds().addAll(areaService.addAreaAddress());
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
     @Override
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
         try {
@@ -279,12 +283,27 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
         try {
             GetNewAreaIdResponse response = new GetNewAreaIdResponse();
             response.setNewAreaId(areaService.getNewAreaId());
+
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public AddMoAddressResponse addMoAddress(AddMoAddressRequest body) throws Fault {
+        try {
+            AddMoAddressResponse response = new AddMoAddressResponse();
+            response.getMoAddressIds().addAll(
+                    areaService.addMoAddress(body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
+                            body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses(),
+                    body.getNotNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNotNsiAddresses()));
 
             return response;
         }

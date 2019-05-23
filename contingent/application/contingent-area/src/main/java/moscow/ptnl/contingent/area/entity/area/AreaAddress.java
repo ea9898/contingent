@@ -42,7 +42,7 @@ public class AreaAddress implements Serializable {
 
     @JoinColumn(name = "ADDRESS_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Addresses addresses;
+    private Addresses address;
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
@@ -82,12 +82,12 @@ public class AreaAddress implements Serializable {
         this.endDate = endDate;
     }
 
-    public Addresses getAddresses() {
-        return addresses;
+    public Addresses getAddress() {
+        return address;
     }
 
-    public void setAddresses(Addresses addresses) {
-        this.addresses = addresses;
+    public void setAddress(Addresses address) {
+        this.address = address;
     }
 
     public Long getId() {

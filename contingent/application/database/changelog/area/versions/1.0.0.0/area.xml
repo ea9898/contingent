@@ -231,6 +231,7 @@
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="MO_ID" type="BIGINT" />
+            <column name="AREA_TYPE_CODE" type="BIGINT" />
             <column name="ORDER_ID" type="BIGINT" />
             <column name="REJECT_ORDER_ID" type="BIGINT" />
             <column name="ADDRESS_ID" type="BIGINT" />
@@ -271,6 +272,20 @@
                      tableName="MO_ADDRESSES"
                      unique="false">
             <column name="REJECT_ORDER_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-57-18-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_MO_ADDRESSES_AREA_TYPE"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MO_ADDRESSES</comment>
+        <createIndex indexName="IXFK_MO_ADDRESSES_AREA_TYPE"
+                     tableName="MO_ADDRESSES"
+                     unique="false">
+            <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -676,6 +691,38 @@
         <rollback>
             <dropSequence sequenceName="SEQ_AREA_MEDICAL_EMPLOYEE"/>
         </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-76-1" author="sorlov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_ADDRESSES"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы ADDRESSES</comment>
+        <createSequence sequenceName="SEQ_ADDRESSES"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_ADDRESSES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-76-2" author="sorlov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_MO_ADDRESSES"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы MO_ADDRESSES</comment>
+        <createSequence sequenceName="SEQ_MO_ADDRESSES"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_MO_ADDRESSES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-83" author="ddryuchin">
+        <dropNotNullConstraint columnDataType="BIGINT"
+                               columnName="MU_ID"
+                               tableName="AREAS"/>
     </changeSet>
 
 </databaseChangeLog>

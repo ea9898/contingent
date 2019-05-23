@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
+import ru.mos.emias.contingent2.core.NotNsiAddress;
+import ru.mos.emias.contingent2.core.NsiAddress;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -51,4 +53,9 @@ public interface AreaServiceInternal {
     void restoreArea(Long id) throws ContingentException;
 
     Long getNewAreaId() throws ContingentException;
+
+    List<Long> addAreaAddress();
+
+    List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
+                            List<NotNsiAddress> notNsiAddresses) throws ContingentException;
 }

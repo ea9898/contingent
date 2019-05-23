@@ -32,69 +32,60 @@ import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaResponse;
  *
  * @author m.kachalov
  */
-@Service(AreaServiceImpl.SERVICE_NAME) 
+@Service(AreaServiceImpl.SERVICE_NAME)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
 public class AreaServiceImpl extends BaseService implements AreaPT {
     
-    public static final String SERVICE_NAME = "V5";
+    public static final String SERVICE_NAME = "V2";
     
     public AreaServiceImpl(){}
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public SetProfileMUResponse setProfileMU(SetProfileMURequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         throw new UnsupportedOperationException("Not supported yet.");
