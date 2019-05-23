@@ -564,6 +564,116 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
+    public List<Long> addAreaAddress() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
+                                   List<NotNsiAddress> notNsiAddresses) throws ContingentException {
+        Validation validation = new Validation();
+
+        if (nsiAddresses.size() + notNsiAddresses.size() == 0) {
+            throw new ContingentException(AreaErrorReason.NO_ADDRESS);
+        }
+        if (nsiAddresses.size() + notNsiAddresses.size() > settingService.getPar1()) {
+            throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
+        }
+        areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+        AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+        AddressAllocationOrder order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
+
+        if (order == null || Boolean.TRUE.equals(order.getArchived())) {
+            throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
+                    new ValidationParameter("orderId", orderId));
+        }
+        areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
+        areaAddressChecker.checkNotNsiAddresses(notNsiAddresses, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //Сформируем список адресов по справочнику
+        List<AddressWrapper> addresses = nsiAddresses.stream()
+                .map(AddressWrapper::new)
+                .peek(a -> {
+                    if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
+                        a.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
+                                a.nsiAddress.getGlobalId(), a.nsiAddress.getLevelAddress()).get(0);
+                    }
+                    else {
+                        a.registryBuilding = registryBuildingRepository.getRegistryBuildings(a.nsiAddress.getGlobalId()).get(0);
+                    }
+                })
+                .collect(Collectors.toList());
+        //Сформируем список адресов вне справочника
+        notNsiAddresses.forEach(a -> {
+            AddressWrapper wrapper = new AddressWrapper();
+            wrapper.notNsiAddress = a;
+            wrapper.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
+                    a.getParentId(), a.getLevelParentId()).get(0);
+            addresses.add(wrapper);
+        });
+        //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
+        areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        addresses.forEach(a -> {
+            Addresses address = new Addresses();
+
+            if (a.nsiAddress != null) {
+                address.setLevel(a.nsiAddress.getLevelAddress());
+
+                if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
+                    address.setAddressFormingElement(a.addressFormingElement);
+                }
+                else {
+                    address.setRegistryBuilding(a.registryBuilding);
+                }
+            }
+            else {
+                address.setLevel(NOT_NSI_ADDRESS_LEVEL);
+                a.registryBuilding = registryBuildingRepository.findRegistryBuildings(
+                        a.notNsiAddress.getHouse(), a.notNsiAddress.getBuilding(), a.notNsiAddress.getConstruction(),
+                        a.notNsiAddress.getParentId()).stream()
+                        .findFirst()
+                        .orElseGet(() -> {
+                            RegistryBuilding registryBuilding = new RegistryBuilding();
+                            registryBuilding.setAddrId(a.notNsiAddress.getParentId());
+                            registryBuilding.setL1Type(a.notNsiAddress.getHouseType());
+                            registryBuilding.setL1Value(a.notNsiAddress.getHouse());
+                            registryBuilding.setL2Type(a.notNsiAddress.getBuildingType());
+                            registryBuilding.setL2Value(a.notNsiAddress.getBuilding());
+                            registryBuilding.setL3Type(a.notNsiAddress.getConstructionType());
+                            registryBuilding.setL3Value(a.notNsiAddress.getConstruction());
+                            registryBuilding.setAddressFormingElement(a.addressFormingElement);
+                            registryBuildingCRUDRepository.save(registryBuilding);
+
+                            return registryBuilding;
+                        });
+                address.setRegistryBuilding(a.registryBuilding);
+            }
+            a.address = addressesRepository.findAddresses(address.getLevel(), address.getRegistryBuilding(), address.getAddressFormingElement())
+                    .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
+        });
+        addresses.forEach(a -> {
+            a.moAddress = new MoAddress();
+            a.moAddress.setAddress(a.address);
+            a.moAddress.setAreaType(areaType);
+            a.moAddress.setMoId(moId);
+            a.moAddress.setAddressAllocationOrder(order);
+            a.moAddress.setStartDate(LocalDate.now());
+            a.moAddress.setCreateDate(LocalDateTime.now());
+            moAddressCRUDRepository.save(a.moAddress);
+        });
+
+        return addresses.stream().map(a -> a.moAddress.getId()).collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
                                                List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
 
@@ -720,111 +830,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return result;
     }
 
-    @Override
-    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
-                                   List<NotNsiAddress> notNsiAddresses) throws ContingentException {
-        Validation validation = new Validation();
-
-        if (nsiAddresses.size() + notNsiAddresses.size() == 0) {
-            throw new ContingentException(AreaErrorReason.NO_ADDRESS);
-        }
-        if (nsiAddresses.size() + notNsiAddresses.size() > settingService.getPar1()) {
-            throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
-        }
-        areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
-        AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
-        AddressAllocationOrder order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
-
-        if (order == null || Boolean.TRUE.equals(order.getArchived())) {
-            throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
-                    new ValidationParameter("orderId", orderId));
-        }
-        areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
-        areaAddressChecker.checkNotNsiAddresses(notNsiAddresses, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        //Сформируем список адресов по справочнику
-        List<AddressWrapper> addresses = nsiAddresses.stream()
-                .map(AddressWrapper::new)
-                .peek(a -> {
-                    if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
-                        a.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
-                                a.nsiAddress.getGlobalId(), a.nsiAddress.getLevelAddress()).get(0);
-                    }
-                    else {
-                        a.registryBuilding = registryBuildingRepository.getRegistryBuildings(a.nsiAddress.getGlobalId()).get(0);
-                    }
-                })
-                .collect(Collectors.toList());
-        //Сформируем список адресов вне справочника
-        notNsiAddresses.forEach(a -> {
-            AddressWrapper wrapper = new AddressWrapper();
-            wrapper.notNsiAddress = a;
-            wrapper.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
-                    a.getParentId(), a.getLevelParentId()).get(0);
-            addresses.add(wrapper);
-        });
-        //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
-        areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        addresses.forEach(a -> {
-            Addresses address = new Addresses();
-
-            if (a.nsiAddress != null) {
-                address.setLevel(a.nsiAddress.getLevelAddress());
-
-                if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
-                    address.setAddressFormingElement(a.addressFormingElement);
-                }
-                else {
-                    address.setRegistryBuilding(a.registryBuilding);
-                }
-            }
-            else {
-                address.setLevel(NOT_NSI_ADDRESS_LEVEL);
-                a.registryBuilding = registryBuildingRepository.findRegistryBuildings(
-                        a.notNsiAddress.getHouse(), a.notNsiAddress.getBuilding(), a.notNsiAddress.getConstruction(),
-                        a.notNsiAddress.getParentId()).stream()
-                        .findFirst()
-                        .orElseGet(() -> {
-                            RegistryBuilding registryBuilding = new RegistryBuilding();
-                            registryBuilding.setAddrId(a.notNsiAddress.getParentId());
-                            registryBuilding.setL1Type(a.notNsiAddress.getHouseType());
-                            registryBuilding.setL1Value(a.notNsiAddress.getHouse());
-                            registryBuilding.setL2Type(a.notNsiAddress.getBuildingType());
-                            registryBuilding.setL2Value(a.notNsiAddress.getBuilding());
-                            registryBuilding.setL3Type(a.notNsiAddress.getConstructionType());
-                            registryBuilding.setL3Value(a.notNsiAddress.getConstruction());
-                            registryBuilding.setAddressFormingElement(a.addressFormingElement);
-                            registryBuildingCRUDRepository.save(registryBuilding);
-
-                            return registryBuilding;
-                        });
-                address.setRegistryBuilding(a.registryBuilding);
-            }
-            a.address = addressesRepository.findAddresses(address.getLevel(), address.getRegistryBuilding(), address.getAddressFormingElement())
-                    .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
-        });
-        addresses.forEach(a -> {
-            a.moAddress = new MoAddress();
-            a.moAddress.setAddress(a.address);
-            a.moAddress.setAreaType(areaType);
-            a.moAddress.setMoId(moId);
-            a.moAddress.setAddressAllocationOrder(order);
-            a.moAddress.setStartDate(LocalDate.now());
-            a.moAddress.setCreateDate(LocalDateTime.now());
-            moAddressCRUDRepository.save(a.moAddress);
-        });
-
-        return addresses.stream().map(a -> a.moAddress.getId()).collect(Collectors.toList());
-    }
-
-    private List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployee> mainEmployees) {
     public List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployee> mainEmployees) {
         mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
         List<Period> periodsWithoutMainEmpl = new ArrayList<>();
@@ -949,10 +954,5 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 empl.getSubdivisionId())));
-    }
-
-    @Override
-    public List<Long> addAreaAddress() {
-        return new ArrayList<>();
     }
 }
