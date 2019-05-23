@@ -7,9 +7,12 @@ import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -17,11 +20,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "ADDRESSES")
+@SequenceGenerator(name = "SEQ_ADDRESSES", sequenceName = "SEQ_ADDRESSES", allocationSize=1)
 public class Addresses implements Serializable {
 
     private static final long serialVersionUID = -414611125417013781L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_ADDRESSES")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 

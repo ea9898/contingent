@@ -705,4 +705,17 @@
                                  referencedTableName="SPECIALIZATION"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-76-3" author="sorlov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_REGISTRY_BUILDING"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы REGISTRY_BUILDING</comment>
+        <createSequence sequenceName="SEQ_REGISTRY_BUILDING"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_REGISTRY_BUILDING"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

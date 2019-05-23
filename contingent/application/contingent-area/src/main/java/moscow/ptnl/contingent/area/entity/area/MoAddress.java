@@ -5,9 +5,12 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -16,19 +19,26 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "MO_ADDRESSES")
+@SequenceGenerator(name = "SEQ_MO_ADDRESSES", sequenceName = "SEQ_MO_ADDRESSES", allocationSize=1)
 public class MoAddress implements Serializable {
 
     private static final long serialVersionUID = -786212687627911093L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_MO_ADDRESSES")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
     @Column(name = "MO_ID")
     private Long moId;
 
-    @Column(name = "ORDER_ID")
-    private Long orderId;
+    @JoinColumn(name = "AREA_TYPE_CODE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AreaTypes areaType;
+
+    @JoinColumn(name = "ORDER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AddressAllocationOrder addressAllocationOrder;
 
     @Column(name = "START_DATE")
     private LocalDate startDate;
@@ -36,8 +46,9 @@ public class MoAddress implements Serializable {
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
-    @Column(name = "REJECT_ORDER_ID")
-    private Long rejectOrderId;
+    @JoinColumn(name = "REJECT_ORDER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AddressAllocationOrder addressRejectOrder;
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
@@ -47,7 +58,7 @@ public class MoAddress implements Serializable {
 
     @JoinColumn(name = "ADDRESS_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Addresses addresses;
+    private Addresses address;
 
     public Long getId() {
         return id;
@@ -65,12 +76,20 @@ public class MoAddress implements Serializable {
         this.moId = moId;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public AreaTypes getAreaType() {
+        return areaType;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void setAreaType(AreaTypes areaType) {
+        this.areaType = areaType;
+    }
+
+    public AddressAllocationOrder getAddressAllocationOrder() {
+        return addressAllocationOrder;
+    }
+
+    public void setAddressAllocationOrder(AddressAllocationOrder addressAllocationOrder) {
+        this.addressAllocationOrder = addressAllocationOrder;
     }
 
     public LocalDate getStartDate() {
@@ -89,12 +108,12 @@ public class MoAddress implements Serializable {
         this.endDate = endDate;
     }
 
-    public Long getRejectOrderId() {
-        return rejectOrderId;
+    public AddressAllocationOrder getAddressRejectOrder() {
+        return addressRejectOrder;
     }
 
-    public void setRejectOrderId(Long rejectOrderId) {
-        this.rejectOrderId = rejectOrderId;
+    public void setAddressRejectOrder(AddressAllocationOrder addressRejectOrder) {
+        this.addressRejectOrder = addressRejectOrder;
     }
 
     public LocalDateTime getCreateDate() {
@@ -113,14 +132,14 @@ public class MoAddress implements Serializable {
         this.updateDate = updateDate;
     }
 
-    public Addresses getAddresses() {
-        return addresses;
+    public Addresses getAddress() {
+        return address;
     }
 
-    public void setAddresses(Addresses addresses) {
-        this.addresses = addresses;
+    public void setAddress(Addresses address) {
+        this.address = address;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
