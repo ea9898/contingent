@@ -309,4 +309,23 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="addAreaAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element name="nsiAddress" type="core:NsiAddress" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="nonNsiAddress" type="core:NotNsiAddress" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="options" type="core:Options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addAreaAddressResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaAddressId" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

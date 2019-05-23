@@ -149,6 +149,27 @@
             <xs:element name="endDate" type="xs:date" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
+    
+    <xs:complexType name="NsiAddress">
+        <xs:sequence>
+            <xs:element name="levelAddress" type="xs:long" />
+            <xs:element name="globalId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NotNsiAddress">
+        <xs:sequence>
+            <xs:element name="levelAddress" type="xs:long" />
+            <xs:element name="levelParentId" type="xs:long" />
+            <xs:element name="parentId" type="xs:long" />
+            <xs:element name="houseType" type="xs:string" minOccurs="0"/>
+            <xs:element name="house" type="xs:string" minOccurs="0"/>
+            <xs:element name="buildingType" type="xs:string" minOccurs="0"/>
+            <xs:element name="building" type="xs:string" minOccurs="0"/>
+            <xs:element name="constructionType" type="xs:string" minOccurs="0"/>
+            <xs:element name="construction" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="Fault">
         <xs:annotation>

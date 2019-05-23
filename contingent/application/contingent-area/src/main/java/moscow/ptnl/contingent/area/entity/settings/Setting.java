@@ -18,103 +18,87 @@ public class Setting implements Serializable {
     private static final long serialVersionUID = -7504397229834601830L;
 
     @Id
-    @Column(name = "NAME", unique = true, nullable = false)
+    @Column(name = "CODE", unique = true, nullable = false)
     private String name;
 
-    @Column(name = "VAL")
+    @Column(name = "NAME")
     private String value;
 
     @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "TYPE")
+    private Long type;
+
+    @Column(name = "VAL")
+    private String val;
+
     @Column(name = "LAST_CHANGE")
     private LocalDateTime lastChange;
 
-    @Column(name = "USER_ID")
-    private String iserId;
-
-    @Column(name = "VAL_TYPE")
-    private Short valType;
-
-    @Column(name = "IS_EXT_VIEW")
-    private Boolean isExtView;
-
     public String getName() {
-            return name;
+        return name;
     }
 
     public void setName(String name) {
-            this.name = name;
+        this.name = name;
     }
 
     public String getValue() {
-            return value;
+        return value;
     }
 
     public void setValue(String value) {
-            this.value = value;
+        this.value = value;
     }
 
     public String getDescription() {
-            return description;
+        return description;
     }
 
     public void setDescription(String description) {
-            this.description = description;
+        this.description = description;
+    }
+
+    public Long getType() {
+        return type;
+    }
+
+    public void setType(Long type) {
+        this.type = type;
+    }
+
+    public String getVal() {
+        return val;
+    }
+
+    public void setVal(String val) {
+        this.val = val;
     }
 
     public LocalDateTime getLastChange() {
-            return lastChange;
+        return lastChange;
     }
 
     public void setLastChange(LocalDateTime lastChange) {
-            this.lastChange = lastChange;
-    }
-
-    public String getIserId() {
-            return iserId;
-    }
-
-    public void setIserId(String iserId) {
-            this.iserId = iserId;
-    }
-
-    public Short getValType() {
-            return valType;
-    }
-
-    public void setValType(Short valType) {
-            this.valType = valType;
-    }
-
-    public Boolean getIsExtView() {
-            return isExtView;
-    }
-
-    public void setIsExtView(Boolean isExtView) {
-            this.isExtView = isExtView;
-    }
-
-    public Boolean getExtView() {
-            return isExtView;
-    }
-
-    public void setExtView(Boolean extView) {
-            isExtView = extView;
-    }
-        
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj != null && obj instanceof Setting) {
-            return ((Setting) obj).getName().equals(this.name);
-        }
-        return false;
+        this.lastChange = lastChange;
     }
 
     @Override
-    public int hashCode() {        
-        return Objects.hashCode(this.name);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Setting setting = (Setting) o;
+        return Objects.equals(name, setting.name) &&
+                Objects.equals(value, setting.value) &&
+                Objects.equals(description, setting.description) &&
+                Objects.equals(type, setting.type) &&
+                Objects.equals(val, setting.val);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, value, description, type, val);
     }
 }
+

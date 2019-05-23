@@ -109,6 +109,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Autowired
     private EsuService esuService;
 
+    @Autowired
+    private SettingService settingService;
+
     @Override
     public List<MuProfile> getProfileMU(Long muId) throws ContingentException {
         return muProfileRepository.getMuProfilesByMuId(muId);
@@ -805,5 +808,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 empl.getSubdivisionId())));
+    }
+
+    @Override
+    public List<Long> addAreaAddress() {
+        return new ArrayList<>();
     }
 }

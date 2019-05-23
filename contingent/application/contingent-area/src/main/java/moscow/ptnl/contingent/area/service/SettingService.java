@@ -1,0 +1,11 @@
+package moscow.ptnl.contingent.area.service;
+
+public interface SettingService {
+
+    Long getPar1();
+
+    Long getPar2();
+
+    Long getPar3();
+
+}

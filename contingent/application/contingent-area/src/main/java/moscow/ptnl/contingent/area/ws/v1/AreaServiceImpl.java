@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
+import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.SoapCustomMapper;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.contingent2.area.Fault;
+import ru.mos.emias.contingent2.area.types.AddAreaAddressRequest;
+import ru.mos.emias.contingent2.area.types.AddAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.AddProfileMURequest;
 import ru.mos.emias.contingent2.area.types.AddProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.AddressAllocationOrderListResultPage;
@@ -266,6 +269,18 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
+    @Override
+    public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
+        try {
+            AddAreaAddressResponse response = new AddAreaAddressResponse();
+            response.getAreaAddressIds().addAll(areaService.addAreaAddress());
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
@@ -285,7 +300,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             GetNewAreaIdResponse response = new GetNewAreaIdResponse();
             response.setNewAreaId(areaService.getNewAreaId());
-
             return response;
         }
         catch (Exception ex) {

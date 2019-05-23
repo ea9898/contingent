@@ -51,4 +51,6 @@ public interface AreaServiceInternal {
     void restoreArea(Long id) throws ContingentException;
 
     Long getNewAreaId() throws ContingentException;
+
+    List<Long> addAreaAddress();
 }

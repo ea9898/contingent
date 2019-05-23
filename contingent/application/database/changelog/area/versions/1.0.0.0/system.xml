@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="CONTINGENT2-80" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AD_CONFIG"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AD_CONFIG</comment>
+        <createTable tableName="AD_CONFIG"
+                     remarks="Внутренние системные параметры">
+            <column name="CODE" type="VARCHAR2(50)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="NAME" type="VARCHAR2(100)" />
+            <column name="CODEDOC" type="VARCHAR2(100)" />
+            <column name="DESCRIPTION" type="VARCHAR2(1000)" />
+            <column name="TYPE" type="INT" />
+            <column name="VAL" type="VARCHAR2(1000)" />
+            <column name="LAST_CHANGE" type="TIMESTAMP(6)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_COUNT_LIMIT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-80-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'PAR_1'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Максимальное количество адресов для распределения</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="CODE" value="max_addresses_for_allocation"/>
+            <column name="CODEDOC" value="PAR_1"/>
+            <column name="DESCRIPTION" value="Максимальное количество адресов для распределения"/>
+            <column name="TYPE" value="1" />
+            <column name="VAL" value="50"/>
+            <column name="LAST_CHANGE" valueDate="now()"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>CODE='PAR_1'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-80-2" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'PAR_2'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Максимальное количество адресов для отмены распределения</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="CODE" value="max_addresses_for_allocation"/>
+            <column name="CODEDOC" value="PAR_2"/>
+            <column name="DESCRIPTION" value="Максимальное количество адресов для отмены распределения"/>
+            <column name="TYPE" value="1" />
+            <column name="VAL" value="500"/>
+            <column name="LAST_CHANGE" valueDate="now()"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>CODE='PAR_2'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-80-3" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'PAR_3'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Максимальное количество адресов для распределения</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="CODE" value="max_page_size"/>
+            <column name="CODEDOC" value="PAR_3"/>
+            <column name="DESCRIPTION" value="Максимальное размер страницы"/>
+            <column name="TYPE" value="1" />
+            <column name="VAL" value="100"/>
+            <column name="LAST_CHANGE" valueDate="now()"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>CODE='PAR_3'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+
+
+</databaseChangeLog>
