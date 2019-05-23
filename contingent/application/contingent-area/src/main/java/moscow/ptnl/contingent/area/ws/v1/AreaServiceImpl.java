@@ -65,7 +65,8 @@ import java.util.stream.Collectors;
  *
  * @author mkachalov
  */
-@Service(AreaServiceImpl.SERVICE_NAME) 
+@Service(AreaServiceImpl.SERVICE_NAME)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
 public class AreaServiceImpl extends BaseService implements AreaPT {
 
@@ -85,7 +86,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private AreaMapper areaMapper;
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
         try {
@@ -101,7 +101,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public AddProfileMUResponse addProfileMU(AddProfileMURequest body) throws Fault {
         try {
@@ -112,7 +111,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public DelProfileMUResponse delProfileMU(DelProfileMURequest body) throws Fault {
         try {
@@ -123,7 +121,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
@@ -140,7 +137,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         try {
@@ -157,7 +153,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws Fault {
         try {
@@ -172,7 +167,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws Fault {
         try {
@@ -189,7 +183,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
         try {
@@ -205,7 +198,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws Fault {
         try {
@@ -218,7 +210,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         try {
@@ -239,7 +230,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
@@ -254,7 +244,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public SetMedicalEmployeeOnAreaResponse setMedicalEmployeeOnArea(SetMedicalEmployeeOnAreaRequest body) throws Fault {
         try {
@@ -282,7 +271,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
         try {
@@ -295,7 +283,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
         try {
@@ -309,7 +296,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public AddMoAddressResponse addMoAddress(AddMoAddressRequest body) throws Fault {
         try {
