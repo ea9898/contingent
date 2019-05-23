@@ -119,7 +119,10 @@ public class AreaAddressChecker {
             }
             existingAddresses.add(wrapper);
         });
-        findCrossedAddresses(existingAddresses, newAddresses).forEach((key, value) -> {
+        Map<AddressWrapper, List<AddressWrapper>> foundAddresses = findCrossedNsiAddresses(existingAddresses, newAddresses);
+        foundAddresses.putAll(findCrossedNotNsiAddresses(existingAddresses, newAddresses));
+
+        foundAddresses.forEach((key, value) -> {
             if (value.isEmpty() && key.addressFormingElement.getAreaTeId() == null) {
                 validation.error(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
             }
@@ -156,14 +159,13 @@ public class AreaAddressChecker {
         });
     }
 
-    private Map<AddressWrapper, List<AddressWrapper>> findCrossedAddresses(
+    private Map<AddressWrapper, List<AddressWrapper>> findCrossedNsiAddresses(
             List<AddressWrapper> existingAddresses, List<AddressWrapper> newAddresses) {
         Set<AddressLevelType> simpleCheck = new HashSet<>();
         Collections.addAll(simpleCheck, AddressLevelType.STREET, AddressLevelType.PLAN, AddressLevelType.PLACE,
                 AddressLevelType.CITY, AddressLevelType.AREA, AddressLevelType.AREA_TE);
 
         Map<AddressWrapper, List<AddressWrapper>> result = new HashMap<>();
-
         //По адресам по справочнику
         newAddresses.stream()
                 .filter(a -> a.nsiAddress != null)
@@ -190,6 +192,13 @@ public class AreaAddressChecker {
                     }
                     result.put(a, found);
                 });
+
+        return result;
+    }
+
+    private Map<AddressWrapper, List<AddressWrapper>> findCrossedNotNsiAddresses(
+            List<AddressWrapper> existingAddresses, List<AddressWrapper> newAddresses) {
+        Map<AddressWrapper, List<AddressWrapper>> result = new HashMap<>();
         //По адресам вне справочника
         newAddresses.stream()
                 .filter(a -> a.notNsiAddress != null)

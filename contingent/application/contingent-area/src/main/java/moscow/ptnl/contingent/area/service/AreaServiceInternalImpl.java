@@ -728,8 +728,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (nsiAddresses.size() + notNsiAddresses.size() == 0) {
             throw new ContingentException(AreaErrorReason.NO_ADDRESS);
         }
-        //Todo проверить системный параметр
-        if (nsiAddresses.size() + notNsiAddresses.size() > 10) {
+        if (nsiAddresses.size() + notNsiAddresses.size() > settingService.getPar1()) {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
         }
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
@@ -765,23 +764,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             wrapper.notNsiAddress = a;
             wrapper.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
                     a.getParentId(), a.getLevelParentId()).get(0);
-            wrapper.registryBuilding = registryBuildingRepository.findRegistryBuildings(
-                    a.getHouse(), a.getBuilding(), a.getConstruction(), a.getParentId()).stream()
-                    .findFirst()
-                    .orElseGet(() -> {
-                        RegistryBuilding registryBuilding = new RegistryBuilding();
-                        registryBuilding.setAddrId(a.getParentId());
-                        registryBuilding.setL1Type(a.getHouseType());
-                        registryBuilding.setL1Value(a.getHouse());
-                        registryBuilding.setL2Type(a.getBuildingType());
-                        registryBuilding.setL2Value(a.getBuilding());
-                        registryBuilding.setL3Type(a.getConstructionType());
-                        registryBuilding.setL3Value(a.getConstruction());
-                        registryBuilding.setAddressFormingElement(wrapper.addressFormingElement);
-                        registryBuildingCRUDRepository.save(registryBuilding);
-
-                        return registryBuilding;
-                    });
             addresses.add(wrapper);
         });
         //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
@@ -805,6 +787,24 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
             else {
                 address.setLevel(NOT_NSI_ADDRESS_LEVEL);
+                a.registryBuilding = registryBuildingRepository.findRegistryBuildings(
+                        a.notNsiAddress.getHouse(), a.notNsiAddress.getBuilding(), a.notNsiAddress.getConstruction(),
+                        a.notNsiAddress.getParentId()).stream()
+                        .findFirst()
+                        .orElseGet(() -> {
+                            RegistryBuilding registryBuilding = new RegistryBuilding();
+                            registryBuilding.setAddrId(a.notNsiAddress.getParentId());
+                            registryBuilding.setL1Type(a.notNsiAddress.getHouseType());
+                            registryBuilding.setL1Value(a.notNsiAddress.getHouse());
+                            registryBuilding.setL2Type(a.notNsiAddress.getBuildingType());
+                            registryBuilding.setL2Value(a.notNsiAddress.getBuilding());
+                            registryBuilding.setL3Type(a.notNsiAddress.getConstructionType());
+                            registryBuilding.setL3Value(a.notNsiAddress.getConstruction());
+                            registryBuilding.setAddressFormingElement(a.addressFormingElement);
+                            registryBuildingCRUDRepository.save(registryBuilding);
+
+                            return registryBuilding;
+                        });
                 address.setRegistryBuilding(a.registryBuilding);
             }
             a.address = addressesRepository.findAddresses(address.getLevel(), address.getRegistryBuilding(), address.getAddressFormingElement())

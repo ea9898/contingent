@@ -63,7 +63,7 @@ public class RegistryBuilding implements Serializable {
     private String l3Value;
 
     @Size(max = 4000)
-    @Column(name = "ADDRESS", nullable = false)
+    @Column(name = "ADDRESS")
     private String address;
 
     public Long getId() {

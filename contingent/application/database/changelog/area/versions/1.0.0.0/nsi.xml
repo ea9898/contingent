@@ -718,4 +718,16 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-76-4" author="sorlov">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="REGISTRY_BUILDING"/>
+        </preConditions>
+        <comment>Изменение обязательности поля ADDRESS для таблицы REGISTRY_BUILDING</comment>
+        <dropNotNullConstraint columnDataType="string"
+                               columnName="ADDRESS"
+                               tableName="REGISTRY_BUILDING"/>
+        <rollback>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
