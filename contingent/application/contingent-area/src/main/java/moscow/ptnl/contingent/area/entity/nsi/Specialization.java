@@ -31,6 +31,15 @@ public class Specialization implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    public Specialization() {
+    }
+
+    public Specialization(Long id, String title, Boolean archived) {
+        this.id = id;
+        this.title = title;
+        this.archived = archived;
+    }
+
     public Long getId() {
         return id;
     }

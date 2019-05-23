@@ -72,6 +72,16 @@ public class AreaTypes implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "areaType")
     private PrimaryAreaTypeAttributes attributes;
 
+    public AreaTypes() {
+    }
+
+    public AreaTypes(Long code, String name, Boolean archived, Specialization specialization) {
+        this.code = code;
+        this.name = name;
+        this.archived = archived;
+        this.specialization = specialization;
+    }
+
     public Long getCode() {
         return code;
     }
