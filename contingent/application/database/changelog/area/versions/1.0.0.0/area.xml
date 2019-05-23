@@ -719,4 +719,10 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-83" author="ddryuchin">
+        <dropNotNullConstraint columnDataType="BIGINT"
+                               columnName="MU_ID"
+                               tableName="AREAS"/>
+    </changeSet>
+
 </databaseChangeLog>
