@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.service;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
@@ -25,6 +26,8 @@ import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRep
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressesRepository;
+import moscow.ptnl.contingent.area.repository.area.AreaAddressCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaMedicalEmployeeRepository;
@@ -143,6 +146,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private MoAddressRepository moAddressRepository;
+
+    @Autowired
+    private AreaAddressCRUDRepository areaAddressCRUDRepository;
+
+    @Autowired
+    private AreaAddressRepository areaAddressRepository;
 
     @Autowired
     private AreaChecker areaChecker;
@@ -973,5 +982,44 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
+    }
+
+    @Override
+    public void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException {
+        Validation validation = new Validation();
+
+        if (moAddressIds.size() > settingService.getPar2()) {
+            validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("moAddressId", settingService.getPar2()));
+        }
+        List<MoAddress> addresses = areaChecker.getAndCheckMoAddressesExist(moAddressIds, validation);
+        areaChecker.checkOrderExists(orderId, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //Система закрывает территории обслуживания участка, созданные в соответствии с архивируемой территорией обслуживания МО
+        delAreaAddresses(addresses.stream().map(MoAddress::getId).collect(Collectors.toList()));
+        //Система закрывает территории обслуживания МО
+        addresses.forEach(a -> {
+            if (a.getStartDate().equals(LocalDate.now())) {
+                moAddressCRUDRepository.delete(a);
+            }
+            else {
+                a.setEndDate(LocalDate.now().minusDays(1));
+            }
+        });
+    }
+
+    private void delAreaAddresses(List<Long> moAddressIds) {
+        List<AreaAddress> addresses = areaAddressRepository.findAreaAddresses(moAddressIds);
+
+        addresses.forEach(a -> {
+            if (a.getStartDate().equals(LocalDate.now())) {
+                areaAddressCRUDRepository.delete(a);
+            }
+            else {
+                a.setEndDate(LocalDate.now().minusDays(1));
+            }
+        });
     }
 }

@@ -61,4 +61,6 @@ public interface AreaServiceInternal {
                             List<NotNsiAddress> notNsiAddresses) throws ContingentException;
 
     Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
+
+    void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException;
 }

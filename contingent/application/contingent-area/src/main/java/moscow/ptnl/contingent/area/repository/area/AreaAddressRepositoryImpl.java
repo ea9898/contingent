@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.repository.area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress_;
 import moscow.ptnl.contingent.area.entity.area.Area_;
+import moscow.ptnl.contingent.area.entity.area.MoAddress_;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
 import moscow.ptnl.contingent.area.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
@@ -33,6 +34,17 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
                                 address.get(AreaAddress_.endDate.getName()).isNull()
                         )
                 )
+        );
+        return entityManager.createQuery(criteria).getResultList();
+    }
+
+    @Override
+    public List<AreaAddress> findAreaAddresses(List<Long> moAddressIds) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<AreaAddress> criteria = criteriaBuilder.createQuery(AreaAddress.class);
+        Root<AreaAddress> address = criteria.from(AreaAddress.class);
+        criteria.where(
+                address.get(AreaAddress_.moAddress.getName()).get(MoAddress_.id.getName()).in(moAddressIds)
         );
         return entityManager.createQuery(criteria).getResultList();
     }

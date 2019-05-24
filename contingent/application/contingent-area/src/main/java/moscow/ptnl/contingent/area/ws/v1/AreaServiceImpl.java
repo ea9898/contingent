@@ -36,6 +36,8 @@ import ru.mos.emias.contingent2.area.types.CreateOrderRequest;
 import ru.mos.emias.contingent2.area.types.CreateOrderResponse;
 import ru.mos.emias.contingent2.area.types.CreatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.types.CreatePrimaryAreaResponse;
+import ru.mos.emias.contingent2.area.types.DelMoAddressRequest;
+import ru.mos.emias.contingent2.area.types.DelMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.DelProfileMURequest;
 import ru.mos.emias.contingent2.area.types.DelProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
@@ -344,6 +346,18 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             soapCustomMapper.mapPagingResults(response, addresses);
 
             return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public DelMoAddressResponse delMoAddress(DelMoAddressRequest body) throws Fault {
+        try {
+            areaService.delMoAddress(body.getMoAddressIds(), body.getOrderId());
+
+            return new DelMoAddressResponse();
         }
         catch (Exception ex) {
             throw mapException(ex);
