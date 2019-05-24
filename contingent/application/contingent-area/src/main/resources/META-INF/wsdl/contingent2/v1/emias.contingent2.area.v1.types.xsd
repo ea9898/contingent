@@ -349,4 +349,30 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="getMoAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="areaType" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element name="pagingOptions" type="core:PagingOptions" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMoAddressResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="moId" type="xs:long" />
+                        <xs:element name="areaType" type="core:AreaTypeShort" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="order" type="core:AddressAllocationOrder" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="moAddress" type="core:MoAddress" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

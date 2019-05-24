@@ -32,6 +32,7 @@ import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.area.MuProfileCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuProfileRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
@@ -139,6 +140,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private MoAddressCRUDRepository moAddressCRUDRepository;
+
+    @Autowired
+    private MoAddressRepository moAddressRepository;
 
     @Autowired
     private AreaChecker areaChecker;
@@ -506,7 +510,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         String numberNew = number == null ? order.getNumber() : number;
         LocalDate dateNew = date == null ? order.getDate() : date;
-        String ouzNew = ""; //ouz == null ? order.getOuz() : ouz;
+        String ouzNew = ouz == null ? order.getOuz() : ouz;
         String nameNew = name == null ? order.getName() : name;
 
         if (addressAllocationOrderRepository.findAddressAllocationOrders(numberNew, dateNew, ouzNew, nameNew, false).stream()
@@ -519,7 +523,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         order.setUpdateDate(LocalDateTime.now());
         order.setNumber(numberNew);
         order.setDate(dateNew);
-//        order.setOuz(ouzNew);
+        order.setOuz(ouzNew);
         order.setName(nameNew);
     }
 
@@ -735,7 +739,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
         }
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
-        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
         if (order == null || Boolean.TRUE.equals(order.getArchived())) {
@@ -748,6 +751,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
         //Сформируем список адресов по справочнику
         List<AddressWrapper> addresses = nsiAddresses.stream()
                 .map(AddressWrapper::new)
@@ -954,5 +958,20 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 empl.getSubdivisionId())));
+    }
+
+    @Override
+    public Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+
+        if (paging != null && paging.getPageSize() > settingService.getPar3()) {
+            validation.error(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
+        }
+        areaChecker.checkAreaTypesExist(areaTypeCodes, validation, "areaType");
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
     }
 }

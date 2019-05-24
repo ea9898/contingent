@@ -149,13 +149,20 @@
         <wsdl:part name="body" element="ns1:addAreaAddressResponse"/>
     </wsdl:message>
 
-
     <wsdl:message name="addMoAddressInput">
         <wsdl:part name="body" element="ns1:addMoAddressRequest"/>
     </wsdl:message>
 
     <wsdl:message name="addMoAddressOutput">
         <wsdl:part name="body" element="ns1:addMoAddressResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMoAddressInput">
+        <wsdl:part name="body" element="ns1:getMoAddressRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMoAddressOutput">
+        <wsdl:part name="body" element="ns1:getMoAddressResponse"/>
     </wsdl:message>
 
     <wsdl:portType name="AreaPT">
@@ -285,6 +292,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:addAreaAddressInput"/>
             <wsdl:output message="tns:addAreaAddressOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMoAddress">
+            <wsdl:documentation>
+                Получение списка территорий обслуживания МО (К_УУ_20)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getMoAddressInput"/>
+            <wsdl:output message="tns:getMoAddressOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -504,6 +519,20 @@
 
         <wsdl:operation name="addMoAddress">
             <soap:operation soapAction="addMoAddress"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMoAddress">
+            <soap:operation soapAction="getMoAddress"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

@@ -31,11 +31,11 @@ public class AreaType implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @JoinColumn(name = "KIND_AREA_TYPE_CODE")
+    @JoinColumn(name = "AREA_TYPE_KIND_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaTypesKind kindAreaType;
 
-    @JoinColumn(name = "CLASS_AREA_TYPE_CODE")
+    @JoinColumn(name = "AREA_TYPE_CLASS_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaTypesClass classAreaType;
 
