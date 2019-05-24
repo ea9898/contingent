@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.repository.nsi;
 
-import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding;
-import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding_;
+import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
+import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry_;
 import moscow.ptnl.contingent.area.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,29 +17,29 @@ import java.util.List;
 public class RegistryBuildingRepositoryImpl extends BaseRepository implements RegistryBuildingRepository {
 
     @Override
-    public List<RegistryBuilding> getRegistryBuildings(long globalId) {
+    public List<BuildingRegistry> getRegistryBuildings(long globalId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<RegistryBuilding> criteria = criteriaBuilder.createQuery(RegistryBuilding.class);
-        Root<RegistryBuilding> template = criteria.from(RegistryBuilding.class);
+        CriteriaQuery<BuildingRegistry> criteria = criteriaBuilder.createQuery(BuildingRegistry.class);
+        Root<BuildingRegistry> template = criteria.from(BuildingRegistry.class);
         criteria.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(template.get(RegistryBuilding_.globalId.getName()), globalId)
+                        criteriaBuilder.equal(template.get(BuildingRegistry_.globalId.getName()), globalId)
                 )
         );
         return entityManager.createQuery(criteria).getResultList();
     }
 
     @Override
-    public List<RegistryBuilding> findRegistryBuildings(String l1Value, String l2Value, String l3Value, long addrId) {
+    public List<BuildingRegistry> findRegistryBuildings(String l1Value, String l2Value, String l3Value, long addrId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<RegistryBuilding> criteria = criteriaBuilder.createQuery(RegistryBuilding.class);
-        Root<RegistryBuilding> template = criteria.from(RegistryBuilding.class);
+        CriteriaQuery<BuildingRegistry> criteria = criteriaBuilder.createQuery(BuildingRegistry.class);
+        Root<BuildingRegistry> template = criteria.from(BuildingRegistry.class);
         criteria.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(template.get(RegistryBuilding_.l1Value.getName()), l1Value),
-                        criteriaBuilder.equal(template.get(RegistryBuilding_.l2Value.getName()), l2Value),
-                        criteriaBuilder.equal(template.get(RegistryBuilding_.l3Value.getName()), l3Value),
-                        criteriaBuilder.equal(template.get(RegistryBuilding_.addrId.getName()), addrId)
+                        criteriaBuilder.equal(template.get(BuildingRegistry_.l1Value.getName()), l1Value),
+                        criteriaBuilder.equal(template.get(BuildingRegistry_.l2Value.getName()), l2Value),
+                        criteriaBuilder.equal(template.get(BuildingRegistry_.l3Value.getName()), l3Value),
+                        criteriaBuilder.equal(template.get(BuildingRegistry_.addrId.getName()), addrId)
                 )
         );
         return entityManager.createQuery(criteria).getResultList();

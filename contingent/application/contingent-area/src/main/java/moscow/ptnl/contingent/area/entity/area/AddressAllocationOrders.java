@@ -36,6 +36,10 @@ public class AddressAllocationOrders implements Serializable {
     @Column(name = "NAME")
     private String name;
 
+    @Size(max = 300)
+    @Column(name = "OUZ")
+    private String ouz;
+
     @Column(name = "DATE")
     private LocalDate date;
 
@@ -104,7 +108,15 @@ public class AddressAllocationOrders implements Serializable {
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
     }
-    
+
+    public String getOuz() {
+        return ouz;
+    }
+
+    public void setOuz(String ouz) {
+        this.ouz = ouz;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

@@ -19,7 +19,7 @@ import java.util.Objects;
 @Table(name = "REGISTRY_BUILDING")
 @SequenceGenerator(name = "SEQ_REGISTRY_BUILDING", sequenceName = "SEQ_REGISTRY_BUILDING", allocationSize=1)
 @Cacheable
-public class RegistryBuilding implements Serializable {
+public class BuildingRegistry implements Serializable {
 
     private static final long serialVersionUID = 5017009667346896559L;
 
@@ -158,8 +158,8 @@ public class RegistryBuilding implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof RegistryBuilding) {
-            return ((RegistryBuilding) obj).getId().equals(this.id);
+        if (obj != null && obj instanceof BuildingRegistry) {
+            return ((BuildingRegistry) obj).getId().equals(this.id);
         }
         return false;
     }

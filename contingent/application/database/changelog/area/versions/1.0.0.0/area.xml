@@ -21,6 +21,7 @@
             </column>
             <column name="NAME" type="VARCHAR2(255)" remarks="Наименование" />
             <column name="DATE" type="TIMESTAMP(6)" remarks="Дата распоряжения" />
+            <column name="OUZ" type="VARCHAR2(300)" remarks="Орган выпустивший распоряжение" />
             <column name="CREATE_DATE" type="TIMESTAMP(6)">
                 <constraints nullable="false" />
             </column>
@@ -157,7 +158,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="AFE_ID" type="BIGINT" />
-            <column name="REGISTRY_BUILDING_ID" type="BIGINT" />
+            <column name="BUILDING_REGISTRY_ID" type="BIGINT" />
         </createTable>
         <rollback>
             <dropTable tableName="ADDRESSES"/>
@@ -184,11 +185,11 @@
                 <indexExists indexName="IXFK_ADDRESSES_REGISTRY_B_ID"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки REGISTRY_BUILDING_ID таблицы ADDRESSES</comment>
+        <comment>Создание индекса колонки BUILDING_REGISTRY_ID таблицы ADDRESSES</comment>
         <createIndex indexName="IXFK_ADDRESSES_REGISTRY_B_ID"
                      tableName="ADDRESSES"
                      unique="false">
-            <column name="REGISTRY_BUILDING_ID" type="number"/>
+            <column name="BUILDING_REGISTRY_ID" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -207,15 +208,15 @@
 
     <changeSet id="CONTINGENT2-57-17-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="ADDRESSES" columnName="REGISTRY_BUILDING_ID" />
-            <columnExists tableName="REGISTRY_BUILDING" columnName="ID" />
+            <columnExists tableName="ADDRESSES" columnName="BUILDING_REGISTRY_ID" />
+            <columnExists tableName="BUILDING_REGISTRY" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_ADDRESSES_REGISTRY_B</comment>
-        <addForeignKeyConstraint baseColumnNames="REGISTRY_BUILDING_ID"
+        <addForeignKeyConstraint baseColumnNames="BUILDING_REGISTRY_ID"
                                  baseTableName="ADDRESSES"
                                  constraintName="FK_ADDRESSES_REGISTRY_B"
                                  referencedColumnNames="ID"
-                                 referencedTableName="REGISTRY_BUILDING"/>
+                                 referencedTableName="BUILDING_REGISTRY"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-18" author="sorlov" labels="1.0.0.0">

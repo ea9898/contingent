@@ -9,9 +9,9 @@ import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
+import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
-import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -758,7 +758,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                                 a.nsiAddress.getGlobalId(), a.nsiAddress.getLevelAddress()).get(0);
                     }
                     else {
-                        a.registryBuilding = registryBuildingRepository.getRegistryBuildings(a.nsiAddress.getGlobalId()).get(0);
+                        a.buildingRegistry = registryBuildingRepository.getRegistryBuildings(a.nsiAddress.getGlobalId()).get(0);
                     }
                 })
                 .collect(Collectors.toList());
@@ -786,32 +786,32 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     address.setAddressFormingElement(a.addressFormingElement);
                 }
                 else {
-                    address.setRegistryBuilding(a.registryBuilding);
+                    address.setBuildingRegistry(a.buildingRegistry);
                 }
             }
             else {
                 address.setLevel(NOT_NSI_ADDRESS_LEVEL);
-                a.registryBuilding = registryBuildingRepository.findRegistryBuildings(
+                a.buildingRegistry = registryBuildingRepository.findRegistryBuildings(
                         a.notNsiAddress.getHouse(), a.notNsiAddress.getBuilding(), a.notNsiAddress.getConstruction(),
                         a.notNsiAddress.getParentId()).stream()
                         .findFirst()
                         .orElseGet(() -> {
-                            RegistryBuilding registryBuilding = new RegistryBuilding();
-                            registryBuilding.setAddrId(a.notNsiAddress.getParentId());
-                            registryBuilding.setL1Type(a.notNsiAddress.getHouseType());
-                            registryBuilding.setL1Value(a.notNsiAddress.getHouse());
-                            registryBuilding.setL2Type(a.notNsiAddress.getBuildingType());
-                            registryBuilding.setL2Value(a.notNsiAddress.getBuilding());
-                            registryBuilding.setL3Type(a.notNsiAddress.getConstructionType());
-                            registryBuilding.setL3Value(a.notNsiAddress.getConstruction());
-                            registryBuilding.setAddressFormingElement(a.addressFormingElement);
-                            registryBuildingCRUDRepository.save(registryBuilding);
+                            BuildingRegistry buildingRegistry = new BuildingRegistry();
+                            buildingRegistry.setAddrId(a.notNsiAddress.getParentId());
+                            buildingRegistry.setL1Type(a.notNsiAddress.getHouseType());
+                            buildingRegistry.setL1Value(a.notNsiAddress.getHouse());
+                            buildingRegistry.setL2Type(a.notNsiAddress.getBuildingType());
+                            buildingRegistry.setL2Value(a.notNsiAddress.getBuilding());
+                            buildingRegistry.setL3Type(a.notNsiAddress.getConstructionType());
+                            buildingRegistry.setL3Value(a.notNsiAddress.getConstruction());
+                            buildingRegistry.setAddressFormingElement(a.addressFormingElement);
+                            registryBuildingCRUDRepository.save(buildingRegistry);
 
-                            return registryBuilding;
+                            return buildingRegistry;
                         });
-                address.setRegistryBuilding(a.registryBuilding);
+                address.setBuildingRegistry(a.buildingRegistry);
             }
-            a.address = addressesRepository.findAddresses(address.getLevel(), address.getRegistryBuilding(), address.getAddressFormingElement())
+            a.address = addressesRepository.findAddresses(address.getLevel(), address.getBuildingRegistry(), address.getAddressFormingElement())
                     .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
         });
         addresses.forEach(a -> {
@@ -828,7 +828,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return addresses.stream().map(a -> a.moAddress.getId()).collect(Collectors.toList());
     }
 
-    private List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployee> mainEmployees) {
+    public List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployee> mainEmployees) {
         mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
         List<Period> periodsWithoutMainEmpl = new ArrayList<>();
         if (mainEmployees.isEmpty()) {

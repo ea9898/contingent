@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
-import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding;
+import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +37,7 @@ public class Addresses implements Serializable {
 
     @JoinColumn(name = "REGISTRY_BUILDING_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private RegistryBuilding registryBuilding;
+    private BuildingRegistry buildingRegistry;
 
     public Long getId() {
         return id;
@@ -63,12 +63,12 @@ public class Addresses implements Serializable {
         this.addressFormingElement = addressFormingElement;
     }
 
-    public RegistryBuilding getRegistryBuilding() {
-        return registryBuilding;
+    public BuildingRegistry getBuildingRegistry() {
+        return buildingRegistry;
     }
 
-    public void setRegistryBuilding(RegistryBuilding registryBuilding) {
-        this.registryBuilding = registryBuilding;
+    public void setBuildingRegistry(BuildingRegistry buildingRegistry) {
+        this.buildingRegistry = buildingRegistry;
     }
 
     @Override
