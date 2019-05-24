@@ -33,10 +33,16 @@ public class Period {
         this.endDate = endDate;
     }
 
+    public boolean isInterceptWith(Period other) {
+        return isInterceptWith(other.getStartDate(), other.getEndDate());
+    }
+
     public boolean isInterceptWith(LocalDate otherStartDate, LocalDate otherEndDate) {
         if (this.endDate == null && otherEndDate == null
-                || otherEndDate != null && this.startDate.isBefore(otherEndDate)
-                || this.endDate != null && otherStartDate.isBefore(this.endDate)) {
+                || otherStartDate.isBefore(this.startDate.plusDays(1)) && otherEndDate != null
+                    && this.startDate.isBefore(otherEndDate.plusDays(1))
+                || this.startDate.isBefore(otherStartDate.plusDays(1)) && this.endDate != null
+                    && otherStartDate.isBefore(this.endDate.plusDays(1))) {
             return true;
         }
         return false;

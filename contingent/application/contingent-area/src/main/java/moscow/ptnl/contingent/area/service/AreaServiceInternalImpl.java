@@ -796,7 +796,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         applyChanges(mainEmployees, changeEmployeesInput);
         addNew(mainEmployees, addEmployeesInput.stream()
                 .filter(empl -> !empl.isIsReplacement()).collect(Collectors.toList()), area);
-        mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
         if (area.getAreaType().getCode() == KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()) {
             checkMainEmployeesOverlappingDates(mainEmployees, validation);
         }
@@ -846,7 +845,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 return periodsWithoutMainEmpl;
             }
             if (next.getStartDate().minusDays(1).isAfter(current.getEndDate())) {
-                periodsWithoutMainEmpl.add(new Period(current.getEndDate().plusDays(1), next.getStartDate()));
+                periodsWithoutMainEmpl.add(new Period(current.getEndDate().plusDays(1), next.getStartDate().minusDays(1)));
             }
         }
         AreaMedicalEmployee last = mainEmployees.get(mainEmployees.size() - 1);
@@ -856,17 +855,20 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return periodsWithoutMainEmpl;
     }
 
-    private void checkMainEmployeesOverlappingDates(List<AreaMedicalEmployee> sortedEmpl,
+    public void checkMainEmployeesOverlappingDates(List<AreaMedicalEmployee> mainEmployees,
                                                     Validation validation) throws ContingentException {
-        if (sortedEmpl.size() > 1) {
-            for (int i = 0; i < sortedEmpl.size() - 1; i++) {
-                if (sortedEmpl.get(i).getEndDate() == null
-                        || sortedEmpl.get(i + 1).getStartDate().isBefore(sortedEmpl.get(i).getEndDate())) {
+        if (mainEmployees.size() > 1) {
+            mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
+            for (int i = 0; i < mainEmployees.size() - 1; i++) {
+                AreaMedicalEmployee current = mainEmployees.get(i);
+                AreaMedicalEmployee next = mainEmployees.get(i + 1);
+                if (current.getEndDate() == null
+                        || next.getStartDate().minusDays(1).isBefore(current.getEndDate())) {
                     validation.error(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP,
                             new ValidationParameter("specialization1",
-                                    sortedEmpl.get(i).getMedicalEmployeeJobInfoId()),
+                                    current.getMedicalEmployeeJobInfoId()),
                             new ValidationParameter("specialization2",
-                                    sortedEmpl.get(i + 1).getMedicalEmployeeJobInfoId()));
+                                    next.getMedicalEmployeeJobInfoId()));
                 }
             }
             if (!validation.isSuccess()) {
@@ -875,7 +877,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
     }
 
-    private void checkReplacementWithoutMain(List<Period> periodsWithoutMainEmpl,
+    public void checkReplacementWithoutMain(List<Period> periodsWithoutMainEmpl,
                                              List<AreaMedicalEmployee> replacementEmployees,
                                              Validation validation) throws ContingentException {
         boolean foundError = false;
@@ -889,8 +891,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (foundError) {
                 validation.error(AreaErrorReason.REPLACEMENT_WITHOUT_MAIN_EMPLOYEE,
                         new ValidationParameter("startDate", period.getStartDate()),
-                        new ValidationParameter("endDate",
-                                period.getEndDate() != null ? period.getEndDate() : Period.MAX_DATE));
+                        new ValidationParameter("endDate",period.getEndDate()));
+                foundError = false;
             }
         }
         if (!validation.isSuccess()) {
@@ -898,7 +900,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
     }
 
-    private void checkDatesNotInterceptWithSamePosition(List<AreaMedicalEmployee> allEmployees,
+    public void checkDatesNotInterceptWithSamePosition(List<AreaMedicalEmployee> allEmployees,
                                                         long areaId, Validation validation) throws ContingentException {
         if (allEmployees.size() > 1) {
             for (int i = 0; i < allEmployees.size() - 1; i++) {
