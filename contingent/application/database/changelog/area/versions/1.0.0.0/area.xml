@@ -292,27 +292,27 @@
     <changeSet id="CONTINGENT2-57-18-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="MO_ADDRESSES" columnName="ORDER_ID" />
-            <columnExists tableName="ADDRESS_ALLOCATION_ORDER" columnName="ID" />
+            <columnExists tableName="ADDRESS_ALLOCATION_ORDERS" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_MO_ADDRESSES_ORDER_ID</comment>
         <addForeignKeyConstraint baseColumnNames="ORDER_ID"
                                  baseTableName="MO_ADDRESSES"
                                  constraintName="FK_MO_ADDRESSES_ORDER_ID"
                                  referencedColumnNames="ID"
-                                 referencedTableName="ADDRESS_ALLOCATION_ORDER"/>
+                                 referencedTableName="ADDRESS_ALLOCATION_ORDERS"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-18-5" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="MO_ADDRESSES" columnName="REJECT_ORDER_ID" />
-            <columnExists tableName="ADDRESS_ALLOCATION_ORDER" columnName="ID" />
+            <columnExists tableName="ADDRESS_ALLOCATION_ORDERS" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_MO_ADDRESSES_R_O_ID</comment>
         <addForeignKeyConstraint baseColumnNames="REJECT_ORDER_ID"
                                  baseTableName="MO_ADDRESSES"
                                  constraintName="FK_MO_ADDRESSES_R_O_ID"
                                  referencedColumnNames="ID"
-                                 referencedTableName="ADDRESS_ALLOCATION_ORDER"/>
+                                 referencedTableName="ADDRESS_ALLOCATION_ORDERS"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-18-6" author="sorlov" labels="1.0.0.0">
