@@ -75,19 +75,27 @@ public class AreaMedicalEmployee implements Serializable {
 
     public AreaMedicalEmployee(Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
                                LocalDate endDate, String snils,  PositionNomClinic positionNomClinic,
-                               LocalDateTime createDate,
-                               LocalDateTime updateDate, Long subdivisionId) {
+                               LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
+        this(null, medicalEmployeeJobInfoId, area, replacement, startDate, endDate, snils, positionNomClinic, createDate, updateDate, subdivisionId);
+    }
+
+    public AreaMedicalEmployee(Long id, Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
+                               LocalDate endDate, String snils,  PositionNomClinic positionNomClinic,
+                               LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
+        this.id = id;
         this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
         this.area = area;
         this.replacement = replacement;
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
+        this.positionNomClinic = positionNomClinic;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subdivisionId = subdivisionId;
-        this.positionNomClinic = positionNomClinic;
+
     }
+
 
     public Long getId() {
         return id;

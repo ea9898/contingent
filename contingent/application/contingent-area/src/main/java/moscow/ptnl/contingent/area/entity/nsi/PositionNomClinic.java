@@ -66,6 +66,26 @@ public class PositionNomClinic implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    public PositionNomClinic() {
+    }
+
+    public PositionNomClinic(Long id, String code, String title, String category, String subcategory,
+                             LocalDate startDate, LocalDate endDate, String extraBud, String addSupp,
+                             String inDr, String medService, Boolean archived) {
+        this.id = id;
+        this.code = code;
+        this.title = title;
+        this.category = category;
+        this.subcategory = subcategory;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.extraBud = extraBud;
+        this.addSupp = addSupp;
+        this.inDr = inDr;
+        this.medService = medService;
+        this.archived = archived;
+    }
+
     public Long getId() {
         return id;
     }

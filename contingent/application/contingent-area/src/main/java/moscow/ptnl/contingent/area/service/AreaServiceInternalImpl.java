@@ -563,6 +563,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
+    public List<Long> addAreaAddress() {
+        return new ArrayList<>();
+    }
+
+    @Override
     public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
                                                List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
 
@@ -825,34 +830,26 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     private List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployee> mainEmployees) {
         mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
-        LocalDate currentDate = LocalDate.now();
         List<Period> periodsWithoutMainEmpl = new ArrayList<>();
         if (mainEmployees.isEmpty()) {
             periodsWithoutMainEmpl.add(Period.ALL_TIME);
             return periodsWithoutMainEmpl;
         }
-        if (mainEmployees.size() == 1 && mainEmployees.get(0).getEndDate() == null
-                || mainEmployees.get(mainEmployees.size() - 1).getEndDate() == null) {
-            return periodsWithoutMainEmpl;
-        }
-        if (mainEmployees.size() == 1 && mainEmployees.get(0).getEndDate() != null) {
-            if (mainEmployees.get(0).getEndDate().isAfter(currentDate)) {
-                periodsWithoutMainEmpl.add(new Period(mainEmployees.get(0).getEndDate(), null));
-            } else {
-                periodsWithoutMainEmpl.add(new Period(currentDate, null));
-            }
-            return periodsWithoutMainEmpl;
-        }
+        AreaMedicalEmployee first = mainEmployees.get(0);
+        periodsWithoutMainEmpl.add(new Period(Period.MIN_DATE, first.getStartDate().minusDays(1)));
         for (int i = 0; i < mainEmployees.size() - 1; i++) {
             AreaMedicalEmployee current = mainEmployees.get(i);
             AreaMedicalEmployee next = mainEmployees.get(i + 1);
             if (current.getEndDate() == null) {
-                periodsWithoutMainEmpl.clear();
                 return periodsWithoutMainEmpl;
             }
-            if (next.getStartDate().isAfter(currentDate) && next.getStartDate().minusDays(1).isAfter(current.getEndDate())) {
+            if (next.getStartDate().minusDays(1).isAfter(current.getEndDate())) {
                 periodsWithoutMainEmpl.add(new Period(current.getEndDate().plusDays(1), next.getStartDate()));
             }
+        }
+        AreaMedicalEmployee last = mainEmployees.get(mainEmployees.size() - 1);
+        if (last.getEndDate() != null) {
+            periodsWithoutMainEmpl.add(new Period(last.getEndDate().plusDays(1), Period.MAX_DATE));
         }
         return periodsWithoutMainEmpl;
     }
@@ -955,10 +952,5 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 empl.getSubdivisionId())));
-    }
-
-    @Override
-    public List<Long> addAreaAddress() {
-        return new ArrayList<>();
     }
 }
