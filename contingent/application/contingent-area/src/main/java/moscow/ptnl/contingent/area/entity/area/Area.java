@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -44,7 +44,7 @@ public class Area implements Serializable {
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypes areaType;
+    private AreaType areaType;
 
     @Column(name = "NUMBER")
     private Integer number;
@@ -98,7 +98,7 @@ public class Area implements Serializable {
     public Area() {
     }
 
-    public Area(Long moId, Long muId, AreaTypes areaType, Integer number, Boolean autoAssignForAttach, Boolean archived, String description, Boolean attachByMedicalReason, Integer ageMin, Integer ageMax, Integer ageMMin, Integer ageMMax, Integer ageWMin, Integer ageWMax, LocalDateTime createDate) {
+    public Area(Long moId, Long muId, AreaType areaType, Integer number, Boolean autoAssignForAttach, Boolean archived, String description, Boolean attachByMedicalReason, Integer ageMin, Integer ageMax, Integer ageMMin, Integer ageMMax, Integer ageWMin, Integer ageWMax, LocalDateTime createDate) {
         this.moId = moId;
         this.muId = muId;
         this.areaType = areaType;
@@ -160,11 +160,11 @@ public class Area implements Serializable {
         this.muId = muId;
     }
 
-    public AreaTypes getAreaType() {
+    public AreaType getAreaType() {
         return areaType;
     }
 
-    public void setAreaType(AreaTypes areaType) {
+    public void setAreaType(AreaType areaType) {
         this.areaType = areaType;
     }
 

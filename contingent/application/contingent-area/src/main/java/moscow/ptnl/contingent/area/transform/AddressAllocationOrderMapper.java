@@ -1,13 +1,14 @@
 package moscow.ptnl.contingent.area.transform;
 
+import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddressAllocationOrder;
 
 @Component
-public class AddressAllocationOrderMapper implements Transform<AddressAllocationOrder, moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder> {
+public class AddressAllocationOrderMapper implements Transform<AddressAllocationOrder, AddressAllocationOrders> {
 
     @Override
-    public AddressAllocationOrder entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder entityObject) {
+    public AddressAllocationOrder entityToDtoTransform(AddressAllocationOrders entityObject) {
         AddressAllocationOrder allocationOrder = new AddressAllocationOrder();
         allocationOrder.setId(entityObject.getId());
         allocationOrder.setNumber(entityObject.getNumber());
@@ -19,7 +20,7 @@ public class AddressAllocationOrderMapper implements Transform<AddressAllocation
     }
 
     @Override
-    public moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder dtoToEntityTransform(AddressAllocationOrder dtoObject) {
+    public AddressAllocationOrders dtoToEntityTransform(AddressAllocationOrder dtoObject) {
         return null;
     }
 }

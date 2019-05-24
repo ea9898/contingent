@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,11 +32,11 @@ public class MuProfile implements Serializable {
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypes areaType;
+    private AreaType areaType;
 
     public MuProfile() {}
 
-    public MuProfile(Long muId, AreaTypes areaType) {
+    public MuProfile(Long muId, AreaType areaType) {
         this.muId = muId;
         this.areaType = areaType;
     }
@@ -57,11 +57,11 @@ public class MuProfile implements Serializable {
         this.muId = muId;
     }
 
-    public AreaTypes getAreaType() {
+    public AreaType getAreaType() {
         return areaType;
     }
 
-    public void setAreaType(AreaTypes areaType) {
+    public void setAreaType(AreaType areaType) {
         this.areaType = areaType;
     }
     

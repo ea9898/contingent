@@ -30,7 +30,7 @@ public class MUProfileTemplates implements Serializable {
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypes areaType;
+    private AreaType areaType;
 
     @Column(name = "AVAILABLE_TO_CREATE")
     @Convert(converter = BooleanIntegerConverter.class)
@@ -52,11 +52,11 @@ public class MUProfileTemplates implements Serializable {
         this.muTypeId = muTypeId;
     }
 
-    public AreaTypes getAreaType() {
+    public AreaType getAreaType() {
         return areaType;
     }
 
-    public void setAreaType(AreaTypes areaType) {
+    public void setAreaType(AreaType areaType) {
         this.areaType = areaType;
     }
 

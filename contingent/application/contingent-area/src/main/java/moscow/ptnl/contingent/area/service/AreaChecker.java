@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,7 +47,7 @@ public class AreaChecker {
     Иначе возвращает ошибку */
     public void checkAreaTypesExist(List<Long> areaTypes, Validation validation, String parameterCode) {
         areaTypes.forEach(a -> {
-            Optional<AreaTypes> areaType = areaTypesCRUDRepository.findById(a);
+            Optional<AreaType> areaType = areaTypesCRUDRepository.findById(a);
 
             if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchived())) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter(parameterCode, a));
@@ -95,7 +94,7 @@ public class AreaChecker {
     public void checkMuProfilesHasAreaTypes(Long muId, List<Long> areaTypes, Validation validation) {
         List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
 
-        List<Long> areaTypesProfiles = muProfiles.stream().map(MuProfile::getAreaType).map(AreaTypes::getCode).collect(Collectors.toList());
+        List<Long> areaTypesProfiles = muProfiles.stream().map(MuProfile::getAreaType).map(AreaType::getCode).collect(Collectors.toList());
         List<Long> areaTypesDiff =
                 areaTypes.stream().filter(areaType -> !areaTypesProfiles.contains(areaType))
                 .collect(Collectors.toList());
@@ -124,7 +123,7 @@ public class AreaChecker {
         }
     }
 
-    public void checkAreaTypeAgeSetups(AreaTypes areaType, Integer ageMin, Integer ageMax,
+    public void checkAreaTypeAgeSetups(AreaType areaType, Integer ageMin, Integer ageMax,
                                        Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW, Validation validation) {
         if (!checkAgeSetupFilling(ageMin, ageMax, areaType.getAgeMin(), areaType.getAgeMax()) ||
                 !checkAgeSetupFilling(ageMinM, ageMaxM, areaType.getAgeMMin(), areaType.getAgeMMax()) ||
@@ -150,9 +149,9 @@ public class AreaChecker {
         }
     }
 
-    public Map<Long, AreaTypes> checkAndGetPrimaryAreaTypesInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
+    public Map<Long, AreaType> checkAndGetPrimaryAreaTypesInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
         List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
-        Map<Long, AreaTypes> primaryAreaTypes = muProfiles.stream()
+        Map<Long, AreaType> primaryAreaTypes = muProfiles.stream()
                 .filter(p -> p.getAreaType() != null)
                 .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuProfile::getAreaType));
 
@@ -213,7 +212,7 @@ public class AreaChecker {
     /*
     Система проверяет, что вид участка отличен от «Именной»
      */
-    public void checkAreaTypeIsNotPersonal(AreaTypes areaType, Validation validation) {
+    public void checkAreaTypeIsNotPersonal(AreaType areaType, Validation validation) {
         if (areaType.getKindAreaType() != null &&
                 Objects.equals(areaType.getKindAreaType().getCode(), KindAreaTypeEnum.PERSONAL.getCode())) {
             validation.error(AreaErrorReason.CANT_RESTORE_PERSONAL_KIND_AREA);

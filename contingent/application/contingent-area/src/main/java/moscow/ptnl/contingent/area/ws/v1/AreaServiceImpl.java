@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
-import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder;
+import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -213,7 +213,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         try {
-            Page<AddressAllocationOrder> results = areaService.searchOrder(body.getId(), body.getNumber(), body.getDate(),
+            Page<AddressAllocationOrders> results = areaService.searchOrder(body.getId(), body.getNumber(), body.getDate(),
                     body.getName(), PageRequest.of(body.getPagingOptions().getPageNumber(), body.getPagingOptions().getPageSize()));
             SearchOrderResponse response = new SearchOrderResponse();
             AddressAllocationOrderListResultPage resultPage = new AddressAllocationOrderListResultPage();

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.repository.nsi;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes_;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
 import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates;
 import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates_;
 import moscow.ptnl.contingent.area.repository.BaseRepository;
@@ -25,7 +25,7 @@ public class MuProfileTemplatesRepositoryImpl extends BaseRepository implements 
         criteria.where(
                 criteriaBuilder.and(
                         criteriaBuilder.equal(template.get(MUProfileTemplates_.muTypeId.getName()), muTypeId),
-                        criteriaBuilder.equal(template.get(MUProfileTemplates_.areaType.getName()).get(AreaTypes_.code.getName()), areaTypeCode)
+                        criteriaBuilder.equal(template.get(MUProfileTemplates_.areaType.getName()).get(AreaType_.code.getName()), areaTypeCode)
                 )
         );
         List<MUProfileTemplates> results = entityManager.createQuery(criteria).getResultList();
@@ -41,7 +41,7 @@ public class MuProfileTemplatesRepositoryImpl extends BaseRepository implements 
         criteria.where(
                 criteriaBuilder.and(
                         criteriaBuilder.equal(template.get(MUProfileTemplates_.muTypeId.getName()), muTypeId),
-                        template.get(MUProfileTemplates_.areaType.getName()).get(AreaTypes_.code.getName()).in(areaTypeCodes)
+                        template.get(MUProfileTemplates_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes)
                 )
         );
         List<MUProfileTemplates> results = entityManager.createQuery(criteria).getResultList();

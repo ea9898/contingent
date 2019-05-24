@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.area.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.Area_;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes_;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
 import moscow.ptnl.contingent.area.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.support.incrementer.PostgresSequenceMaxValueIncrementer;
@@ -46,7 +46,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                         number == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(profile.get(Area_.number.getName()), number),
                         areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
-                                profile.get(Area_.areaType.getName()).get(AreaTypes_.code.getName()).in(areaTypeCodes),
+                                profile.get(Area_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
                         actual == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(profile.get(Area_.archived.getName()), !actual)
                 )

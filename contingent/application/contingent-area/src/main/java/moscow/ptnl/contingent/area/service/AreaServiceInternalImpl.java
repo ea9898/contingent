@@ -1,14 +1,14 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder;
+import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
 import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding;
@@ -50,7 +50,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
@@ -189,7 +188,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         for (Long areaTypeCode : areaTypeCodes) {
-            AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+            AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
             MuProfile muProfile = new MuProfile(muId, areaType);
             muProfileCRUDRepository.save(muProfile);
         }
@@ -296,7 +295,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Validation validation = new Validation();
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
-        Map<Long, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muId, primaryAreaTypeCodes, validation);
+        Map<Long, AreaType> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muId, primaryAreaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -309,7 +308,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (number != null) {
             areaChecker.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
         }
-        AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
         areaChecker.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
         if (!validation.isSuccess()) {
@@ -406,7 +405,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
             }
         }
-        Map<Long, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
+        Map<Long, AreaType> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -476,7 +475,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        AddressAllocationOrder order = new AddressAllocationOrder();
+        AddressAllocationOrders order = new AddressAllocationOrders();
         order.setCreateDate(LocalDateTime.now());
         order.setUpdateDate(LocalDateTime.now());
         order.setArchived(false);
@@ -491,7 +490,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Override
     public void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException {
         Validation validation = new Validation();
-        AddressAllocationOrder order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
+        AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
 
         if (order == null) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
@@ -525,7 +524,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public Page<AddressAllocationOrder> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException {
+    public Page<AddressAllocationOrders> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException {
         Validation validation = new Validation();
 
         if (id == null && number == null && date == null && name == null) {
@@ -732,8 +731,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
         }
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
-        AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
-        AddressAllocationOrder order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
+        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+        AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
         if (order == null || Boolean.TRUE.equals(order.getArchived())) {
             throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
