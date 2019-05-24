@@ -1,17 +1,17 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrder;
+import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MuProfile;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
-import moscow.ptnl.contingent.area.entity.nsi.RegistryBuilding;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -50,7 +50,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
@@ -189,7 +188,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         for (Long areaTypeCode : areaTypeCodes) {
-            AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+            AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
             MuProfile muProfile = new MuProfile(muId, areaType);
             muProfileCRUDRepository.save(muProfile);
         }
@@ -296,7 +295,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Validation validation = new Validation();
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
-        Map<Long, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muId, primaryAreaTypeCodes, validation);
+        Map<Long, AreaType> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muId, primaryAreaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -309,7 +308,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (number != null) {
             areaChecker.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
         }
-        AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
         areaChecker.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
         if (!validation.isSuccess()) {
@@ -406,7 +405,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
             }
         }
-        Map<Long, AreaTypes> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
+        Map<Long, AreaType> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -476,7 +475,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        AddressAllocationOrder order = new AddressAllocationOrder();
+        AddressAllocationOrders order = new AddressAllocationOrders();
         order.setCreateDate(LocalDateTime.now());
         order.setUpdateDate(LocalDateTime.now());
         order.setArchived(false);
@@ -491,7 +490,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Override
     public void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException {
         Validation validation = new Validation();
-        AddressAllocationOrder order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
+        AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
 
         if (order == null) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
@@ -525,7 +524,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public Page<AddressAllocationOrder> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException {
+    public Page<AddressAllocationOrders> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException {
         Validation validation = new Validation();
 
         if (id == null && number == null && date == null && name == null) {
@@ -567,111 +566,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public List<Long> addAreaAddress() {
         return new ArrayList<>();
     }
-
-    @Override
-    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
-                                   List<NotNsiAddress> notNsiAddresses) throws ContingentException {
-        Validation validation = new Validation();
-
-        if (nsiAddresses.size() + notNsiAddresses.size() == 0) {
-            throw new ContingentException(AreaErrorReason.NO_ADDRESS);
-        }
-        if (nsiAddresses.size() + notNsiAddresses.size() > settingService.getPar1()) {
-            throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
-        }
-        areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
-        AreaTypes areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
-        AddressAllocationOrder order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
-
-        if (order == null || Boolean.TRUE.equals(order.getArchived())) {
-            throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
-                    new ValidationParameter("orderId", orderId));
-        }
-        areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
-        areaAddressChecker.checkNotNsiAddresses(notNsiAddresses, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        //Сформируем список адресов по справочнику
-        List<AddressWrapper> addresses = nsiAddresses.stream()
-                .map(AddressWrapper::new)
-                .peek(a -> {
-                    if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
-                        a.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
-                                a.nsiAddress.getGlobalId(), a.nsiAddress.getLevelAddress()).get(0);
-                    }
-                    else {
-                        a.registryBuilding = registryBuildingRepository.getRegistryBuildings(a.nsiAddress.getGlobalId()).get(0);
-                    }
-                })
-                .collect(Collectors.toList());
-        //Сформируем список адресов вне справочника
-        notNsiAddresses.forEach(a -> {
-            AddressWrapper wrapper = new AddressWrapper();
-            wrapper.notNsiAddress = a;
-            wrapper.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
-                    a.getParentId(), a.getLevelParentId()).get(0);
-            addresses.add(wrapper);
-        });
-        //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
-        areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        addresses.forEach(a -> {
-            Addresses address = new Addresses();
-
-            if (a.nsiAddress != null) {
-                address.setLevel(a.nsiAddress.getLevelAddress());
-
-                if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
-                    address.setAddressFormingElement(a.addressFormingElement);
-                }
-                else {
-                    address.setRegistryBuilding(a.registryBuilding);
-                }
-            }
-            else {
-                address.setLevel(NOT_NSI_ADDRESS_LEVEL);
-                a.registryBuilding = registryBuildingRepository.findRegistryBuildings(
-                        a.notNsiAddress.getHouse(), a.notNsiAddress.getBuilding(), a.notNsiAddress.getConstruction(),
-                        a.notNsiAddress.getParentId()).stream()
-                        .findFirst()
-                        .orElseGet(() -> {
-                            RegistryBuilding registryBuilding = new RegistryBuilding();
-                            registryBuilding.setAddrId(a.notNsiAddress.getParentId());
-                            registryBuilding.setL1Type(a.notNsiAddress.getHouseType());
-                            registryBuilding.setL1Value(a.notNsiAddress.getHouse());
-                            registryBuilding.setL2Type(a.notNsiAddress.getBuildingType());
-                            registryBuilding.setL2Value(a.notNsiAddress.getBuilding());
-                            registryBuilding.setL3Type(a.notNsiAddress.getConstructionType());
-                            registryBuilding.setL3Value(a.notNsiAddress.getConstruction());
-                            registryBuilding.setAddressFormingElement(a.addressFormingElement);
-                            registryBuildingCRUDRepository.save(registryBuilding);
-
-                            return registryBuilding;
-                        });
-                address.setRegistryBuilding(a.registryBuilding);
-            }
-            a.address = addressesRepository.findAddresses(address.getLevel(), address.getRegistryBuilding(), address.getAddressFormingElement())
-                    .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
-        });
-        addresses.forEach(a -> {
-            a.moAddress = new MoAddress();
-            a.moAddress.setAddress(a.address);
-            a.moAddress.setAreaType(areaType);
-            a.moAddress.setMoId(moId);
-            a.moAddress.setAddressAllocationOrder(order);
-            a.moAddress.setStartDate(LocalDate.now());
-            a.moAddress.setCreateDate(LocalDateTime.now());
-            moAddressCRUDRepository.save(a.moAddress);
-        });
-
-        return addresses.stream().map(a -> a.moAddress.getId()).collect(Collectors.toList());
-    }
-
 
     @Override
     public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
@@ -827,6 +721,110 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
         });
         return result;
+    }
+
+    @Override
+    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
+                                   List<NotNsiAddress> notNsiAddresses) throws ContingentException {
+        Validation validation = new Validation();
+
+        if (nsiAddresses.size() + notNsiAddresses.size() == 0) {
+            throw new ContingentException(AreaErrorReason.NO_ADDRESS);
+        }
+        if (nsiAddresses.size() + notNsiAddresses.size() > settingService.getPar1()) {
+            throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
+        }
+        areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+        AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
+
+        if (order == null || Boolean.TRUE.equals(order.getArchived())) {
+            throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
+                    new ValidationParameter("orderId", orderId));
+        }
+        areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
+        areaAddressChecker.checkNotNsiAddresses(notNsiAddresses, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //Сформируем список адресов по справочнику
+        List<AddressWrapper> addresses = nsiAddresses.stream()
+                .map(AddressWrapper::new)
+                .peek(a -> {
+                    if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
+                        a.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
+                                a.nsiAddress.getGlobalId(), a.nsiAddress.getLevelAddress()).get(0);
+                    }
+                    else {
+                        a.buildingRegistry = registryBuildingRepository.getRegistryBuildings(a.nsiAddress.getGlobalId()).get(0);
+                    }
+                })
+                .collect(Collectors.toList());
+        //Сформируем список адресов вне справочника
+        notNsiAddresses.forEach(a -> {
+            AddressWrapper wrapper = new AddressWrapper();
+            wrapper.notNsiAddress = a;
+            wrapper.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
+                    a.getParentId(), a.getLevelParentId()).get(0);
+            addresses.add(wrapper);
+        });
+        //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
+        areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        addresses.forEach(a -> {
+            Addresses address = new Addresses();
+
+            if (a.nsiAddress != null) {
+                address.setLevel(a.nsiAddress.getLevelAddress());
+
+                if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
+                    address.setAddressFormingElement(a.addressFormingElement);
+                }
+                else {
+                    address.setBuildingRegistry(a.buildingRegistry);
+                }
+            }
+            else {
+                address.setLevel(NOT_NSI_ADDRESS_LEVEL);
+                a.buildingRegistry = registryBuildingRepository.findRegistryBuildings(
+                        a.notNsiAddress.getHouse(), a.notNsiAddress.getBuilding(), a.notNsiAddress.getConstruction(),
+                        a.notNsiAddress.getParentId()).stream()
+                        .findFirst()
+                        .orElseGet(() -> {
+                            BuildingRegistry buildingRegistry = new BuildingRegistry();
+                            buildingRegistry.setAddrId(a.notNsiAddress.getParentId());
+                            buildingRegistry.setL1Type(a.notNsiAddress.getHouseType());
+                            buildingRegistry.setL1Value(a.notNsiAddress.getHouse());
+                            buildingRegistry.setL2Type(a.notNsiAddress.getBuildingType());
+                            buildingRegistry.setL2Value(a.notNsiAddress.getBuilding());
+                            buildingRegistry.setL3Type(a.notNsiAddress.getConstructionType());
+                            buildingRegistry.setL3Value(a.notNsiAddress.getConstruction());
+                            buildingRegistry.setAddressFormingElement(a.addressFormingElement);
+                            registryBuildingCRUDRepository.save(buildingRegistry);
+
+                            return buildingRegistry;
+                        });
+                address.setBuildingRegistry(a.buildingRegistry);
+            }
+            a.address = addressesRepository.findAddresses(address.getLevel(), address.getBuildingRegistry(), address.getAddressFormingElement())
+                    .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
+        });
+        addresses.forEach(a -> {
+            a.moAddress = new MoAddress();
+            a.moAddress.setAddress(a.address);
+            a.moAddress.setAreaType(areaType);
+            a.moAddress.setMoId(moId);
+            a.moAddress.setAddressAllocationOrder(order);
+            a.moAddress.setStartDate(LocalDate.now());
+            a.moAddress.setCreateDate(LocalDateTime.now());
+            moAddressCRUDRepository.save(a.moAddress);
+        });
+
+        return addresses.stream().map(a -> a.moAddress.getId()).collect(Collectors.toList());
     }
 
     public List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployee> mainEmployees) {

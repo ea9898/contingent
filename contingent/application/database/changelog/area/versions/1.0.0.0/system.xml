@@ -32,7 +32,7 @@
         <preConditions onFail="MARK_RAN">
             <and>
                 <tableExists tableName="AD_CONFIG"/>
-                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'PAR_1'</sqlCheck>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where CODEDOC = 'PAR_1'</sqlCheck>
             </and>
         </preConditions>
         <comment>Максимальное количество адресов для распределения</comment>
@@ -55,12 +55,12 @@
         <preConditions onFail="MARK_RAN">
             <and>
                 <tableExists tableName="AD_CONFIG"/>
-                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'PAR_2'</sqlCheck>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where CODEDOC = 'PAR_2'</sqlCheck>
             </and>
         </preConditions>
         <comment>Максимальное количество адресов для отмены распределения</comment>
         <insert tableName="AD_CONFIG">
-            <column name="CODE" value="max_addresses_for_allocation"/>
+            <column name="CODE" value="max_addresses_for_del_allocation"/>
             <column name="CODEDOC" value="PAR_2"/>
             <column name="DESCRIPTION" value="Максимальное количество адресов для отмены распределения"/>
             <column name="TYPE" value="1" />
@@ -78,7 +78,7 @@
         <preConditions onFail="MARK_RAN">
             <and>
                 <tableExists tableName="AD_CONFIG"/>
-                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'PAR_3'</sqlCheck>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where CODEDOC = 'PAR_3'</sqlCheck>
             </and>
         </preConditions>
         <comment>Максимальное количество адресов для распределения</comment>

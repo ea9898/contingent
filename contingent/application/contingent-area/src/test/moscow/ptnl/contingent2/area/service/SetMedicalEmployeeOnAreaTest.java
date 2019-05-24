@@ -2,7 +2,7 @@ package moscow.ptnl.contingent2.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -27,7 +27,7 @@ public class SetMedicalEmployeeOnAreaTest {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(SetMedicalEmployeeOnAreaTest.class);
     private static AreaServiceInternalImpl areaServiceInternal = new AreaServiceInternalImpl();
     private Specialization specialization;
-    private AreaTypes areaType;
+    private AreaType areaType;
     private Area area;
     private PositionNomClinic position;
     private AreaMedicalEmployee employee1, employee2, employee3, employee4, employee5, employee6, employee7, employee8, employee9;
@@ -38,7 +38,7 @@ public class SetMedicalEmployeeOnAreaTest {
     @Before
     public void init() {
         specialization = new Specialization(5L, "Хирургия", false);
-        areaType = new AreaTypes(3L, "школьный", false, specialization);
+        areaType = new AreaType(3L, "школьный", false, specialization);
         area = new Area(1L, 1L, areaType, false, LocalDateTime.now());
         position = new PositionNomClinic(7L, "1", "врач-хирург", "категория", null, LocalDate.now(), null, "test", "test", "test", "test", false);
         employee1 = new AreaMedicalEmployee(1L,1L, area, true, LocalDate.of(2019, 1, 10), null, "123", position, LocalDateTime.now(), null, 1L);

@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.area.repository.area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress_;
 import moscow.ptnl.contingent.area.entity.area.Area_;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes_;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
 import moscow.ptnl.contingent.area.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,7 +27,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
         criteria.where(
                 criteriaBuilder.and(
                         criteriaBuilder.equal(address.get(AreaAddress_.area.getName()).get(Area_.moId.getName()), moId),
-                        criteriaBuilder.equal(address.get(AreaAddress_.area.getName()).get(Area_.areaType.getName()).get(AreaTypes_.code.getName()), areaTypeCode),
+                        criteriaBuilder.equal(address.get(AreaAddress_.area.getName()).get(Area_.areaType.getName()).get(AreaType_.code.getName()), areaTypeCode),
                         criteriaBuilder.or(
                                 criteriaBuilder.greaterThanOrEqualTo(address.get(AreaAddress_.endDate.getName()), LocalDate.now()),
                                 address.get(AreaAddress_.endDate.getName()).isNull()

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,11 +34,11 @@ public class MoAddress implements Serializable {
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypes areaType;
+    private AreaType areaType;
 
     @JoinColumn(name = "ORDER_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AddressAllocationOrder addressAllocationOrder;
+    private AddressAllocationOrders addressAllocationOrder;
 
     @Column(name = "START_DATE")
     private LocalDate startDate;
@@ -48,7 +48,7 @@ public class MoAddress implements Serializable {
 
     @JoinColumn(name = "REJECT_ORDER_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AddressAllocationOrder addressRejectOrder;
+    private AddressAllocationOrders addressRejectOrder;
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
@@ -76,19 +76,19 @@ public class MoAddress implements Serializable {
         this.moId = moId;
     }
 
-    public AreaTypes getAreaType() {
+    public AreaType getAreaType() {
         return areaType;
     }
 
-    public void setAreaType(AreaTypes areaType) {
+    public void setAreaType(AreaType areaType) {
         this.areaType = areaType;
     }
 
-    public AddressAllocationOrder getAddressAllocationOrder() {
+    public AddressAllocationOrders getAddressAllocationOrder() {
         return addressAllocationOrder;
     }
 
-    public void setAddressAllocationOrder(AddressAllocationOrder addressAllocationOrder) {
+    public void setAddressAllocationOrder(AddressAllocationOrders addressAllocationOrder) {
         this.addressAllocationOrder = addressAllocationOrder;
     }
 
@@ -108,11 +108,11 @@ public class MoAddress implements Serializable {
         this.endDate = endDate;
     }
 
-    public AddressAllocationOrder getAddressRejectOrder() {
+    public AddressAllocationOrders getAddressRejectOrder() {
         return addressRejectOrder;
     }
 
-    public void setAddressRejectOrder(AddressAllocationOrder addressRejectOrder) {
+    public void setAddressRejectOrder(AddressAllocationOrders addressRejectOrder) {
         this.addressRejectOrder = addressRejectOrder;
     }
 

@@ -19,7 +19,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "ADDRESS_ALLOCATION_ORDER")
 @SequenceGenerator(name = "SEQ_ADDRESS_ALLOCATION_ORDER", sequenceName = "SEQ_ADDRESS_ALLOCATION_ORDER", allocationSize=1)
-public class AddressAllocationOrder implements Serializable {
+public class AddressAllocationOrders implements Serializable {
 
     private static final long serialVersionUID = -8116611274341177299L;
 
@@ -35,6 +35,10 @@ public class AddressAllocationOrder implements Serializable {
     @Size(max = 255)
     @Column(name = "NAME")
     private String name;
+
+    @Size(max = 300)
+    @Column(name = "OUZ")
+    private String ouz;
 
     @Column(name = "DATE")
     private LocalDate date;
@@ -104,13 +108,21 @@ public class AddressAllocationOrder implements Serializable {
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
     }
-    
+
+    public String getOuz() {
+        return ouz;
+    }
+
+    public void setOuz(String ouz) {
+        this.ouz = ouz;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AddressAllocationOrder) {
-            return ((AddressAllocationOrder) obj).getId().equals(this.id);
+        if (obj != null && obj instanceof AddressAllocationOrders) {
+            return ((AddressAllocationOrders) obj).getId().equals(this.id);
         }
         return false;
     }

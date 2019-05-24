@@ -12,7 +12,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "CLASS_AREA_TYPES")
 @Cacheable
-public class ClassAreaTypes implements Serializable {
+public class AreaTypesClass implements Serializable {
 
     private static final long serialVersionUID = 4979698890748802824L;
 
@@ -49,8 +49,8 @@ public class ClassAreaTypes implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof ClassAreaTypes) {
-            return ((ClassAreaTypes) obj).getCode().equals(this.code);
+        if (obj != null && obj instanceof AreaTypesClass) {
+            return ((AreaTypesClass) obj).getCode().equals(this.code);
         }
         return false;
     }

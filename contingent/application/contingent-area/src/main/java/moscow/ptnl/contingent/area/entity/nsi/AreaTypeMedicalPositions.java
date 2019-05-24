@@ -24,7 +24,7 @@ public class AreaTypeMedicalPositions implements Serializable {
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypes areaType;
+    private AreaType areaType;
 
     @JoinColumn(name = "POSITION_NOM_ID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,11 +38,11 @@ public class AreaTypeMedicalPositions implements Serializable {
         this.id = id;
     }
 
-    public AreaTypes getAreaType() {
+    public AreaType getAreaType() {
         return areaType;
     }
 
-    public void setAreaType(AreaTypes areaType) {
+    public void setAreaType(AreaType areaType) {
         this.areaType = areaType;
     }
 

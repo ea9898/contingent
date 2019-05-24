@@ -45,11 +45,12 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.e
         }
         if (!entityObject.getPrimaryAreaTypes().isEmpty()) {
             Area.PrimaryAreaTypeCodes areaTypeCodes = new Area.PrimaryAreaTypeCodes();
-            areaTypeCodes.getAreaTypes().addAll(entityObject.getPrimaryAreaTypes().stream()
-                    .map(AreaToAreaType::getMuProfile)
-                    .map(MuProfile::getAreaType)
-                    .map(areaTypeShortMapper::entityToDtoTransform)
-                    .collect(Collectors.toList()));
+            // TODO Изменить в соответствии с задачей
+//            areaTypeCodes.getAreaTypes().addAll(entityObject.getPrimaryAreaTypes().stream()
+//                    .map(AreaToAreaType::getMuProfile)
+//                    .map(MuProfile::getAreaType)
+//                    .map(areaTypeShortMapper::entityToDtoTransform)
+//                    .collect(Collectors.toList()));
             area.setPrimaryAreaTypeCodes(areaTypeCodes);
         }
         return area;

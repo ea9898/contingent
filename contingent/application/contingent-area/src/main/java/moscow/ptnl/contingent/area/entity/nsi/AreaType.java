@@ -17,9 +17,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "AREA_TYPES")
+@Table(name = "AREA_TYPE")
 @Cacheable
-public class AreaTypes implements Serializable {
+public class AreaType implements Serializable {
 
     private static final long serialVersionUID = -1047920239396677745L;
 
@@ -33,11 +33,11 @@ public class AreaTypes implements Serializable {
 
     @JoinColumn(name = "KIND_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private KindAreaTypes kindAreaType;
+    private AreaTypesKind kindAreaType;
 
     @JoinColumn(name = "CLASS_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ClassAreaTypes classAreaType;
+    private AreaTypesClass classAreaType;
 
     @Size(max = 1)
     @Column(name = "GENDER")
@@ -72,10 +72,10 @@ public class AreaTypes implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "areaType")
     private PrimaryAreaTypeAttributes attributes;
 
-    public AreaTypes() {
+    public AreaType() {
     }
 
-    public AreaTypes(Long code, String name, Boolean archived, Specialization specialization) {
+    public AreaType(Long code, String name, Boolean archived, Specialization specialization) {
         this.code = code;
         this.name = name;
         this.archived = archived;
@@ -98,19 +98,19 @@ public class AreaTypes implements Serializable {
         this.name = name;
     }
 
-    public KindAreaTypes getKindAreaType() {
+    public AreaTypesKind getKindAreaType() {
         return kindAreaType;
     }
 
-    public void setKindAreaType(KindAreaTypes kindAreaType) {
+    public void setKindAreaType(AreaTypesKind kindAreaType) {
         this.kindAreaType = kindAreaType;
     }
 
-    public ClassAreaTypes getClassAreaType() {
+    public AreaTypesClass getClassAreaType() {
         return classAreaType;
     }
 
-    public void setClassAreaType(ClassAreaTypes classAreaType) {
+    public void setClassAreaType(AreaTypesClass classAreaType) {
         this.classAreaType = classAreaType;
     }
 
@@ -203,8 +203,8 @@ public class AreaTypes implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AreaTypes) {
-            return ((AreaTypes) obj).getCode().equals(this.code);
+        if (obj != null && obj instanceof AreaType) {
+            return ((AreaType) obj).getCode().equals(this.code);
         }
         return false;
     }

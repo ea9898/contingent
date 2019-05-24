@@ -28,7 +28,7 @@ public class PrimaryAreaTypeAttributes implements Serializable {
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @OneToOne(fetch = FetchType.LAZY)
-    private AreaTypes areaType;
+    private AreaType areaType;
 
     @Column(name = "HEAD_FINANCE")
     @Convert(converter = BooleanIntegerConverter.class)
@@ -65,11 +65,11 @@ public class PrimaryAreaTypeAttributes implements Serializable {
         this.id = id;
     }
 
-    public AreaTypes getAreaType() {
+    public AreaType getAreaType() {
         return areaType;
     }
 
-    public void setAreaType(AreaTypes areaType) {
+    public void setAreaType(AreaType areaType) {
         this.areaType = areaType;
     }
 

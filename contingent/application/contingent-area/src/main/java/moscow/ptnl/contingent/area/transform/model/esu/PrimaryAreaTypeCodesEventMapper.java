@@ -16,9 +16,10 @@ public class PrimaryAreaTypeCodesEventMapper implements Transform<PrimaryAreaTyp
             return null;
         }
         PrimaryAreaTypeCodesEvent codes = new PrimaryAreaTypeCodesEvent();
-        entityObject.stream()
-                .filter(e -> e.getMuProfile().getAreaType() != null)
-                .forEach(e -> codes.getPrimaryAreaTypeCode().add(e.getMuProfile().getAreaType().getCode()));
+        // TODO изменить в соотвествии с задачей
+//        entityObject.stream()
+//                .filter(e -> e.getMuProfile().getAreaType() != null)
+//                .forEach(e -> codes.getPrimaryAreaTypeCode().add(e.getMuProfile().getAreaType().getCode()));
 
         return codes;
     }

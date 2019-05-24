@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
@@ -111,8 +110,8 @@ public class AreaAddressChecker {
             wrapper.address = a.getAddress();
 
             if (AddressLevelType.ID.getLevel().equals(a.getAddress().getLevel())) {
-                wrapper.registryBuilding = a.getAddress().getRegistryBuilding();
-                wrapper.addressFormingElement = a.getAddress().getRegistryBuilding().getAddressFormingElement();
+                wrapper.buildingRegistry = a.getAddress().getBuildingRegistry();
+                wrapper.addressFormingElement = a.getAddress().getBuildingRegistry().getAddressFormingElement();
             }
             else {
                 wrapper.addressFormingElement = a.getAddress().getAddressFormingElement();
@@ -174,15 +173,15 @@ public class AreaAddressChecker {
 
                     if (a.nsiAddress.getLevelAddress() == AddressLevelType.ID.getLevel()) {
                         found = existingAddresses.stream()
-                                .filter(b -> b.registryBuilding != null)
-                                .filter(b -> Objects.equals(b.registryBuilding.getGlobalId(), a.nsiAddress.getGlobalId()))
+                                .filter(b -> b.buildingRegistry != null)
+                                .filter(b -> Objects.equals(b.buildingRegistry.getGlobalId(), a.nsiAddress.getGlobalId()))
                                 .map(AddressWrapper::new)
                                 .collect(Collectors.toList());
 
                         if (found.isEmpty()) {
                             found = findCrossedAddressesByFields(existingAddresses, null,
                                     AddressLevelType.find(a.nsiAddress.getLevelAddress()),
-                                    a.registryBuilding.getAddressFormingElement());
+                                    a.buildingRegistry.getAddressFormingElement());
                         }
                     }
                     else if (simpleCheck.contains(AddressLevelType.find(a.nsiAddress.getLevelAddress()))) {
@@ -204,18 +203,18 @@ public class AreaAddressChecker {
                 .filter(a -> a.notNsiAddress != null)
                 .forEach(a -> {
                     List<AddressWrapper> found = existingAddresses.stream()
-                            .filter(b -> b.registryBuilding != null)
-                            .filter(b -> Objects.equals(b.registryBuilding.getAddrId(), a.notNsiAddress.getParentId()) &&
-                                    Objects.equals(b.registryBuilding.getL1Value(), a.notNsiAddress.getHouse()) &&
-                                    Objects.equals(b.registryBuilding.getL2Value(), a.notNsiAddress.getBuilding()) &&
-                                    Objects.equals(b.registryBuilding.getL3Value(), a.notNsiAddress.getConstruction()))
+                            .filter(b -> b.buildingRegistry != null)
+                            .filter(b -> Objects.equals(b.buildingRegistry.getAddrId(), a.notNsiAddress.getParentId()) &&
+                                    Objects.equals(b.buildingRegistry.getL1Value(), a.notNsiAddress.getHouse()) &&
+                                    Objects.equals(b.buildingRegistry.getL2Value(), a.notNsiAddress.getBuilding()) &&
+                                    Objects.equals(b.buildingRegistry.getL3Value(), a.notNsiAddress.getConstruction()))
                             .map(AddressWrapper::new)
                             .collect(Collectors.toList());
 
                     if (found.isEmpty()) {
                         found = existingAddresses.stream()
-                                .filter(b -> b.registryBuilding != null)
-                                .filter(b -> Objects.equals(b.registryBuilding.getGlobalId(), a.notNsiAddress.getParentId()) &&
+                                .filter(b -> b.buildingRegistry != null)
+                                .filter(b -> Objects.equals(b.buildingRegistry.getGlobalId(), a.notNsiAddress.getParentId()) &&
                                         Objects.equals(b.address.getLevel(), a.notNsiAddress.getLevelParentId()))
                                 .map(AddressWrapper::new)
                                 .collect(Collectors.toList());

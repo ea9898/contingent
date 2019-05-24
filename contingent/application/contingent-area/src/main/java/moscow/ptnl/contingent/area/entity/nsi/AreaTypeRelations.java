@@ -22,30 +22,30 @@ public class AreaTypeRelations implements Serializable {
     @Id
     @JoinColumn(name = "DEPENDENT_AREA_TYPE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypes dependentAreaType;
+    private AreaType dependentAreaType;
 
     @Id
     @JoinColumn(name = "PRIMARY_AREA_TYPE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypes primaryAreaType;
+    private AreaType primaryAreaType;
     
     public Key getKey() {
         return new Key(dependentAreaType, primaryAreaType);
     }
 
-    public AreaTypes getDependentAreaType() {
+    public AreaType getDependentAreaType() {
         return dependentAreaType;
     }
 
-    public void setDependentAreaType(AreaTypes dependentAreaType) {
+    public void setDependentAreaType(AreaType dependentAreaType) {
         this.dependentAreaType = dependentAreaType;
     }
 
-    public AreaTypes getPrimaryAreaType() {
+    public AreaType getPrimaryAreaType() {
         return primaryAreaType;
     }
 
-    public void setPrimaryAreaType(AreaTypes primaryAreaType) {
+    public void setPrimaryAreaType(AreaType primaryAreaType) {
         this.primaryAreaType = primaryAreaType;
     }
 
@@ -69,29 +69,29 @@ public class AreaTypeRelations implements Serializable {
      */
     public static class Key implements Serializable {
         
-        private AreaTypes dependentAreaType;
-        private AreaTypes primaryAreaType;
+        private AreaType dependentAreaType;
+        private AreaType primaryAreaType;
         
         public Key() {}
         
-        public Key(AreaTypes dependentAreaType, AreaTypes primaryAreaType) {
+        public Key(AreaType dependentAreaType, AreaType primaryAreaType) {
             this.dependentAreaType = dependentAreaType;
             this.primaryAreaType = primaryAreaType;
         }
 
-        public AreaTypes getDependentAreaType() {
+        public AreaType getDependentAreaType() {
             return dependentAreaType;
         }
 
-        public void setDependentAreaType(AreaTypes dependentAreaType) {
+        public void setDependentAreaType(AreaType dependentAreaType) {
             this.dependentAreaType = dependentAreaType;
         }
 
-        public AreaTypes getPrimaryAreaType() {
+        public AreaType getPrimaryAreaType() {
             return primaryAreaType;
         }
 
-        public void setPrimaryAreaType(AreaTypes primaryAreaType) {
+        public void setPrimaryAreaType(AreaType primaryAreaType) {
             this.primaryAreaType = primaryAreaType;
         }
 
