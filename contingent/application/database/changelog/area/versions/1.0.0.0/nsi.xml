@@ -132,6 +132,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-57-5-U" author="ddryuchin" labels="1.0.0.0">
+        <renameColumn
+                columnDataType="NUMBER(1)"
+                newColumnName="ARCHIVE"
+                oldColumnName="ARCHIVED"
+                tableName="SPECIALIZATION"/>
+    </changeSet>
+
     <changeSet id="CONTINGENT2-57-6" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -162,6 +170,14 @@
         <rollback>
             <dropTable tableName="AREA_TYPE"/>
         </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-57-16-U" author="ddryuchin" labels="1.0.0.0">
+        <renameColumn
+                columnDataType="NUMBER(1)"
+                newColumnName="ARCHIVE"
+                oldColumnName="ARCHIVED"
+                tableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-6-1" author="sorlov" labels="1.0.0.0">
@@ -290,6 +306,14 @@
         <rollback>
             <dropTable tableName="POSITION_NOM_CLINIC"/>
         </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-57-8-U" author="ddryuchin" labels="1.0.0.0">
+        <renameColumn
+                columnDataType="NUMBER(1)"
+                newColumnName="ARCHIVE"
+                oldColumnName="ARCHIVED"
+                tableName="POSITION_NOM_CLINIC"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-8" author="sorlov" labels="1.0.0.0">
@@ -650,6 +674,15 @@
             <dropTable tableName="SPECIALIZATION_TO_POSITION_NOM"/>
         </rollback>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-57-17-U" author="ddryuchin" labels="1.0.0.0">
+        <renameColumn
+                columnDataType="NUMBER(1)"
+                newColumnName="ARCHIVE"
+                oldColumnName="ARCHIVED"
+                tableName="SPECIALIZATION_TO_POSITION_NOM"/>
+    </changeSet>
+
 
     <changeSet id="CONTINGENT2-57-14-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">

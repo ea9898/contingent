@@ -12,6 +12,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
+import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -36,13 +37,13 @@ import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
-import moscow.ptnl.contingent.area.repository.area.MuProfileCRUDRepository;
-import moscow.ptnl.contingent.area.repository.area.MuProfileRepository;
+import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.area.repository.nsi.MuProfileTemplatesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.MUTypeAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
 import moscow.ptnl.contingent.area.repository.nsi.RegistryBuildingCRUDRepository;
@@ -68,6 +69,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -76,13 +78,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private static final Integer NOT_NSI_ADDRESS_LEVEL = 8;
 
     @Autowired
-    private MuProfileRepository muProfileRepository;
+    private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
 
     @Autowired
-    private MuProfileCRUDRepository muProfileCRUDRepository;
+    private MuAddlAreaTypesCRUDRepository muAddlAreaTypesCRUDRepository;
 
     @Autowired
-    private MuProfileTemplatesRepository muProfileTemplatesRepository;
+    private MUTypeAreaTypesRepository muTypeAreaTypesRepository;
 
     @Autowired
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
@@ -166,8 +168,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private SettingService settingService;
 
     @Override
-    public List<MuAddlAreaTypes> getProfileMU(Long muId) throws ContingentException {
-        return muProfileRepository.getMuProfilesByMuId(muId);
+    public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
+        Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuProfileTemplates(muTypeId, new ArrayList<>(), true).stream()
+                .map(MUTypeAreaTypes::getAreaType)
+                .collect(Collectors.toSet());
+        areaTypes.addAll(muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
+                .map(MuAddlAreaTypes::getAreaType)
+                .collect(Collectors.toSet())
+        );
+        return new ArrayList<>(areaTypes);
     }
 
     /**
@@ -175,7 +184,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
      * @param muId
      * @param muTypeId
      * @param areaTypeCodes
-     * @return
      * @throws ContingentException
      */
     @Override
@@ -188,13 +196,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        areaChecker.checkProfileExist(muId, areaTypeCodes, validation);
+        areaChecker.checkMuAddlAreaTypeExist(muId, areaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        areaChecker.checkMuProfileCreateAvailableByMuType(muTypeId, areaTypeCodes, validation);
+        areaChecker.checkMuTypeAreaTypeCreateAvailable(muTypeId, areaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -203,7 +211,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         for (Long areaTypeCode : areaTypeCodes) {
             AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
             MuAddlAreaTypes muAddlAreaTypes = new MuAddlAreaTypes(muId, areaType);
-            muProfileCRUDRepository.save(muAddlAreaTypes);
+            muAddlAreaTypesCRUDRepository.save(muAddlAreaTypes);
         }
 
         return;
@@ -225,14 +233,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId);
+        List<MuAddlAreaTypes> muAddlAreaTypes = muAddlAreaTypesRepository.getMuAddlAreaTypes(muId);
         List<MuAddlAreaTypes> profilesToDelete = muAddlAreaTypes.stream()
                 .filter(m -> m.getAreaType() != null
                         && areaTypeCodes.contains(m.getAreaType().getCode()))
                 .collect(Collectors.toList());
 
         if (!profilesToDelete.isEmpty()) {
-            muProfileCRUDRepository.deleteAll(profilesToDelete);
+            muAddlAreaTypesCRUDRepository.deleteAll(profilesToDelete);
         }
 
     }
@@ -245,7 +253,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
 
-        MuAddlAreaTypes muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId).stream()
+        MuAddlAreaTypes muAddlAreaTypes = muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
                 .filter(p -> p.getAreaType() != null && Objects.equals(p.getAreaType().getCode(), areaTypeCode))
                 .findFirst().orElse(null);
 
@@ -485,10 +493,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         AddressAllocationOrders order = new AddressAllocationOrders();
         order.setCreateDate(LocalDateTime.now());
         order.setUpdateDate(LocalDateTime.now());
-        order.setArchived(false);
+        order.setArchive(false);
         order.setNumber(number);
         order.setDate(date);
-//        order.setOuz(ouz);
+        order.setOuz(ouz);
         order.setName(name);
 
         return addressAllocationOrderCRUDRepository.save(order).getId();
@@ -504,7 +512,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     new ValidationParameter("id", id));
             throw new ContingentException(validation);
         }
-        if (Boolean.TRUE.equals(order.getArchived())) {
+        if (Boolean.TRUE.equals(order.getArchive())) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
                     new ValidationParameter("id", id));
         }
@@ -560,7 +568,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        area.setArchived(false);
+        area.setArchive(false);
         area.setAutoAssignForAttach(false);
     }
 
@@ -585,7 +593,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId))));
 
         //2
-        if (area.getArchived()) {
+        if (area.getArchive()) {
             throw new ContingentException(validation.error(
                     AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId)));
         }
@@ -741,7 +749,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
-        if (order == null || Boolean.TRUE.equals(order.getArchived())) {
+        if (order == null || Boolean.TRUE.equals(order.getArchive())) {
             throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
                     new ValidationParameter("orderId", orderId));
         }

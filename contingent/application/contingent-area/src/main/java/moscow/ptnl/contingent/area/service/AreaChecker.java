@@ -14,9 +14,9 @@ import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRep
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
-import moscow.ptnl.contingent.area.repository.area.MuProfileRepository;
+import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.area.repository.nsi.MuProfileTemplatesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.MUTypeAreaTypesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,10 +36,10 @@ public class AreaChecker {
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Autowired
-    private MuProfileTemplatesRepository muProfileTemplatesRepository;
+    private MUTypeAreaTypesRepository MUTypeAreaTypesRepository;
 
     @Autowired
-    private MuProfileRepository muProfileRepository;
+    private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
 
     @Autowired
     private AreaRepository areaRepository;
@@ -60,7 +60,7 @@ public class AreaChecker {
         areaTypes.forEach(a -> {
             Optional<AreaType> areaType = areaTypesCRUDRepository.findById(a);
 
-            if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchived())) {
+            if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchive())) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter(parameterCode, a));
             }
         });
@@ -71,8 +71,8 @@ public class AreaChecker {
    •	ИД МУ (MU_ID) = input ИД МУ;
    •	ИД типа участка (AREA_TYPE_CODE) = input ИД типа участка.
    Иначе возвращает ошибку */
-    public void checkProfileExist(Long muId, List<Long> areaTypes, Validation validation) {
-        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.findMuProfilesByMuIdAndAreaTypes(muId, areaTypes);
+    public void checkMuAddlAreaTypeExist(Long muId, List<Long> areaTypes, Validation validation) {
+        List<MuAddlAreaTypes> muAddlAreaTypes = muAddlAreaTypesRepository.findMuAddlAreaTypes(muId, areaTypes);
 
         if (muAddlAreaTypes != null && !muAddlAreaTypes.isEmpty()) {
             for (MuAddlAreaTypes muAddlAreaType : muAddlAreaTypes) {
@@ -88,8 +88,8 @@ public class AreaChecker {
     •	ИД типа участка (AREA_TYPE_CODE) = ИД типа участка;
     •	Допустимость создания (AVAILABLE_TO_CREATE) = «Возможно» .
     Если запись с типом участка не найдена или AVAILABLE_TO_CREATE <> «Возможно» , то Система возвращает ошибку */
-    public void checkMuProfileCreateAvailableByMuType(Long muTypeId, List<Long> areaTypes, Validation validation) {
-        List<MUTypeAreaTypes> templates = muProfileTemplatesRepository.findMuProfileTemplates(muTypeId, areaTypes);
+    public void checkMuTypeAreaTypeCreateAvailable(Long muTypeId, List<Long> areaTypes, Validation validation) {
+        List<MUTypeAreaTypes> templates = MUTypeAreaTypesRepository.findMuProfileTemplates(muTypeId, areaTypes, true);
 
         if (templates != null && !templates.isEmpty()) {
             templates.forEach(temp -> {
@@ -103,7 +103,7 @@ public class AreaChecker {
 
     /* Система проверяет наличие в профиле МУ переданных типов участка. */
     public void checkMuProfilesHasAreaTypes(Long muId, List<Long> areaTypes, Validation validation) {
-        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId);
+        List<MuAddlAreaTypes> muAddlAreaTypes = muAddlAreaTypesRepository.getMuAddlAreaTypes(muId);
 
         List<Long> areaTypesProfiles = muAddlAreaTypes.stream().map(MuAddlAreaTypes::getAreaType).map(AreaType::getCode).collect(Collectors.toList());
         List<Long> areaTypesDiff =
@@ -161,7 +161,7 @@ public class AreaChecker {
     }
 
     public Map<Long, AreaType> checkAndGetPrimaryAreaTypesInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
-        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId);
+        List<MuAddlAreaTypes> muAddlAreaTypes = muAddlAreaTypesRepository.getMuAddlAreaTypes(muId);
         Map<Long, AreaType> primaryAreaTypes = muAddlAreaTypes.stream()
                 .filter(p -> p.getAreaType() != null)
                 .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuAddlAreaTypes::getAreaType));
@@ -195,7 +195,7 @@ public class AreaChecker {
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
         }
-        else if (area.getArchived()) {
+        else if (area.getArchive()) {
             validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;
@@ -207,7 +207,7 @@ public class AreaChecker {
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
         }
-        else if (!area.getArchived()) {
+        else if (!area.getArchive()) {
             validation.error(AreaErrorReason.AREA_IS_NOT_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;
@@ -243,7 +243,7 @@ public class AreaChecker {
     public void checkOrderExists(long orderId, Validation validation) {
         Optional<AddressAllocationOrders> order = addressAllocationOrderCRUDRepository.findById(orderId);
 
-        if (!order.isPresent() || Boolean.TRUE.equals(order.get().getArchived())) {
+        if (!order.isPresent() || Boolean.TRUE.equals(order.get().getArchive())) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS, new ValidationParameter("orderId", orderId));
         }
     }

@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
@@ -105,10 +106,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
         try {
-            List<MuAddlAreaTypes> profiles = areaService.getProfileMU(body.getMuId());
+            List<AreaType> profiles = areaService.getProfileMU(body.getMuId(), body.getMuTypeId());
             GetProfileMUResponse response = new GetProfileMUResponse();
             response.getProfileAreaTypes().addAll(profiles.stream()
-                    .map(soapCustomMapper::mapMuProfileToAreaTypeShort).collect(Collectors.toList()));
+                    .map(areaTypeShortMapper::entityToDtoTransform).collect(Collectors.toList()));
 
             return response;
         }
@@ -122,7 +123,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             areaService.addProfileMU(body.getMuId(), body.getMuTypeId(), body.getAreaTypeCodes());
             return new AddProfileMUResponse();
-        } catch (ContingentException ex) {
+        } catch (Exception ex) {
             throw mapException(ex);
         }
     }
@@ -132,7 +133,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             areaService.delProfileMU(body.getMuId(), body.getAreaTypeCodes());
             return new DelProfileMUResponse();
-        } catch (ContingentException ex) {
+        } catch (Exception ex) {
             throw mapException(ex);
         }
     }

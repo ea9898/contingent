@@ -8,5 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
-public interface MUProfileTemplatesCRUDRepository extends CommonRepository<MUTypeAreaTypes, Long> {
+public interface MUTypeAreaTypesCRUDRepository extends CommonRepository<MUTypeAreaTypes, Long> {
 }

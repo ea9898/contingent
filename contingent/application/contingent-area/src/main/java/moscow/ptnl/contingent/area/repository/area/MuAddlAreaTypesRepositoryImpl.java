@@ -14,10 +14,10 @@ import java.util.List;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
-public class MuProfileRepositoryImpl extends BaseRepository implements MuProfileRepository {
+public class MuAddlAreaTypesRepositoryImpl extends BaseRepository implements MuAddlAreaTypesRepository {
 
     @Override
-    public List<MuAddlAreaTypes> getMuProfilesByMuId(long muId) {
+    public List<MuAddlAreaTypes> getMuAddlAreaTypes(long muId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<MuAddlAreaTypes> criteria = criteriaBuilder.createQuery(MuAddlAreaTypes.class);
         Root<MuAddlAreaTypes> profile = criteria.from(MuAddlAreaTypes.class);
@@ -27,7 +27,7 @@ public class MuProfileRepositoryImpl extends BaseRepository implements MuProfile
     }
 
     @Override
-    public List<MuAddlAreaTypes> findMuProfilesByMuIdAndAreaTypes(long muId, List<Long> areaTypes) {
+    public List<MuAddlAreaTypes> findMuAddlAreaTypes(long muId, List<Long> areaTypes) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<MuAddlAreaTypes> criteria = criteriaBuilder.createQuery(MuAddlAreaTypes.class);
         Root<MuAddlAreaTypes> profile = criteria.from(MuAddlAreaTypes.class);
