@@ -6,9 +6,9 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.util.List;
 
 @NoRepositoryBean
-public interface MuProfileTemplatesRepository {
+public interface MUTypeAreaTypesRepository {
 
 	MUTypeAreaTypes findMuProfileTemplate(int muTypeId, Long areaTypeCode);
 
-    List<MUTypeAreaTypes> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes);
+    List<MUTypeAreaTypes> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes, Boolean availableToCreate);
 }

@@ -2,8 +2,8 @@ package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface AreaServiceInternal {
 
-    List<MuAddlAreaTypes> getProfileMU(Long muId) throws ContingentException;
+    List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException;
 
     void addProfileMU(Long muId, Long muTypeId, List<Long> areaTypeCodes) throws ContingentException;
 

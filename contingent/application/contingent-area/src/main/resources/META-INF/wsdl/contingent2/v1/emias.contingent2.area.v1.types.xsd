@@ -31,6 +31,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="muId" type="xs:long" />
+                <xs:element name="muTypeId" type="xs:long" />
                 <xs:element name="options" type="core:Options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>

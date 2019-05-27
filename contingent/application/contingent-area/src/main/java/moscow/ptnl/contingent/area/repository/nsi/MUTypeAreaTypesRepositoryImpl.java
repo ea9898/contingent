@@ -15,7 +15,7 @@ import java.util.List;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
-public class MuProfileTemplatesRepositoryImpl extends BaseRepository implements MuProfileTemplatesRepository {
+public class MUTypeAreaTypesRepositoryImpl extends BaseRepository implements MUTypeAreaTypesRepository {
 
     @Override
     public MUTypeAreaTypes findMuProfileTemplate(int muTypeId, Long areaTypeCode) {
@@ -34,19 +34,21 @@ public class MuProfileTemplatesRepositoryImpl extends BaseRepository implements 
     }
 
     @Override
-    public List<MUTypeAreaTypes> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes) {
+    public List<MUTypeAreaTypes> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes, Boolean availableToCreate) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<MUTypeAreaTypes> criteria = criteriaBuilder.createQuery(MUTypeAreaTypes.class);
         Root<MUTypeAreaTypes> template = criteria.from(MUTypeAreaTypes.class);
         criteria.where(
                 criteriaBuilder.and(
                         criteriaBuilder.equal(template.get(MUTypeAreaTypes_.muTypeId.getName()), muTypeId),
-                        template.get(MUTypeAreaTypes_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes)
+                        areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
+                                template.get(MUTypeAreaTypes_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
+                        availableToCreate == null ? criteriaBuilder.conjunction() :
+                                criteriaBuilder.equal(template.get(MUTypeAreaTypes_.availableToCreate.getName()), availableToCreate)
                 )
         );
-        List<MUTypeAreaTypes> results = entityManager.createQuery(criteria).getResultList();
 
-        return results;
+        return entityManager.createQuery(criteria).getResultList();
     }
 
 

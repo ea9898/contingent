@@ -6,9 +6,9 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.util.List;
 
 @NoRepositoryBean
-public interface MuProfileRepository {
+public interface MuAddlAreaTypesRepository {
 
-	List<MuAddlAreaTypes> getMuProfilesByMuId(long muId);
+	List<MuAddlAreaTypes> getMuAddlAreaTypes(long muId);
 
-    List<MuAddlAreaTypes> findMuProfilesByMuIdAndAreaTypes(long muId, List<Long> areaTypes);
+    List<MuAddlAreaTypes> findMuAddlAreaTypes(long muId, List<Long> areaTypes);
 }
