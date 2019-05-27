@@ -130,7 +130,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public DelProfileMUResponse delProfileMU(DelProfileMURequest body) throws Fault {
         try {
-            areaService.delProfileMU(body.getMuId(), body.getMuTypeId(), body.getAreaTypeCodes());
+            areaService.delProfileMU(body.getMuId(), body.getAreaTypeCodes());
             return new DelProfileMUResponse();
         } catch (ContingentException ex) {
             throw mapException(ex);

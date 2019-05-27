@@ -210,7 +210,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public void delProfileMU(Long muId, Long muTypeId, List<Long> areaTypeCodes) throws ContingentException {
+    public void delProfileMU(Long muId, List<Long> areaTypeCodes) throws ContingentException {
         Validation validation = new Validation();
 
         areaChecker.checkMuProfilesHasAreaTypes(muId, areaTypeCodes, validation);
@@ -220,12 +220,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         areaChecker.checkMuActiveAreasNotExist(muId, areaTypeCodes, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        areaChecker.checkMuProfileCreateAvailableByMuType(muTypeId, areaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
