@@ -679,10 +679,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaMedicalEmployee> allEmployees = new ArrayList<>(areaEmployeesDb);
         applyChanges(allEmployees, changeEmployeesInput);
         addNew(allEmployees, addEmployeesInput, area);
-        allEmployees.sort(Comparator.comparing(
-                AreaMedicalEmployee::getMedicalEmployeeJobInfoId)
-                .thenComparing(AreaMedicalEmployee::getStartDate));
-        checkDatesNotInterceptWithSamePosition(allEmployees, areaId, validation);
+        checkDatesNotInterceptWithSamePosition(allEmployees, validation);
 
         //7.2
         List<AreaMedicalEmployee> mainEmployees =
@@ -899,17 +896,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     public void checkDatesNotInterceptWithSamePosition(List<AreaMedicalEmployee> allEmployees,
-                                                        long areaId, Validation validation) throws ContingentException {
+                                                       Validation validation) throws ContingentException {
         if (allEmployees.size() > 1) {
+            allEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getMedicalEmployeeJobInfoId)
+                    .thenComparing(AreaMedicalEmployee::getStartDate));
             for (int i = 0; i < allEmployees.size() - 1; i++) {
                 AreaMedicalEmployee current = allEmployees.get(i);
                 AreaMedicalEmployee next = allEmployees.get(i + 1);
                 if (current.getMedicalEmployeeJobInfoId() != null
                         && current.getMedicalEmployeeJobInfoId().equals(next.getMedicalEmployeeJobInfoId())
-                        && (current.getEndDate() == null || next.getStartDate().isBefore(current.getEndDate()))) {
+                        && (current.getEndDate() == null || next.getStartDate().isBefore(current.getEndDate().plusDays(1)))) {
                     validation.error(AreaErrorReason.JOB_ID_DATE_OVERLAP,
                             new ValidationParameter("jobInfoId", current.getMedicalEmployeeJobInfoId()),
-                            new ValidationParameter("areaId", areaId),
+                            new ValidationParameter("areaId", current.getArea().getId()),
                             new ValidationParameter("startDate1", current.getStartDate()),
                             new ValidationParameter("endDate1",
                                     current.getEndDate() != null ? current.getEndDate() : Period.MAX_DATE),
