@@ -16,14 +16,14 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "MU_PROFILES")
-@SequenceGenerator(name = "SEQ_MU_PROFILES", sequenceName = "SEQ_MU_PROFILES", allocationSize=1)
-public class MuProfile implements Serializable {
+@Table(name = "MU_ADDL_AREA_TYPES")
+@SequenceGenerator(name = "SEQ_MU_ADDL_AREA_TYPES", sequenceName = "SEQ_MU_ADDL_AREA_TYPES", allocationSize=1)
+public class MuAddlAreaTypes implements Serializable {
 
     private static final long serialVersionUID = 8725459806418462906L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_MU_PROFILES")
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_MU_ADDL_AREA_TYPES")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
@@ -34,9 +34,9 @@ public class MuProfile implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType areaType;
 
-    public MuProfile() {}
+    public MuAddlAreaTypes() {}
 
-    public MuProfile(Long muId, AreaType areaType) {
+    public MuAddlAreaTypes(Long muId, AreaType areaType) {
         this.muId = muId;
         this.areaType = areaType;
     }
@@ -69,8 +69,8 @@ public class MuProfile implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof MuProfile) {
-            return ((MuProfile) obj).getId().equals(this.id);
+        if (obj != null && obj instanceof MuAddlAreaTypes) {
+            return ((MuAddlAreaTypes) obj).getId().equals(this.id);
         }
         return false;
     }

@@ -444,11 +444,11 @@
     <changeSet id="CONTINGENT2-57-10" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="MU_PROFILE_TEMPLATES"/>
+                <tableExists tableName="MU_TYPE_AREA_TYPES"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы MU_PROFILE_TEMPLATES</comment>
-        <createTable tableName="MU_PROFILE_TEMPLATES"
+        <comment>Создание таблицы MU_TYPE_AREA_TYPES</comment>
+        <createTable tableName="MU_TYPE_AREA_TYPES"
                      remarks="Шаблон профиля МУ">
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
@@ -458,7 +458,7 @@
             <column name="AVAILABLE_TO_CREATE" type="NUMBER(1)" />
         </createTable>
         <rollback>
-            <dropTable tableName="MU_PROFILE_TEMPLATES"/>
+            <dropTable tableName="MU_TYPE_AREA_TYPES"/>
         </rollback>
     </changeSet>
 
@@ -468,9 +468,9 @@
                 <indexExists indexName="IXFK_MU_TEMPLATE_PR_AREA_01"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_PROFILE_TEMPLATES</comment>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_TYPE_AREA_TYPES</comment>
         <createIndex indexName="IXFK_MU_TEMPLATE_PR_AREA_01"
-                     tableName="MU_PROFILE_TEMPLATES"
+                     tableName="MU_TYPE_AREA_TYPES"
                      unique="false">
             <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
@@ -478,12 +478,12 @@
 
     <changeSet id="CONTINGENT2-57-10-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="MU_PROFILE_TEMPLATES" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="MU_TYPE_AREA_TYPES" columnName="AREA_TYPE_CODE" />
             <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_MU_TEMPLATE_PR_AREA_TYPE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
-                                 baseTableName="MU_PROFILE_TEMPLATES"
+                                 baseTableName="MU_TYPE_AREA_TYPES"
                                  constraintName="FK_MU_TEMPLATE_PR_AREA_TYPE"
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPE"/>

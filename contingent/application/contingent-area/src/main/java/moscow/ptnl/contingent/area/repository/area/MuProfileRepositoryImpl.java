@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.MuProfile;
-import moscow.ptnl.contingent.area.entity.area.MuProfile_;
+import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
+import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes_;
 import moscow.ptnl.contingent.area.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,24 +17,24 @@ import java.util.List;
 public class MuProfileRepositoryImpl extends BaseRepository implements MuProfileRepository {
 
     @Override
-    public List<MuProfile> getMuProfilesByMuId(long muId) {
+    public List<MuAddlAreaTypes> getMuProfilesByMuId(long muId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<MuProfile> criteria = criteriaBuilder.createQuery(MuProfile.class);
-        Root<MuProfile> profile = criteria.from(MuProfile.class);
-        criteria.where(criteriaBuilder.equal(profile.get(MuProfile_.muId.getName()), muId));
+        CriteriaQuery<MuAddlAreaTypes> criteria = criteriaBuilder.createQuery(MuAddlAreaTypes.class);
+        Root<MuAddlAreaTypes> profile = criteria.from(MuAddlAreaTypes.class);
+        criteria.where(criteriaBuilder.equal(profile.get(MuAddlAreaTypes_.muId.getName()), muId));
 
         return entityManager.createQuery(criteria).getResultList();
     }
 
     @Override
-    public List<MuProfile> findMuProfilesByMuIdAndAreaTypes(long muId, List<Long> areaTypes) {
+    public List<MuAddlAreaTypes> findMuProfilesByMuIdAndAreaTypes(long muId, List<Long> areaTypes) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<MuProfile> criteria = criteriaBuilder.createQuery(MuProfile.class);
-        Root<MuProfile> profile = criteria.from(MuProfile.class);
+        CriteriaQuery<MuAddlAreaTypes> criteria = criteriaBuilder.createQuery(MuAddlAreaTypes.class);
+        Root<MuAddlAreaTypes> profile = criteria.from(MuAddlAreaTypes.class);
         criteria.where(
             criteriaBuilder.and(
-                    criteriaBuilder.equal(profile.get(MuProfile_.muId.getName()), muId),
-                    profile.get(MuProfile_.areaType.getName()).in(areaTypes)
+                    criteriaBuilder.equal(profile.get(MuAddlAreaTypes_.muId.getName()), muId),
+                    profile.get(MuAddlAreaTypes_.areaType.getName()).in(areaTypes)
             )
         );
 

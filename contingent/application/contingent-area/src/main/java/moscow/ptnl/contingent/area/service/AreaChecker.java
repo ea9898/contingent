@@ -1,10 +1,10 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.MuProfile;
+import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
-import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates;
+import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
@@ -61,13 +61,13 @@ public class AreaChecker {
    •	ИД типа участка (AREA_TYPE_CODE) = input ИД типа участка.
    Иначе возвращает ошибку */
     public void checkProfileExist(Long muId, List<Long> areaTypes, Validation validation) {
-        List<MuProfile> muProfiles = muProfileRepository.findMuProfilesByMuIdAndAreaTypes(muId, areaTypes);
+        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.findMuProfilesByMuIdAndAreaTypes(muId, areaTypes);
 
-        if (muProfiles != null && !muProfiles.isEmpty()) {
-            for (MuProfile muProfile: muProfiles) {
+        if (muAddlAreaTypes != null && !muAddlAreaTypes.isEmpty()) {
+            for (MuAddlAreaTypes muAddlAreaType : muAddlAreaTypes) {
                 validation.error(AreaErrorReason.MU_PROFILE_EXISTS,
-                        new ValidationParameter("muId", muProfile.getMuId()),
-                        new ValidationParameter("areatype", muProfile.getAreaType().getName()));
+                        new ValidationParameter("muId", muAddlAreaType.getMuId()),
+                        new ValidationParameter("areatype", muAddlAreaType.getAreaType().getName()));
             }
         }
     }
@@ -78,7 +78,7 @@ public class AreaChecker {
     •	Допустимость создания (AVAILABLE_TO_CREATE) = «Возможно» .
     Если запись с типом участка не найдена или AVAILABLE_TO_CREATE <> «Возможно» , то Система возвращает ошибку */
     public void checkMuProfileCreateAvailableByMuType(Long muTypeId, List<Long> areaTypes, Validation validation) {
-        List<MUProfileTemplates> templates = muProfileTemplatesRepository.findMuProfileTemplates(muTypeId, areaTypes);
+        List<MUTypeAreaTypes> templates = muProfileTemplatesRepository.findMuProfileTemplates(muTypeId, areaTypes);
 
         if (templates != null && !templates.isEmpty()) {
             templates.forEach(temp -> {
@@ -92,9 +92,9 @@ public class AreaChecker {
 
     /* Система проверяет наличие в профиле МУ переданных типов участка. */
     public void checkMuProfilesHasAreaTypes(Long muId, List<Long> areaTypes, Validation validation) {
-        List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
+        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId);
 
-        List<Long> areaTypesProfiles = muProfiles.stream().map(MuProfile::getAreaType).map(AreaType::getCode).collect(Collectors.toList());
+        List<Long> areaTypesProfiles = muAddlAreaTypes.stream().map(MuAddlAreaTypes::getAreaType).map(AreaType::getCode).collect(Collectors.toList());
         List<Long> areaTypesDiff =
                 areaTypes.stream().filter(areaType -> !areaTypesProfiles.contains(areaType))
                 .collect(Collectors.toList());
@@ -150,10 +150,10 @@ public class AreaChecker {
     }
 
     public Map<Long, AreaType> checkAndGetPrimaryAreaTypesInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
-        List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
-        Map<Long, AreaType> primaryAreaTypes = muProfiles.stream()
+        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId);
+        Map<Long, AreaType> primaryAreaTypes = muAddlAreaTypes.stream()
                 .filter(p -> p.getAreaType() != null)
-                .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuProfile::getAreaType));
+                .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuAddlAreaTypes::getAreaType));
 
         primaryAreaTypeCodes.forEach(c -> {
             if (!primaryAreaTypes.keySet().contains(c)) {

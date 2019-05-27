@@ -15,9 +15,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "MU_PROFILE_TEMPLATES")
+@Table(name = "MU_TYPE_AREA_TYPES")
 @Cacheable
-public class MUProfileTemplates implements Serializable {
+public class MUTypeAreaTypes implements Serializable {
 
     private static final long serialVersionUID = -6543198512394189025L;
 
@@ -72,8 +72,8 @@ public class MUProfileTemplates implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof MUProfileTemplates) {
-            return ((MUProfileTemplates) obj).getId().equals(this.id);
+        if (obj != null && obj instanceof MUTypeAreaTypes) {
+            return ((MUTypeAreaTypes) obj).getId().equals(this.id);
         }
         return false;
     }

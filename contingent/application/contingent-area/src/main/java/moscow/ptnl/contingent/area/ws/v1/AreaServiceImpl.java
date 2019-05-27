@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.area.ws.v1;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.MuProfile;
+import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
@@ -89,7 +89,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
         try {
-            List<MuProfile> profiles = areaService.getProfileMU(body.getMuId());
+            List<MuAddlAreaTypes> profiles = areaService.getProfileMU(body.getMuId());
             GetProfileMUResponse response = new GetProfileMUResponse();
             response.getProfileAreaTypes().addAll(profiles.stream()
                     .map(soapCustomMapper::mapMuProfileToAreaTypeShort).collect(Collectors.toList()));

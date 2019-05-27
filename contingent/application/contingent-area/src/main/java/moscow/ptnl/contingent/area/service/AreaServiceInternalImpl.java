@@ -6,7 +6,7 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.area.entity.area.MuProfile;
+import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
@@ -153,7 +153,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private SettingService settingService;
 
     @Override
-    public List<MuProfile> getProfileMU(Long muId) throws ContingentException {
+    public List<MuAddlAreaTypes> getProfileMU(Long muId) throws ContingentException {
         return muProfileRepository.getMuProfilesByMuId(muId);
     }
 
@@ -189,8 +189,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         for (Long areaTypeCode : areaTypeCodes) {
             AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
-            MuProfile muProfile = new MuProfile(muId, areaType);
-            muProfileCRUDRepository.save(muProfile);
+            MuAddlAreaTypes muAddlAreaTypes = new MuAddlAreaTypes(muId, areaType);
+            muProfileCRUDRepository.save(muAddlAreaTypes);
         }
 
         return;
@@ -218,8 +218,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
-        List<MuProfile> profilesToDelete = muProfiles.stream()
+        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId);
+        List<MuAddlAreaTypes> profilesToDelete = muAddlAreaTypes.stream()
                 .filter(m -> m.getAreaType() != null
                         && areaTypeCodes.contains(m.getAreaType().getCode()))
                 .collect(Collectors.toList());
@@ -238,28 +238,28 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
 
-        MuProfile muProfile = muProfileRepository.getMuProfilesByMuId(muId).stream()
+        MuAddlAreaTypes muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId).stream()
                 .filter(p -> p.getAreaType() != null && Objects.equals(p.getAreaType().getCode(), areaTypeCode))
                 .findFirst().orElse(null);
 
-        if (muProfile == null) {
+        if (muAddlAreaTypes == null) {
             validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("areaTypeCode", areaTypeCode));
         }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        Boolean mpguAvailable = muProfile.getAreaType().getAttributes() == null ? null : muProfile.getAreaType().getAttributes().getMpguAvailable();
-        Boolean areaTypeAttachByMedicalReason = muProfile.getAreaType().getAttributes() == null ? null : muProfile.getAreaType().getAttributes().getAttachByMedicalReason();
+        Boolean mpguAvailable = muAddlAreaTypes.getAreaType().getAttributes() == null ? null : muAddlAreaTypes.getAreaType().getAttributes().getMpguAvailable();
+        Boolean areaTypeAttachByMedicalReason = muAddlAreaTypes.getAreaType().getAttributes() == null ? null : muAddlAreaTypes.getAreaType().getAttributes().getAttachByMedicalReason();
         //Todo сделать проерку AREA_COUNT_LIMIT после разработки НСИ
-        if (muProfile.getAreaType().getKindAreaType() != null &&
-                Objects.equals(muProfile.getAreaType().getKindAreaType().getCode(), KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode())) {
+        if (muAddlAreaTypes.getAreaType().getKindAreaType() != null &&
+                Objects.equals(muAddlAreaTypes.getAreaType().getKindAreaType().getCode(), KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode())) {
             if (Strings.isNullOrEmpty(description) || number == null ||
                     (ageMin == null && ageMax == null && ageMinM == null && ageMaxM == null && ageMinW == null && ageMaxW == null)) {
                 validation.error(AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED);
             }
         }
         areaChecker.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
-        areaChecker.checkAreaTypeAgeSetups(muProfile.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+        areaChecker.checkAreaTypeAgeSetups(muAddlAreaTypes.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
         if (autoAssignForAttachment) {
             if (!Boolean.TRUE.equals(mpguAvailable)) {
@@ -279,7 +279,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         //Создание новго первичного участка
-        Area area = new Area(moId, muId, muProfile.getAreaType(), number, autoAssignForAttachment, false, description,
+        Area area = new Area(moId, muId, muAddlAreaTypes.getAreaType(), number, autoAssignForAttachment, false, description,
                 attachByMedicalReason, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 

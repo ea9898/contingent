@@ -538,11 +538,11 @@
     <changeSet id="CONTINGENT2-57-21" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="MU_PROFILES"/>
+                <tableExists tableName="MU_ADDL_AREA_TYPES"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы MU_PROFILES</comment>
-        <createTable tableName="MU_PROFILES"
+        <comment>Создание таблицы MU_ADDL_AREA_TYPES</comment>
+        <createTable tableName="MU_ADDL_AREA_TYPES"
                      remarks="Профиль МУ">
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
@@ -553,7 +553,7 @@
             <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка. Код" />
         </createTable>
         <rollback>
-            <dropTable tableName="MU_PROFILES"/>
+            <dropTable tableName="MU_ADDL_AREA_TYPES"/>
         </rollback>
     </changeSet>
 
@@ -563,9 +563,9 @@
                 <indexExists indexName="IXFK_PROFILE_MU_AREA_TYPE"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_PROFILES</comment>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_ADDL_AREA_TYPES</comment>
         <createIndex indexName="IXFK_PROFILE_MU_AREA_TYPE"
-                     tableName="MU_PROFILES"
+                     tableName="MU_ADDL_AREA_TYPES"
                      unique="false">
             <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
@@ -573,12 +573,12 @@
 
     <changeSet id="CONTINGENT2-57-21-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="MU_PROFILES" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="MU_ADDL_AREA_TYPES" columnName="AREA_TYPE_CODE" />
             <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_PROFILE_MU_AREA_TYPE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
-                                 baseTableName="MU_PROFILES"
+                                 baseTableName="MU_ADDL_AREA_TYPES"
                                  constraintName="FK_PROFILE_MU_AREA_TYPE"
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPE"/>
@@ -587,13 +587,13 @@
     <changeSet id="CONTINGENT2-57-21-3" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="SEQ_MU_PROFILES"/>
+                <sequenceExists sequenceName="SEQ_MU_ADDL_AREA_TYPES"/>
             </not>
         </preConditions>
-        <comment>Создание сиквенса для таблицы MU_PROFILES</comment>
-        <createSequence sequenceName="SEQ_MU_PROFILES"/>
+        <comment>Создание сиквенса для таблицы MU_ADDL_AREA_TYPES</comment>
+        <createSequence sequenceName="SEQ_MU_ADDL_AREA_TYPES"/>
         <rollback>
-            <dropSequence sequenceName="SEQ_MU_PROFILES"/>
+            <dropSequence sequenceName="SEQ_MU_ADDL_AREA_TYPES"/>
         </rollback>
     </changeSet>
 
