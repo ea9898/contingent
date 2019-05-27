@@ -32,9 +32,9 @@ public class SpecializationToPositionNom implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private PositionNomClinic positionNomClinic;
 
-    @Column(name = "ARCHIVE", nullable = false)
+    @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archive;
+    private Boolean archived;
     
     public Key getKey() {
         return new Key(specialization, positionNomClinic);
@@ -56,9 +56,9 @@ public class SpecializationToPositionNom implements Serializable {
         this.positionNomClinic = positionNomClinic;
     }
 
-    public Boolean getArchive() { return archive; }
+    public Boolean getArchived() { return archived; }
 
-    public void setArchive(Boolean archive) { this.archive = archive; }
+    public void setArchived(Boolean archived) { this.archived = archived; }
 
     @Override
     public boolean equals(Object obj) {

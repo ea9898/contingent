@@ -48,7 +48,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                         areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
                                 profile.get(Area_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
                         actual == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(profile.get(Area_.archive.getName()), !actual)
+                                criteriaBuilder.equal(profile.get(Area_.archived.getName()), !actual)
                 )
         );
         return entityManager.createQuery(criteria).getResultList();

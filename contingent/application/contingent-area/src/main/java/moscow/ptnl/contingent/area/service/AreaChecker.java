@@ -60,7 +60,7 @@ public class AreaChecker {
         areaTypes.forEach(a -> {
             Optional<AreaType> areaType = areaTypesCRUDRepository.findById(a);
 
-            if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchive())) {
+            if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchived())) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter(parameterCode, a));
             }
         });
@@ -195,7 +195,7 @@ public class AreaChecker {
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
         }
-        else if (area.getArchive()) {
+        else if (area.getArchived()) {
             validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;
@@ -207,7 +207,7 @@ public class AreaChecker {
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
         }
-        else if (!area.getArchive()) {
+        else if (!area.getArchived()) {
             validation.error(AreaErrorReason.AREA_IS_NOT_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;
@@ -243,7 +243,7 @@ public class AreaChecker {
     public void checkOrderExists(long orderId, Validation validation) {
         Optional<AddressAllocationOrders> order = addressAllocationOrderCRUDRepository.findById(orderId);
 
-        if (!order.isPresent() || Boolean.TRUE.equals(order.get().getArchive())) {
+        if (!order.isPresent() || Boolean.TRUE.equals(order.get().getArchived())) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS, new ValidationParameter("orderId", orderId));
         }
     }

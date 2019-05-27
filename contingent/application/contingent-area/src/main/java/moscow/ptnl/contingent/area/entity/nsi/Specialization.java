@@ -27,17 +27,17 @@ public class Specialization implements Serializable {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
-    @Column(name = "ARCHIVE", nullable = false)
+    @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archive;
+    private Boolean archived;
 
     public Specialization() {
     }
 
-    public Specialization(Long id, String title, Boolean archive) {
+    public Specialization(Long id, String title, Boolean archived) {
         this.id = id;
         this.title = title;
-        this.archive = archive;
+        this.archived = archived;
     }
 
     public Long getId() {
@@ -56,9 +56,9 @@ public class Specialization implements Serializable {
         this.title = title;
     }
 
-    public Boolean getArchive() { return archive; }
+    public Boolean getArchived() { return archived; }
 
-    public void setArchive(Boolean archive) { this.archive = archive; }
+    public void setArchived(Boolean archived) { this.archived = archived; }
 
     @Override
     public boolean equals(Object obj) {

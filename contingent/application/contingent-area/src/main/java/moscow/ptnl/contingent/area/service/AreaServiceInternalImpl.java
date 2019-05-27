@@ -493,7 +493,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         AddressAllocationOrders order = new AddressAllocationOrders();
         order.setCreateDate(LocalDateTime.now());
         order.setUpdateDate(LocalDateTime.now());
-        order.setArchive(false);
+        order.setArchived(false);
         order.setNumber(number);
         order.setDate(date);
         order.setOuz(ouz);
@@ -512,7 +512,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     new ValidationParameter("id", id));
             throw new ContingentException(validation);
         }
-        if (Boolean.TRUE.equals(order.getArchive())) {
+        if (Boolean.TRUE.equals(order.getArchived())) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
                     new ValidationParameter("id", id));
         }
@@ -568,7 +568,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        area.setArchive(false);
+        area.setArchived(false);
         area.setAutoAssignForAttach(false);
     }
 
@@ -593,7 +593,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId))));
 
         //2
-        if (area.getArchive()) {
+        if (area.getArchived()) {
             throw new ContingentException(validation.error(
                     AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId)));
         }
@@ -749,7 +749,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
-        if (order == null || Boolean.TRUE.equals(order.getArchive())) {
+        if (order == null || Boolean.TRUE.equals(order.getArchived())) {
             throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
                     new ValidationParameter("orderId", orderId));
         }

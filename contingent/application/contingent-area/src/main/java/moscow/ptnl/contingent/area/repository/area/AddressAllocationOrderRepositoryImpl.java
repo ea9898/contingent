@@ -40,7 +40,7 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
                         name == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(order.get(AddressAllocationOrders_.name.getName()), name),
                         archive == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(order.get(AddressAllocationOrders_.archive.getName()), archive)
+                                criteriaBuilder.equal(order.get(AddressAllocationOrders_.archived.getName()), archive)
                 )
         );
         return entityManager.createQuery(criteria).getResultList();
@@ -60,7 +60,7 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
                         name == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.like(
                                         criteriaBuilder.lower(root.get(AddressAllocationOrders_.name.getName())), "%" + name.toLowerCase() + "%"),
-                        criteriaBuilder.equal(root.get(AddressAllocationOrders_.archive.getName()), false)
+                        criteriaBuilder.equal(root.get(AddressAllocationOrders_.archived.getName()), false)
                 ), paging);
     }
 }
