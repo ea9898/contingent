@@ -1,9 +1,6 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
-
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -29,7 +26,6 @@ public class AreaAddress implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private MoAddress moAddress;
 
-    @Id
     @JoinColumn(name = "AREA_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;

@@ -35,7 +35,7 @@ public class Addresses implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private AddressFormingElement addressFormingElement;
 
-    @JoinColumn(name = "REGISTRY_BUILDING_ID")
+    @JoinColumn(name = "BUILDING_REGISTRY_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private BuildingRegistry buildingRegistry;
 

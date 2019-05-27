@@ -1,15 +1,19 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
+import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
+import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuProfileRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuProfileTemplatesRepository;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,6 +46,12 @@ public class AreaChecker {
 
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
+
+    @Autowired
+    private AddressAllocationOrderCRUDRepository addressAllocationOrderCRUDRepository;
+
+    @Autowired
+    private MoAddressCRUDRepository moAddressCRUDRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -227,5 +238,30 @@ public class AreaChecker {
                     new ValidationParameter("areaTypeCode", areaTypeCode),
                     new ValidationParameter("number", number));
         }
+    }
+
+    public void checkOrderExists(long orderId, Validation validation) {
+        Optional<AddressAllocationOrders> order = addressAllocationOrderCRUDRepository.findById(orderId);
+
+        if (!order.isPresent() || Boolean.TRUE.equals(order.get().getArchived())) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS, new ValidationParameter("orderId", orderId));
+        }
+    }
+
+    public List<MoAddress> getAndCheckMoAddressesExist(List<Long> moAddressIds, Validation validation) {
+        List<MoAddress> result = new ArrayList<>();
+
+        moAddressIds.forEach(a -> {
+            Optional<MoAddress> order = moAddressCRUDRepository.findById(a);
+
+            if (!order.isPresent() ||
+                    order.get().getEndDate() != null && order.get().getEndDate().isBefore(LocalDate.now())) {
+                validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("moAddressId", a));
+            }
+            else {
+                result.add(order.get());
+            }
+        });
+        return result;
     }
 }

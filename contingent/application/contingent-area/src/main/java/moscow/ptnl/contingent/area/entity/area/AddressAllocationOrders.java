@@ -17,14 +17,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ADDRESS_ALLOCATION_ORDER")
-@SequenceGenerator(name = "SEQ_ADDRESS_ALLOCATION_ORDER", sequenceName = "SEQ_ADDRESS_ALLOCATION_ORDER", allocationSize=1)
+@Table(name = "ADDRESS_ALLOCATION_ORDERS")
+@SequenceGenerator(name = "SEQ_ADDRESS_ALLOCATION_ORDERS", sequenceName = "SEQ_ADDRESS_ALLOCATION_ORDERS", allocationSize=1)
 public class AddressAllocationOrders implements Serializable {
 
     private static final long serialVersionUID = -8116611274341177299L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_ADDRESS_ALLOCATION_ORDER")
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_ADDRESS_ALLOCATION_ORDERS")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 

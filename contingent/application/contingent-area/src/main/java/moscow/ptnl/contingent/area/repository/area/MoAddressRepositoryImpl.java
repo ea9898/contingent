@@ -4,13 +4,17 @@ import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress_;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
 import moscow.ptnl.contingent.area.repository.BaseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,21 +22,25 @@ import java.util.List;
 @Transactional(propagation=Propagation.MANDATORY)
 public class MoAddressRepositoryImpl extends BaseRepository implements MoAddressRepository {
 
+    @Autowired
+    private MoAddressPagingAndSortingRepository moAddressPagingAndSortingRepository;
+
     @Override
-    public List<MoAddress> getActiveMoAddresses(long moId, long areaTypeCode) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<MoAddress> criteria = criteriaBuilder.createQuery(MoAddress.class);
-        Root<MoAddress> address = criteria.from(MoAddress.class);
-        criteria.where(
+    public Page<MoAddress> getActiveMoAddresses(long moId, List<Long> areaTypeCodes, Pageable paging) {
+        Specification<MoAddress> spec = (Specification<MoAddress>) (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(address.get(MoAddress_.moId.getName()), moId),
-                        criteriaBuilder.equal(address.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaTypeCode),
+                        criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
+                        areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
+                                root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
                         criteriaBuilder.or(
-                                criteriaBuilder.greaterThanOrEqualTo(address.get(MoAddress_.endDate.getName()), LocalDate.now()),
-                                address.get(MoAddress_.endDate.getName()).isNull()
+                                criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
+                                root.get(MoAddress_.endDate.getName()).isNull()
                         )
-                )
-        );
-        return entityManager.createQuery(criteria).getResultList();
+                );
+        if (paging == null) {
+            return new PageImpl<>(moAddressPagingAndSortingRepository.findAll(spec, Sort.by(MoAddress_.id.getName()).ascending()));
+        }
+        return moAddressPagingAndSortingRepository.findAll(spec,
+                PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(MoAddress_.id.getName()).ascending()));
     }
 }

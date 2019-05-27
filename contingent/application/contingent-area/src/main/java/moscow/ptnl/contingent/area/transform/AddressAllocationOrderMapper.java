@@ -14,7 +14,7 @@ public class AddressAllocationOrderMapper implements Transform<AddressAllocation
         allocationOrder.setNumber(entityObject.getNumber());
         allocationOrder.setDate(entityObject.getDate());
         allocationOrder.setName(entityObject.getName());
-//        allocationOrder.setOuz(entityObject.getOuz());
+        allocationOrder.setOuz(entityObject.getOuz());
 
         return allocationOrder;
     }
