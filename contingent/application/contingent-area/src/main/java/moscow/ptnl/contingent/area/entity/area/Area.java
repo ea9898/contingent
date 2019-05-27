@@ -98,7 +98,8 @@ public class Area implements Serializable {
     public Area() {
     }
 
-    public Area(Long moId, Long muId, AreaType areaType, Boolean archive, LocalDateTime createDate) {
+    public Area(Long id, Long moId, Long muId, AreaType areaType, Boolean archive, LocalDateTime createDate) {
+        this.id = id;
         this.moId = moId;
         this.muId = muId;
         this.areaType = areaType;
