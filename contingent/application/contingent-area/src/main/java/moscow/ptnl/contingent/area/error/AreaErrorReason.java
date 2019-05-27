@@ -55,6 +55,8 @@ public enum AreaErrorReason implements ErrorReason {
     ADDRESS_ALREADY_EXISTS_1("UE078", "Адрес уровень: %s, ИД: %s уже обслуживается МО %s и типом участка %s"),
     ADDRESS_ALREADY_EXISTS_2("UE078", "Адрес ИД: %s, %s уже обслуживается МО %s и типом участка %s"),
     TOO_MANY_ADDRESSES("UE079", "Превышено максимально допустимое количество адресов для распределения (не более %s)"),
+    MO_ADDRESS_NOT_EXISTS("UE080", "Территория обслуживания с ИД %s не существует или уже перенесена в архив"),
+    TOO_BIG_PAGE_SIZE("UE081", "Размер страницы превышает максимально допустимое значение (не более %s)"),
     ;
 
     private final String description;

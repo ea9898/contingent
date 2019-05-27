@@ -9,4 +9,6 @@ import java.util.List;
 public interface AreaAddressRepository {
 
 	List<AreaAddress> getActiveAreaAddresses(long moId, long areaTypeCode);
+
+	List<AreaAddress> findAreaAddresses(List<Long> moAddressIds);
 }

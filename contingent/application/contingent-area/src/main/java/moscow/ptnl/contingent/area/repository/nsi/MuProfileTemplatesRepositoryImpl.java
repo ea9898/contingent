@@ -1,8 +1,8 @@
 package moscow.ptnl.contingent.area.repository.nsi;
 
 import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
-import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates;
-import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates_;
+import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes_;
 import moscow.ptnl.contingent.area.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,33 +18,33 @@ import java.util.List;
 public class MuProfileTemplatesRepositoryImpl extends BaseRepository implements MuProfileTemplatesRepository {
 
     @Override
-    public MUProfileTemplates findMuProfileTemplate(int muTypeId, Long areaTypeCode) {
+    public MUTypeAreaTypes findMuProfileTemplate(int muTypeId, Long areaTypeCode) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<MUProfileTemplates> criteria = criteriaBuilder.createQuery(MUProfileTemplates.class);
-        Root<MUProfileTemplates> template = criteria.from(MUProfileTemplates.class);
+        CriteriaQuery<MUTypeAreaTypes> criteria = criteriaBuilder.createQuery(MUTypeAreaTypes.class);
+        Root<MUTypeAreaTypes> template = criteria.from(MUTypeAreaTypes.class);
         criteria.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(template.get(MUProfileTemplates_.muTypeId.getName()), muTypeId),
-                        criteriaBuilder.equal(template.get(MUProfileTemplates_.areaType.getName()).get(AreaType_.code.getName()), areaTypeCode)
+                        criteriaBuilder.equal(template.get(MUTypeAreaTypes_.muTypeId.getName()), muTypeId),
+                        criteriaBuilder.equal(template.get(MUTypeAreaTypes_.areaType.getName()).get(AreaType_.code.getName()), areaTypeCode)
                 )
         );
-        List<MUProfileTemplates> results = entityManager.createQuery(criteria).getResultList();
+        List<MUTypeAreaTypes> results = entityManager.createQuery(criteria).getResultList();
 
         return results.isEmpty() ? null : results.get(0);
     }
 
     @Override
-    public List<MUProfileTemplates> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes) {
+    public List<MUTypeAreaTypes> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<MUProfileTemplates> criteria = criteriaBuilder.createQuery(MUProfileTemplates.class);
-        Root<MUProfileTemplates> template = criteria.from(MUProfileTemplates.class);
+        CriteriaQuery<MUTypeAreaTypes> criteria = criteriaBuilder.createQuery(MUTypeAreaTypes.class);
+        Root<MUTypeAreaTypes> template = criteria.from(MUTypeAreaTypes.class);
         criteria.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(template.get(MUProfileTemplates_.muTypeId.getName()), muTypeId),
-                        template.get(MUProfileTemplates_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes)
+                        criteriaBuilder.equal(template.get(MUTypeAreaTypes_.muTypeId.getName()), muTypeId),
+                        template.get(MUTypeAreaTypes_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes)
                 )
         );
-        List<MUProfileTemplates> results = entityManager.createQuery(criteria).getResultList();
+        List<MUTypeAreaTypes> results = entityManager.createQuery(criteria).getResultList();
 
         return results;
     }

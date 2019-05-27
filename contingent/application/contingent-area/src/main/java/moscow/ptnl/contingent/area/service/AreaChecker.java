@@ -1,15 +1,19 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.MuProfile;
+import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
+import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
-import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates;
+import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
+import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuProfileRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuProfileTemplatesRepository;
@@ -18,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,6 +47,12 @@ public class AreaChecker {
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
 
+    @Autowired
+    private AddressAllocationOrderCRUDRepository addressAllocationOrderCRUDRepository;
+
+    @Autowired
+    private MoAddressCRUDRepository moAddressCRUDRepository;
+
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
     Иначе возвращает ошибку */
@@ -61,13 +72,13 @@ public class AreaChecker {
    •	ИД типа участка (AREA_TYPE_CODE) = input ИД типа участка.
    Иначе возвращает ошибку */
     public void checkProfileExist(Long muId, List<Long> areaTypes, Validation validation) {
-        List<MuProfile> muProfiles = muProfileRepository.findMuProfilesByMuIdAndAreaTypes(muId, areaTypes);
+        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.findMuProfilesByMuIdAndAreaTypes(muId, areaTypes);
 
-        if (muProfiles != null && !muProfiles.isEmpty()) {
-            for (MuProfile muProfile: muProfiles) {
+        if (muAddlAreaTypes != null && !muAddlAreaTypes.isEmpty()) {
+            for (MuAddlAreaTypes muAddlAreaType : muAddlAreaTypes) {
                 validation.error(AreaErrorReason.MU_PROFILE_EXISTS,
-                        new ValidationParameter("muId", muProfile.getMuId()),
-                        new ValidationParameter("areatype", muProfile.getAreaType().getName()));
+                        new ValidationParameter("muId", muAddlAreaType.getMuId()),
+                        new ValidationParameter("areatype", muAddlAreaType.getAreaType().getName()));
             }
         }
     }
@@ -78,7 +89,7 @@ public class AreaChecker {
     •	Допустимость создания (AVAILABLE_TO_CREATE) = «Возможно» .
     Если запись с типом участка не найдена или AVAILABLE_TO_CREATE <> «Возможно» , то Система возвращает ошибку */
     public void checkMuProfileCreateAvailableByMuType(Long muTypeId, List<Long> areaTypes, Validation validation) {
-        List<MUProfileTemplates> templates = muProfileTemplatesRepository.findMuProfileTemplates(muTypeId, areaTypes);
+        List<MUTypeAreaTypes> templates = muProfileTemplatesRepository.findMuProfileTemplates(muTypeId, areaTypes);
 
         if (templates != null && !templates.isEmpty()) {
             templates.forEach(temp -> {
@@ -92,9 +103,9 @@ public class AreaChecker {
 
     /* Система проверяет наличие в профиле МУ переданных типов участка. */
     public void checkMuProfilesHasAreaTypes(Long muId, List<Long> areaTypes, Validation validation) {
-        List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
+        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId);
 
-        List<Long> areaTypesProfiles = muProfiles.stream().map(MuProfile::getAreaType).map(AreaType::getCode).collect(Collectors.toList());
+        List<Long> areaTypesProfiles = muAddlAreaTypes.stream().map(MuAddlAreaTypes::getAreaType).map(AreaType::getCode).collect(Collectors.toList());
         List<Long> areaTypesDiff =
                 areaTypes.stream().filter(areaType -> !areaTypesProfiles.contains(areaType))
                 .collect(Collectors.toList());
@@ -150,10 +161,10 @@ public class AreaChecker {
     }
 
     public Map<Long, AreaType> checkAndGetPrimaryAreaTypesInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
-        List<MuProfile> muProfiles = muProfileRepository.getMuProfilesByMuId(muId);
-        Map<Long, AreaType> primaryAreaTypes = muProfiles.stream()
+        List<MuAddlAreaTypes> muAddlAreaTypes = muProfileRepository.getMuProfilesByMuId(muId);
+        Map<Long, AreaType> primaryAreaTypes = muAddlAreaTypes.stream()
                 .filter(p -> p.getAreaType() != null)
-                .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuProfile::getAreaType));
+                .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuAddlAreaTypes::getAreaType));
 
         primaryAreaTypeCodes.forEach(c -> {
             if (!primaryAreaTypes.keySet().contains(c)) {
@@ -227,5 +238,30 @@ public class AreaChecker {
                     new ValidationParameter("areaTypeCode", areaTypeCode),
                     new ValidationParameter("number", number));
         }
+    }
+
+    public void checkOrderExists(long orderId, Validation validation) {
+        Optional<AddressAllocationOrders> order = addressAllocationOrderCRUDRepository.findById(orderId);
+
+        if (!order.isPresent() || Boolean.TRUE.equals(order.get().getArchived())) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS, new ValidationParameter("orderId", orderId));
+        }
+    }
+
+    public List<MoAddress> getAndCheckMoAddressesExist(List<Long> moAddressIds, Validation validation) {
+        List<MoAddress> result = new ArrayList<>();
+
+        moAddressIds.forEach(a -> {
+            Optional<MoAddress> order = moAddressCRUDRepository.findById(a);
+
+            if (!order.isPresent() ||
+                    order.get().getEndDate() != null && order.get().getEndDate().isBefore(LocalDate.now())) {
+                validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("moAddressId", a));
+            }
+            else {
+                result.add(order.get());
+            }
+        });
+        return result;
     }
 }

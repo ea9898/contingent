@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.repository.nsi;
 
-import moscow.ptnl.contingent.area.entity.nsi.MUProfileTemplates;
+import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 @NoRepositoryBean
 public interface MuProfileTemplatesRepository {
 
-	MUProfileTemplates findMuProfileTemplate(int muTypeId, Long areaTypeCode);
+	MUTypeAreaTypes findMuProfileTemplate(int muTypeId, Long areaTypeCode);
 
-    List<MUProfileTemplates> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes);
+    List<MUTypeAreaTypes> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes);
 }

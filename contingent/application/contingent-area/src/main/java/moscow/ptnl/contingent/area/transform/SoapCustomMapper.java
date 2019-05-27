@@ -1,14 +1,15 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.area.entity.area.MuProfile;
+import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AreaTypeShort;
+import ru.mos.emias.contingent2.core.PagingResults;
 
 @Component
 public class SoapCustomMapper {
 
-    public AreaTypeShort mapMuProfileToAreaTypeShort(MuProfile profile) {
+    public AreaTypeShort mapMuProfileToAreaTypeShort(MuAddlAreaTypes profile) {
         if (profile == null || profile.getAreaType() == null) {
             return null;
         }
@@ -19,13 +20,10 @@ public class SoapCustomMapper {
         return areaType;
     }
 
-//    public PagingResult mapPageToPagingResult(Page<?> page) {
-//        PagingResult pagingResult = new PagingResult();
-//        pagingResult.setPageNumber(page.getNumber());
-//        pagingResult.setPageSize(page.getSize());
-//        pagingResult.setPageTotal(page.getTotalPages());
-//        pagingResult.setMorePagesAvailable(page.getNumber() < page.getTotalPages() - 1);
-//
-//        return pagingResult;
-//    }
+    public void mapPagingResults(PagingResults results, Page<?> page) {
+        results.setPageNumber(page.getNumber());
+        results.setPageSize(page.getSize());
+        results.setPageTotal(page.getTotalPages());
+        results.setMorePagesAvailable(page.getNumber() < page.getTotalPages() - 1);
+    }
 }

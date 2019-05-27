@@ -16,15 +16,15 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "REGISTRY_BUILDING")
-@SequenceGenerator(name = "SEQ_REGISTRY_BUILDING", sequenceName = "SEQ_REGISTRY_BUILDING", allocationSize=1)
+@Table(name = "BUILDING_REGISTRY")
+@SequenceGenerator(name = "SEQ_BUILDING_REGISTRY", sequenceName = "SEQ_BUILDING_REGISTRY", allocationSize=1)
 @Cacheable
 public class BuildingRegistry implements Serializable {
 
     private static final long serialVersionUID = 5017009667346896559L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_REGISTRY_BUILDING")
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_BUILDING_REGISTRY")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 

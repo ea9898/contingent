@@ -28,16 +28,16 @@ public class SettingServiceImpl implements SettingService {
 
     @Override
     public Long getPar1() {
-        return Long.parseLong((String) getPar("PAR_1"));
+        return Long.parseLong((String) getPar("max_addresses_for_allocation"));
     }
 
     @Override
     public Long getPar2() {
-        return Long.parseLong((String) getPar("PAR_2"));
+        return Long.parseLong((String) getPar("max_addresses_for_del_allocation"));
     }
 
     @Override
     public Long getPar3() {
-        return Long.parseLong((String) getPar("PAR_3"));
+        return Long.parseLong((String) getPar("max_page_size"));
     }
 }
