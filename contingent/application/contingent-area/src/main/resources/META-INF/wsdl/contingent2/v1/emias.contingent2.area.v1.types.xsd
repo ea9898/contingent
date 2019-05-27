@@ -32,7 +32,7 @@
             <xs:sequence>
                 <xs:element name="muId" type="xs:long" />
                 <xs:element name="muTypeId" type="xs:long" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -49,7 +49,7 @@
                 <xs:element name="muId" type="xs:long" />
                 <xs:element name="muTypeId" type="xs:long" />
                 <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -64,7 +64,7 @@
             <xs:sequence>
                 <xs:element name="muId" type="xs:long" />
                 <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -90,7 +90,7 @@
                 <xs:element name="ageMinW" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
                 <xs:element name="autoAssignForAttachment" type="xs:boolean" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -117,7 +117,7 @@
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
                 <xs:element name="autoAssignForAttachment" type="xs:boolean" />
                 <xs:element name="attachByMedicalReason" type="xs:boolean" minOccurs="0" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -142,7 +142,7 @@
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
                 <xs:element name="autoAssignForAttachment" type="xs:boolean" />
                 <xs:element name="attachByMedicalReason" type="xs:boolean" minOccurs="0" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -168,7 +168,7 @@
                 <xs:element name="ageMinW" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
                 <xs:element name="autoAssignForAttachment" type="xs:boolean" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -187,7 +187,7 @@
                 <xs:element name="date" type="xs:date" />
                 <xs:element name="ouz" type="xs:string" />
                 <xs:element name="name" type="xs:string" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -208,7 +208,7 @@
                 <xs:element name="date" type="xs:date" minOccurs="0" />
                 <xs:element name="ouz" type="xs:string" minOccurs="0" />
                 <xs:element name="name" type="xs:string" minOccurs="0" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -227,8 +227,8 @@
                 <xs:element name="number" type="xs:string" minOccurs="0" />
                 <xs:element name="date" type="xs:date" minOccurs="0" />
                 <xs:element name="name" type="xs:string" minOccurs="0" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
-                <xs:element name="pagingOptions" type="core:PagingOptions" />
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -245,7 +245,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -264,7 +264,7 @@
                 <xs:element name="areaId" type="xs:long"/>
                 <xs:element name="addMedicalEmployees" type="core:AddMedicalEmployees" minOccurs="0"/>
                 <xs:element name="changeMedicalEmployees" type="core:ChangeMedicalEmployees" minOccurs="0"/>
-                <xs:element name="options" type="core:Options" minOccurs="0"/>
+                <xs:element ref="core:options" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -282,7 +282,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -315,7 +315,7 @@
                 <xs:element name="areaId" type="xs:long" />
                 <xs:element name="nsiAddress" type="core:NsiAddress" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="nonNsiAddress" type="core:NotNsiAddress" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="options" type="core:Options" minOccurs="0"/>
+                <xs:element ref="core:options" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -336,7 +336,7 @@
                 <xs:element name="orderId" type="xs:long" />
                 <xs:element name="nsiAddress" type="core:NsiAddress" minOccurs="0" maxOccurs="unbounded" />
                 <xs:element name="notNsiAddress" type="core:NotNsiAddress" minOccurs="0" maxOccurs="unbounded" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -354,8 +354,8 @@
             <xs:sequence>
                 <xs:element name="moId" type="xs:long" />
                 <xs:element name="areaType" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
-                <xs:element name="pagingOptions" type="core:PagingOptions" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -380,7 +380,7 @@
             <xs:sequence>
                 <xs:element name="moAddressId" type="xs:long" maxOccurs="unbounded" />
                 <xs:element name="orderId" type="xs:long" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
