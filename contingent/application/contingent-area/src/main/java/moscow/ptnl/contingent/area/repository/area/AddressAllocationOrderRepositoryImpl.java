@@ -25,7 +25,7 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
     private AddressAllocationOrderPagingAndSortingRepository addressAllocationOrderPagingAndSortingRepository;
 
     @Override
-    public List<AddressAllocationOrders> findAddressAllocationOrders(String number, LocalDate date, String ouz, String name, Boolean archived) {
+    public List<AddressAllocationOrders> findAddressAllocationOrders(String number, LocalDate date, String ouz, String name, Boolean archive) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AddressAllocationOrders> criteria = criteriaBuilder.createQuery(AddressAllocationOrders.class);
         Root<AddressAllocationOrders> order = criteria.from(AddressAllocationOrders.class);
@@ -39,8 +39,8 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
 //                                criteriaBuilder.equal(order.get(AddressAllocationOrder_.ouz.getName()), ouz),
                         name == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(order.get(AddressAllocationOrders_.name.getName()), name),
-                        archived == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(order.get(AddressAllocationOrders_.archived.getName()), archived)
+                        archive == null ? criteriaBuilder.conjunction() :
+                                criteriaBuilder.equal(order.get(AddressAllocationOrders_.archive.getName()), archive)
                 )
         );
         return entityManager.createQuery(criteria).getResultList();
@@ -60,7 +60,7 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
                         name == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.like(
                                         criteriaBuilder.lower(root.get(AddressAllocationOrders_.name.getName())), "%" + name.toLowerCase() + "%"),
-                        criteriaBuilder.equal(root.get(AddressAllocationOrders_.archived.getName()), false)
+                        criteriaBuilder.equal(root.get(AddressAllocationOrders_.archive.getName()), false)
                 ), paging);
     }
 }

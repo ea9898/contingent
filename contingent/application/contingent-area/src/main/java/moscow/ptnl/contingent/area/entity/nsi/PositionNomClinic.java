@@ -62,16 +62,16 @@ public class PositionNomClinic implements Serializable {
     @Column(name = "MED_SERVICE")
     private String medService;
 
-    @Column(name = "ARCHIVED", nullable = false)
+    @Column(name = "ARCHIVE", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archived;
+    private Boolean archive;
 
     public PositionNomClinic() {
     }
 
     public PositionNomClinic(Long id, String code, String title, String category, String subcategory,
                              LocalDate startDate, LocalDate endDate, String extraBud, String addSupp,
-                             String inDr, String medService, Boolean archived) {
+                             String inDr, String medService, Boolean archive) {
         this.id = id;
         this.code = code;
         this.title = title;
@@ -83,7 +83,7 @@ public class PositionNomClinic implements Serializable {
         this.addSupp = addSupp;
         this.inDr = inDr;
         this.medService = medService;
-        this.archived = archived;
+        this.archive = archive;
     }
 
     public Long getId() {
@@ -174,13 +174,9 @@ public class PositionNomClinic implements Serializable {
         this.medService = medService;
     }
 
-    public Boolean getArchived() {
-        return archived;
-    }
+    public Boolean getArchive() { return archive; }
 
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
-    }
+    public void setArchive(Boolean archive) { this.archive = archive; }
 
     @Override
     public boolean equals(Object obj) {

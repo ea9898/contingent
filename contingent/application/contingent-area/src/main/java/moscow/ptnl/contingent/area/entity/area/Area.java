@@ -53,9 +53,9 @@ public class Area implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean autoAssignForAttach;
 
-    @Column(name = "ARCHIVED")
+    @Column(name = "ARCHIVE")
     @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archived;
+    private Boolean archive;
 
     @Size(max = 370)
     @Column(name = "DESCRIPTION")
@@ -98,21 +98,21 @@ public class Area implements Serializable {
     public Area() {
     }
 
-    public Area(Long moId, Long muId, AreaType areaType, Boolean archived, LocalDateTime createDate) {
+    public Area(Long moId, Long muId, AreaType areaType, Boolean archive, LocalDateTime createDate) {
         this.moId = moId;
         this.muId = muId;
         this.areaType = areaType;
-        this.archived = archived;
+        this.archive = archive;
         this.createDate = createDate;
     }
 
-    public Area(Long moId, Long muId, AreaType areaType, Integer number, Boolean autoAssignForAttach, Boolean archived, String description, Boolean attachByMedicalReason, Integer ageMin, Integer ageMax, Integer ageMMin, Integer ageMMax, Integer ageWMin, Integer ageWMax, LocalDateTime createDate) {
+    public Area(Long moId, Long muId, AreaType areaType, Integer number, Boolean autoAssignForAttach, Boolean archive, String description, Boolean attachByMedicalReason, Integer ageMin, Integer ageMax, Integer ageMMin, Integer ageMMax, Integer ageWMin, Integer ageWMax, LocalDateTime createDate) {
         this.moId = moId;
         this.muId = muId;
         this.areaType = areaType;
         this.number = number;
         this.autoAssignForAttach = autoAssignForAttach;
-        this.archived = archived;
+        this.archive = archive;
         this.description = description;
         this.attachByMedicalReason = attachByMedicalReason;
         this.ageMin = ageMin;
@@ -129,7 +129,7 @@ public class Area implements Serializable {
         setMoId(copy.getMoId());
         setMuId(copy.getMuId());
         setAreaType(copy.getAreaType());
-        setArchived(copy.getArchived());
+        setArchive(copy.getArchive());
         setCreateDate(copy.getCreateDate());
         setUpdateDate(copy.getUpdateDate());
         setAutoAssignForAttach(copy.getAutoAssignForAttach());
@@ -192,13 +192,9 @@ public class Area implements Serializable {
         this.autoAssignForAttach = autoAssignForAttach;
     }
 
-    public Boolean getArchived() {
-        return archived;
-    }
+    public Boolean getArchive() { return archive; }
 
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
-    }
+    public void setArchive(Boolean archive) { this.archive = archive; }
 
     public String getDescription() {
         return description;

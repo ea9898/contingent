@@ -43,9 +43,9 @@ public class AddressAllocationOrders implements Serializable {
     @Column(name = "DATE")
     private LocalDate date;
 
-    @Column(name = "ARCHIVED", nullable = false)
+    @Column(name = "ARCHIVE", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archived;
+    private Boolean archive;
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
@@ -85,13 +85,9 @@ public class AddressAllocationOrders implements Serializable {
         this.date = date;
     }
 
-    public Boolean getArchived() {
-        return archived;
-    }
+    public Boolean getArchive() { return archive; }
 
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
-    }
+    public void setArchive(Boolean archive) { this.archive = archive; }
 
     public LocalDateTime getCreateDate() {
         return createDate;

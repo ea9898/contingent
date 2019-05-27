@@ -11,7 +11,7 @@ import java.util.List;
 @NoRepositoryBean
 public interface AddressAllocationOrderRepository {
 
-	List<AddressAllocationOrders> findAddressAllocationOrders(String number, LocalDate date, String ouz, String name, Boolean archived);
+	List<AddressAllocationOrders> findAddressAllocationOrders(String number, LocalDate date, String ouz, String name, Boolean archive);
 
 	Page<AddressAllocationOrders> findAddressAllocationOrdersOverlapped(Long id, String number, LocalDate date, String name, Pageable paging);
 }

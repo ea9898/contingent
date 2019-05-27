@@ -35,6 +35,14 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-57-15-U" author="ddryuchin" labels="1.0.0.0">
+        <renameColumn
+                      columnDataType="NUMBER(1)"
+                      newColumnName="ARCHIVE"
+                      oldColumnName="ARCHIVED"
+                      tableName="ADDRESS_ALLOCATION_ORDERS"/>
+    </changeSet>
+
     <changeSet id="CONTINGENT2-57-15-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -86,6 +94,14 @@
         <rollback>
             <dropTable tableName="AREAS"/>
         </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-57-16-U" author="ddryuchin" labels="1.0.0.0">
+        <renameColumn
+                columnDataType="NUMBER(1)"
+                newColumnName="ARCHIVE"
+                oldColumnName="ARCHIVED"
+                tableName="AREAS"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-16-1" author="sorlov" labels="1.0.0.0">
