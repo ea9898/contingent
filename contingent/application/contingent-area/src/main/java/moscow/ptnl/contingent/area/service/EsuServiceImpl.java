@@ -1,17 +1,16 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.esu.EsuOutput;
-import moscow.ptnl.contingent2.area.event.AreaEvent;
+import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaRelationChangeEventMapper;
 import moscow.ptnl.contingent.area.repository.esu.EsuOutputCRUDRepository;
 import moscow.ptnl.contingent.area.repository.esu.EsuOutputRepository;
-import moscow.ptnl.contingent.area.transform.model.esu.AreaEventMapper;
+import moscow.ptnl.contingent2.attachment.changedeparea.event.AttachOnAreaRelationChangeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.esu.lib.producer.EsuProducer;
 
-import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -41,7 +40,7 @@ public class EsuServiceImpl implements EsuService {
     private EsuOutputRepository esuOutputRepository;
 
     @Autowired
-    private AreaEventMapper areaEventMapper;
+    private AttachOnAreaRelationChangeEventMapper attachOnAreaRelationChangeEventMapper;
 
     /**
      * Сохраняет информацию о событии в БД и пытается отправить ее в ЕСУ.
@@ -52,7 +51,7 @@ public class EsuServiceImpl implements EsuService {
      */
     public boolean saveAndPublishToESU(moscow.ptnl.contingent.area.model.esu.AreaEvent event) {
         String publishTopic = AREA_TOPIC;
-        AreaEvent publishObject = areaEventMapper.entityToDtoTransform(event);
+        AttachOnAreaRelationChangeEvent publishObject = attachOnAreaRelationChangeEventMapper.entityToDtoTransform(event);
         String message = convertEventObjectToMessage(publishObject);
         EsuOutput record = saveBeforePublishToESU(publishTopic, message);
         //Обновим ИД сообщения
@@ -109,7 +108,7 @@ public class EsuServiceImpl implements EsuService {
         String xmlContent = null;
 
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(moscow.ptnl.contingent2.area.event.AreaEvent.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(moscow.ptnl.contingent2.attachment.changedeparea.event.AttachOnAreaRelationChangeEvent.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             StringWriter sw = new StringWriter();

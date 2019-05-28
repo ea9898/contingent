@@ -158,8 +158,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         try {
             CreateDependentAreaResponse response = new CreateDependentAreaResponse();
-            Long id = areaService.createDependentArea(body.getMoId(), body.getMuId(), body.getNumber(), body.getAreaTypeCode(),
-                    body.getPrimaryAreaTypeCodes(), body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(),
+            Long id = areaService.createDependentArea(body.getMoId(), body.getMuId(), body.getMuTypes().getMuTypes(),
+                    body.getNumber(), body.getAreaTypeCode(), body.getPrimaryAreaTypeCodes(),
+                    body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(),
                     body.getAgeMinW(), body.getAgeMaxW(), body.isAutoAssignForAttachment(), body.getDescription());
 
             response.setId(id);

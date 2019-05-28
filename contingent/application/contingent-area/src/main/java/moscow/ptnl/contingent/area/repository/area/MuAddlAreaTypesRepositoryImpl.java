@@ -27,15 +27,16 @@ public class MuAddlAreaTypesRepositoryImpl extends BaseRepository implements MuA
     }
 
     @Override
-    public List<MuAddlAreaTypes> findMuAddlAreaTypes(long muId, List<Long> areaTypes) {
+    public List<MuAddlAreaTypes> findMuAddlAreaTypes(List<Long> muIds, List<Long> areaTypes) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<MuAddlAreaTypes> criteria = criteriaBuilder.createQuery(MuAddlAreaTypes.class);
         Root<MuAddlAreaTypes> profile = criteria.from(MuAddlAreaTypes.class);
         criteria.where(
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(profile.get(MuAddlAreaTypes_.muId.getName()), muId),
-                        profile.get(MuAddlAreaTypes_.areaType.getName()).in(areaTypes)
-                )
+            criteriaBuilder.and(
+                    muIds == null || muIds.isEmpty() ? criteriaBuilder.conjunction() :
+                            profile.get(MuAddlAreaTypes_.muId.getName()).in(muIds),
+                    profile.get(MuAddlAreaTypes_.areaType.getName()).in(areaTypes)
+            )
         );
 
         return entityManager.createQuery(criteria).getResultList();

@@ -23,6 +23,7 @@ import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.esu.AreaCreateEvent;
 import moscow.ptnl.contingent.area.model.esu.AreaUpdateEvent;
+import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
@@ -170,8 +171,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Override
     public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
-        Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuProfileTemplates(muTypeId, new ArrayList<>(), true).stream()
-                .map(MuTypeAreaTypes::getAreaType)
+        Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, new ArrayList<>(),
+                AvailableToCreateType.ALLOWED).stream()
+                .map(MUTypeAreaTypes::getAreaType)
                 .collect(Collectors.toSet());
         areaTypes.addAll(muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
                 .map(MuAddlAreaTypes::getAreaType)
@@ -305,24 +307,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public Long createDependentArea(long moId, long muId, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
+    public Long createDependentArea(long moId, Long muId, List<MuType> muTypes, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                     boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
-        Map<Long, AreaType> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muId, primaryAreaTypeCodes, validation);
+        areaChecker.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        areaChecker.checkPrimaryAreasInMU(muId, primaryAreaTypeCodes, validation);
-
-        if (!areaRepository.findAreas(moId, null, areaTypeCode, null, null).isEmpty()) {
+        if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
-        }
-        if (number != null) {
-            areaChecker.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
         }
         AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
         areaChecker.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
@@ -330,6 +327,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        Map<Long, AreaType> primaryAreaTypes = areaTypesCRUDRepository.findAreaTypesByCode(primaryAreaTypeCodes).stream()
+                .collect(Collectors.toMap(AreaType::getCode, t -> t));
         //Создание новго зависимого участка
         Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
                 null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
@@ -338,11 +337,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         primaryAreaTypeCodes.forEach(c -> {
             AreaToAreaType areaToAreaType = new AreaToAreaType();
             areaToAreaType.setArea(area);
-//            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
+            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
-        esuService.saveAndPublishToESU(new AreaCreateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
-
+        if (!areaRepository.findAreas(moId, muId, primaryAreaTypeCodes, null, true).isEmpty()) {
+            esuService.saveAndPublishToESU(new AreaCreateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
+        }
         return area.getId();
     }
 
@@ -497,7 +497,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         AddressAllocationOrders order = new AddressAllocationOrders();
         order.setCreateDate(LocalDateTime.now());
         order.setUpdateDate(LocalDateTime.now());
-        order.setArchive(false);
+        order.setArchived(false);
         order.setNumber(number);
         order.setDate(date);
         order.setOuz(ouz);
@@ -516,7 +516,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     new ValidationParameter("id", id));
             throw new ContingentException(validation);
         }
-        if (Boolean.TRUE.equals(order.getArchive())) {
+        if (Boolean.TRUE.equals(order.getArchived())) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
                     new ValidationParameter("id", id));
         }
@@ -753,7 +753,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
-        if (order == null || Boolean.TRUE.equals(order.getArchive())) {
+        if (order == null || Boolean.TRUE.equals(order.getArchived())) {
             throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
                     new ValidationParameter("orderId", orderId));
         }
