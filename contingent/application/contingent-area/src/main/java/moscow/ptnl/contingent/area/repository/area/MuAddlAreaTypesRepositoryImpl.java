@@ -13,7 +13,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Repository
-@Transactional(propagation=Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY)
 public class MuAddlAreaTypesRepositoryImpl extends BaseRepository implements MuAddlAreaTypesRepository {
 
     @Override
@@ -32,11 +32,24 @@ public class MuAddlAreaTypesRepositoryImpl extends BaseRepository implements MuA
         CriteriaQuery<MuAddlAreaTypes> criteria = criteriaBuilder.createQuery(MuAddlAreaTypes.class);
         Root<MuAddlAreaTypes> profile = criteria.from(MuAddlAreaTypes.class);
         criteria.where(
-            criteriaBuilder.and(
-                    criteriaBuilder.equal(profile.get(MuAddlAreaTypes_.muId.getName()), muId),
-                    profile.get(MuAddlAreaTypes_.areaType.getName()).in(areaTypes)
-            )
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(profile.get(MuAddlAreaTypes_.muId.getName()), muId),
+                        profile.get(MuAddlAreaTypes_.areaType.getName()).in(areaTypes)
+                )
         );
+
+        return entityManager.createQuery(criteria).getResultList();
+    }
+
+    @Override
+    public List<MuAddlAreaTypes> findMuAddlAreaTypes(List<Long> muIds, Long primaryAreaTypeCode) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<MuAddlAreaTypes> criteria = criteriaBuilder.createQuery(MuAddlAreaTypes.class);
+        Root<MuAddlAreaTypes> profile = criteria.from(MuAddlAreaTypes.class);
+        criteria.where(
+                criteriaBuilder.and(
+                        profile.get(MuAddlAreaTypes_.muId).in(muIds),
+                        criteriaBuilder.equal(profile.get(MuAddlAreaTypes_.areaType), primaryAreaTypeCode)));
 
         return entityManager.createQuery(criteria).getResultList();
     }

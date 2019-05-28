@@ -12,7 +12,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
-import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -43,7 +43,7 @@ import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepos
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.area.repository.nsi.MUTypeAreaTypesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
 import moscow.ptnl.contingent.area.repository.nsi.RegistryBuildingCRUDRepository;
@@ -57,6 +57,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
+import ru.mos.emias.contingent2.core.MuType;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
 import ru.mos.emias.contingent2.core.NsiAddress;
 
@@ -84,7 +85,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private MuAddlAreaTypesCRUDRepository muAddlAreaTypesCRUDRepository;
 
     @Autowired
-    private MUTypeAreaTypesRepository muTypeAreaTypesRepository;
+    private MuTypeAreaTypesRepository muTypeAreaTypesRepository;
 
     @Autowired
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
@@ -170,7 +171,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Override
     public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
         Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuProfileTemplates(muTypeId, new ArrayList<>(), true).stream()
-                .map(MUTypeAreaTypes::getAreaType)
+                .map(MuTypeAreaTypes::getAreaType)
                 .collect(Collectors.toSet());
         areaTypes.addAll(muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
                 .map(MuAddlAreaTypes::getAreaType)
@@ -398,42 +399,44 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public void updateDependentArea(long areaId, Long muId, Integer number, List<Long> primaryAreaTypeCodesAdd,
-                                    List<Long> primaryAreaTypeCodesDel,
+    public void updateDependentArea(long areaId, Long muId, List<MuType> muTypes, Integer muNumber,
+                                    List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                     boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
+        //1 и 2
         Area area = areaChecker.checkAndGetArea(areaId, validation);
         Area oldArea = new Area(area);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        Long muIdFinal = muId == null ? area.getMuId() : muId;
 
-        if (number != null) {
-            areaChecker.checkAreaExistsInMU(muIdFinal, area.getAreaType().getCode(), number, area.getId(), validation);
+        //3
+        if (muId != null && !muId.equals(area.getMuId()) && area.getAreaType().getKindAreaType() != null
+                && !Objects.equals(area.getAreaType().getKindAreaType().getCode(),
+                KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode())) {
+            validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
         }
-        if (muId != null && !muId.equals(area.getMuId())) {
-            if (area.getAreaType().getKindAreaType() != null &&
-                    !Objects.equals(area.getAreaType().getKindAreaType().getCode(), KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode())) {
-                validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
-            }
-        }
-        Map<Long, AreaType> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
 
+        //4
+        for (Long primaryAreaTypeCode : primaryAreaTypeCodesAdd) {
+            areaChecker.checkAndGetAllowedAreaTypesInMU(primaryAreaTypeCode, muTypes, validation);
+        }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        areaChecker.checkPrimaryAreasInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
+
+        //5
         areaChecker.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        //Обновление участка
+        //6 Обновление участка
+        Long muIdFinal = muId == null ? area.getMuId() : muId;
         area.setMuId(muIdFinal);
-        area.setNumber(number == null ? area.getNumber() : number);
+        area.setNumber(muNumber == null ? area.getNumber() : muNumber);
         area.setAgeMax(ageMax == null ? area.getAgeMax() : ageMax);
         area.setAgeMin(ageMin == null ? area.getAgeMin() : ageMin);
         area.setAgeMMax(ageMaxM == null ? area.getAgeMMax() : ageMaxM);
@@ -445,7 +448,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setUpdateDate(LocalDateTime.now());
 
         resetAutoAssignForAttachment(area);
-        //Обновление привязки к первичным типам участка
+        //7 Обновление привязки к первичным типам участка
         List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId());
 
         List<AreaToAreaType> areaToAreaTypesToAdd = new ArrayList<>();
@@ -469,7 +472,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypesToRemove);
 
-        esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
+        //TODO падает при отправке в есу
+        //esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
     }
 
     private void resetAutoAssignForAttachment(Area area) {

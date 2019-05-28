@@ -226,6 +226,26 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="MuTypes">
+        <xs:annotation>
+            <xs:documentation>Перечень типов МУ.
+                Обязательно, если переданы типы участков для добавления (primaryAreaTypesAdd). При этом:
+                • если участок принадлежит филиалу, то передается тип филиала;
+                • если участок принадлежит МО в целом (филиал отсутствует), то в данной структуре должны передаваться типы всех МУ, принадлежащих данной МО
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="muType" type="tns:MuType" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MuType">
+        <xs:sequence>
+            <xs:element name="muId" type="xs:long" />
+            <xs:element name="muTypeId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="Fault">
         <xs:annotation>
             <xs:documentation>Перечень сообщений об ошибках валидации</xs:documentation>

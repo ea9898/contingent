@@ -187,7 +187,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws Fault {
         try {
-            areaService.updateDependentArea(body.getAreaId(), body.getMuId(), body.getNumber(),
+            areaService.updateDependentArea(body.getAreaId(), body.getMuId(),
+                    body.getMuTypes() == null ? Collections.EMPTY_LIST : body.getMuTypes().getMuTypes(),
+                    body.getNumber(),
                     body.getPrimaryAreaTypesAdd() == null ? Collections.EMPTY_LIST : body.getPrimaryAreaTypesAdd().getPrimaryAreaTypeCodes(),
                     body.getPrimaryAreaTypesDel() == null ? Collections.EMPTY_LIST : body.getPrimaryAreaTypesDel().getPrimaryAreaTypeCodes(),
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),

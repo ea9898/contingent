@@ -6,7 +6,7 @@ import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
-import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
@@ -16,9 +16,10 @@ import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.area.repository.nsi.MUTypeAreaTypesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.mos.emias.contingent2.core.MuType;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -36,7 +37,7 @@ public class AreaChecker {
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Autowired
-    private MUTypeAreaTypesRepository MUTypeAreaTypesRepository;
+    private MuTypeAreaTypesRepository muTypeAreaTypesRepository;
 
     @Autowired
     private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
@@ -89,14 +90,15 @@ public class AreaChecker {
     •	Допустимость создания (AVAILABLE_TO_CREATE) = «Возможно» .
     Если запись с типом участка не найдена или AVAILABLE_TO_CREATE <> «Возможно» , то Система возвращает ошибку */
     public void checkMuTypeAreaTypeCreateAvailable(Long muTypeId, List<Long> areaTypes, Validation validation) {
-        List<MUTypeAreaTypes> templates = MUTypeAreaTypesRepository.findMuProfileTemplates(muTypeId, areaTypes, true);
+        List<MuTypeAreaTypes> templates = muTypeAreaTypesRepository.findMuProfileTemplates(muTypeId, areaTypes, true);
 
         if (templates != null && !templates.isEmpty()) {
             templates.forEach(temp -> {
-                if (!temp.getAvailableToCreate()) {
+                //TODO исправить логику с учотом изменения getAvailableToCreate с Boolean на Integer
+                /*                if (!temp.getAvailableToCreate()) {
                     validation.error(AreaErrorReason.CANT_CHANGE_AREA_TYPE,
                             new ValidationParameter("areaType", temp.getAreaType().getName()));
-                }
+                }*/
             });
         }
     }
@@ -157,6 +159,21 @@ public class AreaChecker {
             validation.error(AreaErrorReason.AREA_AGE_SETUP_EXCEEDED,
                     new ValidationParameter(paramMinCode, ageMin), new ValidationParameter(paramMaxCode, ageMax),
                     new ValidationParameter(paramMinCode, ageMinAreaType), new ValidationParameter(paramMaxCode, ageMaxAreaType));
+        }
+    }
+
+    public void checkAndGetAllowedAreaTypesInMU(long primaryAreaTypeCode, List<MuType> muTypes, Validation validation) {
+        List<MuTypeAreaTypes> muTypeAreaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(primaryAreaTypeCode,
+                muTypes.stream().map(MuType::getMuTypeId).collect(Collectors.toList()));
+        if (muTypeAreaTypes.isEmpty()) {
+            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", primaryAreaTypeCode));
+            return;
+        }
+        if (muTypeAreaTypes.stream().anyMatch(muTypeAreaType -> muTypeAreaType.getAvailableToCreate().equals(MuTypeAreaTypes.ALLOWED_TO_CREATE))) {
+            return;
+        }
+        if (muAddlAreaTypesRepository.findMuAddlAreaTypes(muTypes.stream().map(MuType::getMuId).collect(Collectors.toList()), primaryAreaTypeCode).isEmpty()) {
+            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", primaryAreaTypeCode));
         }
     }
 

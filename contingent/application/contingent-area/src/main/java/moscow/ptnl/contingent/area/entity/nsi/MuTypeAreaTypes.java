@@ -1,24 +1,25 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "MU_TYPE_AREA_TYPES")
 @Cacheable
-public class MUTypeAreaTypes implements Serializable {
+public class MuTypeAreaTypes implements Serializable {
 
+    public static final Integer ALLOWED_TO_CREATE = 1;
+    public static final Integer POSSIBLE_TO_CREATE = 2;
     private static final long serialVersionUID = -6543198512394189025L;
 
     @Id
@@ -33,8 +34,8 @@ public class MUTypeAreaTypes implements Serializable {
     private AreaType areaType;
 
     @Column(name = "AVAILABLE_TO_CREATE")
-    @Convert(converter = BooleanIntegerConverter.class)
-    private Boolean availableToCreate;
+    @Min(1) @Max(2)
+    private Integer availableToCreate;
 
     public Long getId() {
         return id;
@@ -60,11 +61,11 @@ public class MUTypeAreaTypes implements Serializable {
         this.areaType = areaType;
     }
 
-    public Boolean getAvailableToCreate() {
+    public Integer getAvailableToCreate() {
         return availableToCreate;
     }
 
-    public void setAvailableToCreate(Boolean availableToCreate) {
+    public void setAvailableToCreate(Integer availableToCreate) {
         this.availableToCreate = availableToCreate;
     }
     
@@ -72,8 +73,8 @@ public class MUTypeAreaTypes implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof MUTypeAreaTypes) {
-            return ((MUTypeAreaTypes) obj).getId().equals(this.id);
+        if (obj != null && obj instanceof MuTypeAreaTypes) {
+            return ((MuTypeAreaTypes) obj).getId().equals(this.id);
         }
         return false;
     }
