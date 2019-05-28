@@ -6,7 +6,6 @@ import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
-import moscow.ptnl.contingent.area.entity.nsi.MUTypeAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
@@ -18,7 +17,7 @@ import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.area.repository.nsi.MUTypeAreaTypesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.MuType;
@@ -39,7 +38,7 @@ public class AreaChecker {
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Autowired
-    private MUTypeAreaTypesRepository muTypeAreaTypesRepository;
+    private MuTypeAreaTypesRepository muTypeAreaTypesRepository;
 
     @Autowired
     private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
@@ -93,7 +92,7 @@ public class AreaChecker {
     •	Допустимость создания (AVAILABLE_TO_CREATE) = «Возможно» .
     Если запись с типом участка не найдена или AVAILABLE_TO_CREATE <> «Возможно» , то Система возвращает ошибку */
     public void checkMuTypeAreaTypeCreateAvailable(Long muTypeId, List<Long> areaTypes, Validation validation) {
-        List<MUTypeAreaTypes> templates = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, areaTypes, null);
+        List<MuTypeAreaTypes> templates = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, areaTypes, null);
 
         if (templates != null && !templates.isEmpty()) {
             templates.forEach(temp -> {
@@ -181,7 +180,7 @@ public class AreaChecker {
 
     public void checkPrimaryAreaTypesForMuType(List<MuType> muTypes,
                                                List<Long> primaryAreaTypeCodes, Validation validation) {
-        List<MUTypeAreaTypes> muTypeAreaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(
+        List<MuTypeAreaTypes> muTypeAreaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(
                 muTypes.stream().map(MuType::getMuTypeId).collect(Collectors.toList()), primaryAreaTypeCodes, null);
 
         if (muTypeAreaTypes.stream()

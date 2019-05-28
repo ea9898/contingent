@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.repository.nsi;
 
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
+import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
@@ -10,7 +11,9 @@ public interface MuTypeAreaTypesRepository {
 
 	MuTypeAreaTypes findMuProfileTemplate(int muTypeId, Long areaTypeCode);
 
-    List<MuTypeAreaTypes> findMuProfileTemplates(Long muTypeId, List<Long> areaTypeCodes, Boolean availableToCreate);
+    List<MuTypeAreaTypes> findMuTypeAreaTypes(Long muTypeId, List<Long> areaTypeCodes, AvailableToCreateType availableToCreate);
+
+    List<MuTypeAreaTypes> findMuTypeAreaTypes(List<Long> muTypes, List<Long> areaTypeCodes, AvailableToCreateType availableToCreate);
 
     List<MuTypeAreaTypes> findMuTypeAreaTypes(Long muTypeId, List<Long> areaTypeCodes);
 }

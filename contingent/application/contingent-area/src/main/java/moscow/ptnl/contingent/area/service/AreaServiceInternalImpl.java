@@ -22,7 +22,6 @@ import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.esu.AreaCreateEvent;
-import moscow.ptnl.contingent.area.model.esu.AreaUpdateEvent;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
@@ -173,7 +172,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
         Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, new ArrayList<>(),
                 AvailableToCreateType.ALLOWED).stream()
-                .map(MUTypeAreaTypes::getAreaType)
+                .map(MuTypeAreaTypes::getAreaType)
                 .collect(Collectors.toSet());
         areaTypes.addAll(muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
                 .map(MuAddlAreaTypes::getAreaType)
