@@ -6,9 +6,9 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.util.List;
 
 @NoRepositoryBean
-public interface RegistryBuildingRepository {
+public interface BuildingRegistryRepository {
 
-    List<BuildingRegistry> getRegistryBuildings(long globalId);
+    List<BuildingRegistry> getBuildingsRegistry(long globalId);
 
     List<BuildingRegistry> findRegistryBuildings(String l1Value, String l2Value, String l3Value, long addrId);
 }

@@ -66,6 +66,20 @@ public class BuildingRegistry implements Serializable {
     @Column(name = "ADDRESS")
     private String address;
 
+    public BuildingRegistry() {
+    }
+
+    public BuildingRegistry(Long addrId, AddressFormingElement addressFormingElement, String l1Type, String l1Value, String l2Type, String l2Value, String l3Type, String l3Value) {
+        this.addrId = addrId;
+        this.addressFormingElement = addressFormingElement;
+        this.l1Type = l1Type;
+        this.l1Value = l1Value;
+        this.l2Type = l2Type;
+        this.l2Value = l2Value;
+        this.l3Type = l3Type;
+        this.l3Value = l3Value;
+    }
+
     public Long getId() {
         return id;
     }

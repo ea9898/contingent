@@ -12,7 +12,7 @@ import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
-import moscow.ptnl.contingent.area.repository.nsi.RegistryBuildingRepository;
+import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class AreaAddressChecker {
 
     @Autowired
-    private RegistryBuildingRepository registryBuildingRepository;
+    private BuildingRegistryRepository buildingRegistryRepository;
 
     @Autowired
     private AddressFormingElementRepository addressFormingElementRepository;
@@ -43,7 +43,7 @@ public class AreaAddressChecker {
                 validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
             }
             else if (a.getLevelAddress() == AddressLevelType.ID.getLevel()) {
-                if (registryBuildingRepository.getRegistryBuildings(a.getGlobalId()).isEmpty()) {
+                if (buildingRegistryRepository.getBuildingsRegistry(a.getGlobalId()).isEmpty()) {
                     validation.error(AreaErrorReason.NO_ADDRESS_IN_CATALOG,
                             new ValidationParameter("globalId", a.getGlobalId()),
                             new ValidationParameter("levelAddress", a.getLevelAddress()));

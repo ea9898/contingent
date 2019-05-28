@@ -280,7 +280,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
         try {
             AddAreaAddressResponse response = new AddAreaAddressResponse();
-            response.getAreaAddressIds().addAll(areaService.addAreaAddress());
+            response.getAreaAddressIds().addAll(areaService.addAreaAddress(body.getAreaId(),
+                    body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses(),
+                    body.getNonNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNonNsiAddresses()));
             return response;
         }
         catch (Exception ex) {

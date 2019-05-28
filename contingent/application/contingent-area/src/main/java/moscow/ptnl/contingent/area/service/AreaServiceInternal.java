@@ -56,7 +56,8 @@ public interface AreaServiceInternal {
 
     Long getNewAreaId() throws ContingentException;
 
-    List<Long> addAreaAddress();
+    List<Long> addAreaAddress(Long id, List<NsiAddress> nsiAddresses,
+                              List<NotNsiAddress> notNsiAddresses) throws ContingentException;
 
     List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
                             List<NotNsiAddress> notNsiAddresses) throws ContingentException;

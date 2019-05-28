@@ -14,10 +14,10 @@ import java.util.List;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
-public class RegistryBuildingRepositoryImpl extends BaseRepository implements RegistryBuildingRepository {
+public class BuildingRegistryRepositoryImpl extends BaseRepository implements BuildingRegistryRepository {
 
     @Override
-    public List<BuildingRegistry> getRegistryBuildings(long globalId) {
+    public List<BuildingRegistry> getBuildingsRegistry(long globalId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<BuildingRegistry> criteria = criteriaBuilder.createQuery(BuildingRegistry.class);
         Root<BuildingRegistry> template = criteria.from(BuildingRegistry.class);

@@ -8,6 +8,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
+import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
@@ -20,6 +21,8 @@ import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.mos.emias.contingent2.core.NotNsiAddress;
+import ru.mos.emias.contingent2.core.NsiAddress;
 import ru.mos.emias.contingent2.core.MuType;
 
 import java.time.LocalDate;
@@ -219,7 +222,7 @@ public class AreaChecker {
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
         }
-        else if (area.getArchive()) {
+        else if (area.getArchived()) {
             validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;
@@ -231,7 +234,7 @@ public class AreaChecker {
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
         }
-        else if (!area.getArchive()) {
+        else if (!area.getArchived()) {
             validation.error(AreaErrorReason.AREA_IS_NOT_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;
@@ -269,6 +272,20 @@ public class AreaChecker {
 
         if (!order.isPresent() || Boolean.TRUE.equals(order.get().getArchived())) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS, new ValidationParameter("orderId", orderId));
+        }
+    }
+
+    public void noAddresses(List<NsiAddress> nsiAddresses,
+                            List<NotNsiAddress> notNsiAddresses) throws ContingentException {
+        if (nsiAddresses.size() + notNsiAddresses.size() == 0) {
+            throw new ContingentException(AreaErrorReason.NO_ADDRESS);
+        }
+    }
+
+    public void tooManyAddresses(List<NsiAddress> nsiAddresses,
+                                 List<NotNsiAddress> notNsiAddresses, Long maxAddresses) throws ContingentException {
+        if (nsiAddresses.size() + notNsiAddresses.size() > maxAddresses) {
+            throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
         }
     }
 
