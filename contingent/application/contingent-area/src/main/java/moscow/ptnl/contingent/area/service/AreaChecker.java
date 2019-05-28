@@ -170,7 +170,7 @@ public class AreaChecker {
             validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", primaryAreaTypeCode));
             return;
         }
-        if (muTypeAreaTypes.stream().anyMatch(muTypeAreaType -> muTypeAreaType.getAvailableToCreate().equals(MuTypeAreaTypes.ALLOWED_TO_CREATE))) {
+        if (muTypeAreaTypes.stream().anyMatch(muTypeAreaType -> muTypeAreaType.getAvailableToCreate().equals(AvailableToCreateType.ALLOWED.getValue()))) {
             return;
         }
         if (muAddlAreaTypesRepository.findMuAddlAreaTypes(muTypes.stream().map(MuType::getMuId).collect(Collectors.toList()), primaryAreaTypeCode).isEmpty()) {

@@ -18,8 +18,6 @@ import java.util.Objects;
 @Cacheable
 public class MuTypeAreaTypes implements Serializable {
 
-    public static final Integer ALLOWED_TO_CREATE = 1;
-    public static final Integer POSSIBLE_TO_CREATE = 2;
     private static final long serialVersionUID = -6543198512394189025L;
 
     @Id
