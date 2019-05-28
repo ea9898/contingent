@@ -21,14 +21,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "AREA_MEDICAL_EMPLOYEE")
-@SequenceGenerator(name = "seq_area_medical_employee", sequenceName = "seq_area_medical_employee", allocationSize=1)
+@Table(name = "AREA_MEDICAL_EMPLOYEES")
+@SequenceGenerator(name = "seq_area_medical_employees", sequenceName = "seq_area_medical_employees", allocationSize=1)
 public class AreaMedicalEmployee implements Serializable {
 
     private static final long serialVersionUID = 4435222693561566689L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="seq_area_medical_employee")
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="seq_area_medical_employees")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
