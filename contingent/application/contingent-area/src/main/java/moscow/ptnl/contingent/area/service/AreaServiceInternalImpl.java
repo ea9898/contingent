@@ -23,6 +23,7 @@ import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.esu.AreaCreateEvent;
 import moscow.ptnl.contingent.area.model.esu.AreaUpdateEvent;
+import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
@@ -57,6 +58,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
+import ru.mos.emias.contingent2.core.MuType;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
 import ru.mos.emias.contingent2.core.NsiAddress;
 
@@ -169,7 +171,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Override
     public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
-        Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuProfileTemplates(muTypeId, new ArrayList<>(), true).stream()
+        Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, new ArrayList<>(),
+                AvailableToCreateType.ALLOWED).stream()
                 .map(MUTypeAreaTypes::getAreaType)
                 .collect(Collectors.toSet());
         areaTypes.addAll(muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
@@ -304,24 +307,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public Long createDependentArea(long moId, long muId, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
+    public Long createDependentArea(long moId, Long muId, List<MuType> muTypes, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                     boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
 
         areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
-        Map<Long, AreaType> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muId, primaryAreaTypeCodes, validation);
+        areaChecker.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        areaChecker.checkPrimaryAreasInMU(muId, primaryAreaTypeCodes, validation);
-
-        if (!areaRepository.findAreas(moId, null, areaTypeCode, null, null).isEmpty()) {
+        if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
-        }
-        if (number != null) {
-            areaChecker.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
         }
         AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
         areaChecker.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
@@ -329,6 +327,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        Map<Long, AreaType> primaryAreaTypes = areaTypesCRUDRepository.findAreaTypesByCode(primaryAreaTypeCodes).stream()
+                .collect(Collectors.toMap(AreaType::getCode, t -> t));
         //Создание новго зависимого участка
         Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
                 null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
@@ -337,11 +337,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         primaryAreaTypeCodes.forEach(c -> {
             AreaToAreaType areaToAreaType = new AreaToAreaType();
             areaToAreaType.setArea(area);
-//            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
+            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
-        esuService.saveAndPublishToESU(new AreaCreateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
-
+        if (!areaRepository.findAreas(moId, muId, primaryAreaTypeCodes, null, true).isEmpty()) {
+            esuService.saveAndPublishToESU(new AreaCreateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
+        }
         return area.getId();
     }
 
@@ -420,7 +421,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
             }
         }
-        Map<Long, AreaType> primaryAreaTypes = areaChecker.checkAndGetPrimaryAreaTypesInMU(muIdFinal, primaryAreaTypeCodesAdd, validation);
+        //Todo fix
+//        Map<Long, AreaType> primaryAreaTypes = areaChecker.checkPrimaryAreaTypesForMuType(muIdFinal, primaryAreaTypeCodesAdd, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -568,7 +570,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        area.setArchived(false);
+        area.setArchive(false);
         area.setAutoAssignForAttach(false);
     }
 
@@ -593,7 +595,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId))));
 
         //2
-        if (area.getArchived()) {
+        if (area.getArchive()) {
             throw new ContingentException(validation.error(
                     AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId)));
         }

@@ -226,6 +226,13 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="MuType">
+        <xs:sequence>
+            <xs:element name="muId" type="xs:long" />
+            <xs:element name="muTypeId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="Fault">
         <xs:annotation>
             <xs:documentation>Перечень сообщений об ошибках валидации</xs:documentation>
