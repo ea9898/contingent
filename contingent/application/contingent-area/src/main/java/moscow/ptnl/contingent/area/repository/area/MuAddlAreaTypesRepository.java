@@ -11,4 +11,6 @@ public interface MuAddlAreaTypesRepository {
 	List<MuAddlAreaTypes> getMuAddlAreaTypes(long muId);
 
     List<MuAddlAreaTypes> findMuAddlAreaTypes(List<Long> muIds, List<Long> areaTypes);
+
+    List<MuAddlAreaTypes> findMuAddlAreaTypes(List<Long> muIds, Long primaryAreaTypeCode);
 }
