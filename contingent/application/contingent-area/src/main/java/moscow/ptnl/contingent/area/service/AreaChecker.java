@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
@@ -22,12 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
 import ru.mos.emias.contingent2.core.NsiAddress;
+import ru.mos.emias.contingent2.core.MuType;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +41,7 @@ public class AreaChecker {
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Autowired
-    private MUTypeAreaTypesRepository MUTypeAreaTypesRepository;
+    private MUTypeAreaTypesRepository muTypeAreaTypesRepository;
 
     @Autowired
     private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
@@ -63,7 +65,7 @@ public class AreaChecker {
         areaTypes.forEach(a -> {
             Optional<AreaType> areaType = areaTypesCRUDRepository.findById(a);
 
-            if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchived())) {
+            if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchive())) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter(parameterCode, a));
             }
         });
@@ -75,7 +77,8 @@ public class AreaChecker {
    •	ИД типа участка (AREA_TYPE_CODE) = input ИД типа участка.
    Иначе возвращает ошибку */
     public void checkMuAddlAreaTypeExist(Long muId, List<Long> areaTypes, Validation validation) {
-        List<MuAddlAreaTypes> muAddlAreaTypes = muAddlAreaTypesRepository.findMuAddlAreaTypes(muId, areaTypes);
+        List<MuAddlAreaTypes> muAddlAreaTypes = muAddlAreaTypesRepository.findMuAddlAreaTypes(
+                Collections.singletonList(muId), areaTypes);
 
         if (muAddlAreaTypes != null && !muAddlAreaTypes.isEmpty()) {
             for (MuAddlAreaTypes muAddlAreaType : muAddlAreaTypes) {
@@ -92,11 +95,11 @@ public class AreaChecker {
     •	Допустимость создания (AVAILABLE_TO_CREATE) = «Возможно» .
     Если запись с типом участка не найдена или AVAILABLE_TO_CREATE <> «Возможно» , то Система возвращает ошибку */
     public void checkMuTypeAreaTypeCreateAvailable(Long muTypeId, List<Long> areaTypes, Validation validation) {
-        List<MUTypeAreaTypes> templates = MUTypeAreaTypesRepository.findMuProfileTemplates(muTypeId, areaTypes, true);
+        List<MUTypeAreaTypes> templates = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, areaTypes, null);
 
         if (templates != null && !templates.isEmpty()) {
             templates.forEach(temp -> {
-                if (!temp.getAvailableToCreate()) {
+                if (!AvailableToCreateType.POSSIBLE.getValue().equals(temp.getAvailableToCreate())) {
                     validation.error(AreaErrorReason.CANT_CHANGE_AREA_TYPE,
                             new ValidationParameter("areaType", temp.getAreaType().getName()));
                 }
@@ -163,18 +166,24 @@ public class AreaChecker {
         }
     }
 
-    public Map<Long, AreaType> checkAndGetPrimaryAreaTypesInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
-        List<MuAddlAreaTypes> muAddlAreaTypes = muAddlAreaTypesRepository.getMuAddlAreaTypes(muId);
-        Map<Long, AreaType> primaryAreaTypes = muAddlAreaTypes.stream()
-                .filter(p -> p.getAreaType() != null)
-                .collect(Collectors.toMap(p -> p.getAreaType().getCode(), MuAddlAreaTypes::getAreaType));
+    public void checkPrimaryAreaTypesForMuType(List<MuType> muTypes,
+                                               List<Long> primaryAreaTypeCodes, Validation validation) {
+        List<MUTypeAreaTypes> muTypeAreaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(
+                muTypes.stream().map(MuType::getMuTypeId).collect(Collectors.toList()), primaryAreaTypeCodes, null);
 
-        primaryAreaTypeCodes.forEach(c -> {
-            if (!primaryAreaTypes.keySet().contains(c)) {
-                validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", c));
-            }
-        });
-        return primaryAreaTypes;
+        if (muTypeAreaTypes.stream()
+                .noneMatch(t ->
+                    AvailableToCreateType.ALLOWED.getValue().equals(t.getAvailableToCreate()) ||
+                            (AvailableToCreateType.POSSIBLE.getValue().equals(t.getAvailableToCreate()) &&
+                                    !muAddlAreaTypesRepository.findMuAddlAreaTypes(
+                                            muTypes.stream()
+                                                    .filter(m -> Objects.equals(t.getMuTypeId(), m.getMuTypeId()))
+                                                    .map(MuType::getMuId)
+                                                    .collect(Collectors.toList()),
+                                            primaryAreaTypeCodes).isEmpty()))) {
+            String areaTypes = String.join(", ", primaryAreaTypeCodes.stream().map(String::valueOf).collect(Collectors.toList()));
+            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", areaTypes));
+        }
     }
 
     public void checkPrimaryAreasInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
