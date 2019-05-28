@@ -266,8 +266,10 @@ public class Area implements Serializable {
     }
 
     public Set<AreaMedicalEmployee> getActualMedicalEmployees() {
+        LocalDate now = LocalDate.now();
+
         return medicalEmployees.stream()
-                .filter(e -> e.getEndDate() == null || e.getEndDate().isAfter(LocalDate.now()))
+                .filter(e -> e.getEndDate() == null || e.getEndDate().isAfter(now) || e.getEndDate().equals(now))
                 .collect(Collectors.toSet());
     }
 
