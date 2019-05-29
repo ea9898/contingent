@@ -271,7 +271,8 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkAreaExistsInMU(long muId, long areaTypeCode, int number, Long excludeAreaId, Validation validation) {
+    //Todo т.к. МУ ИД теперь не обязательный, видимо нужно учитывать МО ИД ?
+    public void checkAreaExistsInMU(long muId, long areaTypeCode, Integer number, Long excludeAreaId, Validation validation) {
         List<Area> areas = areaRepository.findAreas(null, muId, areaTypeCode, number, true);
 
         if (areas.stream().anyMatch(a -> excludeAreaId == null || !Objects.equals(a.getId(), excludeAreaId))) {
