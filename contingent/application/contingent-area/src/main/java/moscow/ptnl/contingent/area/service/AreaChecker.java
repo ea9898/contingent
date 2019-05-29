@@ -172,21 +172,6 @@ public class AreaChecker {
         }
     }
 
-    public void checkAndGetAllowedAreaTypesInMU(long primaryAreaTypeCode, List<MuType> muTypes, Validation validation) {
-        List<MuTypeAreaTypes> muTypeAreaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(primaryAreaTypeCode,
-                muTypes.stream().map(MuType::getMuTypeId).collect(Collectors.toList()));
-        if (muTypeAreaTypes.isEmpty()) {
-            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", primaryAreaTypeCode));
-            return;
-        }
-        if (muTypeAreaTypes.stream().anyMatch(muTypeAreaType -> muTypeAreaType.getAvailableToCreate().equals(AvailableToCreateType.ALLOWED.getValue()))) {
-            return;
-        }
-        if (muAddlAreaTypesRepository.findMuAddlAreaTypes(muTypes.stream().map(MuType::getMuId).collect(Collectors.toList()), primaryAreaTypeCode).isEmpty()) {
-            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", primaryAreaTypeCode));
-        }
-    }
-
     public void checkPrimaryAreaTypesForMuType(List<MuType> muTypes,
                                                List<Long> primaryAreaTypeCodes, Validation validation) {
         List<MuTypeAreaTypes> muTypeAreaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(

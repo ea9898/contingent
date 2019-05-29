@@ -419,9 +419,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         //4
-        for (Long primaryAreaTypeCode : primaryAreaTypeCodesAdd) {
-            areaChecker.checkAndGetAllowedAreaTypesInMU(primaryAreaTypeCode, muTypes, validation);
-        }
+        areaChecker.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodesAdd, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
