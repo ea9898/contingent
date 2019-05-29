@@ -14,6 +14,8 @@
 
     <include file="system.xml" relativeToChangelogFile="true"/>
 
+    <include file="infrastructure.xml" relativeToChangelogFile="true"/>
+
     <changeSet id="EMIASUPK-7645-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>

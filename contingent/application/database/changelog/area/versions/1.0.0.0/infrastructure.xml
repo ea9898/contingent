@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+	<changeSet id="CONTINGENT2-77-1" author="mkachalov" labels="1.0.0.0">
+        	<preConditions onFail="MARK_RAN">
+            		<not>
+                		<tableExists tableName="JL_HISTORY"/>
+            		</not>
+        	</preConditions>
+        	<comment>Создание таблицы JL_HISTORY</comment>
+		<createTable tableName="JL_HISTORY" remarks="История изменения данных в таблицах">
+			<column name="ID" type="BIGINT" remarks="Идентификатор истории">
+                		<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="TABLE_ID" type="BIGINT" remarks="Тип изменённого объекта">
+				<constraints nullable="false" />
+			</column>
+			<column name="OBJECT_ID" type="BIGINT" remarks="Идентификатор объекта в исходной таблице">
+				<constraints nullable="false" />
+			</column>
+			<column name="CHANGE_DATE" type="TIMESTAMP(6)" remarks="Дата изменения">
+				<constraints nullable="false" />
+			</column>
+			<column name="ACCOUNT_ID" type="BIGINT" remarks="Идентификатор пользователя, внёсшего изменения"/>
+			<column name="USER_LOGIN" type="VARCHAR2(500)" remarks="Логин пользователя, изменившего запись" />
+			<column name="JOB_INFO_ID" type="BIGINT" remarks="Идентификатор исполняемой должности пользователя, внёсшего изменения"/>
+			<column name="LPU_ID" type="BIGINT" remarks="Идентифиатор МО, в которой работает пользователь"/>
+			<column name="SOURCE_TYPE" type="VARCHAR2(370)" remarks="Источник изменения. Справочник APPOINTMENT_SOURCE" />
+			<column name="SERVICE_NAME" type="VARCHAR2(500)" remarks="Имя сервиса, при помощи которого были внесены изменения" />
+			<column name="METHOD_NAME" type="VARCHAR2(500)" remarks="Метод, при помощи которого было внесено изменение" />
+			<column name="EVENT_ID" type="BIGINT" remarks="Идентификатор события из внешней БД"/>
+			<column name="NOTIFICATION_ID" type="BIGINT" remarks="Идентификатор уведомления о событии из внешней БД"/>
+			<column name="USER_ROLE_ID" type="BIGINT" remarks="Необязательное числовое поле ИД роли пользователя"/>
+		</createTable>
+		<rollback>
+            		<dropTable tableName="JL_HISTORY"/>
+	        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-77-2" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="JL_JRN_SEQ_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы JL_HISTORY</comment>
+        <createSequence sequenceName="JL_JRN_SEQ_ID"/>
+        <rollback>
+            <dropSequence sequenceName="JL_JRN_SEQ_ID"/>
+        </rollback>
+    </changeSet>
+
+    <!--
+            /*==============================================================*/
+            /* Index: JL_JRN_IDX1                                           */
+            /*==============================================================*/
+            create index JL_JRN_IDX1 on JL_HISTORY (
+            OBJECT_ID ASC,
+            TABLE_ID ASC
+            );
+    -->
+
+
+    <changeSet id="CONTINGENT2-77-3" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="JL_HISTORY_COLUMNS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы JL_HISTORY_COLUMNS</comment>
+        <createTable tableName="JL_HISTORY_COLUMNS" remarks="История изменения данных в таблицах">
+            <column name="JRN_ID" type="BIGINT" remarks="Идентификатор истории">
+                 <constraints nullable="false" />
+            </column>
+            <column name="COLUMN_NAME" type="VARCHAR2(100)" remarks="Название поля, в котором произошло изменение">
+                 <constraints nullable="false" />
+            </column>
+            <column name="OLD_VALUE" type="VARCHAR2(4000)" remarks="Старое значение"/>
+            <column name="NEW_VALUE" type="VARCHAR2(4000)" remarks="Новое значение"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="jl_history_columns"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-77-4" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="JL_HISTORY"/>                
+            <tableExists tableName="JL_HISTORY_COLUMNS"/>                
+            <not>
+               <foreignKeyConstraintExists schemaName="JL_HISTORY_COLUMNS" foreignKeyName="JL_JHL_FK_JL_HISTORY_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание композитного ключа для таблицы JL_HISTORY_COLUMNS</comment>
+        <addForeignKeyConstraint baseColumnNames="JRN_ID"
+                                 baseTableName="JL_HISTORY_COLUMNS"
+                                 constraintName="JL_JHL_FK_JL_HISTORY_ID"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="JL_HISTORY"/>
+         <rollback>
+            <dropForeignKeyConstraint baseTableName="JL_HISTORY_COLUMNS" constraintName="JL_JHL_FK_JL_HISTORY_ID"/>
+         </rollback>
+     </changeSet>
+
+     <changeSet id="CONTINGENT2-77-5" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="JL_HISTORY"/>                
+            <tableExists tableName="JL_HISTORY_COLUMNS"/>                
+        </preConditions>
+        <comment>Создание констрэйнтов для таблицы JL_HISTORY_COLUMNS</comment>
+        <sql>
+             alter table JL_HISTORY_COLUMNS
+             add constraint JL_JHL_CK1 check (OLD_VALUE IS NOT NULL OR NEW_VALUE IS NOT NULL);
+        </sql>
+        <rollback>
+            <sql>
+                ALTER TABLE JL_HISTORY_COLUMNS DROP CONSTRAINT JL_JHL_CK1;
+            </sql>
+        </rollback>
+     </changeSet>
+
+</databaseChangeLog>
