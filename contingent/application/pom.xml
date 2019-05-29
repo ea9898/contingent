@@ -14,7 +14,7 @@
         <module>contingent-common</module>
         <module>contingent-area</module>
         <module>contingent-requests</module>
-        <module>contingent-infrastructure-area</module>
+        <module>contingent-area-infrastructure</module>
     </modules>
 
     <properties>
