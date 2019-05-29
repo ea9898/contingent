@@ -2,6 +2,8 @@ package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.area.entity.area.AreaAddress;
+import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
@@ -13,29 +15,39 @@ import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.AreaAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
+import moscow.ptnl.contingent.area.util.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.mos.emias.contingent2.core.AddMedicalEmployee;
+import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
 import ru.mos.emias.contingent2.core.NsiAddress;
 import ru.mos.emias.contingent2.core.MuType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class AreaChecker {
+public class AreaServiceHelper {
+
+    public static final Integer NOT_NSI_ADDRESS_LEVEL = 8;
 
     @Autowired
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
@@ -57,6 +69,15 @@ public class AreaChecker {
 
     @Autowired
     private MoAddressCRUDRepository moAddressCRUDRepository;
+
+    @Autowired
+    private PositionNomClinicRepository positionNomClinicRepository;
+
+    @Autowired
+    private AreaAddressCRUDRepository areaAddressCRUDRepository;
+
+    @Autowired
+    private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -295,5 +316,159 @@ public class AreaChecker {
             }
         });
         return result;
+    }
+
+    public void checkMainEmployeesOverlappingDates(List<AreaMedicalEmployee> mainEmployees,
+                                                   Validation validation) throws ContingentException {
+        if (mainEmployees.size() > 1) {
+            mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
+            for (int i = 0; i < mainEmployees.size() - 1; i++) {
+                AreaMedicalEmployee current = mainEmployees.get(i);
+                AreaMedicalEmployee next = mainEmployees.get(i + 1);
+                if (current.getEndDate() == null
+                        || next.getStartDate().minusDays(1).isBefore(current.getEndDate())) {
+                    validation.error(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP,
+                            new ValidationParameter("specialization1",
+                                    current.getMedicalEmployeeJobInfoId()),
+                            new ValidationParameter("specialization2",
+                                    next.getMedicalEmployeeJobInfoId()));
+                }
+            }
+            if (!validation.isSuccess()) {
+                throw new ContingentException(validation);
+            }
+        }
+    }
+
+    public void checkReplacementWithoutMain(List<Period> periodsWithoutMainEmpl,
+                                            List<AreaMedicalEmployee> replacementEmployees,
+                                            Validation validation) throws ContingentException {
+        boolean foundError = false;
+        for (Period period : periodsWithoutMainEmpl) {
+            for (AreaMedicalEmployee empl : replacementEmployees) {
+                if (period.isInterceptWith(empl.getStartDate(), empl.getEndDate())) {
+                    foundError = true;
+                    break;
+                }
+            }
+            if (foundError) {
+                validation.error(AreaErrorReason.REPLACEMENT_WITHOUT_MAIN_EMPLOYEE,
+                        new ValidationParameter("startDate", period.getStartDate()),
+                        new ValidationParameter("endDate",period.getEndDate()));
+                foundError = false;
+            }
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+    }
+
+    public void checkDatesNotInterceptWithSamePosition(List<AreaMedicalEmployee> allEmployees,
+                                                       Validation validation) throws ContingentException {
+        if (allEmployees.size() > 1) {
+            allEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getMedicalEmployeeJobInfoId)
+                    .thenComparing(AreaMedicalEmployee::getStartDate));
+            for (int i = 0; i < allEmployees.size() - 1; i++) {
+                AreaMedicalEmployee current = allEmployees.get(i);
+                AreaMedicalEmployee next = allEmployees.get(i + 1);
+                if (current.getMedicalEmployeeJobInfoId() != null
+                        && current.getMedicalEmployeeJobInfoId().equals(next.getMedicalEmployeeJobInfoId())
+                        && (current.getEndDate() == null || next.getStartDate().isBefore(current.getEndDate().plusDays(1)))) {
+                    validation.error(AreaErrorReason.JOB_ID_DATE_OVERLAP,
+                            new ValidationParameter("jobInfoId", current.getMedicalEmployeeJobInfoId()),
+                            new ValidationParameter("areaId", current.getArea().getId()),
+                            new ValidationParameter("startDate1", current.getStartDate()),
+                            new ValidationParameter("endDate1",
+                                    current.getEndDate() != null ? current.getEndDate() : Period.MAX_DATE),
+                            new ValidationParameter("startDate2", next.getStartDate()),
+                            new ValidationParameter("endDate2",
+                                    next.getEndDate() != null ? next.getEndDate() : Period.MAX_DATE));
+                }
+            }
+            if (!validation.isSuccess()) {
+                throw new ContingentException(validation);
+            }
+        }
+    }
+
+    public List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployee> mainEmployees) {
+        mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
+        List<Period> periodsWithoutMainEmpl = new ArrayList<>();
+        if (mainEmployees.isEmpty()) {
+            periodsWithoutMainEmpl.add(Period.ALL_TIME);
+            return periodsWithoutMainEmpl;
+        }
+        AreaMedicalEmployee first = mainEmployees.get(0);
+        periodsWithoutMainEmpl.add(new Period(Period.MIN_DATE, first.getStartDate().minusDays(1)));
+        for (int i = 0; i < mainEmployees.size() - 1; i++) {
+            AreaMedicalEmployee current = mainEmployees.get(i);
+            AreaMedicalEmployee next = mainEmployees.get(i + 1);
+            if (current.getEndDate() == null) {
+                return periodsWithoutMainEmpl;
+            }
+            if (next.getStartDate().minusDays(1).isAfter(current.getEndDate())) {
+                periodsWithoutMainEmpl.add(new Period(current.getEndDate().plusDays(1), next.getStartDate().minusDays(1)));
+            }
+        }
+        AreaMedicalEmployee last = mainEmployees.get(mainEmployees.size() - 1);
+        if (last.getEndDate() != null) {
+            periodsWithoutMainEmpl.add(new Period(last.getEndDate().plusDays(1), Period.MAX_DATE));
+        }
+        return periodsWithoutMainEmpl;
+    }
+
+    public void applyChanges(List<AreaMedicalEmployee> employees, List<ChangeMedicalEmployee> changeEmployees) {
+        for (AreaMedicalEmployee empl : employees) {
+            Optional<ChangeMedicalEmployee> optionalChangeEmpl = changeEmployees.stream().filter(
+                    ch -> empl.getId().equals(ch.getAssignmentId())).findFirst();
+            if (!optionalChangeEmpl.isPresent()) {
+                continue;
+            }
+            ChangeMedicalEmployee changeEmpl = optionalChangeEmpl.get();
+            if (changeEmpl.getStartDate() != null) {
+                empl.setStartDate(changeEmpl.getStartDate());
+            }
+
+            if (changeEmpl.getEndDate() != null) {
+                empl.setEndDate(changeEmpl.getEndDate());
+            }
+        }
+    }
+
+    public void addNew(List<AreaMedicalEmployee> employees, List<AddMedicalEmployee> addEmployees, Area area) {
+        addEmployees.forEach(empl -> employees.add(new AreaMedicalEmployee(
+                empl.getMedicalEmployeeJobInfoId(),
+                area,
+                empl.isIsReplacement(),
+                empl.getStartDate(),
+                empl.getEndDate(),
+                empl.getSnils(),
+                positionNomClinicRepository.getPositionProxy(empl.getPositionId()),
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                empl.getSubdivisionId())));
+    }
+
+
+    public void delAreaAddresses(List<AreaAddress> addresses) {
+        addresses.forEach(a -> {
+            if (a.getStartDate().equals(LocalDate.now())) {
+                areaAddressCRUDRepository.delete(a);
+            }
+            else {
+                a.setEndDate(LocalDate.now().minusDays(1));
+            }
+        });
+    }
+
+    public void delAreaMedicalEmployees(List<AreaMedicalEmployee> employees) {
+        employees.forEach(a -> {
+            if (a.getStartDate().equals(LocalDate.now())) {
+                areaMedicalEmployeeCRUDRepository.delete(a);
+            }
+            else {
+                a.setEndDate(LocalDate.now().minusDays(1));
+            }
+        });
     }
 }

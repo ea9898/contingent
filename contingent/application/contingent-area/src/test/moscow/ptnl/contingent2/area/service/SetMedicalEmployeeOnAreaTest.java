@@ -8,6 +8,7 @@ import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
+import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.util.Period;
 import org.junit.Assert;
@@ -25,7 +26,7 @@ import java.util.List;
 public class SetMedicalEmployeeOnAreaTest {
 
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(SetMedicalEmployeeOnAreaTest.class);
-    private static AreaServiceInternalImpl areaServiceInternal = new AreaServiceInternalImpl();
+    private static AreaServiceHelper areaServiceHelper = new AreaServiceHelper();
     private Specialization specialization;
     private AreaType areaType;
     private Area area1, area2;
@@ -65,7 +66,7 @@ public class SetMedicalEmployeeOnAreaTest {
     @Test
     public void getPeriodsWithoutMainEmployee_emptyEmployeesTest() {
         LOG.info("Тест getPeriodsWithoutMainEmployee передан пустой список медработников");
-        List<Period> periods = areaServiceInternal.getPeriodsWithoutMainEmployee(new ArrayList<>());
+        List<Period> periods = areaServiceHelper.getPeriodsWithoutMainEmployee(new ArrayList<>());
         Assert.assertEquals(1, periods.size());
         Assert.assertEquals(Period.ALL_TIME, periods.get(0));
     }
@@ -73,7 +74,7 @@ public class SetMedicalEmployeeOnAreaTest {
     @Test
     public void getPeriodsWithoutMainEmployee_singleEmployeeWithNullEndDateTest() {
         LOG.info("Тест getPeriodsWithoutMainEmployee передан один медработник с пустой датой окончания назначения");
-        List<Period> periods = areaServiceInternal.getPeriodsWithoutMainEmployee(Collections.singletonList(employee1));
+        List<Period> periods = areaServiceHelper.getPeriodsWithoutMainEmployee(Collections.singletonList(employee1));
         Assert.assertEquals(1, periods.size());
         Assert.assertEquals(new Period(Period.MIN_DATE, employee1.getStartDate().minusDays(1)), periods.get(0));
     }
@@ -81,7 +82,7 @@ public class SetMedicalEmployeeOnAreaTest {
     @Test
     public void getPeriodsWithoutMainEmployee_singleEmployeeWithEndDateTest() {
         LOG.info("Тест getPeriodsWithoutMainEmployee передан один медработник с датой окончания назначения");
-        List<Period> periods = areaServiceInternal.getPeriodsWithoutMainEmployee(Collections.singletonList(employee2));
+        List<Period> periods = areaServiceHelper.getPeriodsWithoutMainEmployee(Collections.singletonList(employee2));
         Assert.assertEquals(2, periods.size());
         Assert.assertEquals(new Period(Period.MIN_DATE, employee2.getStartDate().minusDays(1)), periods.get(0));
         Assert.assertEquals(new Period(employee2.getEndDate().plusDays(1), Period.MAX_DATE), periods.get(1));
@@ -91,7 +92,7 @@ public class SetMedicalEmployeeOnAreaTest {
     public void getPeriodsWithoutMainEmployee_twoEmployeesWithGapTest() {
         LOG.info("Тест getPeriodsWithoutMainEmployee переданы два медработникв с датами окончания назначения");
         List<AreaMedicalEmployee> employees = Arrays.asList(employee3, employee2);
-        List<Period> periods = areaServiceInternal.getPeriodsWithoutMainEmployee(employees);
+        List<Period> periods = areaServiceHelper.getPeriodsWithoutMainEmployee(employees);
         Assert.assertEquals(3, periods.size());
         Assert.assertEquals(new Period(Period.MIN_DATE, employee2.getStartDate().minusDays(1)), periods.get(0));
         Assert.assertEquals(new Period(employee2.getEndDate().plusDays(1), employee3.getStartDate().minusDays(1)), periods.get(1));
@@ -102,7 +103,7 @@ public class SetMedicalEmployeeOnAreaTest {
     public void getPeriodsWithoutMainEmployee_threeEmployeesTest() {
         LOG.info("Тест getPeriodsWithoutMainEmployee переданы три медработника, один из которых с незаполненой датой окончания назначения");
         List<AreaMedicalEmployee> employees = Arrays.asList(employee4, employee3, employee2);
-        List<Period> periods = areaServiceInternal.getPeriodsWithoutMainEmployee(employees);
+        List<Period> periods = areaServiceHelper.getPeriodsWithoutMainEmployee(employees);
         Assert.assertEquals(2, periods.size());
         Assert.assertEquals(new Period(Period.MIN_DATE, employee2.getStartDate().minusDays(1)), periods.get(0));
         Assert.assertEquals(new Period(employee2.getEndDate().plusDays(1), employee3.getStartDate().minusDays(1)),
@@ -113,7 +114,7 @@ public class SetMedicalEmployeeOnAreaTest {
     public void getPeriodsWithoutMainEmployee_fourEmployeesTest() {
         LOG.info("Тест getPeriodsWithoutMainEmployee переданы четыре медработника");
         List<AreaMedicalEmployee> employees = Arrays.asList(employee4, employee3, employee1, employee2);
-        List<Period> periods = areaServiceInternal.getPeriodsWithoutMainEmployee(employees);
+        List<Period> periods = areaServiceHelper.getPeriodsWithoutMainEmployee(employees);
         Assert.assertEquals(1, periods.size());
         Assert.assertEquals(new Period(Period.MIN_DATE, employee1.getStartDate().minusDays(1)), periods.get(0));
     }
@@ -121,21 +122,21 @@ public class SetMedicalEmployeeOnAreaTest {
     @Test
     public void checkMainEmployeesOverlappingDates_emptyEmployeesTest() throws ContingentException {
         LOG.info("Тест checkMainEmployeesOverlappingDates передан пустой список медработников");
-        areaServiceInternal.checkMainEmployeesOverlappingDates(new ArrayList<>(), validation);
+        areaServiceHelper.checkMainEmployeesOverlappingDates(new ArrayList<>(), validation);
     }
 
     @Test
     public void checkMainEmployeesOverlappingDate_singleEmployeeTest() throws ContingentException {
         LOG.info("Тест checkMainEmployeesOverlappingDates передан один медработник");
-        areaServiceInternal.checkMainEmployeesOverlappingDates(Collections.singletonList(employee1), validation);
-        areaServiceInternal.checkMainEmployeesOverlappingDates(Collections.singletonList(employee2), validation);
+        areaServiceHelper.checkMainEmployeesOverlappingDates(Collections.singletonList(employee1), validation);
+        areaServiceHelper.checkMainEmployeesOverlappingDates(Collections.singletonList(employee2), validation);
     }
 
     @Test
     public void checkMainEmployeesOverlappingDate_twoOverlappedEmployeesTest() {
         LOG.info("Тест checkMainEmployeesOverlappingDates переданы два пересекающихся медработника");
         try {
-            areaServiceInternal.checkMainEmployeesOverlappingDates(Arrays.asList(employee4, employee3), validation);
+            areaServiceHelper.checkMainEmployeesOverlappingDates(Arrays.asList(employee4, employee3), validation);
         } catch (ContingentException e) {
             Assert.assertEquals(1, e.getValidation().getMessages().size());
             Assert.assertEquals(String.format(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP.getDescription(),
@@ -150,7 +151,7 @@ public class SetMedicalEmployeeOnAreaTest {
     public void checkMainEmployeesOverlappingDate_twoPairOverlappedEmployeesTest() {
         LOG.info("Тест checkMainEmployeesOverlappingDates переданы две пары пересекающихся медработника");
         try {
-            areaServiceInternal.checkMainEmployeesOverlappingDates(
+            areaServiceHelper.checkMainEmployeesOverlappingDates(
                     Arrays.asList(employee6, employee7, employee5, employee3), validation);
         } catch (ContingentException e) {
             Assert.assertEquals(2, e.getValidation().getMessages().size());
@@ -168,14 +169,14 @@ public class SetMedicalEmployeeOnAreaTest {
     @Test
     public void checkReplacementWithoutMain_emptyEmployeesTest() throws ContingentException {
         LOG.info("Тест checkReplacementWithoutMain передан пустой список медработников");
-        areaServiceInternal.checkReplacementWithoutMain(
+        areaServiceHelper.checkReplacementWithoutMain(
                 Collections.singletonList(period1), new ArrayList<>(), validation);
     }
 
     @Test
     public void checkReplacementWithoutMain_emptyPeriodsTest() throws ContingentException {
         LOG.info("Тест checkReplacementWithoutMain передан пустой список периода проверки медработников");
-        areaServiceInternal.checkReplacementWithoutMain(
+        areaServiceHelper.checkReplacementWithoutMain(
                 new ArrayList<>(), Collections.singletonList(employee1), validation);
     }
 
@@ -183,7 +184,7 @@ public class SetMedicalEmployeeOnAreaTest {
     public void checkReplacementWithoutMain_oneEmployeeInPeriodTest() {
         LOG.info("Тест checkReplacementWithoutMain передан один медработник подпадающий в период");
         try {
-            areaServiceInternal.checkReplacementWithoutMain(Collections.singletonList(period1),
+            areaServiceHelper.checkReplacementWithoutMain(Collections.singletonList(period1),
                     Collections.singletonList(employee1), validation);
         } catch (ContingentException e) {
             Assert.assertEquals(1, e.getValidation().getMessages().size());
@@ -199,7 +200,7 @@ public class SetMedicalEmployeeOnAreaTest {
     public void checkReplacementWithoutMain_severalEmployeesTest() {
         LOG.info("Тест checkReplacementWithoutMain передан один медработник подпадающий в период");
         try {
-            areaServiceInternal.checkReplacementWithoutMain(Arrays.asList(period2, period3, period4),
+            areaServiceHelper.checkReplacementWithoutMain(Arrays.asList(period2, period3, period4),
                     Arrays.asList(employee8, employee9), validation);
         } catch (ContingentException e) {
             Assert.assertEquals(1, e.getValidation().getMessages().size());
@@ -229,13 +230,13 @@ public class SetMedicalEmployeeOnAreaTest {
     @Test
     public void checkDatesNotInterceptWithSamePosition_emptyEmployeesTest() throws ContingentException {
         LOG.info("Тест checkDatesNotInterceptWithSamePosition передан пустой список медработников");
-        areaServiceInternal.checkDatesNotInterceptWithSamePosition(new ArrayList<>(), validation);
+        areaServiceHelper.checkDatesNotInterceptWithSamePosition(new ArrayList<>(), validation);
     }
 
     @Test
     public void checkDatesNotInterceptWithSamePosition_datesInterceptedForDifferentJobInfoIdEmployeesTest() throws ContingentException {
         LOG.info("Тест checkDatesNotInterceptWithSamePosition переданы медработники с разным исполнением должности и пересекающимися датами");
-        areaServiceInternal.checkDatesNotInterceptWithSamePosition(
+        areaServiceHelper.checkDatesNotInterceptWithSamePosition(
                 Arrays.asList(employee3, employee4, employee5, employee6, employee7), validation);
     }
 
@@ -243,7 +244,7 @@ public class SetMedicalEmployeeOnAreaTest {
     public void checkDatesNotInterceptWithSamePosition_datesInterceptedForSameJobInfoIdEmployeesTest() {
         LOG.info("Тест checkDatesNotInterceptWithSamePosition переданы медработники с одинаковым исполнением должности и пересекающимися датами");
         try {
-            areaServiceInternal.checkDatesNotInterceptWithSamePosition(
+            areaServiceHelper.checkDatesNotInterceptWithSamePosition(
                     Arrays.asList(employee2, employee3, employee4, employee1), validation);
         } catch (ContingentException e) {
             Assert.assertEquals(1, e.getValidation().getMessages().size());
@@ -260,7 +261,7 @@ public class SetMedicalEmployeeOnAreaTest {
     public void checkDatesNotInterceptWithSamePosition_datesInterceptedForSameJobInfoIdEmployeesTest2() {
         LOG.info("Тест checkDatesNotInterceptWithSamePosition переданы медработники с одинаковым исполнением должности и пересекающимися датами");
         try {
-            areaServiceInternal.checkDatesNotInterceptWithSamePosition(
+            areaServiceHelper.checkDatesNotInterceptWithSamePosition(
                     Arrays.asList(employee8, employee7, employee10, employee9, employee11), validation);
         } catch (ContingentException e) {
             Assert.assertEquals(3, e.getValidation().getMessages().size());
