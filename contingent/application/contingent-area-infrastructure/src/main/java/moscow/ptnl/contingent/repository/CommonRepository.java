@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.repository;
+package moscow.ptnl.contingent.repository;
 
 import java.io.Serializable;
 

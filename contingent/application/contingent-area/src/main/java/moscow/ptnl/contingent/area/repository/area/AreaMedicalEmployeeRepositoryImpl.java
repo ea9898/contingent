@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.area.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee_;
-import moscow.ptnl.contingent.area.repository.BaseRepository;
+import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

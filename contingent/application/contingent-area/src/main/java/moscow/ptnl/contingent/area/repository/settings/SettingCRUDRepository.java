@@ -1,8 +1,7 @@
 package moscow.ptnl.contingent.area.repository.settings;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaCountLimit;
 import moscow.ptnl.contingent.area.entity.settings.Setting;
-import moscow.ptnl.contingent.area.repository.CommonRepository;
+import moscow.ptnl.contingent.repository.CommonRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.area.repository.nsi;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.entity.nsi.SpecializationToPositionNom;
 import moscow.ptnl.contingent.area.entity.nsi.SpecializationToPositionNom_;
-import moscow.ptnl.contingent.area.repository.BaseRepository;
+import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

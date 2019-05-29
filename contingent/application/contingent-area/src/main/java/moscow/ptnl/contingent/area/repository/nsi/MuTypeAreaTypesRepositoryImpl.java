@@ -4,7 +4,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes_;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
-import moscow.ptnl.contingent.area.repository.BaseRepository;
+import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

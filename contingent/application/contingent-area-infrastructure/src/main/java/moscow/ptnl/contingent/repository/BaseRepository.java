@@ -1,8 +1,8 @@
-package moscow.ptnl.contingent.area.repository;
+package moscow.ptnl.contingent.repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import moscow.ptnl.contingent.area.configuration.PersistenceConfiguration;
+import moscow.ptnl.contingent.configuration.PersistenceConfiguration;
 
 public class BaseRepository {
 
