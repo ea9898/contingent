@@ -163,7 +163,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaAddressChecker areaAddressChecker;
 
     @Autowired
-    private EsuService esuService;
+    private EsuHelperService esuHelperService;
 
     @Autowired
     private SettingService settingService;
@@ -339,9 +339,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
-        if (!areaRepository.findAreas(moId, muId, primaryAreaTypeCodes, null, true).isEmpty()) {
-            esuService.saveAndPublishToESU(new AreaCreateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
-        }
+        esuHelperService.trySendDependentAreaChange(area);
+
         return area.getId();
     }
 
@@ -563,14 +562,23 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Validation validation = new Validation();
 
         Area area = areaChecker.checkAndGetArchivedArea(id, validation);
-        areaChecker.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
-        areaChecker.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
 
+        if (area != null) {
+            areaChecker.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
+            areaChecker.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
+        }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
         area.setArchived(false);
         area.setAutoAssignForAttach(false);
+
+        if (areaChecker.isAreaPrimary(area)) {
+            esuHelperService.trySendPrimaryAreaChange(area);
+        }
+        else if (areaChecker.isAreaDependent(area)) {
+            esuHelperService.trySendDependentAreaChange(area);
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.model.esu;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AreaEvent {
@@ -39,10 +40,10 @@ public abstract class AreaEvent {
     }
 
     public List<AreaToAreaType> getAddPrimaryAreaTypes() {
-        return addPrimaryAreaTypes;
+        return addPrimaryAreaTypes == null ? new ArrayList<>() : addPrimaryAreaTypes;
     }
 
     public List<AreaToAreaType> getDelPrimaryAreaTypes() {
-        return delPrimaryAreaTypes;
+        return delPrimaryAreaTypes == null ? new ArrayList<>() : delPrimaryAreaTypes;
     }
 }
