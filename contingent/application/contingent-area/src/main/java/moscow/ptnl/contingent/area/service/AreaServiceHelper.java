@@ -48,6 +48,8 @@ import java.util.stream.Collectors;
 public class AreaServiceHelper {
 
     public static final Integer NOT_NSI_ADDRESS_LEVEL = 8;
+    private static final Long PRIMARY_AREA_TYPE_CLASS = 1L;
+    private static final Long DEPENDENT_AREA_TYPE_CLASS = 2L;
 
     @Autowired
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
@@ -470,5 +472,15 @@ public class AreaServiceHelper {
                 a.setEndDate(LocalDate.now().minusDays(1));
             }
         });
+    }
+
+    public boolean isAreaPrimary(Area area) {
+        return area.getAreaType() != null && area.getAreaType().getClassAreaType() != null &&
+                Objects.equals(PRIMARY_AREA_TYPE_CLASS, area.getAreaType().getClassAreaType().getCode());
+    }
+
+    public boolean isAreaDependent(Area area) {
+        return area.getAreaType() != null && area.getAreaType().getClassAreaType() != null &&
+                Objects.equals(DEPENDENT_AREA_TYPE_CLASS, area.getAreaType().getClassAreaType().getCode());
     }
 }

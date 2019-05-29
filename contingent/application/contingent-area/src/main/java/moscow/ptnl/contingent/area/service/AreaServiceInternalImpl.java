@@ -21,7 +21,6 @@ import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.model.esu.AreaCreateEvent;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
@@ -149,7 +148,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaAddressChecker areaAddressChecker;
 
     @Autowired
-    private EsuService esuService;
+    private EsuHelperService esuHelperService;
 
     @Autowired
     private SettingService settingService;
@@ -323,9 +322,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
-        if (!areaRepository.findAreas(moId, muId, primaryAreaTypeCodes, null, true).isEmpty()) {
-            esuService.saveAndPublishToESU(new AreaCreateEvent(area, areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId())));
-        }
+        esuHelperService.trySendDependentAreaChange(area);
+
         return area.getId();
     }
 
@@ -547,14 +545,23 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Validation validation = new Validation();
 
         Area area = areaHelper.checkAndGetArchivedArea(id, validation);
-        areaHelper.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
-        areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
 
+        if (area != null) {
+            areaHelper.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
+            areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
+        }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
         area.setArchived(false);
         area.setAutoAssignForAttach(false);
+
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.trySendPrimaryAreaChange(area);
+        }
+        else if (areaHelper.isAreaDependent(area)) {
+            esuHelperService.trySendDependentAreaChange(area);
+        }
     }
 
     @Override
