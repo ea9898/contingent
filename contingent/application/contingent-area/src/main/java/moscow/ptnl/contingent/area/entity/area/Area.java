@@ -95,6 +95,9 @@ public class Area implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaToAreaType> primaryAreaTypes;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
+    private Set<AreaAddress> areaAddresses;
+
     public Area() {
     }
 
@@ -107,7 +110,7 @@ public class Area implements Serializable {
         this.createDate = createDate;
     }
 
-    public Area(Long moId, Long muId, AreaType areaType, Integer number, Boolean autoAssignForAttach, Boolean archive, String description, Boolean attachByMedicalReason, Integer ageMin, Integer ageMax, Integer ageMMin, Integer ageMMax, Integer ageWMin, Integer ageWMax, LocalDateTime createDate) {
+    public Area(Long moId, Long muId, AreaType areaType, Integer number, Boolean autoAssignForAttach, Boolean archived, String description, Boolean attachByMedicalReason, Integer ageMin, Integer ageMax, Integer ageMMin, Integer ageMMax, Integer ageWMin, Integer ageWMax, LocalDateTime createDate) {
         this.moId = moId;
         this.muId = muId;
         this.areaType = areaType;
@@ -292,7 +295,19 @@ public class Area implements Serializable {
     public Set<AreaToAreaType> getPrimaryAreaTypes() {
         return primaryAreaTypes;
     }
-    
+
+    public Set<AreaAddress> getAreaAddresses() {
+        return areaAddresses;
+    }
+
+    public Set<AreaAddress> getActualAreaAddresses() {
+        LocalDate now = LocalDate.now();
+
+        return areaAddresses.stream()
+                .filter(e -> e.getEndDate() == null || e.getEndDate().isAfter(now) || e.getEndDate().equals(now))
+                .collect(Collectors.toSet());
+    }
+
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.id);

@@ -192,7 +192,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public void addProfileMU(Long muId, Long muTypeId, List<Long> areaTypeCodes) throws ContingentException {
         Validation validation = new Validation();
 
-        areaChecker.checkAreaTypesExist(areaTypeCodes, validation, "areaTypesAdd");
+        areaChecker.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaTypesAdd");
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -253,7 +253,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
 
-        areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+        areaChecker.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
 
         MuAddlAreaTypes muAddlAreaTypes = muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
                 .filter(p -> p.getAreaType() != null && Objects.equals(p.getAreaType().getCode(), areaTypeCode))
@@ -311,7 +311,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                                     boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
 
-        areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+        areaChecker.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
         areaChecker.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
@@ -780,7 +780,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         areaChecker.tooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
 
-        areaChecker.checkAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+        List<AreaType> areaTypes = areaChecker.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode),
+                validation, "areaTypeCode");
 
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
@@ -857,9 +858,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             a.address = addressesRepository.findAddresses(address.getLevel(), address.getBuildingRegistry(), address.getAddressFormingElement())
                     .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
         });
-
-        // TODO этот запрос и проверку checkAreaTypesExist объединить в 1 запрос к БД
-        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+        AreaType areaType = areaTypes.get(0);
         addresses.forEach(a -> {
             a.moAddress = new MoAddress();
             a.moAddress.setAddress(a.address);
@@ -1012,7 +1011,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (paging != null && paging.getPageSize() > settingService.getPar3()) {
             validation.error(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
         }
-        areaChecker.checkAreaTypesExist(areaTypeCodes, validation, "areaType");
+        areaChecker.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaType");
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -1034,7 +1033,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         //Система закрывает территории обслуживания участка, созданные в соответствии с архивируемой территорией обслуживания МО
-        delAreaAddresses(addresses.stream().map(MoAddress::getId).collect(Collectors.toList()));
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(addresses.stream()
+                .map(MoAddress::getId)
+                .collect(Collectors.toList()));
+        delAreaAddresses(areaAddresses);
         //Система закрывает территории обслуживания МО
         addresses.forEach(a -> {
             if (a.getStartDate().equals(LocalDate.now())) {
@@ -1046,9 +1048,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         });
     }
 
-    private void delAreaAddresses(List<Long> moAddressIds) {
-        List<AreaAddress> addresses = areaAddressRepository.findAreaAddresses(moAddressIds);
-
+    private void delAreaAddresses(List<AreaAddress> addresses) {
         addresses.forEach(a -> {
             if (a.getStartDate().equals(LocalDate.now())) {
                 areaAddressCRUDRepository.delete(a);
@@ -1057,5 +1057,36 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 a.setEndDate(LocalDate.now().minusDays(1));
             }
         });
+    }
+
+    private void delAreaMedicalEmployees(List<AreaMedicalEmployee> employees) {
+        employees.forEach(a -> {
+            if (a.getStartDate().equals(LocalDate.now())) {
+                areaMedicalEmployeeCRUDRepository.delete(a);
+            }
+            else {
+                a.setEndDate(LocalDate.now().minusDays(1));
+            }
+        });
+    }
+
+    @Override
+    public void archiveArea(long areaId) throws ContingentException {
+        Validation validation = new Validation();
+
+        Area area = areaChecker.checkAndGetArea(areaId, validation);
+
+        if (area != null && Boolean.TRUE.equals(area.getAutoAssignForAttach())) {
+            validation.error(AreaErrorReason.AREA_IS_AUTO_ATTACH, new ValidationParameter("areaId", areaId));
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //Система исключает адреса обслуживаня из участка, если указаны
+        delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
+        //Система исключает МР из участка, если указаны
+        delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
+        //Система для данного участка меняет статус на «Архивный»
+        area.setArchived(true);
     }
 }

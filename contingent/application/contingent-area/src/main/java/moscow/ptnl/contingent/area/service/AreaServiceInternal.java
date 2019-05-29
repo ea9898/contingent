@@ -65,4 +65,6 @@ public interface AreaServiceInternal {
     Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
 
     void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException;
+
+    void archiveArea(long areaId) throws ContingentException;
 }

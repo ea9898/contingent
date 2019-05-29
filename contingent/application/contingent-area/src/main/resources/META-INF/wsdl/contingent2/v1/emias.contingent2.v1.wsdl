@@ -173,6 +173,14 @@
         <wsdl:part name="body" element="ns1:delMoAddressResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="archiveAreaInput">
+        <wsdl:part name="body" element="ns1:archiveAreaRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="archiveAreaOutput">
+        <wsdl:part name="body" element="ns1:archiveAreaResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="addProfileMU">
             <wsdl:documentation>
@@ -316,6 +324,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:delMoAddressInput"/>
             <wsdl:output message="tns:delMoAddressOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="archiveArea">
+            <wsdl:documentation>
+                Архивирование участка обслуживания (К_УУ_13)
+            </wsdl:documentation>
+            <wsdl:input message="tns:archiveAreaInput"/>
+            <wsdl:output message="tns:archiveAreaOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -563,6 +579,20 @@
 
         <wsdl:operation name="delMoAddress">
             <soap:operation soapAction="delMoAddress"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="archiveArea">
+            <soap:operation soapAction="archiveArea"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>
