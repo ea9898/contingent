@@ -90,7 +90,7 @@ public class AreaServiceHelper {
         areaTypes.forEach(a -> {
             Optional<AreaType> areaType = areaTypesCRUDRepository.findById(a);
 
-            if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchive())) {
+            if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchived())) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter(parameterCode, a));
             }
             else {

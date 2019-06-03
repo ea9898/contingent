@@ -87,3 +87,7 @@ contingent/application/contingent-common/target/
 contingent/application/contingent-requests/requests.iml
 contingent/application/contingent-requests/target/
 contingent/application/contingent.iml
+contingent/application/contingent-area/src/main/resources/META-INF/xsd/esu/
+contingent/application/contingent-area/src/test/resources/
+contingent/application/contingent-infrastructure-area/src/
+contingent/application/contingent-infrastructure-area/target/classes/

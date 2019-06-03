@@ -25,7 +25,7 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
     private AddressAllocationOrderPagingAndSortingRepository addressAllocationOrderPagingAndSortingRepository;
 
     @Override
-    public List<AddressAllocationOrders> findAddressAllocationOrders(String number, LocalDate date, String ouz, String name, Boolean archive) {
+    public List<AddressAllocationOrders> findAddressAllocationOrders(String number, LocalDate date, String ouz, String name, Boolean archived) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AddressAllocationOrders> criteria = criteriaBuilder.createQuery(AddressAllocationOrders.class);
         Root<AddressAllocationOrders> order = criteria.from(AddressAllocationOrders.class);
@@ -35,12 +35,12 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
                                 criteriaBuilder.equal(order.get(AddressAllocationOrders_.number.getName()), number ),
                         date == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(order.get(AddressAllocationOrders_.date.getName()), date),
-//                        ouz == null ? criteriaBuilder.conjunction() :
-//                                criteriaBuilder.equal(order.get(AddressAllocationOrder_.ouz.getName()), ouz),
+                        ouz == null ? criteriaBuilder.conjunction() :
+                                criteriaBuilder.equal(order.get(AddressAllocationOrders_.ouz.getName()), ouz),
                         name == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(order.get(AddressAllocationOrders_.name.getName()), name),
-                        archive == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(order.get(AddressAllocationOrders_.archived.getName()), archive)
+                        archived == null ? criteriaBuilder.conjunction() :
+                                criteriaBuilder.equal(order.get(AddressAllocationOrders_.archived.getName()), archived)
                 )
         );
         return entityManager.createQuery(criteria).getResultList();
