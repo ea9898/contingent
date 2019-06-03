@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -29,13 +30,13 @@ public class AddressFormingElementRepositoryImpl extends BaseRepository implemen
         return addressFormingElementCRUDRepository.findAll(addressFormingElementSpecification);
     }
 
-    @Autowired
-    public List<AddressFormingElement> findAfeByIdAndLevel(Long afeId, int level) {
+    @Override
+    public List<AddressFormingElement> findAfeByIdAndLevel(long afeId, int level) {
         Specification<AddressFormingElement> addressFormingElementSpecification =
             (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(AddressFormingElement_.id), afeId),
-                    criteriaBuilder.equal(root.get(AddressFormingElement_.aoLevel), level)
+                    criteriaBuilder.equal(root.get(AddressFormingElement_.id.getName()), afeId),
+                    criteriaBuilder.equal(root.get(AddressFormingElement_.aoLevel.getName()), level)
                 );
         return addressFormingElementCRUDRepository.findAll(addressFormingElementSpecification);
     }

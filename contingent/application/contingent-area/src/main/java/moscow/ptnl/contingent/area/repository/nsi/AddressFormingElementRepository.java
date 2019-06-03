@@ -10,7 +10,7 @@ public interface AddressFormingElementRepository {
 
 	List<AddressFormingElement> getAddressFormingElements(long globalId, int level);
 
-	List<AddressFormingElement> findAfeByIdAndLevel(Long afeId, int level);
+	List<AddressFormingElement> findAfeByIdAndLevel(long afeId, int level);
 
 	AddressFormingElement findAfeByGlobalId(Long globalId);
 
