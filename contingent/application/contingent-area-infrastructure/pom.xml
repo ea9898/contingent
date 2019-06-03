@@ -22,6 +22,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>area-domain</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${api.slf4j}</version>
@@ -56,6 +61,23 @@
             <artifactId>spring-integration-core</artifactId>
             <version>${spring.integration.version}</version>
             <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.mos.emias.esu</groupId>
+            <artifactId>esu-producer-lib</artifactId>
+            <version>1.1.1</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>        
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${spring-kafka.version}</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>${hibernate.jpamodelgen.version}</version>
         </dependency>
     </dependencies>
 

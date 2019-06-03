@@ -172,154 +172,7 @@
                     </annotationProcessorPaths>                    
                 </configuration>
             </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>add-source</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>add-source</goal>
-                            </goals>
-                            <configuration>
-                                <sources>
-                                    <source>${project.build.directory}/generated-sources/annotations</source>
-                                    <source>${project.build.directory}/generated-sources/cxf</source>
-                                </sources>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.cxf</groupId>
-                    <artifactId>cxf-codegen-plugin</artifactId>
-                    <version>${cxf.version}</version>
-                    <executions>
-                        <execution>
-                            <id>generate-sources</id>
-                            <phase>generate-sources</phase>
-                            <configuration>
-                                <wsdlOptions>
-                                    <wsdlOption>
-                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/nsi/ReceiveChangesWS.wsdl</wsdl>
-                                        <bindingFiles>
-                                            <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
-                                        </bindingFiles>
-                                        <serviceName>receive_changes</serviceName>                                                                                                                                               
-                                    </wsdlOption>
-                                    <wsdlOption>
-                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v1/emias.contingent2.v1.wsdl</wsdl>
-                                        <bindingFiles>
-                                            <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
-                                        </bindingFiles>
-                                        <serviceName>AreaService</serviceName>
-                                        <extraargs>
-                                            <extraarg>-verbose</extraarg>
-                                            <extraarg>-p</extraarg>
-                                            <extraarg>http://emias.mos.ru/contingent2/core/v1/=ru.mos.emias.contingent2.core</extraarg>
-                                            <extraarg>-p</extraarg>
-                                            <extraarg>http://emias.mos.ru/contingent2/area/v1/=ru.mos.emias.contingent2.area</extraarg>
-                                            <extraarg>-p</extraarg>
-                                            <extraarg>http://emias.mos.ru/contingent2/area/v1/types/=ru.mos.emias.contingent2.area.types</extraarg>
-                                        </extraargs>
-                                    </wsdlOption>
-                                    <wsdlOption>
-                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v2/emias.contingent2.v2.wsdl</wsdl>
-                                        <bindingFiles>
-                                            <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
-                                        </bindingFiles>
-                                        <serviceName>AreaService</serviceName>                                                                                                                                               
-                                    </wsdlOption>
-                                </wsdlOptions>
-                            </configuration>
-                            <goals>
-                                <goal>wsdl2java</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>jaxb2-maven-plugin</artifactId>
-                    <version>2.4</version>
-                    <executions>
-                        <execution>
-                            <id>xjc</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>xjc</goal>
-                            </goals>
-                            <configuration>
-                                <encoding>UTF-8</encoding>
-                                <sources>
-                                    <source>src/main/resources/META-INF/xsd/nsi</source>
-                                </sources>
-                                <packageName>moscow.ptnl.contingent2.nsi</packageName>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>xjc2</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>xjc</goal>
-                            </goals>
-                            <configuration>
-                                <clearOutputDir>false</clearOutputDir>
-                                <encoding>UTF-8</encoding>
-                                <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/AreaEvent.xsd</source>
-                                </sources>
-                                <packageName>moscow.ptnl.contingent2.area.event</packageName>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>xjc3</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>xjc</goal>
-                            </goals>
-                            <configuration>
-                                <clearOutputDir>false</clearOutputDir>
-                                <encoding>UTF-8</encoding>
-                                <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/CreateСloseAttachment.xsd</source>
-                                </sources>
-                                <packageName>moscow.ptnl.contingent2.attachment.disp.event</packageName>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>xjc4</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>xjc</goal>
-                            </goals>
-                            <configuration>
-                                <clearOutputDir>false</clearOutputDir>
-                                <encoding>UTF-8</encoding>
-                                <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/AttachToDependentArea.xsd</source>
-                                </sources>
-                                <packageName>moscow.ptnl.contingent2.attachment.deparea.event</packageName>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>xjc5</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>xjc</goal>
-                            </goals>
-                            <configuration>
-                                <clearOutputDir>false</clearOutputDir>
-                                <encoding>UTF-8</encoding>
-                                <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/AttachOnAreaRelationChange.xsd</source>
-                                </sources>
-                                <packageName>moscow.ptnl.contingent2.attachment.changedeparea.event</packageName>
-                            </configuration>
-                        </execution>
-                    </executions>
-            </plugin>
+                
         </plugins>
             <pluginManagement>
                 <plugins>
@@ -359,34 +212,22 @@
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>area-domain</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>area-infrastructure</artifactId>
             <version>1.0.0</version>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>org.reactivestreams</groupId>
             <artifactId>reactive-streams</artifactId>
             <version>1.0.1</version>
             <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-producer-lib</artifactId>
-            <version>1.1.1</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-consumer-lib</artifactId>
-            <version>1.0.3</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-            <version>${spring-kafka.version}</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
+        </dependency> -->
+        
 
         <dependency>
             <groupId>javax</groupId>

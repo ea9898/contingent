@@ -3,7 +3,6 @@ package moscow.ptnl.contingent.area.ws.v1;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
@@ -70,6 +69,9 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.messaging.MessageChannel;
 
 /**
  *
@@ -104,6 +106,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private MoAddressMapper moAddressMapper;
+    
+    @Autowired @Qualifier(EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME)
+    private MessageChannel historyChannel;
 
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
@@ -208,6 +213,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
         try {
+            
             Long id = areaService.createOrder(body.getNumber(), body.getDate(), body.getOuz(), body.getName());
 
             CreateOrderResponse response = new CreateOrderResponse();
