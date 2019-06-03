@@ -23,7 +23,7 @@ public class AttachOnAreaRelationChangeEventMapper implements Transform<AttachOn
     public AttachOnAreaRelationChangeEvent entityToDtoTransform(moscow.ptnl.contingent.area.model.esu.AreaEvent entityObject) {
         AttachOnAreaRelationChangeEvent event = new AttachOnAreaRelationChangeEvent();
         event.setOperationDate(gregorianCalendarMapper.entityToDtoTransform(entityObject.getArea().getUpdateDate()));
-        event.setDependentArea(dependentAreaMapper.entityToDtoTransform(entityObject.getArea()));
+        event.setDependendArea(dependentAreaMapper.entityToDtoTransform(entityObject.getArea()));
         event.getPrimaryAreaAdd().addAll(entityObject.getAddPrimaryAreaTypes().stream()
                 .map(AreaToAreaType::getAreaType)
                 .map(AreaType::getCode)

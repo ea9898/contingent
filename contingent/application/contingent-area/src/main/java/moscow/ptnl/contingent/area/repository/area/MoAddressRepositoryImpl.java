@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress_;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
 import moscow.ptnl.contingent.area.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,18 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
         }
         return moAddressPagingAndSortingRepository.findAll(spec,
                 PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(MoAddress_.id.getName()).ascending()));
+    }
+
+    @Override
+    public List<MoAddress> getActiveMoAddresses(AreaType areaType) {
+        Specification<MoAddress> moAddressSpecification = (root, criteriaQuery, criteriaBuilder) ->
+            criteriaBuilder.and(
+                criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.or(
+                            criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
+                            root.get(MoAddress_.endDate.getName()).isNull()
+            ));
+
+        return moAddressPagingAndSortingRepository.findAll(moAddressSpecification);
     }
 }

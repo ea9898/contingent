@@ -8,5 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
-public interface RegistryBuildingCRUDRepository extends CommonRepository<BuildingRegistry, Long> {
+public interface BuildingRegistryCRUDRepository extends CommonRepository<BuildingRegistry, Long> {
 }

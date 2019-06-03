@@ -46,9 +46,11 @@ import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
-import moscow.ptnl.contingent.area.repository.nsi.RegistryBuildingCRUDRepository;
+import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.area.repository.nsi.SpecializationToPositionNomRepository;
+import moscow.ptnl.contingent.area.transform.NotNsiAddressToAddressWrapperMapper;
+import moscow.ptnl.contingent.area.transform.NsiAddressToAddressWrapperMapper;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,7 +129,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private PositionNomClinicRepository positionNomClinicRepository;
 
     @Autowired
-    private RegistryBuildingCRUDRepository registryBuildingCRUDRepository;
+    private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
 
     @Autowired
     private AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
@@ -167,6 +169,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private SettingService settingService;
+
+    @Autowired
+    NsiAddressToAddressWrapperMapper nsiAddressToAddressWrapperMapper;
+
+    @Autowired
+    NotNsiAddressToAddressWrapperMapper notNsiAddressToAddressWrapperMapper;
+
+    @Autowired
+    Algorithms algorithms;
 
     @Override
     public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
@@ -733,6 +744,18 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return result;
     }
 
+    private List<AddressWrapper> converoAddressToWrapper(List<NsiAddress> nsiAddresses,
+                                                         List<NotNsiAddress> notNsiAddresses) {
+        //Сформируем список адресов по справочнику
+        List<AddressWrapper> addresses = nsiAddresses.stream()
+                .map(nsiAddressToAddressWrapperMapper::dtoToEntityTransform).collect(Collectors.toList());
+
+        //Сформируем список адресов вне справочника
+        addresses.addAll(notNsiAddresses.stream().map(notNsiAddressToAddressWrapperMapper::dtoToEntityTransform).collect(Collectors.toList()));
+
+        return addresses;
+    }
+
     @Override
     public List<Long> addAreaAddress(Long id, List<NsiAddress> nsiAddresses,
                                      List<NotNsiAddress> notNsiAddresses) throws ContingentException {
@@ -759,6 +782,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 7.
+        List<Long> serviceDistrictMO = new ArrayList<>();
+        List<AddressWrapper> addresses = converoAddressToWrapper(nsiAddresses, notNsiAddresses);
+        algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
+                nsiAddresses, notNsiAddresses, serviceDistrictMO, validation);
 
         // 8.
 
@@ -796,28 +823,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        //Сформируем список адресов по справочнику
-        List<AddressWrapper> addresses = nsiAddresses.stream()
-                .map(AddressWrapper::new)
-                .peek(a -> {
-                    if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
-                        a.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
-                                a.nsiAddress.getGlobalId(), a.nsiAddress.getLevelAddress()).get(0);
-                    }
-                    else {
-                        a.buildingRegistry = buildingRegistryRepository.getBuildingsRegistry(a.nsiAddress.getGlobalId()).get(0);
-                    }
-                })
-                .collect(Collectors.toList());
+        List<AddressWrapper> addresses = converoAddressToWrapper(nsiAddresses, notNsiAddresses);
 
-        //Сформируем список адресов вне справочника
-        notNsiAddresses.forEach(a -> {
-            AddressWrapper wrapper = new AddressWrapper();
-            wrapper.notNsiAddress = a;
-            wrapper.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
-                    a.getParentId(), a.getLevelParentId()).get(0);
-            addresses.add(wrapper);
-        });
         //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
         areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
 
@@ -849,7 +856,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                                     a.notNsiAddress.getHouseType(), a.notNsiAddress.getHouse(),
                                     a.notNsiAddress.getBuildingType(), a.notNsiAddress.getBuilding(),
                                     a.notNsiAddress.getConstructionType(), a.notNsiAddress.getConstruction());
-                            registryBuildingCRUDRepository.save(buildingRegistry);
+                            buildingRegistryCRUDRepository.save(buildingRegistry);
                             return buildingRegistry;
                         });
                 address.setBuildingRegistry(a.buildingRegistry);

@@ -1,12 +1,12 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
 import moscow.ptnl.contingent.area.transform.Transform;
-import moscow.ptnl.contingent2.attachment.changedeparea.event.AttachOnAreaRelationChangeEvent.DependentArea;
+import moscow.ptnl.contingent2.attachment.changedeparea.event.AttachOnAreaRelationChangeEvent.DependendArea;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DependentAreaMapper implements Transform<DependentArea, moscow.ptnl.contingent.area.entity.area.Area> {
+public class DependentAreaMapper implements Transform<DependendArea, moscow.ptnl.contingent.area.entity.area.Area> {
 
     private static final Long DEFAULT_POLICY_TYPE = 1L;
 
@@ -14,8 +14,8 @@ public class DependentAreaMapper implements Transform<DependentArea, moscow.ptnl
     private AreaRestrictionMapper areaRestrictionMapper;
 
     @Override
-    public DependentArea entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.Area entityObject) {
-        DependentArea area = new DependentArea();
+    public DependendArea entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.Area entityObject) {
+        DependendArea area = new DependendArea();
         area.setAreaId(entityObject.getId());
         area.setMoId(entityObject.getMoId());
         area.setMuId(entityObject.getMuId());
@@ -26,7 +26,7 @@ public class DependentAreaMapper implements Transform<DependentArea, moscow.ptnl
     }
 
     @Override
-    public moscow.ptnl.contingent.area.entity.area.Area dtoToEntityTransform(DependentArea dtoObject) {
+    public moscow.ptnl.contingent.area.entity.area.Area dtoToEntityTransform(DependendArea dtoObject) {
         return null;
     }
 }

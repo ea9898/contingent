@@ -268,7 +268,7 @@
                                 <clearOutputDir>false</clearOutputDir>
                                 <encoding>UTF-8</encoding>
                                 <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/AreaEvent.xsd</source>
+                                    <source>src/main/resources/META-INF/xsd/esu/areaevent.v1.xsd</source>
                                 </sources>
                                 <packageName>moscow.ptnl.contingent2.area.event</packageName>
                             </configuration>
@@ -283,7 +283,7 @@
                                 <clearOutputDir>false</clearOutputDir>
                                 <encoding>UTF-8</encoding>
                                 <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/CreateСloseAttachment.xsd</source>
+                                    <source>src/main/resources/META-INF/xsd/esu/createcloseattachment.v1.xsd</source>
                                 </sources>
                                 <packageName>moscow.ptnl.contingent2.attachment.disp.event</packageName>
                             </configuration>
@@ -298,7 +298,7 @@
                                 <clearOutputDir>false</clearOutputDir>
                                 <encoding>UTF-8</encoding>
                                 <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/AttachToDependentArea.xsd</source>
+                                    <source>src/main/resources/META-INF/xsd/esu/attachtodependentarea.v1.xsd</source>
                                 </sources>
                                 <packageName>moscow.ptnl.contingent2.attachment.deparea.event</packageName>
                             </configuration>
@@ -313,7 +313,7 @@
                                 <clearOutputDir>false</clearOutputDir>
                                 <encoding>UTF-8</encoding>
                                 <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/AttachOnAreaRelationChange.xsd</source>
+                                    <source>src/main/resources/META-INF/xsd/esu/attachoonarearelationchange.v1.xsd</source>
                                 </sources>
                                 <packageName>moscow.ptnl.contingent2.attachment.changedeparea.event</packageName>
                             </configuration>
