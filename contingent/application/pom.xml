@@ -13,8 +13,9 @@
     <modules>
         <module>contingent-common</module>
         <module>contingent-area</module>
+        <module>contingent-area-domain</module>
+        <module>contingent-area-infrastructure</module>
         <module>contingent-requests</module>
-        <module>contingent-infrastructure-area</module>
     </modules>
 
     <properties>

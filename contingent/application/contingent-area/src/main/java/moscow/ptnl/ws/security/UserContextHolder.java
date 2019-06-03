@@ -1,5 +1,6 @@
 package moscow.ptnl.ws.security;
 
+import moscow.ptnl.contingent.security.Principal;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
 public class UserContextHolder {
@@ -16,5 +17,21 @@ public class UserContextHolder {
         } else {
             userContexts.remove();
         }
+    }
+    
+    public static Principal getPrincipal() {
+        UserContext userContext = getContext();
+        if (userContext == null) {
+            return null;
+        }
+        Principal principal = new Principal(userContext.getUserName());
+        principal.setIpAddress(userContext.getHostIp());
+        principal.setUserRoleId((userContext.getUserRoleId() != 0) ? userContext.getUserRoleId() : null);
+        //TODO не понятно как заполнять
+        //principal.setAccountId(Long.MIN_VALUE);
+        //principal.setFullName(fullName);
+        //principal.setJobInfoId(Long.MIN_VALUE);
+        //principal.setLpuId(Long.MIN_VALUE);
+        return principal;
     }
 }

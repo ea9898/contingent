@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.area.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes_;
-import moscow.ptnl.contingent.area.repository.BaseRepository;
+import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,18 +41,4 @@ public class MuAddlAreaTypesRepositoryImpl extends BaseRepository implements MuA
 
         return entityManager.createQuery(criteria).getResultList();
     }
-
-    @Override
-    public List<MuAddlAreaTypes> findMuAddlAreaTypes(List<Long> muIds, Long primaryAreaTypeCode) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<MuAddlAreaTypes> criteria = criteriaBuilder.createQuery(MuAddlAreaTypes.class);
-        Root<MuAddlAreaTypes> profile = criteria.from(MuAddlAreaTypes.class);
-        criteria.where(
-                criteriaBuilder.and(
-                        profile.get(MuAddlAreaTypes_.muId).in(muIds),
-                        criteriaBuilder.equal(profile.get(MuAddlAreaTypes_.areaType), primaryAreaTypeCode)));
-
-        return entityManager.createQuery(criteria).getResultList();
-    }
-
 }

@@ -204,14 +204,14 @@
                                     <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/nsi/ReceiveChangesWS.wsdl</wsdl>
                                         <bindingFiles>
-                                            <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
+                                            <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
                                         </bindingFiles>
                                         <serviceName>receive_changes</serviceName>                                                                                                                                               
                                     </wsdlOption>
                                     <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v1/emias.contingent2.v1.wsdl</wsdl>
                                         <bindingFiles>
-                                            <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
+                                            <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
                                         </bindingFiles>
                                         <serviceName>AreaService</serviceName>
                                         <extraargs>
@@ -227,7 +227,7 @@
                                     <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v2/emias.contingent2.v2.wsdl</wsdl>
                                         <bindingFiles>
-                                            <bindingFile>${basedir}/src/main/resources/jaxb-binding.xml</bindingFile>
+                                            <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
                                         </bindingFiles>
                                         <serviceName>AreaService</serviceName>                                                                                                                                               
                                     </wsdlOption>
@@ -256,66 +256,6 @@
                                     <source>src/main/resources/META-INF/xsd/nsi</source>
                                 </sources>
                                 <packageName>moscow.ptnl.contingent2.nsi</packageName>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>xjc2</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>xjc</goal>
-                            </goals>
-                            <configuration>
-                                <clearOutputDir>false</clearOutputDir>
-                                <encoding>UTF-8</encoding>
-                                <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/areaevent.v1.xsd</source>
-                                </sources>
-                                <packageName>moscow.ptnl.contingent2.area.event</packageName>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>xjc3</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>xjc</goal>
-                            </goals>
-                            <configuration>
-                                <clearOutputDir>false</clearOutputDir>
-                                <encoding>UTF-8</encoding>
-                                <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/createcloseattachment.v1.xsd</source>
-                                </sources>
-                                <packageName>moscow.ptnl.contingent2.attachment.disp.event</packageName>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>xjc4</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>xjc</goal>
-                            </goals>
-                            <configuration>
-                                <clearOutputDir>false</clearOutputDir>
-                                <encoding>UTF-8</encoding>
-                                <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/attachtodependentarea.v1.xsd</source>
-                                </sources>
-                                <packageName>moscow.ptnl.contingent2.attachment.deparea.event</packageName>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>xjc5</id>
-                            <phase>generate-sources</phase>
-                            <goals>
-                                <goal>xjc</goal>
-                            </goals>
-                            <configuration>
-                                <clearOutputDir>false</clearOutputDir>
-                                <encoding>UTF-8</encoding>
-                                <sources>
-                                    <source>src/main/resources/META-INF/xsd/esu/attachoonarearelationchange.v1.xsd</source>
-                                </sources>
-                                <packageName>moscow.ptnl.contingent2.attachment.changedeparea.event</packageName>
                             </configuration>
                         </execution>
                     </executions>
@@ -357,31 +297,24 @@
             <artifactId>common</artifactId>
             <version>1.0.0</version>
         </dependency>
-
         <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>area-domain</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>area-infrastructure</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+<!--        <dependency>
             <groupId>org.reactivestreams</groupId>
             <artifactId>reactive-streams</artifactId>
             <version>1.0.1</version>
             <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-producer-lib</artifactId>
-            <version>1.1.1</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-consumer-lib</artifactId>
-            <version>1.0.3</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-            <version>${spring-kafka.version}</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
+        </dependency> -->
+
 
         <dependency>
             <groupId>javax</groupId>
