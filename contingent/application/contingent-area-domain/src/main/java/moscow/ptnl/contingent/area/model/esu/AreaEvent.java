@@ -5,7 +5,7 @@ import java.util.List;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 
-public abstract class AreaEvent {
+public abstract class AreaEvent implements ESUEvent {
 
     private final OperationType operationType;
     private final Area area;
@@ -26,6 +26,7 @@ public abstract class AreaEvent {
         this(operationType, area, null, addPrimaryAreaTypes, null);
     }
 
+    @Override
     public OperationType getOperationType() {
         return operationType;
     }
