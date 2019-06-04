@@ -67,4 +67,6 @@ public interface AreaServiceInternal {
     void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException;
 
     void archiveArea(long areaId) throws ContingentException;
+
+    void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException;
 }

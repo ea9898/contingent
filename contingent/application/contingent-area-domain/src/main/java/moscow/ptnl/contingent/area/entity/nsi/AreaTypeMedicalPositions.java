@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.entity.nsi;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -10,7 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 
 @Entity
 @Table(name = "AREA_TYPE_MEDICAL_POSITIONS")
@@ -27,9 +29,13 @@ public class AreaTypeMedicalPositions implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType areaType;
 
-    @JoinColumn(name = "POSITION_NOM_ID")
+    @JoinColumn(name = "POSITION_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private PositionNomClinic positionNomClinic;
+    private PositionNom positionNom;
+
+    @Column(name = "ARCHIVED")
+    @Convert(converter = BooleanStrictIntegerConverter.class)
+    private Boolean archived;
 
     public Long getId() {
         return id;
@@ -47,12 +53,20 @@ public class AreaTypeMedicalPositions implements Serializable {
         this.areaType = areaType;
     }
 
-    public PositionNomClinic getPositionNomClinic() {
-        return positionNomClinic;
+    public PositionNom getPositionNom() {
+        return positionNom;
     }
 
-    public void setPositionNomClinic(PositionNomClinic positionNomClinic) {
-        this.positionNomClinic = positionNomClinic;
+    public void setPositionNom(PositionNom positionNom) {
+        this.positionNom = positionNom;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
     }
 
     @Override

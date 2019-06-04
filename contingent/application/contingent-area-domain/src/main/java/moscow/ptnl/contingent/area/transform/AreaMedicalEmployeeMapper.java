@@ -1,17 +1,18 @@
 package moscow.ptnl.contingent.area.transform;
 
+import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.MedicalEmployee;
 
 @Component
-public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee> {
+public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, AreaMedicalEmployees> {
 
     @Autowired
     private PositionNomClinicMapper positionNomClinicMapper;
 
     @Override
-    public MedicalEmployee entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee entityObject) {
+    public MedicalEmployee entityToDtoTransform(AreaMedicalEmployees entityObject) {
         MedicalEmployee employee = new MedicalEmployee();
         employee.setId(entityObject.getId());
         employee.setMedicalEmployeeJobInfoId(entityObject.getMedicalEmployeeJobInfoId());
@@ -20,14 +21,14 @@ public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, mos
         employee.setStartDate(entityObject.getStartDate());
         employee.setEndDate(entityObject.getEndDate());
 
-        if (entityObject.getPositionNomClinic() != null) {
-            employee.setPosition(positionNomClinicMapper.entityToDtoTransform(entityObject.getPositionNomClinic()));
+        if (entityObject.getPositionNom() != null) {
+            employee.setPosition(positionNomClinicMapper.entityToDtoTransform(entityObject.getPositionNom()));
         }
         return employee;
     }
 
     @Override
-    public moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee dtoToEntityTransform(MedicalEmployee dtoObject) {
+    public AreaMedicalEmployees dtoToEntityTransform(MedicalEmployee dtoObject) {
         return null;
     }
 }

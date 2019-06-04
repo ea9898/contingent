@@ -1,15 +1,14 @@
 package moscow.ptnl.contingent2.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
+import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
+import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
-import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.util.Period;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,8 +29,8 @@ public class SetMedicalEmployeeOnAreaTest {
     private Specialization specialization;
     private AreaType areaType;
     private Area area1, area2;
-    private PositionNomClinic position;
-    private AreaMedicalEmployee employee1, employee2, employee3, employee4, employee5, employee6, employee7,
+    private PositionNom position;
+    private AreaMedicalEmployees employee1, employee2, employee3, employee4, employee5, employee6, employee7,
             employee8, employee9, employee10, employee11;
     private Validation validation;
     private Period period1, period2, period3, period4, period5, period6;
@@ -42,18 +41,18 @@ public class SetMedicalEmployeeOnAreaTest {
         areaType = new AreaType(3L, "школьный", false, specialization);
         area1 = new Area(1L, 1L, 1L, areaType, false, LocalDateTime.now());
         area2 = new Area(2L, 1L, 1L, areaType, false, LocalDateTime.now());
-        position = new PositionNomClinic(7L, "1", "врач-хирург", "категория", null, LocalDate.now(), null, "test", "test", "test", "test", false);
-        employee1 = new AreaMedicalEmployee(1L, 1L, area1, true, LocalDate.of(2019, 1, 10), null, "123", position, LocalDateTime.now(), null, 1L);
-        employee2 = new AreaMedicalEmployee(2L, 1L, area1, false, LocalDate.of(2019, 2, 3), LocalDate.of(2019, 2, 10), "123", position, LocalDateTime.now(), null, 1L);
-        employee3 = new AreaMedicalEmployee(3L, 3L, area1, false, LocalDate.of(2019, 3, 2), LocalDate.of(2019, 3, 10), "123", position, LocalDateTime.now(), null, 1L);
-        employee4 = new AreaMedicalEmployee(4L, 4L, area1, false, LocalDate.of(2019, 3, 5), null, "123", position, LocalDateTime.now(), null, 1L);
-        employee5 = new AreaMedicalEmployee(5L, 5L, area2, false, LocalDate.of(2019, 3, 5), LocalDate.of(2019, 3, 15), "123", position, LocalDateTime.now(), null, 1L);
-        employee6 = new AreaMedicalEmployee(6L, 6L, area2, false, LocalDate.of(2019, 5, 1), LocalDate.of(2019, 5, 10), "123", position, LocalDateTime.now(), null, 1L);
-        employee7 = new AreaMedicalEmployee(7L, 7L, area2, false, LocalDate.of(2019, 5, 10), LocalDate.of(2019, 5, 20), "123", position, LocalDateTime.now(), null, 1L);
-        employee8 = new AreaMedicalEmployee(8L, 7L, area2, false, LocalDate.of(2019, 2, 3), LocalDate.of(2019, 2, 10), "123", position, LocalDateTime.now(), null, 1L);
-        employee9 = new AreaMedicalEmployee(9L, 7L, area2, false, LocalDate.of(2019, 3, 5), LocalDate.of(2019, 3, 11), "123", position, LocalDateTime.now(), null, 1L);
-        employee10 = new AreaMedicalEmployee(10L, 7L, area2, true, LocalDate.of(2019, 3, 11), LocalDate.of(2019, 3, 20), "123", position, LocalDateTime.now(), null, 1L);
-        employee11 = new AreaMedicalEmployee(11L, 7L, area2, true, LocalDate.of(2019, 2, 10), LocalDate.of(2019, 3, 5), "123", position, LocalDateTime.now(), null, 1L);
+        position = new PositionNom(7L, "1", "врач-хирург", LocalDate.now(), null, false);
+        employee1 = new AreaMedicalEmployees(1L, 1L, area1, true, LocalDate.of(2019, 1, 10), null, "123", position, LocalDateTime.now(), null, 1L);
+        employee2 = new AreaMedicalEmployees(2L, 1L, area1, false, LocalDate.of(2019, 2, 3), LocalDate.of(2019, 2, 10), "123", position, LocalDateTime.now(), null, 1L);
+        employee3 = new AreaMedicalEmployees(3L, 3L, area1, false, LocalDate.of(2019, 3, 2), LocalDate.of(2019, 3, 10), "123", position, LocalDateTime.now(), null, 1L);
+        employee4 = new AreaMedicalEmployees(4L, 4L, area1, false, LocalDate.of(2019, 3, 5), null, "123", position, LocalDateTime.now(), null, 1L);
+        employee5 = new AreaMedicalEmployees(5L, 5L, area2, false, LocalDate.of(2019, 3, 5), LocalDate.of(2019, 3, 15), "123", position, LocalDateTime.now(), null, 1L);
+        employee6 = new AreaMedicalEmployees(6L, 6L, area2, false, LocalDate.of(2019, 5, 1), LocalDate.of(2019, 5, 10), "123", position, LocalDateTime.now(), null, 1L);
+        employee7 = new AreaMedicalEmployees(7L, 7L, area2, false, LocalDate.of(2019, 5, 10), LocalDate.of(2019, 5, 20), "123", position, LocalDateTime.now(), null, 1L);
+        employee8 = new AreaMedicalEmployees(8L, 7L, area2, false, LocalDate.of(2019, 2, 3), LocalDate.of(2019, 2, 10), "123", position, LocalDateTime.now(), null, 1L);
+        employee9 = new AreaMedicalEmployees(9L, 7L, area2, false, LocalDate.of(2019, 3, 5), LocalDate.of(2019, 3, 11), "123", position, LocalDateTime.now(), null, 1L);
+        employee10 = new AreaMedicalEmployees(10L, 7L, area2, true, LocalDate.of(2019, 3, 11), LocalDate.of(2019, 3, 20), "123", position, LocalDateTime.now(), null, 1L);
+        employee11 = new AreaMedicalEmployees(11L, 7L, area2, true, LocalDate.of(2019, 2, 10), LocalDate.of(2019, 3, 5), "123", position, LocalDateTime.now(), null, 1L);
         validation = new Validation();
         period1 = Period.ALL_TIME;
         period2 = new Period(Period.MIN_DATE, LocalDate.of(2019, 2, 2));
@@ -91,7 +90,7 @@ public class SetMedicalEmployeeOnAreaTest {
     @Test
     public void getPeriodsWithoutMainEmployee_twoEmployeesWithGapTest() {
         LOG.info("Тест getPeriodsWithoutMainEmployee переданы два медработникв с датами окончания назначения");
-        List<AreaMedicalEmployee> employees = Arrays.asList(employee3, employee2);
+        List<AreaMedicalEmployees> employees = Arrays.asList(employee3, employee2);
         List<Period> periods = areaServiceHelper.getPeriodsWithoutMainEmployee(employees);
         Assert.assertEquals(3, periods.size());
         Assert.assertEquals(new Period(Period.MIN_DATE, employee2.getStartDate().minusDays(1)), periods.get(0));
@@ -102,7 +101,7 @@ public class SetMedicalEmployeeOnAreaTest {
     @Test
     public void getPeriodsWithoutMainEmployee_threeEmployeesTest() {
         LOG.info("Тест getPeriodsWithoutMainEmployee переданы три медработника, один из которых с незаполненой датой окончания назначения");
-        List<AreaMedicalEmployee> employees = Arrays.asList(employee4, employee3, employee2);
+        List<AreaMedicalEmployees> employees = Arrays.asList(employee4, employee3, employee2);
         List<Period> periods = areaServiceHelper.getPeriodsWithoutMainEmployee(employees);
         Assert.assertEquals(2, periods.size());
         Assert.assertEquals(new Period(Period.MIN_DATE, employee2.getStartDate().minusDays(1)), periods.get(0));
@@ -113,7 +112,7 @@ public class SetMedicalEmployeeOnAreaTest {
     @Test
     public void getPeriodsWithoutMainEmployee_fourEmployeesTest() {
         LOG.info("Тест getPeriodsWithoutMainEmployee переданы четыре медработника");
-        List<AreaMedicalEmployee> employees = Arrays.asList(employee4, employee3, employee1, employee2);
+        List<AreaMedicalEmployees> employees = Arrays.asList(employee4, employee3, employee1, employee2);
         List<Period> periods = areaServiceHelper.getPeriodsWithoutMainEmployee(employees);
         Assert.assertEquals(1, periods.size());
         Assert.assertEquals(new Period(Period.MIN_DATE, employee1.getStartDate().minusDays(1)), periods.get(0));

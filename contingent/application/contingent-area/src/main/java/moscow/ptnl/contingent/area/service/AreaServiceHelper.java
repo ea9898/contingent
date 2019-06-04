@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.area.service;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
+import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
@@ -113,7 +113,7 @@ public class AreaServiceHelper {
             for (MuAddlAreaTypes muAddlAreaType : muAddlAreaTypes) {
                 validation.error(AreaErrorReason.MU_PROFILE_EXISTS,
                         new ValidationParameter("muId", muAddlAreaType.getMuId()),
-                        new ValidationParameter("areatype", muAddlAreaType.getAreaType().getName()));
+                        new ValidationParameter("areatype", muAddlAreaType.getAreaType().getTitle()));
             }
         }
     }
@@ -130,7 +130,7 @@ public class AreaServiceHelper {
             templates.forEach(temp -> {
                 if (!AvailableToCreateType.POSSIBLE.getValue().equals(temp.getAvailableToCreate())) {
                     validation.error(AreaErrorReason.CANT_CHANGE_AREA_TYPE,
-                            new ValidationParameter("areaType", temp.getAreaType().getName()));
+                            new ValidationParameter("areaType", temp.getAreaType().getTitle()));
                 }
             });
         }
@@ -162,7 +162,7 @@ public class AreaServiceHelper {
         if (!areas.isEmpty()) {
             for (Area area: areas) {
                 validation.error(AreaErrorReason.CANT_DELETE_AREA_TYPE,
-                        new ValidationParameter("areaType", area.getAreaType().getName()),
+                        new ValidationParameter("areaType", area.getAreaType().getTitle()),
                         new ValidationParameter("areaNumber", area.getNumber()));
             }
 
@@ -206,7 +206,7 @@ public class AreaServiceHelper {
                             (AvailableToCreateType.POSSIBLE.getValue().equals(t.getAvailableToCreate()) &&
                                     !muAddlAreaTypesRepository.findMuAddlAreaTypes(
                                             muTypes.stream()
-                                                    .filter(m -> Objects.equals(t.getMuTypeId(), m.getMuTypeId()))
+                                                    .filter(m -> Objects.equals(t.getMuTypeCode(), m.getMuTypeId()))
                                                     .map(MuType::getMuId)
                                                     .collect(Collectors.toList()),
                                             primaryAreaTypeCodes).isEmpty()))) {
@@ -233,10 +233,14 @@ public class AreaServiceHelper {
     public Area checkAndGetArea(long areaId, Validation validation) {
         Area area = areaCRUDRepository.findById(areaId).orElse(null);
 
+        // Система выполняет поиск участка, по входному параметру ИД участка в БД.
+        // Участок найден, иначе возвращает ошибку
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
         }
-        else if (area.getArchived()) {
+        else
+        // Система проверяет, что участок не находится в архиве, иначе возвращает ошибку
+            if (area.getArchived()) {
             validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;
@@ -321,13 +325,13 @@ public class AreaServiceHelper {
         return result;
     }
 
-    public void checkMainEmployeesOverlappingDates(List<AreaMedicalEmployee> mainEmployees,
+    public void checkMainEmployeesOverlappingDates(List<AreaMedicalEmployees> mainEmployees,
                                                    Validation validation) throws ContingentException {
         if (mainEmployees.size() > 1) {
-            mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
+            mainEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate));
             for (int i = 0; i < mainEmployees.size() - 1; i++) {
-                AreaMedicalEmployee current = mainEmployees.get(i);
-                AreaMedicalEmployee next = mainEmployees.get(i + 1);
+                AreaMedicalEmployees current = mainEmployees.get(i);
+                AreaMedicalEmployees next = mainEmployees.get(i + 1);
                 if (current.getEndDate() == null
                         || next.getStartDate().minusDays(1).isBefore(current.getEndDate())) {
                     validation.error(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP,
@@ -344,11 +348,11 @@ public class AreaServiceHelper {
     }
 
     public void checkReplacementWithoutMain(List<Period> periodsWithoutMainEmpl,
-                                            List<AreaMedicalEmployee> replacementEmployees,
+                                            List<AreaMedicalEmployees> replacementEmployees,
                                             Validation validation) throws ContingentException {
         boolean foundError = false;
         for (Period period : periodsWithoutMainEmpl) {
-            for (AreaMedicalEmployee empl : replacementEmployees) {
+            for (AreaMedicalEmployees empl : replacementEmployees) {
                 if (period.isInterceptWith(empl.getStartDate(), empl.getEndDate())) {
                     foundError = true;
                     break;
@@ -366,14 +370,14 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkDatesNotInterceptWithSamePosition(List<AreaMedicalEmployee> allEmployees,
+    public void checkDatesNotInterceptWithSamePosition(List<AreaMedicalEmployees> allEmployees,
                                                        Validation validation) throws ContingentException {
         if (allEmployees.size() > 1) {
-            allEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getMedicalEmployeeJobInfoId)
-                    .thenComparing(AreaMedicalEmployee::getStartDate));
+            allEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getMedicalEmployeeJobInfoId)
+                    .thenComparing(AreaMedicalEmployees::getStartDate));
             for (int i = 0; i < allEmployees.size() - 1; i++) {
-                AreaMedicalEmployee current = allEmployees.get(i);
-                AreaMedicalEmployee next = allEmployees.get(i + 1);
+                AreaMedicalEmployees current = allEmployees.get(i);
+                AreaMedicalEmployees next = allEmployees.get(i + 1);
                 if (current.getMedicalEmployeeJobInfoId() != null
                         && current.getMedicalEmployeeJobInfoId().equals(next.getMedicalEmployeeJobInfoId())
                         && (current.getEndDate() == null || next.getStartDate().isBefore(current.getEndDate().plusDays(1)))) {
@@ -394,18 +398,18 @@ public class AreaServiceHelper {
         }
     }
 
-    public List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployee> mainEmployees) {
-        mainEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
+    public List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployees> mainEmployees) {
+        mainEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate));
         List<Period> periodsWithoutMainEmpl = new ArrayList<>();
         if (mainEmployees.isEmpty()) {
             periodsWithoutMainEmpl.add(Period.ALL_TIME);
             return periodsWithoutMainEmpl;
         }
-        AreaMedicalEmployee first = mainEmployees.get(0);
+        AreaMedicalEmployees first = mainEmployees.get(0);
         periodsWithoutMainEmpl.add(new Period(Period.MIN_DATE, first.getStartDate().minusDays(1)));
         for (int i = 0; i < mainEmployees.size() - 1; i++) {
-            AreaMedicalEmployee current = mainEmployees.get(i);
-            AreaMedicalEmployee next = mainEmployees.get(i + 1);
+            AreaMedicalEmployees current = mainEmployees.get(i);
+            AreaMedicalEmployees next = mainEmployees.get(i + 1);
             if (current.getEndDate() == null) {
                 return periodsWithoutMainEmpl;
             }
@@ -413,15 +417,15 @@ public class AreaServiceHelper {
                 periodsWithoutMainEmpl.add(new Period(current.getEndDate().plusDays(1), next.getStartDate().minusDays(1)));
             }
         }
-        AreaMedicalEmployee last = mainEmployees.get(mainEmployees.size() - 1);
+        AreaMedicalEmployees last = mainEmployees.get(mainEmployees.size() - 1);
         if (last.getEndDate() != null) {
             periodsWithoutMainEmpl.add(new Period(last.getEndDate().plusDays(1), Period.MAX_DATE));
         }
         return periodsWithoutMainEmpl;
     }
 
-    public void applyChanges(List<AreaMedicalEmployee> employees, List<ChangeMedicalEmployee> changeEmployees) {
-        for (AreaMedicalEmployee empl : employees) {
+    public void applyChanges(List<AreaMedicalEmployees> employees, List<ChangeMedicalEmployee> changeEmployees) {
+        for (AreaMedicalEmployees empl : employees) {
             Optional<ChangeMedicalEmployee> optionalChangeEmpl = changeEmployees.stream().filter(
                     ch -> empl.getId().equals(ch.getAssignmentId())).findFirst();
             if (!optionalChangeEmpl.isPresent()) {
@@ -438,8 +442,8 @@ public class AreaServiceHelper {
         }
     }
 
-    public void addNew(List<AreaMedicalEmployee> employees, List<AddMedicalEmployee> addEmployees, Area area) {
-        addEmployees.forEach(empl -> employees.add(new AreaMedicalEmployee(
+    public void addNew(List<AreaMedicalEmployees> employees, List<AddMedicalEmployee> addEmployees, Area area) {
+        addEmployees.forEach(empl -> employees.add(new AreaMedicalEmployees(
                 empl.getMedicalEmployeeJobInfoId(),
                 area,
                 empl.isIsReplacement(),
@@ -464,7 +468,7 @@ public class AreaServiceHelper {
         });
     }
 
-    public void delAreaMedicalEmployees(List<AreaMedicalEmployee> employees) {
+    public void delAreaMedicalEmployees(List<AreaMedicalEmployees> employees) {
         employees.forEach(a -> {
             if (a.getStartDate().equals(LocalDate.now())) {
                 areaMedicalEmployeeCRUDRepository.delete(a);
@@ -483,5 +487,15 @@ public class AreaServiceHelper {
     public boolean isAreaDependent(Area area) {
         return area.getAreaType() != null && area.getAreaType().getClassAreaType() != null &&
                 Objects.equals(DEPENDENT_AREA_TYPE_CLASS, area.getAreaType().getClassAreaType().getCode());
+    }
+
+    // К_УУ_11 3.
+    // Система проверяет, что количество территорий обслуживания не превышает максимально
+    // допустимое значение, указанное во внутреннем системном параметре (PAR_2).
+    // Иначе возвращает ошибку
+    public void tooManyAreaAddresses(List<Long> areaAddressIds, Long maxAreaAddress, Validation validation) {
+        if (areaAddressIds.size() > maxAreaAddress) {
+            validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAreaAddress));
+        }
     }
 }

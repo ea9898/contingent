@@ -26,7 +26,7 @@ public class MuTypeAreaTypesRepositoryImpl extends BaseRepository implements MuT
         Root<MuTypeAreaTypes> template = criteria.from(MuTypeAreaTypes.class);
         criteria.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(template.get(MuTypeAreaTypes_.muTypeId.getName()), muTypeId),
+                        criteriaBuilder.equal(template.get(MuTypeAreaTypes_.muTypeCode.getName()), muTypeId),
                         criteriaBuilder.equal(template.get(MuTypeAreaTypes_.areaType.getName()).get(AreaType_.code.getName()), areaTypeCode)
                 )
         );
@@ -43,7 +43,7 @@ public class MuTypeAreaTypesRepositoryImpl extends BaseRepository implements MuT
         criteria.where(
                 criteriaBuilder.and(
                         muTypes == null || muTypes.isEmpty() ? criteriaBuilder.conjunction() :
-                                template.get(MuTypeAreaTypes_.muTypeId.getName()).in(muTypes),
+                                template.get(MuTypeAreaTypes_.muTypeCode.getName()).in(muTypes),
                         areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
                                 template.get(MuTypeAreaTypes_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
                         availableToCreate == null ? criteriaBuilder.conjunction() :
@@ -60,13 +60,13 @@ public class MuTypeAreaTypesRepositoryImpl extends BaseRepository implements MuT
     }
 
     @Override
-    public List<MuTypeAreaTypes> findMuTypeAreaTypes(Long muTypeId, List<Long> areaTypeCodes) {
+    public List<MuTypeAreaTypes> findMuTypeAreaTypes(Long muTypeCode, List<Long> areaTypeCodes) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<MuTypeAreaTypes> criteria = criteriaBuilder.createQuery(MuTypeAreaTypes.class);
         Root<MuTypeAreaTypes> template = criteria.from(MuTypeAreaTypes.class);
         criteria.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(template.get(MuTypeAreaTypes_.muTypeId), muTypeId),
+                        criteriaBuilder.equal(template.get(MuTypeAreaTypes_.muTypeCode), muTypeCode),
                         areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
                                 template.get(MuTypeAreaTypes_.areaType).get(AreaType_.code).in(areaTypeCodes)
                 )

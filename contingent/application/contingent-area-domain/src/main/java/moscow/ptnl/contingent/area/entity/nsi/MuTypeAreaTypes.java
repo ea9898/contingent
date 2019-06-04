@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.entity.nsi;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -12,7 +13,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.util.Objects;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 
 @Entity
 @Table(name = "MU_TYPE_AREA_TYPES")
@@ -25,8 +27,8 @@ public class MuTypeAreaTypes implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "MU_TYPE_ID")
-    private Integer muTypeId;
+    @Column(name = "MU_TYPE_CODE")
+    private Integer muTypeCode;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,6 +38,10 @@ public class MuTypeAreaTypes implements Serializable {
     @Min(1) @Max(2)
     private Integer availableToCreate;
 
+    @Column(name = "ARCHIVED", nullable = false)
+    @Convert(converter = BooleanStrictIntegerConverter.class)
+    private Boolean archived;
+
     public Long getId() {
         return id;
     }
@@ -44,12 +50,12 @@ public class MuTypeAreaTypes implements Serializable {
         this.id = id;
     }
 
-    public Integer getMuTypeId() {
-        return muTypeId;
+    public Integer getMuTypeCode() {
+        return muTypeCode;
     }
 
-    public void setMuTypeId(Integer muTypeId) {
-        this.muTypeId = muTypeId;
+    public void setMuTypeCode(Integer muTypeCode) {
+        this.muTypeCode = muTypeCode;
     }
 
     public AreaType getAreaType() {

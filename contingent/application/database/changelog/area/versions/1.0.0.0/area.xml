@@ -105,14 +105,14 @@
     <changeSet id="CONTINGENT2-57-2-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREAS" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPE" columnName="CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AREA_AREA_TYPE01</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
                                  baseTableName="AREAS"
                                  constraintName="FK_AREA_AREA_TYPE01"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE"/>
+                                 referencedTableName="AREA_TYPES"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-16-3" author="sorlov" labels="1.0.0.0">
@@ -158,7 +158,8 @@
                 <constraints nullable="false" />
             </column>
             <column name="AFE_ID" type="BIGINT" />
-            <column name="BUILDING_REGISTRY_ID" type="BIGINT" />
+            <column name="CREATE_DATE" type="TIMESTAMP(6)" remarks="Время создания" />
+            <column name="BR_ID" type="BIGINT" />
         </createTable>
         <rollback>
             <dropTable tableName="ADDRESSES"/>
@@ -185,11 +186,11 @@
                 <indexExists indexName="IXFK_ADDRESSES_REGISTRY_B_ID"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки BUILDING_REGISTRY_ID таблицы ADDRESSES</comment>
+        <comment>Создание индекса колонки BR_ID таблицы ADDRESSES</comment>
         <createIndex indexName="IXFK_ADDRESSES_REGISTRY_B_ID"
                      tableName="ADDRESSES"
                      unique="false">
-            <column name="BUILDING_REGISTRY_ID" type="number"/>
+            <column name="BR_ID" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -208,11 +209,11 @@
 
     <changeSet id="CONTINGENT2-57-17-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="ADDRESSES" columnName="BUILDING_REGISTRY_ID" />
+            <columnExists tableName="ADDRESSES" columnName="BR_ID" />
             <columnExists tableName="BUILDING_REGISTRY" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_ADDRESSES_REGISTRY_B</comment>
-        <addForeignKeyConstraint baseColumnNames="BUILDING_REGISTRY_ID"
+        <addForeignKeyConstraint baseColumnNames="BR_ID"
                                  baseTableName="ADDRESSES"
                                  constraintName="FK_ADDRESSES_REGISTRY_B"
                                  referencedColumnNames="ID"
@@ -319,14 +320,14 @@
     <changeSet id="CONTINGENT2-57-18-6" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="MO_ADDRESSES" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPE" columnName="CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_MO_ADDRESSES_AREA_TYPE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
                                  baseTableName="MO_ADDRESSES"
                                  constraintName="FK_MO_ADDRESSES_AREA_TYPE"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE"/>
+                                 referencedTableName="AREA_TYPES"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-18-7" author="ddryuchin" labels="1.0.0.0">
@@ -469,7 +470,7 @@
             <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала работы на участке" />
             <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
             <column name="SNILS" type="VARCHAR2(20)" />
-            <column name="POSITION_NOM_ID" type="BIGINT" />
+            <column name="POSITION_CODE" type="BIGINT" />
             <column name="SUBDIVISION_ID" type="BIGINT" />
             <column name="CREATE_DATE" type="TIMESTAMP(6)">
                 <constraints nullable="false" />
@@ -501,11 +502,11 @@
                 <indexExists indexName="IXFK_AME_POSITION_NOM_CLINIC"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки POSITION_NOM_ID таблицы AREA_MEDICAL_EMPLOYEES</comment>
+        <comment>Создание индекса колонки POSITION_CODE таблицы AREA_MEDICAL_EMPLOYEES</comment>
         <createIndex indexName="IXFK_AME_POSITION_NOM_CLINIC"
                      tableName="AREA_MEDICAL_EMPLOYEES"
                      unique="false">
-            <column name="POSITION_NOM_ID" type="number"/>
+            <column name="POSITION_CODE" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -524,15 +525,15 @@
 
     <changeSet id="CONTINGENT2-57-20-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_NOM_ID" />
-            <columnExists tableName="POSITION_NOM_CLINIC" columnName="ID" />
+            <columnExists tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE" />
+            <columnExists tableName="POSITION_NOM" columnName="ID" />
         </preConditions>
-        <comment>Создание внешнего ключа FK_AME_POSITION_NOM_CLINIC</comment>
-        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_ID"
+        <comment>Создание внешнего ключа FK_AME_POSITION_NOM</comment>
+        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
                                  baseTableName="AREA_MEDICAL_EMPLOYEES"
-                                 constraintName="FK_AME_POSITION_NOM_CLINIC"
+                                 constraintName="FK_AME_POSITION_NOM"
                                  referencedColumnNames="ID"
-                                 referencedTableName="POSITION_NOM_CLINIC"/>
+                                 referencedTableName="POSITION_NOM"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-21" author="sorlov" labels="1.0.0.0">
@@ -551,6 +552,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка. Код" />
+            <column name="CREATE_DATE" type="TIMESTAMP(6)" remarks="Время создания" />
         </createTable>
         <rollback>
             <dropTable tableName="MU_ADDL_AREA_TYPES"/>
@@ -574,14 +576,14 @@
     <changeSet id="CONTINGENT2-57-21-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="MU_ADDL_AREA_TYPES" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPE" columnName="CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_PROFILE_MU_AREA_TYPE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
                                  baseTableName="MU_ADDL_AREA_TYPES"
                                  constraintName="FK_PROFILE_MU_AREA_TYPE"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE"/>
+                                 referencedTableName="AREA_TYPES"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-21-3" author="sorlov">
@@ -651,14 +653,14 @@
     <changeSet id="CONTINGENT2-57-22-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TO_AREA_TYPE" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPE" columnName="CODE" />
+            <columnExists tableName="AREA_TYPES" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AREA_TO_AREA_AREA_TYPE_CODE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
                                  baseTableName="AREA_TO_AREA_TYPE"
                                  constraintName="FK_AREA_TO_AREA_AREA_TYPE_CODE"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE"/>
+                                 referencedTableName="AREA_TYPES"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-22-2" author="sorlov" labels="1.0.0.0">

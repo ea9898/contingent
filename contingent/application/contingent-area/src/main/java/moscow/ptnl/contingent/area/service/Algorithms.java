@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
@@ -15,11 +16,15 @@ import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
+import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
+import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
 import ru.mos.emias.contingent2.core.NsiAddress;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,14 +55,18 @@ public class Algorithms {
     @Autowired
     AlgorithmsHelper algorithmsHelper;
 
+    @Autowired
+    XMLGregorianCalendarMapper xmlGregorianCalendarMapper;
+
+
+
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public Long searchServiceDistrictMOByAddress (
         Long moId,
         AreaType areaType,
         Long orderId,
         List<NsiAddress> nsiAddressList,
-        List<NotNsiAddress> notNsiAddressList,
-        List<Long> serviceDistrictIds, Validation validation) throws ContingentException {
+        List<NotNsiAddress> notNsiAddressList, Validation validation) throws ContingentException {
 
         // 1.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
@@ -234,8 +243,27 @@ public class Algorithms {
     //  Формирование топика «Создание или закрытие прикреплений при изменении участка» (А_УУ_4)
     // TODO реализовать
     public String createTopicCreateCloseAttachAreaChange() {
-
         return "";
     }
 
+    // Формирование топика «Сведения об участке» (А_УУ_5)
+    public String createTopicAreaInfo(Area area, String methodName) {
+
+        // 1.
+        AreaInfoEvent areaInfoEvent = new AreaInfoEvent();
+
+        areaInfoEvent.setId(1);
+        areaInfoEvent.setOperationDate(xmlGregorianCalendarMapper.entityToDtoTransform(LocalDateTime.now()));
+        areaInfoEvent.setOperationType(methodName);
+        areaInfoEvent.setAreaId(area.getId());
+        areaInfoEvent.setAreaType(area.getAreaType().getCode());
+        areaInfoEvent.setMuId(area.getMuId());
+        areaInfoEvent.setNumber(area.getNumber());
+        areaInfoEvent.setName(area.getDescription());
+        areaInfoEvent.setArchive(area.getArchived());
+        areaInfoEvent.setAutoAssignForAttachment(area.getAutoAssignForAttach());
+//        areaInfoEvent.setResidentsBindRate(area.getAreaType().);
+
+        return "";
+    }
 }

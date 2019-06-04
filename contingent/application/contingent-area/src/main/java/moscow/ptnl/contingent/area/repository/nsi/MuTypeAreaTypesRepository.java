@@ -9,11 +9,11 @@ import java.util.List;
 @NoRepositoryBean
 public interface MuTypeAreaTypesRepository {
 
-	MuTypeAreaTypes findMuProfileTemplate(int muTypeId, Long areaTypeCode);
+	MuTypeAreaTypes findMuProfileTemplate(int muTypeCode, Long areaTypeCode);
 
-    List<MuTypeAreaTypes> findMuTypeAreaTypes(Long muTypeId, List<Long> areaTypeCodes, AvailableToCreateType availableToCreate);
+    List<MuTypeAreaTypes> findMuTypeAreaTypes(Long muTypeCode, List<Long> areaTypeCodes, AvailableToCreateType availableToCreate);
 
     List<MuTypeAreaTypes> findMuTypeAreaTypes(List<Long> muTypes, List<Long> areaTypeCodes, AvailableToCreateType availableToCreate);
 
-    List<MuTypeAreaTypes> findMuTypeAreaTypes(Long muTypeId, List<Long> areaTypeCodes);
+    List<MuTypeAreaTypes> findMuTypeAreaTypes(Long muTypeCode, List<Long> areaTypeCodes);
 }

@@ -15,7 +15,7 @@ public class SoapCustomMapper {
         }
         AreaTypeShort areaType = new AreaTypeShort();
         areaType.setCode(profile.getAreaType().getCode());
-        areaType.setName(profile.getAreaType().getName());
+        areaType.setName(profile.getAreaType().getTitle());
 
         return areaType;
     }

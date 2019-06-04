@@ -1,7 +1,10 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -12,7 +15,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "AREA_TYPE_CLASS")
 @Cacheable
-public class AreaTypesClass implements Serializable {
+public class AreaTypeClass implements Serializable {
 
     private static final long serialVersionUID = 4979698890748802824L;
 
@@ -21,8 +24,12 @@ public class AreaTypesClass implements Serializable {
 	private Long code;
 
     @Size(max = 255)
-	@Column(name = "VALUE")
-	private String value;
+	@Column(name = "TITLE")
+	private String title;
+
+    @Column(name = "ARCHIVED", nullable = false)
+    @Convert(converter = BooleanStrictIntegerConverter.class)
+    private Boolean archived;
 
     public Long getCode() {
         return code;
@@ -32,14 +39,22 @@ public class AreaTypesClass implements Serializable {
         this.code = code;
     }
 
-    public String getValue() {
-        return value;
+    public String getTitle() {
+        return title;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setTitle(String title) {
+        this.title = title;
     }
-    
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.code);
@@ -49,8 +64,8 @@ public class AreaTypesClass implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AreaTypesClass) {
-            return ((AreaTypesClass) obj).getCode().equals(this.code);
+        if (obj != null && obj instanceof AreaTypeClass) {
+            return ((AreaTypeClass) obj).getCode().equals(this.code);
         }
         return false;
     }

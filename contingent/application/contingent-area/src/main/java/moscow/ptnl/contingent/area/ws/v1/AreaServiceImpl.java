@@ -38,6 +38,8 @@ import ru.mos.emias.contingent2.area.types.CreateOrderRequest;
 import ru.mos.emias.contingent2.area.types.CreateOrderResponse;
 import ru.mos.emias.contingent2.area.types.CreatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.types.CreatePrimaryAreaResponse;
+import ru.mos.emias.contingent2.area.types.DelAreaAddressRequest;
+import ru.mos.emias.contingent2.area.types.DelAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.DelMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.DelMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.DelProfileMURequest;
@@ -157,6 +159,16 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public DelAreaAddressResponse delAreaAddress(DelAreaAddressRequest body) throws Fault {
+        try {
+            areaService.delAreaAddress(body.getAreaId(), body.getAreaAddressIds());
+            return new DelAreaAddressResponse();
+        } catch (Exception ex) {
             throw mapException(ex);
         }
     }

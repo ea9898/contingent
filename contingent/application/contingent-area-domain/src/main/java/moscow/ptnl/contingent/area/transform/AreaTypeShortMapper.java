@@ -11,7 +11,7 @@ public class AreaTypeShortMapper implements Transform<AreaTypeShort, AreaType> {
     public AreaTypeShort entityToDtoTransform(AreaType entityObject) {
         AreaTypeShort allocationOrder = new AreaTypeShort();
         allocationOrder.setCode(entityObject.getCode());
-        allocationOrder.setName(entityObject.getName());
+        allocationOrder.setName(entityObject.getTitle());
 
         return allocationOrder;
     }

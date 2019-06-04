@@ -90,7 +90,7 @@ public class Area implements Serializable {
     private LocalDateTime updateDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
-    private Set<AreaMedicalEmployee> medicalEmployees;
+    private Set<AreaMedicalEmployees> medicalEmployees;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaToAreaType> primaryAreaTypes;
@@ -264,11 +264,11 @@ public class Area implements Serializable {
         this.ageWMax = ageWMax;
     }
 
-    public Set<AreaMedicalEmployee> getMedicalEmployees() {
+    public Set<AreaMedicalEmployees> getMedicalEmployees() {
         return medicalEmployees;
     }
 
-    public Set<AreaMedicalEmployee> getActualMedicalEmployees() {
+    public Set<AreaMedicalEmployees> getActualMedicalEmployees() {
         LocalDate now = LocalDate.now();
 
         return medicalEmployees.stream()

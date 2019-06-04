@@ -27,6 +27,9 @@ public class Specialization implements Serializable {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
+    @Column(name = "CODE")
+    private Long code;
+
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
@@ -46,6 +49,14 @@ public class Specialization implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCode() {
+        return code;
+    }
+
+    public void setCode(Long code) {
+        this.code = code;
     }
 
     public String getTitle() {

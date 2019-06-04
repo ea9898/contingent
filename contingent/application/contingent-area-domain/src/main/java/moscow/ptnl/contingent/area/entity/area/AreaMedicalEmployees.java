@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
-import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
+import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -23,7 +23,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "AREA_MEDICAL_EMPLOYEES")
 @SequenceGenerator(name = "seq_area_medical_employees", sequenceName = "seq_area_medical_employees", allocationSize=1)
-public class AreaMedicalEmployee implements Serializable {
+public class AreaMedicalEmployees implements Serializable {
 
     private static final long serialVersionUID = 4435222693561566689L;
 
@@ -57,9 +57,9 @@ public class AreaMedicalEmployee implements Serializable {
     @Size(max = 20)
     private String snils;
 
-    @JoinColumn(name = "POSITION_NOM_ID")
+    @JoinColumn(name = "POSITION_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private PositionNomClinic positionNomClinic;
+    private PositionNom positionNom;
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
@@ -70,18 +70,18 @@ public class AreaMedicalEmployee implements Serializable {
     @Column(name = "SUBDIVISION_ID")
     private Long subdivisionId;
 
-    public AreaMedicalEmployee() {
+    public AreaMedicalEmployees() {
     }
 
-    public AreaMedicalEmployee(Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
-                               LocalDate endDate, String snils,  PositionNomClinic positionNomClinic,
-                               LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
-        this(null, medicalEmployeeJobInfoId, area, replacement, startDate, endDate, snils, positionNomClinic, createDate, updateDate, subdivisionId);
+    public AreaMedicalEmployees(Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
+                                LocalDate endDate, String snils, PositionNom positionNom,
+                                LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
+        this(null, medicalEmployeeJobInfoId, area, replacement, startDate, endDate, snils, positionNom, createDate, updateDate, subdivisionId);
     }
 
-    public AreaMedicalEmployee(Long id, Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
-                               LocalDate endDate, String snils,  PositionNomClinic positionNomClinic,
-                               LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
+    public AreaMedicalEmployees(Long id, Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
+                                LocalDate endDate, String snils, PositionNom positionNom,
+                                LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
         this.id = id;
         this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
         this.area = area;
@@ -89,7 +89,7 @@ public class AreaMedicalEmployee implements Serializable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
-        this.positionNomClinic = positionNomClinic;
+        this.positionNom = positionNom;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subdivisionId = subdivisionId;
@@ -153,12 +153,12 @@ public class AreaMedicalEmployee implements Serializable {
         this.snils = snils;
     }
 
-    public PositionNomClinic getPositionNomClinic() {
-        return positionNomClinic;
+    public PositionNom getPositionNom() {
+        return positionNom;
     }
 
-    public void setPositionNomClinic(PositionNomClinic positionNomClinic) {
-        this.positionNomClinic = positionNomClinic;
+    public void setPositionNom(PositionNom positionNom) {
+        this.positionNom = positionNom;
     }
 
     public LocalDateTime getCreateDate() {
@@ -197,8 +197,8 @@ public class AreaMedicalEmployee implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AreaMedicalEmployee) {
-            return ((AreaMedicalEmployee) obj).getId().equals(this.id);
+        if (obj != null && obj instanceof AreaMedicalEmployees) {
+            return ((AreaMedicalEmployees) obj).getId().equals(this.id);
         }
         return false;
     }

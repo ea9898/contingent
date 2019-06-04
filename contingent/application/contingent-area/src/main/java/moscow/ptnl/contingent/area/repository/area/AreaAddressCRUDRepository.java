@@ -2,11 +2,12 @@ package moscow.ptnl.contingent.area.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.repository.CommonRepository;
+import moscow.ptnl.contingent.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
-public interface AreaAddressCRUDRepository extends CommonRepository<AreaAddress, Long> {
+public interface AreaAddressCRUDRepository extends PagingAndSortingRepository<AreaAddress, Long> {
 }

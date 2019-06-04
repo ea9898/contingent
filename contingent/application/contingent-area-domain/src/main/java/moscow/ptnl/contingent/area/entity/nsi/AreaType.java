@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
+import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 
 import javax.persistence.Cacheable;
@@ -15,10 +16,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypesClass;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypesKind;
-import moscow.ptnl.contingent.area.entity.nsi.PrimaryAreaTypeAttributes;
-import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 
 @Entity
 @Table(name = "AREA_TYPE")
@@ -32,19 +29,19 @@ public class AreaType implements Serializable {
     private Long code;
 
     @Size(max = 100)
-    @Column(name = "NAME")
-    private String name;
+    @Column(name = "TITLE")
+    private String title;
 
     @JoinColumn(name = "AREA_TYPE_KIND_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypesKind kindAreaType;
+    private AreaTypeKind kindAreaType;
 
     @JoinColumn(name = "AREA_TYPE_CLASS_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypesClass classAreaType;
+    private AreaTypeClass classAreaType;
 
     @Size(max = 1)
-    @Column(name = "GENDER")
+    @Column(name = "GENDER_CODE")
     private String gender;
 
     @Column(name = "AGE_MIN")
@@ -69,19 +66,43 @@ public class AreaType implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
-    @JoinColumn(name = "SPECIALIZATION_ID")
+    @Column(name = "HEAD_FINANCE")
+    @Convert(converter = BooleanIntegerConverter.class)
+    private Boolean headFinance;
+
+    @Column(name = "HAS_SERVICE_TERRITORY")
+    @Convert(converter = BooleanIntegerConverter.class)
+    private Boolean hasServiceTerritory;
+
+    @Column(name = "ATTACH_BY_REQUEST")
+    @Convert(converter = BooleanIntegerConverter.class)
+    private Boolean attachByRequest;
+
+    @Column(name = "ATTACH_BY_MEDICAL_REASON")
+    @Convert(converter = BooleanIntegerConverter.class)
+    private Boolean attachByMedicalReason;
+
+    @Column(name = "MPGU_AVAILABLE")
+    @Convert(converter = BooleanIntegerConverter.class)
+    private Boolean mpguAvailable;
+
+    @JoinColumn(name = "AREA_COUNT_LIMIT_CODE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AreaCountLimit areaCountLimit;
+
+    @Column(name = "RESIDENTS_BIND_RATE")
+    private Integer residentsBindRate;
+
+    @JoinColumn(name = "SPECIALIZATION_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private Specialization specialization;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "areaType")
-    private PrimaryAreaTypeAttributes attributes;
 
     public AreaType() {
     }
 
-    public AreaType(Long code, String name, Boolean archive, Specialization specialization) {
+    public AreaType(Long code, String title, Boolean archive, Specialization specialization) {
         this.code = code;
-        this.name = name;
+        this.title = title;
         this.archived = archive;
         this.specialization = specialization;
     }
@@ -94,27 +115,27 @@ public class AreaType implements Serializable {
         this.code = code;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public AreaTypesKind getKindAreaType() {
+    public AreaTypeKind getKindAreaType() {
         return kindAreaType;
     }
 
-    public void setKindAreaType(AreaTypesKind kindAreaType) {
+    public void setKindAreaType(AreaTypeKind kindAreaType) {
         this.kindAreaType = kindAreaType;
     }
 
-    public AreaTypesClass getClassAreaType() {
+    public AreaTypeClass getClassAreaType() {
         return classAreaType;
     }
 
-    public void setClassAreaType(AreaTypesClass classAreaType) {
+    public void setClassAreaType(AreaTypeClass classAreaType) {
         this.classAreaType = classAreaType;
     }
 
@@ -186,14 +207,6 @@ public class AreaType implements Serializable {
         this.specialization = specialization;
     }
 
-    public PrimaryAreaTypeAttributes getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(PrimaryAreaTypeAttributes attributes) {
-        this.attributes = attributes;
-    }
-    
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.code);

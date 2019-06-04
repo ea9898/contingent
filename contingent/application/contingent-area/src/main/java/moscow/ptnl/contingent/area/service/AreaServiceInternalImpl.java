@@ -4,7 +4,7 @@ import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployee;
+import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
@@ -13,7 +13,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
 import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
-import moscow.ptnl.contingent.area.entity.nsi.PositionNomClinic;
+import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -26,6 +26,7 @@ import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRep
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressesRepository;
+import moscow.ptnl.contingent.area.repository.area.AreaAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaMedicalEmployeeCRUDRepository;
@@ -144,6 +145,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaAddressRepository areaAddressRepository;
 
     @Autowired
+    private AreaAddressCRUDRepository areaAddressCRUDRepository;
+
+    @Autowired
     private AreaServiceHelper areaHelper;
 
     @Autowired
@@ -259,8 +263,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        Boolean mpguAvailable = muAddlAreaTypes.getAreaType().getAttributes() == null ? null : muAddlAreaTypes.getAreaType().getAttributes().getMpguAvailable();
-        Boolean areaTypeAttachByMedicalReason = muAddlAreaTypes.getAreaType().getAttributes() == null ? null : muAddlAreaTypes.getAreaType().getAttributes().getAttachByMedicalReason();
+        // TODO аттрибуты переехали. Переделать.
+//        Boolean mpguAvailable = muAddlAreaTypes.getAreaType().getAttributes() == null ? null : muAddlAreaTypes.getAreaType().getAttributes().getMpguAvailable();
+//        Boolean areaTypeAttachByMedicalReason = muAddlAreaTypes.getAreaType().getAttributes() == null ? null : muAddlAreaTypes.getAreaType().getAttributes().getAttachByMedicalReason();
         //Todo сделать проерку AREA_COUNT_LIMIT после разработки НСИ
         if (muAddlAreaTypes.getAreaType().getKindAreaType() != null &&
                 Objects.equals(muAddlAreaTypes.getAreaType().getKindAreaType().getCode(), KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode())) {
@@ -272,23 +277,23 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
         areaHelper.checkAreaTypeAgeSetups(muAddlAreaTypes.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
-        if (autoAssignForAttachment) {
-            if (!Boolean.TRUE.equals(mpguAvailable)) {
-                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT, new ValidationParameter("areaTypeCode", areaTypeCode));
-            }
-            if (Boolean.TRUE.equals(attachByMedicalReason)) {
-                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
-            }
-        }
-        if (attachByMedicalReason != null && areaTypeAttachByMedicalReason != null &&
-                !Objects.equals(attachByMedicalReason, areaTypeAttachByMedicalReason)) {
-            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
-                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
-                    new ValidationParameter("attachByMedicalReason", areaTypeAttachByMedicalReason));
-        }
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
+//        if (autoAssignForAttachment) {
+//            if (!Boolean.TRUE.equals(mpguAvailable)) {
+//                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT, new ValidationParameter("areaTypeCode", areaTypeCode));
+//            }
+//            if (Boolean.TRUE.equals(attachByMedicalReason)) {
+//                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
+//            }
+//        }
+//        if (attachByMedicalReason != null && areaTypeAttachByMedicalReason != null &&
+//                !Objects.equals(attachByMedicalReason, areaTypeAttachByMedicalReason)) {
+//            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
+//                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
+//                    new ValidationParameter("attachByMedicalReason", areaTypeAttachByMedicalReason));
+//        }
+//        if (!validation.isSuccess()) {
+//            throw new ContingentException(validation);
+//        }
         //Создание новго первичного участка
         Area area = new Area(moId, muId, muAddlAreaTypes.getAreaType(), number, autoAssignForAttachment, false, description,
                 attachByMedicalReason, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
@@ -349,27 +354,29 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        Boolean mpguAvailable = area.getAreaType().getAttributes() == null ? null : area.getAreaType().getAttributes().getMpguAvailable();
-        Boolean areaTypeAttachByMedicalReason = area.getAreaType().getAttributes() == null ? null : area.getAreaType().getAttributes().getAttachByMedicalReason();
+        // TODO аттрибуты переехали в AREA
+        // TODO переделать
+//        Boolean mpguAvailable = area.getAreaType().getAttributes() == null ? null : area.getAreaType().getAttributes().getMpguAvailable();
+//        Boolean areaTypeAttachByMedicalReason = area.getAreaType().getAttributes() == null ? null : area.getAreaType().getAttributes().getAttachByMedicalReason();
 
         if (number != null) {
             areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), number, area.getId(), validation);
         }
-        if (autoAssignForAttachment) {
-            if (!Boolean.TRUE.equals(mpguAvailable)) {
-                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
-                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
-            }
-            if (Boolean.TRUE.equals(attachByMedicalReason)) {
-                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
-            }
-        }
-        if (attachByMedicalReason != null && areaTypeAttachByMedicalReason != null &&
-                !Objects.equals(attachByMedicalReason, areaTypeAttachByMedicalReason)) {
-            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
-                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
-                    new ValidationParameter("attachByMedicalReason", areaTypeAttachByMedicalReason));
-        }
+//        if (autoAssignForAttachment) {
+//            if (!Boolean.TRUE.equals(mpguAvailable)) {
+//                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
+//                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+//            }
+//            if (Boolean.TRUE.equals(attachByMedicalReason)) {
+//                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
+//            }
+//        }
+//        if (attachByMedicalReason != null && areaTypeAttachByMedicalReason != null &&
+//                !Objects.equals(attachByMedicalReason, areaTypeAttachByMedicalReason)) {
+//            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
+//                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
+//                    new ValidationParameter("attachByMedicalReason", areaTypeAttachByMedicalReason));
+//        }
         areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
         if (!validation.isSuccess()) {
@@ -599,7 +606,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         List<Long> changeIds = changeEmployeesInput.stream().map(ChangeMedicalEmployee::getAssignmentId)
                 .collect(Collectors.toList());
-        List<AreaMedicalEmployee> changeEmployeesDb = new ArrayList<>();
+        List<AreaMedicalEmployees> changeEmployeesDb = new ArrayList<>();
         areaMedicalEmployeeCRUDRepository.findAllById(changeIds).forEach(changeEmployeesDb::add);
 
         //3
@@ -614,14 +621,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        List<AreaMedicalEmployee> areaEmployeesDb = areaMedicalEmployeeRepository.getEmployeesByAreaId(areaId);
+        List<AreaMedicalEmployees> areaEmployeesDb = areaMedicalEmployeeRepository.getEmployeesByAreaId(areaId);
 
         //4
         for (ChangeMedicalEmployee inputEmpl : changeEmployeesInput) {
 
-            Optional<AreaMedicalEmployee> employee = areaEmployeesDb.stream().filter(
+            Optional<AreaMedicalEmployees> employee = areaEmployeesDb.stream().filter(
                     empl -> empl.getId().equals(inputEmpl.getAssignmentId())).findFirst();
-            AreaMedicalEmployee emplDb = null;
+            AreaMedicalEmployees emplDb = null;
             if (!employee.isPresent()) {
                 validation.error(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
                         new ValidationParameter("id", inputEmpl.getAssignmentId()));
@@ -676,12 +683,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
             //5.4
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
-            PositionNomClinic inputPosition = positionNomClinicCRUDRepository.findById(empl.getPositionId()).orElse(null);
-            if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNomClinic().getId() != empl.getPositionId())) {
+            PositionNom inputPosition = positionNomClinicCRUDRepository.findById(empl.getPositionId()).orElse(null);
+            if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", inputPosition != null ? inputPosition.getTitle() : null),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
-                        new ValidationParameter("areaTypeName", area.getAreaType().getName()));
+                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
             }
         }
         if (!validation.isSuccess()) {
@@ -689,13 +696,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         //7.1
-        List<AreaMedicalEmployee> allEmployees = new ArrayList<>(areaEmployeesDb);
+        List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
         areaHelper.applyChanges(allEmployees, changeEmployeesInput);
         areaHelper.addNew(allEmployees, addEmployeesInput, area);
         areaHelper.checkDatesNotInterceptWithSamePosition(allEmployees, validation);
 
         //7.2
-        List<AreaMedicalEmployee> mainEmployees =
+        List<AreaMedicalEmployees> mainEmployees =
                 areaEmployeesDb.stream().filter(empl -> !empl.getReplacement()).collect(Collectors.toList());
         areaHelper.applyChanges(mainEmployees, changeEmployeesInput);
         areaHelper.addNew(mainEmployees, addEmployeesInput.stream()
@@ -711,12 +718,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             List<Period> periodsWithoutMainEmpl = areaHelper.getPeriodsWithoutMainEmployee(mainEmployees);
             if (periodsWithoutMainEmpl.size() > 0) {
                 //7.5
-                List<AreaMedicalEmployee> replacementEmployees = areaEmployeesDb.stream()
-                        .filter(AreaMedicalEmployee::getReplacement).collect(Collectors.toList());
+                List<AreaMedicalEmployees> replacementEmployees = areaEmployeesDb.stream()
+                        .filter(AreaMedicalEmployees::getReplacement).collect(Collectors.toList());
                 areaHelper.applyChanges(replacementEmployees, changeEmployeesInput);
                 areaHelper.addNew(replacementEmployees, addEmployeesInput.stream()
                         .filter(AddMedicalEmployee::isIsReplacement).collect(Collectors.toList()), area);
-                replacementEmployees.sort(Comparator.comparing(AreaMedicalEmployee::getStartDate));
+                replacementEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate));
                 areaHelper.checkReplacementWithoutMain(periodsWithoutMainEmpl, replacementEmployees, validation);
             }
         }
@@ -771,12 +778,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 7.
-        List<Long> serviceDistrictMO = new ArrayList<>();
-        List<AddressWrapper> addresses = converoAddressToWrapper(nsiAddresses, notNsiAddresses);
-        algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
-                nsiAddresses, notNsiAddresses, serviceDistrictMO, validation);
+        Long serviceDistrictMO = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
+                nsiAddresses, notNsiAddresses, validation);
 
         // 8.
+
 
         // 9.
 
@@ -933,5 +939,48 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
         //Система для данного участка меняет статус на «Архивный»
         area.setArchived(true);
+    }
+
+    @Override
+    public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1. и 2.
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 3.
+        areaHelper.tooManyAreaAddresses(areaAddressIds, settingService.getPar2(), validation);
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 4.
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaAddressIds);
+        areaAddressIds.forEach(aai -> {
+            List<Long> areaAddressesIdsDiff = areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
+            if (!areaAddresses.stream().map(AreaAddress::getId).anyMatch(aa -> aa.equals(aai))) {
+                 validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("areaAddressId", aai));
+            }
+        });
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 5.
+        LocalDate localDate = LocalDate.now();
+        for (AreaAddress areaAddress: areaAddresses) {
+            if (!areaAddress.getStartDate().equals(localDate)) {
+                // 5.1.
+                areaAddress.setEndDate(localDate.minusDays(1L));
+            } else {
+                // 5.2.
+                areaAddressCRUDRepository.delete(areaAddress);
+            }
+        }
+
+        // 6.
+        if (area.getAreaType().getClassAreaType().getCode().equals(1L)) {
+            // А_УУ_5
+        }
+
+        // 7.
+        return;
     }
 }

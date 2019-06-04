@@ -1,6 +1,8 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -10,6 +12,8 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.IdClass;
+
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 
 @Entity
@@ -21,15 +25,23 @@ public class AreaTypeRelations implements Serializable {
     private static final long serialVersionUID = -8346464667577347303L;
 
     @Id
-    @JoinColumn(name = "DEPENDENT_AREA_TYPE_ID")
+    @Column(name = "ID")
+    private Long id;
+
+    @Id
+    @JoinColumn(name = "DEPENDENT_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType dependentAreaType;
 
     @Id
-    @JoinColumn(name = "PRIMARY_AREA_TYPE_ID")
+    @JoinColumn(name = "PRIMARY_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType primaryAreaType;
-    
+
+    @Column(name = "ARCHIVED")
+    @Convert(converter = BooleanStrictIntegerConverter.class)
+    private Boolean archived;
+
     public Key getKey() {
         return new Key(dependentAreaType, primaryAreaType);
     }
