@@ -1,12 +1,12 @@
 package moscow.ptnl.contingent.service;
 
-import moscow.ptnl.contingent.area.model.esu.AreaEvent;
 
 import java.time.LocalDateTime;
+import moscow.ptnl.contingent.area.model.esu.ESUEvent;
 
 public interface EsuService {
 
-    boolean saveAndPublishToESU(AreaEvent event);
+    boolean saveAndPublishToESU(ESUEvent event);
 
     void periodicalPublishUnsuccessMessagesToESU(LocalDateTime olderThan);
 }

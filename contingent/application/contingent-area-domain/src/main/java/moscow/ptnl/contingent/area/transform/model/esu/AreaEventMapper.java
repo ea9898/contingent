@@ -1,13 +1,11 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
-import moscow.ptnl.contingent.area.model.esu.OperationType;
 import moscow.ptnl.contingent.area.transform.Transform;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 
 @Component
 public class AreaEventMapper implements Transform<AreaInfoEvent, moscow.ptnl.contingent.area.model.esu.AreaEvent> {

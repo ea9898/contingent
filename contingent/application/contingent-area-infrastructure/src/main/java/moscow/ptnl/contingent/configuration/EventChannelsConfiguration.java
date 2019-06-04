@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.scheduling.PollerMetadata;
@@ -40,8 +41,8 @@ public class EventChannelsConfiguration {
     public static final String ESU_EVENT_CHANNEL_NAME = "ESUEventChannel";
     
     private static final int QUEUE_LENGTH = 1000;
-    private static final int QUEUE_DELIVERY_INTERVAL = 5; //msec
-    
+    private static final int QUEUE_DELIVERY_INTERVAL = 5; //msec 
+        
     
     /**
      * Канал для отправки сообщений в историю.   
@@ -61,7 +62,7 @@ public class EventChannelsConfiguration {
      */
     @Bean(name = ESU_EVENT_CHANNEL_NAME)
     public MessageChannel createESUEventChannel() {        
-        return new QueueChannel(QUEUE_LENGTH);
+        return new DirectChannel();
     }
     
     @Bean(name = PollerMetadata.DEFAULT_POLLER_METADATA_BEAN_NAME)

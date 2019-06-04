@@ -18,12 +18,18 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import moscow.ptnl.contingent.area.model.esu.ESUEvent;
 import moscow.ptnl.contingent.service.EsuService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Service
+@PropertySource("classpath:application-esu.properties")
 public class EsuServiceImpl implements EsuService {
 
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
@@ -41,6 +47,12 @@ public class EsuServiceImpl implements EsuService {
 
     @Autowired
     private AttachOnAreaRelationChangeEventMapper attachOnAreaRelationChangeEventMapper;
+    
+    @Value("${esu.producer.area.topic}")
+    private String esuAreaTopicName;
+    
+    @Value("${esu.producer.produce.timeout}")
+    private Integer producerRequestTimeout;
 
     /**
      * Сохраняет информацию о событии в БД и пытается отправить ее в ЕСУ.
@@ -49,8 +61,14 @@ public class EsuServiceImpl implements EsuService {
      * @param event
      * @return true при успешной публикации в ЕСУ
      */
-    public boolean saveAndPublishToESU(moscow.ptnl.contingent.area.model.esu.AreaEvent event) {
-//        String publishTopic = AREA_TOPIC;
+    @Override
+    public boolean saveAndPublishToESU(ESUEvent event) {
+        Optional<String> resolvedTopicName = resolveTopicName(event);
+        if (resolvedTopicName.isPresent()) {
+                String topicName = resolvedTopicName.get();
+                LOG.debug("create message for topic: {}", topicName);
+                String ispkEventId = UUID.randomUUID().toString();
+        }
 //        AttachOnAreaRelationChangeEvent publishObject = attachOnAreaRelationChangeEventMapper.entityToDtoTransform(event);
 //        String message = convertEventObjectToMessage(publishObject);
 //        EsuOutput record = saveBeforePublishToESU(publishTopic, message);
@@ -119,4 +137,19 @@ public class EsuServiceImpl implements EsuService {
 //        }
 //        return xmlContent;
 //    }
+    
+    /**
+     * Определяем подходящий топик в зависимости от типа события.
+     * Если событие не должно писаться в топик, то вернет Optional.empty.
+     * 
+     * @param publishObject
+     * @return 
+     */
+    private Optional<String> resolveTopicName(ESUEvent publishObject) { 
+        if (publishObject != null) {
+            LOG.debug("\n================\nEVENT CODE: {}\n==================", publishObject.getOperationType());
+            return Optional.of(esuAreaTopicName);
+        }
+        return Optional.empty();
+    }
 }
