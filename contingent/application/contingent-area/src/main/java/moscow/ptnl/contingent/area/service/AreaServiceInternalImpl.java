@@ -46,8 +46,8 @@ import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicCRUDRepositor
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.area.repository.nsi.SpecializationToPositionNomRepository;
-import moscow.ptnl.contingent.area.transform.NotNsiAddressToAddressWrapperMapper;
-import moscow.ptnl.contingent.area.transform.NsiAddressToAddressWrapperMapper;
+import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
+import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,13 +160,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private SettingService settingService;
 
     @Autowired
-    NsiAddressToAddressWrapperMapper nsiAddressToAddressWrapperMapper;
-
-    @Autowired
-    NotNsiAddressToAddressWrapperMapper notNsiAddressToAddressWrapperMapper;
-
-    @Autowired
     Algorithms algorithms;
+
+    @Autowired
+    NsiAddressMapper nsiAddressMapper;
+
+    @Autowired
+    NotNsiAddressMapper notNsiAddressMapper;
 
     @Override
     public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
@@ -744,10 +744,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                                                          List<NotNsiAddress> notNsiAddresses) {
         //Сформируем список адресов по справочнику
         List<AddressWrapper> addresses = nsiAddresses.stream()
-                .map(nsiAddressToAddressWrapperMapper::dtoToEntityTransform).collect(Collectors.toList());
+                .map(nsiAddressMapper::dtoToEntityTransform).map(AddressWrapper::new).collect(Collectors.toList());
 
         //Сформируем список адресов вне справочника
-        addresses.addAll(notNsiAddresses.stream().map(notNsiAddressToAddressWrapperMapper::dtoToEntityTransform).collect(Collectors.toList()));
+        addresses.addAll(notNsiAddresses.stream().map(notNsiAddressMapper::dtoToEntityTransform)
+                .map(notNsi -> {
+                    AddressWrapper addressWrapper = new AddressWrapper();
+                    addressWrapper.setNotNsiAddress(notNsi);
+                    addressWrapper.setAddressFormingElement(addressFormingElementRepository.getAddressFormingElements(notNsi.getParentId(), notNsi.getLevelParentId()).get(0));
+                    return addressWrapper;
+                }).collect(Collectors.toList()));
 
         return addresses;
     }

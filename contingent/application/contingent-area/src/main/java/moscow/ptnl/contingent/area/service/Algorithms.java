@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
+import moscow.ptnl.contingent.area.model.area.DependentArea;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
@@ -18,6 +19,7 @@ import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepositor
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import moscow.ptnl.contingent2.attachment.disp.event.CreateCloseAttachmentEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
@@ -241,29 +243,17 @@ public class Algorithms {
 
 
     //  Формирование топика «Создание или закрытие прикреплений при изменении участка» (А_УУ_4)
-    // TODO реализовать
-    public String createTopicCreateCloseAttachAreaChange() {
-        return "";
+    public CreateCloseAttachmentEvent createTopicCreateCloseAttachAreaChange(
+            List<Long> primaryAreasIdCreateAttachments,
+            List<Long> primaryAreasIdCloseAttachments,
+            DependentArea dependentArea) {
+        // TODO реализовать формирование сообщения
+        return new CreateCloseAttachmentEvent();
     }
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
-    public String createTopicAreaInfo(Area area, String methodName) {
-
-        // 1.
-        AreaInfoEvent areaInfoEvent = new AreaInfoEvent();
-
-        areaInfoEvent.setId(1);
-        areaInfoEvent.setOperationDate(xmlGregorianCalendarMapper.entityToDtoTransform(LocalDateTime.now()));
-        areaInfoEvent.setOperationType(methodName);
-        areaInfoEvent.setAreaId(area.getId());
-        areaInfoEvent.setAreaType(area.getAreaType().getCode());
-        areaInfoEvent.setMuId(area.getMuId());
-        areaInfoEvent.setNumber(area.getNumber());
-        areaInfoEvent.setName(area.getDescription());
-        areaInfoEvent.setArchive(area.getArchived());
-        areaInfoEvent.setAutoAssignForAttachment(area.getAutoAssignForAttach());
-//        areaInfoEvent.setResidentsBindRate(area.getAreaType().);
-
-        return "";
+    public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {
+        // TODO реализовать формирование сообщения
+        return new AreaInfoEvent();
     }
 }

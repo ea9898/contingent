@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.service.impl;
 
 import moscow.ptnl.contingent.domain.esu.EsuOutput;
-import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaRelationChangeEventMapper;
 import moscow.ptnl.contingent.repository.esu.EsuOutputCRUDRepository;
 import moscow.ptnl.contingent.repository.esu.EsuOutputRepository;
 import org.slf4j.Logger;
@@ -45,9 +44,6 @@ public class EsuServiceImpl implements EsuService {
     @Autowired
     private EsuOutputRepository esuOutputRepository;
 
-    @Autowired
-    private AttachOnAreaRelationChangeEventMapper attachOnAreaRelationChangeEventMapper;
-    
     @Value("${esu.producer.area.topic}")
     private String esuAreaTopicName;
     

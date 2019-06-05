@@ -4,8 +4,6 @@ import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
-import ru.mos.emias.contingent2.core.NotNsiAddress;
-import ru.mos.emias.contingent2.core.NsiAddress;
 
 public class AddressWrapper {
 
