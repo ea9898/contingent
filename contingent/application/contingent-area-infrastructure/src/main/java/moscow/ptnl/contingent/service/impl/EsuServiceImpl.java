@@ -143,7 +143,7 @@ public class EsuServiceImpl implements EsuService {
      */
     private Optional<String> resolveTopicName(ESUEvent publishObject) { 
         if (publishObject != null) {
-            LOG.debug("\n================\nEVENT CODE: {}\n==================", publishObject.getOperationType());
+//            LOG.debug("\n================\nEVENT CODE: {}\n==================", publishObject.getOperationType());
             return Optional.of(esuAreaTopicName);
         }
         return Optional.empty();

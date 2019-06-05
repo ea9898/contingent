@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.model.esu;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import moscow.ptnl.contingent.area.entity.area.Area;
@@ -7,28 +8,30 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 
 public abstract class AreaEvent implements ESUEvent {
 
-    private final OperationType operationType;
+    private final LocalDateTime operationDate;
     private final Area area;
     private final Area oldArea;
+    //Todo если не требуется, удалить
     private final List<AreaToAreaType> addPrimaryAreaTypes;
+    //Todo если не требуется, удалить
     private final List<AreaToAreaType> delPrimaryAreaTypes;
 
-    AreaEvent(OperationType operationType, Area area, Area oldArea, List<AreaToAreaType> addPrimaryAreaTypes,
-            List<AreaToAreaType> delPrimaryAreaTypes) {
-        this.operationType = operationType;
+    AreaEvent(LocalDateTime operationDate, Area area, Area oldArea,
+              List<AreaToAreaType> addPrimaryAreaTypes, List<AreaToAreaType> delPrimaryAreaTypes) {
+        this.operationDate = operationDate;
         this.area = area;
         this.oldArea = oldArea;
         this.addPrimaryAreaTypes = addPrimaryAreaTypes;
         this.delPrimaryAreaTypes = delPrimaryAreaTypes;
     }
 
-    AreaEvent(OperationType operationType, Area area, List<AreaToAreaType> addPrimaryAreaTypes) {
-        this(operationType, area, null, addPrimaryAreaTypes, null);
+    AreaEvent(LocalDateTime operationDate, Area area, List<AreaToAreaType> addPrimaryAreaTypes) {
+        this(operationDate, area, null, addPrimaryAreaTypes, null);
     }
 
     @Override
-    public OperationType getOperationType() {
-        return operationType;
+    public LocalDateTime getOperationDate() {
+        return operationDate;
     }
 
     public Area getArea() {

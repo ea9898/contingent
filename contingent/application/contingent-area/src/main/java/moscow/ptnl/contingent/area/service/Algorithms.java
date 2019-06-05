@@ -18,6 +18,7 @@ import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepos
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
+import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.disp.event.CreateCloseAttachmentEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,6 @@ import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
 import ru.mos.emias.contingent2.core.NsiAddress;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +59,8 @@ public class Algorithms {
     @Autowired
     XMLGregorianCalendarMapper xmlGregorianCalendarMapper;
 
-
+    @Autowired
+    AreaInfoEventMapper areaInfoEventMapper;
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public Long searchServiceDistrictMOByAddress (
@@ -253,7 +253,6 @@ public class Algorithms {
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
     public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {
-        // TODO реализовать формирование сообщения
-        return new AreaInfoEvent();
+        return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.area.model.esu.AreaInfoEvent(methodName, area));
     }
 }
