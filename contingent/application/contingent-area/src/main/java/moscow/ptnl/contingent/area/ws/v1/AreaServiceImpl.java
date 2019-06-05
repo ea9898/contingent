@@ -3,7 +3,6 @@ package moscow.ptnl.contingent.area.ws.v1;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
@@ -388,7 +387,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
         try {
             GetAreaAddressResponse response = new GetAreaAddressResponse();
-            Page<AreaAddress> areaAddresses = areaService.getAreaAddress(body.getAreaId(), body.getPagingOptions() != null ?
+            Page<moscow.ptnl.contingent.area.model.area.AddressArea> areaAddresses = areaService.getAreaAddress(body.getAreaId(), body.getPagingOptions() != null ?
                     pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()) : null);
             response.getAreaAddresses().addAll(
                 areaAddresses.getContent().stream()

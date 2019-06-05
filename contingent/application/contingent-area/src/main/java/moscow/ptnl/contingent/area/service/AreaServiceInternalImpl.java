@@ -58,6 +58,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
+import ru.mos.emias.contingent2.core.Address;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.contingent2.core.MuType;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
@@ -74,6 +75,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -886,7 +888,53 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
 
+    // (К_УУ_12)	Получение списка адресов участка обслуживания
+    @Override
+    public Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(long areaId, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
 
+        // 1.
+        areaHelper.checkMaxPage(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 2.
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId);
+
+        if (areaAddresses.isEmpty()) {
+            return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(), paging, 0);
+        }
+
+        // 3.
+        Map<Long, Addresses>  addresses = new TreeMap<>();
+        areaAddresses.forEach(aa -> {
+            Addresses address = aa.getAddress();
+            addresses.put(aa.getId(), address);
+        });
+
+        List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
+
+        addresses.forEach((addressId, address) -> {
+            if (address.getLevel() == 8) {
+                BuildingRegistry buildingRegistry = address.getBuildingRegistry();
+                AddressFormingElement addressFormingElement = buildingRegistry.getAddressFormingElement();
+                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, buildingRegistry, addressFormingElement));
+            } else {
+                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, address.getAddressFormingElement()));
+            }
+        });
+
+        // 4.
+        // Сортировка в TreeMap
+
+        // 5.
+        return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(addressAreas),
+                paging, addressAreas.size());
+    }
+
+    // (К_УУ_20) Получение списка территорий обслуживания МО
     @Override
     public Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException {
         Validation validation = new Validation();
@@ -904,52 +952,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
-    }
-
-    // (К_УУ_12)	Получение списка адресов участка обслуживания
-    @Override
-    public Page<AreaAddress> getAreaAddress(long areaId, PageRequest paging) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 1.
-        areaHelper.checkMaxPage(paging, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        // 2.
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId);
-
-        if (areaAddresses.isEmpty()) {
-            // TODO Сделать формирование Pageable
-            return new PageImpl<AreaAddress>(new ArrayList<>(), Pageable.unpaged(), 0);
-        }
-
-        // 3.
-        Map<Long, Addresses>  addresses = new HashMap<>();
-        areaAddresses.forEach(aa -> {
-            Addresses address = aa.getAddress();
-            addresses.put(aa.getId(), address);
-        });
-
-        Map<Long, AddressWrapper> addressWrappers = new HashMap<>();
-
-        addresses.forEach((addressId, address) -> {
-            if (address.getLevel() == 8) {
-                BuildingRegistry buildingRegistry = address.getBuildingRegistry();
-                AddressFormingElement addressFormingElement = buildingRegistry.getAddressFormingElement();
-                addressWrappers.put(addressId, new AddressWrapper(buildingRegistry, addressFormingElement));
-            } else {
-                addressWrappers.put(addressId, new AddressWrapper(address.getAddressFormingElement()));
-            }
-        });
-
-        // 4.
-
-
-        // 5.
-        return null;
     }
 
     @Override

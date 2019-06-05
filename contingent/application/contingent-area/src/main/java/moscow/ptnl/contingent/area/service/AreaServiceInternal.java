@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
+import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
@@ -65,7 +66,7 @@ public interface AreaServiceInternal {
 
     Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
 
-    Page<AreaAddress> getAreaAddress(long areaId, PageRequest paging) throws ContingentException;
+    Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(long areaId, PageRequest paging) throws ContingentException;
 
     void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException;
 
