@@ -156,6 +156,21 @@
                             <packageName>moscow.ptnl.contingent2.attachment.changeprimarea.event</packageName>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>xjc6</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <clearOutputDir>false</clearOutputDir>
+                            <encoding>UTF-8</encoding>
+                            <sources>
+                                <source>src/main/resources/META-INF/xsd/esu/attachoonareachange.v1.xsd</source>
+                            </sources>
+                            <packageName>moscow.ptnl.contingent2.attachment.changearea.event</packageName>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
