@@ -207,6 +207,14 @@ public class AreaType implements Serializable {
         this.specialization = specialization;
     }
 
+    public Integer getResidentsBindRate() {
+        return residentsBindRate;
+    }
+
+    public void setResidentsBindRate(Integer residentsBindRate) {
+        this.residentsBindRate = residentsBindRate;
+    }
+
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.code);
