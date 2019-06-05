@@ -1,13 +1,15 @@
 package moscow.ptnl.contingent.area.transform;
 
+import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.Area;
+import ru.mos.emias.contingent2.core.AreaTypeShort;
 
 import java.util.stream.Collectors;
 
 @Component
-public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.entity.area.Area> {
+public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.model.area.AreaInfo> {
 
     @Autowired
     private AreaTypeShortMapper areaTypeShortMapper;
@@ -16,46 +18,61 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.e
     private AreaMedicalEmployeeMapper areaMedicalEmployeeMapper;
 
     @Override
-    public Area entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.Area entityObject) {
+    public Area entityToDtoTransform(moscow.ptnl.contingent.area.model.area.AreaInfo entityObject) {
         Area area = new Area();
-        area.setId(entityObject.getId());
-        area.setMoId(entityObject.getMoId());
-        area.setMuId(entityObject.getMuId());
-        area.setNumber(entityObject.getNumber());
-        area.setDescription(entityObject.getDescription());
-        area.setAreaType(areaTypeShortMapper.entityToDtoTransform(entityObject.getAreaType()));
-        area.setAgeMin(entityObject.getAgeMin());
-        area.setAgeMax(entityObject.getAgeMax());
-        area.setAgeMinM(entityObject.getAgeMMin());
-        area.setAgeMaxM(entityObject.getAgeMMax());
-        area.setAgeMinW(entityObject.getAgeWMin());
-        area.setAgeMaxW(entityObject.getAgeWMax());
-        area.setAutoAssignForAttachment(entityObject.getAutoAssignForAttach());
-        area.setAttachByMedicalReason(entityObject.getAttachByMedicalReason());
-        area.setArchive(Boolean.TRUE.equals(entityObject.getArchived()));
 
-        if (!entityObject.getActualMedicalEmployees().isEmpty()) {
+        moscow.ptnl.contingent.area.entity.area.Area areaObj = entityObject.getArea();
+        area.setId(areaObj.getId());
+        area.setMoId(areaObj.getMoId());
+        area.setMuId(areaObj.getMuId());
+        area.setNumber(areaObj.getNumber());
+        area.setDescription(areaObj.getDescription());
+        area.setAreaType(areaTypeShortMapper.entityToDtoTransform(areaObj.getAreaType()));
+        area.setAgeMin(areaObj.getAgeMin());
+        area.setAgeMax(areaObj.getAgeMax());
+        area.setAgeMinM(areaObj.getAgeMMin());
+        area.setAgeMaxM(areaObj.getAgeMMax());
+        area.setAgeMinW(areaObj.getAgeWMin());
+        area.setAgeMaxW(areaObj.getAgeWMax());
+        area.setAutoAssignForAttachment(areaObj.getAutoAssignForAttach());
+        area.setAttachByMedicalReason(areaObj.getAttachByMedicalReason());
+        area.setArchive(Boolean.TRUE.equals(areaObj.getArchived()));
+
+        if (!entityObject.getMainAreaMedicalEmployees().isEmpty()) {
             Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
-            medicalEmployees.getMedicalEmployees().addAll(entityObject.getActualMedicalEmployees().stream()
+            medicalEmployees.getMedicalEmployees().addAll(entityObject.getMainAreaMedicalEmployees().stream()
                     .map(areaMedicalEmployeeMapper::entityToDtoTransform)
                     .collect(Collectors.toList()));
             area.setMedicalEmployees(medicalEmployees);
         }
-        if (!entityObject.getPrimaryAreaTypes().isEmpty()) {
+
+        if (!entityObject.getReplacementAreaMedicalEmployees().isEmpty()) {
+            Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
+            medicalEmployees.getMedicalEmployees().addAll(entityObject.getReplacementAreaMedicalEmployees().stream()
+                    .map(areaMedicalEmployeeMapper::entityToDtoTransform)
+                    .collect(Collectors.toList()));
+            area.setMedicalEmployees(medicalEmployees);
+        }
+
+        if (!entityObject.getArea().getPrimaryAreaTypes().isEmpty()) {
             Area.PrimaryAreaTypeCodes areaTypeCodes = new Area.PrimaryAreaTypeCodes();
-            // TODO Изменить в соответствии с задачей
-//            areaTypeCodes.getAreaTypes().addAll(entityObject.getPrimaryAreaTypes().stream()
-//                    .map(AreaToAreaType::getMuProfile)
-//                    .map(MuAddlAreaTypes::getAreaType)
-//                    .map(areaTypeShortMapper::entityToDtoTransform)
-//                    .collect(Collectors.toList()));
+
+            entityObject.getArea().getPrimaryAreaTypes()
+                .stream().map(AreaToAreaType::getAreaType)
+                    .map(aat -> {
+                        AreaTypeShort areaTypeShort = new AreaTypeShort();
+                        areaTypeShort.setCode(aat.getCode());
+                        areaTypeShort.setName(aat.getTitle());
+                        return areaTypeShort;
+                    })
+                    .collect(Collectors.toList());
             area.setPrimaryAreaTypeCodes(areaTypeCodes);
         }
         return area;
     }
 
     @Override
-    public moscow.ptnl.contingent.area.entity.area.Area dtoToEntityTransform(Area dtoObject) {
+    public moscow.ptnl.contingent.area.model.area.AreaInfo dtoToEntityTransform(Area dtoObject) {
         return null;
     }
 }

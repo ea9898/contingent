@@ -22,6 +22,7 @@ import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
+import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
@@ -55,10 +56,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
-import ru.mos.emias.contingent2.core.Address;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.contingent2.core.MuType;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
@@ -69,14 +68,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -561,12 +558,26 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return addressAllocationOrderRepository.findAddressAllocationOrdersOverlapped(id, number, date, name, paging);
     }
 
+    // (К_УУ_9)	Получение подробной информации об участке
     @Override
-    public Area getAreaById(Long id) throws ContingentException {
-        Optional<Area> area = areaCRUDRepository.findById(id);
+    public AreaInfo getAreaById(Long id) throws ContingentException {
 
-        return area.orElseThrow(() -> new ContingentException(
-                new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", id))));
+        // 1.
+        Optional<Area> areaOptional = areaCRUDRepository.findById(id);
+        if (!areaOptional.isPresent()) {
+            throw new ContingentException(new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", id)));
+        }
+        Area area = areaOptional.get();
+
+        // 2.
+        List<AreaMedicalEmployees> mainMedicalEmployees = areaMedicalEmployeeRepository.
+                getEmployeesMainActualByAreaId(area.getId());
+
+        // 3.
+        List<AreaMedicalEmployees> replacementMedicalEmployees = areaMedicalEmployeeRepository.
+                getEmployeesReplacementActualByAreaId(area.getId());
+
+        return new AreaInfo(area, mainMedicalEmployees, replacementMedicalEmployees);
     }
 
     @Override

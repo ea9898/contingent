@@ -1,12 +1,10 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
-import moscow.ptnl.contingent.area.model.area.AddressWrapper;
+import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
@@ -49,7 +47,7 @@ public interface AreaServiceInternal {
 
     Page<AddressAllocationOrders> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException;
 
-    Area getAreaById(Long id) throws ContingentException;
+    AreaInfo getAreaById(Long id) throws ContingentException;
 
     List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addMedicalEmployees,
                                         List<ChangeMedicalEmployee> changeMedicalEmployees) throws ContingentException;

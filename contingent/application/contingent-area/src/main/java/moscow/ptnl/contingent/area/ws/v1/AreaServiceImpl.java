@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
+import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
@@ -276,10 +277,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
-            Area area = areaService.getAreaById(body.getAreaId());
+            AreaInfo area = areaService.getAreaById(body.getAreaId());
             GetAreaByIdResponse response = new GetAreaByIdResponse();
             response.setResult(areaMapper.entityToDtoTransform(area));
-
             return response;
         }
         catch (Exception ex) {
