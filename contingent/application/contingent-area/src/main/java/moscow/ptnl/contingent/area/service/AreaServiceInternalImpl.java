@@ -168,6 +168,42 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Autowired
     NotNsiAddressMapper notNsiAddressMapper;
 
+    // (К_УУ_1)	Добавление типов участка в профиль МУ
+    @Override
+    public void addProfileMU(Long muId, Long muTypeId, List<Long> areaTypeCodes) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1.
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaTypesAdd");
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 2.
+        areaHelper.checkMuAddlAreaTypeExist(muId, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 3.
+        areaHelper.checkMuTypeAreaTypeCreateAvailable(muTypeId, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 4.
+        for (Long areaTypeCode : areaTypeCodes) {
+            AreaType areaType = areaTypes.stream().filter(at -> at.getCode().equals(areaTypeCode)).findFirst().orElse(null);
+            MuAddlAreaTypes muAddlAreaTypes = new MuAddlAreaTypes(muId, areaType);
+            muAddlAreaTypesCRUDRepository.save(muAddlAreaTypes);
+        }
+
+        // 5.
+    }
+
     @Override
     public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
         Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, new ArrayList<>(),
@@ -181,41 +217,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return new ArrayList<>(areaTypes);
     }
 
-    /**
-     *
-     * @param muId
-     * @param muTypeId
-     * @param areaTypeCodes
-     * @throws ContingentException
-     */
-    @Override
-    public void addProfileMU(Long muId, Long muTypeId, List<Long> areaTypeCodes) throws ContingentException {
-        Validation validation = new Validation();
 
-        areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaTypesAdd");
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        areaHelper.checkMuAddlAreaTypeExist(muId, areaTypeCodes, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        areaHelper.checkMuTypeAreaTypeCreateAvailable(muTypeId, areaTypeCodes, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        for (Long areaTypeCode : areaTypeCodes) {
-            AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
-            MuAddlAreaTypes muAddlAreaTypes = new MuAddlAreaTypes(muId, areaType);
-            muAddlAreaTypesCRUDRepository.save(muAddlAreaTypes);
-        }
-    }
 
     @Override
     public void delProfileMU(Long muId, List<Long> areaTypeCodes) throws ContingentException {
