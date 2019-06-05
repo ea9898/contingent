@@ -26,6 +26,7 @@ import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
 import moscow.ptnl.contingent.area.util.Period;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
@@ -80,6 +81,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
+
+    @Autowired
+    private SettingService settingService;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -497,5 +501,14 @@ public class AreaServiceHelper {
         if (areaAddressIds.size() > maxAreaAddress) {
             validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAreaAddress));
         }
+    }
+
+    // Система проверяет, что размер страницы, указанный во входных параметрах, не превышает максимально допустимое значение, указанное во внутреннем системном параметре (PAR_3).
+    // Иначе возвращает ошибку
+    public void checkMaxPage(PageRequest paging, Validation validation) {
+        if (paging != null && paging.getPageSize() > settingService.getPar3()) {
+            validation.error(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
+        }
+
     }
 }

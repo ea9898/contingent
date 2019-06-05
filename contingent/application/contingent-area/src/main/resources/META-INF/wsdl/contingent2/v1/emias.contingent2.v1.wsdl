@@ -189,6 +189,15 @@
         <wsdl:part name="body" element="ns1:delAreaAddressResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="getAreaAddressInput">
+        <wsdl:part name="body" element="ns1:getAreaAddressRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getAreaAddressOutput">
+        <wsdl:part name="body" element="ns1:getAreaAddressResponse"/>
+    </wsdl:message>
+
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="addProfileMU">
             <wsdl:documentation>
@@ -348,6 +357,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:delAreaAddressInput"/>
             <wsdl:output message="tns:delAreaAddressOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getAreaAddress">
+            <wsdl:documentation>
+                (К_УУ_12)	Получение списка адресов участка обслуживания
+            </wsdl:documentation>
+            <wsdl:input message="tns:getAreaAddressInput"/>
+            <wsdl:output message="tns:getAreaAddressOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -623,6 +640,20 @@
 
         <wsdl:operation name="delAreaAddress">
             <soap:operation soapAction="delAreaAddress"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getAreaAddress">
+            <soap:operation soapAction="getAreaAddress"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

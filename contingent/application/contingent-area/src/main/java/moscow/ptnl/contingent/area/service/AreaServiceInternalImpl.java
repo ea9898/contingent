@@ -8,6 +8,7 @@ import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
@@ -52,7 +53,9 @@ import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
@@ -65,11 +68,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -204,21 +209,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 5.
     }
 
-    @Override
-    public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
-        Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, new ArrayList<>(),
-                AvailableToCreateType.ALLOWED).stream()
-                .map(MuTypeAreaTypes::getAreaType)
-                .collect(Collectors.toSet());
-        areaTypes.addAll(muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
-                .map(MuAddlAreaTypes::getAreaType)
-                .collect(Collectors.toSet())
-        );
-        return new ArrayList<>(areaTypes);
-    }
-
-
-
+    // (К_УУ_2)	Удаление типов участка из профиля МУ
     @Override
     public void delProfileMU(Long muId, List<Long> areaTypeCodes) throws ContingentException {
         Validation validation = new Validation();
@@ -246,6 +237,22 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
     }
+
+    // (К_УУ_3)	Предоставление сведений профиля МУ
+    @Override
+    public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
+        Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, new ArrayList<>(),
+                AvailableToCreateType.ALLOWED).stream()
+                .map(MuTypeAreaTypes::getAreaType)
+                .collect(Collectors.toSet());
+        areaTypes.addAll(muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
+                .map(MuAddlAreaTypes::getAreaType)
+                .collect(Collectors.toSet())
+        );
+        return new ArrayList<>(areaTypes);
+    }
+
+
 
     @Override
     public Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
@@ -884,15 +891,65 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException {
         Validation validation = new Validation();
 
-        if (paging != null && paging.getPageSize() > settingService.getPar3()) {
-            validation.error(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
+        // 1.
+        areaHelper.checkMaxPage(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
         }
+
         areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaType");
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
         return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
+    }
+
+    // (К_УУ_12)	Получение списка адресов участка обслуживания
+    @Override
+    public Page<AreaAddress> getAreaAddress(long areaId, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1.
+        areaHelper.checkMaxPage(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 2.
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId);
+
+        if (areaAddresses.isEmpty()) {
+            // TODO Сделать формирование Pageable
+            return new PageImpl<AreaAddress>(new ArrayList<>(), Pageable.unpaged(), 0);
+        }
+
+        // 3.
+        Map<Long, Addresses>  addresses = new HashMap<>();
+        areaAddresses.forEach(aa -> {
+            Addresses address = aa.getAddress();
+            addresses.put(aa.getId(), address);
+        });
+
+        Map<Long, AddressWrapper> addressWrappers = new HashMap<>();
+
+        addresses.forEach((addressId, address) -> {
+            if (address.getLevel() == 8) {
+                BuildingRegistry buildingRegistry = address.getBuildingRegistry();
+                AddressFormingElement addressFormingElement = buildingRegistry.getAddressFormingElement();
+                addressWrappers.put(addressId, new AddressWrapper(buildingRegistry, addressFormingElement));
+            } else {
+                addressWrappers.put(addressId, new AddressWrapper(address.getAddressFormingElement()));
+            }
+        });
+
+        // 4.
+
+
+        // 5.
+        return null;
     }
 
     @Override

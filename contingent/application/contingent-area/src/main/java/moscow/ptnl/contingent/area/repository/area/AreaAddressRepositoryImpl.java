@@ -12,11 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -27,7 +23,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     AreaAddressCRUDRepository areaAddressCRUDRepository;
 
     // Спека поиска актуальных территорий обслуживания
-    private Specification<AreaAddress> activeMoAddressesSpec() {
+    private Specification<AreaAddress> activeAreaAddressesSpec() {
         return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
             criteriaBuilder.or(
                 criteriaBuilder.greaterThanOrEqualTo(root.get(AreaAddress_.endDate.getName()), LocalDate.now()),
@@ -49,7 +45,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
                 criteriaBuilder.equal(root.get(AreaAddress_.area.getName()).get(Area_.areaType.getName()).get(AreaType_.code.getName()), areaTypeCode)
             );
 
-        specification = specification.and(activeMoAddressesSpec());
+        specification = specification.and(activeAreaAddressesSpec());
         return areaAddressCRUDRepository.findAll(specification);
     }
 
@@ -60,7 +56,14 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
 
     @Override
     public List<AreaAddress> findAreaAddressesActual(List<Long> moAddressIds) {
-        return areaAddressCRUDRepository.findAll(findMoAddressesByIdsSpec(moAddressIds).and(activeMoAddressesSpec()));
+        return areaAddressCRUDRepository.findAll(findMoAddressesByIdsSpec(moAddressIds).and(activeAreaAddressesSpec()));
     }
 
+    @Override
+    public List<AreaAddress> findAreaAddressesByAreaId(long areaId) {
+        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) ->
+            criteriaBuilder.equal(root.get(AreaAddress_.area.getName()), areaId);
+
+        return areaAddressCRUDRepository.findAll(specification.and(activeAreaAddressesSpec()));
+    }
 }

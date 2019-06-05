@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -63,6 +64,8 @@ public interface AreaServiceInternal {
                             List<NotNsiAddress> notNsiAddresses) throws ContingentException;
 
     Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
+
+    Page<AreaAddress> getAreaAddress(long areaId, PageRequest paging) throws ContingentException;
 
     void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException;
 

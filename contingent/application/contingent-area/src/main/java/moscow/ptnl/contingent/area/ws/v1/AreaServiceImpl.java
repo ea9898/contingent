@@ -3,10 +3,12 @@ package moscow.ptnl.contingent.area.ws.v1;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
+import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.AreaTypeShortMapper;
 import moscow.ptnl.contingent.area.transform.MoAddressMapper;
@@ -44,6 +46,8 @@ import ru.mos.emias.contingent2.area.types.DelMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.DelMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.DelProfileMURequest;
 import ru.mos.emias.contingent2.area.types.DelProfileMUResponse;
+import ru.mos.emias.contingent2.area.types.GetAreaAddressRequest;
+import ru.mos.emias.contingent2.area.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdResponse;
 import ru.mos.emias.contingent2.area.types.GetMoAddressRequest;
@@ -109,6 +113,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private MoAddressMapper moAddressMapper;
     
+    @Autowired
+    private AreaAddressMapper areaAddressMapper;
+
     @Autowired @Qualifier(EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME)
     private MessageChannel historyChannel;
 
@@ -371,6 +378,23 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             areaService.delMoAddress(body.getMoAddressIds(), body.getOrderId());
 
             return new DelMoAddressResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
+        try {
+            GetAreaAddressResponse response = new GetAreaAddressResponse();
+            Page<AreaAddress> areaAddresses = areaService.getAreaAddress(body.getAreaId(), body.getPagingOptions() != null ?
+                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()) : null);
+            response.getAreaAddresses().addAll(
+                areaAddresses.getContent().stream()
+                .map(areaAddressMapper::entityToDtoTransform)
+                        .collect(Collectors.toList()));
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

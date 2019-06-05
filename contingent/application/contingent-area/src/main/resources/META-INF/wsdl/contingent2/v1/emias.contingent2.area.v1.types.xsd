@@ -433,4 +433,26 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="getAreaAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaAddressResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="areaAddress" type="core:AreaAddress" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
