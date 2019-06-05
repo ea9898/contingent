@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.area.entity.area.Area_;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.support.incrementer.PostgresSequenceMaxValueIncrementer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,6 +26,9 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private AreaCRUDRepository areaCRUDRepository;
+
     private PostgresSequenceMaxValueIncrementer areaSequenceIncrementer;
 
     @PostConstruct
@@ -34,24 +38,19 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
     @Override
     public List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean actual) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Area> criteria = criteriaBuilder.createQuery(Area.class);
-        Root<Area> profile = criteria.from(Area.class);
-        criteria.where(
+        Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.and(
                         moId == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(profile.get(Area_.moId.getName()), moId),
+                                criteriaBuilder.equal(root.get(Area_.moId.getName()), moId),
                         muId == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(profile.get(Area_.muId.getName()), muId),
+                                criteriaBuilder.equal(root.get(Area_.muId.getName()), muId),
                         number == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(profile.get(Area_.number.getName()), number),
+                                criteriaBuilder.equal(root.get(Area_.number.getName()), number),
                         areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
-                                profile.get(Area_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
+                                root.get(Area_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
                         actual == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(profile.get(Area_.archived.getName()), !actual)
-                )
-        );
-        return entityManager.createQuery(criteria).getResultList();
+                                criteriaBuilder.equal(root.get(Area_.archived.getName()), !actual));
+        return areaCRUDRepository.findAll(specification);
     }
 
     @Override

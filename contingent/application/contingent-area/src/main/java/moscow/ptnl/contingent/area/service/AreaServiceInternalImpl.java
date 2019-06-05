@@ -583,11 +583,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public Long getNewAreaId() throws ContingentException {
-        return areaRepository.getNextAreaId();
-    }
-
-    @Override
     public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
                                                List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
 
@@ -989,4 +984,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 7.
         return;
     }
+
+    // (К_УУ_21) Получение идентификатора для создания нового участка
+    @Override
+    public Long getNewAreaId() throws ContingentException {
+        return areaRepository.getNextAreaId();
+    }
+
 }

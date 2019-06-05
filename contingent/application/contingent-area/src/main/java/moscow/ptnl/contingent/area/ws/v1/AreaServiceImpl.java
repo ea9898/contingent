@@ -323,19 +323,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     }
 
     @Override
-    public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
-        try {
-            GetNewAreaIdResponse response = new GetNewAreaIdResponse();
-            response.setNewAreaId(areaService.getNewAreaId());
-
-            return response;
-        }
-        catch (Exception ex) {
-            throw mapException(ex);
-        }
-    }
-
-    @Override
     public AddMoAddressResponse addMoAddress(AddMoAddressRequest body) throws Fault {
         try {
             AddMoAddressResponse response = new AddMoAddressResponse();
@@ -396,6 +383,19 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             areaService.archiveArea(body.getAreaId());
 
             return new ArchiveAreaResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
+        try {
+            GetNewAreaIdResponse response = new GetNewAreaIdResponse();
+            response.setNewAreaId(areaService.getNewAreaId());
+
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);
