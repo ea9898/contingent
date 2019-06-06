@@ -13,6 +13,7 @@ import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaAddressCRUDRepository;
@@ -21,9 +22,12 @@ import moscow.ptnl.contingent.area.repository.area.AreaMedicalEmployeeCRUDReposi
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
+import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
+import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.util.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -84,6 +88,15 @@ public class AreaServiceHelper {
 
     @Autowired
     private SettingService settingService;
+
+    @Autowired
+    NsiAddressMapper nsiAddressMapper;
+
+    @Autowired
+    NotNsiAddressMapper notNsiAddressMapper;
+
+    @Autowired
+    private AddressFormingElementRepository addressFormingElementRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -351,6 +364,25 @@ public class AreaServiceHelper {
             }
         }
     }
+
+    public List<AddressWrapper> converoAddressToWrapper(List<NsiAddress> nsiAddresses,
+                                                        List<NotNsiAddress> notNsiAddresses) {
+        //Сформируем список адресов по справочнику
+        List<AddressWrapper> addresses = nsiAddresses.stream()
+                .map(nsiAddressMapper::dtoToEntityTransform).map(AddressWrapper::new).collect(Collectors.toList());
+
+        //Сформируем список адресов вне справочника
+        addresses.addAll(notNsiAddresses.stream().map(notNsiAddressMapper::dtoToEntityTransform)
+                .map(notNsi -> {
+                    AddressWrapper addressWrapper = new AddressWrapper();
+                    addressWrapper.setNotNsiAddress(notNsi);
+                    addressWrapper.setAddressFormingElement(addressFormingElementRepository.getAddressFormingElements(notNsi.getParentId(), notNsi.getLevelParentId()).get(0));
+                    return addressWrapper;
+                }).collect(Collectors.toList()));
+
+        return addresses;
+    }
+
 
     public void checkReplacementWithoutMain(List<Period> periodsWithoutMainEmpl,
                                             List<AreaMedicalEmployees> replacementEmployees,

@@ -245,9 +245,6 @@ public class Algorithms {
         return crossAddresses;
     }
 
-
-
-
     //  Формирование топика «Создание или закрытие прикреплений при изменении участка» (А_УУ_4)
     public AttachOnAreaChange createTopicCreateCloseAttachAreaChange(
             List<Long> primaryAreasIdCreateAttachments,
