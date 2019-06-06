@@ -903,6 +903,80 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
 
+    @Override
+    public void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException {
+        Validation validation = new Validation();
+
+        if (moAddressIds.size() > settingService.getPar2()) {
+            validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("moAddressId", settingService.getPar2()));
+        }
+        List<MoAddress> addresses = areaHelper.getAndCheckMoAddressesExist(moAddressIds, validation);
+        areaHelper.checkOrderExists(orderId, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //Система закрывает территории обслуживания участка, созданные в соответствии с архивируемой территорией обслуживания МО
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(addresses.stream()
+                .map(MoAddress::getId)
+                .collect(Collectors.toList()));
+        areaHelper.delAreaAddresses(areaAddresses);
+        //Система закрывает территории обслуживания МО
+        addresses.forEach(a -> {
+            if (a.getStartDate().equals(LocalDate.now())) {
+                moAddressCRUDRepository.delete(a);
+            }
+            else {
+                a.setEndDate(LocalDate.now().minusDays(1));
+            }
+        });
+    }
+
+    // (К_УУ_11) Удаление адресов из участка обслуживания
+    @Override
+    public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1. и 2.
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 3.
+        areaHelper.tooManyAreaAddresses(areaAddressIds, settingService.getPar2(), validation);
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 4.
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaAddressIds);
+        areaAddressIds.forEach(aai -> {
+            List<Long> areaAddressesIdsDiff = areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
+            if (!areaAddresses.stream().map(AreaAddress::getId).anyMatch(aa -> aa.equals(aai))) {
+                 validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("areaAddressId", aai));
+            }
+        });
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 5.
+        LocalDate localDate = LocalDate.now();
+        for (AreaAddress areaAddress: areaAddresses) {
+            if (!areaAddress.getStartDate().equals(localDate)) {
+                // 5.1.
+                areaAddress.setEndDate(localDate.minusDays(1L));
+            } else {
+                // 5.2.
+                areaAddressCRUDRepository.delete(areaAddress);
+            }
+        }
+
+        // 6.
+        if (area.getAreaType().getClassAreaType().getCode().equals(1L)) {
+            // А_УУ_5
+            esuHelperService.sendAreaInfoEventTopicToESU(area, "delAreaAddress");
+        }
+
+        // 7.
+        return;
+    }
+
     // (К_УУ_12)	Получение списка адресов участка обслуживания
     @Override
     public Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(long areaId, PageRequest paging) throws ContingentException {
@@ -949,6 +1023,37 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 paging, addressAreas.size());
     }
 
+    // (К_УУ_13) Архивирование участка обслуживания
+    @Override
+    public void archiveArea(long areaId) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1. 2.
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
+
+        // 3.
+        if (area != null && Boolean.TRUE.equals(area.getAutoAssignForAttach())) {
+            validation.error(AreaErrorReason.AREA_IS_AUTO_ATTACH, new ValidationParameter("areaId", areaId));
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 4. Система исключает адреса обслуживаня из участка, если указаны
+        areaHelper.delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
+
+        // 5. Система исключает МР из участка, если указаны
+        areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
+
+        // 6. Система для данного участка меняет статус на «Архивный»
+        area.setArchived(true);
+        areaCRUDRepository.save(area);
+
+        // 7.
+        esuHelperService.sendAreaInfoEventTopicToESU(area, "archiveArea");
+
+    }
+
     // (К_УУ_20) Получение списка территорий обслуживания МО
     @Override
     public Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException {
@@ -967,102 +1072,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
-    }
-
-    @Override
-    public void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException {
-        Validation validation = new Validation();
-
-        if (moAddressIds.size() > settingService.getPar2()) {
-            validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("moAddressId", settingService.getPar2()));
-        }
-        List<MoAddress> addresses = areaHelper.getAndCheckMoAddressesExist(moAddressIds, validation);
-        areaHelper.checkOrderExists(orderId, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        //Система закрывает территории обслуживания участка, созданные в соответствии с архивируемой территорией обслуживания МО
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(addresses.stream()
-                .map(MoAddress::getId)
-                .collect(Collectors.toList()));
-        areaHelper.delAreaAddresses(areaAddresses);
-        //Система закрывает территории обслуживания МО
-        addresses.forEach(a -> {
-            if (a.getStartDate().equals(LocalDate.now())) {
-                moAddressCRUDRepository.delete(a);
-            }
-            else {
-                a.setEndDate(LocalDate.now().minusDays(1));
-            }
-        });
-    }
-
-    @Override
-    public void archiveArea(long areaId) throws ContingentException {
-        Validation validation = new Validation();
-
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
-
-        if (area != null && Boolean.TRUE.equals(area.getAutoAssignForAttach())) {
-            validation.error(AreaErrorReason.AREA_IS_AUTO_ATTACH, new ValidationParameter("areaId", areaId));
-        }
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        //Система исключает адреса обслуживаня из участка, если указаны
-        areaHelper.delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
-        //Система исключает МР из участка, если указаны
-        areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
-        //Система для данного участка меняет статус на «Архивный»
-        area.setArchived(true);
-
-        areaCRUDRepository.save(area);
-    }
-
-    // (К_УУ_11) Удаление адресов из участка обслуживания
-    @Override
-    public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 1. и 2.
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
-
-        // 3.
-        areaHelper.tooManyAreaAddresses(areaAddressIds, settingService.getPar2(), validation);
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
-
-        // 4.
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaAddressIds);
-        areaAddressIds.forEach(aai -> {
-            List<Long> areaAddressesIdsDiff = areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
-            if (!areaAddresses.stream().map(AreaAddress::getId).anyMatch(aa -> aa.equals(aai))) {
-                 validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("areaAddressId", aai));
-            }
-        });
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
-
-        // 5.
-        LocalDate localDate = LocalDate.now();
-        for (AreaAddress areaAddress: areaAddresses) {
-            if (!areaAddress.getStartDate().equals(localDate)) {
-                // 5.1.
-                areaAddress.setEndDate(localDate.minusDays(1L));
-            } else {
-                // 5.2.
-                areaAddressCRUDRepository.delete(areaAddress);
-            }
-        }
-
-        // 6.
-        if (area.getAreaType().getClassAreaType().getCode().equals(1L)) {
-            // А_УУ_5
-            esuHelperService.sendAreaInfoEventTopicToESU(area, "delAreaAddress");
-        }
-
-        // 7.
-        return;
     }
 
     // (К_УУ_21) Получение идентификатора для создания нового участка
