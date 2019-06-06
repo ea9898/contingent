@@ -234,6 +234,7 @@ public class AreaServiceHelper {
         }
     }
 
+    // Проверяет существует ли участок с указанным идентификатором и не находится ли он в архиве
     public Area checkAndGetArea(long areaId, Validation validation) {
         Area area = areaCRUDRepository.findById(areaId).orElse(null);
 

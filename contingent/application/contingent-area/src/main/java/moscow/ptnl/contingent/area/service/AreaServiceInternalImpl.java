@@ -122,7 +122,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaMedicalEmployeeRepository areaMedicalEmployeeRepository;
 
     @Autowired
-    private PositionNomClinicCRUDRepository positionNomClinicCRUDRepository;
+    private PositionNomClinicCRUDRepository positionNomCRUDRepository;
 
     @Autowired
     private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
@@ -604,33 +604,32 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
     }
 
+    // (К_УУ_8)	Изменение медицинских работников на участке обслуживания
     @Override
     public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
                                                List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
 
         Validation validation = new Validation();
 
-        //1
-        Area area = areaCRUDRepository.findById(areaId).orElseThrow(() -> new ContingentException(
-                validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId))));
+        // 1. 2.
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
 
-        //2
-        if (area.getArchived()) {
-            throw new ContingentException(validation.error(
-                    AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId)));
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
         }
 
-
+        //3
         List<Long> changeIds = changeEmployeesInput.stream().map(ChangeMedicalEmployee::getAssignmentId)
                 .collect(Collectors.toList());
         List<AreaMedicalEmployees> changeEmployeesDb = new ArrayList<>();
         areaMedicalEmployeeCRUDRepository.findAllById(changeIds).forEach(changeEmployeesDb::add);
 
-        //3
         if (area.getAreaType().getCode() != KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()
                 && area.getAreaType().getCode() != KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
+
             addEmployeesInput.stream().filter(empl -> !empl.isIsReplacement())
                     .forEach(empl -> validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED));
+
             changeEmployeesDb.stream().filter(empl -> !empl.getReplacement())
                     .forEach(empl -> validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED));
         }
@@ -638,9 +637,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
+        //4
         List<AreaMedicalEmployees> areaEmployeesDb = areaMedicalEmployeeRepository.getEmployeesByAreaId(areaId);
 
-        //4
         for (ChangeMedicalEmployee inputEmpl : changeEmployeesInput) {
 
             Optional<AreaMedicalEmployees> employee = areaEmployeesDb.stream().filter(
@@ -687,6 +686,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                         new ValidationParameter("startDate", empl.getStartDate()));
             }
 
+            // TODO в связи с изменениями в структуре БД блок требуется актуализировать
             //5.2
             Specialization specialization = specializationToPositionNomRepository.getSpecializationIdByPositionNomId(empl.getPositionId());
 
@@ -700,7 +700,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
             //5.4
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
-            PositionNom inputPosition = positionNomClinicCRUDRepository.findById(empl.getPositionId()).orElse(null);
+            PositionNom inputPosition = positionNomCRUDRepository.findById(empl.getPositionId()).orElse(null);
             if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", inputPosition != null ? inputPosition.getTitle() : null),
@@ -712,13 +712,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        //7.1
+        //6.1
         List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
         areaHelper.applyChanges(allEmployees, changeEmployeesInput);
         areaHelper.addNew(allEmployees, addEmployeesInput, area);
         areaHelper.checkDatesNotInterceptWithSamePosition(allEmployees, validation);
 
-        //7.2
+        //6.2
         List<AreaMedicalEmployees> mainEmployees =
                 areaEmployeesDb.stream().filter(empl -> !empl.getReplacement()).collect(Collectors.toList());
         areaHelper.applyChanges(mainEmployees, changeEmployeesInput);
@@ -728,13 +728,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaHelper.checkMainEmployeesOverlappingDates(mainEmployees, validation);
         }
 
-        //7.3
+        //6.3
         if (area.getAreaType().getCode() == KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()
                 || area.getAreaType().getCode() == KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
-            //7.4
+            //6.4
             List<Period> periodsWithoutMainEmpl = areaHelper.getPeriodsWithoutMainEmployee(mainEmployees);
             if (periodsWithoutMainEmpl.size() > 0) {
-                //7.5
+                //6.5
                 List<AreaMedicalEmployees> replacementEmployees = areaEmployeesDb.stream()
                         .filter(AreaMedicalEmployees::getReplacement).collect(Collectors.toList());
                 areaHelper.applyChanges(replacementEmployees, changeEmployeesInput);
@@ -745,7 +745,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
         }
 
-        //8
+        //7
         List<Long> result = new ArrayList<>();
         areaHelper.applyChanges(changeEmployeesDb, changeEmployeesInput);
         areaHelper.addNew(changeEmployeesDb, addEmployeesInput, area);
@@ -754,6 +754,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 result.add(saved.getId());
             }
         });
+
+        // 8
+        esuHelperService.sendAreaInfoEventTopicToESU(area, "setMedicalEmployeeOnArea");
+
         return result;
     }
 
