@@ -1016,8 +1016,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
         //Система для данного участка меняет статус на «Архивный»
         area.setArchived(true);
+
+        areaCRUDRepository.save(area);
     }
 
+    // (К_УУ_11) Удаление адресов из участка обслуживания
     @Override
     public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
         Validation validation = new Validation();
@@ -1055,6 +1058,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 6.
         if (area.getAreaType().getClassAreaType().getCode().equals(1L)) {
             // А_УУ_5
+            esuHelperService.sendAreaInfoEventTopicToESU(area, "delAreaAddress");
         }
 
         // 7.
