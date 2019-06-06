@@ -543,6 +543,13 @@ public class AreaServiceHelper {
         if (paging != null && paging.getPageSize() > settingService.getPar3()) {
             validation.error(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
         }
-
     }
+
+    public void resetAutoAssignForAttachment(Area area) {
+        if (area.getAutoAssignForAttach()) {
+            List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), null, null);
+            areas.stream().filter(a -> !Objects.equals(area.getId(), a.getId())).forEach(a -> a.setAutoAssignForAttach(false));
+        }
+    }
+
 }

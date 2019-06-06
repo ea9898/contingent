@@ -300,7 +300,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 attachByMedicalReason, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 
-        resetAutoAssignForAttachment(area);
+        areaHelper.resetAutoAssignForAttachment(area);
 
         return area.getId();
     }
@@ -395,7 +395,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setDescription(description == null ? area.getDescription() : description);
         area.setUpdateDate(LocalDateTime.now());
 
-        resetAutoAssignForAttachment(area);
+        areaHelper.resetAutoAssignForAttachment(area);
     }
 
     @Override
@@ -445,7 +445,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setDescription(description == null ? area.getDescription() : description);
         area.setUpdateDate(LocalDateTime.now());
 
-        resetAutoAssignForAttachment(area);
+        areaHelper.resetAutoAssignForAttachment(area);
         //7 Обновление привязки к первичным типам участка
         List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId());
 
@@ -472,13 +472,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         //TODO падает при отправке в есу
         //esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
-    }
-
-    private void resetAutoAssignForAttachment(Area area) {
-        if (area.getAutoAssignForAttach()) {
-            List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), null, null);
-            areas.stream().filter(a -> !Objects.equals(area.getId(), a.getId())).forEach(a -> a.setAutoAssignForAttach(false));
-        }
     }
 
     @Override
@@ -549,28 +542,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         return addressAllocationOrderRepository.findAddressAllocationOrdersOverlapped(id, number, date, name, paging);
-    }
-
-    // (К_УУ_9)	Получение подробной информации об участке
-    @Override
-    public AreaInfo getAreaById(Long id) throws ContingentException {
-
-        // 1.
-        Optional<Area> areaOptional = areaCRUDRepository.findById(id);
-        if (!areaOptional.isPresent()) {
-            throw new ContingentException(new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", id)));
-        }
-        Area area = areaOptional.get();
-
-        // 2.
-        List<AreaMedicalEmployees> mainMedicalEmployees = areaMedicalEmployeeRepository.
-                getEmployeesMainActualByAreaId(area.getId());
-
-        // 3.
-        List<AreaMedicalEmployees> replacementMedicalEmployees = areaMedicalEmployeeRepository.
-                getEmployeesReplacementActualByAreaId(area.getId());
-
-        return new AreaInfo(area, mainMedicalEmployees, replacementMedicalEmployees);
     }
 
     // (К_УУ_8)	Изменение медицинских работников на участке обслуживания
@@ -730,6 +701,28 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         return result;
+    }
+
+    // (К_УУ_9)	Получение подробной информации об участке
+    @Override
+    public AreaInfo getAreaById(Long id) throws ContingentException {
+
+        // 1.
+        Optional<Area> areaOptional = areaCRUDRepository.findById(id);
+        if (!areaOptional.isPresent()) {
+            throw new ContingentException(new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", id)));
+        }
+        Area area = areaOptional.get();
+
+        // 2.
+        List<AreaMedicalEmployees> mainMedicalEmployees = areaMedicalEmployeeRepository.
+                getEmployeesMainActualByAreaId(area.getId());
+
+        // 3.
+        List<AreaMedicalEmployees> replacementMedicalEmployees = areaMedicalEmployeeRepository.
+                getEmployeesReplacementActualByAreaId(area.getId());
+
+        return new AreaInfo(area, mainMedicalEmployees, replacementMedicalEmployees);
     }
 
     @Override
@@ -902,7 +895,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaAddressIds);
         areaAddressIds.forEach(aai -> {
             List<Long> areaAddressesIdsDiff = areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
-            if (!areaAddresses.stream().map(AreaAddress::getId).anyMatch(aa -> aa.equals(aai))) {
+            if (areaAddresses.stream().map(AreaAddress::getId).noneMatch(aa -> aa.equals(aai))) {
                  validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("areaAddressId", aai));
             }
         });
@@ -914,6 +907,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (!areaAddress.getStartDate().equals(localDate)) {
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
+                areaAddressCRUDRepository.save(areaAddress);
             } else {
                 // 5.2.
                 areaAddressCRUDRepository.delete(areaAddress);
