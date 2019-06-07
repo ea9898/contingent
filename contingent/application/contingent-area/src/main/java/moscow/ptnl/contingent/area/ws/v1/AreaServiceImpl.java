@@ -377,14 +377,14 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
         try {
             GetAreaAddressResponse response = new GetAreaAddressResponse();
-            /*
+            
             Page<moscow.ptnl.contingent.area.model.area.AddressArea> areaAddresses = areaService.getAreaAddress(body.getAreaId(), body.getPagingOptions() != null ?
                     pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()) : null);
             response.getAreaAddresses().addAll(
                 areaAddresses.getContent().stream()
                 .map(areaAddressMapper::entityToDtoTransform)
                         .collect(Collectors.toList()));
-            */
+            
             return response;
         }
         catch (Exception ex) {

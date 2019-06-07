@@ -302,6 +302,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         areaHelper.resetAutoAssignForAttachment(area);
 
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "createPrimaryArea"));
+        }
+
         return area.getId();
     }
 
@@ -396,8 +400,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setUpdateDate(LocalDateTime.now());
 
         areaHelper.resetAutoAssignForAttachment(area);
-        
-        historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
+
+        areaCRUDRepository.save(area);
+
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "updatePrimaryArea"));
+    }
+
     }
 
     @Override
@@ -696,6 +705,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 10.
 
         // 11.
+
+        // 12.
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "addAreaAddress"));
+        }
 
         return new ArrayList<>();
     }
