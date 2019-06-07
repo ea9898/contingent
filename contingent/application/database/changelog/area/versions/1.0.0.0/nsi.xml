@@ -137,11 +137,11 @@
     <changeSet id="CONTINGENT2-57-6" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="AREA_TYPES"/>
+                <tableExists tableName="AREA_TYPE"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы AREA_TYPES</comment>
-        <createTable tableName="AREA_TYPES"
+        <comment>Создание таблицы AREA_TYPE</comment>
+        <createTable tableName="AREA_TYPE"
                      remarks="Тип участка">
             <column name="CODE" type="BIGINT" remarks="Код типа участка">
                 <constraints primaryKey="true" nullable="false" />
@@ -169,7 +169,7 @@
             <column name="SPECIALIZATION_CODE" type="BIGINT" />
         </createTable>
         <rollback>
-            <dropTable tableName="AREA_TYPES"/>
+            <dropTable tableName="AREA_TYPE"/>
         </rollback>
     </changeSet>
 
@@ -179,9 +179,9 @@
                 <indexExists indexName="IXFK_AREA_TYPE_CLASS_ARE01"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CLASS_CODE таблицы AREA_TYPES</comment>
+        <comment>Создание индекса колонки AREA_TYPE_CLASS_CODE таблицы AREA_TYPE</comment>
         <createIndex indexName="IXFK_AREA_TYPE_CLASS_ARE01"
-                     tableName="AREA_TYPES"
+                     tableName="AREA_TYPE"
                      unique="false">
             <column name="AREA_TYPE_CLASS_CODE" type="number"/>
         </createIndex>
@@ -195,7 +195,7 @@
         </preConditions>
         <comment>Создание индекса колонки AREA_TYPE_KIND_CODE таблицы AREA_TYPE</comment>
         <createIndex indexName="IXFK_AREA_TYPE_KIND_AREA01"
-                     tableName="AREA_TYPES"
+                     tableName="AREA_TYPE"
                      unique="false">
             <column name="AREA_TYPE_KIND_CODE" type="number"/>
         </createIndex>
@@ -204,12 +204,12 @@
     <changeSet id="CONTINGENT2-57-6-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <indexExists indexName="IXFK_AREA_TYPES_SPECIALIZATION"/>
+                <indexExists indexName="IXFK_AREA_TYPE_SPECIALIZATION"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки SPECIALIZATION_ID таблицы AREA_TYPES</comment>
-        <createIndex indexName="IXFK_AREA_TYPES_SPECIALIZATION"
-                     tableName="AREA_TYPES"
+        <comment>Создание индекса колонки SPECIALIZATION_ID таблицы AREA_TYPE</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_SPECIALIZATION"
+                     tableName="AREA_TYPE"
                      unique="false">
             <column name="SPECIALIZATION_CODE" type="number"/>
         </createIndex>
@@ -217,12 +217,12 @@
 
     <changeSet id="CONTINGENT2-57-6-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPES" columnName="AREA_TYPE_CLASS_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="AREA_TYPE_CLASS_CODE" />
             <columnExists tableName="AREA_TYPE_CLASS" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AREA_AREA_TYPE_CLASS_TYPES</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CLASS_CODE"
-                                 baseTableName="AREA_TYPES"
+                                 baseTableName="AREA_TYPE"
                                  constraintName="FK_AREA_AREA_TYPE_CLASS_TYPES"
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPE_CLASS"/>
@@ -230,12 +230,12 @@
 
     <changeSet id="CONTINGENT2-57-6-5" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPES" columnName="AREA_TYPE_KIND_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="AREA_TYPE_KIND_CODE" />
             <columnExists tableName="AREA_TYPE_KIND" columnName="CODE" />
         </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_TYPES_AREA_TYPE_KIND</comment>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_AREA_TYPE_KIND</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_KIND_CODE"
-                                 baseTableName="AREA_TYPES"
+                                 baseTableName="AREA_TYPE"
                                  constraintName="FK_AREA_AREA_TYPE_KIND_TYPES"
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPE_KIND"/>
@@ -243,13 +243,13 @@
 
     <changeSet id="CONTINGENT2-57-6-6" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPES" columnName="SPECIALIZATION_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="SPECIALIZATION_CODE" />
             <columnExists tableName="SPECIALIZATION" columnName="ID" />
         </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_TYPES_SPECIALIZATION</comment>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_SPECIALIZATION</comment>
         <addForeignKeyConstraint baseColumnNames="SPECIALIZATION_CODE"
-                                 baseTableName="AREA_TYPES"
-                                 constraintName="FK_AREA_TYPES_SPECIALIZATION"
+                                 baseTableName="AREA_TYPE"
+                                 constraintName="FK_AREA_TYPE_SPECIALIZATION"
                                  referencedColumnNames="ID"
                                  referencedTableName="SPECIALIZATION"/>
     </changeSet>
@@ -382,14 +382,14 @@
     <changeSet id="CONTINGENT2-57-8-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AREA_TYPE_MEDI_AREA_TYPE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
                                  baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
                                  constraintName="FK_AREA_TYPE_MEDI_AREA_TYPE"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPES"/>
+                                 referencedTableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-9" author="sorlov" labels="1.0.0.0">
@@ -450,37 +450,37 @@
     <changeSet id="CONTINGENT2-57-9-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_RELATIONS" columnName="DEPENDENT_AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AREA_TYPE_REL_AREA_TYPE_DEP</comment>
         <addForeignKeyConstraint baseColumnNames="DEPENDENT_AREA_TYPE_CODE"
                                  baseTableName="AREA_TYPE_RELATIONS"
                                  constraintName="FK_AREA_TYPE_REL_AREA_TYPE_DEP"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPES"/>
+                                 referencedTableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-9-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_RELATIONS" columnName="PRIMARY_AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AREA_TYPE_REL_AREA_TYPE_PRI</comment>
         <addForeignKeyConstraint baseColumnNames="PRIMARY_AREA_TYPE_CODE"
                                  baseTableName="AREA_TYPE_RELATIONS"
                                  constraintName="FK_AREA_TYPE_REL_AREA_TYPE_PRI"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPES"/>
+                                 referencedTableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-10" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="MU_TYPE_AREA_TYPES"/>
+                <tableExists tableName="MU_TYPE_AREA_TYPE"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы MU_TYPE_AREA_TYPES</comment>
-        <createTable tableName="MU_TYPE_AREA_TYPES"
+        <comment>Создание таблицы MU_TYPE_AREA_TYPE</comment>
+        <createTable tableName="MU_TYPE_AREA_TYPE"
                      remarks="Шаблон профиля МУ">
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
@@ -493,7 +493,7 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="MU_TYPE_AREA_TYPES"/>
+            <dropTable tableName="MU_TYPE_AREA_TYPE"/>
         </rollback>
     </changeSet>
 
@@ -503,9 +503,9 @@
                 <indexExists indexName="IXFK_MU_TEMPLATE_PR_AREA_01"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_TYPE_AREA_TYPES</comment>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_TYPE_AREA_TYPE</comment>
         <createIndex indexName="IXFK_MU_TEMPLATE_PR_AREA_01"
-                     tableName="MU_TYPE_AREA_TYPES"
+                     tableName="MU_TYPE_AREA_TYPE"
                      unique="false">
             <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
@@ -513,15 +513,15 @@
 
     <changeSet id="CONTINGENT2-57-10-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="MU_TYPE_AREA_TYPES" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+            <columnExists tableName="MU_TYPE_AREA_TYPE" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_MU_TEMPLATE_PR_AREA_TYPE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
-                                 baseTableName="MU_TYPE_AREA_TYPES"
+                                 baseTableName="MU_TYPE_AREA_TYPE"
                                  constraintName="FK_MU_TEMPLATE_PR_AREA_TYPE"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPES"/>
+                                 referencedTableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-13" author="sorlov" labels="1.0.0.0">
@@ -661,7 +661,7 @@
 
     <changeSet id="CONTINGENT2-3-2-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
             <columnExists tableName="POLICY_SERVICE_TYPES" columnName="AREA_TYPE_CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_POLICY_SERVICE_TYPES_ATC_01</comment>
@@ -669,7 +669,7 @@
                                  baseTableName="POLICY_SERVICE_TYPES"
                                  constraintName="FK_POSITION_NOM_SPECIALIZATION_01"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPES"/>
+                                 referencedTableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-3-2-2" author="ddryuchin" labels="1.0.0.0">
