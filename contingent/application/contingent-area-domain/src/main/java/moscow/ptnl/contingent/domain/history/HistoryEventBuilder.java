@@ -16,16 +16,16 @@ public class HistoryEventBuilder {
     private final HistoryEvent event;
     private final Set<HistoryEventValue> values;    
     
-    private HistoryEventBuilder(JournalHistoryTable table, Long objectId) {
+    private HistoryEventBuilder(Class<?> objectType, Long objectId) {
         this.event = new HistoryEvent();
-        this.event.setTypeId(table);
+        this.event.setObjectType(objectType.getSimpleName());
         this.event.setObjectId(objectId);
         this.event.setChangeDate(LocalDateTime.now());        
         this.values = new HashSet<>();        
     }
     
-    public static HistoryEventBuilder withTableAndObject(JournalHistoryTable table, Long objectId) {
-        HistoryEventBuilder builder = new HistoryEventBuilder(table, objectId);
+    public static HistoryEventBuilder withTableAndObject(Class<?> objectType, Long objectId) {
+        HistoryEventBuilder builder = new HistoryEventBuilder(objectType, objectId);
         return builder;
     }
     

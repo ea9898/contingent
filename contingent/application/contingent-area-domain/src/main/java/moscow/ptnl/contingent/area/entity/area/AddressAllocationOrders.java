@@ -15,11 +15,10 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import moscow.ptnl.contingent.domain.history.JournalHistoryTable;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
 
-@Entity @Journalable(type = JournalHistoryTable.AREA)
+@Entity @Journalable
 @Table(name = "ADDRESS_ALLOCATION_ORDERS")
 @SequenceGenerator(name = "SEQ_ADDRESS_ALLOCATION_ORDERS", sequenceName = "SEQ_ADDRESS_ALLOCATION_ORDERS", allocationSize=1)
 public class AddressAllocationOrders implements Serializable {

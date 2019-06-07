@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 import javax.persistence.Transient;
 import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.domain.history.HistoryEventBuilder;
-import moscow.ptnl.contingent.domain.history.JournalHistoryTable;
 import moscow.ptnl.contingent.domain.history.converter.DefaultConverter;
 import moscow.ptnl.contingent.domain.history.meta.FieldConverter;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
@@ -51,7 +50,7 @@ public class HistoryServiceImpl implements HistoryService {
         
         //TODO вытаскиваем какие то метаданные из Journalable - надо решить какие
         HistoryEventBuilder eventBuilder = HistoryEventBuilder
-                .withTableAndObject(classAnnotation.type(), 1L)
+                .withTableAndObject(oldObject.getClass(), 1L)
                 .setPrincipal(principal);
         
         //обходим поля объекта и ищем проаннотированные

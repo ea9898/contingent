@@ -39,7 +39,7 @@ public class HistoryEventEndpoint {
      */
     @ServiceActivator(inputChannel = HISTORY_EVENT_CHANNEL_NAME)
     public void historyEventConsumer(Message<HistoryEvent> msg) {
-        LOG.debug("recive history event: {}", msg.getPayload().getTypeId().name());
+        LOG.debug("recive history event: {}", msg.getPayload().getObjectType());
         try {
             HistoryEvent event = msg.getPayload();
             historyEventRepository.save(event);
