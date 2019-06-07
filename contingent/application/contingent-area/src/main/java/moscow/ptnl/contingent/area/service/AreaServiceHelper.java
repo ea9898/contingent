@@ -13,6 +13,7 @@ import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
@@ -24,6 +25,7 @@ import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
 import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
@@ -85,6 +87,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
+
+    @Autowired
+    private BuildingRegistryRepository buildingRegistryRepository;
 
     @Autowired
     private SettingService settingService;
@@ -366,11 +371,22 @@ public class AreaServiceHelper {
         }
     }
 
-    public List<AddressWrapper> converoAddressToWrapper(List<NsiAddress> nsiAddresses,
+    public List<AddressWrapper> convertAddressToWrapper(List<NsiAddress> nsiAddresses,
                                                         List<NotNsiAddress> notNsiAddresses) {
         //Сформируем список адресов по справочнику
         List<AddressWrapper> addresses = nsiAddresses.stream()
-                .map(nsiAddressMapper::dtoToEntityTransform).map(AddressWrapper::new).collect(Collectors.toList());
+                .map(nsiAddressMapper::dtoToEntityTransform)
+                .map(AddressWrapper::new)
+                .peek(a -> {
+                    if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
+                        a.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
+                                a.nsiAddress.getGlobalId(), a.nsiAddress.getLevelAddress()).get(0);
+                    }
+                    else {
+                        a.buildingRegistry = buildingRegistryRepository.getBuildingsRegistry(a.nsiAddress.getGlobalId()).get(0);
+                    }
+                })
+                .collect(Collectors.toList());
 
         //Сформируем список адресов вне справочника
         addresses.addAll(notNsiAddresses.stream().map(notNsiAddressMapper::dtoToEntityTransform)

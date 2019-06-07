@@ -1,6 +1,5 @@
 package moscow.ptnl.contingent.area.service;
 
-import com.google.common.collect.Lists;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
@@ -41,7 +40,6 @@ import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
-import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
@@ -49,8 +47,6 @@ import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicCRUDRepositor
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.area.repository.nsi.SpecializationToPositionNomRepository;
-import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
-import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +63,6 @@ import ru.mos.emias.contingent2.core.NsiAddress;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -792,7 +787,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        List<AddressWrapper> addresses = areaHelper.converoAddressToWrapper(nsiAddresses, notNsiAddresses);
+        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses, notNsiAddresses);
 
         //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
         areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
