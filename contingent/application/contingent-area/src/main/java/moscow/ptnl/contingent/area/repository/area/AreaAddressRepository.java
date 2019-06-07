@@ -13,4 +13,6 @@ public interface AreaAddressRepository {
 	List<AreaAddress> findAreaAddresses(List<Long> moAddressIds);
 
     List<AreaAddress> findAreaAddressesActual(List<Long> moAddressIds);
+
+    List<AreaAddress> findAreaAddressesByAreaId(long areaId);
 }

@@ -12,6 +12,7 @@ import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.DependentArea;
+import moscow.ptnl.contingent.area.model.esu.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
@@ -19,17 +20,19 @@ import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepositor
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
+import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
-import moscow.ptnl.contingent2.attachment.disp.event.CreateCloseAttachmentEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
 import ru.mos.emias.contingent2.core.NsiAddress;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 
 /**
  * Это класс с алгоритмами А_УУ_хх
@@ -39,28 +42,31 @@ import java.util.stream.Collectors;
 public class Algorithms {
 
     @Autowired
-    MoAddressRepository moAddressRepository;
+    private MoAddressRepository moAddressRepository;
 
     @Autowired
-    AddressesCRUDRepository addressesCRUDRepository;
+    private AddressesCRUDRepository addressesCRUDRepository;
 
     @Autowired
-    AddressFormingElementRepository addressFormingElementRepository;
+    private AddressFormingElementRepository addressFormingElementRepository;
 
     @Autowired
-    AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
+    private AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
 
     @Autowired
-    BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
+    private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
 
     @Autowired
-    AlgorithmsHelper algorithmsHelper;
+    private AlgorithmsHelper algorithmsHelper;
 
     @Autowired
-    XMLGregorianCalendarMapper xmlGregorianCalendarMapper;
+    private XMLGregorianCalendarMapper xmlGregorianCalendarMapper;
 
     @Autowired
-    AreaInfoEventMapper areaInfoEventMapper;
+    private AreaInfoEventMapper areaInfoEventMapper;
+
+    @Autowired
+    private AttachOnAreaChangeMapper attachOnAreaChangeMapper;
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public Long searchServiceDistrictMOByAddress (
@@ -239,16 +245,23 @@ public class Algorithms {
         return crossAddresses;
     }
 
-
-
-
     //  Формирование топика «Создание или закрытие прикреплений при изменении участка» (А_УУ_4)
-    public CreateCloseAttachmentEvent createTopicCreateCloseAttachAreaChange(
+    public AttachOnAreaChange createTopicCreateCloseAttachAreaChange(
             List<Long> primaryAreasIdCreateAttachments,
             List<Long> primaryAreasIdCloseAttachments,
-            DependentArea dependentArea) {
-        // TODO реализовать формирование сообщения
-        return new CreateCloseAttachmentEvent();
+            Area dependentArea) {
+        if (primaryAreasIdCloseAttachments != null && !primaryAreasIdCloseAttachments.isEmpty()) {
+            if (primaryAreasIdCreateAttachments != null && !primaryAreasIdCreateAttachments.isEmpty()) {
+                throw new IllegalArgumentException("Нельзя одновременно передавать primaryAreasIdCreateAttachments и primaryAreasIdCloseAttachments");
+            }
+            return attachOnAreaChangeMapper.entityToDtoTransform(new AttachOnAreaChangeEvent(
+                    AttachOnAreaChangeEvent.OperationType.CLOSE, dependentArea, new HashSet<>(primaryAreasIdCloseAttachments)));
+        }
+        if (primaryAreasIdCreateAttachments != null && !primaryAreasIdCreateAttachments.isEmpty()) {
+            return attachOnAreaChangeMapper.entityToDtoTransform(new AttachOnAreaChangeEvent(
+                    AttachOnAreaChangeEvent.OperationType.CREATE, dependentArea, new HashSet<>(primaryAreasIdCreateAttachments)));
+        }
+        return null;
     }
 
     // Формирование топика «Сведения об участке» (А_УУ_5)

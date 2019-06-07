@@ -9,4 +9,8 @@ import java.util.List;
 public interface AreaMedicalEmployeeRepository {
 
     List<AreaMedicalEmployees> getEmployeesByAreaId(long areaId);
+
+    List<AreaMedicalEmployees> getEmployeesMainActualByAreaId(long areaId);
+
+    List<AreaMedicalEmployees> getEmployeesReplacementActualByAreaId(long areaId);
 }

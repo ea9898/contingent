@@ -105,14 +105,14 @@
     <changeSet id="CONTINGENT2-57-2-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREAS" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AREA_AREA_TYPE01</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
                                  baseTableName="AREAS"
                                  constraintName="FK_AREA_AREA_TYPE01"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPES"/>
+                                 referencedTableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-16-3" author="sorlov" labels="1.0.0.0">
@@ -320,14 +320,14 @@
     <changeSet id="CONTINGENT2-57-18-6" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="MO_ADDRESSES" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_MO_ADDRESSES_AREA_TYPE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
                                  baseTableName="MO_ADDRESSES"
                                  constraintName="FK_MO_ADDRESSES_AREA_TYPE"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPES"/>
+                                 referencedTableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-18-7" author="ddryuchin" labels="1.0.0.0">
@@ -539,11 +539,11 @@
     <changeSet id="CONTINGENT2-57-21" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="MU_ADDL_AREA_TYPES"/>
+                <tableExists tableName="MU_ADDL_AREA_TYPE"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы MU_ADDL_AREA_TYPES</comment>
-        <createTable tableName="MU_ADDL_AREA_TYPES"
+        <comment>Создание таблицы MU_ADDL_AREA_TYPE</comment>
+        <createTable tableName="MU_ADDL_AREA_TYPE"
                      remarks="Профиль МУ">
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
@@ -555,7 +555,7 @@
             <column name="CREATE_DATE" type="TIMESTAMP(6)" remarks="Время создания" />
         </createTable>
         <rollback>
-            <dropTable tableName="MU_ADDL_AREA_TYPES"/>
+            <dropTable tableName="MU_ADDL_AREA_TYPE"/>
         </rollback>
     </changeSet>
 
@@ -565,9 +565,9 @@
                 <indexExists indexName="IXFK_PROFILE_MU_AREA_TYPE"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_ADDL_AREA_TYPES</comment>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_ADDL_AREA_TYPE</comment>
         <createIndex indexName="IXFK_PROFILE_MU_AREA_TYPE"
-                     tableName="MU_ADDL_AREA_TYPES"
+                     tableName="MU_ADDL_AREA_TYPE"
                      unique="false">
             <column name="AREA_TYPE_CODE" type="number"/>
         </createIndex>
@@ -575,27 +575,27 @@
 
     <changeSet id="CONTINGENT2-57-21-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="MU_ADDL_AREA_TYPES" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+            <columnExists tableName="MU_ADDL_AREA_TYPE" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_PROFILE_MU_AREA_TYPE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
-                                 baseTableName="MU_ADDL_AREA_TYPES"
+                                 baseTableName="MU_ADDL_AREA_TYPE"
                                  constraintName="FK_PROFILE_MU_AREA_TYPE"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPES"/>
+                                 referencedTableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-21-3" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="SEQ_MU_ADDL_AREA_TYPES"/>
+                <sequenceExists sequenceName="SEQ_MU_ADDL_AREA_TYPE"/>
             </not>
         </preConditions>
-        <comment>Создание сиквенса для таблицы MU_ADDL_AREA_TYPES</comment>
-        <createSequence sequenceName="SEQ_MU_ADDL_AREA_TYPES"/>
+        <comment>Создание сиквенса для таблицы MU_ADDL_AREA_TYPE</comment>
+        <createSequence sequenceName="SEQ_MU_ADDL_AREA_TYPE"/>
         <rollback>
-            <dropSequence sequenceName="SEQ_MU_ADDL_AREA_TYPES"/>
+            <dropSequence sequenceName="SEQ_MU_ADDL_AREA_TYPE"/>
         </rollback>
     </changeSet>
 
@@ -653,14 +653,14 @@
     <changeSet id="CONTINGENT2-57-22-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TO_AREA_TYPE" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPES" columnName="CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AREA_TO_AREA_AREA_TYPE_CODE</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
                                  baseTableName="AREA_TO_AREA_TYPE"
                                  constraintName="FK_AREA_TO_AREA_AREA_TYPE_CODE"
                                  referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPES"/>
+                                 referencedTableName="AREA_TYPE"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-57-22-2" author="sorlov" labels="1.0.0.0">

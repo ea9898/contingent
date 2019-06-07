@@ -9,7 +9,7 @@ import ru.mos.emias.contingent2.core.MedicalEmployee;
 public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, AreaMedicalEmployees> {
 
     @Autowired
-    private PositionNomClinicMapper positionNomClinicMapper;
+    private PositionNomMapper positionNomMapper;
 
     @Override
     public MedicalEmployee entityToDtoTransform(AreaMedicalEmployees entityObject) {
@@ -22,7 +22,7 @@ public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, Are
         employee.setEndDate(entityObject.getEndDate());
 
         if (entityObject.getPositionNom() != null) {
-            employee.setPosition(positionNomClinicMapper.entityToDtoTransform(entityObject.getPositionNom()));
+            employee.setPosition(positionNomMapper.entityToDtoTransform(entityObject.getPositionNom()));
         }
         return employee;
     }

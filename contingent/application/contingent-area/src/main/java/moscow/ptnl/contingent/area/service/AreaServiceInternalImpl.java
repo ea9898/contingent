@@ -8,10 +8,11 @@ import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
-import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
@@ -21,6 +22,7 @@ import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
+import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
@@ -38,7 +40,6 @@ import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
-import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
@@ -46,12 +47,11 @@ import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicCRUDRepositor
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.area.repository.nsi.SpecializationToPositionNomRepository;
-import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
-import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
@@ -70,6 +70,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import moscow.ptnl.ws.security.UserContextHolder;
@@ -120,16 +121,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaMedicalEmployeeRepository areaMedicalEmployeeRepository;
 
     @Autowired
-    private PositionNomClinicCRUDRepository positionNomClinicCRUDRepository;
+    private PositionNomClinicCRUDRepository positionNomCRUDRepository;
 
     @Autowired
     private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
 
     @Autowired
     private BuildingRegistryRepository buildingRegistryRepository;
-
-    @Autowired
-    private AddressFormingElementRepository addressFormingElementRepository;
 
     @Autowired
     private AddressesCRUDRepository addressesCRUDRepository;
@@ -163,12 +161,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private Algorithms algorithms;
-
-    @Autowired
-    private NsiAddressMapper nsiAddressMapper;
-
-    @Autowired
-    private NotNsiAddressMapper notNsiAddressMapper;
     
     @Autowired
     private HistoryService historyService;
@@ -209,21 +201,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 5.
     }
 
-    @Override
-    public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
-        Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, new ArrayList<>(),
-                AvailableToCreateType.ALLOWED).stream()
-                .map(MuTypeAreaTypes::getAreaType)
-                .collect(Collectors.toSet());
-        areaTypes.addAll(muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
-                .map(MuAddlAreaTypes::getAreaType)
-                .collect(Collectors.toSet())
-        );
-        return new ArrayList<>(areaTypes);
-    }
-
-
-
+    // (К_УУ_2)	Удаление типов участка из профиля МУ
     @Override
     public void delProfileMU(Long muId, List<Long> areaTypeCodes) throws ContingentException {
         Validation validation = new Validation();
@@ -252,6 +230,22 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     }
 
+    // (К_УУ_3)	Предоставление сведений профиля МУ
+    @Override
+    public List<AreaType> getProfileMU(long muId, long muTypeId) throws ContingentException {
+        Set<AreaType> areaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(muTypeId, new ArrayList<>(),
+                AvailableToCreateType.ALLOWED).stream()
+                .map(MuTypeAreaTypes::getAreaType)
+                .collect(Collectors.toSet());
+        areaTypes.addAll(muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
+                .map(MuAddlAreaTypes::getAreaType)
+                .collect(Collectors.toSet())
+        );
+        return new ArrayList<>(areaTypes);
+    }
+
+
+
     @Override
     public Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
@@ -275,7 +269,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 //        Boolean areaTypeAttachByMedicalReason = muAddlAreaTypes.getAreaType().getAttributes() == null ? null : muAddlAreaTypes.getAreaType().getAttributes().getAttachByMedicalReason();
         //Todo сделать проерку AREA_COUNT_LIMIT после разработки НСИ
         if (muAddlAreaTypes.getAreaType().getKindAreaType() != null &&
-                Objects.equals(muAddlAreaTypes.getAreaType().getKindAreaType().getCode(), KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode())) {
+                Objects.equals(muAddlAreaTypes.getAreaType().getKindAreaType().getCode(), AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode())) {
             if (Strings.isNullOrEmpty(description) || number == null ||
                     (ageMin == null && ageMax == null && ageMinM == null && ageMaxM == null && ageMinW == null && ageMaxW == null)) {
                 validation.error(AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED);
@@ -306,7 +300,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 attachByMedicalReason, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 
-        resetAutoAssignForAttachment(area);
+        areaHelper.resetAutoAssignForAttachment(area);
 
         return area.getId();
     }
@@ -345,7 +339,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaToAreaType.setAreaType(primaryAreaTypes.get(c));
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
-        esuHelperService.trySendDependentAreaChange(area);
+//        esuHelperService.trySendDependentAreaChange(area);
 
         return area.getId();
     }
@@ -401,92 +395,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setDescription(description == null ? area.getDescription() : description);
         area.setUpdateDate(LocalDateTime.now());
 
-        resetAutoAssignForAttachment(area);
+        areaHelper.resetAutoAssignForAttachment(area);
         
         historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
-    }
-
-    @Override
-    public void updateDependentArea(long areaId, Long muId, List<MuType> muTypes, Integer muNumber,
-                                    List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
-                                    Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                    boolean autoAssignForAttachment, String description) throws ContingentException {
-        Validation validation = new Validation();
-        //1 и 2
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
-        Area oldArea = new Area(area);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        //3
-        if (muId != null && !muId.equals(area.getMuId()) && area.getAreaType().getKindAreaType() != null
-                && !Objects.equals(area.getAreaType().getKindAreaType().getCode(),
-                KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode())) {
-            validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
-        }
-
-        //4
-        areaHelper.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodesAdd, validation);
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        //5
-        areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        //6 Обновление участка
-        Long muIdFinal = muId == null ? area.getMuId() : muId;
-        area.setMuId(muIdFinal);
-        area.setNumber(muNumber == null ? area.getNumber() : muNumber);
-        area.setAgeMax(ageMax == null ? area.getAgeMax() : ageMax);
-        area.setAgeMin(ageMin == null ? area.getAgeMin() : ageMin);
-        area.setAgeMMax(ageMaxM == null ? area.getAgeMMax() : ageMaxM);
-        area.setAgeMMin(ageMinM == null ? area.getAgeMMin() : ageMinM);
-        area.setAgeWMax(ageMaxW == null ? area.getAgeWMax() : ageMaxW);
-        area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
-        area.setAutoAssignForAttach(autoAssignForAttachment);
-        area.setDescription(description == null ? area.getDescription() : description);
-        area.setUpdateDate(LocalDateTime.now());
-
-        resetAutoAssignForAttachment(area);
-        //7 Обновление привязки к первичным типам участка
-        List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId());
-
-        List<AreaToAreaType> areaToAreaTypesToAdd = new ArrayList<>();
-
-//        primaryAreaTypeCodesAdd.stream()
-//                .filter(c -> areaToAreaTypes.stream().noneMatch(a -> Objects.equals(c, a.getAreaType().getCode())))
-//                .forEach(c -> {
-//            AreaToAreaType areaToAreaType = new AreaToAreaType();
-//            areaToAreaType.setArea(area);
-//            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
-//            areaToAreaTypeCRUDRepository.save(areaToAreaType);
-//            areaToAreaTypesToAdd.add(areaToAreaType);
-//        });
-        List<AreaToAreaType> areaToAreaTypesToRemove = new ArrayList<>();
-
-//                areaToAreaTypes.stream()
-//                .filter(a -> a.getAreaType() != null &&
-//                        !primaryAreaTypeCodesAdd.contains(a.getAreaType().getCode()) &&
-//                        primaryAreaTypeCodesDel.contains(a.getAreaType().getCode()))
-//                .collect(Collectors.toList());
-
-        areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypesToRemove);
-
-        //TODO падает при отправке в есу
-        //esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
-    }
-
-    private void resetAutoAssignForAttachment(Area area) {
-        if (area.getAutoAssignForAttach()) {
-            List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), null, null);
-            areas.stream().filter(a -> !Objects.equals(area.getId(), a.getId())).forEach(a -> a.setAutoAssignForAttach(false));
-        }
     }
 
     @Override
@@ -567,65 +478,32 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return addressAllocationOrderRepository.findAddressAllocationOrdersOverlapped(id, number, date, name, paging);
     }
 
-    @Override
-    public Area getAreaById(Long id) throws ContingentException {
-        Optional<Area> area = areaCRUDRepository.findById(id);
-
-        return area.orElseThrow(() -> new ContingentException(
-                new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", id))));
-    }
-
-    @Override
-    public void restoreArea(Long id) throws ContingentException {
-        Validation validation = new Validation();
-
-        Area area = areaHelper.checkAndGetArchivedArea(id, validation);
-
-        if (area != null) {
-            areaHelper.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
-            areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
-        }
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        area.setArchived(false);
-        area.setAutoAssignForAttach(false);
-
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.trySendPrimaryAreaChange(area);
-        }
-        else if (areaHelper.isAreaDependent(area)) {
-            esuHelperService.trySendDependentAreaChange(area);
-        }
-    }
-
+    // (К_УУ_8)	Изменение медицинских работников на участке обслуживания
     @Override
     public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
                                                List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
 
         Validation validation = new Validation();
 
-        //1
-        Area area = areaCRUDRepository.findById(areaId).orElseThrow(() -> new ContingentException(
-                validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId))));
+        // 1. 2.
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
 
-        //2
-        if (area.getArchived()) {
-            throw new ContingentException(validation.error(
-                    AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId)));
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
         }
 
-
+        //3
         List<Long> changeIds = changeEmployeesInput.stream().map(ChangeMedicalEmployee::getAssignmentId)
                 .collect(Collectors.toList());
         List<AreaMedicalEmployees> changeEmployeesDb = new ArrayList<>();
         areaMedicalEmployeeCRUDRepository.findAllById(changeIds).forEach(changeEmployeesDb::add);
 
-        //3
-        if (area.getAreaType().getCode() != KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()
-                && area.getAreaType().getCode() != KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
+        if (area.getAreaType().getCode() != AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()
+                && area.getAreaType().getCode() != AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
+
             addEmployeesInput.stream().filter(empl -> !empl.isIsReplacement())
                     .forEach(empl -> validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED));
+
             changeEmployeesDb.stream().filter(empl -> !empl.getReplacement())
                     .forEach(empl -> validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED));
         }
@@ -633,9 +511,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
+        //4
         List<AreaMedicalEmployees> areaEmployeesDb = areaMedicalEmployeeRepository.getEmployeesByAreaId(areaId);
 
-        //4
         for (ChangeMedicalEmployee inputEmpl : changeEmployeesInput) {
 
             Optional<AreaMedicalEmployees> employee = areaEmployeesDb.stream().filter(
@@ -682,6 +560,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                         new ValidationParameter("startDate", empl.getStartDate()));
             }
 
+            // TODO в связи с изменениями в структуре БД блок требуется актуализировать
             //5.2
             Specialization specialization = specializationToPositionNomRepository.getSpecializationIdByPositionNomId(empl.getPositionId());
 
@@ -695,7 +574,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
             //5.4
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
-            PositionNom inputPosition = positionNomClinicCRUDRepository.findById(empl.getPositionId()).orElse(null);
+            PositionNom inputPosition = positionNomCRUDRepository.findById(empl.getPositionId()).orElse(null);
             if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", inputPosition != null ? inputPosition.getTitle() : null),
@@ -707,29 +586,29 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        //7.1
+        //6.1
         List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
         areaHelper.applyChanges(allEmployees, changeEmployeesInput);
         areaHelper.addNew(allEmployees, addEmployeesInput, area);
         areaHelper.checkDatesNotInterceptWithSamePosition(allEmployees, validation);
 
-        //7.2
+        //6.2
         List<AreaMedicalEmployees> mainEmployees =
                 areaEmployeesDb.stream().filter(empl -> !empl.getReplacement()).collect(Collectors.toList());
         areaHelper.applyChanges(mainEmployees, changeEmployeesInput);
         areaHelper.addNew(mainEmployees, addEmployeesInput.stream()
                 .filter(empl -> !empl.isIsReplacement()).collect(Collectors.toList()), area);
-        if (area.getAreaType().getCode() == KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()) {
+        if (area.getAreaType().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) {
             areaHelper.checkMainEmployeesOverlappingDates(mainEmployees, validation);
         }
 
-        //7.3
-        if (area.getAreaType().getCode() == KindAreaTypeEnum.MILDLY_ASSOCIATED.getCode()
-                || area.getAreaType().getCode() == KindAreaTypeEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
-            //7.4
+        //6.3
+        if (area.getAreaType().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()
+                || area.getAreaType().getCode() == AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
+            //6.4
             List<Period> periodsWithoutMainEmpl = areaHelper.getPeriodsWithoutMainEmployee(mainEmployees);
             if (periodsWithoutMainEmpl.size() > 0) {
-                //7.5
+                //6.5
                 List<AreaMedicalEmployees> replacementEmployees = areaEmployeesDb.stream()
                         .filter(AreaMedicalEmployees::getReplacement).collect(Collectors.toList());
                 areaHelper.applyChanges(replacementEmployees, changeEmployeesInput);
@@ -740,7 +619,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
         }
 
-        //8
+        //7
         List<Long> result = new ArrayList<>();
         areaHelper.applyChanges(changeEmployeesDb, changeEmployeesInput);
         areaHelper.addNew(changeEmployeesDb, addEmployeesInput, area);
@@ -749,25 +628,35 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 result.add(saved.getId());
             }
         });
+
+        // 8
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "setMedicalEmployeeOnArea"));
+        }
+
         return result;
     }
 
-    private List<AddressWrapper> converoAddressToWrapper(List<NsiAddress> nsiAddresses,
-                                                         List<NotNsiAddress> notNsiAddresses) {
-        //Сформируем список адресов по справочнику
-        List<AddressWrapper> addresses = nsiAddresses.stream()
-                .map(nsiAddressMapper::dtoToEntityTransform).map(AddressWrapper::new).collect(Collectors.toList());
+    // (К_УУ_9)	Получение подробной информации об участке
+    @Override
+    public AreaInfo getAreaById(Long id) throws ContingentException {
 
-        //Сформируем список адресов вне справочника
-        addresses.addAll(notNsiAddresses.stream().map(notNsiAddressMapper::dtoToEntityTransform)
-                .map(notNsi -> {
-                    AddressWrapper addressWrapper = new AddressWrapper();
-                    addressWrapper.setNotNsiAddress(notNsi);
-                    addressWrapper.setAddressFormingElement(addressFormingElementRepository.getAddressFormingElements(notNsi.getParentId(), notNsi.getLevelParentId()).get(0));
-                    return addressWrapper;
-                }).collect(Collectors.toList()));
+        // 1.
+        Optional<Area> areaOptional = areaCRUDRepository.findById(id);
+        if (!areaOptional.isPresent()) {
+            throw new ContingentException(new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", id)));
+        }
+        Area area = areaOptional.get();
 
-        return addresses;
+        // 2.
+        List<AreaMedicalEmployees> mainMedicalEmployees = areaMedicalEmployeeRepository.
+                getEmployeesMainActualByAreaId(area.getId());
+
+        // 3.
+        List<AreaMedicalEmployees> replacementMedicalEmployees = areaMedicalEmployeeRepository.
+                getEmployeesReplacementActualByAreaId(area.getId());
+
+        return new AreaInfo(area, mainMedicalEmployees, replacementMedicalEmployees);
     }
 
     @Override
@@ -837,7 +726,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        List<AddressWrapper> addresses = converoAddressToWrapper(nsiAddresses, notNsiAddresses);
+        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses, notNsiAddresses);
 
         //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
         areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
@@ -894,22 +783,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
 
-
-    @Override
-    public Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException {
-        Validation validation = new Validation();
-
-        if (paging != null && paging.getPageSize() > settingService.getPar3()) {
-            validation.error(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
-        }
-        areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaType");
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
-    }
-
     @Override
     public void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException {
         Validation validation = new Validation();
@@ -935,30 +808,90 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
             else {
                 a.setEndDate(LocalDate.now().minusDays(1));
+                moAddressCRUDRepository.save(a);
             }
         });
     }
 
+
+    // (К_УУ_10) Изменение участка обслуживания зависимого типа
     @Override
-    public void archiveArea(long areaId) throws ContingentException {
+    public void updateDependentArea(long areaId, Long muId, List<MuType> muTypes, Integer muNumber,
+                                    List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
+                                    Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                    boolean autoAssignForAttachment, String description) throws ContingentException {
         Validation validation = new Validation();
-
+        //1 и 2
         Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area oldArea = new Area(area);
 
-        if (area != null && Boolean.TRUE.equals(area.getAutoAssignForAttach())) {
-            validation.error(AreaErrorReason.AREA_IS_AUTO_ATTACH, new ValidationParameter("areaId", areaId));
-        }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        //Система исключает адреса обслуживаня из участка, если указаны
-        areaHelper.delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
-        //Система исключает МР из участка, если указаны
-        areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
-        //Система для данного участка меняет статус на «Архивный»
-        area.setArchived(true);
+
+        //3
+        if (muId != null && !muId.equals(area.getMuId()) && area.getAreaType().getKindAreaType() != null
+                && !Objects.equals(area.getAreaType().getKindAreaType().getCode(),
+                AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode())) {
+            validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
+        }
+
+        //4
+        areaHelper.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodesAdd, validation);
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        //5
+        areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+    }
+        //6 Обновление участка
+        Long muIdFinal = muId == null ? area.getMuId() : muId;
+        area.setMuId(muIdFinal);
+        area.setNumber(muNumber == null ? area.getNumber() : muNumber);
+        area.setAgeMax(ageMax == null ? area.getAgeMax() : ageMax);
+        area.setAgeMin(ageMin == null ? area.getAgeMin() : ageMin);
+        area.setAgeMMax(ageMaxM == null ? area.getAgeMMax() : ageMaxM);
+        area.setAgeMMin(ageMinM == null ? area.getAgeMMin() : ageMinM);
+        area.setAgeWMax(ageMaxW == null ? area.getAgeWMax() : ageMaxW);
+        area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
+        area.setAutoAssignForAttach(autoAssignForAttachment);
+        area.setDescription(description == null ? area.getDescription() : description);
+        area.setUpdateDate(LocalDateTime.now());
+
+        areaHelper.resetAutoAssignForAttachment(area);
+        //7 Обновление привязки к первичным типам участка
+        List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId());
+
+        List<AreaToAreaType> areaToAreaTypesToAdd = new ArrayList<>();
+
+//        primaryAreaTypeCodesAdd.stream()
+//                .filter(c -> areaToAreaTypes.stream().noneMatch(a -> Objects.equals(c, a.getAreaType().getCode())))
+//                .forEach(c -> {
+//            AreaToAreaType areaToAreaType = new AreaToAreaType();
+//            areaToAreaType.setArea(area);
+//            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
+//            areaToAreaTypeCRUDRepository.save(areaToAreaType);
+//            areaToAreaTypesToAdd.add(areaToAreaType);
+//        });
+        List<AreaToAreaType> areaToAreaTypesToRemove = new ArrayList<>();
+
+//                areaToAreaTypes.stream()
+//                .filter(a -> a.getAreaType() != null &&
+//                        !primaryAreaTypeCodesAdd.contains(a.getAreaType().getCode()) &&
+//                        primaryAreaTypeCodesDel.contains(a.getAreaType().getCode()))
+//                .collect(Collectors.toList());
+
+        areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypesToRemove);
+
+        //TODO падает при отправке в есу
+        //esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
     }
 
+    // (К_УУ_11) Удаление адресов из участка обслуживания
     @Override
     public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
         Validation validation = new Validation();
@@ -975,7 +908,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaAddressIds);
         areaAddressIds.forEach(aai -> {
             List<Long> areaAddressesIdsDiff = areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
-            if (!areaAddresses.stream().map(AreaAddress::getId).anyMatch(aa -> aa.equals(aai))) {
+            if (areaAddresses.stream().map(AreaAddress::getId).noneMatch(aa -> aa.equals(aai))) {
                  validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("areaAddressId", aai));
             }
         });
@@ -987,6 +920,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (!areaAddress.getStartDate().equals(localDate)) {
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
+                areaAddressCRUDRepository.save(areaAddress);
             } else {
                 // 5.2.
                 areaAddressCRUDRepository.delete(areaAddress);
@@ -994,12 +928,183 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 6.
-        if (area.getAreaType().getClassAreaType().getCode().equals(1L)) {
-            // А_УУ_5
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "delAreaAddress"));
         }
 
         // 7.
         return;
+    }
+
+    // (К_УУ_12)	Получение списка адресов участка обслуживания
+    @Override
+    public Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(long areaId, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1.
+        areaHelper.checkMaxPage(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 2.
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId);
+
+        if (areaAddresses.isEmpty()) {
+            return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(), paging, 0);
+        }
+
+        // 3.
+        Map<Long, Addresses>  addresses = new TreeMap<>();
+        areaAddresses.forEach(aa -> {
+            Addresses address = aa.getAddress();
+            addresses.put(aa.getId(), address);
+        });
+
+        List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
+
+        addresses.forEach((addressId, address) -> {
+            if (address.getLevel() == 8) {
+                BuildingRegistry buildingRegistry = address.getBuildingRegistry();
+                AddressFormingElement addressFormingElement = buildingRegistry.getAddressFormingElement();
+                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, buildingRegistry, addressFormingElement));
+            } else {
+                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, address.getAddressFormingElement()));
+            }
+        });
+
+        // 4.
+        // Сортировка в TreeMap
+
+        // 5.
+        return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(addressAreas),
+                paging, addressAreas.size());
+    }
+
+    // (К_УУ_13) Архивирование участка обслуживания
+    @Override
+    public void archiveArea(long areaId) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1. 2.
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 3.
+        if (area != null && Boolean.TRUE.equals(area.getAutoAssignForAttach())) {
+            validation.error(AreaErrorReason.AREA_IS_AUTO_ATTACH, new ValidationParameter("areaId", areaId));
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 4. Система исключает адреса обслуживаня из участка, если указаны
+        areaHelper.delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
+
+        // 5. Система исключает МР из участка, если указаны
+        areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
+
+        // 6. Система для данного участка меняет статус на «Архивный»
+        area.setArchived(true);
+        areaCRUDRepository.save(area);
+
+        // 7.
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "archiveArea"));
+        }
+    }
+
+    // (К_УУ_14) Восстановление архивного участка обслуживания
+    @Override
+    public void restoreArea(Long areaId) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1. 2.
+        Area area = areaHelper.checkAndGetArchivedArea(areaId, validation);
+
+        if (area != null) {
+            // 3.
+            areaHelper.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
+
+            // 4.
+            areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 5.
+        area.setAutoAssignForAttach(false);
+
+        // 6.
+        area.setArchived(false);
+        areaCRUDRepository.save(area);
+
+        // 7.
+        if (areaHelper.isAreaPrimary(area)) {
+            // 7.1. Поиск зависимых участков
+            // TODO логику фильтрации в репозиторий
+            List<Area> areas = areaRepository.findAreas(area.getMuId() == null ? area.getMoId() : null, area.getMuId(),
+                    (Long) null, null, true).stream()
+                    .filter(a -> a.getPrimaryAreaTypes() != null &&
+                            a.getPrimaryAreaTypes().stream()
+                                    .anyMatch(t -> Objects.equals(t.getAreaType(), area.getAreaType())))
+                    .collect(Collectors.toList());
+
+            // 7.2.
+            areas.forEach(depArea ->
+                esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
+                    .createTopicCreateCloseAttachAreaChange(Collections.singletonList(areaId), null, depArea))
+                );
+        }
+
+        // 8.
+        if (areaHelper.isAreaDependent(area)) {
+            // TODO логику фильтрации в репозиторий
+            List<Area> areas = areaRepository.findAreas(area.getMuId() == null ? area.getMoId() : null, area.getMuId(),
+                    area.getPrimaryAreaTypes().stream()
+                            .map(AreaToAreaType::getAreaType)
+                            .map(AreaType::getCode)
+                            .distinct()
+                            .collect(Collectors.toList()),
+                    null, true);
+
+            esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
+                    .createTopicCreateCloseAttachAreaChange(areas.stream().map(Area::getId).collect(Collectors.toList()),
+                            null, area));
+        }
+
+        // 9.
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "restoreArea"));
+        }
+
+        // 10.
+        return;
+    }
+
+    // (К_УУ_20) Получение списка территорий обслуживания МО
+    @Override
+    public Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1.
+        areaHelper.checkMaxPage(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaType");
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
     }
 
     // (К_УУ_21) Получение идентификатора для создания нового участка

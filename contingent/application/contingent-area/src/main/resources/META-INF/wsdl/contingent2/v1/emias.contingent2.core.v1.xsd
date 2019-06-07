@@ -232,6 +232,13 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="AreaAddress">
+        <xs:sequence>
+            <xs:element name="areaAddressId" type="xs:long" />
+            <xs:element name="address" type="tns:Address" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="MuTypes">
         <xs:annotation>
             <xs:documentation>Перечень типов МУ.

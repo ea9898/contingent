@@ -1,10 +1,10 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
+import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
@@ -44,6 +44,8 @@ import ru.mos.emias.contingent2.area.types.DelMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.DelMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.DelProfileMURequest;
 import ru.mos.emias.contingent2.area.types.DelProfileMUResponse;
+import ru.mos.emias.contingent2.area.types.GetAreaAddressRequest;
+import ru.mos.emias.contingent2.area.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdResponse;
 import ru.mos.emias.contingent2.area.types.GetMoAddressRequest;
@@ -105,6 +107,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private MoAddressMapper moAddressMapper;
+
 
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
@@ -264,10 +267,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
-            Area area = areaService.getAreaById(body.getAreaId());
+            AreaInfo area = areaService.getAreaById(body.getAreaId());
             GetAreaByIdResponse response = new GetAreaByIdResponse();
             response.setResult(areaMapper.entityToDtoTransform(area));
-
             return response;
         }
         catch (Exception ex) {
@@ -365,6 +367,25 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             areaService.delMoAddress(body.getMoAddressIds(), body.getOrderId());
 
             return new DelMoAddressResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
+        try {
+            GetAreaAddressResponse response = new GetAreaAddressResponse();
+            /*
+            Page<moscow.ptnl.contingent.area.model.area.AddressArea> areaAddresses = areaService.getAreaAddress(body.getAreaId(), body.getPagingOptions() != null ?
+                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()) : null);
+            response.getAreaAddresses().addAll(
+                areaAddresses.getContent().stream()
+                .map(areaAddressMapper::entityToDtoTransform)
+                        .collect(Collectors.toList()));
+            */
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

@@ -7,12 +7,13 @@ import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.KindAreaTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaAddressCRUDRepository;
@@ -21,11 +22,16 @@ import moscow.ptnl.contingent.area.repository.area.AreaMedicalEmployeeCRUDReposi
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
+import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
+import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.util.Period;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
@@ -80,6 +86,21 @@ public class AreaServiceHelper {
 
     @Autowired
     private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
+
+    @Autowired
+    private BuildingRegistryRepository buildingRegistryRepository;
+
+    @Autowired
+    private SettingService settingService;
+
+    @Autowired
+    NsiAddressMapper nsiAddressMapper;
+
+    @Autowired
+    NotNsiAddressMapper notNsiAddressMapper;
+
+    @Autowired
+    private AddressFormingElementRepository addressFormingElementRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -230,6 +251,7 @@ public class AreaServiceHelper {
         }
     }
 
+    // Проверяет существует ли участок с указанным идентификатором и не находится ли он в архиве
     public Area checkAndGetArea(long areaId, Validation validation) {
         Area area = areaCRUDRepository.findById(areaId).orElse(null);
 
@@ -269,8 +291,9 @@ public class AreaServiceHelper {
     Система проверяет, что вид участка отличен от «Именной»
      */
     public void checkAreaTypeIsNotPersonal(AreaType areaType, Validation validation) {
+        // TODO как то странно это все...
         if (areaType.getKindAreaType() != null &&
-                Objects.equals(areaType.getKindAreaType().getCode(), KindAreaTypeEnum.PERSONAL.getCode())) {
+                Objects.equals(areaType.getKindAreaType().getCode(), 4L)) {
             validation.error(AreaErrorReason.CANT_RESTORE_PERSONAL_KIND_AREA);
         }
     }
@@ -346,6 +369,36 @@ public class AreaServiceHelper {
             }
         }
     }
+
+    public List<AddressWrapper> convertAddressToWrapper(List<NsiAddress> nsiAddresses,
+                                                        List<NotNsiAddress> notNsiAddresses) {
+        //Сформируем список адресов по справочнику
+        List<AddressWrapper> addresses = nsiAddresses.stream()
+                .map(nsiAddressMapper::dtoToEntityTransform)
+                .map(AddressWrapper::new)
+                .peek(a -> {
+                    if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
+                        a.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
+                                a.nsiAddress.getGlobalId(), a.nsiAddress.getLevelAddress()).get(0);
+                    }
+                    else {
+                        a.buildingRegistry = buildingRegistryRepository.getBuildingsRegistry(a.nsiAddress.getGlobalId()).get(0);
+                    }
+                })
+                .collect(Collectors.toList());
+
+        //Сформируем список адресов вне справочника
+        addresses.addAll(notNsiAddresses.stream().map(notNsiAddressMapper::dtoToEntityTransform)
+                .map(notNsi -> {
+                    AddressWrapper addressWrapper = new AddressWrapper();
+                    addressWrapper.setNotNsiAddress(notNsi);
+                    addressWrapper.setAddressFormingElement(addressFormingElementRepository.getAddressFormingElements(notNsi.getParentId(), notNsi.getLevelParentId()).get(0));
+                    return addressWrapper;
+                }).collect(Collectors.toList()));
+
+        return addresses;
+    }
+
 
     public void checkReplacementWithoutMain(List<Period> periodsWithoutMainEmpl,
                                             List<AreaMedicalEmployees> replacementEmployees,
@@ -498,4 +551,20 @@ public class AreaServiceHelper {
             validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAreaAddress));
         }
     }
+
+    // Система проверяет, что размер страницы, указанный во входных параметрах, не превышает максимально допустимое значение, указанное во внутреннем системном параметре (PAR_3).
+    // Иначе возвращает ошибку
+    public void checkMaxPage(PageRequest paging, Validation validation) {
+        if (paging != null && paging.getPageSize() > settingService.getPar3()) {
+            validation.error(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
+        }
+    }
+
+    public void resetAutoAssignForAttachment(Area area) {
+        if (area.getAutoAssignForAttach()) {
+            List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), null, null);
+            areas.stream().filter(a -> !Objects.equals(area.getId(), a.getId())).forEach(a -> a.setAutoAssignForAttach(false));
+        }
+    }
+
 }

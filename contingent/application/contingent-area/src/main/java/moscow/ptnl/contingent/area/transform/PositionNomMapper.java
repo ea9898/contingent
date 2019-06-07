@@ -6,7 +6,7 @@ import ru.mos.emias.contingent2.core.PositionNomClinic;
 
 @Component
 
-public class PositionNomClinicMapper implements Transform<PositionNomClinic, PositionNom> {
+public class PositionNomMapper implements Transform<PositionNomClinic, PositionNom> {
 
     @Override
     public PositionNomClinic entityToDtoTransform(PositionNom entityObject) {
