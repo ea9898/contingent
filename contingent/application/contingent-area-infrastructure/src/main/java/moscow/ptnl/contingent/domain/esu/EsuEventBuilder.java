@@ -2,13 +2,19 @@ package moscow.ptnl.contingent.domain.esu;
 
 
 import moscow.ptnl.contingent.security.Principal;
+import moscow.ptnl.contingent.util.Utils;
+import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
 // Заглушка для формирования сообщения для сохранения в БД топика и отправки в ЕСУ
 public class EsuEventBuilder {
 
+    private EsuOutput esuOutput;
+
     public EsuEventBuilder() {
+        esuOutput = new EsuOutput();
     }
 
     public EsuOutput build() {
@@ -21,6 +27,8 @@ public class EsuEventBuilder {
     }
 
     public EsuEventBuilder addTopic(Object o){
+        String xmlString = Utils.convertEventObjectToMessage(o, o.getClass());
+        esuOutput.setMessage(xmlString);
         return this;
     }
 

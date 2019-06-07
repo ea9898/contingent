@@ -118,22 +118,6 @@ public class EsuServiceImpl implements EsuService {
         return esuProducer.publish(publishTopic, message);
     }
 
-//    private static String convertEventObjectToMessage(Object o) {
-//        String xmlContent = null;
-//
-//        try {
-//            JAXBContext jaxbContext = JAXBContext.newInstance(moscow.ptnl.contingent2.attachment.changedeparea.event.AttachOnAreaRelationChangeEvent.class);
-//            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-//            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-//            StringWriter sw = new StringWriter();
-//            jaxbMarshaller.marshal(o, sw);
-//            xmlContent = sw.toString();
-//        } catch (JAXBException e) {
-//            LOG.error("Ошибка конвертации объекта в XML", e);
-//        }
-//        return xmlContent;
-//    }
-    
     /**
      * Определяем подходящий топик в зависимости от типа события.
      * Если событие не должно писаться в топик, то вернет Optional.empty.
