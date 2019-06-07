@@ -712,7 +712,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        List<AddressWrapper> addresses = areaHelper.converoAddressToWrapper(nsiAddresses, notNsiAddresses);
+        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses, notNsiAddresses);
 
         //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
         areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
