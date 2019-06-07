@@ -73,6 +73,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 
 /**
  *
@@ -108,6 +109,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private MoAddressMapper moAddressMapper;
 
+    @Autowired
+    private AreaAddressMapper areaAddressMapper;
 
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
