@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.service.EsuService;
+import moscow.ptnl.contingent.service.esu.EsuService;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;

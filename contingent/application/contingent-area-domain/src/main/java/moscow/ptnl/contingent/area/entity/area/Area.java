@@ -23,8 +23,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.domain.history.JournalHistoryTable;
+import moscow.ptnl.contingent.domain.history.meta.Journalable;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
 
-@Entity
+@Entity @Journalable(type = JournalHistoryTable.AREA)
 @Table(name = "AREAS")
 @SequenceGenerator(name = "SEQ_AREAS", sequenceName = "SEQ_AREAS", allocationSize=1)
 public class Area implements Serializable {
@@ -36,65 +39,84 @@ public class Area implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    @LogIt
     @Column(name = "MO_ID", nullable = false)
     private Long moId;
 
+    @LogIt
     @Column(name = "MU_ID")
     private Long muId;
 
+    @LogIt
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType areaType;
 
+    @LogIt
     @Column(name = "NUMBER")
     private Integer number;
 
+    @LogIt
     @Column(name = "IS_AUTO_ASSIGN_FOR_ATTACH")
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean autoAssignForAttach;
 
+    @LogIt
     @Column(name = "ARCHIVED")
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    @LogIt
     @Size(max = 370)
     @Column(name = "DESCRIPTION")
     private String description;
 
+    @LogIt
     @Column(name = "ATTACH_BY_MEDICAL_REASON")
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean attachByMedicalReason;
 
+    @LogIt
     @Column(name = "AGE_MIN")
     private Integer ageMin;
 
+    @LogIt
     @Column(name = "AGE_MAX")
     private Integer ageMax;
 
+    @LogIt
     @Column(name = "AGE_M_MIN")
     private Integer ageMMin;
 
+    @LogIt
     @Column(name = "AGE_M_MAX")
     private Integer ageMMax;
 
+    @LogIt
     @Column(name = "AGE_W_MIN")
     private Integer ageWMin;
 
+    @LogIt
     @Column(name = "AGE_W_MAX")
     private Integer ageWMax;
 
+    @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
+    @LogIt
     @Column(name = "UPDATE_DATE", nullable = false)
     private LocalDateTime updateDate;
 
+    @LogIt
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaMedicalEmployees> medicalEmployees;
 
+    @LogIt
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaToAreaType> primaryAreaTypes;
 
+    @LogIt
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaAddress> areaAddresses;
 

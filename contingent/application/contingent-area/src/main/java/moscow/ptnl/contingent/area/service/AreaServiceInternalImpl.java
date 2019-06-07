@@ -71,6 +71,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.service.history.HistoryService;
+import moscow.ptnl.ws.security.UserContextHolder;
 
 @Component
 public class AreaServiceInternalImpl implements AreaServiceInternal {
@@ -160,13 +162,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private SettingService settingService;
 
     @Autowired
-    Algorithms algorithms;
+    private Algorithms algorithms;
 
     @Autowired
-    NsiAddressMapper nsiAddressMapper;
+    private NsiAddressMapper nsiAddressMapper;
 
     @Autowired
-    NotNsiAddressMapper notNsiAddressMapper;
+    private NotNsiAddressMapper notNsiAddressMapper;
+    
+    @Autowired
+    private HistoryService historyService;
 
     // (К_УУ_1)	Добавление типов участка в профиль МУ
     @Override
@@ -397,6 +402,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setUpdateDate(LocalDateTime.now());
 
         resetAutoAssignForAttachment(area);
+        
+        historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
     }
 
     @Override
@@ -508,6 +515,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Override
     public void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException {
         Validation validation = new Validation();
+        
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
 
         if (order == null) {
@@ -522,6 +530,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (date != null) {
             areaHelper.checkDateTillToday(date, validation);
         }
+        
+        AddressAllocationOrders oldOrder = historyService.clone(order);
+        
         String numberNew = number == null ? order.getNumber() : number;
         LocalDate dateNew = date == null ? order.getDate() : date;
         String ouzNew = ouz == null ? order.getOuz() : ouz;
@@ -539,6 +550,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         order.setDate(dateNew);
         order.setOuz(ouzNew);
         order.setName(nameNew);
+        
+        addressAllocationOrderCRUDRepository.save(order);
+        
+        historyService.write(UserContextHolder.getPrincipal(), oldOrder, order);
     }
 
     @Override

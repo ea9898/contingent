@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.service.impl;
+package moscow.ptnl.contingent.service.esu;
 
 import moscow.ptnl.contingent.domain.esu.EsuOutput;
 import moscow.ptnl.contingent.repository.esu.EsuOutputCRUDRepository;
@@ -22,7 +22,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import moscow.ptnl.contingent.area.model.esu.ESUEvent;
-import moscow.ptnl.contingent.service.EsuService;
+import moscow.ptnl.contingent.service.esu.EsuService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;

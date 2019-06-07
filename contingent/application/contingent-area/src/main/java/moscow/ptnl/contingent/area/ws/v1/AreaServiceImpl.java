@@ -71,9 +71,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.messaging.MessageChannel;
 
 /**
  *
@@ -108,9 +105,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private MoAddressMapper moAddressMapper;
-    
-    @Autowired @Qualifier(EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME)
-    private MessageChannel historyChannel;
 
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
