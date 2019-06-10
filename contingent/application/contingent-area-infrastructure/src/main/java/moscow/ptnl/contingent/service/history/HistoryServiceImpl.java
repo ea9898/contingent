@@ -5,7 +5,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import javax.persistence.Transient;
 import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
+import moscow.ptnl.contingent.domain.history.EntityConverterHelper;
 import moscow.ptnl.contingent.domain.history.HistoryEventBuilder;
+import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.converter.DefaultConverter;
 import moscow.ptnl.contingent.domain.history.meta.FieldConverter;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
@@ -49,9 +51,15 @@ public class HistoryServiceImpl implements HistoryService {
         }
         
         //TODO вытаскиваем какие то метаданные из Journalable - надо решить какие
+        ServiceName serviceName = classAnnotation.value();
+        if (serviceName == null) {
+            throw new IllegalArgumentException("неизвестный тип сервиса");
+        }
+        
         HistoryEventBuilder eventBuilder = HistoryEventBuilder
-                .withTableAndObject(oldObject.getClass(), 1L)
-                .setPrincipal(principal);
+                .withEntity(oldObject.getClass(), EntityConverterHelper.getEntityId(oldObject))
+                .setPrincipal(principal)
+                .setServiceName(serviceName);
         
         //обходим поля объекта и ищем проаннотированные
         Class objectType = oldObject.getClass();

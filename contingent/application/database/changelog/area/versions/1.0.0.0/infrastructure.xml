@@ -18,7 +18,7 @@
 			<column name="OBJECT_TYPE" type="VARCHAR(255)" remarks="Тип изменённого объекта">
 				<constraints nullable="false" />
 			</column>
-			<column name="OBJECT_ID" type="BIGINT" remarks="Идентификатор объекта в исходной таблице">
+			<column name="OBJECT_ID" type="VARCHAR(255)" remarks="Идентификатор объекта в исходной таблице">
 				<constraints nullable="false" />
 			</column>
 			<column name="CHANGE_DATE" type="TIMESTAMP(6)" remarks="Дата изменения">
@@ -58,8 +58,8 @@
             /* Index: JL_JRN_IDX1                                           */
             /*==============================================================*/
             create index JL_JRN_IDX1 on JL_HISTORY (
-            OBJECT_ID ASC,
-            TABLE_ID ASC
+            OBJECT_TYPE ASC,
+            OBJECT_ID ASC
             );
     -->
 

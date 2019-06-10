@@ -20,7 +20,7 @@ import org.springframework.scheduling.support.PeriodicTrigger;
  * ...
  * historyChannel.send(
  *          HistoryEventBuilder
- *              .withTableAndObject(JournalHistoryTable.AREA, 1L)
+ *              .withEntity(entity.getClass(), entity.getId())
  *              .setPrincipal(UserContextHolder.getPrincipal())
  *              .addValue("field1", "old-val-1", "new-val-1")
  *              .addValue("field2", "old-val-2", "new-val-2")

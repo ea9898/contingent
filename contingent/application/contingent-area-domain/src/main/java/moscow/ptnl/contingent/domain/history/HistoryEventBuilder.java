@@ -8,7 +8,9 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
 /**
- *
+ * Вспомогательный класс для удобного формирования события, публикуемого в
+ * дальнейшем в историю изменений.
+ * 
  * @author m.kachalov
  */
 public class HistoryEventBuilder {
@@ -16,7 +18,7 @@ public class HistoryEventBuilder {
     private final HistoryEvent event;
     private final Set<HistoryEventValue> values;    
     
-    private HistoryEventBuilder(Class<?> objectType, Long objectId) {
+    private HistoryEventBuilder(Class<?> objectType, String objectId) {
         this.event = new HistoryEvent();
         this.event.setObjectType(objectType.getSimpleName());
         this.event.setObjectId(objectId);
@@ -24,8 +26,15 @@ public class HistoryEventBuilder {
         this.values = new HashSet<>();        
     }
     
-    public static HistoryEventBuilder withTableAndObject(Class<?> objectType, Long objectId) {
-        HistoryEventBuilder builder = new HistoryEventBuilder(objectType, objectId);
+    /**
+     * Инициализация билдера с заполнением обязательных полей события.
+     * 
+     * @param entityType тип логируемой сущности
+     * @param entityId уникальный идентификатор сущности
+     * @return 
+     */
+    public static HistoryEventBuilder withEntity(Class<?> entityType, String entityId) {
+        HistoryEventBuilder builder = new HistoryEventBuilder(entityType, entityId);
         return builder;
     }
     
