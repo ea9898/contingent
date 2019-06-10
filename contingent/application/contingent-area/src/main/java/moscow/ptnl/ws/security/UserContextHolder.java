@@ -27,10 +27,10 @@ public class UserContextHolder {
         Principal principal = new Principal(userContext.getUserName());
         principal.setIpAddress(userContext.getHostIp());
         principal.setUserRoleId((userContext.getUserRoleId() != 0) ? userContext.getUserRoleId() : null);
+        principal.setJobInfoId(userContext.getJobExecutionId()); //FIXME - это правильно?
         //TODO не понятно как заполнять
         //principal.setAccountId(Long.MIN_VALUE);
         //principal.setFullName(fullName);
-        //principal.setJobInfoId(Long.MIN_VALUE);
         //principal.setLpuId(Long.MIN_VALUE);
         return principal;
     }

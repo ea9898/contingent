@@ -22,7 +22,6 @@ import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
-import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
@@ -33,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 
 /**
  * Это класс с алгоритмами А_УУ_хх
@@ -42,31 +42,31 @@ import java.util.stream.Collectors;
 public class Algorithms {
 
     @Autowired
-    MoAddressRepository moAddressRepository;
+    private MoAddressRepository moAddressRepository;
 
     @Autowired
-    AddressesCRUDRepository addressesCRUDRepository;
+    private AddressesCRUDRepository addressesCRUDRepository;
 
     @Autowired
-    AddressFormingElementRepository addressFormingElementRepository;
+    private AddressFormingElementRepository addressFormingElementRepository;
 
     @Autowired
-    AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
+    private AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
 
     @Autowired
-    BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
+    private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
 
     @Autowired
-    AlgorithmsHelper algorithmsHelper;
+    private AlgorithmsHelper algorithmsHelper;
 
     @Autowired
-    XMLGregorianCalendarMapper xmlGregorianCalendarMapper;
+    private XMLGregorianCalendarMapper xmlGregorianCalendarMapper;
 
     @Autowired
-    AreaInfoEventMapper areaInfoEventMapper;
+    private AreaInfoEventMapper areaInfoEventMapper;
 
     @Autowired
-    AttachOnAreaChangeMapper attachOnAreaChangeMapper;
+    private AttachOnAreaChangeMapper attachOnAreaChangeMapper;
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public Long searchServiceDistrictMOByAddress (

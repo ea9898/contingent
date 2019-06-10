@@ -1,14 +1,12 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
-import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.AreaTypeShortMapper;
 import moscow.ptnl.contingent.area.transform.MoAddressMapper;
@@ -75,9 +73,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.messaging.MessageChannel;
+import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 
 /**
  *
@@ -112,12 +108,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private MoAddressMapper moAddressMapper;
-    
+
     @Autowired
     private AreaAddressMapper areaAddressMapper;
-
-    @Autowired @Qualifier(EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME)
-    private MessageChannel historyChannel;
 
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
@@ -387,12 +380,14 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
         try {
             GetAreaAddressResponse response = new GetAreaAddressResponse();
+            
             Page<moscow.ptnl.contingent.area.model.area.AddressArea> areaAddresses = areaService.getAreaAddress(body.getAreaId(), body.getPagingOptions() != null ?
                     pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()) : null);
             response.getAreaAddresses().addAll(
                 areaAddresses.getContent().stream()
                 .map(areaAddressMapper::entityToDtoTransform)
                         .collect(Collectors.toList()));
+            
             return response;
         }
         catch (Exception ex) {

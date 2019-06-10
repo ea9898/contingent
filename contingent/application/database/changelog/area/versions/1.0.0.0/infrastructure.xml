@@ -15,7 +15,7 @@
 			<column name="ID" type="BIGINT" remarks="Идентификатор истории">
                 		<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="TABLE_ID" type="BIGINT" remarks="Тип изменённого объекта">
+			<column name="OBJECT_TYPE" type="VARCHAR(255)" remarks="Тип изменённого объекта">
 				<constraints nullable="false" />
 			</column>
 			<column name="OBJECT_ID" type="BIGINT" remarks="Идентификатор объекта в исходной таблице">

@@ -36,9 +36,8 @@ public class HistoryEvent implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = HistoryEvent.SEQUENCE_GENERATOR_NAME)
     private Long id;
     
-    @Column(name = "TABLE_ID") @NotNull
-    @Convert(converter = JournalHistoryTable.Converter.class)
-    private JournalHistoryTable typeId;
+    @Column(name = "OBJECT_TYPE") @NotNull    
+    private String objectType;
     
     @Column(name = "OBJECT_ID") @NotNull
     private Long objectId;
@@ -90,12 +89,12 @@ public class HistoryEvent implements Serializable {
         this.id = id;
     }
 
-    public JournalHistoryTable getTypeId() {
-        return typeId;
+    public String getObjectType() {
+        return objectType;
     }
 
-    public void setTypeId(JournalHistoryTable typeId) {
-        this.typeId = typeId;
+    public void setObjectType(String objectType) {
+        this.objectType = objectType;
     }
 
     public Long getObjectId() {

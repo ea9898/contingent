@@ -15,8 +15,10 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import moscow.ptnl.contingent.domain.history.meta.Journalable;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
 
-@Entity
+@Entity @Journalable
 @Table(name = "ADDRESS_ALLOCATION_ORDERS")
 @SequenceGenerator(name = "SEQ_ADDRESS_ALLOCATION_ORDERS", sequenceName = "SEQ_ADDRESS_ALLOCATION_ORDERS", allocationSize=1)
 public class AddressAllocationOrders implements Serializable {
@@ -28,28 +30,35 @@ public class AddressAllocationOrders implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    @LogIt
     @Size(max = 255)
     @Column(name = "NUMBER", nullable = false)
     private String number;
 
+    @LogIt
     @Size(max = 255)
     @Column(name = "NAME")
     private String name;
 
+    @LogIt
     @Size(max = 300)
     @Column(name = "OUZ")
     private String ouz;
 
+    @LogIt
     @Column(name = "DATE")
     private LocalDate date;
 
+    @LogIt
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
+    @LogIt
     @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 

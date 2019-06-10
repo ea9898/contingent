@@ -1,48 +1,39 @@
 package moscow.ptnl.contingent.domain.esu;
 
-
-import moscow.ptnl.contingent.security.Principal;
 import moscow.ptnl.contingent.util.Utils;
-import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
-import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
 // Заглушка для формирования сообщения для сохранения в БД топика и отправки в ЕСУ
 public class EsuEventBuilder {
 
-    private EsuOutput esuOutput;
+    private final EsuOutput esuOutput;
 
-    public EsuEventBuilder() {
-        esuOutput = new EsuOutput();
+    private EsuEventBuilder(String topic) {
+        this.esuOutput = new EsuOutput();
+        this.esuOutput.setTopic(topic);
     }
 
     public EsuOutput build() {
         return new EsuOutput();
     }
 
-    public static EsuEventBuilder withTableAndObject() {
-        EsuEventBuilder builder = new EsuEventBuilder();
+    public static EsuEventBuilder withTopic(String topic) {
+        EsuEventBuilder builder = new EsuEventBuilder(topic);
         return builder;
     }
 
-    public EsuEventBuilder addTopic(Object o){
+    public EsuEventBuilder setMessage(Object o){
         String xmlString = Utils.convertEventObjectToMessage(o, o.getClass());
         esuOutput.setMessage(xmlString);
         return this;
     }
 
-    public EsuEventBuilder setPrincipal(Principal principal) {
-//        event.setAccountId(principal.getAccountId());
-//        event.setJobInfoId(principal.getJobInfoId());
-//        event.setLpuId(principal.getLpuId());
-//        event.setUserLogin(principal.getUsername());
-//        event.setUserRoleId(principal.getUserRoleId());
-        return this;
-    }
-
     public Message<EsuOutput> buildMessage() {
-        return MessageBuilder.withPayload(build()).build();
+        return MessageBuilder
+                .withPayload(build())
+                .setHeader("TOPIC", esuOutput.getTopic())
+                .build();
     }
 
 }
