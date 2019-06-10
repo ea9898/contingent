@@ -10,6 +10,7 @@ public enum AreaErrorReason implements ErrorReason {
     AREA_NOT_FOUND("E006", "Участок обслуживания МО с ИД %s не найден в системе"),
     AREA_IS_ARCHIVED("E012", "Участок с ИД %s находится в статусе «Архивный»"),
     AREA_IS_NOT_ARCHIVED("E014", "Участок с ИД %s находится в статусе «Активный»"),
+    ADDRESS_ALREADY_SERVICED_ANOTHER_AREA("E018", "Адрес, включенный в территорию обслуживания участка, не должен входить в территорию обслуживания другого участка с ИД типа участка %s"),
     NO_SEARCH_PARAMETERS("E024", "Не заданы критерии поиска"),
     AREA_TYPES_NOT_EXISTS_IN_PROFILE("E026", "Тип(ы) участка с ИД %s отсутствует(ют) в профиле"),
     MU_PROFILE_EXISTS("E027", "Для МУ %s участок с типом %s уже задан"),
@@ -58,6 +59,8 @@ public enum AreaErrorReason implements ErrorReason {
     TOO_MANY_ADDRESSES("UE079", "Превышено максимально допустимое количество адресов для распределения (не более %s)"),
     MO_ADDRESS_NOT_EXISTS("UE080", "Территория обслуживания с ИД %s не существует или уже перенесена в архив"),
     TOO_BIG_PAGE_SIZE("UE081", "Размер страницы превышает максимально допустимое значение (не более %s)"),
+    ADDRESS_ALREADY_SERVICED_NSI("UE083", "Адрес уровень: %s, ИД: %s уже обслуживается данным участком."),
+    ADDRESS_ALREADY_SERVICED_NOTNSI("UE083", "Адрес ИД: %s, %s: %s %s уже обслуживается данным участком.")
     ;
 
     private final String description;

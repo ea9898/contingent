@@ -132,13 +132,14 @@ public class Algorithms {
     }
 
     // Поиск участков по адресу (А_УУ_2)
-    public List<Long> searchAreaByAddress(
+    // TODO реализовать
+    public Long searchAreaByAddress(
             Long moId,
             Long areaId,
             List<NsiAddress> nsiAddressList,
             List<NotNsiAddress> notNsiAddressList) {
 
-        return new ArrayList<>();
+        return 100L;
     }
 
 

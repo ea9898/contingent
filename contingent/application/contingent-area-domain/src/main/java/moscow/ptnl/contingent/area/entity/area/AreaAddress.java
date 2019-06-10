@@ -48,14 +48,6 @@ public class AreaAddress implements Serializable {
     @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 
-    public MoAddress getDistributionToMo() {
-        return moAddress;
-    }
-
-    public void setDistributionToMo(MoAddress moAddress) {
-        this.moAddress = moAddress;
-    }
-
     public Area getArea() {
         return area;
     }

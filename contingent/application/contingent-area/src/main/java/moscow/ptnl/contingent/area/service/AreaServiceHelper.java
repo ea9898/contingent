@@ -102,6 +102,9 @@ public class AreaServiceHelper {
     @Autowired
     private AddressFormingElementRepository addressFormingElementRepository;
 
+    @Autowired
+    private Algorithms algorithms;
+
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
     Иначе возвращает ошибку */
@@ -564,6 +567,46 @@ public class AreaServiceHelper {
         if (area.getAutoAssignForAttach()) {
             List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), null, null);
             areas.stream().filter(a -> !Objects.equals(area.getId(), a.getId())).forEach(a -> a.setAutoAssignForAttach(false));
+        }
+    }
+
+    /* К_УУ_13 Система проверяет, что каждый из списка адресов не обслуживается участком такого же типа, как и участок из входных параметров */
+    public void checkAddressNotServiceByAreatype(Area area, List<NsiAddress> nsiAddresses, List<NotNsiAddress> notNsiAddresses, Validation validation) {
+        for (NsiAddress nsiAddress: nsiAddresses) {
+            Long foundAreaId = algorithms.searchAreaByAddress(area.getMoId(), area.getId(),
+                    Collections.singletonList(nsiAddress), new ArrayList<>());
+            if (foundAreaId != null) {
+                if (!foundAreaId.equals(area.getId())) {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
+                            new ValidationParameter("areaId", foundAreaId));
+                } else {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI,
+                            new ValidationParameter("id", nsiAddress.getGlobalId()),
+                            new ValidationParameter("level", nsiAddress.getLevelAddress()));
+                }
+            }
+        }
+
+        for (NotNsiAddress notNsiAddress: notNsiAddresses) {
+            Long foundAreaId = algorithms.searchAreaByAddress(area.getMoId(), area.getId(),
+                    new ArrayList<>(), Collections.singletonList(notNsiAddress));
+            if (foundAreaId != null) {
+                if (!foundAreaId.equals(area.getId())) {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
+                            new ValidationParameter("areaId", foundAreaId));
+                } else {
+                    List<ValidationParameter> validationParameters = new ArrayList<>();
+                    validationParameters.add(new ValidationParameter("id", notNsiAddress.getParentId()));
+                    validationParameters.add(new ValidationParameter("house", notNsiAddress.getHouseType() + notNsiAddress.getHouse()));
+                    if (notNsiAddress.getConstructionType() != null && notNsiAddress.getConstruction() != null) {
+                        validationParameters.add(new ValidationParameter("construction", notNsiAddress.getConstructionType() + notNsiAddress.getConstruction()));
+                    }
+                    if (notNsiAddress.getBuildingType() != null && notNsiAddress.getBuilding() != null) {
+                        validationParameters.add(new ValidationParameter("building", notNsiAddress.getBuildingType() + notNsiAddress.getBuilding()));
+                    }
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NOTNSI, validationParameters.toArray(new ValidationParameter[validationParameters.size()]));
+                }
+            }
         }
     }
 
