@@ -23,10 +23,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
 
-@Entity @Journalable
+@Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREAS")
 @SequenceGenerator(name = "SEQ_AREAS", sequenceName = "SEQ_AREAS", allocationSize=1)
 public class Area implements Serializable {

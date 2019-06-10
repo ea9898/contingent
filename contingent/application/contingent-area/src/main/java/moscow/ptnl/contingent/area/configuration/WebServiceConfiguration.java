@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
  * @author m.kachalov
  */
 @Configuration
-@ComponentScan("moscow.ptnl")
+@ComponentScan(basePackages = "moscow.ptnl")
 public class WebServiceConfiguration {
     
     @Autowired

@@ -40,7 +40,7 @@ public class HistoryEvent implements Serializable {
     private String objectType;
     
     @Column(name = "OBJECT_ID") @NotNull
-    private Long objectId;
+    private String objectId;
 
     @Column(name = "CHANGE_DATE") @NotNull
     private LocalDateTime changeDate;
@@ -97,11 +97,11 @@ public class HistoryEvent implements Serializable {
         this.objectType = objectType;
     }
 
-    public Long getObjectId() {
+    public String getObjectId() {
         return objectId;
     }
 
-    public void setObjectId(Long objectId) {
+    public void setObjectId(String objectId) {
         this.objectId = objectId;
     }
 
