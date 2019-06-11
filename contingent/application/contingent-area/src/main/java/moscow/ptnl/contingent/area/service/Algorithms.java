@@ -11,10 +11,8 @@ import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.model.area.DependentArea;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
-import moscow.ptnl.contingent.area.model.esu.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
@@ -26,15 +24,16 @@ import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.mos.emias.contingent2.core.NotNsiAddress;
-import ru.mos.emias.contingent2.core.NsiAddress;
+
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
+
 
 /**
  * Это класс с алгоритмами А_УУ_хх
@@ -269,6 +268,6 @@ public class Algorithms {
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
     public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {
-        return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.area.model.esu.AreaInfoEvent(methodName, area));
+        return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
     }
 }
