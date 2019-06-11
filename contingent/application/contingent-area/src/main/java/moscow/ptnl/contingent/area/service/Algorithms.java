@@ -12,7 +12,7 @@ import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.DependentArea;
-import moscow.ptnl.contingent.area.model.esu.AttachOnAreaChangeEvent;
+import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
@@ -267,6 +267,6 @@ public class Algorithms {
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
     public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {
-        return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.area.model.esu.AreaInfoEvent(methodName, area));
+        return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class AreaEventMapper implements Transform<AreaInfoEvent, moscow.ptnl.contingent.area.model.esu.AreaEvent> {
+public class AreaEventMapper implements Transform<AreaInfoEvent, moscow.ptnl.contingent.domain.esu.event.AreaEvent> {
 
     @Autowired
     private AreaInfoEventMapper areaInfoEventMapper;
@@ -20,7 +20,7 @@ public class AreaEventMapper implements Transform<AreaInfoEvent, moscow.ptnl.con
     private XMLGregorianCalendarMapper gregorianCalendarMapper;
 
     @Override
-    public AreaInfoEvent entityToDtoTransform(moscow.ptnl.contingent.area.model.esu.AreaEvent entityObject) {
+    public AreaInfoEvent entityToDtoTransform(moscow.ptnl.contingent.domain.esu.event.AreaEvent entityObject) {
         AreaInfoEvent event = new AreaInfoEvent();
 //        event.setInformDate(gregorianCalendarMapper.entityToDtoTransform(LocalDateTime.now()));
 //        event.setOperationDate(gregorianCalendarMapper.entityToDtoTransform(entityObject.getArea().getUpdateDate()));
@@ -40,7 +40,7 @@ public class AreaEventMapper implements Transform<AreaInfoEvent, moscow.ptnl.con
     }
 
     @Override
-    public moscow.ptnl.contingent.area.model.esu.AreaEvent dtoToEntityTransform(AreaInfoEvent dtoObject) {
+    public moscow.ptnl.contingent.domain.esu.event.AreaEvent dtoToEntityTransform(AreaInfoEvent dtoObject) {
         return null;
     }
 }

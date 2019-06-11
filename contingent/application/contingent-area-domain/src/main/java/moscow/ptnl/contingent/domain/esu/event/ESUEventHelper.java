@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moscow.ptnl.contingent.area.model.esu;
+package moscow.ptnl.contingent.domain.esu.event;
 
 /**
  *

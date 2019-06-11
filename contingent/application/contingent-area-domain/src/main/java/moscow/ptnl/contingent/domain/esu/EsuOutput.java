@@ -12,6 +12,8 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import javax.persistence.Convert;
+import moscow.ptnl.contingent.domain.esu.converter.StatusConverter;
 
 @Entity
 @Table(name = "ESU_OUTPUT")
@@ -47,7 +49,8 @@ public class EsuOutput implements Serializable {
     private String message;
 
     @Column(name = "STATUS", nullable = false)
-    private Integer status;
+    @Convert(converter = StatusConverter.class)
+    private STATUS status = STATUS.UNSUCCESS;
 
     public Long getId() {
         return id;
@@ -105,11 +108,11 @@ public class EsuOutput implements Serializable {
         this.message = message;
     }
 
-    public Integer getStatus() {
+    public STATUS getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(STATUS status) {
         this.status = status;
     }
     
@@ -126,5 +129,34 @@ public class EsuOutput implements Serializable {
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.id);
+    }
+    
+    //0-не успешно, 1-успешно, 2-в процессе отправки в ЕСУ
+    public static enum STATUS {
+        
+        UNSUCCESS(0),
+        SUCCESS(1),
+        INPROGRESS(2);
+        
+        private final Integer value;
+        
+        STATUS(Integer value) {
+            this.value = value;
+        }
+        
+        public Integer getValue() {
+            return this.value;
+        }
+        
+        public static STATUS getByValue(Integer value) {
+            if (value == null)
+                return null;
+            for (STATUS status : STATUS.values()) {
+                if (status.getValue().equals(value))
+                    return status;
+            }
+            return null;
+        }
+        
     }
 }

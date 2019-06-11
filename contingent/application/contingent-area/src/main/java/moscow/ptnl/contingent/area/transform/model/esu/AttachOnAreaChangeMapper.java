@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
-import moscow.ptnl.contingent.area.model.esu.AttachOnAreaChangeEvent;
+import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.area.transform.Transform;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.attachment.changearea.event.AreaRestriction;
@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AttachOnAreaChangeMapper implements Transform<AttachOnAreaChange, moscow.ptnl.contingent.area.model.esu.AttachOnAreaChangeEvent> {
+public class AttachOnAreaChangeMapper implements Transform<AttachOnAreaChange, moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent> {
 
     @Autowired
     private XMLGregorianCalendarMapper gregorianCalendarMapper;
 
     @Override
-    public AttachOnAreaChange entityToDtoTransform(moscow.ptnl.contingent.area.model.esu.AttachOnAreaChangeEvent entity) {
+    public AttachOnAreaChange entityToDtoTransform(moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent entity) {
         AttachOnAreaChange event = new AttachOnAreaChange();
         moscow.ptnl.contingent.area.entity.area.Area area = entity.getArea();
 
@@ -49,7 +49,7 @@ public class AttachOnAreaChangeMapper implements Transform<AttachOnAreaChange, m
     }
 
     @Override
-    public moscow.ptnl.contingent.area.model.esu.AttachOnAreaChangeEvent dtoToEntityTransform(AttachOnAreaChange dtoObject) {
+    public moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent dtoToEntityTransform(AttachOnAreaChange dtoObject) {
         return null;
     }
 }

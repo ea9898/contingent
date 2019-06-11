@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.model.esu;
+package moscow.ptnl.contingent.domain.esu.event;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;

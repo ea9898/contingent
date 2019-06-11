@@ -25,7 +25,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
 
         criteria.where(
             criteriaBuilder.and(
-                criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), 0),
+                criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), EsuOutput.STATUS.UNSUCCESS),
                 criteriaBuilder.or(
                     criteriaBuilder.lessThan(template.get(EsuOutput_.sentTime.getName()), olderThan),
                     criteriaBuilder.isNull(template.get(EsuOutput_.sentTime.getName()))
@@ -33,7 +33,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
             )
         );
         List<EsuOutput> results = entityManager.createQuery(criteria).getResultList();
-        results.forEach(r -> r.setStatus(2));
+        results.forEach(r -> r.setStatus(EsuOutput.STATUS.INPROGRESS));
 
         return results;
     }

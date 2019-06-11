@@ -8,10 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.mos.emias.esu.lib.producer.EsuProducer;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -21,8 +17,7 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import moscow.ptnl.contingent.area.model.esu.ESUEvent;
-import moscow.ptnl.contingent.service.esu.EsuService;
+import moscow.ptnl.contingent.domain.esu.event.ESUEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -82,6 +77,7 @@ public class EsuServiceImpl implements EsuService {
         return false;
     }
 
+    @Override
     public void periodicalPublishUnsuccessMessagesToESU(LocalDateTime olderThen) {
         List<EsuOutput> records = esuOutputRepository.findEsuOutputsToResend(olderThen);
 
@@ -94,14 +90,14 @@ public class EsuServiceImpl implements EsuService {
             }
         }
         //меняем статус сообщений на неуспешный, если они еще в статусе inProgress
-        records.stream().filter(r -> Objects.equals(2, r.getStatus())).forEach(r -> r.setStatus(0));
+        records.stream().filter(r -> Objects.equals(EsuOutput.STATUS.INPROGRESS, r.getStatus())).forEach(r -> r.setStatus(EsuOutput.STATUS.UNSUCCESS));
     }
 
     private EsuOutput saveBeforePublishToESU(String publishTopic, String message) {
         EsuOutput esuOutput = new EsuOutput();
         esuOutput.setTopic(publishTopic);
         esuOutput.setMessage(message);
-        esuOutput.setStatus(0);
+        esuOutput.setStatus(EsuOutput.STATUS.UNSUCCESS);
 
         return esuOutputCRUDRepository.save(esuOutput);
     }
@@ -111,7 +107,7 @@ public class EsuServiceImpl implements EsuService {
         esuOutput.setOffset(esuAnswer.getOffset());
         esuOutput.setPartition(esuAnswer.getPartition());
         esuOutput.setSentTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(esuAnswer.getTimestamp()), TimeZone.getDefault().toZoneId()));
-        esuOutput.setStatus(1);
+        esuOutput.setStatus(EsuOutput.STATUS.SUCCESS);
     }
 
     private EsuProducer.MessageMetadata publishToESU(String publishTopic, String message) throws InterruptedException, ExecutionException {

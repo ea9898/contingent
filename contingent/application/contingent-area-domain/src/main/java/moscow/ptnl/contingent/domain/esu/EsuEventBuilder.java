@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.domain.esu;
 
-import moscow.ptnl.contingent.util.Utils;
+import moscow.ptnl.util.XMLUtil;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
@@ -24,7 +24,7 @@ public class EsuEventBuilder {
     }
 
     public EsuEventBuilder setMessage(Object o){
-        String xmlString = Utils.convertEventObjectToMessage(o, o.getClass());
+        String xmlString = XMLUtil.convertEventObjectToMessage(o, o.getClass());
         esuOutput.setMessage(xmlString);
         return this;
     }
