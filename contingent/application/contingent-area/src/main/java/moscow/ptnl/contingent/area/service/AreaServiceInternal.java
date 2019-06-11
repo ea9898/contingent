@@ -5,13 +5,14 @@ import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
+import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.contingent2.core.MuType;
-import ru.mos.emias.contingent2.core.NotNsiAddress;
-import ru.mos.emias.contingent2.core.NsiAddress;
+
 
 import java.time.LocalDate;
 import java.util.List;

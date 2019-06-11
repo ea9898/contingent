@@ -322,7 +322,7 @@
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
                 <xs:element name="nsiAddress" type="core:NsiAddress" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="nonNsiAddress" type="core:NotNsiAddress" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="notNsiAddress" type="core:NotNsiAddress" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="core:options" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>

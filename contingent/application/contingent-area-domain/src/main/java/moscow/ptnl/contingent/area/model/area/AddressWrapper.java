@@ -30,6 +30,8 @@ public class AddressWrapper {
         this.nsiAddress = nsiAddress;
     }
 
+    public AddressWrapper(NotNsiAddress notNsiAddress) { this.notNsiAddress = notNsiAddress; }
+
     public AddressWrapper(AddressWrapper addressWrapper) {
         this.nsiAddress = addressWrapper.nsiAddress;
         this.notNsiAddress = addressWrapper.notNsiAddress;

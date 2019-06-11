@@ -23,6 +23,8 @@ import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
+import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
@@ -49,7 +51,6 @@ import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.area.repository.nsi.SpecializationToPositionNomRepository;
 import moscow.ptnl.contingent.area.util.Period;
-import moscow.ptnl.contingent2.area.info.Address;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -59,10 +60,7 @@ import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.contingent2.core.MuType;
-import ru.mos.emias.contingent2.core.NotNsiAddress;
-import ru.mos.emias.contingent2.core.NsiAddress;
 
-import javax.ejb.Stateless;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -700,94 +698,106 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 7.
-        Long serviceDistrictMO = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
-                nsiAddresses, notNsiAddresses, validation);
+        // Список все адресов с привязанными мета-данными
+        List<AddressWrapper> addressWrapperList = areaHelper.convertToAddressWarapper(nsiAddresses, notNsiAddresses);
+
+        // 7. Обогащение обертки объектами территорией обслуживания МО
+        areaHelper.addMoAddressToAddressWrapper(area, addressWrapperList, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         // 8.
-        areaHelper.checkAddressNotServiceByAreatype(area, nsiAddresses, notNsiAddresses, validation);
+        areaHelper.checkAddressNotServiceByAreatype(area, addressWrapperList, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
         // 9.
-        List<BuildingRegistry> buildingRegistries = new ArrayList<>();
-        notNsiAddresses.forEach(nna -> {
-            Optional<BuildingRegistry> buildingRegistryOptional = buildingRegistryRepository.findRegistryBuildings(
-                    nna.getHouse(), nna.getBuilding(), nna.getConstruction(),
-                    nna.getParentId()).stream().findFirst();
-            if (!buildingRegistryOptional.isPresent()) {
-                BuildingRegistry buildingRegistry = new BuildingRegistry(
-                        nna.getParentId(), addressFormingElementRepository.findAfeByIdAndLevel(nna.getParentId(), nna.getLevelParentId()).get(0),
-                        nna.getHouseType(), nna.getHouse(),
-                        nna.getBuildingType(), nna.getBuilding(),
-                        nna.getConstructionType(), nna.getConstruction());
-                buildingRegistries.add(buildingRegistryCRUDRepository.save(buildingRegistry));
-            } else {
-                buildingRegistries.add(buildingRegistryOptional.get());
+        addressWrapperList.forEach(addressWrapper -> {
+            if (addressWrapper.getNotNsiAddress() != null) {
+                NotNsiAddress nna = addressWrapper.getNotNsiAddress();
+                Optional<BuildingRegistry> buildingRegistryOptional = buildingRegistryRepository.findRegistryBuildings(
+                        nna.getHouse(), nna.getBuilding(), nna.getConstruction(),
+                        nna.getParentId()).stream().findFirst();
+                if (!buildingRegistryOptional.isPresent()) {
+                    BuildingRegistry buildingRegistry = new BuildingRegistry(
+                            nna.getParentId(), addressFormingElementRepository.findAfeByIdAndLevel(nna.getParentId(), nna.getLevelParentId()).get(0),
+                            nna.getHouseType(), nna.getHouse(),
+                            nna.getBuildingType(), nna.getBuilding(),
+                            nna.getConstructionType(), nna.getConstruction());
+                    addressWrapper.setBuildingRegistry(buildingRegistry);
+                } else {
+                    addressWrapper.setBuildingRegistry(buildingRegistryOptional.get());
+                }
             }
         });
 
         // 10.
-        List<Addresses> addresses = new ArrayList<>();
-        for (NsiAddress nsiAddress: nsiAddresses) {
-            AddressFormingElement addressFormingElement = null;
-            BuildingRegistry buildingRegistry = null;
+        addressWrapperList.forEach(addressWrapper -> {
+            if (addressWrapper.getNsiAddress() != null) {
+                // НСИ
+                NsiAddress nsiAddress = addressWrapper.getNsiAddress();
+                AddressFormingElement addressFormingElement = null;
+                BuildingRegistry buildingRegistry = null;
 
-            if (nsiAddress.getLevelAddress() != 8) {
-                addressFormingElement = addressFormingElementRepository.getAddressFormingElements(nsiAddress.getGlobalId(), nsiAddress.getLevelAddress()).get(0);
+                if (nsiAddress.getLevelAddress() != 8) {
+                    addressFormingElement = addressFormingElementRepository.getAddressFormingElements(nsiAddress.getGlobalId(), nsiAddress.getLevelAddress()).get(0);
+                } else {
+                    buildingRegistry = buildingRegistryRepository.getBuildingsRegistry(nsiAddress.getGlobalId()).get(0);
+                }
+
+                List<Addresses> foundAddresses = addressesRepository.findAddresses(nsiAddress.getLevelAddress(), buildingRegistry, addressFormingElement);
+
+                if (!foundAddresses.isEmpty()) {
+                    addressWrapper.setAddress(foundAddresses.get(0));
+                } else {
+                    Addresses address = new Addresses();
+                    address.setLevel(nsiAddress.getLevelAddress());
+                    address.setAddressFormingElement(addressFormingElement);
+                    address.setBuildingRegistry(buildingRegistry);
+                    addressWrapper.setAddress(addressesCRUDRepository.save(address));
+                }
+
             } else {
-                buildingRegistry = buildingRegistryRepository.getBuildingsRegistry(nsiAddress.getGlobalId()).get(0);
+                // неНСИ
+                BuildingRegistry buildingRegistry = addressWrapper.getBuildingRegistry();
+
+                List<Addresses> foundAddresses = addressesRepository.findAddresses(8L, buildingRegistry, null);
+
+                if (!foundAddresses.isEmpty()) {
+                    addressWrapper.setAddress(foundAddresses.get(0));
+                } else {
+                    Addresses address = new Addresses();
+                    address.setLevel(8);
+                    address.setBuildingRegistry(buildingRegistry);
+                    addressWrapper.setAddress(addressesCRUDRepository.save(address));
+                }
+
             }
 
-            List<Addresses> foundAddresses = addressesRepository.findAddresses(nsiAddress.getLevelAddress(), buildingRegistry, addressFormingElement);
-
-            if (!foundAddresses.isEmpty()) {
-                addresses.add(foundAddresses.get(0));
-            } else {
-                Addresses address = new Addresses();
-                address.setLevel(nsiAddress.getLevelAddress());
-                address.setAddressFormingElement(addressFormingElement);
-                address.setBuildingRegistry(buildingRegistry);
-                addresses.add(addressesCRUDRepository.save(address));
-            }
-
-        }
-
-        for (BuildingRegistry buildingRegistry: buildingRegistries) {
-            List<Addresses> foundAddresses = addressesRepository.findAddresses(8L, buildingRegistry, null);
-
-            if (!foundAddresses.isEmpty()) {
-                addresses.add(foundAddresses.get(0));
-            } else {
-                Addresses address = new Addresses();
-                address.setLevel(8);
-                address.setBuildingRegistry(buildingRegistry);
-                addresses.add(addressesCRUDRepository.save(address));
-            }
-        }
+        });
 
         // 11.
         List<Long> areaAddressIds = new ArrayList<>();
-
-        addresses.forEach(address -> {
+        addressWrapperList.forEach(addressWrapper -> {
             AreaAddress areaAddress = new AreaAddress();
             areaAddress.setArea(area);
-            areaAddress.setMoAddress(moAddressCRUDRepository.findById(serviceDistrictMO).orElse(null));
-            areaAddress.setAddress(address);
+            areaAddress.setMoAddress(areaAddress.getMoAddress());
+            areaAddress.setAddress(addressWrapper.getAddress());
             areaAddress.setCreateDate(LocalDateTime.now());
             areaAddress.setUpdateDate(LocalDateTime.now());
             areaAddressIds.add(areaAddressCRUDRepository.save(areaAddress).getId());
         });
-
 
         // 12.
         if (areaHelper.isAreaPrimary(area)) {
             esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "addAreaAddress"));
         }
 
-        return areaAddressIds;
+        return new ArrayList<>();
     }
 
     @Override

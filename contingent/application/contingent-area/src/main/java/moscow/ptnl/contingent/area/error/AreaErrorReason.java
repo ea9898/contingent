@@ -59,6 +59,8 @@ public enum AreaErrorReason implements ErrorReason {
     TOO_MANY_ADDRESSES("UE079", "Превышено максимально допустимое количество адресов для распределения (не более %s)"),
     MO_ADDRESS_NOT_EXISTS("UE080", "Территория обслуживания с ИД %s не существует или уже перенесена в архив"),
     TOO_BIG_PAGE_SIZE("UE081", "Размер страницы превышает максимально допустимое значение (не более %s)"),
+    ADDRESS_NOT_SERVICED_MO__NSI("UE082", "Адрес уровень: %s, ИД: %s не включен в территорию обслуживания МО %s."),
+    ADDRESS_NOT_SERVICED_MO_NOTNSI("UE082", "Адрес ИД: %s, %s: %s %s не включен в территорию обслуживания МО %s."),
     ADDRESS_ALREADY_SERVICED_NSI("UE083", "Адрес уровень: %s, ИД: %s уже обслуживается данным участком."),
     ADDRESS_ALREADY_SERVICED_NOTNSI("UE083", "Адрес ИД: %s, %s: %s %s уже обслуживается данным участком.")
     ;

@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.area.model.area;
 
+import java.util.Objects;
+
 public class NotNsiAddress {
 
     private Integer levelParentId;
@@ -80,5 +82,25 @@ public class NotNsiAddress {
 
     public void setConstruction(String construction) {
         this.construction = construction;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NotNsiAddress that = (NotNsiAddress) o;
+        return Objects.equals(levelParentId, that.levelParentId) &&
+                Objects.equals(parentId, that.parentId) &&
+                Objects.equals(houseType, that.houseType) &&
+                Objects.equals(house, that.house) &&
+                Objects.equals(buildingType, that.buildingType) &&
+                Objects.equals(building, that.building) &&
+                Objects.equals(constructionType, that.constructionType) &&
+                Objects.equals(construction, that.construction);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(levelParentId, parentId, houseType, house, buildingType, building, constructionType, construction);
     }
 }

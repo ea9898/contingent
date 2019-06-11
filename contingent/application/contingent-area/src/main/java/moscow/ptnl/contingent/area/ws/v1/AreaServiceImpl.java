@@ -10,6 +10,8 @@ import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.AreaTypeShortMapper;
 import moscow.ptnl.contingent.area.transform.MoAddressMapper;
+import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
+import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.PagingOptionsMapper;
 import moscow.ptnl.contingent.area.transform.SoapCustomMapper;
 import moscow.ptnl.contingent.area.transform.SoapExceptionMapper;
@@ -111,6 +113,12 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AreaAddressMapper areaAddressMapper;
+
+    @Autowired
+    private NsiAddressMapper nsiAddressMapper;
+
+    @Autowired
+    private NotNsiAddressMapper notNsiAddressMapper;
 
     @Override
     public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
@@ -300,8 +308,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             AddAreaAddressResponse response = new AddAreaAddressResponse();
             response.getAreaAddressIds().addAll(areaService.addAreaAddress(body.getAreaId(),
-                    body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses(),
-                    body.getNonNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNonNsiAddresses()));
+                    body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList()),
+                    body.getNotNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNotNsiAddresses().stream().map(notNsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
             return response;
         }
         catch (Exception ex) {
@@ -327,8 +335,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             AddMoAddressResponse response = new AddMoAddressResponse();
             response.getMoAddressIds().addAll(
                     areaService.addMoAddress(body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
-                            body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses(),
-                    body.getNotNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNotNsiAddresses()));
+                            body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList()),
+                            body.getNotNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNotNsiAddresses().stream().map(notNsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
 
             return response;
         }
