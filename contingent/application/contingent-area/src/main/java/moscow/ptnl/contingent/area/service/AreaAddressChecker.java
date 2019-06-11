@@ -9,6 +9,8 @@ import moscow.ptnl.contingent.area.model.area.AddressDetailsElementType;
 import moscow.ptnl.contingent.area.model.area.AddressDetailsType;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
+import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
+import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
@@ -16,8 +18,6 @@ import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import ru.mos.emias.contingent2.core.NotNsiAddress;
-import ru.mos.emias.contingent2.core.NsiAddress;
 
 import java.util.*;
 import java.util.stream.Collectors;

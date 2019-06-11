@@ -12,6 +12,8 @@ import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.DependentArea;
+import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
+import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.model.esu.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
@@ -24,8 +26,6 @@ import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.mos.emias.contingent2.core.NotNsiAddress;
-import ru.mos.emias.contingent2.core.NsiAddress;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -69,12 +69,12 @@ public class Algorithms {
     private AttachOnAreaChangeMapper attachOnAreaChangeMapper;
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
-    public Long searchServiceDistrictMOByAddress (
-        Long moId,
-        AreaType areaType,
-        Long orderId,
-        List<NsiAddress> nsiAddressList,
-        List<NotNsiAddress> notNsiAddressList, Validation validation) throws ContingentException {
+    public MoAddress searchServiceDistrictMOByAddress (
+            Long moId,
+            AreaType areaType,
+            Long orderId,
+            List<NsiAddress> nsiAddressList,
+            List<NotNsiAddress> notNsiAddressList, Validation validation) throws ContingentException {
 
         // 1.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
@@ -122,13 +122,13 @@ public class Algorithms {
         List<AddressWrapper> addressWrapperList = findIntersectingAddresses(addressWrappers, nsiAddressList, notNsiAddressList);
 
         // 5.
-        Long serviceDestriceMoId = null;
+        MoAddress serviceDestriceMo = null;
         if (addressWrapperList != null && !addressWrapperList.isEmpty()) {
-            serviceDestriceMoId = moAddresses.get(0).getId();
+            serviceDestriceMo = moAddresses.get(0);
         }
 
         // 6.
-        return serviceDestriceMoId;
+        return serviceDestriceMo;
     }
 
     // Поиск участков по адресу (А_УУ_2)
@@ -229,7 +229,7 @@ public class Algorithms {
                 // По parentId ищется AFE
                 AddressFormingElement addressFormingElement =
                         addressFormingElementRepository.findAfeByGlobalId(notNsiAddress.getParentId());
-                if (notNsiAddress.getParentId() == AddressLevelType.STREET.getLevel()) {
+                if (notNsiAddress.getLevelParentId() == AddressLevelType.STREET.getLevel()) {
                     // Если уровень вышестоящего элемента = 7, то выполняется алгоритм, описанный на шаге 1, начиная с п.  1.1, b.2.
                     crossAddresses.addAll(AlgorithmsHelper.checkPlanIdExist.apply(addressFormingElement, afeAndBr));
                 } else {
