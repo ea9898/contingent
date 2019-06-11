@@ -1,11 +1,15 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
+import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
+import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
+import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.NotNsiAddress;
@@ -22,6 +26,12 @@ public class AlgorithmsHelper {
 
     @Autowired
     AddressFormingElementRepository addressFormingElementRepository;
+
+    @Autowired
+    private AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
+
+    @Autowired
+    private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
 
     // А_УУ_3 1.1.
     public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchById =
@@ -260,4 +270,41 @@ public class AlgorithmsHelper {
 
                 }
             };
+
+    // А_УУ_1, А_УУ_2 3.
+    public List<AddressWrapper> createAfeBrList(List<Address4Algoritm> addresses4Algoritm) {
+        List<AddressWrapper> addressWrappers = new ArrayList<>();
+        addresses4Algoritm.forEach(al -> {
+            if (!AddressLevelType.ID.getLevel().equals(al.getLevel())) {
+                // 3.1.
+                addressWrappers.addAll(addressFormingElementRepository.findAfeByIdAndLevel(
+                        al.getAddressId(), al.getLevel()).stream().map(AddressWrapper::new)
+                        .collect(Collectors.toList()));
+            } else {
+                // 3.2.
+                // a.
+                Optional<BuildingRegistry> buildingRegistryOptional = buildingRegistryCRUDRepository.findById(al.getAddressId());
+                if (buildingRegistryOptional.isPresent()) {
+                    BuildingRegistry buildingRegistry = buildingRegistryOptional.get();
+                    Long afeId = buildingRegistry.getAddressFormingElement().getId();
+
+                    // b.
+                    AddressFormingElement addressFormingElement = addressFormingElementCRUDRepository.findById(afeId).get();
+
+                    // c.
+                    AddressWrapper addressWrapper = new AddressWrapper();
+                    addressWrapper.setAddressFormingElement(addressFormingElement);
+                    addressWrapper.setBuildingRegistry(buildingRegistry);
+
+                    // d.
+                    addressWrapper.setAddressLevelType(AddressLevelType.ID);
+                    addressWrapper.setBrGlobalId(buildingRegistry.getGlobalId());
+
+                    addressWrappers.add(addressWrapper);
+                }
+
+            }
+        });
+        return addressWrappers;
+    }
 }

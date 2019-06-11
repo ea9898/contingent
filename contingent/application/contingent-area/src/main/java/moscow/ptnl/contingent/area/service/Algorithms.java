@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
@@ -14,6 +15,7 @@ import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
@@ -27,6 +29,8 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -52,12 +56,6 @@ public class Algorithms {
     private AddressFormingElementRepository addressFormingElementRepository;
 
     @Autowired
-    private AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
-
-    @Autowired
-    private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
-
-    @Autowired
     private AlgorithmsHelper algorithmsHelper;
 
     @Autowired
@@ -68,6 +66,9 @@ public class Algorithms {
 
     @Autowired
     private AttachOnAreaChangeMapper attachOnAreaChangeMapper;
+
+    @Autowired
+    private AreaAddressRepository areaAddressRepository;
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public MoAddress searchServiceDistrictMOByAddress (
@@ -86,38 +87,7 @@ public class Algorithms {
 
 
         // 3.
-        List<AddressWrapper> addressWrappers = new ArrayList<>();
-        address4Algoritms.forEach(al -> {
-            if (!AddressLevelType.ID.getLevel().equals(al.getLevel())) {
-                // 3.1.
-                addressWrappers.addAll(addressFormingElementRepository.findAfeByIdAndLevel(
-                        al.getAddressId(), al.getLevel()).stream().map(AddressWrapper::new)
-                        .collect(Collectors.toList()));
-            } else {
-                // 3.2.
-                // a.
-                Optional<BuildingRegistry> buildingRegistryOptional = buildingRegistryCRUDRepository.findById(al.getAddressId());
-                if (buildingRegistryOptional.isPresent()) {
-                    BuildingRegistry buildingRegistry = buildingRegistryOptional.get();
-                    Long afeId = buildingRegistry.getAddressFormingElement().getId();
-
-                    // b.
-                    AddressFormingElement addressFormingElement = addressFormingElementCRUDRepository.findById(afeId).get();
-
-                    // c.
-                    AddressWrapper addressWrapper = new AddressWrapper();
-                    addressWrapper.setAddressFormingElement(addressFormingElement);
-                    addressWrapper.setBuildingRegistry(buildingRegistry);
-
-                    // d.
-                    addressWrapper.setAddressLevelType(AddressLevelType.ID);
-                    addressWrapper.setBrGlobalId(buildingRegistry.getGlobalId());
-
-                    addressWrappers.add(addressWrapper);
-                }
-
-            }
-        });
+        List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
 
         // 4.
         List<AddressWrapper> addressWrapperList = findIntersectingAddresses(addressWrappers, nsiAddressList, notNsiAddressList);
@@ -133,14 +103,34 @@ public class Algorithms {
     }
 
     // Поиск участков по адресу (А_УУ_2)
-    // TODO реализовать
     public Long searchAreaByAddress(
             Long moId,
-            Long areaId,
+            AreaType areaTypeCode,
             List<NsiAddress> nsiAddressList,
-            List<NotNsiAddress> notNsiAddressList) {
+            List<NotNsiAddress> notNsiAddressList) throws ContingentException {
 
-        return 100L;
+        // 1.
+        List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddresses(moId, areaTypeCode.getCode());
+
+        if (areaAddresses.isEmpty()) {
+            return null;
+        }
+
+        // 2.
+        List<Address4Algoritm> address4Algoritms = areaAddresses.stream().map(Address4Algoritm::new).collect(Collectors.toList());
+
+        // 3.
+        List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
+
+        // 4.
+        List<AddressWrapper> crossAddresses = findIntersectingAddresses(addressWrappers, nsiAddressList, notNsiAddressList);
+
+        // 5.
+        if (!crossAddresses.isEmpty()) {
+            return areaAddressRepository.findAreaAddressByAddress(crossAddresses.get(0).getAddress()).get(0).getArea().getId();
+        } else {
+            return null;
+        }
     }
 
 
@@ -157,32 +147,32 @@ public class Algorithms {
 
             if (addressFormingElement != null) {
 
-                if (nsiAddress.getLevelAddress() == AddressLevelType.ID.getLevel()) {
-                    crossAddresses = algorithmsHelper.searchById.apply(addressFormingElement, afeAndBr);
+                if (nsiAddress.getLevelAddress().equals(AddressLevelType.ID.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchById.apply(addressFormingElement, afeAndBr);
                 }
 
-                if (nsiAddress.getLevelAddress() == AddressLevelType.STREET.getLevel()) {
-                    crossAddresses = algorithmsHelper.searchByStreetId.apply(addressFormingElement, afeAndBr);
+                if (nsiAddress.getLevelAddress().equals(AddressLevelType.STREET.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByStreetId.apply(addressFormingElement, afeAndBr);
                 }
 
-                if (nsiAddress.getLevelAddress() == AddressLevelType.PLAN.getLevel()) {
-                    crossAddresses = algorithmsHelper.searchByPlanId.apply(addressFormingElement, afeAndBr);
+                if (nsiAddress.getLevelAddress().equals(AddressLevelType.PLAN.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByPlanId.apply(addressFormingElement, afeAndBr);
                 }
 
-                if (nsiAddress.getLevelAddress() == AddressLevelType.PLACE.getLevel()) {
-                    crossAddresses = algorithmsHelper.searchByPlaceId.apply(addressFormingElement, afeAndBr);
+                if (nsiAddress.getLevelAddress().equals(AddressLevelType.PLACE.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByPlaceId.apply(addressFormingElement, afeAndBr);
                 }
 
-                if (nsiAddress.getLevelAddress() == AddressLevelType.CITY.getLevel()) {
-                    crossAddresses = algorithmsHelper.searchByCityId.apply(addressFormingElement, afeAndBr);
+                if (nsiAddress.getLevelAddress().equals(AddressLevelType.CITY.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByCityId.apply(addressFormingElement, afeAndBr);
                 }
 
-                if (nsiAddress.getLevelAddress() == AddressLevelType.AREA.getLevel()) {
-                    crossAddresses = algorithmsHelper.searchByAreaId.apply(addressFormingElement, afeAndBr);
+                if (nsiAddress.getLevelAddress().equals(AddressLevelType.AREA.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByAreaId.apply(addressFormingElement, afeAndBr);
                 }
 
-                if (nsiAddress.getLevelAddress() == AddressLevelType.AREA_TE.getLevel()) {
-                    crossAddresses = algorithmsHelper.searchByAreaTeId.apply(addressFormingElement, afeAndBr);
+                if (nsiAddress.getLevelAddress().equals(AddressLevelType.AREA_TE.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByAreaTeId.apply(addressFormingElement, afeAndBr);
                 }
             }
 

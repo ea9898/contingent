@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.repository.area;
 
+import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress_;
 import moscow.ptnl.contingent.area.entity.area.Area_;
@@ -63,6 +64,14 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     public List<AreaAddress> findAreaAddressesByAreaId(long areaId) {
         Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) ->
             criteriaBuilder.equal(root.get(AreaAddress_.area.getName()), areaId);
+
+        return areaAddressCRUDRepository.findAll(specification.and(activeAreaAddressesSpec()));
+    }
+
+    @Override
+    public List<AreaAddress> findAreaAddressByAddress(Addresses addresses) {
+        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) ->
+            criteriaBuilder.equal(root.get(AreaAddress_.address.getName()), addresses);
 
         return areaAddressCRUDRepository.findAll(specification.and(activeAreaAddressesSpec()));
     }

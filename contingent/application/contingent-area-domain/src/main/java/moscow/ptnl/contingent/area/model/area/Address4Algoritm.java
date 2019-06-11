@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.model.area;
 
 import moscow.ptnl.contingent.area.entity.area.Addresses;
+import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 
 public class Address4Algoritm {
 
@@ -17,6 +18,14 @@ public class Address4Algoritm {
         this(addresses.getBuildingRegistry() != null ? addresses.getBuildingRegistry().getId() :
                 addresses.getAddressFormingElement().getId(), addresses.getLevel());
     }
+
+    public Address4Algoritm(AreaAddress areaAddress) {
+        this.level = areaAddress.getAddress().getLevel();
+        this.addressId = areaAddress.getAddress().getBuildingRegistry() != null ?
+            areaAddress.getAddress().getBuildingRegistry().getId() :
+            areaAddress.getAddress().getAddressFormingElement().getId();
+    }
+
 
     public Long getAddressId() { return addressId; }
 
