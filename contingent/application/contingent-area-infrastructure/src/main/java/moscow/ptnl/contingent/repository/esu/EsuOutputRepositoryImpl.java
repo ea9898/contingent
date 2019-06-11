@@ -10,20 +10,26 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.criteria.CriteriaUpdate;
 import moscow.ptnl.contingent.domain.esu.EsuOutput;
 import moscow.ptnl.contingent.domain.esu.EsuOutput_;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
 public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutputRepository {
-
+    
+    /** Максимальное количество записей в IN запросе */
+    private static final int MAX_RECORDS_IN_CLAUSE = 1000; 
+    
     @Override
     public List<EsuOutput> findEsuOutputsToResend(LocalDateTime olderThan) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<EsuOutput> criteria = criteriaBuilder.createQuery(EsuOutput.class);
-        Root<EsuOutput> template = criteria.from(EsuOutput.class);
-
-        criteria.where(
+        
+        CriteriaQuery<EsuOutput> selectCriteria = criteriaBuilder.createQuery(EsuOutput.class);
+        Root<EsuOutput> template = selectCriteria.from(EsuOutput.class);
+        
+        selectCriteria.where(
             criteriaBuilder.and(
                 criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), EsuOutput.STATUS.UNSUCCESS),
                 criteriaBuilder.or(
@@ -32,9 +38,72 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
                 )
             )
         );
-        List<EsuOutput> results = entityManager.createQuery(criteria).getResultList();
-        results.forEach(r -> r.setStatus(EsuOutput.STATUS.INPROGRESS));
+        List<EsuOutput> results = entityManager
+                .createQuery(selectCriteria)
+                .setMaxResults(MAX_RECORDS_IN_CLAUSE)
+                .getResultList();
+        
+        if (!results.isEmpty()) {
+            CriteriaUpdate<EsuOutput> updateCriteria = criteriaBuilder.createCriteriaUpdate(EsuOutput.class);
+            template = updateCriteria.from(EsuOutput.class);
 
+            updateCriteria
+                    .set(template.get(EsuOutput_.status.getName()), EsuOutput.STATUS.INPROGRESS)
+                    .where(template.get(EsuOutput_.id).in(results.stream().map(r -> r.getId()).collect(Collectors.toList())));
+
+            entityManager
+                .createQuery(updateCriteria)
+                .executeUpdate();
+        }
+        
         return results;
+    }
+
+    @Override
+    public void updateStatus(List<Long> ids, EsuOutput.STATUS fromStatus, EsuOutput.STATUS toStatus) {
+        if (ids == null || ids.isEmpty())
+            return;
+        
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        
+        CriteriaUpdate<EsuOutput> updateCriteria = criteriaBuilder.createCriteriaUpdate(EsuOutput.class);
+        Root<EsuOutput> template = updateCriteria.from(EsuOutput.class);
+        
+        updateCriteria
+                    .set(template.get(EsuOutput_.status.getName()), toStatus)
+                    .where(
+                        criteriaBuilder.and(
+                            criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), fromStatus),   
+                            template.get(EsuOutput_.id).in(ids)
+                        )
+                    );
+        
+        entityManager
+                .createQuery(updateCriteria)
+                .executeUpdate();
+    }
+
+    @Override
+    public void updateStatus(Long id, EsuOutput.STATUS fromStatus, EsuOutput.STATUS toStatus) {
+        if (id == null)
+            return;
+        
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        
+        CriteriaUpdate<EsuOutput> updateCriteria = criteriaBuilder.createCriteriaUpdate(EsuOutput.class);
+        Root<EsuOutput> template = updateCriteria.from(EsuOutput.class);
+        
+        updateCriteria
+                    .set(template.get(EsuOutput_.status.getName()), toStatus)
+                    .where(
+                        criteriaBuilder.and(
+                            criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), fromStatus),   
+                            criteriaBuilder.equal(template.get(EsuOutput_.id), id)
+                        )
+                    );
+        
+        entityManager
+                .createQuery(updateCriteria)
+                .executeUpdate();
     }
 }
