@@ -583,11 +583,11 @@ public class AreaServiceHelper {
     }
 
     /* К_УУ_13 Система проверяет, что каждый из списка адресов не обслуживается участком такого же типа, как и участок из входных параметров */
-    public void checkAddressNotServiceByAreatype(Area area, List<AddressWrapper> addressWrapperList, Validation validation) {
+    public void checkAddressNotServiceByAreatype(Area area, List<AddressWrapper> addressWrapperList, Validation validation) throws ContingentException {
         for (AddressWrapper addressWrapper: addressWrapperList) {
             if (addressWrapper.getNsiAddress() != null) {
                 NsiAddress nsiAddress = addressWrapper.getNsiAddress();
-                Long foundAreaId = algorithms.searchAreaByAddress(area.getMoId(), area.getId(),
+                Long foundAreaId = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(),
                         Collections.singletonList(nsiAddress), new ArrayList<>());
                 if (foundAreaId != null) {
                     if (!foundAreaId.equals(area.getId())) {
@@ -601,7 +601,7 @@ public class AreaServiceHelper {
                 }
             } else {
                 NotNsiAddress notNsiAddress = addressWrapper.getNotNsiAddress();
-                Long foundAreaId = algorithms.searchAreaByAddress(area.getMoId(), area.getId(),
+                Long foundAreaId = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(),
                         new ArrayList<>(), Collections.singletonList(notNsiAddress));
                 if (foundAreaId != null) {
                     if (!foundAreaId.equals(area.getId())) {
