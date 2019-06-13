@@ -569,16 +569,19 @@ public class AreaServiceHelper {
         }
     }
 
-    // TODO так работать не будет!!!
     private List<ValidationParameter> getValidationParamsForNotNsiAddress(NotNsiAddress notNsiAddress) {
         List<ValidationParameter> validationParameters = new ArrayList<>();
         validationParameters.add(new ValidationParameter("id", notNsiAddress.getParentId()));
         validationParameters.add(new ValidationParameter("house", notNsiAddress.getHouseType() + notNsiAddress.getHouse()));
         if (notNsiAddress.getConstructionType() != null && notNsiAddress.getConstruction() != null) {
             validationParameters.add(new ValidationParameter("construction", notNsiAddress.getConstructionType() + notNsiAddress.getConstruction()));
+        } else {
+            validationParameters.add(new ValidationParameter("construction", ""));
         }
         if (notNsiAddress.getBuildingType() != null && notNsiAddress.getBuilding() != null) {
             validationParameters.add(new ValidationParameter("building", notNsiAddress.getBuildingType() + notNsiAddress.getBuilding()));
+        } else {
+            validationParameters.add(new ValidationParameter("building", ""));
         }
         return validationParameters;
     }

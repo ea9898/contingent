@@ -121,41 +121,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private NotNsiAddressMapper notNsiAddressMapper;
 
     @Override
-    public GetProfileMUResponse getProfileMU(GetProfileMURequest body) throws Fault {
-        try {
-            List<AreaType> profiles = areaService.getProfileMU(body.getMuId(), body.getMuTypeId());
-            GetProfileMUResponse response = new GetProfileMUResponse();
-            response.getProfileAreaTypes().addAll(profiles.stream()
-                    .map(areaTypeShortMapper::entityToDtoTransform).collect(Collectors.toList()));
-
-            return response;
-        }
-        catch (Exception ex) {
-            throw mapException(ex);
-        }
-    }
-
-    @Override
-    public AddProfileMUResponse addProfileMU(AddProfileMURequest body) throws Fault {
-        try {
-            areaService.addProfileMU(body.getMuId(), body.getMuTypeId(), body.getAreaTypeCodes());
-            return new AddProfileMUResponse();
-        } catch (Exception ex) {
-            throw mapException(ex);
-        }
-    }
-
-    @Override
-    public DelProfileMUResponse delProfileMU(DelProfileMURequest body) throws Fault {
-        try {
-            areaService.delProfileMU(body.getMuId(), body.getAreaTypeCodes());
-            return new DelProfileMUResponse();
-        } catch (Exception ex) {
-            throw mapException(ex);
-        }
-    }
-
-    @Override
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
             CreatePrimaryAreaResponse response = new CreatePrimaryAreaResponse();

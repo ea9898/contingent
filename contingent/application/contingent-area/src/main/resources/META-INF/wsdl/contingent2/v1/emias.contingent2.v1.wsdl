@@ -29,14 +29,6 @@
         <wsdl:part name="userContext" element="uctx:userContext"/>
     </wsdl:message>
 
-    <wsdl:message name="getProfileMUInput">
-        <wsdl:part name="body" element="ns1:getProfileMURequest"/>
-    </wsdl:message>
-
-    <wsdl:message name="getProfileMUOutput">
-        <wsdl:part name="body" element="ns1:getProfileMUResponse"/>
-    </wsdl:message>
-
     <wsdl:message name="createDependentAreaInput">
         <wsdl:part name="body" element="ns1:createDependentAreaRequest"/>
     </wsdl:message>
@@ -107,22 +99,6 @@
 
     <wsdl:message name="setMedicalEmployeeOnAreaOutput">
         <wsdl:part name="body" element="ns1:setMedicalEmployeeOnAreaResponse"/>
-    </wsdl:message>
-
-    <wsdl:message name="addProfileMUInput">
-        <wsdl:part name="body" element="ns1:addProfileMURequest"/>
-    </wsdl:message>
-
-    <wsdl:message name="addProfileMUOutput">
-        <wsdl:part name="body" element="ns1:addProfileMUResponse"/>
-    </wsdl:message>
-
-    <wsdl:message name="delProfileMUInput">
-        <wsdl:part name="body" element="ns1:delProfileMURequest"/>
-    </wsdl:message>
-
-    <wsdl:message name="delProfileMUOutput">
-        <wsdl:part name="body" element="ns1:delProfileMUResponse"/>
     </wsdl:message>
 
     <wsdl:message name="restoreAreaInput">
@@ -199,30 +175,6 @@
 
 
     <wsdl:portType name="AreaPT">
-        <wsdl:operation name="addProfileMU">
-            <wsdl:documentation>
-                Добавление типов участка в профиль МУ (К_УУ_1)
-            </wsdl:documentation>
-            <wsdl:input message="tns:addProfileMUInput"/>
-            <wsdl:output message="tns:addProfileMUOutput"/>
-            <wsdl:fault name="fault" message="tns:fault"/>
-        </wsdl:operation>
-        <wsdl:operation name="delProfileMU">
-            <wsdl:documentation>
-                Удаление типов участка из профиля МУ (К_УУ_2)
-            </wsdl:documentation>
-            <wsdl:input message="tns:delProfileMUInput"/>
-            <wsdl:output message="tns:delProfileMUOutput"/>
-            <wsdl:fault name="fault" message="tns:fault"/>
-        </wsdl:operation>
-        <wsdl:operation name="getProfileMU">
-            <wsdl:documentation>
-                Предоставление сведений профиля МУ (К_УУ_3)
-            </wsdl:documentation>
-            <wsdl:input message="tns:getProfileMUInput"/>
-            <wsdl:output message="tns:getProfileMUOutput"/>
-            <wsdl:fault message="tns:fault" name="fault" />
-        </wsdl:operation>
         <wsdl:operation name="createPrimaryArea">
             <wsdl:documentation>
                 Создание участка первичного типа (К_УУ_3)
@@ -372,20 +324,6 @@
     <wsdl:binding name="AreaPTB" type="tns:AreaPT">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
-        <wsdl:operation name="getProfileMU">
-            <soap:operation soapAction="getProfileMU"/>
-            <wsdl:input>
-                <soap:header message="tns:userContext" part="userContext" use="literal"/>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="fault">
-                <soap:fault name="fault" use="literal"/>
-            </wsdl:fault>
-        </wsdl:operation>
-
          <wsdl:operation name="createPrimaryArea">
             <soap:operation soapAction="createPrimaryArea"/>
             <wsdl:input>
@@ -500,34 +438,6 @@
 
         <wsdl:operation name="setMedicalEmployeeOnArea">
             <soap:operation soapAction="setMedicalEmployeeOnArea"/>
-            <wsdl:input>
-                <soap:header message="tns:userContext" part="userContext" use="literal"/>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="fault">
-                <soap:fault name="fault" use="literal"/>
-            </wsdl:fault>
-        </wsdl:operation>
-
-        <wsdl:operation name="addProfileMU">
-            <soap:operation soapAction="addProfileMU"/>
-            <wsdl:input>
-                <soap:header message="tns:userContext" part="userContext" use="literal"/>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="fault">
-                <soap:fault name="fault" use="literal"/>
-            </wsdl:fault>
-        </wsdl:operation>
-
-        <wsdl:operation name="delProfileMU">
-            <soap:operation soapAction="delProfileMU"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>
