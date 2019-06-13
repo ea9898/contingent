@@ -4,7 +4,397 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet id="CONTINGENT2-57-1" author="sorlov" labels="1.0.0.0">
+    <!-- SPECIALIZATION -->
+    <changeSet id="CONTINGENT2-NSI-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="SPECIALIZATION"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы SPECIALIZATION</comment>
+        <createTable tableName="SPECIALIZATION">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="CODE" type="NUMBER(3)" />
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="SPECIALIZATION"/>
+        </rollback>
+    </changeSet>
+    <!-- !!!! SPECIALIZATION !!!! -->
+
+    <!-- POSITION_NOM -->
+    <changeSet id="CONTINGENT2-NSI-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="POSITION_NOM"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы POSITION_NOM</comment>
+        <createTable tableName="POSITION_NOM"
+                     remarks="Номенклатура должностей медицинских организаций, оказывающих первичную медико-санитарную помощь">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="CODE" type="VARCHAR2(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(1000)">
+                <constraints nullable="false" />
+            </column>
+            <column name="START" type="TIMESTAMP(6)" remarks="Дата начала работы на участке">
+                <constraints nullable="false" />
+            </column>
+            <column name="END" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
+            <column name="SPECIALIZATION_ID" type="BIGINT" />
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="POSITION_NOM"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-2-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="SPECIALIZATION" columnName="ID" />
+            <columnExists tableName="POSITION_NOM" columnName="SPECIALIZATION_ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_POSITION_NOM_SPECIALIZATION_01</comment>
+        <addForeignKeyConstraint baseColumnNames="SPECIALIZATION_ID"
+                                 baseTableName="POSITION_NOM"
+                                 constraintName="FK_POSITION_NOM_SPECIALIZATION_01"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="SPECIALIZATION"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-2-2" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_POSITION_NOM_SPECIALIZATIONO01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки SPECIALIZATION_ID таблицы POSITION_NOM</comment>
+        <createIndex indexName="IXFK_POSITION_NOM_SPECIALIZATIONO01"
+                     tableName="POSITION_NOM"
+                     unique="false">
+            <column name="SPECIALIZATION_ID" type="BIGINT"/>
+        </createIndex>
+    </changeSet>
+    <!-- !!!! POSITION_NOM !!!! -->
+
+    <!-- AREA_TYPES_CLASS -->
+    <changeSet id="CONTINGENT2-NSI-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPES_CLASS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPES_CLASS</comment>
+        <createTable tableName="AREA_TYPES_CLASS">
+            <column name="CODE" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(255)" />
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPES_CLASS"/>
+        </rollback>
+    </changeSet>
+    <!-- !!!! AREA_TYPES_CLASS !!!! -->
+
+    <!-- AREA_TYPES_KIND -->
+    <changeSet id="CONTINGENT2-NSI-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPES_KIND"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPES_KIND</comment>
+        <createTable tableName="AREA_TYPES_KIND">
+            <column name="CODE" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(255)" />
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPES_KIND"/>
+        </rollback>
+    </changeSet>
+    <!-- !!!! AREA_TYPES_KIND !!!! -->
+
+    <!-- AREA_TYPE -->
+    <changeSet id="CONTINGENT2-NSI-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPE"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPE</comment>
+        <createTable tableName="AREA_TYPE"
+                     remarks="Тип участка">
+            <column name="CODE" type="BIGINT" remarks="Код типа участка">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(100)" />
+            <column name="AREA_TYPE_KIND_CODE" type="BIGINT" />
+            <column name="AREA_TYPE_CLASS_CODE" type="BIGINT" remarks="Класс типа участка. Код" />
+            <column name="HEAD_FINANCE" type="NUMBER(1)" remarks="Поголовное финансирование"/>
+            <column name="ATTACH_BY_MEDICAL_REASON" type="NUMBER(1)" remarks="Прикрепление по медицинским показаниям"/>
+            <column name="HAS_SERVICE_TERRITORY" type="NUMBER(1)" remarks="Наличие территории обслуживания"/>
+            <column name="ATTACH_BY_REQUEST" type="NUMBER(1)" remarks="Прикрепление по заявлению"/>
+            <column name="MPGU_AVAILABLE" type="NUMBER(1)" remarks="Возможно прикрепление через МПГУ"/>
+            <column name="AREA_COUNT_LIMIT_CODE" type="NUMBER(4)" remarks="Ограничение количества участков"/>
+            <column name="GENDER_CODE" type="VARCHAR2(1)" remarks="Пол, 0 - любой, 1 - м, 2- ж" />
+            <column name="RESIDENTS_BIND_RATE" type="NUMBER(8)" remarks="Норма прикрепления	" />
+            <column name="AGE_MIN" type="SMALLINT" remarks="Возраст мин" />
+            <column name="AGE_MAX" type="SMALLINT" remarks="Возраст макс" />
+            <column name="AGE_M_MIN" type="SMALLINT" remarks="Возраст М мин" />
+            <column name="AGE_M_MAX" type="SMALLINT" remarks="Возраст М макс" />
+            <column name="AGE_W_MIN" type="SMALLINT" remarks="Возраст Ж мин" />
+            <column name="AGE_W_MAX" type="SMALLINT" remarks="Возраст Ж макс" />
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-5-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_CLASS_ARE01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CLASS_CODE таблицы AREA_TYPE</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_CLASS_ARE01"
+                     tableName="AREA_TYPE"
+                     unique="false">
+            <column name="AREA_TYPE_CLASS_CODE" type="BIGINT"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-5-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_KIND_AREA01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_KIND_CODE таблицы AREA_TYPE</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_KIND_AREA01"
+                     tableName="AREA_TYPE"
+                     unique="false">
+            <column name="AREA_TYPE_KIND_CODE" type="BIGINT"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-5-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE" columnName="AREA_TYPE_CLASS_CODE" />
+            <columnExists tableName="AREA_TYPES_CLASS" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_AREA_TYPE_CLASS_TYPES</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CLASS_CODE"
+                                 baseTableName="AREA_TYPE"
+                                 constraintName="FK_AREA_AREA_TYPE_CLASS_TYPES"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES_CLASS"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-5-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE" columnName="AREA_TYPE_KIND_CODE" />
+            <columnExists tableName="AREA_TYPES_KIND" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_AREA_TYPES_KIND</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_KIND_CODE"
+                                 baseTableName="AREA_TYPE"
+                                 constraintName="FK_AREA_AREA_TYPE_KIND_TYPES"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPES_KIND"/>
+    </changeSet>
+    <!-- !!!! AREA_TYPE !!!! -->
+
+    <!-- AREA_TYPE_MEDICAL_POSITIONS -->
+    <changeSet id="CONTINGENT2-NSI-6" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
+        <createTable tableName="AREA_TYPE_MEDICAL_POSITIONS"
+                     remarks="Должности МР на типе участка">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка. Код" />
+            <column name="POSITION_CODE" type="BIGINT" />
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_ME_POSITIO01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки POSITION_NOM_ID таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_ME_POSITIO01"
+                     tableName="AREA_TYPE_MEDICAL_POSITIONS"
+                     unique="false">
+            <column name="POSITION_CODE" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_MEDI_AREA_01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_MEDI_AREA_01"
+                     tableName="AREA_TYPE_MEDICAL_POSITIONS"
+                     unique="false">
+            <column name="AREA_TYPE_CODE" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="POSITION_NOM" columnName="ID" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_ME_POSITION_NO_01</comment>
+        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
+                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
+                                 constraintName="FK_AREA_TYPE_ME_POSITION_NO_01"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="POSITION_NOM"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_MEDI_AREA_TYPE</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
+                                 constraintName="FK_AREA_TYPE_MEDI_AREA_TYPE"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPE"/>
+    </changeSet>
+    <!-- !!!! AREA_TYPE_MEDICAL_POSITIONS !!!! -->
+
+    <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
+    <changeSet id="CONTINGENT2-NSI-7" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPE_RELATIONS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPE_RELATIONS</comment>
+        <createTable tableName="AREA_TYPE_RELATIONS"
+                     remarks="Связь зависимых и первичных">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="DEPENDENT_AREA_TYPE_CODE" type="BIGINT" remarks="Код зависимого типа участка">
+                <constraints nullable="false" />
+            </column>
+            <column name="PRIMARY_AREA_TYPE_CODE" type="BIGINT" remarks="Код первичного типа участка">
+                <constraints nullable="false" />
+            </column>
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPE_RELATIONS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-7-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_RELA_AREA_DEP"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки DEPENDENT_AREA_TYPE_CODE таблицы AREA_TYPE_RELATIONS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_RELA_AREA_DEP"
+                     tableName="AREA_TYPE_RELATIONS"
+                     unique="false">
+            <column name="DEPENDENT_AREA_TYPE_CODE" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-7-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AREA_TYPE_RELA_AREA_PRIM"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки PRIMARY_AREA_TYPE_CODE таблицы AREA_TYPE_RELATIONS</comment>
+        <createIndex indexName="IXFK_AREA_TYPE_RELA_AREA_PRIM"
+                     tableName="AREA_TYPE_RELATIONS"
+                     unique="false">
+            <column name="PRIMARY_AREA_TYPE_CODE" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-7-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="DEPENDENT_AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_REL_AREA_TYPE_DEP</comment>
+        <addForeignKeyConstraint baseColumnNames="DEPENDENT_AREA_TYPE_CODE"
+                                 baseTableName="AREA_TYPE_RELATIONS"
+                                 constraintName="FK_AREA_TYPE_REL_AREA_TYPE_DEP"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPE"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-7-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="PRIMARY_AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_REL_AREA_TYPE_PRI</comment>
+        <addForeignKeyConstraint baseColumnNames="PRIMARY_AREA_TYPE_CODE"
+                                 baseTableName="AREA_TYPE_RELATIONS"
+                                 constraintName="FK_AREA_TYPE_REL_AREA_TYPE_PRI"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPE"/>
+    </changeSet>
+    <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
+
+    <!-- ADDRESS_FORMING_ELEMENT -->
+    <changeSet id="CONTINGENT2-NSI-8" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
@@ -54,7 +444,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-ф-1" author="ddryuchin" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-NSI-8-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AFE_GLOBAL_ID"/>
@@ -67,464 +457,36 @@
             <column name="GLOBAL_ID" type="BIGINT"/>
         </createIndex>
     </changeSet>
+    <!-- !!!! ADDRESS_FORMING_ELEMENT !!!! -->
 
-    <changeSet id="CONTINGENT2-57-3" author="sorlov" labels="1.0.0.0">
+    <!-- POLICY_TYPE -->
+    <changeSet id="CONTINGENT2-NSI-9" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="AREA_TYPE_CLASS"/>
+                <tableExists tableName="POLICY_TYPE"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы AREA_TYPE_CLASS</comment>
-        <createTable tableName="AREA_TYPE_CLASS">
-            <column name="CODE" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="TITLE" type="VARCHAR2(255)" />
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <rollback>
-            <dropTable tableName="AREA_TYPE_CLASS"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-4" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="AREA_TYPE_KIND"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы AREA_TYPE_KIND</comment>
-        <createTable tableName="AREA_TYPE_KIND">
-            <column name="CODE" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="TITLE" type="VARCHAR2(255)" />
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <rollback>
-            <dropTable tableName="AREA_TYPE_KIND"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-5" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="SPECIALIZATION"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы SPECIALIZATION</comment>
-        <createTable tableName="SPECIALIZATION">
-            <column name="ID" type="BIGINT">
+        <comment>Создание таблицы POLICY_TYPE</comment>
+        <createTable tableName="POLICY_TYPE"
+                     remarks="Тип полиса">
+            <column name="CODE" type="BIGINT" >
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="TITLE" type="VARCHAR2(100)">
                 <constraints nullable="false" />
             </column>
-            <column name="CODE" type="NUMBER(3)" />
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="SPECIALIZATION"/>
+            <dropTable tableName="POLICY_TYPE"/>
         </rollback>
     </changeSet>
+    <!-- !!!! POLICY_TYPE !!!! -->
 
-    <changeSet id="CONTINGENT2-57-6" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="AREA_TYPE"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы AREA_TYPE</comment>
-        <createTable tableName="AREA_TYPE"
-                     remarks="Тип участка">
-            <column name="CODE" type="BIGINT" remarks="Код типа участка">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="TITLE" type="VARCHAR2(100)" />
-            <column name="AREA_TYPE_KIND_CODE" type="BIGINT" />
-            <column name="AREA_TYPE_CLASS_CODE" type="BIGINT" remarks="Класс типа участка. Код" />
-            <column name="HEAD_FINANCE" type="NUMBER(1)" remarks="Поголовное финансирование"/>
-            <column name="ATTACH_BY_MEDICAL_REASON" type="NUMBER(1)" remarks="Прикрепление по медицинским показаниям"/>
-            <column name="HAS_SERVICE_TERRITORY" type="NUMBER(1)" remarks="Наличие территории обслуживания"/>
-            <column name="ATTACH_BY_REQUEST" type="NUMBER(1)" remarks="Прикрепление по заявлению"/>
-            <column name="MPGU_AVAILABLE" type="NUMBER(1)" remarks="Возможно прикрепление через МПГУ"/>
-            <column name="AREA_COUNT_LIMIT_CODE" type="NUMBER(4)" remarks="Ограничение количества участков"/>
-            <column name="GENDER_CODE" type="VARCHAR2(1)" remarks="Пол, 0 - любой, 1 - м, 2- ж" />
-            <column name="RESIDENTS_BIND_RATE" type="NUMBER(8)" remarks="Норма прикрепления	" />
-            <column name="AGE_MIN" type="SMALLINT" remarks="Возраст мин" />
-            <column name="AGE_MAX" type="SMALLINT" remarks="Возраст макс" />
-            <column name="AGE_M_MIN" type="SMALLINT" remarks="Возраст М мин" />
-            <column name="AGE_M_MAX" type="SMALLINT" remarks="Возраст М макс" />
-            <column name="AGE_W_MIN" type="SMALLINT" remarks="Возраст Ж мин" />
-            <column name="AGE_W_MAX" type="SMALLINT" remarks="Возраст Ж макс" />
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-            <column name="SPECIALIZATION_CODE" type="BIGINT" />
-        </createTable>
-        <rollback>
-            <dropTable tableName="AREA_TYPE"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-6-1" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AREA_TYPE_CLASS_ARE01"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CLASS_CODE таблицы AREA_TYPE</comment>
-        <createIndex indexName="IXFK_AREA_TYPE_CLASS_ARE01"
-                     tableName="AREA_TYPE"
-                     unique="false">
-            <column name="AREA_TYPE_CLASS_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-6-2" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AREA_TYPE_KIND_AREA01"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_KIND_CODE таблицы AREA_TYPE</comment>
-        <createIndex indexName="IXFK_AREA_TYPE_KIND_AREA01"
-                     tableName="AREA_TYPE"
-                     unique="false">
-            <column name="AREA_TYPE_KIND_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-6-3" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AREA_TYPE_SPECIALIZATION"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки SPECIALIZATION_ID таблицы AREA_TYPE</comment>
-        <createIndex indexName="IXFK_AREA_TYPE_SPECIALIZATION"
-                     tableName="AREA_TYPE"
-                     unique="false">
-            <column name="SPECIALIZATION_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-6-4" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE" columnName="AREA_TYPE_CLASS_CODE" />
-            <columnExists tableName="AREA_TYPE_CLASS" columnName="CODE" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_AREA_TYPE_CLASS_TYPES</comment>
-        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CLASS_CODE"
-                                 baseTableName="AREA_TYPE"
-                                 constraintName="FK_AREA_AREA_TYPE_CLASS_TYPES"
-                                 referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE_CLASS"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-6-5" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE" columnName="AREA_TYPE_KIND_CODE" />
-            <columnExists tableName="AREA_TYPE_KIND" columnName="CODE" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_TYPE_AREA_TYPE_KIND</comment>
-        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_KIND_CODE"
-                                 baseTableName="AREA_TYPE"
-                                 constraintName="FK_AREA_AREA_TYPE_KIND_TYPES"
-                                 referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE_KIND"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-6-6" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE" columnName="SPECIALIZATION_CODE" />
-            <columnExists tableName="SPECIALIZATION" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_TYPE_SPECIALIZATION</comment>
-        <addForeignKeyConstraint baseColumnNames="SPECIALIZATION_CODE"
-                                 baseTableName="AREA_TYPE"
-                                 constraintName="FK_AREA_TYPE_SPECIALIZATION"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="SPECIALIZATION"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-7" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="POSITION_NOM"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы POSITION_NOM</comment>
-        <createTable tableName="POSITION_NOM"
-                     remarks="Номенклатура должностей медицинских организаций, оказывающих первичную медико-санитарную помощь">
-            <column name="ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="CODE" type="VARCHAR2(100)">
-                <constraints nullable="false" />
-            </column>
-            <column name="TITLE" type="VARCHAR2(1000)">
-                <constraints nullable="false" />
-            </column>
-            <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала работы на участке">
-                <constraints nullable="false" />
-            </column>
-            <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
-            <column name="SPECIALIZATION_ID" type="BIGINT" />
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <rollback>
-            <dropTable tableName="POSITION_NOM"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-7-1" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="SPECIALIZATION" columnName="ID" />
-            <columnExists tableName="POSITION_NOM" columnName="SPECIALIZATION_ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_POSITION_NOM_SPECIALIZATION_01</comment>
-        <addForeignKeyConstraint baseColumnNames="SPECIALIZATION_ID"
-                                 baseTableName="POSITION_NOM"
-                                 constraintName="FK_POSITION_NOM_SPECIALIZATION_01"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="SPECIALIZATION"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-7-2" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_POSITION_NOM_SPECIALIZATIONO01"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки SPECIALIZATION_ID таблицы POSITION_NOM</comment>
-        <createIndex indexName="IXFK_POSITION_NOM_SPECIALIZATIONO01"
-                     tableName="POSITION_NOM"
-                     unique="false">
-            <column name="SPECIALIZATION_ID" type="BIGINT"/>
-        </createIndex>
-    </changeSet>
-
-
-
-    <changeSet id="CONTINGENT2-57-8" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
-        <createTable tableName="AREA_TYPE_MEDICAL_POSITIONS"
-                     remarks="Должности МР на типе участка">
-            <column name="ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка. Код" />
-            <column name="POSITION_CODE" type="BIGINT" />
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <rollback>
-            <dropTable tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-8-1" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AREA_TYPE_ME_POSITIO01"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки POSITION_NOM_ID таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
-        <createIndex indexName="IXFK_AREA_TYPE_ME_POSITIO01"
-                     tableName="AREA_TYPE_MEDICAL_POSITIONS"
-                     unique="false">
-            <column name="POSITION_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-8-2" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AREA_TYPE_MEDI_AREA_01"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
-        <createIndex indexName="IXFK_AREA_TYPE_MEDI_AREA_01"
-                     tableName="AREA_TYPE_MEDICAL_POSITIONS"
-                     unique="false">
-            <column name="AREA_TYPE_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-8-3" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="POSITION_NOM" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_TYPE_ME_POSITION_NO_01</comment>
-        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
-                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
-                                 constraintName="FK_AREA_TYPE_ME_POSITION_NO_01"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="POSITION_NOM"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-8-4" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPE" columnName="CODE" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_TYPE_MEDI_AREA_TYPE</comment>
-        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
-                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
-                                 constraintName="FK_AREA_TYPE_MEDI_AREA_TYPE"
-                                 referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-9" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="AREA_TYPE_RELATIONS"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы AREA_TYPE_RELATIONS</comment>
-        <createTable tableName="AREA_TYPE_RELATIONS"
-                     remarks="Связь зависимых и первичных">
-            <column name="ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="DEPENDENT_AREA_TYPE_CODE" type="BIGINT" remarks="Код зависимого типа участка">
-                <constraints nullable="false" />
-            </column>
-            <column name="PRIMARY_AREA_TYPE_CODE" type="BIGINT" remarks="Код первичного типа участка">
-                <constraints nullable="false" />
-            </column>
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <rollback>
-            <dropTable tableName="AREA_TYPE_RELATIONS"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-9-1" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AREA_TYPE_RELA_AREA_DEP"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки DEPENDENT_AREA_TYPE_CODE таблицы AREA_TYPE_RELATIONS</comment>
-        <createIndex indexName="IXFK_AREA_TYPE_RELA_AREA_DEP"
-                     tableName="AREA_TYPE_RELATIONS"
-                     unique="false">
-            <column name="DEPENDENT_AREA_TYPE_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-9-2" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AREA_TYPE_RELA_AREA_PRIM"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки PRIMARY_AREA_TYPE_CODE таблицы AREA_TYPE_RELATIONS</comment>
-        <createIndex indexName="IXFK_AREA_TYPE_RELA_AREA_PRIM"
-                     tableName="AREA_TYPE_RELATIONS"
-                     unique="false">
-            <column name="PRIMARY_AREA_TYPE_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-9-3" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="DEPENDENT_AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPE" columnName="CODE" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_TYPE_REL_AREA_TYPE_DEP</comment>
-        <addForeignKeyConstraint baseColumnNames="DEPENDENT_AREA_TYPE_CODE"
-                                 baseTableName="AREA_TYPE_RELATIONS"
-                                 constraintName="FK_AREA_TYPE_REL_AREA_TYPE_DEP"
-                                 referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-9-4" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="PRIMARY_AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPE" columnName="CODE" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_TYPE_REL_AREA_TYPE_PRI</comment>
-        <addForeignKeyConstraint baseColumnNames="PRIMARY_AREA_TYPE_CODE"
-                                 baseTableName="AREA_TYPE_RELATIONS"
-                                 constraintName="FK_AREA_TYPE_REL_AREA_TYPE_PRI"
-                                 referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-10" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="MU_TYPE_AREA_TYPE"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы MU_TYPE_AREA_TYPE</comment>
-        <createTable tableName="MU_TYPE_AREA_TYPE"
-                     remarks="Шаблон профиля МУ">
-            <column name="ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="MU_TYPE_CODE" type="SMALLINT" />
-            <column name="AREA_TYPE_CODE" type="BIGINT" />
-            <column name="AVAILABLE_TO_CREATE" type="NUMBER(1)" />
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <rollback>
-            <dropTable tableName="MU_TYPE_AREA_TYPE"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-10-1" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_MU_TEMPLATE_PR_AREA_01"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы MU_TYPE_AREA_TYPE</comment>
-        <createIndex indexName="IXFK_MU_TEMPLATE_PR_AREA_01"
-                     tableName="MU_TYPE_AREA_TYPE"
-                     unique="false">
-            <column name="AREA_TYPE_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-10-2" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="MU_TYPE_AREA_TYPE" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="AREA_TYPE" columnName="CODE" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_MU_TEMPLATE_PR_AREA_TYPE</comment>
-        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
-                                 baseTableName="MU_TYPE_AREA_TYPE"
-                                 constraintName="FK_MU_TEMPLATE_PR_AREA_TYPE"
-                                 referencedColumnNames="CODE"
-                                 referencedTableName="AREA_TYPE"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-57-13" author="sorlov" labels="1.0.0.0">
+    <!-- BUILDING_REGISTRY -->
+    <changeSet id="CONTINGENT2-NSI-10" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="BUILDING_REGISTRY"/>
@@ -554,7 +516,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-13-1" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-NSI-10-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IDX_BUILDING_REGISTRY_AFE_ID"/>
@@ -568,7 +530,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-13-3" author="sorlov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-NSI-10-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="BUILDING_REGISTRY" columnName="AFE_ID" />
             <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="ID" />
@@ -581,7 +543,7 @@
                                  referencedTableName="ADDRESS_FORMING_ELEMENT"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-57-13-4" author="ddryuchin" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-NSI-10-3" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IDX_BUILDING_REGISTRY_GLOBAL_ID"/>
@@ -595,7 +557,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-76-3" author="sorlov">
+    <changeSet id="CONTINGENT2-NSI-10-4" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SEQ_BUILDING_REGISTRY"/>
@@ -607,20 +569,24 @@
             <dropSequence sequenceName="SEQ_BUILDING_REGISTRY"/>
         </rollback>
     </changeSet>
+    <!-- !!!! BUILDING_REGISTRY !!!! -->
 
-    <changeSet id="CONTINGENT2-3-1" author="ddryuchin" labels="1.0.0.0">
+    <!-- AREA_TYPE_SPECIALIZATIONS -->
+    <changeSet id="CONTINGENT2-NSI-11" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="POLICY_TYPE"/>
+                <tableExists tableName="AREA_TYPE_SPECIALIZATIONS"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы POLICY_TYPE</comment>
-        <createTable tableName="POLICY_TYPE"
-                     remarks="Тип полиса">
-            <column name="CODE" type="BIGINT" >
+        <comment>Создание таблицы AREA_TYPE_SPECIALIZATIONS</comment>
+        <createTable tableName="AREA_TYPE_SPECIALIZATIONS">
+            <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="TITLE" type="VARCHAR2(100)">
+            <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка">
+                <constraints nullable="false" />
+            </column>
+            <column name="SPECIALIZATION_CODE" type="BIGINT" remarks="Код специальности">
                 <constraints nullable="false" />
             </column>
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
@@ -628,89 +594,52 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="POLICY_TYPE"/>
+            <dropTable tableName="AREA_TYPE_SPECIALIZATIONS"/>
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-3-2" author="ddryuchin" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-NSI-11-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="POLICY_SERVICE_TYPES"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы POLICY_SERVICE_TYPES</comment>
-        <createTable tableName="POLICY_SERVICE_TYPES"
-                     remarks="Тип обслуживаемого полиса">
-            <column name="ID" type="BIGINT" >
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Идентификатор Типа участка">
-                <constraints nullable="false" />
-            </column>
-            <column name="POLICY_TYPE_CODE" type="BIGINT" remarks="Идентификатор Типа полиса">
-                <constraints nullable="false" />
-            </column>
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-        </createTable>
-        <rollback>
-            <dropTable tableName="POLICY_SERVICE_TYPES"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-3-2-1" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_SPECIALIZATIONS" columnName="AREA_TYPE_CODE" />
             <columnExists tableName="AREA_TYPE" columnName="CODE" />
-            <columnExists tableName="POLICY_SERVICE_TYPES" columnName="AREA_TYPE_CODE" />
         </preConditions>
-        <comment>Создание внешнего ключа FK_POLICY_SERVICE_TYPES_ATC_01</comment>
+        <comment>Создание внешнего ключа FK_ATS_ATC</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
-                                 baseTableName="POLICY_SERVICE_TYPES"
-                                 constraintName="FK_POSITION_NOM_SPECIALIZATION_01"
+                                 baseTableName="AREA_TYPE_SPECIALIZATIONS"
+                                 constraintName="FK_ATS_ATC"
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-3-2-2" author="ddryuchin" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-NSI-11-2" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <indexExists indexName="IXFK_POLICY_SERVICE_TYPES01"/>
+                <indexExists indexName="IDX_ATS_ATC"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы POLICY_SERVICE_TYPES</comment>
-        <createIndex indexName="IXFK_POLICY_SERVICE_TYPES01"
-                     tableName="POLICY_SERVICE_TYPES"
+        <comment>Создание индекса колонки AREA_TYPE_CODE таблицы AREA_TYPE_SPECIALIZATIONS</comment>
+        <createIndex indexName="IDX_ATS_ATC"
+                     tableName="AREA_TYPE_SPECIALIZATIONS"
                      unique="false">
             <column name="AREA_TYPE_CODE" type="BIGINT"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-3-2-3" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="POLICY_TYPE" columnName="CODE" />
-            <columnExists tableName="POLICY_SERVICE_TYPES" columnName="POLICY_TYPE_CODE" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_POLICY_SERVICE_TYPES_PTC_01</comment>
-        <addForeignKeyConstraint baseColumnNames="POLICY_TYPE_CODE"
-                                 baseTableName="POLICY_SERVICE_TYPES"
-                                 constraintName="FK_POLICY_SERVICE_TYPES_PTC_01"
-                                 referencedColumnNames="CODE"
-                                 referencedTableName="POLICY_TYPE"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-3-2-4" author="ddryuchin" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-NSI-11-3" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <indexExists indexName="IXFK_POLICY_SERVICE_TYPES02"/>
+                <indexExists indexName="IDX_ATS_SPEC_CODE"/>
             </not>
         </preConditions>
-        <comment>Создание индекса колонки POLICY_TYPE_CODE таблицы POLICY_SERVICE_TYPES</comment>
-        <createIndex indexName="IXFK_POLICY_SERVICE_TYPES02"
-                     tableName="POLICY_SERVICE_TYPES"
+        <comment>Создание индекса колонки SPECIALIZATION_CODE таблицы AREA_TYPE_SPECIALIZATIONS</comment>
+        <createIndex indexName="IDX_ATS_SPEC_CODE"
+                     tableName="AREA_TYPE_SPECIALIZATIONS"
                      unique="false">
-            <column name="POLICY_TYPE_CODE" type="BIGINT"/>
+            <column name="SPECIALIZATION_CODE" type="BIGINT"/>
         </createIndex>
     </changeSet>
+    <!-- !!!! AREA_TYPE_SPECIALIZATIONS !!!! -->
+
+
 
 </databaseChangeLog>
