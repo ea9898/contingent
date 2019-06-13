@@ -11,9 +11,9 @@ import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
-import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -25,7 +25,6 @@ import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
-import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.area.repository.area.AddressesCRUDRepository;
@@ -44,11 +43,13 @@ import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesCRUDRepository
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
-import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicCRUDRepository;
+import moscow.ptnl.contingent.area.repository.nsi.PositionNomCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
+import moscow.ptnl.contingent.area.repository.nsi.PositionNomRepository;
 import moscow.ptnl.contingent.area.repository.nsi.SpecializationToPositionNomRepository;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.util.Strings;
@@ -70,7 +71,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.service.history.HistoryService;
@@ -122,7 +122,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaMedicalEmployeeRepository areaMedicalEmployeeRepository;
 
     @Autowired
-    private PositionNomClinicCRUDRepository positionNomCRUDRepository;
+    private PositionNomCRUDRepository positionNomCRUDRepository;
 
     @Autowired
     private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
@@ -168,6 +168,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private HistoryService historyService;
+
+    @Autowired
+    private PositionNomRepository positionNomRepository;
+
+    @Autowired
+    private AreaTypeSpecializationsRepository areaTypeSpecializationsRepository;
 
     // (К_УУ_1)	Добавление типов участков, доступных для МО
 
@@ -498,6 +504,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         //5
+        List<AreaTypeSpecializations> areaTypeSpecializations = areaTypeSpecializationsRepository.
+                findByAreaTypeCode(area.getAreaType());
         for (AddMedicalEmployee empl : addEmployeesInput) {
             //5.1
             if (empl.getStartDate().isBefore(LocalDate.now())) {
@@ -505,27 +513,35 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                         new ValidationParameter("startDate", empl.getStartDate()));
             }
 
-            // TODO в связи с изменениями в структуре БД блок требуется актуализировать
             //5.2
-            Specialization specialization = specializationToPositionNomRepository.getSpecializationIdByPositionNomId(empl.getPositionId());
+            List<PositionNom> positionNom = positionNomRepository.searchPostitionNomActualByCode(empl.getPositionId());
+
+            if (positionNom.isEmpty()) {
+                // TODO ???
+                continue;
+            }
 
             //5.3
-//            if (specialization != null && !area.getAreaType().getSpecialization().getId().equals(specialization.getId())) {
-//                validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
-//                        new ValidationParameter("InputSpecialization", specialization.getTitle()),
-//                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
-//                        new ValidationParameter("AreaSpecialization", area.getAreaType().getSpecialization().getTitle()));
-//            }
+            Specialization specialization = positionNom.get(0).getSpecialization();
 
-            //5.4
-            List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
-            PositionNom inputPosition = positionNomCRUDRepository.findById(empl.getPositionId()).orElse(null);
-            if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
-                validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
-                        new ValidationParameter("positionTitle", inputPosition != null ? inputPosition.getTitle() : null),
+            // 5.4.
+            if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
+                validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
+                        new ValidationParameter("InputSpecialization", specialization.getTitle()),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
-                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
+                        new ValidationParameter("AreaSpecialization", area.getAreaType()));
+
             }
+
+            // 5.5
+//            List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
+//            PositionNom inputPosition = positionNomCRUDRepository.findById(empl.getPositionId()).orElse(null);
+//            if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
+//                validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
+//                        new ValidationParameter("positionTitle", inputPosition != null ? inputPosition.getTitle() : null),
+//                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
+//                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
+//            }
         }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);

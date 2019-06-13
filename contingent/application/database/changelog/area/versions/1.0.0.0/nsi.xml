@@ -638,6 +638,19 @@
             <column name="SPECIALIZATION_CODE" type="BIGINT"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-11-3" author="sorlov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы AREA_TYPE_SPECIALIZATIONS</comment>
+        <createSequence sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
+        </rollback>
+    </changeSet>
     <!-- !!!! AREA_TYPE_SPECIALIZATIONS !!!! -->
 
 

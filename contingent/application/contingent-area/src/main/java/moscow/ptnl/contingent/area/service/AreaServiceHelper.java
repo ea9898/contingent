@@ -28,7 +28,7 @@ import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepositor
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
-import moscow.ptnl.contingent.area.repository.nsi.PositionNomClinicRepository;
+import moscow.ptnl.contingent.area.repository.nsi.PositionNomRepository;
 import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.util.Period;
@@ -79,7 +79,7 @@ public class AreaServiceHelper {
     private MoAddressCRUDRepository moAddressCRUDRepository;
 
     @Autowired
-    private PositionNomClinicRepository positionNomClinicRepository;
+    private PositionNomRepository positionNomRepository;
 
     @Autowired
     private AreaAddressCRUDRepository areaAddressCRUDRepository;
@@ -505,7 +505,7 @@ public class AreaServiceHelper {
                 empl.getStartDate(),
                 empl.getEndDate(),
                 empl.getSnils(),
-                positionNomClinicRepository.getPositionProxy(empl.getPositionId()),
+                positionNomRepository.getPositionProxy(empl.getPositionId()),
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 empl.getSubdivisionId())));

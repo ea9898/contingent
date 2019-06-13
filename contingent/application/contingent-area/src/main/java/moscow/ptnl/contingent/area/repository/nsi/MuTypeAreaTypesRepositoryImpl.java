@@ -15,6 +15,8 @@ import javax.persistence.criteria.Root;
 import java.util.Collections;
 import java.util.List;
 
+// TODO Переписать спеками
+@Deprecated
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
 public class MuTypeAreaTypesRepositoryImpl extends BaseRepository implements MuTypeAreaTypesRepository {
