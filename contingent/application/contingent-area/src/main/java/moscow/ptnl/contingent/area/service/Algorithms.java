@@ -196,7 +196,7 @@ public class Algorithms {
         //•	ADDR_ID = ИД вышестоящего элемента.
         for (NotNsiAddress notNsiAddress: notNsiAddresses) {
             crossAddresses = afeAndBr.stream()
-                    .filter(aw ->
+                    .filter(aw ->aw.getBuildingRegistry() != null &&
                             aw.getBuildingRegistry().getL1Value().equals(notNsiAddress.getHouse()) &&
                                     aw.getBuildingRegistry().getL2Value().equals(notNsiAddress.getConstruction()) &&
                                     aw.getBuildingRegistry().getL3Value().equals(notNsiAddress.getBuilding()) &&
@@ -220,12 +220,17 @@ public class Algorithms {
                 // По parentId ищется AFE
                 AddressFormingElement addressFormingElement =
                         addressFormingElementRepository.findAfeByGlobalId(notNsiAddress.getParentId());
-                if (notNsiAddress.getLevelParentId() == AddressLevelType.STREET.getLevel()) {
+
+                List<AddressWrapper> crossNotNsiAddresses = null;
+                if (notNsiAddress.getLevelParentId().equals(AddressLevelType.STREET.getLevel())) {
                     // Если уровень вышестоящего элемента = 7, то выполняется алгоритм, описанный на шаге 1, начиная с п.  1.1, b.2.
-                    crossAddresses.addAll(AlgorithmsHelper.checkPlanIdExist.apply(addressFormingElement, afeAndBr));
+                    crossNotNsiAddresses = AlgorithmsHelper.checkPlanIdExist.apply(addressFormingElement, afeAndBr);
                 } else {
                     // Иначе выполняется алгоритм, описанный на шаге 1, начиная с п.  1.1, b.2.2.
-                    crossAddresses.addAll(AlgorithmsHelper.checkPlaceIdExist.apply(addressFormingElement, afeAndBr));
+                    crossNotNsiAddresses = AlgorithmsHelper.checkPlaceIdExist.apply(addressFormingElement, afeAndBr);
+                }
+                if (crossNotNsiAddresses != null && !crossNotNsiAddresses.isEmpty()) {
+                    crossAddresses.addAll(crossNotNsiAddresses);
                 }
 
                 if (!crossAddresses.isEmpty()) {

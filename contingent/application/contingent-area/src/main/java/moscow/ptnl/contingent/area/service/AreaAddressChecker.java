@@ -89,11 +89,11 @@ public class AreaAddressChecker {
                 validation.error(AreaErrorReason.FILL_ADDRESS_DETAILS_TYPE);
             }
             if (!StringUtils.isEmpty(buildingType)
-                    && AddressDetailsType.getAddressDetailsType(buildingType, AddressDetailsElementType.BUILDING) != null ||
+                    && AddressDetailsType.getAddressDetailsType(buildingType, AddressDetailsElementType.BUILDING) == null ||
                     !StringUtils.isEmpty(constructionType)
-                            && AddressDetailsType.getAddressDetailsType(constructionType, AddressDetailsElementType.CONSTRUCTION) != null ||
+                            && AddressDetailsType.getAddressDetailsType(constructionType, AddressDetailsElementType.CONSTRUCTION) == null ||
                     !StringUtils.isEmpty(houseType)
-                            && AddressDetailsType.getAddressDetailsType(houseType, AddressDetailsElementType.HOUSE) != null) {
+                            && AddressDetailsType.getAddressDetailsType(houseType, AddressDetailsElementType.HOUSE) == null) {
                 validation.error(AreaErrorReason.INCORRECT_ADDRESS_DETAILS_TYPE);
             }
         }

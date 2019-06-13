@@ -19,35 +19,34 @@ public class AddressFormingElementRepositoryImpl extends BaseRepository implemen
     @Autowired
     AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
 
+    private Specification<AddressFormingElement> searchByIdSpec(long afeId) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(AddressFormingElement_.id.getName()), afeId);
+    }
+
+    private Specification<AddressFormingElement> searchByGlobalIdSpec(long globalId) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(AddressFormingElement_.globalId.getName()), globalId);
+    }
+
+    private Specification<AddressFormingElement> searchByLevelSpec(int level) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(AddressFormingElement_.aoLevel.getName()), String.valueOf(level));
+    }
+
     @Override
     public List<AddressFormingElement> getAddressFormingElements(long globalId, int level) {
-        Specification<AddressFormingElement> addressFormingElementSpecification =
-                (root, criteriaQuery, criteriaBuilder) ->
-                    criteriaBuilder.and(
-                        criteriaBuilder.equal(root.get(AddressFormingElement_.globalId.getName()), globalId),
-                        criteriaBuilder.equal(root.get(AddressFormingElement_.aoLevel.getName()), String.valueOf(level))
-                );
-        return addressFormingElementCRUDRepository.findAll(addressFormingElementSpecification);
+        return addressFormingElementCRUDRepository.findAll(searchByGlobalIdSpec(globalId).and(searchByLevelSpec(level)));
     }
 
     @Override
     public List<AddressFormingElement> findAfeByIdAndLevel(long afeId, int level) {
-        Specification<AddressFormingElement> addressFormingElementSpecification =
-            (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(AddressFormingElement_.id.getName()), afeId),
-                    criteriaBuilder.equal(root.get(AddressFormingElement_.aoLevel.getName()), level)
-                );
-        return addressFormingElementCRUDRepository.findAll(addressFormingElementSpecification);
+        return addressFormingElementCRUDRepository.findAll(searchByIdSpec(afeId).and(searchByLevelSpec(level)));
     }
 
     @Override
     public AddressFormingElement findAfeByGlobalId(Long globalId) {
-        Specification<AddressFormingElement> addressFormingElementSpecification =
-            (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(AddressFormingElement_.globalId.getName()), globalId));
-        return addressFormingElementCRUDRepository.findOne(addressFormingElementSpecification).orElse(null);
+        return addressFormingElementCRUDRepository.findOne(searchByGlobalIdSpec(globalId)).orElse(null);
     }
 
 }
