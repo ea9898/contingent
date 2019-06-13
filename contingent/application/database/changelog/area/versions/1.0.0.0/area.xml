@@ -723,6 +723,19 @@
             <column name="MO_ID" type="number"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-AREA-8-4" author="sorlov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_MO_AVAILABLE_AREA_TYPES"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы SEQ_MO_AVAILABLE_AREA_TYPES</comment>
+        <createSequence sequenceName="SEQ_MO_AVAILABLE_AREA_TYPES"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_MO_AVAILABLE_AREA_TYPES"/>
+        </rollback>
+    </changeSet>
     <!-- !!!! MO_AVAILABLE_AREA_TYPES !!!! -->
 
     <!-- MU_AVAILABLE_AREA_TYPES -->

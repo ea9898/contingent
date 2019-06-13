@@ -29,6 +29,8 @@ import ru.mos.emias.contingent2.area.types.AddAreaAddressRequest;
 import ru.mos.emias.contingent2.area.types.AddAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.AddMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.AddMoAddressResponse;
+import ru.mos.emias.contingent2.area.types.AddMoAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.types.AddMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.AddProfileMURequest;
 import ru.mos.emias.contingent2.area.types.AddProfileMUResponse;
 import ru.mos.emias.contingent2.area.types.AddressAllocationOrderListResultPage;
@@ -387,6 +389,18 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             response.setNewAreaId(areaService.getNewAreaId());
 
             return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public AddMoAvailableAreaTypesResponse addMoAvailableAreaTypes(AddMoAvailableAreaTypesRequest body) throws Fault {
+        try {
+            areaService.addMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
+
+            return new AddMoAvailableAreaTypesResponse();
         }
         catch (Exception ex) {
             throw mapException(ex);

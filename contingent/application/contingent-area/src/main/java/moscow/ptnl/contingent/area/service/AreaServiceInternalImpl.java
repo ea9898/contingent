@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
@@ -39,6 +40,7 @@ import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
+import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
@@ -147,6 +149,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private AreaAddressCRUDRepository areaAddressCRUDRepository;
+
+    @Autowired
+    private MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
 
     @Autowired
     private AreaServiceHelper areaHelper;
@@ -1165,4 +1170,25 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return areaRepository.getNextAreaId();
     }
 
+    // (К_УУ_1) Добавление типов участков, доступных для МО
+    @Override
+    public void addMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
+        Validation validation = new Validation();
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaTypeCode");
+        areaHelper.checkAreaTypesExistInMO(moId, areaTypes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        areaTypeCodes.forEach(a -> {
+            MoAvailableAreaTypes availableAreaType = new MoAvailableAreaTypes();
+            areaTypes.stream()
+                    .filter(t -> Objects.equals(t.getCode(), a))
+                    .findFirst()
+                    .ifPresent(availableAreaType::setAreaType);
+            availableAreaType.setMoId(moId);
+            availableAreaType.setCreateDate(LocalDateTime.now());
+            moAvailableAreaTypesCRUDRepository.save(availableAreaType);
+        });
+    }
 }
