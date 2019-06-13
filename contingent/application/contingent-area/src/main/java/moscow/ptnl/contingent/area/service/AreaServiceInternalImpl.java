@@ -180,7 +180,27 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Autowired
     private AreaTypeSpecializationsRepository areaTypeSpecializationsRepository;
 
-    // (К_УУ_1)	Добавление типов участков, доступных для МО
+    // (К_УУ_1) Добавление типов участков, доступных для МО
+    @Override
+    public void addMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
+        Validation validation = new Validation();
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaTypeCode");
+        areaHelper.checkAreaTypesExistInMO(moId, areaTypes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        areaTypeCodes.forEach(a -> {
+            MoAvailableAreaTypes availableAreaType = new MoAvailableAreaTypes();
+            areaTypes.stream()
+                    .filter(t -> Objects.equals(t.getCode(), a))
+                    .findFirst()
+                    .ifPresent(availableAreaType::setAreaType);
+            availableAreaType.setMoId(moId);
+            availableAreaType.setCreateDate(LocalDateTime.now());
+            moAvailableAreaTypesCRUDRepository.save(availableAreaType);
+        });
+    }
 
     // (К_УУ_2)	Удаление типов участков из доступных для МО
 
@@ -1170,25 +1190,4 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return areaRepository.getNextAreaId();
     }
 
-    // (К_УУ_1) Добавление типов участков, доступных для МО
-    @Override
-    public void addMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
-        Validation validation = new Validation();
-        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaTypeCode");
-        areaHelper.checkAreaTypesExistInMO(moId, areaTypes, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        areaTypeCodes.forEach(a -> {
-            MoAvailableAreaTypes availableAreaType = new MoAvailableAreaTypes();
-            areaTypes.stream()
-                    .filter(t -> Objects.equals(t.getCode(), a))
-                    .findFirst()
-                    .ifPresent(availableAreaType::setAreaType);
-            availableAreaType.setMoId(moId);
-            availableAreaType.setCreateDate(LocalDateTime.now());
-            moAvailableAreaTypesCRUDRepository.save(availableAreaType);
-        });
-    }
 }
