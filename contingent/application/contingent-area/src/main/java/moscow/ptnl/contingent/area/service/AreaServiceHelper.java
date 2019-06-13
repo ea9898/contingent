@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
@@ -23,6 +24,7 @@ import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
@@ -103,6 +105,9 @@ public class AreaServiceHelper {
     private AddressFormingElementRepository addressFormingElementRepository;
 
     @Autowired
+    private MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
+
+    @Autowired
     private Algorithms algorithms;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
@@ -135,9 +140,8 @@ public class AreaServiceHelper {
 
         if (muAddlAreaTypes != null && !muAddlAreaTypes.isEmpty()) {
             for (MuAddlAreaTypes muAddlAreaType : muAddlAreaTypes) {
-                validation.error(AreaErrorReason.MU_PROFILE_EXISTS,
-                        new ValidationParameter("muId", muAddlAreaType.getMuId()),
-                        new ValidationParameter("areatype", muAddlAreaType.getAreaType().getTitle()));
+                validation.error(AreaErrorReason.AREA_TYPE_ALREADY_EXISTS,
+                        new ValidationParameter("areaType", muAddlAreaType.getAreaType().getTitle()));
             }
         }
     }
@@ -664,5 +668,19 @@ public class AreaServiceHelper {
                 }
             }
         }
+    }
+
+    // К_УУ_1 2.
+    // Система проверяет, что в списке доступных для МО отсутствует Тип участка с переданным кодом
+    public void checkAreaTypesExistInMO(long moId, List<AreaType> areaTypes, Validation validation) {
+        List<AreaType> availableAreaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId).stream()
+                .map(MoAvailableAreaTypes::getAreaType)
+                .collect(Collectors.toList());
+        areaTypes.forEach(a -> {
+            if (availableAreaTypes.contains(a)) {
+                validation.error(AreaErrorReason.AREA_TYPE_ALREADY_EXISTS,
+                        new ValidationParameter("areaTypeCode", a.getTitle()));
+            }
+        });
     }
 }
