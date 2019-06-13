@@ -3,6 +3,8 @@ package moscow.ptnl.contingent.area.repository.nsi;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions_;
 import moscow.ptnl.contingent.repository.BaseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +17,14 @@ import java.util.List;
 @Repository
 @Transactional(propagation= Propagation.MANDATORY)
 public class AreaTypeMedicalPositionsRepositoryImpl extends BaseRepository implements AreaTypeMedicalPositionsRepository {
+
+    @Autowired
+    AreaTypeMedicalPositionsCRUDRepository areaTypeMedicalPositionsCRUDRepository;
+
     @Override
     public List<AreaTypeMedicalPositions> getPositionsByAreaType(long areaTypeId) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<AreaTypeMedicalPositions> criteria = criteriaBuilder.createQuery(AreaTypeMedicalPositions.class);
-        Root<AreaTypeMedicalPositions> template = criteria.from(AreaTypeMedicalPositions.class);
-        criteria.where(criteriaBuilder.equal(template.get(AreaTypeMedicalPositions_.areaType), areaTypeId));
-        List<AreaTypeMedicalPositions> results = entityManager.createQuery(criteria).getResultList();
-
-        return results.isEmpty() ? null : results;
+        Specification<AreaTypeMedicalPositions> specification = (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(AreaTypeMedicalPositions_.areaType), areaTypeId);
+        return areaTypeMedicalPositionsCRUDRepository.findAll(specification);
     }
 }

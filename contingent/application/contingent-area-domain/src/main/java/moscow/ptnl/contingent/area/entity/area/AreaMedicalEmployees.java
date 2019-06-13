@@ -32,7 +32,7 @@ public class AreaMedicalEmployees implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "MEDICAL_EMPLOYEE_JOB_INFO_ID")
+    @Column(name = "MEDICAL_EMPLOYEE_JOB_ID")
     private Long medicalEmployeeJobInfoId;
 
     @JoinColumn(name = "AREA_ID")

@@ -214,7 +214,7 @@
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="MEDICAL_EMPLOYEE_JOB_INFO_ID" type="BIGINT" remarks="ИД Исполнения должности" />
+            <column name="MEDICAL_EMPLOYEE_JOB_ID" type="BIGINT" remarks="ИД Исполнения должности" />
             <column name="AREA_ID" type="BIGINT" />
             <column name="IS_REPLACEMENT" type="NUMBER(1)" remarks="Роль МУ на участке (тип обслуживнаия)" />
             <column name="OUZ" type="VARCHAR2(50)" />

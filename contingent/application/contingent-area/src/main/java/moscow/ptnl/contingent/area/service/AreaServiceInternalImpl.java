@@ -554,19 +554,18 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
                         new ValidationParameter("InputSpecialization", specialization.getTitle()),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
-                        new ValidationParameter("AreaSpecialization", area.getAreaType()));
+                        new ValidationParameter("AreaSpecialization", area.getAreaType().getCode()));
 
             }
 
             // 5.5
-//            List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
-//            PositionNom inputPosition = positionNomCRUDRepository.findById(empl.getPositionId()).orElse(null);
-//            if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
-//                validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
-//                        new ValidationParameter("positionTitle", inputPosition != null ? inputPosition.getTitle() : null),
-//                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
-//                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
-//            }
+            List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
+            if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
+                validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
+                        new ValidationParameter("positionTitle", positionNom != null ? positionNom.get(0).getTitle() : null),
+                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
+                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
+            }
         }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
