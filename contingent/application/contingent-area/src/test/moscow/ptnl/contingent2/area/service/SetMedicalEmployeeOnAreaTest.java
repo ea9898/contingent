@@ -37,8 +37,8 @@ public class SetMedicalEmployeeOnAreaTest {
 
     @Before
     public void init() {
-        specialization = new Specialization(5L, "Хирургия", false);
-        areaType = new AreaType(3L, "школьный", false, specialization);
+//        specialization = new Specialization(5L, "Хирургия", false);
+        areaType = new AreaType(3L, "школьный", false);
         area1 = new Area(1L, 1L, 1L, areaType, false, LocalDateTime.now());
         area2 = new Area(2L, 1L, 1L, areaType, false, LocalDateTime.now());
         position = new PositionNom(7L, "1", "врач-хирург", LocalDate.now(), null, false);

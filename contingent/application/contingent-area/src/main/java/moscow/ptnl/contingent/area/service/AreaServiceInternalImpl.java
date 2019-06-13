@@ -578,12 +578,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             Specialization specialization = specializationToPositionNomRepository.getSpecializationIdByPositionNomId(empl.getPositionId());
 
             //5.3
-            if (specialization != null && !area.getAreaType().getSpecialization().getId().equals(specialization.getId())) {
-                validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
-                        new ValidationParameter("InputSpecialization", specialization.getTitle()),
-                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
-                        new ValidationParameter("AreaSpecialization", area.getAreaType().getSpecialization().getTitle()));
-            }
+//            if (specialization != null && !area.getAreaType().getSpecialization().getId().equals(specialization.getId())) {
+//                validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
+//                        new ValidationParameter("InputSpecialization", specialization.getTitle()),
+//                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
+//                        new ValidationParameter("AreaSpecialization", area.getAreaType().getSpecialization().getTitle()));
+//            }
 
             //5.4
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());

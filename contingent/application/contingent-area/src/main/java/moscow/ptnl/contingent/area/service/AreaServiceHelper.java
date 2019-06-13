@@ -569,6 +569,7 @@ public class AreaServiceHelper {
         }
     }
 
+    // TODO так работать не будет!!!
     private List<ValidationParameter> getValidationParamsForNotNsiAddress(NotNsiAddress notNsiAddress) {
         List<ValidationParameter> validationParameters = new ArrayList<>();
         validationParameters.add(new ValidationParameter("id", notNsiAddress.getParentId()));

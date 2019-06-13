@@ -93,18 +93,13 @@ public class AreaType implements Serializable {
     @Column(name = "RESIDENTS_BIND_RATE")
     private Integer residentsBindRate;
 
-    @JoinColumn(name = "SPECIALIZATION_CODE")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Specialization specialization;
-
     public AreaType() {
     }
 
-    public AreaType(Long code, String title, Boolean archive, Specialization specialization) {
+    public AreaType(Long code, String title, Boolean archive) {
         this.code = code;
         this.title = title;
         this.archived = archive;
-        this.specialization = specialization;
     }
 
     public Long getCode() {
@@ -198,14 +193,6 @@ public class AreaType implements Serializable {
     public Boolean getArchived() { return archived; }
 
     public void setArchived(Boolean archived) { this.archived = archived; }
-
-    public Specialization getSpecialization() {
-        return specialization;
-    }
-
-    public void setSpecialization(Specialization specialization) {
-        this.specialization = specialization;
-    }
 
     public Integer getResidentsBindRate() {
         return residentsBindRate;
