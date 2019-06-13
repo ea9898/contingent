@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import static moscow.ptnl.contingent.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
+import moscow.ptnl.contingent.service.esu.EsuService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -27,9 +29,14 @@ public class ESUEventEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(ESUEventEndpoint.class);
 
+    @Autowired
+    private EsuService esuService;
+
     @ServiceActivator(inputChannel = ESU_EVENT_CHANNEL_NAME)
     public void esuOutputConsumer(Message<EsuOutput> msg) {
-        LOG.debug("input message: {}", msg.getPayload().getEsuId());
-
+        LOG.debug("input message: ");
+        String topicName = (String) msg.getHeaders().get(""); //FIXME
+        EsuOutput event = msg.getPayload();
+        esuService.saveAndPublishToESU(topicName, event);
     }
 }

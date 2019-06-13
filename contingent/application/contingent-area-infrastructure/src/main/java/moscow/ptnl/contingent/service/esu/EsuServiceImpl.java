@@ -11,12 +11,15 @@ import ru.mos.emias.esu.lib.producer.EsuProducer;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.TimeZone;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import moscow.ptnl.contingent.domain.esu.event.ESUEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -28,14 +31,14 @@ public class EsuServiceImpl implements EsuService {
 
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    private final static String AREA_TOPIC = "SelfContingentArea";
+    //private final static String AREA_TOPIC = "SelfContingentArea";
 
     @Autowired
     private EsuProducer esuProducer;
 
     @Autowired
     private EsuOutputCRUDRepository esuOutputCRUDRepository;
-
+    
     @Autowired
     private EsuOutputRepository esuOutputRepository;
 
@@ -49,69 +52,87 @@ public class EsuServiceImpl implements EsuService {
      * Сохраняет информацию о событии в БД и пытается отправить ее в ЕСУ.
      * В случае успеха отправки в ЕСУ, ответ сохраняется в БД.
      *
+     * @param topicName
      * @param event
      * @return true при успешной публикации в ЕСУ
      */
     @Override
-    public boolean saveAndPublishToESU(ESUEvent event) {
-        Optional<String> resolvedTopicName = resolveTopicName(event);
-        if (resolvedTopicName.isPresent()) {
-                String topicName = resolvedTopicName.get();
-                LOG.debug("create message for topic: {}", topicName);
-                String ispkEventId = UUID.randomUUID().toString();
+    public boolean saveAndPublishToESU(String topicName, EsuOutput event) {
+        LOG.debug("create message for topic: {}", topicName);
+        
+        try {
+            String ispkEventId = UUID.randomUUID().toString();
+            String message = createMessageBody(topicName, event, ispkEventId);
+            LOG.debug(message);
+
+            EsuOutput esuOutput = new EsuOutput();
+            esuOutput.setTopic(topicName);
+            esuOutput.setMessage(message);        
+            esuOutput.setSentTime(LocalDateTime.now());
+            esuOutput.setStatus(EsuOutput.STATUS.INPROGRESS);
+            //TODO esuOutput <- ispkEventId
+
+            esuOutput = esuOutputCRUDRepository.save(esuOutput); 
+            
+            //TODO здесь нужна асинхронность, чтобы не блокировать базу 
+            publishToESU(esuOutput.getId(), esuOutput.getTopic(), esuOutput.getMessage());
+            
+            return true;
+        } catch (Exception e) {
+            LOG.error("ошибка при создании события для ЕСУ", e);
         }
-//        AttachOnAreaRelationChangeEvent publishObject = attachOnAreaRelationChangeEventMapper.entityToDtoTransform(event);
-//        String message = convertEventObjectToMessage(publishObject);
-//        EsuOutput record = saveBeforePublishToESU(publishTopic, message);
-//        //Обновим ИД сообщения
-//        publishObject.setId(record.getId());
-//        message = convertEventObjectToMessage(publishObject);
-//
-//        try {
-//            EsuProducer.MessageMetadata esuAnswer = publishToESU(publishTopic, message);
-//            saveAfterPublishToESU(record, esuAnswer);
-//            return true;
-//        } catch (Exception e) {
-//            LOG.warn("ошибка при публикации данных о событии в ЕСУ", e);
-//        }
+        
         return false;
     }
 
     @Override
     public void periodicalPublishUnsuccessMessagesToESU(LocalDateTime olderThen) {
+        
         List<EsuOutput> records = esuOutputRepository.findEsuOutputsToResend(olderThen);
 
         for (EsuOutput record : records) {
-            try {
-                EsuProducer.MessageMetadata esuAnswer = publishToESU(record.getTopic(), record.getMessage());
-                saveAfterPublishToESU(record, esuAnswer);
-            } catch (Exception e) {
-                LOG.warn("ошибка при публикации данных о событии в ЕСУ", e);
-            }
+            LOG.debug("TRY RESEND TO ESU: {}", record.getId());
+            //TODO здесь нужна асинхронность, чтобы не блокировать базу 
+            publishToESU(record.getId(), record.getTopic(), record.getMessage());                
+            
         }
-        //меняем статус сообщений на неуспешный, если они еще в статусе inProgress
-        records.stream().filter(r -> Objects.equals(EsuOutput.STATUS.INPROGRESS, r.getStatus())).forEach(r -> r.setStatus(EsuOutput.STATUS.UNSUCCESS));
     }
 
-    private EsuOutput saveBeforePublishToESU(String publishTopic, String message) {
-        EsuOutput esuOutput = new EsuOutput();
-        esuOutput.setTopic(publishTopic);
-        esuOutput.setMessage(message);
-        esuOutput.setStatus(EsuOutput.STATUS.UNSUCCESS);
-
-        return esuOutputCRUDRepository.save(esuOutput);
-    }
-
-    private void saveAfterPublishToESU(EsuOutput esuOutput, EsuProducer.MessageMetadata esuAnswer) {
-        esuOutput.setEsuId(esuAnswer.getKey());
-        esuOutput.setOffset(esuAnswer.getOffset());
-        esuOutput.setPartition(esuAnswer.getPartition());
-        esuOutput.setSentTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(esuAnswer.getTimestamp()), TimeZone.getDefault().toZoneId()));
-        esuOutput.setStatus(EsuOutput.STATUS.SUCCESS);
-    }
-
-    private EsuProducer.MessageMetadata publishToESU(String publishTopic, String message) throws InterruptedException, ExecutionException {
-        return esuProducer.publish(publishTopic, message);
+    /**
+     * Блокирующий метод публиукации в ЕСУ.
+     * 
+     * @param recordId
+     * @param publishTopic
+     * @param message 
+     */
+    private void publishToESU(final Long recordId, final String publishTopic, final String message) {
+        try {
+            //запускаем в потоке чтобы иметь возможность прервать по таймауту
+            EsuProducer.MessageMetadata  esuAnswer = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return esuProducer.publish(publishTopic, message);
+                } catch (Exception e){
+                    LOG.error("ошибка при публикации данных о событии в ЕСУ", e);
+                    throw new RuntimeException(e);
+                }
+            } /*,getPublishThreadExecutor()*/).get(producerRequestTimeout, TimeUnit.MILLISECONDS);
+            
+            Optional<EsuOutput> result = esuOutputCRUDRepository.findById(recordId);
+            if (result.isPresent()) {
+                EsuOutput esuOutput = result.get();
+                esuOutput.setEsuId(esuAnswer.getKey());
+                esuOutput.setOffset(esuAnswer.getOffset());
+                esuOutput.setPartition(esuAnswer.getPartition());
+                esuOutput.setSentTime(toLocalDateTime(esuAnswer.getTimestamp()));
+                esuOutput.setStatus(EsuOutput.STATUS.SUCCESS);
+                esuOutputCRUDRepository.save(esuOutput);
+            } else {
+                LOG.warn("не найдено событие в ESU_OUTPUT с идентификатором: {}", recordId);
+            }
+        } catch (Exception e) {
+            LOG.error("ошибка при публикации данных о событии в ЕСУ", e);
+            esuOutputRepository.updateStatus(recordId, EsuOutput.STATUS.INPROGRESS, EsuOutput.STATUS.UNSUCCESS);
+        }
     }
 
     /**
@@ -127,5 +148,29 @@ public class EsuServiceImpl implements EsuService {
             return Optional.of(esuAreaTopicName);
         }
         return Optional.empty();
+    }
+    
+    private String createMessageBody(String topicName, EsuOutput event, String ispkEventId) {
+        //FIXME
+        return null;
+    }
+    
+    private static LocalDateTime toLocalDateTime(long timestamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp / 1000), ZoneOffset.systemDefault());
+    }
+    
+    /**
+     * Позволяет запускать поток выполнения как демон.
+     * 
+     * @return 
+     */
+    private static ExecutorService getPublishThreadExecutor() {
+        final ThreadFactory threadFactory = (Runnable r) -> {
+            Thread t = Executors.defaultThreadFactory().newThread(r);
+            t.setDaemon(true);
+            t.setName("PublishToESU Thread");
+            return t;
+        };
+        return Executors.newFixedThreadPool(1, threadFactory);
     }
 }
