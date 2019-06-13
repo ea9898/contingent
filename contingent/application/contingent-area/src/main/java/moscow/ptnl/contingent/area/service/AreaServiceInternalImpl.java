@@ -169,7 +169,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Autowired
     private HistoryService historyService;
 
+    // (К_УУ_1)	Добавление типов участков, доступных для МО
 
+    // (К_УУ_2)	Удаление типов участков из доступных для МО
+
+    // (К_УУ_3)	Предоставление типов участков, доступных для МО
+
+    // (К_УУ_4)	Добавление типов, доступных для МУ
+
+    // (К_УУ_5)	Удаление типов участков из доступных для МУ
+
+    // (К_УУ_6)	Предоставление типов участков, доступных для МУ
+
+    // (К_УУ_7)	Создание участка обслуживания первичного типа
     @Override
     public Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
@@ -233,6 +245,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return area.getId();
     }
 
+    // (К_УУ_8)	Создание участка обслуживания зависимого типа
     @Override
     public Long createDependentArea(long moId, Long muId, List<MuType> muTypes, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
@@ -272,6 +285,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return area.getId();
     }
 
+    // (К_УУ_9)	Изменение участка обслуживания первичного типа
     @Override
     public void updatePrimaryArea(long areaId, Integer number,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
@@ -329,89 +343,87 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         if (areaHelper.isAreaPrimary(area)) {
             esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "updatePrimaryArea"));
-    }
-
-    }
-
-    @Override
-    public Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException {
-        Validation validation = new Validation();
-        areaHelper.checkDateTillToday(date, validation);
-
-        if (!addressAllocationOrderRepository.findAddressAllocationOrders(number, date, ouz, name, false).isEmpty()) {
-            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_EXISTS);
         }
+    }
+
+    // (К_УУ_10) Изменение участка обслуживания зависимого типа
+    @Override
+    public void updateDependentArea(long areaId, Long muId, List<MuType> muTypes, Integer muNumber,
+                                    List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
+                                    Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                    boolean autoAssignForAttachment, String description) throws ContingentException {
+        Validation validation = new Validation();
+        //1 и 2
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area oldArea = new Area(area);
+
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        AddressAllocationOrders order = new AddressAllocationOrders();
-        order.setCreateDate(LocalDateTime.now());
-        order.setUpdateDate(LocalDateTime.now());
-        order.setArchived(false);
-        order.setNumber(number);
-        order.setDate(date);
-        order.setOuz(ouz);
-        order.setName(name);
 
-        return addressAllocationOrderCRUDRepository.save(order).getId();
-    }
-
-    @Override
-    public void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException {
-        Validation validation = new Validation();
-
-        AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
-
-        if (order == null) {
-            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
-                    new ValidationParameter("id", id));
-            throw new ContingentException(validation);
-        }
-        if (Boolean.TRUE.equals(order.getArchived())) {
-            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
-                    new ValidationParameter("id", id));
-        }
-        if (date != null) {
-            areaHelper.checkDateTillToday(date, validation);
+        //3
+        if (muId != null && !muId.equals(area.getMuId()) && area.getAreaType().getKindAreaType() != null
+                && !Objects.equals(area.getAreaType().getKindAreaType().getCode(),
+                AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode())) {
+            validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
         }
 
-        AddressAllocationOrders oldOrder = historyService.clone(order);
-
-        String numberNew = number == null ? order.getNumber() : number;
-        LocalDate dateNew = date == null ? order.getDate() : date;
-        String ouzNew = ouz == null ? order.getOuz() : ouz;
-        String nameNew = name == null ? order.getName() : name;
-
-        if (addressAllocationOrderRepository.findAddressAllocationOrders(numberNew, dateNew, ouzNew, nameNew, false).stream()
-                .anyMatch(o -> !Objects.equals(o.getId(), id))) {
-            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_EXISTS);
-        }
+        //4
+        areaHelper.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodesAdd, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        order.setUpdateDate(LocalDateTime.now());
-        order.setNumber(numberNew);
-        order.setDate(dateNew);
-        order.setOuz(ouzNew);
-        order.setName(nameNew);
 
-        addressAllocationOrderCRUDRepository.save(order);
+        //5
+        areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
-        historyService.write(UserContextHolder.getPrincipal(), oldOrder, order);
-    }
-
-    @Override
-    public Page<AddressAllocationOrders> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException {
-        Validation validation = new Validation();
-
-        if (id == null && number == null && date == null && name == null) {
-            validation.error(AreaErrorReason.NO_SEARCH_PARAMETERS);
+        if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        return addressAllocationOrderRepository.findAddressAllocationOrdersOverlapped(id, number, date, name, paging);
+        //6 Обновление участка
+        Long muIdFinal = muId == null ? area.getMuId() : muId;
+        area.setMuId(muIdFinal);
+        area.setNumber(muNumber == null ? area.getNumber() : muNumber);
+        area.setAgeMax(ageMax == null ? area.getAgeMax() : ageMax);
+        area.setAgeMin(ageMin == null ? area.getAgeMin() : ageMin);
+        area.setAgeMMax(ageMaxM == null ? area.getAgeMMax() : ageMaxM);
+        area.setAgeMMin(ageMinM == null ? area.getAgeMMin() : ageMinM);
+        area.setAgeWMax(ageMaxW == null ? area.getAgeWMax() : ageMaxW);
+        area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
+        area.setAutoAssignForAttach(autoAssignForAttachment);
+        area.setDescription(description == null ? area.getDescription() : description);
+        area.setUpdateDate(LocalDateTime.now());
+
+        areaHelper.resetAutoAssignForAttachment(area);
+        //7 Обновление привязки к первичным типам участка
+        List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId());
+
+        List<AreaToAreaType> areaToAreaTypesToAdd = new ArrayList<>();
+
+//        primaryAreaTypeCodesAdd.stream()
+//                .filter(c -> areaToAreaTypes.stream().noneMatch(a -> Objects.equals(c, a.getAreaType().getCode())))
+//                .forEach(c -> {
+//            AreaToAreaType areaToAreaType = new AreaToAreaType();
+//            areaToAreaType.setArea(area);
+//            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
+//            areaToAreaTypeCRUDRepository.save(areaToAreaType);
+//            areaToAreaTypesToAdd.add(areaToAreaType);
+//        });
+        List<AreaToAreaType> areaToAreaTypesToRemove = new ArrayList<>();
+
+//                areaToAreaTypes.stream()
+//                .filter(a -> a.getAreaType() != null &&
+//                        !primaryAreaTypeCodesAdd.contains(a.getAreaType().getCode()) &&
+//                        primaryAreaTypeCodesDel.contains(a.getAreaType().getCode()))
+//                .collect(Collectors.toList());
+
+        areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypesToRemove);
+
+        //TODO падает при отправке в есу
+        //esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
     }
 
-    // (К_УУ_10)	Изменение медицинских работников на участке обслуживания
+    // (К_УУ_11) Изменение медицинских работников на участке обслуживания
     @Override
     public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
                                                List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
@@ -570,7 +582,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return result;
     }
 
-    // (К_УУ_12)	Получение подробной информации об участке
+    // (К_УУ_12) Получение подробной информации об участке
     @Override
     public AreaInfo getAreaById(Long id) throws ContingentException {
 
@@ -720,6 +732,284 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return new ArrayList<>();
     }
 
+    // (К_УУ_14) Удаление адресов из участка обслуживания
+    @Override
+    public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1. и 2.
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 3.
+        areaHelper.tooManyAreaAddresses(areaAddressIds, settingService.getPar2(), validation);
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 4.
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaAddressIds);
+        areaAddressIds.forEach(aai -> {
+            List<Long> areaAddressesIdsDiff = areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
+            if (areaAddresses.stream().map(AreaAddress::getId).noneMatch(aa -> aa.equals(aai))) {
+                validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("areaAddressId", aai));
+            }
+        });
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 5.
+        LocalDate localDate = LocalDate.now();
+        for (AreaAddress areaAddress: areaAddresses) {
+            if (!areaAddress.getStartDate().equals(localDate)) {
+                // 5.1.
+                areaAddress.setEndDate(localDate.minusDays(1L));
+                areaAddressCRUDRepository.save(areaAddress);
+            } else {
+                // 5.2.
+                areaAddressCRUDRepository.delete(areaAddress);
+            }
+        }
+
+        // 6.
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "delAreaAddress"));
+        }
+
+        // 7.
+        return;
+    }
+
+    // (К_УУ_15) Получение списка адресов участка обслуживания
+    @Override
+    public Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(long areaId, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1.
+        areaHelper.checkMaxPage(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 2.
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId);
+
+        if (areaAddresses.isEmpty()) {
+            return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(), paging, 0);
+        }
+
+        // 3.
+        Map<Long, Addresses>  addresses = new TreeMap<>();
+        areaAddresses.forEach(aa -> {
+            Addresses address = aa.getAddress();
+            addresses.put(aa.getId(), address);
+        });
+
+        List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
+
+        addresses.forEach((addressId, address) -> {
+            if (address.getLevel() == 8) {
+                BuildingRegistry buildingRegistry = address.getBuildingRegistry();
+                AddressFormingElement addressFormingElement = buildingRegistry.getAddressFormingElement();
+                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, buildingRegistry, addressFormingElement));
+            } else {
+                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, address.getAddressFormingElement()));
+            }
+        });
+
+        // 4.
+        // Сортировка в TreeMap
+
+        // 5.
+        return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(addressAreas),
+                paging, addressAreas.size());
+    }
+
+    // (К_УУ_16) Архивирование участка обслуживания
+    @Override
+    public void archiveArea(long areaId) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1. 2.
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 3.
+        if (area != null && Boolean.TRUE.equals(area.getAutoAssignForAttach())) {
+            validation.error(AreaErrorReason.AREA_IS_AUTO_ATTACH, new ValidationParameter("areaId", areaId));
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 4. Система исключает адреса обслуживаня из участка, если указаны
+        areaHelper.delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
+
+        // 5. Система исключает МР из участка, если указаны
+        areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
+
+        // 6. Система для данного участка меняет статус на «Архивный»
+        area.setArchived(true);
+        areaCRUDRepository.save(area);
+
+        // 7.
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "archiveArea"));
+        }
+    }
+
+    // (К_УУ_17) Восстановление архивного участка обслуживания
+    @Override
+    public void restoreArea(Long areaId) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 1. 2.
+        Area area = areaHelper.checkAndGetArchivedArea(areaId, validation);
+
+        if (area != null) {
+            // 3.
+            areaHelper.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
+
+            // 4.
+            areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 5.
+        area.setAutoAssignForAttach(false);
+
+        // 6.
+        area.setArchived(false);
+        areaCRUDRepository.save(area);
+
+        // 7.
+        if (areaHelper.isAreaPrimary(area)) {
+            // 7.1. Поиск зависимых участков
+            // TODO логику фильтрации в репозиторий
+            List<Area> areas = areaRepository.findAreas(area.getMuId() == null ? area.getMoId() : null, area.getMuId(),
+                    (Long) null, null, true).stream()
+                    .filter(a -> a.getPrimaryAreaTypes() != null &&
+                            a.getPrimaryAreaTypes().stream()
+                                    .anyMatch(t -> Objects.equals(t.getAreaType(), area.getAreaType())))
+                    .collect(Collectors.toList());
+
+            // 7.2.
+            areas.forEach(depArea ->
+                    esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
+                            .createTopicCreateCloseAttachAreaChange(Collections.singletonList(areaId), null, depArea))
+            );
+        }
+
+        // 8.
+        if (areaHelper.isAreaDependent(area)) {
+            // TODO логику фильтрации в репозиторий
+            List<Area> areas = areaRepository.findAreas(area.getMuId() == null ? area.getMoId() : null, area.getMuId(),
+                    area.getPrimaryAreaTypes().stream()
+                            .map(AreaToAreaType::getAreaType)
+                            .map(AreaType::getCode)
+                            .distinct()
+                            .collect(Collectors.toList()),
+                    null, true);
+
+            esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
+                    .createTopicCreateCloseAttachAreaChange(areas.stream().map(Area::getId).collect(Collectors.toList()),
+                            null, area));
+        }
+
+        // 9.
+        if (areaHelper.isAreaPrimary(area)) {
+            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "restoreArea"));
+        }
+
+        // 10.
+        return;
+    }
+
+    // (К_УУ_18) Создание распоряжения
+    @Override
+    public Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException {
+        Validation validation = new Validation();
+        areaHelper.checkDateTillToday(date, validation);
+
+        if (!addressAllocationOrderRepository.findAddressAllocationOrders(number, date, ouz, name, false).isEmpty()) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_EXISTS);
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        AddressAllocationOrders order = new AddressAllocationOrders();
+        order.setCreateDate(LocalDateTime.now());
+        order.setUpdateDate(LocalDateTime.now());
+        order.setArchived(false);
+        order.setNumber(number);
+        order.setDate(date);
+        order.setOuz(ouz);
+        order.setName(name);
+
+        return addressAllocationOrderCRUDRepository.save(order).getId();
+    }
+
+    // (К_УУ_19) Изменение распоряжения
+    @Override
+    public void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException {
+        Validation validation = new Validation();
+
+        AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
+
+        if (order == null) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
+                    new ValidationParameter("id", id));
+            throw new ContingentException(validation);
+        }
+        if (Boolean.TRUE.equals(order.getArchived())) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
+                    new ValidationParameter("id", id));
+        }
+        if (date != null) {
+            areaHelper.checkDateTillToday(date, validation);
+        }
+
+        AddressAllocationOrders oldOrder = historyService.clone(order);
+
+        String numberNew = number == null ? order.getNumber() : number;
+        LocalDate dateNew = date == null ? order.getDate() : date;
+        String ouzNew = ouz == null ? order.getOuz() : ouz;
+        String nameNew = name == null ? order.getName() : name;
+
+        if (addressAllocationOrderRepository.findAddressAllocationOrders(numberNew, dateNew, ouzNew, nameNew, false).stream()
+                .anyMatch(o -> !Objects.equals(o.getId(), id))) {
+            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_EXISTS);
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        order.setUpdateDate(LocalDateTime.now());
+        order.setNumber(numberNew);
+        order.setDate(dateNew);
+        order.setOuz(ouzNew);
+        order.setName(nameNew);
+
+        addressAllocationOrderCRUDRepository.save(order);
+
+        historyService.write(UserContextHolder.getPrincipal(), oldOrder, order);
+    }
+
+    // (К_УУ_20) Поиск распоряжений
+    @Override
+    public Page<AddressAllocationOrders> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+
+        if (id == null && number == null && date == null && name == null) {
+            validation.error(AreaErrorReason.NO_SEARCH_PARAMETERS);
+            throw new ContingentException(validation);
+        }
+        return addressAllocationOrderRepository.findAddressAllocationOrdersOverlapped(id, number, date, name, paging);
+    }
+
+    // (К_УУ_21) Распределение жилых домов к территории обслуживания МО
     @Override
     public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
                                    List<NotNsiAddress> notNsiAddresses) throws ContingentException {
@@ -802,7 +1092,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return addresses.stream().map(a -> a.moAddress.getId()).collect(Collectors.toList());
     }
 
-
+    // (К_УУ_22) Отмена распределения жилых домов к территории обслуживания МО
     @Override
     public void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException {
         Validation validation = new Validation();
@@ -833,281 +1123,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         });
     }
 
-
-    // (К_УУ_10) Изменение участка обслуживания зависимого типа
-    @Override
-    public void updateDependentArea(long areaId, Long muId, List<MuType> muTypes, Integer muNumber,
-                                    List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
-                                    Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                    boolean autoAssignForAttachment, String description) throws ContingentException {
-        Validation validation = new Validation();
-        //1 и 2
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
-        Area oldArea = new Area(area);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        //3
-        if (muId != null && !muId.equals(area.getMuId()) && area.getAreaType().getKindAreaType() != null
-                && !Objects.equals(area.getAreaType().getKindAreaType().getCode(),
-                AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode())) {
-            validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
-        }
-
-        //4
-        areaHelper.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodesAdd, validation);
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        //5
-        areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-    }
-        //6 Обновление участка
-        Long muIdFinal = muId == null ? area.getMuId() : muId;
-        area.setMuId(muIdFinal);
-        area.setNumber(muNumber == null ? area.getNumber() : muNumber);
-        area.setAgeMax(ageMax == null ? area.getAgeMax() : ageMax);
-        area.setAgeMin(ageMin == null ? area.getAgeMin() : ageMin);
-        area.setAgeMMax(ageMaxM == null ? area.getAgeMMax() : ageMaxM);
-        area.setAgeMMin(ageMinM == null ? area.getAgeMMin() : ageMinM);
-        area.setAgeWMax(ageMaxW == null ? area.getAgeWMax() : ageMaxW);
-        area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
-        area.setAutoAssignForAttach(autoAssignForAttachment);
-        area.setDescription(description == null ? area.getDescription() : description);
-        area.setUpdateDate(LocalDateTime.now());
-
-        areaHelper.resetAutoAssignForAttachment(area);
-        //7 Обновление привязки к первичным типам участка
-        List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.getAreaTypesByAreaId(area.getId());
-
-        List<AreaToAreaType> areaToAreaTypesToAdd = new ArrayList<>();
-
-//        primaryAreaTypeCodesAdd.stream()
-//                .filter(c -> areaToAreaTypes.stream().noneMatch(a -> Objects.equals(c, a.getAreaType().getCode())))
-//                .forEach(c -> {
-//            AreaToAreaType areaToAreaType = new AreaToAreaType();
-//            areaToAreaType.setArea(area);
-//            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
-//            areaToAreaTypeCRUDRepository.save(areaToAreaType);
-//            areaToAreaTypesToAdd.add(areaToAreaType);
-//        });
-        List<AreaToAreaType> areaToAreaTypesToRemove = new ArrayList<>();
-
-//                areaToAreaTypes.stream()
-//                .filter(a -> a.getAreaType() != null &&
-//                        !primaryAreaTypeCodesAdd.contains(a.getAreaType().getCode()) &&
-//                        primaryAreaTypeCodesDel.contains(a.getAreaType().getCode()))
-//                .collect(Collectors.toList());
-
-        areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypesToRemove);
-
-        //TODO падает при отправке в есу
-        //esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
-    }
-
-    // (К_УУ_11) Удаление адресов из участка обслуживания
-    @Override
-    public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 1. и 2.
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
-
-        // 3.
-        areaHelper.tooManyAreaAddresses(areaAddressIds, settingService.getPar2(), validation);
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
-
-        // 4.
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaAddressIds);
-        areaAddressIds.forEach(aai -> {
-            List<Long> areaAddressesIdsDiff = areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
-            if (areaAddresses.stream().map(AreaAddress::getId).noneMatch(aa -> aa.equals(aai))) {
-                 validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("areaAddressId", aai));
-            }
-        });
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
-
-        // 5.
-        LocalDate localDate = LocalDate.now();
-        for (AreaAddress areaAddress: areaAddresses) {
-            if (!areaAddress.getStartDate().equals(localDate)) {
-                // 5.1.
-                areaAddress.setEndDate(localDate.minusDays(1L));
-                areaAddressCRUDRepository.save(areaAddress);
-            } else {
-                // 5.2.
-                areaAddressCRUDRepository.delete(areaAddress);
-            }
-        }
-
-        // 6.
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "delAreaAddress"));
-        }
-
-        // 7.
-        return;
-    }
-
-    // (К_УУ_12)	Получение списка адресов участка обслуживания
-    @Override
-    public Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(long areaId, PageRequest paging) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 1.
-        areaHelper.checkMaxPage(paging, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        // 2.
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId);
-
-        if (areaAddresses.isEmpty()) {
-            return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(), paging, 0);
-        }
-
-        // 3.
-        Map<Long, Addresses>  addresses = new TreeMap<>();
-        areaAddresses.forEach(aa -> {
-            Addresses address = aa.getAddress();
-            addresses.put(aa.getId(), address);
-        });
-
-        List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
-
-        addresses.forEach((addressId, address) -> {
-            if (address.getLevel() == 8) {
-                BuildingRegistry buildingRegistry = address.getBuildingRegistry();
-                AddressFormingElement addressFormingElement = buildingRegistry.getAddressFormingElement();
-                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, buildingRegistry, addressFormingElement));
-            } else {
-                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, address.getAddressFormingElement()));
-            }
-        });
-
-        // 4.
-        // Сортировка в TreeMap
-
-        // 5.
-        return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(addressAreas),
-                paging, addressAreas.size());
-    }
-
-    // (К_УУ_13) Архивирование участка обслуживания
-    @Override
-    public void archiveArea(long areaId) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 1. 2.
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        // 3.
-        if (area != null && Boolean.TRUE.equals(area.getAutoAssignForAttach())) {
-            validation.error(AreaErrorReason.AREA_IS_AUTO_ATTACH, new ValidationParameter("areaId", areaId));
-        }
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        // 4. Система исключает адреса обслуживаня из участка, если указаны
-        areaHelper.delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
-
-        // 5. Система исключает МР из участка, если указаны
-        areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
-
-        // 6. Система для данного участка меняет статус на «Архивный»
-        area.setArchived(true);
-        areaCRUDRepository.save(area);
-
-        // 7.
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "archiveArea"));
-        }
-    }
-
-    // (К_УУ_14) Восстановление архивного участка обслуживания
-    @Override
-    public void restoreArea(Long areaId) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 1. 2.
-        Area area = areaHelper.checkAndGetArchivedArea(areaId, validation);
-
-        if (area != null) {
-            // 3.
-            areaHelper.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
-
-            // 4.
-            areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
-        }
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        // 5.
-        area.setAutoAssignForAttach(false);
-
-        // 6.
-        area.setArchived(false);
-        areaCRUDRepository.save(area);
-
-        // 7.
-        if (areaHelper.isAreaPrimary(area)) {
-            // 7.1. Поиск зависимых участков
-            // TODO логику фильтрации в репозиторий
-            List<Area> areas = areaRepository.findAreas(area.getMuId() == null ? area.getMoId() : null, area.getMuId(),
-                    (Long) null, null, true).stream()
-                    .filter(a -> a.getPrimaryAreaTypes() != null &&
-                            a.getPrimaryAreaTypes().stream()
-                                    .anyMatch(t -> Objects.equals(t.getAreaType(), area.getAreaType())))
-                    .collect(Collectors.toList());
-
-            // 7.2.
-            areas.forEach(depArea ->
-                esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
-                    .createTopicCreateCloseAttachAreaChange(Collections.singletonList(areaId), null, depArea))
-                );
-        }
-
-        // 8.
-        if (areaHelper.isAreaDependent(area)) {
-            // TODO логику фильтрации в репозиторий
-            List<Area> areas = areaRepository.findAreas(area.getMuId() == null ? area.getMoId() : null, area.getMuId(),
-                    area.getPrimaryAreaTypes().stream()
-                            .map(AreaToAreaType::getAreaType)
-                            .map(AreaType::getCode)
-                            .distinct()
-                            .collect(Collectors.toList()),
-                    null, true);
-
-            esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
-                    .createTopicCreateCloseAttachAreaChange(areas.stream().map(Area::getId).collect(Collectors.toList()),
-                            null, area));
-        }
-
-        // 9.
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "restoreArea"));
-        }
-
-        // 10.
-        return;
-    }
-
-    // (К_УУ_20) Получение списка территорий обслуживания МО
+    // (К_УУ_23) Получение списка территорий обслуживания МО
     @Override
     public Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException {
         Validation validation = new Validation();
@@ -1127,7 +1143,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
     }
 
-    // (К_УУ_21) Получение идентификатора для создания нового участка
+    // (К_УУ_24) Получение идентификатора для создания нового участка
     @Override
     public Long getNewAreaId() throws ContingentException {
         return areaRepository.getNextAreaId();
