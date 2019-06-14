@@ -415,7 +415,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             GetMoAvailableAreaTypesResponse result = new GetMoAvailableAreaTypesResponse();
             result.getMoAvailableAreaTypes().addAll(areaService.getMoAvailableAreaTypes(body.getMoId()).stream()
-                    .map(MoAvailableAreaTypes::getAreaType)
                     .map(areaTypeShortMapper::entityToDtoTransform)
                     .collect(Collectors.toList())
             );

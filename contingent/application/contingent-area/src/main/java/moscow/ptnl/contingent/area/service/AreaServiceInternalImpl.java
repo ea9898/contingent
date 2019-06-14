@@ -210,8 +210,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_3)	Предоставление типов участков, доступных для МО
     @Override
-    public List<MoAvailableAreaTypes> getMoAvailableAreaTypes(long moId) throws ContingentException {
-        return moAvailableAreaTypesRepository.findAreaTypes(moId);
+    public List<AreaType> getMoAvailableAreaTypes(long moId) throws ContingentException {
+        List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId);
+
+        return moAvailableAreaTypes.stream().map(MoAvailableAreaTypes::getAreaType).collect(Collectors.toList());
     }
 
     // (К_УУ_4)	Добавление типов, доступных для МУ
