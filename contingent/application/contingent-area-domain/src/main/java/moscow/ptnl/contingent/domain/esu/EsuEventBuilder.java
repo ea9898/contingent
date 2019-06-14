@@ -1,21 +1,18 @@
 package moscow.ptnl.contingent.domain.esu;
 
-import moscow.ptnl.util.XMLUtil;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
 // Заглушка для формирования сообщения для сохранения в БД топика и отправки в ЕСУ
 public class EsuEventBuilder {
+    
+    public static final String TOPIC_HEADER_NAME = "ESU_TOPIC";
 
-    private final EsuOutput esuOutput;
+    private final String topicName;
+    private Object eventObject;
 
     private EsuEventBuilder(String topic) {
-        this.esuOutput = new EsuOutput();
-        this.esuOutput.setTopic(topic);
-    }
-
-    public EsuOutput build() {
-        return new EsuOutput();
+        this.topicName = topic;
     }
 
     public static EsuEventBuilder withTopic(String topic) {
@@ -23,16 +20,15 @@ public class EsuEventBuilder {
         return builder;
     }
 
-    public EsuEventBuilder setMessage(Object o){
-        String xmlString = XMLUtil.convertEventObjectToMessage(o, o.getClass());
-        esuOutput.setMessage(xmlString);
+    public EsuEventBuilder setEventObject(Object object){        
+        this.eventObject = object;
         return this;
     }
 
-    public Message<EsuOutput> buildMessage() {
+    public Message<Object> buildMessage() {
         return MessageBuilder
-                .withPayload(build())
-                .setHeader("TOPIC", esuOutput.getTopic())
+                .withPayload(this.eventObject)
+                .setHeader(TOPIC_HEADER_NAME, this.topicName)
                 .build();
     }
 

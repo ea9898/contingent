@@ -29,11 +29,19 @@ public interface EsuOutputRepository {
     void updateStatus(List<Long> ids, EsuOutput.STATUS fromStatus, EsuOutput.STATUS toStatus);
     
     /**
-     * Меняем статус записе с указанным id.
+     * Меняем статус записи с указанным id.
      * 
      * @param id
      * @param fromStatus первоначальное значение статуса (учитывается в услрвии)
      * @param toStatus новое значение статуса
      */
     void updateStatus(Long id, EsuOutput.STATUS fromStatus, EsuOutput.STATUS toStatus);
+    
+    /**
+     * Меняем сообщение записи с указанным id.
+     * 
+     * @param id
+     * @param message 
+     */
+    void updateMessage(Long id, String message);
 }

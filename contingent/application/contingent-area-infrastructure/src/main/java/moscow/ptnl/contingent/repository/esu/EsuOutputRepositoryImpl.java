@@ -106,4 +106,23 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
                 .createQuery(updateCriteria)
                 .executeUpdate();
     }
+    
+    @Override
+    public void updateMessage(Long id, String message) {
+        if (id == null)
+            throw new IllegalArgumentException("идентификатор записи не может быть null");
+        
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        
+        CriteriaUpdate<EsuOutput> updateCriteria = criteriaBuilder.createCriteriaUpdate(EsuOutput.class);
+        Root<EsuOutput> template = updateCriteria.from(EsuOutput.class);
+        
+        updateCriteria
+            .set(template.get(EsuOutput_.message), message)
+            .where(criteriaBuilder.equal(template.get(EsuOutput_.id), id));
+        
+        entityManager
+            .createQuery(updateCriteria)
+            .executeUpdate();
+    }
 }
