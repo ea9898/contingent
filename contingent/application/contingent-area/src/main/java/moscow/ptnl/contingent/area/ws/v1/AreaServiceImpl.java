@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.ws.v1;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
@@ -54,6 +55,8 @@ import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdResponse;
 import ru.mos.emias.contingent2.area.types.GetMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.GetMoAddressResponse;
+import ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdResponse;
 import ru.mos.emias.contingent2.area.types.GetProfileMURequest;
@@ -401,6 +404,22 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             areaService.addMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new AddMoAvailableAreaTypesResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public GetMoAvailableAreaTypesResponse getMoAvailableAreaTypes(GetMoAvailableAreaTypesRequest body) throws Fault {
+        try {
+            GetMoAvailableAreaTypesResponse result = new GetMoAvailableAreaTypesResponse();
+            result.getMoAvailableAreaTypes().addAll(areaService.getMoAvailableAreaTypes(body.getMoId()).stream()
+                    .map(MoAvailableAreaTypes::getAreaType)
+                    .map(areaTypeShortMapper::entityToDtoTransform)
+                    .collect(Collectors.toList())
+            );
+            return result;
         }
         catch (Exception ex) {
             throw mapException(ex);
