@@ -189,6 +189,14 @@
         <wsdl:part name="body" element="ns1:getMoAvailableAreaTypesResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="delMoAvailableAreaTypesInput">
+        <wsdl:part name="body" element="ns1:delMoAvailableAreaTypesRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="delMoAvailableAreaTypesOutput">
+        <wsdl:part name="body" element="ns1:delMoAvailableAreaTypesResponse"/>
+    </wsdl:message>
+
 
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
@@ -349,6 +357,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:getMoAvailableAreaTypesInput"/>
             <wsdl:output message="tns:getMoAvailableAreaTypesOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="delMoAvailableAreaTypes">
+            <wsdl:documentation>
+                Удаление типов участка из доступных для МО (К_УУ_2)
+            </wsdl:documentation>
+            <wsdl:input message="tns:delMoAvailableAreaTypesInput"/>
+            <wsdl:output message="tns:delMoAvailableAreaTypesOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -624,6 +640,20 @@
 
         <wsdl:operation name="getMoAvailableAreaTypes">
             <soap:operation soapAction="getMoAvailableAreaTypes"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="delMoAvailableAreaTypes">
+            <soap:operation soapAction="delMoAvailableAreaTypes"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

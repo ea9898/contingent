@@ -70,5 +70,7 @@ public interface AreaServiceInternal {
 
     void addMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException;
 
+    void delMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException;
+
     List<AreaType> getMoAvailableAreaTypes(long moId) throws ContingentException;
 }

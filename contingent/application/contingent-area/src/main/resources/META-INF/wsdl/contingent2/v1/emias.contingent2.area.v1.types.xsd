@@ -427,6 +427,28 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="delMoAvailableAreaTypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="areaTypeCodes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delMoAvailableAreaTypesResponse">
+        <xs:complexType>
+            <xs:sequence/>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="getMoAvailableAreaTypesRequest">
         <xs:complexType>
             <xs:sequence>

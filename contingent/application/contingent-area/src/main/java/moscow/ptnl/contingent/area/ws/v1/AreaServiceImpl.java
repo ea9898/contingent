@@ -45,6 +45,8 @@ import ru.mos.emias.contingent2.area.types.DelAreaAddressRequest;
 import ru.mos.emias.contingent2.area.types.DelAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.DelMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.DelMoAddressResponse;
+import ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaAddressRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
@@ -398,6 +400,18 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             areaService.addMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new AddMoAvailableAreaTypesResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public DelMoAvailableAreaTypesResponse delMoAvailableAreaTypes(DelMoAvailableAreaTypesRequest body) throws Fault {
+        try {
+            areaService.delMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
+
+            return new DelMoAvailableAreaTypesResponse();
         }
         catch (Exception ex) {
             throw mapException(ex);
