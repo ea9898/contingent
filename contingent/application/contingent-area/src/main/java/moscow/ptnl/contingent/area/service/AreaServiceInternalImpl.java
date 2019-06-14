@@ -927,14 +927,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 7.
         if (areaHelper.isAreaPrimary(area)) {
-            // 7.1. Поиск зависимых участков
-            // TODO логику фильтрации в репозиторий
-            List<Area> areas = areaRepository.findAreas(area.getMuId() == null ? area.getMoId() : null, area.getMuId(),
-                    (Long) null, null, true).stream()
-                    .filter(a -> a.getPrimaryAreaTypes() != null &&
-                            a.getPrimaryAreaTypes().stream()
-                                    .anyMatch(t -> Objects.equals(t.getAreaType(), area.getAreaType())))
-                    .collect(Collectors.toList());
+            // 7.1. Поиск зависимых участков подобного типа
+            List<Area> areas = areaRepository.findDependentAreasByAreaEqAreaType(area);
+
 
             // 7.2.
             areas.forEach(depArea ->
@@ -945,14 +940,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 8.
         if (areaHelper.isAreaDependent(area)) {
-            // TODO логику фильтрации в репозиторий
-            List<Area> areas = areaRepository.findAreas(area.getMuId() == null ? area.getMoId() : null, area.getMuId(),
-                    area.getPrimaryAreaTypes().stream()
-                            .map(AreaToAreaType::getAreaType)
-                            .map(AreaType::getCode)
-                            .distinct()
-                            .collect(Collectors.toList()),
-                    null, true);
+            List<Area> areas = areaRepository.findPrimaryAreasByAreaEqAreaType(area);
 
             esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
                     .createTopicCreateCloseAttachAreaChange(areas.stream().map(Area::getId).collect(Collectors.toList()),

@@ -12,5 +12,9 @@ public interface AreaRepository {
 
 	List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean actual);
 
-	Long getNextAreaId();
+    List<Area> findDependentAreasByAreaEqAreaType(Area area);
+
+    List<Area> findPrimaryAreasByAreaEqAreaType(Area area);
+
+    Long getNextAreaId();
 }

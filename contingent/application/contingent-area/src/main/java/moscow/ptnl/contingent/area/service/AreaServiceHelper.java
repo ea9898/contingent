@@ -298,7 +298,6 @@ public class AreaServiceHelper {
     Система проверяет, что вид участка отличен от «Именной»
      */
     public void checkAreaTypeIsNotPersonal(AreaType areaType, Validation validation) {
-        // TODO как то странно это все...
         if (areaType.getKindAreaType() != null &&
                 Objects.equals(areaType.getKindAreaType().getCode(), 4L)) {
             validation.error(AreaErrorReason.CANT_RESTORE_PERSONAL_KIND_AREA);

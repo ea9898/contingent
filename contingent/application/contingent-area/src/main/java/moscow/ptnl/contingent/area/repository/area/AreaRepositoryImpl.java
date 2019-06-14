@@ -16,8 +16,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
@@ -30,6 +32,28 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     private AreaCRUDRepository areaCRUDRepository;
 
     private PostgresSequenceMaxValueIncrementer areaSequenceIncrementer;
+
+    private Specification<Area> searchByMuIdSpec(Long muId) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(Area_.muId), muId);
+    }
+
+    private Specification<Area> searchByMoIdSpec(Long moId) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(Area_.moId), moId);
+    }
+
+    private Specification<Area> searchEmptyMuIdSpec() {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                root.get(Area_.muId).isNull();
+    }
+
+
+
+    private Specification<Area> searchActive() {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(Area_.archived.getName()), false);
+    }
 
     @PostConstruct
     private void initialize() {
@@ -56,6 +80,41 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     @Override
     public List<Area> findAreas(Long moId, Long muId, Long areaTypeCode, Integer number, Boolean actual) {
         return findAreas(moId, muId, Collections.singletonList(areaTypeCode), number, actual);
+    }
+
+    @Override
+    public List<Area> findDependentAreasByAreaEqAreaType(Area area) {
+        Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.and(
+                    criteriaBuilder.or(
+                            criteriaBuilder.equal(root.get(Area_.muId), area.getMuId()),
+                            criteriaBuilder.and(
+                                    root.get(Area_.moId.getName()).isNull(),
+                                    criteriaBuilder.equal(root.get(Area_.moId), area.getMoId())
+                            )
+                    )
+                );
+        List<Area> depAreas = areaCRUDRepository.findAll(specification.and(searchActive()));
+
+        return depAreas.stream().filter(da -> !da.getPrimaryAreaTypes().isEmpty() &&
+                da.getPrimaryAreaTypes().contains(area.getAreaType())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Area> findPrimaryAreasByAreaEqAreaType(Area area) {
+        Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.conjunction();
+        if (area.getMuId() != null) {
+            specification.and(searchByMuIdSpec(area.getMuId()));
+        }
+
+        specification = specification.or(searchEmptyMuIdSpec().and(searchByMoIdSpec(area.getMoId())));
+
+        specification = specification.and(searchActive());
+
+        List<Area> primArea = areaCRUDRepository.findAll(specification);
+
+        return primArea.stream().filter(da -> !da.getPrimaryAreaTypes().isEmpty() &&
+                da.getPrimaryAreaTypes().contains(area.getAreaType())).collect(Collectors.toList());
     }
 
     @Override
