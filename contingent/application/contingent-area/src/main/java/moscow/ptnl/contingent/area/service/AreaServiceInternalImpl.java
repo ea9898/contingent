@@ -41,6 +41,7 @@ import moscow.ptnl.contingent.area.repository.area.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
@@ -154,6 +155,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
 
     @Autowired
+    private MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
+
+    @Autowired
     private AreaServiceHelper areaHelper;
 
     @Autowired
@@ -205,6 +209,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     // (К_УУ_2)	Удаление типов участков из доступных для МО
 
     // (К_УУ_3)	Предоставление типов участков, доступных для МО
+    @Override
+    public List<MoAvailableAreaTypes> getMoAvailableAreaTypes(long moId) throws ContingentException {
+        return moAvailableAreaTypesRepository.findAreaTypes(moId);
+    }
 
     // (К_УУ_4)	Добавление типов, доступных для МУ
 
