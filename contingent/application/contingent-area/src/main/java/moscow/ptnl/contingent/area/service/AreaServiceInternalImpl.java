@@ -668,15 +668,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
 
             //5.2
-            List<PositionNom> positionNom = positionNomRepository.searchPostitionNomActualByCode(empl.getPositionId());
+            Optional<PositionNom> positionNom = positionNomCRUDRepository.findById(empl.getPositionId());
 
-            if (positionNom.isEmpty()) {
+            if (!positionNom.isPresent()) {
                 // TODO ???
                 continue;
             }
 
             //5.3
-            Specialization specialization = positionNom.get(0).getSpecialization();
+            Specialization specialization = positionNom.get().getSpecialization();
 
             // 5.4.
             if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
@@ -691,7 +691,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
             if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
-                        new ValidationParameter("positionTitle", positionNom != null ? positionNom.get(0).getTitle() : null),
+                        new ValidationParameter("positionTitle", positionNom != null ? positionNom.get().getTitle() : null),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                         new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
             }
