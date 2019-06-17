@@ -375,7 +375,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public void updatePrimaryArea(long areaId, Integer number,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
+
+        // TODO требуется полная переработка
+/*
         Validation validation = new Validation();
+
+        // 1. 2.
         Area area = areaHelper.checkAndGetArea(areaId, validation);
         Area oldArea = new Area(area);
 
@@ -426,9 +431,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         areaCRUDRepository.save(area);
 
+        // 11.
         if (areaHelper.isAreaPrimary(area)) {
             esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "updatePrimaryArea"));
         }
+*/
     }
 
     // (К_УУ_10) Изменение участка обслуживания зависимого типа
