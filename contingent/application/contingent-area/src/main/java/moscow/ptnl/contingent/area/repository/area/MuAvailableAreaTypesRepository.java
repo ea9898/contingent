@@ -9,5 +9,7 @@ import java.util.List;
 @NoRepositoryBean
 public interface MuAvailableAreaTypesRepository {
 
+    List<MuAvailableAreaTypes> findAreaTypes(long moId);
+
     List<MuAvailableAreaTypes> findByAreaTypes(AreaType areaType);
 }

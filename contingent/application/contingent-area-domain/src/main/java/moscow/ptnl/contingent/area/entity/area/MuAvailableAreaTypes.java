@@ -5,6 +5,8 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,6 +24,7 @@ public class MuAvailableAreaTypes implements Serializable {
     private static final long serialVersionUID = 7163458434444617867L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_MU_AVAILABLE_AREA_TYPES")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 

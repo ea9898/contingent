@@ -164,7 +164,7 @@ public class AreaServiceHelper {
         if (templates != null && !templates.isEmpty()) {
             templates.forEach(temp -> {
                 if (!AvailableToCreateType.POSSIBLE.getValue().equals(temp.getAvailableToCreate())) {
-                    validation.error(AreaErrorReason.CANT_CHANGE_AREA_TYPE,
+                    validation.error(AreaErrorReason.AREA_TYPE_NOT_EXISTS_IN_MU,
                             new ValidationParameter("areaType", temp.getAreaType().getTitle()));
                 }
             });
@@ -701,7 +701,21 @@ public class AreaServiceHelper {
         });
     }
 
-    // К_УУ_2 1.
+    // К_УУ_4 2.
+    // Система проверяет, что в списке доступных для МУ отсутствует Тип участка с переданным кодом
+    public void checkAreaTypesExistInMU(long muId, List<AreaType> areaTypes, Validation validation) {
+        List<AreaType> availableAreaTypes = muAvailableAreaTypesRepository.findAreaTypes(muId).stream()
+                .map(MuAvailableAreaTypes::getAreaType)
+                .collect(Collectors.toList());
+        areaTypes.forEach(a -> {
+            if (availableAreaTypes.contains(a)) {
+                validation.error(AreaErrorReason.AREA_TYPE_ALREADY_EXISTS,
+                        new ValidationParameter("areaType", a.getTitle()));
+            }
+        });
+    }
+
+    // К_УУ_2 1., К_УУ_4 1.
     // Система проверяет, что в списке доступных для МО присутствует Тип участка с переданным кодом
     public List<MoAvailableAreaTypes> checkAndGetAreaTypesNotExistInMO(long moId, List<Long> areaTypeCodes, Validation validation) {
         List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId);

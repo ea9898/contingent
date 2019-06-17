@@ -9,6 +9,7 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
+import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
@@ -44,6 +45,7 @@ import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesCRUDRepos
 import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
+import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeSpecializationsRepository;
@@ -76,6 +78,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import moscow.ptnl.contingent.service.history.HistoryService;
 import moscow.ptnl.ws.security.UserContextHolder;
 import ru.mos.emias.contingent2.core.PolicyTypeCodes;
@@ -175,6 +179,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AddressFormingElementRepository addressFormingElementRepository;
 
     @Autowired
+    private MuAvailableAreaTypesCRUDRepository muAvailableAreaTypesCRUDRepository;
+
+    @Autowired
     private Algorithms algorithms;
 
     @Autowired
@@ -230,6 +237,26 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_4)	Добавление типов, доступных для МУ
+    @Override
+    public void addMuAvailableAreaTypes(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException {
+        Validation validation = new Validation();
+        List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
+        areaHelper.checkAreaTypesExistInMU(muId, moAvailableAreaTypes.stream()
+                .map(MoAvailableAreaTypes::getAreaType)
+                .collect(Collectors.toList()), validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        moAvailableAreaTypes.forEach(a -> {
+            MuAvailableAreaTypes muAvailableAreaType = new MuAvailableAreaTypes();
+            muAvailableAreaType.setMuId(muId);
+            muAvailableAreaType.setAreaType(a.getAreaType());
+            muAvailableAreaType.setMoAvailableAreaType(a);
+            muAvailableAreaType.setCreateDate(LocalDateTime.now());
+            muAvailableAreaTypesCRUDRepository.save(muAvailableAreaType);
+        });
+    }
 
     // (К_УУ_5)	Удаление типов участков из доступных для МУ
 
