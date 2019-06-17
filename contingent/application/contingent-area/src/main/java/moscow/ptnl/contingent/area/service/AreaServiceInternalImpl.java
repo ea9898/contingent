@@ -25,6 +25,8 @@ import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
@@ -46,6 +48,7 @@ import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesRepositor
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeSpecializationsRepository;
@@ -72,6 +75,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -182,6 +186,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private MuAvailableAreaTypesCRUDRepository muAvailableAreaTypesCRUDRepository;
 
     @Autowired
+    private MuAvailableAreaTypesRepository muAvailableAreaTypesRepository;
+
+    @Autowired
     private Algorithms algorithms;
 
     @Autowired
@@ -240,7 +247,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Override
     public void addMuAvailableAreaTypes(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException {
         Validation validation = new Validation();
+        // 1.
         List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
+        // 2.
         areaHelper.checkAreaTypesExistInMU(muId, moAvailableAreaTypes.stream()
                 .map(MoAvailableAreaTypes::getAreaType)
                 .collect(Collectors.toList()), validation);
@@ -248,6 +257,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        // 3.
         moAvailableAreaTypes.forEach(a -> {
             MuAvailableAreaTypes muAvailableAreaType = new MuAvailableAreaTypes();
             muAvailableAreaType.setMuId(muId);
@@ -259,8 +269,39 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_5)	Удаление типов участков из доступных для МУ
+    @Override
+    public void delMuAvailableAreaTypes(long muId, List<Long> areaTypeCodes) throws ContingentException {
+        Validation validation = new Validation();
+        // 1.
+        List<MuAvailableAreaTypes> areaTypes = areaHelper.checkAndGetAreaTypesNotExistInMU(muId, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        // 2.
+        muAvailableAreaTypesCRUDRepository.deleteAll(areaTypes);
+    }
 
     // (К_УУ_6)	Предоставление типов участков, доступных для МУ
+    @Override
+    public MuAreaTypesFull getMuAvailableAreaTypes(long moId, long muId, AreaTypeStateType areaTypeState) throws ContingentException {
+        // 1.
+        List<AreaType> usedAreaTypes = muAvailableAreaTypesRepository.findAreaTypes(muId).stream()
+                .map(MuAvailableAreaTypes::getAreaType)
+                .collect(Collectors.toList());
+        // 2.
+        List<AreaType> availableAreaTypes = new ArrayList<>();
+
+        if (!AreaTypeStateType.USED_IN_MU.equals(areaTypeState)) {
+            availableAreaTypes.addAll(moAvailableAreaTypesRepository.findAreaTypes(moId).stream()
+                    .filter(a -> usedAreaTypes.stream()
+                                    .noneMatch(b -> Objects.equals(b, a.getAreaType())))
+                    .map(MoAvailableAreaTypes::getAreaType)
+                    .collect(Collectors.toList()));
+        }
+        return new MuAreaTypesFull(AreaTypeStateType.AVAILABLE_TO_ADD.equals(areaTypeState) ? new ArrayList<>() : usedAreaTypes,
+                availableAreaTypes);
+    }
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
     @Override

@@ -4,10 +4,12 @@ import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.AreaTypeShortMapper;
+import moscow.ptnl.contingent.area.transform.GetMuAvailableAreaTypesResponseMapper;
 import moscow.ptnl.contingent.area.transform.MoAddressMapper;
 import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
@@ -47,6 +49,8 @@ import ru.mos.emias.contingent2.area.types.DelMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.DelMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesResponse;
+import ru.mos.emias.contingent2.area.types.DelMuAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.types.DelMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaAddressRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
@@ -55,6 +59,8 @@ import ru.mos.emias.contingent2.area.types.GetMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.GetMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesResponse;
+import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdResponse;
 import ru.mos.emias.contingent2.area.types.RestoreAreaRequest;
@@ -75,6 +81,7 @@ import ru.mos.emias.contingent2.area.AreaPT;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 
@@ -120,6 +127,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private NotNsiAddressMapper notNsiAddressMapper;
+
+    @Autowired
+    private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
 
     @Override
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
@@ -443,6 +453,29 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             areaService.addMuAvailableAreaTypes(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new AddMuAvailableAreaTypesResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public DelMuAvailableAreaTypesResponse delMuAvailableAreaTypes(DelMuAvailableAreaTypesRequest body) throws Fault {
+        try {
+            areaService.delMuAvailableAreaTypes(body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
+
+            return new DelMuAvailableAreaTypesResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public GetMuAvailableAreaTypesResponse getMuAvailableAreaTypes(GetMuAvailableAreaTypesRequest body) throws Fault {
+        try {
+            return getMuAvailableAreaTypesResponseMapper.entityToDtoTransform(areaService.getMuAvailableAreaTypes(
+                    body.getMoId(), body.getMuId(), AreaTypeStateType.getByValue(body.getAreaTypeState())));
         }
         catch (Exception ex) {
             throw mapException(ex);

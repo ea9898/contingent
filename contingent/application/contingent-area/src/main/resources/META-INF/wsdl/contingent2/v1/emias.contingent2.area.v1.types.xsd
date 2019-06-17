@@ -486,4 +486,72 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="delMuAvailableAreaTypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="muId" type="xs:long" />
+                <xs:element name="areaTypeCodes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delMuAvailableAreaTypesResponse">
+        <xs:complexType>
+            <xs:sequence/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMuAvailableAreaTypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="muId" type="xs:long" />
+                <xs:element name="areaTypeState">
+                    <xs:annotation>
+                        <xs:documentation>
+                            0 - Используемые в МУ,
+                            1 - Доступные для добавления в список МУ,
+                            2 - Все
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:int">
+                            <xs:minInclusive value="0"/>
+                            <xs:maxInclusive value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMuAvailableAreaTypesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="availableToUseAreaTypes" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaType" type="core:AreaTypeShort" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="availableToAddAreaTypes" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaType" type="core:AreaTypeShort" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
