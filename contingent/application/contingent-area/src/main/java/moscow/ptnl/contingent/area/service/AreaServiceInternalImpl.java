@@ -78,6 +78,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import moscow.ptnl.ws.security.UserContextHolder;
+import ru.mos.emias.contingent2.core.PolicyTypeCodes;
+import ru.mos.emias.contingent2.core.PrimaryAreaTypeCodes;
 
 @Component
 public class AreaServiceInternalImpl implements AreaServiceInternal {
@@ -288,12 +290,42 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_8)	Создание участка обслуживания зависимого типа
     @Override
-    public Long createDependentArea(long moId, Long muId, List<MuType> muTypes, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
+    public Long createDependentArea(long moId, Long muId, Integer number, Long areaTypeCode,
+                                    List<Long> primaryAreaTypeCodes, List<Long> policyTypeCodes,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                     boolean autoAssignForAttachment, String description) throws ContingentException {
+
         Validation validation = new Validation();
 
+        // 1.
         areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+
+        // 2.
+        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
+        areaHelper.checkPrimaryAreasInMU(muId, areaType, validation);
+
+        // 3.
+
+        // 4.
+
+        // 5.
+
+        // 6.
+
+        // 7.
+
+        // 8.
+
+        // 9.
+
+        // 10.
+
+        // 11.
+
+
+        return 0L;
+/*
+
         areaHelper.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
@@ -324,6 +356,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 //        esuHelperService.trySendDependentAreaChange(area);
 
         return area.getId();
+*/
     }
 
     // (К_УУ_9)	Изменение участка обслуживания первичного типа
@@ -779,7 +812,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "addAreaAddress"));
         }
 
-        return new ArrayList<>();
+        return areaAddressIds;
     }
 
     // (К_УУ_14) Удаление адресов из участка обслуживания

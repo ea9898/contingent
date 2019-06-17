@@ -2,7 +2,10 @@ package moscow.ptnl.contingent.area.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes_;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,9 @@ import java.util.List;
 @Transactional(propagation=Propagation.MANDATORY)
 public class MoAvailableAreaTypesRepositoryImpl extends BaseRepository implements MoAvailableAreaTypesRepository {
 
+    @Autowired
+    private MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
+
     @Override
     public List<MoAvailableAreaTypes> findAreaTypes(long moId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -26,4 +32,14 @@ public class MoAvailableAreaTypesRepositoryImpl extends BaseRepository implement
         );
         return entityManager.createQuery(criteria).getResultList();
     }
+
+    @Override
+    public List<MoAvailableAreaTypes> findByAreaTypes(AreaType areaType) {
+        Specification<MoAvailableAreaTypes> specification =
+                (root, criteriaQuery, criteriaBuilder) ->
+                        criteriaBuilder.equal(root.get(MoAvailableAreaTypes_.areaType.getName()), areaType);
+
+        return moAvailableAreaTypesCRUDRepository.findAll(specification);
+    }
+
 }

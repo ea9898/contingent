@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.contingent2.core.MuType;
+import ru.mos.emias.contingent2.core.PolicyTypeCodes;
+import ru.mos.emias.contingent2.core.PrimaryAreaTypeCodes;
 
 
 import java.time.LocalDate;
@@ -24,7 +26,8 @@ public interface AreaServiceInternal {
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
-    Long createDependentArea(long moId, Long muId, List<MuType> muTypes, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodes,
+    Long createDependentArea(long moId, Long muId, Integer number, Long areaTypeCode,
+                             List<Long> primaryAreaTypeCodes, List<Long> policyTypeCodes,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              boolean autoAssignForAttachment, String description) throws ContingentException;
 

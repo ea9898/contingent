@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -26,6 +27,7 @@ import moscow.ptnl.contingent.area.repository.area.AreaRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
+import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
@@ -106,6 +108,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
+
+    @Autowired
+    private MuAvailableAreaTypesRepository muAvailableAreaTypesRepository;
 
     @Autowired
     private Algorithms algorithms;
@@ -243,7 +248,17 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkPrimaryAreasInMU(long muId, List<Long> primaryAreaTypeCodes, Validation validation) {
+    // К_УУ_8 2.
+    // Система проверяет наличие каждого переданного первичного типа участка
+    public void checkPrimaryAreasInMU(Long muId, AreaType areaType, Validation validation) {
+        if (muId != null) {
+            List<MuAvailableAreaTypes> muAvailableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType);
+        } else {
+            List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findByAreaTypes(areaType);
+        }
+
+/*
+
         StringBuilder primaryAreaTypesMissing = new StringBuilder();
         List<Area> areas = areaRepository.findAreas(null, muId, primaryAreaTypeCodes, null, true);
 
@@ -256,6 +271,7 @@ public class AreaServiceHelper {
             validation.error(AreaErrorReason.NO_PRIMARY_AREA, new ValidationParameter("primaryAreaTypeCode",
                     primaryAreaTypesMissing.substring(0, primaryAreaTypesMissing.length() - 2)));
         }
+*/
     }
 
     // Проверяет существует ли участок с указанным идентификатором и не находится ли он в архиве

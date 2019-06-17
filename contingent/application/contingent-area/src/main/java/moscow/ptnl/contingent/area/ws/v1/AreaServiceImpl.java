@@ -75,6 +75,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
+import ru.mos.emias.contingent2.core.PrimaryAreaTypeCodes;
 
 /**
  *
@@ -149,8 +150,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         try {
             CreateDependentAreaResponse response = new CreateDependentAreaResponse();
-            Long id = areaService.createDependentArea(body.getMoId(), body.getMuId(), body.getMuTypes().getMuTypes(),
-                    body.getNumber(), body.getAreaTypeCode(), body.getPrimaryAreaTypeCodes(),
+            Long id = areaService.createDependentArea(body.getMoId(), body.getMuId(),
+                    body.getNumber(), body.getAreaTypeCode(),
+                    body.getPrimaryAreaTypes().stream().flatMap(pat -> pat.getPrimaryAreaTypeCodes().stream()).collect(Collectors.toList()),
+                    body.getPolicyTypes().stream().flatMap(pt -> pt.getPolicyTypeCodes().stream()).collect(Collectors.toList()),
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(),
                     body.getAgeMinW(), body.getAgeMaxW(), body.isAutoAssignForAttachment(), body.getDescription());
 
