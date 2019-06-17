@@ -1,7 +1,5 @@
 package moscow.ptnl.contingent.area.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes_;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes_;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
@@ -23,6 +21,17 @@ public class MuAvailableAreaTypesRepositoryImpl extends BaseRepository implement
 
     @Autowired
     private MuAvailableAreaTypesCRUDRepository muAvailableAreaTypesCRUDRepository;
+
+    @Override
+    public List<MuAvailableAreaTypes> findAreaTypes(long muId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<MuAvailableAreaTypes> criteria = criteriaBuilder.createQuery(MuAvailableAreaTypes.class);
+        Root<MuAvailableAreaTypes> order = criteria.from(MuAvailableAreaTypes.class);
+        criteria.where(
+                criteriaBuilder.equal(order.get(MuAvailableAreaTypes_.muId.getName()), muId)
+        );
+        return entityManager.createQuery(criteria).getResultList();
+    }
 
     @Override
     public List<MuAvailableAreaTypes> findByAreaTypes(AreaType areaType) {
