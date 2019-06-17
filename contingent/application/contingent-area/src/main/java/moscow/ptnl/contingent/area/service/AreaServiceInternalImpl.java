@@ -399,7 +399,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_9)	Изменение участка обслуживания первичного типа
     @Override
-    public void updatePrimaryArea(long areaId, Integer number,
+    public void updatePrimaryArea(long areaId, Integer number, List<Integer> policyTypesAdd, List<Integer> policyTypesDel,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
 

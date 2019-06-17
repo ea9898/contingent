@@ -85,6 +85,8 @@
                 <xs:element name="areaId" type="xs:long" />
                 <xs:element name="number" type="xs:int" minOccurs="0" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
+                <xs:element name="PolicyTypesAdd" type="core:PolicyTypesAdd" minOccurs="0" />
+                <xs:element name="PolicyTypesDel" type="core:PolicyTypesDel" minOccurs="0" />
                 <xs:element name="ageMin" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMax" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinM" type="xs:int" minOccurs="0" />
@@ -100,6 +102,7 @@
     <xs:element name="updatePrimaryAreaResponse">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="fault" type="core:Fault" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
