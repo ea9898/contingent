@@ -21,6 +21,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import moscow.ptnl.contingent.domain.esu.event.ESUEventHelper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +31,7 @@ public class EsuServiceImpl implements EsuService {
 
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    //private final static String AREA_TOPIC = "SelfContingentArea";
-
-    @Autowired
+    @Autowired @Lazy
     private EsuProducer esuProducer;
 
     @Autowired
@@ -40,12 +39,12 @@ public class EsuServiceImpl implements EsuService {
     
     @Autowired
     private EsuOutputRepository esuOutputRepository;
-    
-    @Value("${esu.producer.area.topic}")
-    private String esuAreaTopicName;
-    
+        
     @Value("${esu.producer.produce.timeout}")
     private Integer producerRequestTimeout;
+    
+    @Autowired
+    private AsyncEsuExecutor asyncEsuExecutor;
 
     /**
      * Сохраняет информацию о событии в БД и пытается отправить ее в ЕСУ.
@@ -72,8 +71,8 @@ public class EsuServiceImpl implements EsuService {
             esuOutput.setMessage(message); 
             esuOutputRepository.updateMessage(esuOutput.getId(), message);
             
-            //TODO здесь нужна асинхронность, чтобы не блокировать базу 
-            publishToESU(esuOutput.getId(), esuOutput.getTopic(), esuOutput.getMessage());
+            //здесь нужна асинхронность, чтобы не блокировать базу             
+            asyncEsuExecutor.publishToESU(this, esuOutput.getId(), esuOutput.getTopic(), esuOutput.getMessage());
             
             return true;
         } catch (Exception e) {
@@ -90,8 +89,8 @@ public class EsuServiceImpl implements EsuService {
 
         records.forEach((record) -> {
             LOG.debug("TRY RESEND TO ESU: {}", record.getId());
-            //TODO здесь нужна асинхронность, чтобы не блокировать базу
-            publishToESU(record.getId(), record.getTopic(), record.getMessage());
+            //здесь нужна асинхронность, чтобы не блокировать базу
+            asyncEsuExecutor.publishToESU(this, record.getId(), record.getTopic(), record.getMessage());
         });
     }
 
@@ -102,29 +101,40 @@ public class EsuServiceImpl implements EsuService {
      * @param publishTopic
      * @param message 
      */
-    private void publishToESU(final Long recordId, final String publishTopic, final String message) {
+    @Override
+    public void publishToESU(final Long recordId, final String publishTopic, final String message) {
+                
+        EsuProducer.MessageMetadata esuAnswer = null;
+        //запускаем в потоке чтобы иметь возможность прервать по таймауту
         try {
-            //запускаем в потоке чтобы иметь возможность прервать по таймауту
-            EsuProducer.MessageMetadata  esuAnswer = CompletableFuture.supplyAsync(() -> {
+            esuAnswer = CompletableFuture.supplyAsync(() -> {
                 try {
                     return esuProducer.publish(publishTopic, message);
                 } catch (Exception e){
-                    LOG.error("ошибка при публикации данных о событии в ЕСУ", e);
-                    throw new RuntimeException(e);
+                    LOG.error("ошибка при публикации данных в ЕСУ", e);
                 }
+                return null;
             } /*,getPublishThreadExecutor()*/).get(producerRequestTimeout, TimeUnit.MILLISECONDS);
-            
-            Optional<EsuOutput> result = esuOutputCRUDRepository.findById(recordId);
-            if (result.isPresent()) {
-                EsuOutput esuOutput = result.get();
-                esuOutput.setEsuId(esuAnswer.getKey());
-                esuOutput.setOffset(esuAnswer.getOffset());
-                esuOutput.setPartition(esuAnswer.getPartition());
-                esuOutput.setSentTime(toLocalDateTime(esuAnswer.getTimestamp()));
-                esuOutput.setStatus(EsuOutput.STATUS.SUCCESS);
-                esuOutputCRUDRepository.save(esuOutput);
+        } catch (Throwable e) {
+            LOG.error("публикации данных в ЕСУ прервана", e);
+        }
+        
+        try {
+            if (esuAnswer == null) {
+                esuOutputRepository.updateStatus(recordId, EsuOutput.STATUS.INPROGRESS, EsuOutput.STATUS.UNSUCCESS);
             } else {
-                LOG.warn("не найдено событие в ESU_OUTPUT с идентификатором: {}", recordId);
+                Optional<EsuOutput> result = esuOutputCRUDRepository.findById(recordId);
+                if (result.isPresent()) {
+                    EsuOutput esuOutput = result.get();
+                    esuOutput.setEsuId(esuAnswer.getKey());
+                    esuOutput.setOffset(esuAnswer.getOffset());
+                    esuOutput.setPartition(esuAnswer.getPartition());
+                    esuOutput.setSentTime(toLocalDateTime(esuAnswer.getTimestamp()));
+                    esuOutput.setStatus(EsuOutput.STATUS.SUCCESS);
+                    esuOutputCRUDRepository.save(esuOutput);
+                } else {
+                    LOG.warn("не найдено событие в ESU_OUTPUT с идентификатором: {}", recordId);
+                }
             }
         } catch (Exception e) {
             LOG.error("ошибка при публикации данных о событии в ЕСУ", e);

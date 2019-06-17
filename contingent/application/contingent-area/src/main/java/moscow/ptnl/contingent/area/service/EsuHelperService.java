@@ -24,9 +24,6 @@ public class EsuHelperService {
     private AreaRepository areaRepository;
 
     @Autowired
-    private EsuService esuService;
-
-    @Autowired
     private Algorithms algorithms;
 
     @Autowired @Qualifier(EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME)
@@ -57,7 +54,7 @@ public class EsuHelperService {
      * @throws RuntimeException при невозможности определить имя топика на основе типа события
      */
     public void sendEventToESU(Object event) throws RuntimeException {
-        LOG.info("TRY SEND EVENT: {}", event);
+        LOG.debug("TRY SEND EVENT: {}", event);
         esuChannel.send(EsuEventBuilder
                 .withTopic(ESUEventHelper.resolveTopicName(event))
                 .setEventObject(event)

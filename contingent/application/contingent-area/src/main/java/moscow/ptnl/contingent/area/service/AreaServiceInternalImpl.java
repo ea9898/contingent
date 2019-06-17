@@ -78,9 +78,13 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import moscow.ptnl.ws.security.UserContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class AreaServiceInternalImpl implements AreaServiceInternal {
+    
+    private final static Logger LOG = LoggerFactory.getLogger(AreaServiceInternalImpl.class);
 
     @Autowired
     private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
@@ -344,7 +348,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
         Area area = areaHelper.checkAndGetArea(areaId, validation);
-        Area oldArea = new Area(area);
+        Area oldArea = new Area(area);              
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -913,7 +917,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 6. Система для данного участка меняет статус на «Архивный»
         area.setArchived(true);
         areaCRUDRepository.save(area);
-
+        
         // 7.
         if (areaHelper.isAreaPrimary(area)) {
             esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "archiveArea"));

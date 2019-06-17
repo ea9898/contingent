@@ -62,7 +62,8 @@ public class EventChannelsConfiguration {
      */
     @Bean(name = ESU_EVENT_CHANNEL_NAME)
     public MessageChannel createESUEventChannel() {        
-        return new DirectChannel();
+        //return new DirectChannel();
+        return new QueueChannel(QUEUE_LENGTH);
     }
     
     @Bean(name = PollerMetadata.DEFAULT_POLLER_METADATA_BEAN_NAME)
