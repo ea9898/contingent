@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "AREA_MEDICAL_EMPLOYEES")
+@Table(name = "AREA_MEDICAL_EMPLOYEE")
 @SequenceGenerator(name = "seq_area_medical_employees", sequenceName = "seq_area_medical_employees", allocationSize=1)
 public class AreaMedicalEmployees implements Serializable {
 
