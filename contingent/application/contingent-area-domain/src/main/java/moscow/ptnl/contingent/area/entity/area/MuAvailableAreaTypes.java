@@ -5,8 +5,6 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -21,15 +19,14 @@ import java.util.Objects;
 @SequenceGenerator(name = "SEQ_MU_AVAILABLE_AREA_TYPES", sequenceName = "SEQ_MU_AVAILABLE_AREA_TYPES", allocationSize=1)
 public class MuAvailableAreaTypes implements Serializable {
 
-    private static final long serialVersionUID = -1737065823045335993L;
+    private static final long serialVersionUID = 7163458434444617867L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_MU_AVAILABLE_AREA_TYPES")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
     @Column(name = "MU_ID")
-    private Long moId;
+    private Long muId;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,7 +34,7 @@ public class MuAvailableAreaTypes implements Serializable {
 
     @JoinColumn(name = "MO_AVAILABLE_AREA_TYPES_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private MoAvailableAreaTypes moAvailableAreaTypes;
+    private MoAvailableAreaTypes moAvailableAreaType;
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
@@ -50,12 +47,12 @@ public class MuAvailableAreaTypes implements Serializable {
         this.id = id;
     }
 
-    public Long getMoId() {
-        return moId;
+    public Long getMuId() {
+        return muId;
     }
 
-    public void setMoId(Long moId) {
-        this.moId = moId;
+    public void setMuId(Long muId) {
+        this.muId = muId;
     }
 
     public AreaType getAreaType() {
@@ -66,12 +63,12 @@ public class MuAvailableAreaTypes implements Serializable {
         this.areaType = areaType;
     }
 
-    public MoAvailableAreaTypes getMoAvailableAreaTypes() {
-        return moAvailableAreaTypes;
+    public MoAvailableAreaTypes getMoAvailableAreaType() {
+        return moAvailableAreaType;
     }
 
-    public void setMoAvailableAreaTypes(MoAvailableAreaTypes moAvailableAreaTypes) {
-        this.moAvailableAreaTypes = moAvailableAreaTypes;
+    public void setMoAvailableAreaType(MoAvailableAreaTypes moAvailableAreaType) {
+        this.moAvailableAreaType = moAvailableAreaType;
     }
 
     public LocalDateTime getCreateDate() {
@@ -83,6 +80,18 @@ public class MuAvailableAreaTypes implements Serializable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj != null && obj instanceof MuAvailableAreaTypes) {
+            return ((MuAvailableAreaTypes) obj).getId().equals(this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.id);
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

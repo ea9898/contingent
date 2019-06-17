@@ -14,13 +14,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import moscow.ptnl.contingent.domain.esu.event.ESUEvent;
+import moscow.ptnl.contingent.domain.esu.event.ESUEventHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class EsuServiceImpl implements EsuService {
     
     @Autowired
     private EsuOutputRepository esuOutputRepository;
-
+    
     @Value("${esu.producer.area.topic}")
     private String esuAreaTopicName;
     
@@ -57,22 +56,21 @@ public class EsuServiceImpl implements EsuService {
      * @return true при успешной публикации в ЕСУ
      */
     @Override
-    public boolean saveAndPublishToESU(String topicName, EsuOutput event) {
+    public boolean saveAndPublishToESU(String topicName, Object event) {
         LOG.debug("create message for topic: {}", topicName);
         
         try {
-            String ispkEventId = UUID.randomUUID().toString();
-            String message = createMessageBody(topicName, event, ispkEventId);
-            LOG.debug(message);
-
             EsuOutput esuOutput = new EsuOutput();
             esuOutput.setTopic(topicName);
-            esuOutput.setMessage(message);        
             esuOutput.setSentTime(LocalDateTime.now());
             esuOutput.setStatus(EsuOutput.STATUS.INPROGRESS);
-            //TODO esuOutput <- ispkEventId
-
-            esuOutput = esuOutputCRUDRepository.save(esuOutput); 
+            esuOutput.setMessage(" ");
+            esuOutput = esuOutputCRUDRepository.save(esuOutput);
+            
+            String message = ESUEventHelper.toESUMessage(event, esuOutput.getId());
+            LOG.debug(message);
+            esuOutput.setMessage(message); 
+            esuOutputRepository.updateMessage(esuOutput.getId(), message);
             
             //TODO здесь нужна асинхронность, чтобы не блокировать базу 
             publishToESU(esuOutput.getId(), esuOutput.getTopic(), esuOutput.getMessage());
@@ -90,16 +88,15 @@ public class EsuServiceImpl implements EsuService {
         
         List<EsuOutput> records = esuOutputRepository.findEsuOutputsToResend(olderThen);
 
-        for (EsuOutput record : records) {
+        records.forEach((record) -> {
             LOG.debug("TRY RESEND TO ESU: {}", record.getId());
-            //TODO здесь нужна асинхронность, чтобы не блокировать базу 
-            publishToESU(record.getId(), record.getTopic(), record.getMessage());                
-            
-        }
+            //TODO здесь нужна асинхронность, чтобы не блокировать базу
+            publishToESU(record.getId(), record.getTopic(), record.getMessage());
+        });
     }
 
     /**
-     * Блокирующий метод публиукации в ЕСУ.
+     * Блокирующий метод публикации в ЕСУ.
      * 
      * @param recordId
      * @param publishTopic
@@ -133,26 +130,6 @@ public class EsuServiceImpl implements EsuService {
             LOG.error("ошибка при публикации данных о событии в ЕСУ", e);
             esuOutputRepository.updateStatus(recordId, EsuOutput.STATUS.INPROGRESS, EsuOutput.STATUS.UNSUCCESS);
         }
-    }
-
-    /**
-     * Определяем подходящий топик в зависимости от типа события.
-     * Если событие не должно писаться в топик, то вернет Optional.empty.
-     * 
-     * @param publishObject
-     * @return 
-     */
-    private Optional<String> resolveTopicName(ESUEvent publishObject) { 
-        if (publishObject != null) {
-//            LOG.debug("\n================\nEVENT CODE: {}\n==================", publishObject.getOperationType());
-            return Optional.of(esuAreaTopicName);
-        }
-        return Optional.empty();
-    }
-    
-    private String createMessageBody(String topicName, EsuOutput event, String ispkEventId) {
-        //FIXME
-        return null;
     }
     
     private static LocalDateTime toLocalDateTime(long timestamp) {

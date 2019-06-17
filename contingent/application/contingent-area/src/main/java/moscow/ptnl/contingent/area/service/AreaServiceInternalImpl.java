@@ -209,6 +209,17 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_2)	Удаление типов участков из доступных для МО
+    @Override
+    public void delMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
+        Validation validation = new Validation();
+        List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
+        areaHelper.checkAndGetAreaTypesNotExistInMU(moAvailableAreaTypes, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        moAvailableAreaTypes.forEach(a -> moAvailableAreaTypesCRUDRepository.delete(a));
+    }
 
     // (К_УУ_3)	Предоставление типов участков, доступных для МО
     @Override

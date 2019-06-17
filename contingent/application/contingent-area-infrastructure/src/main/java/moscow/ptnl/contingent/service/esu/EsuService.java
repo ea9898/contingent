@@ -2,9 +2,11 @@ package moscow.ptnl.contingent.service.esu;
 
 
 import java.time.LocalDateTime;
-import moscow.ptnl.contingent.domain.esu.EsuOutput;
 
-
+/**
+ *
+ * @author m.kachalov
+ */
 public interface EsuService {
 
     /**
@@ -15,7 +17,7 @@ public interface EsuService {
      * @param event
      * @return true при успешной публикации в ЕСУ
      */
-    boolean saveAndPublishToESU(String topicName, EsuOutput event);
+    boolean saveAndPublishToESU(String topicName, Object event);
 
     void periodicalPublishUnsuccessMessagesToESU(LocalDateTime olderThan);
 }

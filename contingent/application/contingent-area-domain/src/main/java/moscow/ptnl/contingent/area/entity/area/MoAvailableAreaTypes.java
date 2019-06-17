@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,11 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "MO_AVAILABLE_AREA_TYPES")
@@ -37,6 +40,9 @@ public class MoAvailableAreaTypes implements Serializable {
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "moAvailableAreaType")
+    private Set<MuAvailableAreaTypes> muAvailableAreaTypes;
 
     public Long getId() {
         return id;
@@ -68,6 +74,10 @@ public class MoAvailableAreaTypes implements Serializable {
 
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
+    }
+
+    public Set<MuAvailableAreaTypes> getMuAvailableAreaTypes() {
+        return muAvailableAreaTypes;
     }
 
     @Override
