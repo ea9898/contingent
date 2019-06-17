@@ -2,14 +2,14 @@ package moscow.ptnl.contingent.area.ws.v1;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.AreaTypeShortMapper;
+import moscow.ptnl.contingent.area.transform.GetMuAvailableAreaTypesResponseMapper;
 import moscow.ptnl.contingent.area.transform.MoAddressMapper;
 import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
@@ -32,6 +32,8 @@ import ru.mos.emias.contingent2.area.types.AddMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.AddMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.AddMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.AddMoAvailableAreaTypesResponse;
+import ru.mos.emias.contingent2.area.types.AddMuAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.types.AddMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.AddressAllocationOrderListResultPage;
 import ru.mos.emias.contingent2.area.types.ArchiveAreaRequest;
 import ru.mos.emias.contingent2.area.types.ArchiveAreaResponse;
@@ -47,6 +49,8 @@ import ru.mos.emias.contingent2.area.types.DelMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.DelMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesResponse;
+import ru.mos.emias.contingent2.area.types.DelMuAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.types.DelMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaAddressRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
@@ -55,6 +59,8 @@ import ru.mos.emias.contingent2.area.types.GetMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.GetMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesResponse;
+import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdResponse;
 import ru.mos.emias.contingent2.area.types.RestoreAreaRequest;
@@ -121,6 +127,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private NotNsiAddressMapper notNsiAddressMapper;
 
+    @Autowired
+    private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
+
     @Override
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
@@ -151,8 +160,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         try {
             CreateDependentAreaResponse response = new CreateDependentAreaResponse();
-            Long id = areaService.createDependentArea(body.getMoId(), body.getMuId(), body.getMuTypes().getMuTypes(),
-                    body.getNumber(), body.getAreaTypeCode(), body.getPrimaryAreaTypeCodes(),
+            Long id = areaService.createDependentArea(body.getMoId(), body.getMuId(),
+                    body.getNumber(), body.getAreaTypeCode(),
+                    body.getPrimaryAreaTypes().stream().flatMap(pat -> pat.getPrimaryAreaTypeCodes().stream()).collect(Collectors.toList()),
+                    body.getPolicyTypes().stream().flatMap(pt -> pt.getPolicyTypeCodes().stream()).collect(Collectors.toList()),
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(),
                     body.getAgeMinW(), body.getAgeMaxW(), body.isAutoAssignForAttachment(), body.getDescription());
 
@@ -168,6 +179,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws Fault {
         try {
             areaService.updatePrimaryArea(body.getAreaId(), body.getNumber(),
+                    body.getPolicyTypesAdd() == null ? Collections.EMPTY_LIST : body.getPolicyTypesAdd().getPolicyTypeCodes(),
+                    body.getPolicyTypesDel() == null ? Collections.EMPTY_LIST : body.getPolicyTypesDel().getPolicyTypeCodes(),
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
                     body.isAutoAssignForAttachment(), body.isAttachByMedicalReason(), body.getDescription());
 
@@ -427,6 +440,41 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     .collect(Collectors.toList())
             );
             return result;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public AddMuAvailableAreaTypesResponse addMuAvailableAreaTypes(AddMuAvailableAreaTypesRequest body) throws Fault {
+        try {
+            areaService.addMuAvailableAreaTypes(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
+
+            return new AddMuAvailableAreaTypesResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public DelMuAvailableAreaTypesResponse delMuAvailableAreaTypes(DelMuAvailableAreaTypesRequest body) throws Fault {
+        try {
+            areaService.delMuAvailableAreaTypes(body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
+
+            return new DelMuAvailableAreaTypesResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public GetMuAvailableAreaTypesResponse getMuAvailableAreaTypes(GetMuAvailableAreaTypesRequest body) throws Fault {
+        try {
+            return getMuAvailableAreaTypesResponseMapper.entityToDtoTransform(areaService.getMuAvailableAreaTypes(
+                    body.getMoId(), body.getMuId(), AreaTypeStateType.getByValue(body.getAreaTypeState())));
         }
         catch (Exception ex) {
             throw mapException(ex);

@@ -29,6 +29,11 @@
             <xs:element name="primaryAreaTypeCode" type="xs:long" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
+    <xs:complexType name="PolicyTypeCodes">
+        <xs:sequence>
+            <xs:element name="policyTypeCode" type="xs:long" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
     <xs:complexType name="AddressAllocationOrder">
         <xs:annotation>
             <xs:documentation>Типы участка в профиле МУ</xs:documentation>
@@ -265,6 +270,28 @@
         </xs:annotation>
         <xs:sequence>
             <xs:element name="fault" type="xs:string" maxOccurs="unbounded" default="Описание уточняется"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PolicyTypesAdd">
+        <xs:annotation>
+            <xs:documentation>Добавляемые типы полисов.
+                Код типа полиса. Возможные значения: 1 – полис ОМС
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="policyTypeCode" type="xs:int" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PolicyTypesDel">
+        <xs:annotation>
+            <xs:documentation>Удаляемые типы полисов.
+                Код типа полиса. Возможные значения: 1 – полис ОМС
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="policyTypeCode" type="xs:int" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 

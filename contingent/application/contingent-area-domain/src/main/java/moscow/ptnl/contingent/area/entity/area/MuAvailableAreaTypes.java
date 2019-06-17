@@ -5,9 +5,12 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -15,11 +18,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "MU_AVAILABLE_AREA_TYPES")
+@SequenceGenerator(name = "SEQ_MU_AVAILABLE_AREA_TYPES", sequenceName = "SEQ_MU_AVAILABLE_AREA_TYPES", allocationSize=1)
 public class MuAvailableAreaTypes implements Serializable {
 
     private static final long serialVersionUID = 7163458434444617867L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_MU_AVAILABLE_AREA_TYPES")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
@@ -78,17 +83,19 @@ public class MuAvailableAreaTypes implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj != null && obj instanceof MuAvailableAreaTypes) {
-            return ((MuAvailableAreaTypes) obj).getId().equals(this.id);
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MuAvailableAreaTypes that = (MuAvailableAreaTypes) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(muId, that.muId) &&
+                Objects.equals(areaType, that.areaType) &&
+                Objects.equals(moAvailableAreaType, that.moAvailableAreaType) &&
+                Objects.equals(createDate, that.createDate);
     }
 
     @Override
-    public int hashCode() {        
-        return Objects.hashCode(this.id);
+    public int hashCode() {
+        return Objects.hash(id, muId, areaType, moAvailableAreaType, createDate);
     }
 }

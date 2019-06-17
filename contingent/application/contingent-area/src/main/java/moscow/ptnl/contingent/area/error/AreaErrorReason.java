@@ -14,7 +14,7 @@ public enum AreaErrorReason implements ErrorReason {
     NO_SEARCH_PARAMETERS("E024", "Не заданы критерии поиска"),
     AREA_TYPE_NOT_EXISTS_IN_MO("E026", "Тип участка %s отсутствует в списке доступных для МО"),
     AREA_TYPE_ALREADY_EXISTS("E027", "Тип участка %s уже присутствует в списке доступных"),
-    CANT_CHANGE_AREA_TYPE("E028", "Невозможно изменить тип участка %s. В шаблоне профиля допустимость создания данного типа отлична от «Возможно»"),
+    AREA_TYPE_NOT_EXISTS_IN_MU("E028", "Тип участка %s отсутствует в списке доступных для МУ"),
     CANT_DELETE_AREA_TYPE("E030", "Невозможно удалить тип участка с ИД %s, так как он присутствует в списке доступных для МУ с ИД %s"),
     ADDRESS_ALLOCATION_ORDER_EXISTS("E031", "Распоряжение с указанными параметрами уже существует в системе"),
     ADDRESS_ALLOCATION_ORDER_NOT_EXISTS("E032", "Распоряжение с ИД %s не найдено в системе"),

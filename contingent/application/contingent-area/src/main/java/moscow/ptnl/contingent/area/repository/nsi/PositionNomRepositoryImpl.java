@@ -27,7 +27,7 @@ public class PositionNomRepositoryImpl extends BaseRepository implements Positio
     public List<PositionNom> searchPostitionNomActualByCode(Long positionId) {
         Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
             criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(PositionNom_.code.getName()), positionId),
+                    criteriaBuilder.equal(root.get(PositionNom_.id.getName()), positionId),
                     criteriaBuilder.equal(root.get(PositionNom_.archived.getName()), false)
             );
         return positionNomCRUDRepository.findAll(specification);
