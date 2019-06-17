@@ -80,31 +80,19 @@ public class MuAvailableAreaTypes implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj != null && obj instanceof MuAvailableAreaTypes) {
-            return ((MuAvailableAreaTypes) obj).getId().equals(this.id);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(this.id);
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MuAvailableAreaTypes that = (MuAvailableAreaTypes) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(moId, that.moId) &&
+                Objects.equals(muId, that.muId) &&
                 Objects.equals(areaType, that.areaType) &&
-                Objects.equals(moAvailableAreaTypes, that.moAvailableAreaTypes) &&
+                Objects.equals(moAvailableAreaType, that.moAvailableAreaType) &&
                 Objects.equals(createDate, that.createDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, moId, areaType, moAvailableAreaTypes, createDate);
+        return Objects.hash(id, muId, areaType, moAvailableAreaType, createDate);
     }
 }
