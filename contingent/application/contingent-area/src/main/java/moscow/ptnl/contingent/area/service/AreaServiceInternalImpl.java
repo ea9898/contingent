@@ -215,6 +215,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        // TODO перееписать с saveAll
         areaTypeCodes.forEach(a -> {
             MoAvailableAreaTypes availableAreaType = new MoAvailableAreaTypes();
             areaTypes.stream()
@@ -237,6 +238,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        // TODO перееписать с deleteAll
         moAvailableAreaTypes.forEach(a -> moAvailableAreaTypesCRUDRepository.delete(a));
     }
 
