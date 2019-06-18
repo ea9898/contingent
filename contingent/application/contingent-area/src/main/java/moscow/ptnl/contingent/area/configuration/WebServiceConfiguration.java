@@ -17,7 +17,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
+ * Конфигурационный файл для создания Aoache CXF SOAP-сервисов.
+ * 
+ * Для включения логирования SOAP-запросов в настройках сервера приложений 
+ * должно быть установлено свойство org.apache.cxf.logging.enabled=true.
+ * 
  * @author m.kachalov
  */
 @Configuration

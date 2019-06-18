@@ -83,8 +83,10 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 
 import moscow.ptnl.contingent.service.history.HistoryService;
+import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.ws.security.UserContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -311,7 +313,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
-    @Override
+    @Override @LogESU(value = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
@@ -1000,7 +1002,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_16) Архивирование участка обслуживания
-    @Override
+    @Override @LogESU(AreaInfoEvent.class)
     public void archiveArea(long areaId) throws ContingentException {
         Validation validation = new Validation();
 
