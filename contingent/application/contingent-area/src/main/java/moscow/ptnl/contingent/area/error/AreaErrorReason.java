@@ -26,7 +26,7 @@ public enum AreaErrorReason implements ErrorReason {
     AREAS_NUMBER_LIMIT_EXCEEDED("UE047", "Невозможно создать участок, так как количество участков с типом %s превысит ограничение (%s)"),
     AREA_WITH_TYPE_EXISTS_IN_MO("UE048", "В МО уже существует участок с типом %s"),
     SOFT_RELATED_AREA_MUST_BE_FILLED("UE049", "Для участка вида «Мягко-ассоциированный участок» должны быть заполнены описание, номер, возрастной контингент"),
-    NO_PRIMARY_AREA("UE050", "Невозможно создать/изменить участок, так как отсутствует участок первичного типа (%s)"),
+    NO_PRIMARY_AREA("UE050", "Невозможно создать/изменить участок, так как добавляемый тип полиса отличен от ОМС"),
     AREA_NOT_RELATED_TO_SPECIAL_OFFICE("UE051", "Изменение филиала возможно только для участка вида «Ассоциированный со специализированным кабинетом»"),
     AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED("UE052", "Изменение основного медицинского работника возможно только для видов «Мягко-ассоциированный участок», «Ассоциированный со специализированным кабинетом»"),
     SPECIALIZATION_NOT_RELATED_TO_AREA("UE053", "Специализация %s исполнения должности с ИД %s не соответствует специализации типа участка %s"),
@@ -62,7 +62,8 @@ public enum AreaErrorReason implements ErrorReason {
     ADDRESS_NOT_SERVICED_MO__NSI("UE082", "Адрес уровень: %s, ИД: %s не включен в территорию обслуживания МО %s."),
     ADDRESS_NOT_SERVICED_MO_NOTNSI("UE082", "Адрес ИД: %s, %s: %s %s не включен в территорию обслуживания МО %s."),
     ADDRESS_ALREADY_SERVICED_NSI("UE083", "Адрес уровень: %s, ИД: %s уже обслуживается данным участком."),
-    ADDRESS_ALREADY_SERVICED_NOTNSI("UE083", "Адрес ИД: %s, %s: %s %s уже обслуживается данным участком.")
+    ADDRESS_ALREADY_SERVICED_NOTNSI("UE083", "Адрес ИД: %s, %s: %s %s уже обслуживается данным участком."),
+    POLICY_TYPE_NOT_SET_FOR_AREA("UE084", "Тип полиса с кодом %s не задан для участка с ИД %s")
     ;
 
     private final String description;

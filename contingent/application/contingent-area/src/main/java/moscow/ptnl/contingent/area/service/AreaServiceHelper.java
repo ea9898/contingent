@@ -4,12 +4,14 @@ import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.PolicyTypeEnum;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
@@ -29,6 +31,8 @@ import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesRepositor
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
@@ -53,7 +57,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -116,6 +119,12 @@ public class AreaServiceHelper {
 
     @Autowired
     private Algorithms algorithms;
+
+    @Autowired
+    private AreaPolicyTypesRepository areaPolicyTypesRepository;
+
+    @Autowired
+    private AreaPolicyTypesCRUDRepository areaPolicyTypesCRUDRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -206,9 +215,9 @@ public class AreaServiceHelper {
 
     public void checkAreaTypeAgeSetups(AreaType areaType, Integer ageMin, Integer ageMax,
                                        Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW, Validation validation) {
-        if (!checkAgeSetupFilling(ageMin, ageMax, areaType.getAgeMin(), areaType.getAgeMax()) ||
-                !checkAgeSetupFilling(ageMinM, ageMaxM, areaType.getAgeMMin(), areaType.getAgeMMax()) ||
-                !checkAgeSetupFilling(ageMinW, ageMaxW, areaType.getAgeWMin(), areaType.getAgeWMax())) {
+        if (checkAgeSetupFilling(ageMin, ageMax, areaType.getAgeMin(), areaType.getAgeMax()) ||
+                checkAgeSetupFilling(ageMinM, ageMaxM, areaType.getAgeMMin(), areaType.getAgeMMax()) ||
+                checkAgeSetupFilling(ageMinW, ageMaxW, areaType.getAgeWMin(), areaType.getAgeWMax())) {
             validation.error(AreaErrorReason.INCORRECT_AREA_AGE_SETUPS);
             return;
         }
@@ -218,7 +227,7 @@ public class AreaServiceHelper {
     }
 
     private boolean checkAgeSetupFilling(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType) {
-        return (ageMin == null || ageMinAreaType != null) && (ageMax == null || ageMaxAreaType != null);
+        return (ageMin == null && ageMinAreaType != null) || (ageMax == null && ageMaxAreaType != null);
     }
 
     private void checkAgeSetupRange(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType,
@@ -753,4 +762,40 @@ public class AreaServiceHelper {
                 )
         );
     }
+
+    public void checkPolicyTypesIsOMS(List<Long> policyTypesAdd,  Validation validation) throws ContingentException {
+        if (!policyTypesAdd.isEmpty() && policyTypesAdd.stream().anyMatch(policy -> !policy.equals(PolicyTypeEnum.OMS.getCode()))) {
+            validation.error(AreaErrorReason.NO_PRIMARY_AREA);
+            throw new ContingentException(validation);
+        }
+    }
+
+    public void checkPolicyTypesDel(long areaId, List<Long> policyTypesDel,  Validation validation) throws ContingentException {
+        if (!policyTypesDel.isEmpty()) {
+            for (Long policy : policyTypesDel) {
+                if (areaPolicyTypesRepository.findAll(areaId, policy).isEmpty()) {
+                    validation.error(AreaErrorReason.POLICY_TYPE_NOT_SET_FOR_AREA,
+                            new ValidationParameter("areaTypeCode", policy),
+                            new ValidationParameter("areaid", areaId));
+                }
+            }
+            if (!validation.isSuccess()) {
+                throw new ContingentException(validation);
+            }
+        }
+    }
+
+    public void saveAndDeleteAreaPolicyTypes(long areaId, List<Long> policyTypesAdd, List<Long> policyTypesDel) throws ContingentException {
+
+        if (!policyTypesDel.isEmpty()) {
+            areaPolicyTypesRepository.deleteAll(areaId, policyTypesDel);
+        }
+
+        if (!policyTypesAdd.isEmpty()) {
+            List<AreaPolicyTypes> policys = policyTypesAdd.stream()
+                    .map(policyId -> new AreaPolicyTypes(areaId, policyId)).collect(Collectors.toList());
+            areaPolicyTypesCRUDRepository.saveAll(policys);
+        }
+    }
+
 }
