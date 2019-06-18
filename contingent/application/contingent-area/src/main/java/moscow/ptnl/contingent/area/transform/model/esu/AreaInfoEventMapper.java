@@ -37,11 +37,11 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         event.setArchive(area.getArchived());
         event.setNumber(area.getNumber());
         event.setName(area.getDescription());
-        event.setAutoAssignForAttachment(area.getAutoAssignForAttach());
-        event.setResidentsBindRate(area.getAreaType().getResidentsBindRate().longValue());
+        event.setAutoAssignForAttachment(Boolean.TRUE.equals(area.getAutoAssignForAttach()));
+        event.setResidentsBindRate((area.getAreaType().getResidentsBindRate() != null) ? area.getAreaType().getResidentsBindRate().longValue() : null);
         event.setAreaRestriction(areaRestrictionMapper.entityToDtoTransform(area));
-        event.setMainEmployees(mainEmployeesMapper.entityToDtoTransform(area.getActualMainMedicalEmployees()));
-        event.setReplacementEmployees(replacementEmployeesMapper.entityToDtoTransform(area.getActualReplacementMedicalEmployees()));
+        event.setMainEmployees(mainEmployeesMapper.entityToDtoTransform(area.getActualMainMedicalEmployees())); //FIXME тут ошибка 
+        event.setReplacementEmployees(replacementEmployeesMapper.entityToDtoTransform(area.getActualReplacementMedicalEmployees())); //FIXME тут ошибка 
         event.setAddresses(addressesMapper.entityToDtoTransform(area.getActualAreaAddresses()));
 
         return event;

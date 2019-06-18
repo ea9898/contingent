@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.concurrent.Executor;
+import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @EnableScheduling
@@ -27,7 +28,7 @@ public class EsuPublishScheduler {
 
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    @Autowired
+    @Autowired @Lazy
     private EsuService esuService;
 
     @Value("${esu.resend.timeout}")
@@ -47,7 +48,7 @@ public class EsuPublishScheduler {
      * Периодическая проверка наличия неотправленных в ЕСУ сообщений и
      * попытка повторной их отправки.
      */
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Scheduled(cron = "${esu.resend.publish.cron.rule}")
     public void esuTask() {
         LOG.debug("Start periodical task to resend messages to ESU");

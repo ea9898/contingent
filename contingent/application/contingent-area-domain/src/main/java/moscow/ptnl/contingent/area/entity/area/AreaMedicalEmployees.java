@@ -22,13 +22,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "AREA_MEDICAL_EMPLOYEE")
-@SequenceGenerator(name = "seq_area_medical_employees", sequenceName = "seq_area_medical_employees", allocationSize=1)
+@SequenceGenerator(name = "seq_area_medical_employee", sequenceName = "seq_area_medical_employee", allocationSize=1)
 public class AreaMedicalEmployees implements Serializable {
 
     private static final long serialVersionUID = 4435222693561566689L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="seq_area_medical_employees")
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="seq_area_medical_employee")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 

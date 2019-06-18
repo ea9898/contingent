@@ -25,6 +25,8 @@ import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
@@ -46,6 +48,7 @@ import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesRepositor
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeSpecializationsRepository;
@@ -64,7 +67,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.contingent2.core.MuType;
@@ -80,9 +82,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
+
+    private final static Logger LOG = LoggerFactory.getLogger(AreaServiceInternalImpl.class);
 
     @Autowired
     private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
@@ -178,6 +185,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private MuAvailableAreaTypesCRUDRepository muAvailableAreaTypesCRUDRepository;
 
     @Autowired
+    private MuAvailableAreaTypesRepository muAvailableAreaTypesRepository;
+
+    @Autowired
     private Algorithms algorithms;
 
     @Autowired
@@ -199,6 +209,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        // TODO перееписать с saveAll
         areaTypeCodes.forEach(a -> {
             MoAvailableAreaTypes availableAreaType = new MoAvailableAreaTypes();
             areaTypes.stream()
@@ -221,6 +232,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        // TODO перееписать с deleteAll
         moAvailableAreaTypes.forEach(a -> moAvailableAreaTypesCRUDRepository.delete(a));
     }
 
@@ -236,7 +248,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Override
     public void addMuAvailableAreaTypes(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException {
         Validation validation = new Validation();
+        // 1.
         List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
+        // 2.
         areaHelper.checkAreaTypesExistInMU(muId, moAvailableAreaTypes.stream()
                 .map(MoAvailableAreaTypes::getAreaType)
                 .collect(Collectors.toList()), validation);
@@ -244,6 +258,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        // 3.
         moAvailableAreaTypes.forEach(a -> {
             MuAvailableAreaTypes muAvailableAreaType = new MuAvailableAreaTypes();
             muAvailableAreaType.setMuId(muId);
@@ -255,8 +270,39 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_5)	Удаление типов участков из доступных для МУ
+    @Override
+    public void delMuAvailableAreaTypes(long muId, List<Long> areaTypeCodes) throws ContingentException {
+        Validation validation = new Validation();
+        // 1.
+        List<MuAvailableAreaTypes> areaTypes = areaHelper.checkAndGetAreaTypesNotExistInMU(muId, areaTypeCodes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        // 2.
+        muAvailableAreaTypesCRUDRepository.deleteAll(areaTypes);
+    }
 
     // (К_УУ_6)	Предоставление типов участков, доступных для МУ
+    @Override
+    public MuAreaTypesFull getMuAvailableAreaTypes(long moId, long muId, AreaTypeStateType areaTypeState) throws ContingentException {
+        // 1.
+        List<AreaType> usedAreaTypes = muAvailableAreaTypesRepository.findAreaTypes(muId).stream()
+                .map(MuAvailableAreaTypes::getAreaType)
+                .collect(Collectors.toList());
+        // 2.
+        List<AreaType> availableAreaTypes = new ArrayList<>();
+
+        if (!AreaTypeStateType.USED_IN_MU.equals(areaTypeState)) {
+            availableAreaTypes.addAll(moAvailableAreaTypesRepository.findAreaTypes(moId).stream()
+                    .filter(a -> usedAreaTypes.stream()
+                                    .noneMatch(b -> Objects.equals(b, a.getAreaType())))
+                    .map(MoAvailableAreaTypes::getAreaType)
+                    .collect(Collectors.toList()));
+        }
+        return new MuAreaTypesFull(AreaTypeStateType.AVAILABLE_TO_ADD.equals(areaTypeState) ? new ArrayList<>() : usedAreaTypes,
+                availableAreaTypes);
+    }
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
     @Override
@@ -316,7 +362,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.resetAutoAssignForAttachment(area);
 
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "createPrimaryArea"));
+            esuHelperService.sendAreaInfoEvent(area, "createPrimaryArea");
         }
 
         return area.getId();
@@ -631,15 +677,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
 
             //5.2
-            List<PositionNom> positionNom = positionNomRepository.searchPostitionNomActualByCode(empl.getPositionId());
+            Optional<PositionNom> positionNom = positionNomCRUDRepository.findById(empl.getPositionId());
 
-            if (positionNom.isEmpty()) {
+            if (!positionNom.isPresent()) {
                 // TODO ???
                 continue;
             }
 
             //5.3
-            Specialization specialization = positionNom.get(0).getSpecialization();
+            Specialization specialization = positionNom.get().getSpecialization();
 
             // 5.4.
             if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
@@ -654,7 +700,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
             if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
-                        new ValidationParameter("positionTitle", positionNom != null ? positionNom.get(0).getTitle() : null),
+                        new ValidationParameter("positionTitle", positionNom != null ? positionNom.get().getTitle() : null),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                         new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
             }
@@ -708,7 +754,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 8
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "setMedicalEmployeeOnArea"));
+            esuHelperService.sendAreaInfoEvent(area, "setMedicalEmployeeOnArea");
         }
 
         return result;
@@ -858,7 +904,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 12.
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "addAreaAddress"));
+            esuHelperService.sendAreaInfoEvent(area, "addAreaAddress");
         }
 
         return areaAddressIds;
@@ -902,7 +948,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 6.
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "delAreaAddress"));
+            esuHelperService.sendAreaInfoEvent(area, "delAreaAddress");
         }
 
         // 7.
@@ -987,7 +1033,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 7.
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "archiveArea"));
+            esuHelperService.sendAreaInfoEvent(area, "archiveArea");
         }
     }
 
@@ -1025,8 +1071,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
             // 7.2.
             areas.forEach(depArea ->
-                    esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
-                            .createTopicCreateCloseAttachAreaChange(Collections.singletonList(areaId), null, depArea))
+                    esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(areaId), null, depArea)
             );
         }
 
@@ -1034,14 +1079,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (areaHelper.isAreaDependent(area)) {
             List<Area> areas = areaRepository.findPrimaryAreasByAreaEqAreaType(area);
 
-            esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
-                    .createTopicCreateCloseAttachAreaChange(areas.stream().map(Area::getId).collect(Collectors.toList()),
-                            null, area));
+            esuHelperService.sendAttachOnAreaChangeEvent(areas.stream().map(Area::getId).collect(Collectors.toList()),
+                            null, area);
         }
 
         // 9.
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "restoreArea"));
+            esuHelperService.sendAreaInfoEvent(area, "restoreArea");
         }
 
         // 10.

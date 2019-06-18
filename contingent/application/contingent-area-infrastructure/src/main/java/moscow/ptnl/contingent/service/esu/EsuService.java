@@ -4,7 +4,8 @@ package moscow.ptnl.contingent.service.esu;
 import java.time.LocalDateTime;
 
 /**
- *
+ * Сервис публикации данных в ЕСУ и сохранение статусов в БД.
+ * 
  * @author m.kachalov
  */
 public interface EsuService {
@@ -20,4 +21,13 @@ public interface EsuService {
     boolean saveAndPublishToESU(String topicName, Object event);
 
     void periodicalPublishUnsuccessMessagesToESU(LocalDateTime olderThan);
+    
+    /**
+     * Метод для асинхронного вызова в компоненте {@see AsyncEsuExecutor}.
+     * 
+     * @param recordId
+     * @param publishTopic
+     * @param message 
+     */
+    void publishToESU(final Long recordId, final String publishTopic, final String message);
 }

@@ -5,6 +5,8 @@ import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,7 @@ import ru.mos.emias.contingent2.core.MuType;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface AreaServiceInternal {
 
@@ -75,4 +78,8 @@ public interface AreaServiceInternal {
     List<AreaType> getMoAvailableAreaTypes(long moId) throws ContingentException;
 
     void addMuAvailableAreaTypes(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException;
+
+    void delMuAvailableAreaTypes(long muId, List<Long> areaTypeCodes) throws ContingentException;
+
+    MuAreaTypesFull getMuAvailableAreaTypes(long moId, long muId, AreaTypeStateType areaTypeState) throws ContingentException;
 }

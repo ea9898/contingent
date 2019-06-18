@@ -205,6 +205,22 @@
         <wsdl:part name="body" element="ns1:addMuAvailableAreaTypesResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="delMuAvailableAreaTypesInput">
+        <wsdl:part name="body" element="ns1:delMuAvailableAreaTypesRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="delMuAvailableAreaTypesOutput">
+        <wsdl:part name="body" element="ns1:delMuAvailableAreaTypesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMuAvailableAreaTypesInput">
+        <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMuAvailableAreaTypesOutput">
+        <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesResponse"/>
+    </wsdl:message>
+
 
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
@@ -381,6 +397,22 @@
             </wsdl:documentation>
             <wsdl:input message="tns:addMuAvailableAreaTypesInput"/>
             <wsdl:output message="tns:addMuAvailableAreaTypesOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="delMuAvailableAreaTypes">
+            <wsdl:documentation>
+                Удаление типов участков из доступных для МУ (К_УУ_5)
+            </wsdl:documentation>
+            <wsdl:input message="tns:delMuAvailableAreaTypesInput"/>
+            <wsdl:output message="tns:delMuAvailableAreaTypesOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMuAvailableAreaTypes">
+            <wsdl:documentation>
+                Предоставление типов участков, доступных для МУ (К_УУ_6)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getMuAvailableAreaTypesInput"/>
+            <wsdl:output message="tns:getMuAvailableAreaTypesOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -684,6 +716,34 @@
 
         <wsdl:operation name="addMuAvailableAreaTypes">
             <soap:operation soapAction="addMuAvailableAreaTypes"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="delMuAvailableAreaTypes">
+            <soap:operation soapAction="delMuAvailableAreaTypes"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMuAvailableAreaTypes">
+            <soap:operation soapAction="getMuAvailableAreaTypes"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>
