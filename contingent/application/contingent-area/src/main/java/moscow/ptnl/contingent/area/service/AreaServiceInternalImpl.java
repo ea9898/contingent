@@ -368,7 +368,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.resetAutoAssignForAttachment(area);
 
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "createPrimaryArea"));
+            esuHelperService.sendAreaInfoEvent(area, "createPrimaryArea");
         }
 
         return area.getId();
@@ -752,7 +752,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 8
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "setMedicalEmployeeOnArea"));
+            esuHelperService.sendAreaInfoEvent(area, "setMedicalEmployeeOnArea");
         }
 
         return result;
@@ -902,7 +902,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 12.
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "addAreaAddress"));
+            esuHelperService.sendAreaInfoEvent(area, "addAreaAddress");
         }
 
         return areaAddressIds;
@@ -946,7 +946,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 6.
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "delAreaAddress"));
+            esuHelperService.sendAreaInfoEvent(area, "delAreaAddress");
         }
 
         // 7.
@@ -1031,7 +1031,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         
         // 7.
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "archiveArea"));
+            esuHelperService.sendAreaInfoEvent(area, "archiveArea");
         }
     }
 
@@ -1069,8 +1069,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
             // 7.2.
             areas.forEach(depArea ->
-                    esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
-                            .createTopicCreateCloseAttachAreaChange(Collections.singletonList(areaId), null, depArea))
+                    esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(areaId), null, depArea)
             );
         }
 
@@ -1078,14 +1077,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (areaHelper.isAreaDependent(area)) {
             List<Area> areas = areaRepository.findPrimaryAreasByAreaEqAreaType(area);
 
-            esuHelperService.sendAttachOnAreaChangeTopicToEsu(algorithms
-                    .createTopicCreateCloseAttachAreaChange(areas.stream().map(Area::getId).collect(Collectors.toList()),
-                            null, area));
+            esuHelperService.sendAttachOnAreaChangeEvent(areas.stream().map(Area::getId).collect(Collectors.toList()),
+                            null, area);
         }
 
         // 9.
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "restoreArea"));
+            esuHelperService.sendAreaInfoEvent(area, "restoreArea");
         }
 
         // 10.

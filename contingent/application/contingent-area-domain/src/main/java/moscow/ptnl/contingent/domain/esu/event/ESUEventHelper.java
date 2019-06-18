@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package moscow.ptnl.contingent.domain.esu.event;
 
+import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import moscow.ptnl.contingent2.attachment.deparea.event.AttachToDependentAreaEvent;
 import moscow.ptnl.util.XMLUtil;
 import org.slf4j.Logger;
@@ -21,6 +18,7 @@ public class ESUEventHelper {
     private ESUEventHelper(){}
     
     /**
+     * Конвертируем объект в строковое представление для записи в ЕСУ.
      * 
      * @param publishObject
      * @param eventId
@@ -28,8 +26,18 @@ public class ESUEventHelper {
      * @throws IllegalArgumentException
      */
     public static String toESUMessage(Object publishObject, Long eventId) throws IllegalArgumentException {
-        if (publishObject instanceof moscow.ptnl.contingent2.area.info.AreaInfoEvent) {
-            moscow.ptnl.contingent2.area.info.AreaInfoEvent event = (moscow.ptnl.contingent2.area.info.AreaInfoEvent) publishObject;
+        if (publishObject == null) {
+            throw new IllegalArgumentException("объект не может быть null");
+        }
+        if (publishObject instanceof AreaInfoEvent) {
+            AreaInfoEvent event = (AreaInfoEvent) publishObject;
+            event.setId(eventId);
+            if (event.getOperationDate() == null) {
+                event.setOperationDate(XMLUtil.getCurrentDate());
+            }
+            return XMLUtil.convertEventObjectToMessage(event, event.getClass());
+        } else if (publishObject instanceof AttachOnAreaChange) {
+            AttachOnAreaChange event = (AttachOnAreaChange) publishObject;
             event.setId(eventId);
             if (event.getOperationDate() == null) {
                 event.setOperationDate(XMLUtil.getCurrentDate());
