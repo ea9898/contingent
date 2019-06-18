@@ -511,7 +511,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 11
         if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEventTopicToESU(algorithms.createTopicAreaInfo(area, "updatePrimaryArea"));
+            esuHelperService.sendAreaInfoEvent(area, "updatePrimaryArea");
         }
     }
 
