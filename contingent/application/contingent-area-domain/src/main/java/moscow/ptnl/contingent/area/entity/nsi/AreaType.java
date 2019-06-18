@@ -202,6 +202,54 @@ public class AreaType implements Serializable {
         this.residentsBindRate = residentsBindRate;
     }
 
+    public Boolean getHeadFinance() {
+        return headFinance;
+    }
+
+    public void setHeadFinance(Boolean headFinance) {
+        this.headFinance = headFinance;
+    }
+
+    public Boolean getHasServiceTerritory() {
+        return hasServiceTerritory;
+    }
+
+    public void setHasServiceTerritory(Boolean hasServiceTerritory) {
+        this.hasServiceTerritory = hasServiceTerritory;
+    }
+
+    public Boolean getAttachByRequest() {
+        return attachByRequest;
+    }
+
+    public void setAttachByRequest(Boolean attachByRequest) {
+        this.attachByRequest = attachByRequest;
+    }
+
+    public Boolean getAttachByMedicalReason() {
+        return attachByMedicalReason;
+    }
+
+    public void setAttachByMedicalReason(Boolean attachByMedicalReason) {
+        this.attachByMedicalReason = attachByMedicalReason;
+    }
+
+    public Boolean getMpguAvailable() {
+        return mpguAvailable;
+    }
+
+    public void setMpguAvailable(Boolean mpguAvailable) {
+        this.mpguAvailable = mpguAvailable;
+    }
+
+    public AreaCountLimit getAreaCountLimit() {
+        return areaCountLimit;
+    }
+
+    public void setAreaCountLimit(AreaCountLimit areaCountLimit) {
+        this.areaCountLimit = areaCountLimit;
+    }
+
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.code);

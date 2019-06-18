@@ -953,5 +953,18 @@
                                  referencedColumnNames="ID"
                                  referencedTableName="ADDRESSES"/>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-148" author="shnaider">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AREA_POLICY_TYPES"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы SEQ_AREA_POLICY_TYPES</comment>
+        <createSequence sequenceName="SEQ_AREA_POLICY_TYPES"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_AREA_POLICY_TYPES"/>
+        </rollback>
+    </changeSet>
     <!-- !!!! AREA_ADDRESSES !!!! -->
 </databaseChangeLog>

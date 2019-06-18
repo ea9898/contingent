@@ -280,7 +280,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="policyTypeCode" type="xs:int" maxOccurs="unbounded" />
+            <xs:element name="policyTypeCode" type="xs:long" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
@@ -291,7 +291,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="policyTypeCode" type="xs:int" maxOccurs="unbounded" />
+            <xs:element name="policyTypeCode" type="xs:long" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
