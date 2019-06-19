@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
@@ -50,6 +51,8 @@ import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
@@ -198,6 +201,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private AreaTypeSpecializationsRepository areaTypeSpecializationsRepository;
+
+    @Autowired
+    private AreaPolicyTypesCRUDRepository areaPolicyTypesCRUDRepository;
 
     // (К_УУ_1) Добавление типов участков, доступных для МО
     @Override
@@ -385,58 +391,55 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkPrimaryAreasInMU(muId, areaType, validation);
 
         // 3.
-
-        // 4.
-
-        // 5.
-
-        // 6.
-
-        // 7.
-
-        // 8.
-
-        // 9.
-
-        // 10.
-
-        // 11.
-
-
-        return 0L;
-/*
-
-        areaHelper.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodes, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
         if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
         }
-        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
-        areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
-
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        Map<Long, AreaType> primaryAreaTypes = areaTypesCRUDRepository.findAreaTypesByCode(primaryAreaTypeCodes).stream()
-                .collect(Collectors.toMap(AreaType::getCode, t -> t));
-        //Создание новго зависимого участка
+
+        // 4. TODO очень станно..
+        if (policyTypeCodes != null && !policyTypeCodes.isEmpty() &&
+                !policyTypeCodes.stream().allMatch(ptc -> ptc.equals(1L))) {
+            throw new ContingentException(AreaErrorReason.NO_PRIMARY_AREA);
+        }
+
+        // 5.
+        areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 6.
         Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
                 null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
-        //Сохранение привязки к первичным типам участка
-        primaryAreaTypeCodes.forEach(c -> {
-            AreaToAreaType areaToAreaType = new AreaToAreaType();
-            areaToAreaType.setArea(area);
-            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
-            areaToAreaTypeCRUDRepository.save(areaToAreaType);
-        });
-//        esuHelperService.trySendDependentAreaChange(area);
 
+        // 7.
+        AreaToAreaType areaToAreaType = new AreaToAreaType();
+        areaToAreaType.setArea(area);
+        areaToAreaType.setAreaType(areaTypesCRUDRepository.findById(areaTypeCode).get());
+        areaToAreaTypeCRUDRepository.save(areaToAreaType);
+
+        // 8.
+        if (policyTypeCodes != null && !policyTypeCodes.isEmpty()) {
+            AreaPolicyTypes areaPolicyTypes = new AreaPolicyTypes();
+            areaPolicyTypes.setArea(area);
+            areaPolicyTypes.setPolicyTypeCode(policyTypeCodes.get(0));
+            areaPolicyTypesCRUDRepository.save(areaPolicyTypes);
+        }
+
+        // 9.
+        List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodes, null, true);
+
+        // 10.
+        primAreas.forEach(primArea ->
+                esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(area.getId()),
+                        null, primArea)
+        );
+
+        // 11.
         return area.getId();
-*/
     }
 
     // (К_УУ_9)	Изменение участка обслуживания первичного типа
@@ -462,7 +465,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkPolicyTypesIsOMS(policyTypesAdd, validation);
 
         // 5
-        areaHelper.checkPolicyTypesDel(areaId, policyTypesDel, validation);
+        areaHelper.checkPolicyTypesDel(area, policyTypesDel, validation);
 
         // 6
         if (autoAssignForAttachment) {
@@ -507,7 +510,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         // 10
-        areaHelper.saveAndDeleteAreaPolicyTypes(areaId,policyTypesAdd,policyTypesDel);
+        areaHelper.saveAndDeleteAreaPolicyTypes(area, policyTypesAdd, policyTypesDel);
 
         // 11
         if (areaHelper.isAreaPrimary(area)) {

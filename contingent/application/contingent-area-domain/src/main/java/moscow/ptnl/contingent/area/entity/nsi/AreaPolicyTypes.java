@@ -1,14 +1,20 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
+import moscow.ptnl.contingent.area.entity.area.Area;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "AREA_POLICY_TYPES")
@@ -23,17 +29,18 @@ public class AreaPolicyTypes implements Serializable {
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "area_id")
-    private Long area_id;
+    @JoinColumn(name = "AREA_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Area area;
 
-    @Column(name = "policy_type_code", nullable = false)
+    @Column(name = "POLICY_TYPE_CODE", nullable = false)
     private Long policyTypeCode;
 
     public AreaPolicyTypes() {
     }
 
-    public AreaPolicyTypes(Long area_id, Long policyTypeCode) {
-        this.area_id = area_id;
+    public AreaPolicyTypes(Area area, Long policyTypeCode) {
+        this.area = area;
         this.policyTypeCode = policyTypeCode;
     }
 
@@ -45,12 +52,12 @@ public class AreaPolicyTypes implements Serializable {
         this.id = id;
     }
 
-    public Long getArea_id() {
-        return area_id;
+    public Area getArea() {
+        return area;
     }
 
-    public void setArea_id(Long area_id) {
-        this.area_id = area_id;
+    public void setArea(Area area) {
+        this.area = area;
     }
 
     public Long getPolicyTypeCode() {
@@ -64,20 +71,15 @@ public class AreaPolicyTypes implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AreaPolicyTypes)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         AreaPolicyTypes that = (AreaPolicyTypes) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (area_id != null ? !area_id.equals(that.area_id) : that.area_id != null) return false;
-        return policyTypeCode != null ? policyTypeCode.equals(that.policyTypeCode) : that.policyTypeCode == null;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(area, that.area) &&
+                Objects.equals(policyTypeCode, that.policyTypeCode);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (area_id != null ? area_id.hashCode() : 0);
-        result = 31 * result + (policyTypeCode != null ? policyTypeCode.hashCode() : 0);
-        return result;
+        return Objects.hash(id, area, policyTypeCode);
     }
 }

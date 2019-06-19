@@ -752,13 +752,13 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkPolicyTypesDel(long areaId, List<Long> policyTypesDel,  Validation validation) throws ContingentException {
+    public void checkPolicyTypesDel(Area area, List<Long> policyTypesDel,  Validation validation) throws ContingentException {
         if (!policyTypesDel.isEmpty()) {
             for (Long policy : policyTypesDel) {
-                if (areaPolicyTypesRepository.findAll(areaId, policy).isEmpty()) {
+                if (areaPolicyTypesRepository.findAll(area, policy).isEmpty()) {
                     validation.error(AreaErrorReason.POLICY_TYPE_NOT_SET_FOR_AREA,
                             new ValidationParameter("areaTypeCode", policy),
-                            new ValidationParameter("areaid", areaId));
+                            new ValidationParameter("areaid", area.getId()));
                 }
             }
             if (!validation.isSuccess()) {
@@ -767,15 +767,15 @@ public class AreaServiceHelper {
         }
     }
 
-    public void saveAndDeleteAreaPolicyTypes(long areaId, List<Long> policyTypesAdd, List<Long> policyTypesDel) throws ContingentException {
+    public void saveAndDeleteAreaPolicyTypes(Area area, List<Long> policyTypesAdd, List<Long> policyTypesDel) throws ContingentException {
 
         if (!policyTypesDel.isEmpty()) {
-            areaPolicyTypesRepository.deleteAll(areaId, policyTypesDel);
+            areaPolicyTypesRepository.deleteAll(area, policyTypesDel);
         }
 
         if (!policyTypesAdd.isEmpty()) {
             List<AreaPolicyTypes> policys = policyTypesAdd.stream()
-                    .map(policyId -> new AreaPolicyTypes(areaId, policyId)).collect(Collectors.toList());
+                    .map(policyId -> new AreaPolicyTypes(area, policyId)).collect(Collectors.toList());
             areaPolicyTypesCRUDRepository.saveAll(policys);
         }
     }
