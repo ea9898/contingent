@@ -366,7 +366,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         // 11
-        List<AreaPolicyTypes> areaPolicyTypes = policyTypes.stream().map(policyType -> new AreaPolicyTypes(area.getId(), policyType)).collect(Collectors.toList());
+        List<AreaPolicyTypes> areaPolicyTypes = policyTypes.stream().map(policyType ->
+                new AreaPolicyTypes(area, policyType)).collect(Collectors.toList());
         areaPolicyTypesCRUDRepository.saveAll(areaPolicyTypes);
 
         // 12
