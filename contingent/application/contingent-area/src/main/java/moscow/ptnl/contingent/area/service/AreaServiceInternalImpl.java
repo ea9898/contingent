@@ -327,7 +327,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
     @Override @LogESU(value = AreaInfoEvent.class, useResult = true)
-    public Long createPrimaryArea(long moId, long muId, Integer muTypeCode, Integer number, Long areaTypeCode, List<Long> policyTypes,
+    public Long createPrimaryArea(long moId, long muId, Integer muTypeCode, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
@@ -343,8 +343,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkAreaTypeCountLimits(moId, muId, areaType, validation);
 
         // 4
-        if (areaType.getKindAreaType() != null &&
-                Objects.equals(areaType.getKindAreaType().getCode(), AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) &&
+        if (areaType.getAreaTypeKind() != null &&
+                Objects.equals(areaType.getAreaTypeKind().getCode(), AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) &&
                 (Strings.isNullOrEmpty(description) || number == null ||
                         ageMin == null && ageMax == null && ageMinM == null && ageMaxM == null && ageMinW == null && ageMaxW == null)) {
             validation.error(AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED);
@@ -371,6 +371,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         // 11
+        List<PolicyType> policyTypes = policyTypeRepository.findByIds(policyTypesIds);
         List<AreaPolicyTypes> areaPolicyTypes = policyTypes.stream().map(policyType ->
                 new AreaPolicyTypes(area, policyType)).collect(Collectors.toList());
         areaPolicyTypesCRUDRepository.saveAll(areaPolicyTypes);
@@ -411,7 +412,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 4. TODO очень станно..
+        // 4. TODO очень странно..
         areaHelper.checkPolicyTypesDepArea(policyTypeCodesIds, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);

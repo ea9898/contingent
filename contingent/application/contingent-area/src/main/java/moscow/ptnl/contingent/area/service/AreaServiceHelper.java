@@ -256,7 +256,7 @@ public class AreaServiceHelper {
         }
 
         if (moAvailableAreaTypes.size() + muAvailableAreaTypes.size() == 0) {
-            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE,
+            validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU,
                     new ValidationParameter("areaType", areaType.getCode()));
         }
     }
