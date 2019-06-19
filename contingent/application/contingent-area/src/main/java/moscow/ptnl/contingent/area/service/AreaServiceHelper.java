@@ -10,6 +10,7 @@ import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyTypeEnum;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -237,7 +238,7 @@ public class AreaServiceHelper {
                                                     .collect(Collectors.toList()),
                                             primaryAreaTypeCodes).isEmpty()))) {
             String areaTypes = String.join(", ", primaryAreaTypeCodes.stream().map(String::valueOf).collect(Collectors.toList()));
-            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", areaTypes));
+            validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU, new ValidationParameter("primaryAreaTypeCode", areaTypes));
         }
     }
 
@@ -798,5 +799,59 @@ public class AreaServiceHelper {
         return muAvailableAreaTypes.stream()
                 .filter(a -> areaTypeCodes.contains(a.getAreaType().getCode()))
                 .collect(Collectors.toList());
+    }
+
+    public void checkAreaTypeAvailable(AreaType areaType, Validation validation) throws ContingentException {
+        List<MuAvailableAreaTypes> availableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType);
+        if (availableAreaTypes.isEmpty()) {
+            throw new ContingentException(validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU,
+                    new ValidationParameter("areaTypeTitle", areaType.getTitle())));
+        }
+    }
+
+    public void checkAreaTypeCountLimits(long moId, long muId, AreaType areaType, Validation validation) throws ContingentException {
+        if (areaType.getAreaCountLimit() != null) {
+            if (areaType.getAreaCountLimit().equals(AreaTypeCountLimitEnum.MO.getCode())) {
+                List<Area> areas = areaRepository.findAreas(moId, null, areaType.getCode(), null, true);
+                if (areas.size() >= AreaTypeCountLimitEnum.MO.getLimit()) {
+                    validation.error(AreaErrorReason.AREAS_NUMBER_LIMIT_EXCEEDED,
+                            new ValidationParameter("areaTypeTitle", areaType.getTitle()),
+                            new ValidationParameter("areaTypeLimit", AreaTypeCountLimitEnum.MO.getLimit()));
+                }
+            } else if (areaType.getAreaCountLimit().equals(AreaTypeCountLimitEnum.MU.getCode())) {
+                List<Area> areas = areaRepository.findAreas(null, muId, areaType.getCode(), null, true);
+                if (areas.size() >= AreaTypeCountLimitEnum.MU.getLimit()) {
+                    validation.error(AreaErrorReason.AREAS_NUMBER_LIMIT_EXCEEDED,
+                            new ValidationParameter("areaTypeTitle", areaType.getTitle()),
+                            new ValidationParameter("areaTypeLimit", AreaTypeCountLimitEnum.MU.getLimit()));
+                }
+            }
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+    }
+
+    public void checkAutoAssignForAttachment(AreaType areaType, Boolean autoAssignForAttachment,
+                                             Boolean attachByMedicalReason, Validation validation) {
+        if (autoAssignForAttachment) {
+            if (areaType.getMpguAvailable() != null
+                    && !Boolean.TRUE.equals(areaType.getMpguAvailable())) {
+                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
+                        new ValidationParameter("areaTypeCode", areaType.getCode()));
+            }
+            if (Boolean.TRUE.equals(attachByMedicalReason)) {
+                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
+            }
+        }
+    }
+
+    public void checkAttachByMedicalReason(AreaType areaType, Boolean attachByMedicalReason, Validation validation) {
+        if (attachByMedicalReason != null && areaType.getAttachByMedicalReason() != null &&
+                !Objects.equals(attachByMedicalReason, areaType.getAttachByMedicalReason())) {
+            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
+                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
+                    new ValidationParameter("attachByMedicalReason", areaType.getAttachByMedicalReason()));
+        }
     }
 }

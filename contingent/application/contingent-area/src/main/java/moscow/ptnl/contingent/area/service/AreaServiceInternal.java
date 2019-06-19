@@ -18,11 +18,10 @@ import ru.mos.emias.contingent2.core.MuType;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface AreaServiceInternal {
 
-    Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
+    Long createPrimaryArea(long moId, long muId, Integer muTypeId, Integer number, Long areaTypeCode, List<Long> policyTypes,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
