@@ -34,10 +34,11 @@ public interface AreaServiceInternal {
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
-    void updateDependentArea(long areaId, Long muId, List<MuType> muTypes, Integer muNumber, List<Long> primaryAreaTypeCodesAdd,
-                             List<Long> primaryAreaTypeCodesDel,
+    void updateDependentArea(long areaId, Long muId, Integer number, String description,
+                             List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
+                             List<Long> policyTypesAdd, List<Long> policyTypesDel,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                             boolean autoAssignForAttachment, String description) throws ContingentException;
+                             Boolean autoAssignForAttachment) throws ContingentException;
 
     Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException;
 

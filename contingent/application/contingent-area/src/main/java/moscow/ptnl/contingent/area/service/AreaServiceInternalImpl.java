@@ -51,6 +51,8 @@ import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesCRUDRepos
 import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
@@ -86,6 +88,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
+
+import moscow.ptnl.contingent.service.history.HistoryService;
+import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import moscow.ptnl.ws.security.UserContextHolder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
@@ -309,7 +321,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
-    @Override
+    @Override @LogESU(value = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, long muId, Integer muTypeCode, Integer number, Long areaTypeCode, List<Long> policyTypes,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
@@ -383,58 +395,55 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkPrimaryAreasInMU(muId, areaType, validation);
 
         // 3.
-
-        // 4.
-
-        // 5.
-
-        // 6.
-
-        // 7.
-
-        // 8.
-
-        // 9.
-
-        // 10.
-
-        // 11.
-
-
-        return 0L;
-/*
-
-        areaHelper.checkPrimaryAreaTypesForMuType(muTypes, primaryAreaTypeCodes, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
         if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
         }
-        AreaType areaType = areaTypesCRUDRepository.findById(areaTypeCode).get();
-        areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
-
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        Map<Long, AreaType> primaryAreaTypes = areaTypesCRUDRepository.findAreaTypesByCode(primaryAreaTypeCodes).stream()
-                .collect(Collectors.toMap(AreaType::getCode, t -> t));
-        //Создание новго зависимого участка
+
+        // 4. TODO очень станно..
+        if (policyTypeCodes != null && !policyTypeCodes.isEmpty() &&
+                !policyTypeCodes.stream().allMatch(ptc -> ptc.equals(1L))) {
+            throw new ContingentException(AreaErrorReason.NO_PRIMARY_AREA);
+        }
+
+        // 5.
+        areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 6.
         Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
                 null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
-        //Сохранение привязки к первичным типам участка
-        primaryAreaTypeCodes.forEach(c -> {
-            AreaToAreaType areaToAreaType = new AreaToAreaType();
-            areaToAreaType.setArea(area);
-            areaToAreaType.setAreaType(primaryAreaTypes.get(c));
-            areaToAreaTypeCRUDRepository.save(areaToAreaType);
-        });
-//        esuHelperService.trySendDependentAreaChange(area);
 
+        // 7.
+        AreaToAreaType areaToAreaType = new AreaToAreaType();
+        areaToAreaType.setArea(area);
+        areaToAreaType.setAreaType(areaTypesCRUDRepository.findById(areaTypeCode).get());
+        areaToAreaTypeCRUDRepository.save(areaToAreaType);
+
+        // 8.
+        if (policyTypeCodes != null && !policyTypeCodes.isEmpty()) {
+            AreaPolicyTypes areaPolicyTypes = new AreaPolicyTypes();
+            areaPolicyTypes.setArea(area);
+            areaPolicyTypes.setPolicyTypeCode(policyTypeCodes.get(0));
+            areaPolicyTypesCRUDRepository.save(areaPolicyTypes);
+        }
+
+        // 9.
+        List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodes, null, true);
+
+        // 10.
+        primAreas.forEach(primArea ->
+                esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(area.getId()),
+                        null, primArea)
+        );
+
+        // 11.
         return area.getId();
-*/
     }
 
     // (К_УУ_9)	Изменение участка обслуживания первичного типа
@@ -460,13 +469,27 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkPolicyTypesIsOMS(policyTypesAdd, validation);
 
         // 5
-        areaHelper.checkPolicyTypesDel(areaId, policyTypesDel, validation);
+        areaHelper.checkPolicyTypesDel(area, policyTypesDel, validation);
 
         // 6
-        areaHelper.checkAutoAssignForAttachment(area.getAreaType(), autoAssignForAttachment, attachByMedicalReason, validation);
+        if (autoAssignForAttachment) {
+            if (area.getAreaType().getMpguAvailable() != null
+                    && !Boolean.TRUE.equals(area.getAreaType().getMpguAvailable())) {
+                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
+                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+            }
+           if (Boolean.TRUE.equals(attachByMedicalReason)) {
+                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
+            }
+        }
 
         // 7
-        areaHelper.checkAttachByMedicalReason(area.getAreaType(), attachByMedicalReason, validation);
+        if (attachByMedicalReason != null && area.getAreaType().getAttachByMedicalReason() != null &&
+                !Objects.equals(attachByMedicalReason, area.getAreaType().getAttachByMedicalReason())) {
+            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
+                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
+                    new ValidationParameter("attachByMedicalReason", area.getAreaType().getAttachByMedicalReason()));
+        }
 
         // 8
         areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
@@ -491,7 +514,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         // 10
-        areaHelper.saveAndDeleteAreaPolicyTypes(areaId,policyTypesAdd,policyTypesDel);
+        areaHelper.saveAndDeleteAreaPolicyTypes(area, policyTypesAdd, policyTypesDel);
 
         // 11
         if (areaHelper.isAreaPrimary(area)) {
@@ -501,10 +524,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_10) Изменение участка обслуживания зависимого типа
     @Override
-    public void updateDependentArea(long areaId, Long muId, List<MuType> muTypes, Integer muNumber,
+    public void updateDependentArea(long areaId, Long muId, Integer number, String description,
                                     List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
+                                    List<Long> policyTypesAdd, List<Long> policyTypesDel,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                    boolean autoAssignForAttachment, String description) throws ContingentException {
+                                    Boolean autoAssignForAttachment) throws ContingentException {
+/*
         Validation validation = new Validation();
         //1 и 2
         Area area = areaHelper.checkAndGetArea(areaId, validation);
@@ -574,6 +599,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         //TODO падает при отправке в есу
         //esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
+*/
     }
 
     // (К_УУ_11) Изменение медицинских работников на участке обслуживания
@@ -777,10 +803,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
         // 3.
-        areaHelper.noAddresses(nsiAddresses, notNsiAddresses);
+        areaHelper.checkNoAddresses(nsiAddresses, notNsiAddresses);
 
         // 4.
-        areaHelper.tooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
+        areaHelper.checkTooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
 
         // 5.
         areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
@@ -986,7 +1012,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_16) Архивирование участка обслуживания
-    @Override
+    @Override @LogESU(AreaInfoEvent.class)
     public void archiveArea(long areaId) throws ContingentException {
         Validation validation = new Validation();
 
@@ -1162,36 +1188,64 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
                                    List<NotNsiAddress> notNsiAddresses) throws ContingentException {
         Validation validation = new Validation();
-
-        areaHelper.noAddresses(nsiAddresses, notNsiAddresses);
-
-        areaHelper.tooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
-
+        // 1.
+        areaHelper.checkNoAddresses(nsiAddresses, notNsiAddresses);
+        // 2.
+        areaHelper.checkTooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
+        // 3.
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode),
                 validation, "areaTypeCode");
-
+        // 4.
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
         if (order == null || Boolean.TRUE.equals(order.getArchived())) {
             throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
                     new ValidationParameter("orderId", orderId));
         }
+        // 5.
         areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
-
+        // 6.
         areaAddressChecker.checkNotNsiAddresses(notNsiAddresses, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        // 7. Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
+        for (NsiAddress nsiAddress : nsiAddresses) {
+            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaTypes.get(0), orderId,
+                    Collections.singletonList(nsiAddress), Collections.EMPTY_LIST, validation);
 
-        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses, notNsiAddresses);
+            if (moAddress != null) {
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_1,
+                        new ValidationParameter("levelAddress", nsiAddress.getLevelAddress()),
+                        new ValidationParameter("globalId", nsiAddress.getGlobalId()),
+                        new ValidationParameter("moId", moAddress.getMoId()),
+                        new ValidationParameter("areaTypeCode", moAddress.getAreaType().getCode()));
+            }
+        }
+        for (NotNsiAddress notNsiAddress : notNsiAddresses) {
+            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaTypes.get(0), orderId,
+                    Collections.EMPTY_LIST, Collections.singletonList(notNsiAddress), validation);
 
-        //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
-        areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
-
+            if (moAddress != null) {
+                String parameters = notNsiAddress.getHouseType() + ": " +
+                        notNsiAddress.getHouse() + ", " +
+                        notNsiAddress.getBuildingType() + ": " +
+                        notNsiAddress.getBuilding() + ", " +
+                        notNsiAddress.getConstructionType() + ": " +
+                        notNsiAddress.getConstruction();
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_2,
+                        new ValidationParameter("parentId", notNsiAddress.getParentId()),
+                        new ValidationParameter("address", parameters),
+                        new ValidationParameter("moId", moAddress.getMoId()),
+                        new ValidationParameter("areaTypeCode", moAddress.getAreaType().getCode()));
+            }
+        }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses, notNsiAddresses);
+
         addresses.forEach(a -> {
             Addresses address = new Addresses();
 
@@ -1206,6 +1260,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 }
             }
             else {
+                // 8.
                 address.setLevel(AreaServiceHelper.NOT_NSI_ADDRESS_LEVEL);
                 a.buildingRegistry = buildingRegistryRepository.findRegistryBuildings(
                         a.notNsiAddress.getHouse(), a.notNsiAddress.getBuilding(), a.notNsiAddress.getConstruction(),
@@ -1222,6 +1277,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                         });
                 address.setBuildingRegistry(a.buildingRegistry);
             }
+            // 9.
             a.address = addressesRepository.findAddresses(address.getLevel(), address.getBuildingRegistry(), address.getAddressFormingElement())
                     .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
         });
