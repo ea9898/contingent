@@ -33,15 +33,16 @@ public class AreaPolicyTypes implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
 
-    @Column(name = "POLICY_TYPE_CODE", nullable = false)
-    private Long policyTypeCode;
+    @JoinColumn(name = "POLICY_TYPE_CODE", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PolicyType policyType;
 
     public AreaPolicyTypes() {
     }
 
-    public AreaPolicyTypes(Area area, Long policyTypeCode) {
+    public AreaPolicyTypes(Area area, PolicyType policyType) {
         this.area = area;
-        this.policyTypeCode = policyTypeCode;
+        this.policyType = policyType;
     }
 
     public Long getId() {
@@ -60,12 +61,12 @@ public class AreaPolicyTypes implements Serializable {
         this.area = area;
     }
 
-    public Long getPolicyTypeCode() {
-        return policyTypeCode;
+    public PolicyType getPolicyType() {
+        return policyType;
     }
 
-    public void setPolicyTypeCode(Long policyTypeCode) {
-        this.policyTypeCode = policyTypeCode;
+    public void setPolicyType(PolicyType policyType) {
+        this.policyType = policyType;
     }
 
     @Override
@@ -75,11 +76,11 @@ public class AreaPolicyTypes implements Serializable {
         AreaPolicyTypes that = (AreaPolicyTypes) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(area, that.area) &&
-                Objects.equals(policyTypeCode, that.policyTypeCode);
+                Objects.equals(policyType, that.policyType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, area, policyTypeCode);
+        return Objects.hash(id, area, policyType);
     }
 }

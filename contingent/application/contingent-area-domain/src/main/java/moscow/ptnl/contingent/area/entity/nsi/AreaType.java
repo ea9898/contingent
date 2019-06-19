@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -34,11 +33,11 @@ public class AreaType implements Serializable {
 
     @JoinColumn(name = "AREA_TYPE_KIND_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypeKind kindAreaType;
+    private AreaTypeKind areaTypeKind;
 
     @JoinColumn(name = "AREA_TYPE_CLASS_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypeClass classAreaType;
+    private AreaTypeClass areaTypeClass;
 
     @Size(max = 1)
     @Column(name = "GENDER_CODE")
@@ -118,20 +117,20 @@ public class AreaType implements Serializable {
         this.title = title;
     }
 
-    public AreaTypeKind getKindAreaType() {
-        return kindAreaType;
+    public AreaTypeKind getAreaTypeKind() {
+        return areaTypeKind;
     }
 
-    public void setKindAreaType(AreaTypeKind kindAreaType) {
-        this.kindAreaType = kindAreaType;
+    public void setAreaTypeKind(AreaTypeKind areaTypeKind) {
+        this.areaTypeKind = areaTypeKind;
     }
 
-    public AreaTypeClass getClassAreaType() {
-        return classAreaType;
+    public AreaTypeClass getAreaTypeClass() {
+        return areaTypeClass;
     }
 
-    public void setClassAreaType(AreaTypeClass classAreaType) {
-        this.classAreaType = classAreaType;
+    public void setAreaTypeClass(AreaTypeClass areaTypeClass) {
+        this.areaTypeClass = areaTypeClass;
     }
 
     public String getGender() {

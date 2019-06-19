@@ -88,4 +88,54 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-151-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="esu_input_seq_id"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы ESU_INPUT</comment>
+        <createSequence sequenceName="esu_input_seq_id" remarks="сиквенс для таблицы ESU_INPUT"/>
+        <rollback>
+            <dropSequence sequenceName="esu_input_seq_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-151" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ESU_INPUT"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы ESU_INPUT</comment>
+        <createTable tableName="ESU_INPUT" remarks="Журнал принятых сообщений из сервиса ЕСУ">
+            <column name="ID" type="number" remarks="Идентификатор записи таблицы" defaultValueComputed="nextval('esu_input_seq_id')">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ESU_ID" type="varchar(255)" remarks="Идентификатор записи в сервисе ЕСУ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ESU_OFFSET" type="number" remarks="Оффсет принятого сообщения">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PARTITION" type="number" remarks="Раздел принятого сообщение">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RECEIVED_TIME" type="timestamp" remarks="timestamp принятого сообщения" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOPIC" type="varchar(255)" remarks="Название топика принятого сообщение">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MESSAGE" type="clob" remarks="Текст сообщения">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EVENT_ID" type="varchar2(36)" remarks="Идентификатор события в формате UUID"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="ESU_INPUT"/>
+        </rollback>
+    </changeSet>
+
+
 </databaseChangeLog>

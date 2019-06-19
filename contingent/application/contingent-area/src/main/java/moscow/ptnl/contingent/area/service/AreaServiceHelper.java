@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyTypeEnum;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -243,28 +244,20 @@ public class AreaServiceHelper {
 
     // К_УУ_8 2.
     // Система проверяет наличие каждого переданного первичного типа участка
-    public void checkPrimaryAreasInMU(Long muId, AreaType areaType, Validation validation) {
+    public void checkPrimaryAreasTypesInMUProfile(Long muId, AreaType areaType, Validation validation) {
+        List<MuAvailableAreaTypes> muAvailableAreaTypes = new ArrayList<>();
+        List<MoAvailableAreaTypes> moAvailableAreaTypes = new ArrayList<>();
+
         if (muId != null) {
-            List<MuAvailableAreaTypes> muAvailableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType);
+            muAvailableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType);
         } else {
-            List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findByAreaTypes(areaType);
+            moAvailableAreaTypes = moAvailableAreaTypesRepository.findByAreaTypes(areaType);
         }
 
-/*
-
-        StringBuilder primaryAreaTypesMissing = new StringBuilder();
-        List<Area> areas = areaRepository.findAreas(null, muId, primaryAreaTypeCodes, null, true);
-
-        primaryAreaTypeCodes.forEach(c -> {
-            if (areas.stream().noneMatch(a -> a.getAreaType() != null && Objects.equals(c, a.getAreaType().getCode()))) {
-                primaryAreaTypesMissing.append(c).append(", ");
-            }
-        });
-        if (primaryAreaTypesMissing.length() > 0) {
-            validation.error(AreaErrorReason.NO_PRIMARY_AREA, new ValidationParameter("primaryAreaTypeCode",
-                    primaryAreaTypesMissing.substring(0, primaryAreaTypesMissing.length() - 2)));
+        if (moAvailableAreaTypes.size() + muAvailableAreaTypes.size() == 0) {
+            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE,
+                    new ValidationParameter("areaType", areaType.getCode()));
         }
-*/
     }
 
     // Проверяет существует ли участок с указанным идентификатором и не находится ли он в архиве
@@ -307,8 +300,8 @@ public class AreaServiceHelper {
     Система проверяет, что вид участка отличен от «Именной»
      */
     public void checkAreaTypeIsNotPersonal(AreaType areaType, Validation validation) {
-        if (areaType.getKindAreaType() != null &&
-                Objects.equals(areaType.getKindAreaType().getCode(), 4L)) {
+        if (areaType.getAreaTypeKind() != null &&
+                Objects.equals(areaType.getAreaTypeKind().getCode(), 4L)) {
             validation.error(AreaErrorReason.CANT_RESTORE_PERSONAL_KIND_AREA);
         }
     }
@@ -547,13 +540,13 @@ public class AreaServiceHelper {
     }
 
     public boolean isAreaPrimary(Area area) {
-        return area.getAreaType() != null && area.getAreaType().getClassAreaType() != null &&
-                Objects.equals(PRIMARY_AREA_TYPE_CLASS, area.getAreaType().getClassAreaType().getCode());
+        return area.getAreaType() != null && area.getAreaType().getAreaTypeClass() != null &&
+                Objects.equals(PRIMARY_AREA_TYPE_CLASS, area.getAreaType().getAreaTypeClass().getCode());
     }
 
     public boolean isAreaDependent(Area area) {
-        return area.getAreaType() != null && area.getAreaType().getClassAreaType() != null &&
-                Objects.equals(DEPENDENT_AREA_TYPE_CLASS, area.getAreaType().getClassAreaType().getCode());
+        return area.getAreaType() != null && area.getAreaType().getAreaTypeClass() != null &&
+                Objects.equals(DEPENDENT_AREA_TYPE_CLASS, area.getAreaType().getAreaTypeClass().getCode());
     }
 
     // К_УУ_11 3.
@@ -752,9 +745,9 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkPolicyTypesDel(Area area, List<Long> policyTypesDel,  Validation validation) throws ContingentException {
+    public void checkPolicyTypesDel(Area area, List<PolicyType> policyTypesDel, Validation validation) throws ContingentException {
         if (!policyTypesDel.isEmpty()) {
-            for (Long policy : policyTypesDel) {
+            for (PolicyType policy : policyTypesDel) {
                 if (areaPolicyTypesRepository.findAll(area, policy).isEmpty()) {
                     validation.error(AreaErrorReason.POLICY_TYPE_NOT_SET_FOR_AREA,
                             new ValidationParameter("areaTypeCode", policy),
@@ -767,7 +760,7 @@ public class AreaServiceHelper {
         }
     }
 
-    public void saveAndDeleteAreaPolicyTypes(Area area, List<Long> policyTypesAdd, List<Long> policyTypesDel) throws ContingentException {
+    public void saveAndDeleteAreaPolicyTypes(Area area, List<PolicyType> policyTypesAdd, List<PolicyType> policyTypesDel) throws ContingentException {
 
         if (!policyTypesDel.isEmpty()) {
             areaPolicyTypesRepository.deleteAll(area, policyTypesDel);
@@ -777,6 +770,13 @@ public class AreaServiceHelper {
             List<AreaPolicyTypes> policys = policyTypesAdd.stream()
                     .map(policyId -> new AreaPolicyTypes(area, policyId)).collect(Collectors.toList());
             areaPolicyTypesCRUDRepository.saveAll(policys);
+        }
+    }
+
+    public void checkPolicyTypesDepArea(List<Long> policyTypeCodes, Validation validation) {
+        if (policyTypeCodes != null && !policyTypeCodes.isEmpty() &&
+                !policyTypeCodes.stream().allMatch(ptc -> ptc.equals(1L))) {
+            validation.error(AreaErrorReason.NO_PRIMARY_AREA);
         }
     }
 

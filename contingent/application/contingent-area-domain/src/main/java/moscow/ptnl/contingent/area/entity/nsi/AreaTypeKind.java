@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "AREA_TYPE_KIND")
+@Table(name = "AREA_TYPES_KIND")
 @Cacheable
 public class AreaTypeKind implements Serializable {
 
