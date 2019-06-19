@@ -1,10 +1,8 @@
 package moscow.ptnl.contingent.domain.esu.event;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class AreaInfoEvent extends AreaEvent {
 

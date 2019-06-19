@@ -332,15 +332,15 @@ public class AreaServiceHelper {
         }
     }
 
-    public void noAddresses(List<NsiAddress> nsiAddresses,
-                            List<NotNsiAddress> notNsiAddresses) throws ContingentException {
+    public void checkNoAddresses(List<NsiAddress> nsiAddresses,
+                                 List<NotNsiAddress> notNsiAddresses) throws ContingentException {
         if (nsiAddresses.size() + notNsiAddresses.size() == 0) {
             throw new ContingentException(AreaErrorReason.NO_ADDRESS);
         }
     }
 
-    public void tooManyAddresses(List<NsiAddress> nsiAddresses,
-                                 List<NotNsiAddress> notNsiAddresses, Long maxAddresses) throws ContingentException {
+    public void checkTooManyAddresses(List<NsiAddress> nsiAddresses,
+                                      List<NotNsiAddress> notNsiAddresses, Long maxAddresses) throws ContingentException {
         if (nsiAddresses.size() + notNsiAddresses.size() > maxAddresses) {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
         }

@@ -85,13 +85,20 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
+
+import moscow.ptnl.contingent.service.history.HistoryService;
+import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import moscow.ptnl.ws.security.UserContextHolder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
-
+    
     private final static Logger LOG = LoggerFactory.getLogger(AreaServiceInternalImpl.class);
 
     @Autowired
@@ -311,7 +318,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
-    @Override
+    @Override @LogESU(value = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
@@ -796,10 +803,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
         // 3.
-        areaHelper.noAddresses(nsiAddresses, notNsiAddresses);
+        areaHelper.checkNoAddresses(nsiAddresses, notNsiAddresses);
 
         // 4.
-        areaHelper.tooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
+        areaHelper.checkTooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
 
         // 5.
         areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
@@ -1005,7 +1012,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_16) Архивирование участка обслуживания
-    @Override
+    @Override @LogESU(AreaInfoEvent.class)
     public void archiveArea(long areaId) throws ContingentException {
         Validation validation = new Validation();
 
@@ -1181,36 +1188,64 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
                                    List<NotNsiAddress> notNsiAddresses) throws ContingentException {
         Validation validation = new Validation();
-
-        areaHelper.noAddresses(nsiAddresses, notNsiAddresses);
-
-        areaHelper.tooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
-
+        // 1.
+        areaHelper.checkNoAddresses(nsiAddresses, notNsiAddresses);
+        // 2.
+        areaHelper.checkTooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
+        // 3.
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode),
                 validation, "areaTypeCode");
-
+        // 4.
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
         if (order == null || Boolean.TRUE.equals(order.getArchived())) {
             throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
                     new ValidationParameter("orderId", orderId));
         }
+        // 5.
         areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
-
+        // 6.
         areaAddressChecker.checkNotNsiAddresses(notNsiAddresses, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        // 7. Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
+        for (NsiAddress nsiAddress : nsiAddresses) {
+            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaTypes.get(0), orderId,
+                    Collections.singletonList(nsiAddress), Collections.EMPTY_LIST, validation);
 
-        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses, notNsiAddresses);
+            if (moAddress != null) {
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_1,
+                        new ValidationParameter("levelAddress", nsiAddress.getLevelAddress()),
+                        new ValidationParameter("globalId", nsiAddress.getGlobalId()),
+                        new ValidationParameter("moId", moAddress.getMoId()),
+                        new ValidationParameter("areaTypeCode", moAddress.getAreaType().getCode()));
+            }
+        }
+        for (NotNsiAddress notNsiAddress : notNsiAddresses) {
+            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaTypes.get(0), orderId,
+                    Collections.EMPTY_LIST, Collections.singletonList(notNsiAddress), validation);
 
-        //Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
-        areaAddressChecker.checkMoAddressesExist(moId, areaTypeCode, addresses, validation);
-
+            if (moAddress != null) {
+                String parameters = notNsiAddress.getHouseType() + ": " +
+                        notNsiAddress.getHouse() + ", " +
+                        notNsiAddress.getBuildingType() + ": " +
+                        notNsiAddress.getBuilding() + ", " +
+                        notNsiAddress.getConstructionType() + ": " +
+                        notNsiAddress.getConstruction();
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_2,
+                        new ValidationParameter("parentId", notNsiAddress.getParentId()),
+                        new ValidationParameter("address", parameters),
+                        new ValidationParameter("moId", moAddress.getMoId()),
+                        new ValidationParameter("areaTypeCode", moAddress.getAreaType().getCode()));
+            }
+        }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses, notNsiAddresses);
+
         addresses.forEach(a -> {
             Addresses address = new Addresses();
 
@@ -1225,6 +1260,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 }
             }
             else {
+                // 8.
                 address.setLevel(AreaServiceHelper.NOT_NSI_ADDRESS_LEVEL);
                 a.buildingRegistry = buildingRegistryRepository.findRegistryBuildings(
                         a.notNsiAddress.getHouse(), a.notNsiAddress.getBuilding(), a.notNsiAddress.getConstruction(),
@@ -1241,6 +1277,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                         });
                 address.setBuildingRegistry(a.buildingRegistry);
             }
+            // 9.
             a.address = addressesRepository.findAddresses(address.getLevel(), address.getBuildingRegistry(), address.getAddressFormingElement())
                     .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
         });
