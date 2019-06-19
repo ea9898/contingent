@@ -38,7 +38,11 @@ public class ContingentWebApplicationInitializer implements WebApplicationInitia
         cXFServlet.setLoadOnStartup(1);
         //cXFServlet.addMapping("/area/*");
         cXFServlet.addMapping("/*");
-        
+        //Настройка редиректа для файла info.json
+        cXFServlet.setInitParameter("redirects-list", "/info.json");
+        cXFServlet.setInitParameter("redirect-attributes", "javax.servlet.include.request_uri");
+        cXFServlet.setInitParameter("redirect-servlet-name", "default");
+
         //Регистрация сервлетов метрик
         ServletRegistration.Dynamic metrics = container.addServlet("metrics", new MetricsServlet(new MetricRegistry() {{
                 registerAll(new GarbageCollectorMetricSet());

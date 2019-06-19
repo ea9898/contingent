@@ -85,9 +85,8 @@ public class AreaType implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean mpguAvailable;
 
-    @JoinColumn(name = "AREA_COUNT_LIMIT_CODE")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AreaCountLimit areaCountLimit;
+    @Column(name = "AREA_COUNT_LIMIT_CODE")
+    private Integer areaCountLimit;
 
     @Column(name = "RESIDENTS_BIND_RATE")
     private Integer residentsBindRate;
@@ -241,11 +240,11 @@ public class AreaType implements Serializable {
         this.mpguAvailable = mpguAvailable;
     }
 
-    public AreaCountLimit getAreaCountLimit() {
+    public Integer getAreaCountLimit() {
         return areaCountLimit;
     }
 
-    public void setAreaCountLimit(AreaCountLimit areaCountLimit) {
+    public void setAreaCountLimit(Integer areaCountLimit) {
         this.areaCountLimit = areaCountLimit;
     }
 

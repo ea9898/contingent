@@ -8,7 +8,6 @@ import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
@@ -54,6 +53,7 @@ import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesRepositor
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesRepository;
+import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
@@ -68,10 +68,13 @@ import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import moscow.ptnl.util.Strings;
 import moscow.ptnl.ws.security.UserContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
@@ -97,7 +100,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
-    
+
     private final static Logger LOG = LoggerFactory.getLogger(AreaServiceInternalImpl.class);
 
     @Autowired
@@ -324,65 +327,60 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
     @Override @LogESU(value = AreaInfoEvent.class, useResult = true)
-    public Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode,
+    public Long createPrimaryArea(long moId, long muId, Integer muTypeCode, Integer number, Long areaTypeCode, List<Long> policyTypes,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
 
-        areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+        // 1
+        AreaType areaType = areaHelper.checkAndGetAreaTypesExist(
+                Collections.singletonList(areaTypeCode), validation, "areaTypeCode").get(0);
 
-        MuAddlAreaTypes muAddlAreaTypes = muAddlAreaTypesRepository.getMuAddlAreaTypes(muId).stream()
-                .filter(p -> p.getAreaType() != null && Objects.equals(p.getAreaType().getCode(), areaTypeCode))
-                .findFirst().orElse(null);
+        // 2
+        areaHelper.checkAreaTypeAvailable(areaType, validation);
 
-        if (muAddlAreaTypes == null) {
-            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("areaTypeCode", areaTypeCode));
+        // 3
+        areaHelper.checkAreaTypeCountLimits(moId, muId, areaType, validation);
+
+        // 4
+        if (areaType.getKindAreaType() != null &&
+                Objects.equals(areaType.getKindAreaType().getCode(), AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) &&
+                (Strings.isNullOrEmpty(description) || number == null ||
+                        ageMin == null && ageMax == null && ageMinM == null && ageMaxM == null && ageMinW == null && ageMaxW == null)) {
+            validation.error(AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED);
         }
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        // TODO аттрибуты переехали. Переделать.
-//        Boolean mpguAvailable = muAddlAreaTypes.getAreaType().getAttributes() == null ? null : muAddlAreaTypes.getAreaType().getAttributes().getMpguAvailable();
-//        Boolean areaTypeAttachByMedicalReason = muAddlAreaTypes.getAreaType().getAttributes() == null ? null : muAddlAreaTypes.getAreaType().getAttributes().getAttachByMedicalReason();
-        //Todo сделать проерку AREA_COUNT_LIMIT после разработки НСИ
-        if (muAddlAreaTypes.getAreaType().getAreaTypeKind() != null &&
-                Objects.equals(muAddlAreaTypes.getAreaType().getAreaTypeKind().getCode(), AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode())) {
-            if (Strings.isNullOrEmpty(description) || number == null ||
-                    (ageMin == null && ageMax == null && ageMinM == null && ageMaxM == null && ageMinW == null && ageMaxW == null)) {
-                validation.error(AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED);
-            }
-        }
+
+        // 5
         areaHelper.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
-        areaHelper.checkAreaTypeAgeSetups(muAddlAreaTypes.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
-//        if (autoAssignForAttachment) {
-//            if (!Boolean.TRUE.equals(mpguAvailable)) {
-//                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT, new ValidationParameter("areaTypeCode", areaTypeCode));
-//            }
-//            if (Boolean.TRUE.equals(attachByMedicalReason)) {
-//                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
-//            }
-//        }
-//        if (attachByMedicalReason != null && areaTypeAttachByMedicalReason != null &&
-//                !Objects.equals(attachByMedicalReason, areaTypeAttachByMedicalReason)) {
-//            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
-//                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
-//                    new ValidationParameter("attachByMedicalReason", areaTypeAttachByMedicalReason));
-//        }
-//        if (!validation.isSuccess()) {
-//            throw new ContingentException(validation);
-//        }
-        //Создание новго первичного участка
-        Area area = new Area(moId, muId, muAddlAreaTypes.getAreaType(), number, autoAssignForAttachment, false, description,
+        // 6
+        areaHelper.checkPolicyTypesIsOMS(Collections.singletonList(areaTypeCode), validation);
+
+        // 7
+        areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+
+        // 8
+        areaHelper.checkAutoAssignForAttachment(areaType, autoAssignForAttachment, attachByMedicalReason, validation);
+
+        // 9
+        areaHelper.checkAttachByMedicalReason(areaType, attachByMedicalReason, validation);
+
+        // 10
+        Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
                 attachByMedicalReason, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 
-        areaHelper.resetAutoAssignForAttachment(area);
+        // 11
+        List<AreaPolicyTypes> areaPolicyTypes = policyTypes.stream().map(policyType ->
+                new AreaPolicyTypes(area, policyType)).collect(Collectors.toList());
+        areaPolicyTypesCRUDRepository.saveAll(areaPolicyTypes);
 
+        // 12
         if (areaHelper.isAreaPrimary(area)) {
             esuHelperService.sendAreaInfoEvent(area, "createPrimaryArea");
         }
 
+        // 13
         return area.getId();
     }
 

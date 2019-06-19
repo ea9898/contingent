@@ -24,7 +24,7 @@
             <column name="LAST_CHANGE" type="TIMESTAMP(6)" />
         </createTable>
         <rollback>
-            <dropTable tableName="AREA_COUNT_LIMIT"/>
+            <dropTable tableName="AD_CONFIG"/>
         </rollback>
     </changeSet>
 
