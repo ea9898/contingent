@@ -527,10 +527,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_10) Изменение участка обслуживания зависимого типа
     @Override
-    public void updateDependentArea(long areaId, Long muId, List<MuType> muTypes, Integer muNumber,
+    public void updateDependentArea(long areaId, Long muId, Integer number, String description,
                                     List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
+                                    List<Long> policyTypesAdd, List<Long> policyTypesDel,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                    boolean autoAssignForAttachment, String description) throws ContingentException {
+                                    Boolean autoAssignForAttachment) throws ContingentException {
+/*
         Validation validation = new Validation();
         //1 и 2
         Area area = areaHelper.checkAndGetArea(areaId, validation);
@@ -600,6 +602,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         //TODO падает при отправке в есу
         //esuService.saveAndPublishToESU(new AreaUpdateEvent(area, oldArea, areaToAreaTypesToAdd, areaToAreaTypesToRemove));
+*/
     }
 
     // (К_УУ_11) Изменение медицинских работников на участке обслуживания
