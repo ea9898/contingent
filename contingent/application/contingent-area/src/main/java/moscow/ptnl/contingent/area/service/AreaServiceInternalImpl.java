@@ -462,6 +462,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        Area oldArea = historyService.clone(area);
 
         // 3
         if (number != null) {
@@ -525,6 +526,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (areaHelper.isAreaPrimary(area)) {
             esuHelperService.sendAreaInfoEvent(area, "updatePrimaryArea");
         }
+
+        // Логирование изменений
+        historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
     }
 
     // (К_УУ_10) Изменение участка обслуживания зависимого типа
@@ -538,6 +542,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Validation validation = new Validation();
         //1. и 2.
         Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area oldArea = historyService.clone(area);
+
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -605,6 +611,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 //        area.setAttachByMedicalReason(); TODO нет такого входного параметра
         area.setDescription(description == null ? area.getDescription() : description);
         area.setUpdateDate(LocalDateTime.now());
+        areaCRUDRepository.save(area);
 
         // 9.
         // 9.1.
@@ -652,8 +659,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
         }
 
+        // Логирование изменений
+        historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
+
         // 13.
-        return;
     }
 
     // (К_УУ_11) Изменение медицинских работников на участке обслуживания
