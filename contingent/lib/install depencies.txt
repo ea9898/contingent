@@ -1,2 +1,2 @@
 mvn install:install-file -Dfile=esu-producer-lib-1.1.1.jar -DgroupId=ru.mos.emias.esu -DartifactId=esu-producer-lib -Dversion=1.1.1 -Dpackaging=jar
-mvn install:install-file -Dfile=esu-consumer-lib-1.0.3.jar -DgroupId=ru.mos.emias.esu -DartifactId=esu-consumer-lib -Dversion=1.0.3 -Dpackaging=jar
+mvn install:install-file -Dfile=esu-consumer-lib-2.1.0.jar -DgroupId=ru.mos.emias.esu -DartifactId=esu-consumer-lib -Dversion=2.1.0 -Dpackaging=jar

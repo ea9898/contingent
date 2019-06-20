@@ -101,41 +101,96 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-151" author="ddryuchin" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-151-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ESU_INPUT"/>
+            <not>
+                <columnExists tableName="ESU_INPUT" columnName="STATUS" />
+            </not>
+        </preConditions>
+        <dropTable tableName="ESU_INPUT" />
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-151-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ESU_INPUT"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы ESU_INPUT</comment>
-        <createTable tableName="ESU_INPUT" remarks="Журнал принятых сообщений из сервиса ЕСУ">
-            <column name="ID" type="number" remarks="Идентификатор записи таблицы" defaultValueComputed="nextval('esu_input_seq_id')">
+        <createTable tableName="ESU_INPUT"
+                     remarks="Журнал входящих сообщений ЕСУ">
+            <column name="ID" type="NUMBER" remarks="Идентификатор записи таблицы">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="ESU_ID" type="varchar(255)" remarks="Идентификатор записи в сервисе ЕСУ">
+            <column name="ESU_ID" type="VARCHAR(255)" remarks="Идентификатор записи в сервисе ЕСУ">
                 <constraints nullable="false"/>
             </column>
-            <column name="ESU_OFFSET" type="number" remarks="Оффсет принятого сообщения">
+            <column name="ESU_OFFSET" type="NUMBER" remarks="Оффсет принятого сообщения">
                 <constraints nullable="false"/>
             </column>
-            <column name="PARTITION" type="number" remarks="Раздел принятого сообщение">
+            <column name="PARTITION" type="NUMBER" remarks="Раздел принятого сообщение">
                 <constraints nullable="false"/>
             </column>
-            <column name="RECEIVED_TIME" type="timestamp" remarks="timestamp принятого сообщения" defaultValueComputed="CURRENT_TIMESTAMP">
+            <column name="RECEIVED_TIME" type="TIMESTAMP" remarks="timestamp принятого сообщения" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-            <column name="TOPIC" type="varchar(255)" remarks="Название топика принятого сообщение">
+            <column name="TOPIC" type="VARCHAR(255)" remarks="Название топика принятого сообщение">
                 <constraints nullable="false"/>
             </column>
-            <column name="MESSAGE" type="clob" remarks="Текст сообщения">
+            <column name="MESSAGE" type="CLOB" remarks="Текст сообщения">
                 <constraints nullable="false"/>
             </column>
-            <column name="EVENT_ID" type="varchar2(36)" remarks="Идентификатор события в формате UUID"/>
+            <column name="STATUS" type="NUMBER(8)" remarks="Статус обработки принятого сообщение" defaultValue="NULL" />
+            <column name="UPDATE_TIME" type="TIMESTAMP" remarks="Время обновления записи" />
+            <column name="ERROR_MESSAGE" type="CLOB" remarks="Сообщение об ошибке, полученное при обработке" />
         </createTable>
         <rollback>
-            <dropTable tableName="ESU_INPUT"/>
+            <dropTable tableName="ESU_INPUT" />
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-151-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_ESU_INPUT_TOPIC"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки TOPIC таблицы ESU_INPUT</comment>
+        <createIndex indexName="IDX_ESU_INPUT_TOPIC"
+                     tableName="ESU_INPUT"
+                     unique="false">
+            <column name="TOPIC" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-151-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_ESU_INPUT_ESU_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки ESU_ID таблицы ESU_INPUT</comment>
+        <createIndex indexName="IDX_ESU_INPUT_ESU_ID"
+                     tableName="ESU_INPUT"
+                     unique="false">
+            <column name="ESU_ID" type="string"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-151-6" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_ESU_INPUT_STATUS"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки STATUS таблицы ESU_INPUT</comment>
+        <createIndex indexName="IDX_ESU_INPUT_STATUS"
+                     tableName="ESU_INPUT"
+                     unique="false">
+            <column name="STATUS" type="number"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>
