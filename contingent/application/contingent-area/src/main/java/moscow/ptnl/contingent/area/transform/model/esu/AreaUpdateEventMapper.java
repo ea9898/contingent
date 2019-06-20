@@ -20,10 +20,10 @@ public class AreaUpdateEventMapper /*implements Transform<AreaUpdateEvent, AreaE
 //        event.setMoId(Objects.equals(oldArea.getMoId(), area.getMoId()) ? null : area.getMoId());
 //        event.setMuId(Objects.equals(oldArea.getMuId(), area.getMuId()) ? null : area.getMuId());
 //        event.setDescription(Objects.equals(oldArea.getDescription(), area.getDescription()) ? null : area.getDescription());
-//        event.setAreaTypeClassCode(Objects.equals(oldArea.getAreaType().getClassAreaType().getCode(),
-//                area.getAreaType().getClassAreaType().getCode()) ? null : area.getAreaType().getClassAreaType().getCode());
-//        event.setAreaTypeKindCode(Objects.equals(oldArea.getAreaType().getKindAreaType().getCode(),
-//                area.getAreaType().getKindAreaType().getCode()) ? null : area.getAreaType().getKindAreaType().getCode());
+//        event.setAreaTypeClassCode(Objects.equals(oldArea.getAreaType().getAreaTypeClass().getCode(),
+//                area.getAreaType().getAreaTypeClass().getCode()) ? null : area.getAreaType().getAreaTypeClass().getCode());
+//        event.setAreaTypeKindCode(Objects.equals(oldArea.getAreaType().getAreaTypeKind().getCode(),
+//                area.getAreaType().getAreaTypeKind().getCode()) ? null : area.getAreaType().getAreaTypeKind().getCode());
 //        event.setAreaTypeCode(Objects.equals(oldArea.getAreaType().getCode(), area.getAreaType().getCode()) ? null : area.getAreaType().getCode());
 //        event.setAgeMin(Objects.equals(oldArea.getAgeMin(), area.getAgeMin()) ? null : area.getAgeMin());
 //        event.setAgeMax(Objects.equals(oldArea.getAgeMax(), area.getAgeMax()) ? null : area.getAgeMax());

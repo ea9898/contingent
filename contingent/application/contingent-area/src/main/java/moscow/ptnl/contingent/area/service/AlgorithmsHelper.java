@@ -2,18 +2,14 @@ package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
-import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementCRUDRepository;
-import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
-import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.AddressFormingElementCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.AddressFormingElementRepository;
+import moscow.ptnl.contingent.repository.nsi.BuildingRegistryCRUDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.mos.emias.contingent2.core.NotNsiAddress;
-import ru.mos.emias.contingent2.core.NsiAddress;
 
 import java.util.ArrayList;
 import java.util.List;

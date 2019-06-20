@@ -10,7 +10,8 @@ import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeCountLimitEnum;
+import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyTypeEnum;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -20,23 +21,21 @@ import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
-import moscow.ptnl.contingent.area.model.nsi.AvailableToCreateType;
-import moscow.ptnl.contingent.area.repository.area.AddressAllocationOrderCRUDRepository;
-import moscow.ptnl.contingent.area.repository.area.AreaAddressCRUDRepository;
-import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
-import moscow.ptnl.contingent.area.repository.area.AreaMedicalEmployeeCRUDRepository;
-import moscow.ptnl.contingent.area.repository.area.AreaRepository;
-import moscow.ptnl.contingent.area.repository.area.MoAddressCRUDRepository;
-import moscow.ptnl.contingent.area.repository.area.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.area.repository.area.MuAddlAreaTypesRepository;
-import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
-import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
-import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesRepository;
-import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
-import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
-import moscow.ptnl.contingent.area.repository.nsi.PositionNomRepository;
+import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
+import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.repository.area.MuAddlAreaTypesRepository;
+import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.repository.nsi.AddressFormingElementRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaPolicyTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaPolicyTypesRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.BuildingRegistryRepository;
+import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
 import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.util.Period;
@@ -45,7 +44,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
-import ru.mos.emias.contingent2.core.MuType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -68,9 +66,6 @@ public class AreaServiceHelper {
 
     @Autowired
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
-
-    @Autowired
-    private MuTypeAreaTypesRepository muTypeAreaTypesRepository;
 
     @Autowired
     private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
@@ -221,50 +216,22 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkPrimaryAreaTypesForMuType(List<MuType> muTypes,
-                                               List<Long> primaryAreaTypeCodes, Validation validation) {
-        List<MuTypeAreaTypes> muTypeAreaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(
-                muTypes.stream().map(MuType::getMuTypeId).collect(Collectors.toList()), primaryAreaTypeCodes, null);
-
-        if (muTypeAreaTypes.stream()
-                .noneMatch(t ->
-                    AvailableToCreateType.ALLOWED.getValue().equals(t.getAvailableToCreate()) ||
-                            (AvailableToCreateType.POSSIBLE.getValue().equals(t.getAvailableToCreate()) &&
-                                    !muAddlAreaTypesRepository.findMuAddlAreaTypes(
-                                            muTypes.stream()
-                                                    .filter(m -> Objects.equals(t.getMuTypeCode(), m.getMuTypeId()))
-                                                    .map(MuType::getMuId)
-                                                    .collect(Collectors.toList()),
-                                            primaryAreaTypeCodes).isEmpty()))) {
-            String areaTypes = String.join(", ", primaryAreaTypeCodes.stream().map(String::valueOf).collect(Collectors.toList()));
-            validation.error(AreaErrorReason.MU_PROFILE_HAS_NO_AREA_TYPE, new ValidationParameter("primaryAreaTypeCode", areaTypes));
-        }
-    }
-
     // К_УУ_8 2.
     // Система проверяет наличие каждого переданного первичного типа участка
-    public void checkPrimaryAreasInMU(Long muId, AreaType areaType, Validation validation) {
+    public void checkPrimaryAreasTypesInMUProfile(Long muId, AreaType areaType, Validation validation) {
+        List<MuAvailableAreaTypes> muAvailableAreaTypes = new ArrayList<>();
+        List<MoAvailableAreaTypes> moAvailableAreaTypes = new ArrayList<>();
+
         if (muId != null) {
-            List<MuAvailableAreaTypes> muAvailableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType);
+            muAvailableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType);
         } else {
-            List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findByAreaTypes(areaType);
+            moAvailableAreaTypes = moAvailableAreaTypesRepository.findByAreaTypes(areaType);
         }
 
-/*
-
-        StringBuilder primaryAreaTypesMissing = new StringBuilder();
-        List<Area> areas = areaRepository.findAreas(null, muId, primaryAreaTypeCodes, null, true);
-
-        primaryAreaTypeCodes.forEach(c -> {
-            if (areas.stream().noneMatch(a -> a.getAreaType() != null && Objects.equals(c, a.getAreaType().getCode()))) {
-                primaryAreaTypesMissing.append(c).append(", ");
-            }
-        });
-        if (primaryAreaTypesMissing.length() > 0) {
-            validation.error(AreaErrorReason.NO_PRIMARY_AREA, new ValidationParameter("primaryAreaTypeCode",
-                    primaryAreaTypesMissing.substring(0, primaryAreaTypesMissing.length() - 2)));
+        if (moAvailableAreaTypes.size() + muAvailableAreaTypes.size() == 0) {
+            validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU,
+                    new ValidationParameter("areaType", areaType.getCode()));
         }
-*/
     }
 
     // Проверяет существует ли участок с указанным идентификатором и не находится ли он в архиве
@@ -307,8 +274,8 @@ public class AreaServiceHelper {
     Система проверяет, что вид участка отличен от «Именной»
      */
     public void checkAreaTypeIsNotPersonal(AreaType areaType, Validation validation) {
-        if (areaType.getKindAreaType() != null &&
-                Objects.equals(areaType.getKindAreaType().getCode(), 4L)) {
+        if (areaType.getAreaTypeKind() != null &&
+                Objects.equals(areaType.getAreaTypeKind().getCode(), 4L)) {
             validation.error(AreaErrorReason.CANT_RESTORE_PERSONAL_KIND_AREA);
         }
     }
@@ -547,13 +514,13 @@ public class AreaServiceHelper {
     }
 
     public boolean isAreaPrimary(Area area) {
-        return area.getAreaType() != null && area.getAreaType().getClassAreaType() != null &&
-                Objects.equals(PRIMARY_AREA_TYPE_CLASS, area.getAreaType().getClassAreaType().getCode());
+        return area.getAreaType() != null && area.getAreaType().getAreaTypeClass() != null &&
+                Objects.equals(PRIMARY_AREA_TYPE_CLASS, area.getAreaType().getAreaTypeClass().getCode());
     }
 
     public boolean isAreaDependent(Area area) {
-        return area.getAreaType() != null && area.getAreaType().getClassAreaType() != null &&
-                Objects.equals(DEPENDENT_AREA_TYPE_CLASS, area.getAreaType().getClassAreaType().getCode());
+        return area.getAreaType() != null && area.getAreaType().getAreaTypeClass() != null &&
+                Objects.equals(DEPENDENT_AREA_TYPE_CLASS, area.getAreaType().getAreaTypeClass().getCode());
     }
 
     // К_УУ_11 3.
@@ -752,9 +719,9 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkPolicyTypesDel(Area area, List<Long> policyTypesDel,  Validation validation) throws ContingentException {
+    public void checkPolicyTypesDel(Area area, List<PolicyType> policyTypesDel, Validation validation) throws ContingentException {
         if (!policyTypesDel.isEmpty()) {
-            for (Long policy : policyTypesDel) {
+            for (PolicyType policy : policyTypesDel) {
                 if (areaPolicyTypesRepository.findAll(area, policy).isEmpty()) {
                     validation.error(AreaErrorReason.POLICY_TYPE_NOT_SET_FOR_AREA,
                             new ValidationParameter("areaTypeCode", policy),
@@ -767,7 +734,7 @@ public class AreaServiceHelper {
         }
     }
 
-    public void saveAndDeleteAreaPolicyTypes(Area area, List<Long> policyTypesAdd, List<Long> policyTypesDel) throws ContingentException {
+    public void saveAndDeleteAreaPolicyTypes(Area area, List<PolicyType> policyTypesAdd, List<PolicyType> policyTypesDel) throws ContingentException {
 
         if (!policyTypesDel.isEmpty()) {
             areaPolicyTypesRepository.deleteAll(area, policyTypesDel);
@@ -777,6 +744,13 @@ public class AreaServiceHelper {
             List<AreaPolicyTypes> policys = policyTypesAdd.stream()
                     .map(policyId -> new AreaPolicyTypes(area, policyId)).collect(Collectors.toList());
             areaPolicyTypesCRUDRepository.saveAll(policys);
+        }
+    }
+
+    public void checkPolicyTypesDepArea(List<Long> policyTypeCodes, Validation validation) {
+        if (policyTypeCodes != null && !policyTypeCodes.isEmpty() &&
+                !policyTypeCodes.stream().allMatch(ptc -> ptc.equals(1L))) {
+            validation.error(AreaErrorReason.NO_PRIMARY_AREA);
         }
     }
 
@@ -798,5 +772,59 @@ public class AreaServiceHelper {
         return muAvailableAreaTypes.stream()
                 .filter(a -> areaTypeCodes.contains(a.getAreaType().getCode()))
                 .collect(Collectors.toList());
+    }
+
+    public void checkAreaTypeAvailable(AreaType areaType, Validation validation) throws ContingentException {
+        List<MuAvailableAreaTypes> availableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType);
+        if (availableAreaTypes.isEmpty()) {
+            throw new ContingentException(validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU,
+                    new ValidationParameter("areaTypeTitle", areaType.getTitle())));
+        }
+    }
+
+    public void checkAreaTypeCountLimits(long moId, long muId, AreaType areaType, Validation validation) throws ContingentException {
+        if (areaType.getAreaCountLimit() != null) {
+            if (areaType.getAreaCountLimit().equals(AreaTypeCountLimitEnum.MO.getCode())) {
+                List<Area> areas = areaRepository.findAreas(moId, null, areaType.getCode(), null, true);
+                if (areas.size() >= AreaTypeCountLimitEnum.MO.getLimit()) {
+                    validation.error(AreaErrorReason.AREAS_NUMBER_LIMIT_EXCEEDED,
+                            new ValidationParameter("areaTypeTitle", areaType.getTitle()),
+                            new ValidationParameter("areaTypeLimit", AreaTypeCountLimitEnum.MO.getLimit()));
+                }
+            } else if (areaType.getAreaCountLimit().equals(AreaTypeCountLimitEnum.MU.getCode())) {
+                List<Area> areas = areaRepository.findAreas(null, muId, areaType.getCode(), null, true);
+                if (areas.size() >= AreaTypeCountLimitEnum.MU.getLimit()) {
+                    validation.error(AreaErrorReason.AREAS_NUMBER_LIMIT_EXCEEDED,
+                            new ValidationParameter("areaTypeTitle", areaType.getTitle()),
+                            new ValidationParameter("areaTypeLimit", AreaTypeCountLimitEnum.MU.getLimit()));
+                }
+            }
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+    }
+
+    public void checkAutoAssignForAttachment(AreaType areaType, Boolean autoAssignForAttachment,
+                                             Boolean attachByMedicalReason, Validation validation) {
+        if (autoAssignForAttachment) {
+            if (areaType.getMpguAvailable() != null
+                    && !Boolean.TRUE.equals(areaType.getMpguAvailable())) {
+                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
+                        new ValidationParameter("areaTypeCode", areaType.getCode()));
+            }
+            if (Boolean.TRUE.equals(attachByMedicalReason)) {
+                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
+            }
+        }
+    }
+
+    public void checkAttachByMedicalReason(AreaType areaType, Boolean attachByMedicalReason, Validation validation) {
+        if (attachByMedicalReason != null && areaType.getAttachByMedicalReason() != null &&
+                !Objects.equals(attachByMedicalReason, areaType.getAttachByMedicalReason())) {
+            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
+                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
+                    new ValidationParameter("attachByMedicalReason", areaType.getAttachByMedicalReason()));
+        }
     }
 }

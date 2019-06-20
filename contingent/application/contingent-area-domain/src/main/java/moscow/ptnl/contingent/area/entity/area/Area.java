@@ -47,7 +47,6 @@ public class Area implements Serializable {
     @Column(name = "MU_ID")
     private Long muId;
 
-    @LogIt
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType areaType;
@@ -104,7 +103,6 @@ public class Area implements Serializable {
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
-    @LogIt
     @Column(name = "UPDATE_DATE", nullable = false)
     private LocalDateTime updateDate;
 
@@ -288,6 +286,18 @@ public class Area implements Serializable {
 
     public Set<AreaMedicalEmployees> getMedicalEmployees() {
         return medicalEmployees;
+    }
+
+    public void setMedicalEmployees(Set<AreaMedicalEmployees> medicalEmployees) {
+        this.medicalEmployees = medicalEmployees;
+    }
+
+    public void setPrimaryAreaTypes(Set<AreaToAreaType> primaryAreaTypes) {
+        this.primaryAreaTypes = primaryAreaTypes;
+    }
+
+    public void setAreaAddresses(Set<AreaAddress> areaAddresses) {
+        this.areaAddresses = areaAddresses;
     }
 
     public Set<AreaMedicalEmployees> getActualMedicalEmployees() {

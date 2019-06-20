@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -34,11 +33,11 @@ public class AreaType implements Serializable {
 
     @JoinColumn(name = "AREA_TYPE_KIND_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypeKind kindAreaType;
+    private AreaTypeKind areaTypeKind;
 
     @JoinColumn(name = "AREA_TYPE_CLASS_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    private AreaTypeClass classAreaType;
+    private AreaTypeClass areaTypeClass;
 
     @Size(max = 1)
     @Column(name = "GENDER_CODE")
@@ -86,9 +85,8 @@ public class AreaType implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean mpguAvailable;
 
-    @JoinColumn(name = "AREA_COUNT_LIMIT_CODE")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AreaCountLimit areaCountLimit;
+    @Column(name = "AREA_COUNT_LIMIT_CODE")
+    private Integer areaCountLimit;
 
     @Column(name = "RESIDENTS_BIND_RATE")
     private Integer residentsBindRate;
@@ -118,20 +116,20 @@ public class AreaType implements Serializable {
         this.title = title;
     }
 
-    public AreaTypeKind getKindAreaType() {
-        return kindAreaType;
+    public AreaTypeKind getAreaTypeKind() {
+        return areaTypeKind;
     }
 
-    public void setKindAreaType(AreaTypeKind kindAreaType) {
-        this.kindAreaType = kindAreaType;
+    public void setAreaTypeKind(AreaTypeKind areaTypeKind) {
+        this.areaTypeKind = areaTypeKind;
     }
 
-    public AreaTypeClass getClassAreaType() {
-        return classAreaType;
+    public AreaTypeClass getAreaTypeClass() {
+        return areaTypeClass;
     }
 
-    public void setClassAreaType(AreaTypeClass classAreaType) {
-        this.classAreaType = classAreaType;
+    public void setAreaTypeClass(AreaTypeClass areaTypeClass) {
+        this.areaTypeClass = areaTypeClass;
     }
 
     public String getGender() {
@@ -242,11 +240,11 @@ public class AreaType implements Serializable {
         this.mpguAvailable = mpguAvailable;
     }
 
-    public AreaCountLimit getAreaCountLimit() {
+    public Integer getAreaCountLimit() {
         return areaCountLimit;
     }
 
-    public void setAreaCountLimit(AreaCountLimit areaCountLimit) {
+    public void setAreaCountLimit(Integer areaCountLimit) {
         this.areaCountLimit = areaCountLimit;
     }
 

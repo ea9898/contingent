@@ -5,10 +5,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
+import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -51,9 +51,7 @@ public class LogESUInterceptor {
             
         method.setAccessible(true);
         String methodName = method.getName();
-                
-        LOG.info("INVOCE : "+ methodName + " FOR EVENT : " + annotation.type().getName());
-
+        
         final Object result = joinPoint.proceed();
         
         if (annotation.type().isAssignableFrom(AreaInfoEvent.class)) {

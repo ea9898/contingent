@@ -73,6 +73,8 @@ public class ESUEventHelper {
             topicName = "areaInfoEvent";
         } else if (publishObject instanceof AttachToDependentAreaEvent) {
             topicName = "attachToDependentAreaEvent";
+        } else if (publishObject instanceof AttachOnAreaChange) {
+            topicName= "attachOnAreaChange";
         }
         
         if (topicName == null) {
