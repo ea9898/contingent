@@ -19,7 +19,7 @@ public @interface LogESU {
      * 
      * @return 
      */
-    Class<?> value();
+    Class<?> type();
     
     String[] parameters() default {};
     

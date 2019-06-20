@@ -157,7 +157,8 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>                                                   
+                    <encoding>${project.build.sourceEncoding}</encoding> 
+                    <parameters>true</parameters> <!-- необходимо для передачи имен аргументов в Java Reflection -->                                                  
                     <annotationProcessorPaths>  
                         <path>
                             <groupId>org.hibernate</groupId>
