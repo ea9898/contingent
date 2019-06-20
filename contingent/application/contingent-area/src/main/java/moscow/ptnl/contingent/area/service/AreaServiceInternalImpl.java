@@ -53,13 +53,11 @@ import moscow.ptnl.contingent.area.repository.area.MuAvailableAreaTypesRepositor
 import moscow.ptnl.contingent.area.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesRepository;
-import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
-import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PolicyTypeRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomRepository;
@@ -94,10 +92,6 @@ import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
 
@@ -108,9 +102,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private MuAddlAreaTypesCRUDRepository muAddlAreaTypesCRUDRepository;
-
-    @Autowired
-    private MuTypeAreaTypesRepository muTypeAreaTypesRepository;
 
     @Autowired
     private AreaTypesCRUDRepository areaTypesCRUDRepository;

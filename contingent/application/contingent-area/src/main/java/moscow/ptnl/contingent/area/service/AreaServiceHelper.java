@@ -11,7 +11,6 @@ import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeCountLimitEnum;
-import moscow.ptnl.contingent.area.entity.nsi.MuTypeAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyTypeEnum;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -37,7 +36,6 @@ import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.area.repository.nsi.BuildingRegistryRepository;
-import moscow.ptnl.contingent.area.repository.nsi.MuTypeAreaTypesRepository;
 import moscow.ptnl.contingent.area.repository.nsi.PositionNomRepository;
 import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
@@ -70,9 +68,6 @@ public class AreaServiceHelper {
 
     @Autowired
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
-
-    @Autowired
-    private MuTypeAreaTypesRepository muTypeAreaTypesRepository;
 
     @Autowired
     private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
@@ -220,26 +215,6 @@ public class AreaServiceHelper {
             validation.error(AreaErrorReason.AREA_AGE_SETUP_EXCEEDED,
                     new ValidationParameter(paramMinCode, ageMin), new ValidationParameter(paramMaxCode, ageMax),
                     new ValidationParameter(paramMinCode, ageMinAreaType), new ValidationParameter(paramMaxCode, ageMaxAreaType));
-        }
-    }
-
-    public void checkPrimaryAreaTypesForMuType(List<MuType> muTypes,
-                                               List<Long> primaryAreaTypeCodes, Validation validation) {
-        List<MuTypeAreaTypes> muTypeAreaTypes = muTypeAreaTypesRepository.findMuTypeAreaTypes(
-                muTypes.stream().map(MuType::getMuTypeId).collect(Collectors.toList()), primaryAreaTypeCodes, null);
-
-        if (muTypeAreaTypes.stream()
-                .noneMatch(t ->
-                    AvailableToCreateType.ALLOWED.getValue().equals(t.getAvailableToCreate()) ||
-                            (AvailableToCreateType.POSSIBLE.getValue().equals(t.getAvailableToCreate()) &&
-                                    !muAddlAreaTypesRepository.findMuAddlAreaTypes(
-                                            muTypes.stream()
-                                                    .filter(m -> Objects.equals(t.getMuTypeCode(), m.getMuTypeId()))
-                                                    .map(MuType::getMuId)
-                                                    .collect(Collectors.toList()),
-                                            primaryAreaTypeCodes).isEmpty()))) {
-            String areaTypes = String.join(", ", primaryAreaTypeCodes.stream().map(String::valueOf).collect(Collectors.toList()));
-            validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU, new ValidationParameter("primaryAreaTypeCode", areaTypes));
         }
     }
 
