@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.repository.esu;
 
+import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public interface EsuOutputRepository {
      * @param fromStatus первоначальное значение статуса (учитывается в услрвии)
      * @param toStatus новое значение статуса
      */
-    void updateStatus(List<Long> ids, EsuOutput.STATUS fromStatus, EsuOutput.STATUS toStatus);
+    void updateStatus(List<Long> ids, EsuStatusType fromStatus, EsuStatusType toStatus);
     
     /**
      * Меняем статус записи с указанным id.
@@ -35,7 +36,7 @@ public interface EsuOutputRepository {
      * @param fromStatus первоначальное значение статуса (учитывается в услрвии)
      * @param toStatus новое значение статуса
      */
-    void updateStatus(Long id, EsuOutput.STATUS fromStatus, EsuOutput.STATUS toStatus);
+    void updateStatus(Long id, EsuStatusType fromStatus, EsuStatusType toStatus);
     
     /**
      * Меняем сообщение записи с указанным id.

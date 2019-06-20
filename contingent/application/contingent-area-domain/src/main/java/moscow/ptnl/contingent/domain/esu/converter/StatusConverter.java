@@ -1,16 +1,16 @@
 package moscow.ptnl.contingent.domain.esu.converter;
 
 import javax.persistence.AttributeConverter;
-import moscow.ptnl.contingent.domain.esu.EsuOutput;
+import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 
 /**
  *
  * @author mkachalov
  */
-public class StatusConverter implements AttributeConverter<EsuOutput.STATUS, Integer> {
+public class StatusConverter implements AttributeConverter<EsuStatusType, Integer> {
 
     @Override
-    public Integer convertToDatabaseColumn(EsuOutput.STATUS attribute) {
+    public Integer convertToDatabaseColumn(EsuStatusType attribute) {
         if (attribute == null) {
             return null;
         }
@@ -18,11 +18,11 @@ public class StatusConverter implements AttributeConverter<EsuOutput.STATUS, Int
     }
 
     @Override
-    public EsuOutput.STATUS convertToEntityAttribute(Integer dbData) {
+    public EsuStatusType convertToEntityAttribute(Integer dbData) {
         if (dbData == null) {
             return null;
         }
-        return EsuOutput.STATUS.getByValue(dbData);
+        return EsuStatusType.getByValue(dbData);
     }
     
 }

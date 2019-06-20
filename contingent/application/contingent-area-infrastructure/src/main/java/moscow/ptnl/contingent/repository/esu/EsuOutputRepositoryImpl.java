@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.repository.esu;
 
+import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -31,7 +32,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
         
         selectCriteria.where(
             criteriaBuilder.and(
-                criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), EsuOutput.STATUS.UNSUCCESS),
+                criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), EsuStatusType.UNSUCCESS),
                 criteriaBuilder.or(
                     criteriaBuilder.lessThan(template.get(EsuOutput_.sentTime.getName()), olderThan),
                     criteriaBuilder.isNull(template.get(EsuOutput_.sentTime.getName()))
@@ -48,7 +49,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
             template = updateCriteria.from(EsuOutput.class);
 
             updateCriteria
-                    .set(template.get(EsuOutput_.status.getName()), EsuOutput.STATUS.INPROGRESS)
+                    .set(template.get(EsuOutput_.status.getName()), EsuStatusType.INPROGRESS)
                     .where(template.get(EsuOutput_.id).in(results.stream().map(r -> r.getId()).collect(Collectors.toList())));
 
             entityManager
@@ -60,7 +61,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
     }
 
     @Override
-    public void updateStatus(List<Long> ids, EsuOutput.STATUS fromStatus, EsuOutput.STATUS toStatus) {
+    public void updateStatus(List<Long> ids, EsuStatusType fromStatus, EsuStatusType toStatus) {
         if (ids == null || ids.isEmpty())
             return;
         
@@ -84,7 +85,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
     }
 
     @Override
-    public void updateStatus(Long id, EsuOutput.STATUS fromStatus, EsuOutput.STATUS toStatus) {
+    public void updateStatus(Long id, EsuStatusType fromStatus, EsuStatusType toStatus) {
         if (id == null)
             return;
         
