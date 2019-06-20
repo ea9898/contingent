@@ -26,6 +26,7 @@
             <artifactId>area-domain</artifactId>
             <version>1.0.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -67,7 +68,13 @@
             <artifactId>esu-producer-lib</artifactId>
             <version>1.1.1</version>
             <scope>${artefact.scope}</scope>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>ru.mos.emias.esu</groupId>
+            <artifactId>esu-consumer-lib</artifactId>
+            <version>2.1.0</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>

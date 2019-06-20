@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.service.esu;
 
 import moscow.ptnl.contingent.domain.esu.EsuOutput;
+import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.esu.EsuOutputCRUDRepository;
 import moscow.ptnl.contingent.repository.esu.EsuOutputRepository;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class EsuServiceImpl implements EsuService {
             EsuOutput esuOutput = new EsuOutput();
             esuOutput.setTopic(topicName);
             esuOutput.setSentTime(LocalDateTime.now());
-            esuOutput.setStatus(EsuOutput.STATUS.INPROGRESS);
+            esuOutput.setStatus(EsuStatusType.INPROGRESS);
             esuOutput.setMessage(" ");
             esuOutput = esuOutputCRUDRepository.save(esuOutput);
             
@@ -121,7 +122,7 @@ public class EsuServiceImpl implements EsuService {
         
         try {
             if (esuAnswer == null) {
-                esuOutputRepository.updateStatus(recordId, EsuOutput.STATUS.INPROGRESS, EsuOutput.STATUS.UNSUCCESS);
+                esuOutputRepository.updateStatus(recordId, EsuStatusType.INPROGRESS, EsuStatusType.UNSUCCESS);
             } else {
                 Optional<EsuOutput> result = esuOutputCRUDRepository.findById(recordId);
                 if (result.isPresent()) {
@@ -130,7 +131,7 @@ public class EsuServiceImpl implements EsuService {
                     esuOutput.setOffset(esuAnswer.getOffset());
                     esuOutput.setPartition(esuAnswer.getPartition());
                     esuOutput.setSentTime(toLocalDateTime(esuAnswer.getTimestamp()));
-                    esuOutput.setStatus(EsuOutput.STATUS.SUCCESS);
+                    esuOutput.setStatus(EsuStatusType.SUCCESS);
                     esuOutputCRUDRepository.save(esuOutput);
                 } else {
                     LOG.warn("не найдено событие в ESU_OUTPUT с идентификатором: {}", recordId);
@@ -138,7 +139,7 @@ public class EsuServiceImpl implements EsuService {
             }
         } catch (Exception e) {
             LOG.error("ошибка при публикации данных о событии в ЕСУ", e);
-            esuOutputRepository.updateStatus(recordId, EsuOutput.STATUS.INPROGRESS, EsuOutput.STATUS.UNSUCCESS);
+            esuOutputRepository.updateStatus(recordId, EsuStatusType.INPROGRESS, EsuStatusType.UNSUCCESS);
         }
     }
     
