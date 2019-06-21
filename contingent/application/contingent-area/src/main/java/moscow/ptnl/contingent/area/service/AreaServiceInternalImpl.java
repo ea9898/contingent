@@ -317,7 +317,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
-    @Override @LogESU(value = AreaInfoEvent.class, useResult = true)
+    @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, long muId, Integer muTypeCode, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
@@ -368,9 +368,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaPolicyTypesCRUDRepository.saveAll(areaPolicyTypes);
 
         // 12
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEvent(area, "createPrimaryArea");
-        }
+        //if (areaHelper.isAreaPrimary(area)) {
+        //    esuHelperService.sendAreaInfoEvent(area, "createPrimaryArea");
+        //}
 
         // 13
         return area.getId();
@@ -450,7 +450,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_9)	Изменение участка обслуживания первичного типа
-    @Override
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void updatePrimaryArea(long areaId, Integer number, List<Long> policyTypesAddIds, List<Long> policyTypesDelIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
@@ -523,9 +523,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.saveAndDeleteAreaPolicyTypes(area, policyTypesAdd, policyTypesDel);
 
         // 11
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEvent(area, "updatePrimaryArea");
-        }
+        //if (areaHelper.isAreaPrimary(area)) {
+        //    esuHelperService.sendAreaInfoEvent(area, "updatePrimaryArea");
+        //}
 
         // Логирование изменений
         historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
@@ -666,7 +666,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_11) Изменение медицинских работников на участке обслуживания
-    @Override
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
                                                List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
 
@@ -825,9 +825,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         });
 
         // 8
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEvent(area, "setMedicalEmployeeOnArea");
-        }
+        //if (areaHelper.isAreaPrimary(area)) {
+        //    esuHelperService.sendAreaInfoEvent(area, "setMedicalEmployeeOnArea");
+        //}
 
         return result;
     }
@@ -855,7 +855,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_13) Добавление адресов на участок обслуживания
-    @Override
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"id"})
     public List<Long> addAreaAddress(Long id, List<NsiAddress> nsiAddresses,
                                      List<NotNsiAddress> notNsiAddresses) throws ContingentException {
         Validation validation = new Validation();
@@ -975,15 +975,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         });
 
         // 12.
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEvent(area, "addAreaAddress");
-        }
+        //if (areaHelper.isAreaPrimary(area)) {
+        //    esuHelperService.sendAreaInfoEvent(area, "addAreaAddress");
+        //}
 
         return areaAddressIds;
     }
 
     // (К_УУ_14) Удаление адресов из участка обслуживания
-    @Override
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
         Validation validation = new Validation();
 
@@ -1019,9 +1019,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 6.
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEvent(area, "delAreaAddress");
-        }
+        //if (areaHelper.isAreaPrimary(area)) {
+        //    esuHelperService.sendAreaInfoEvent(area, "delAreaAddress");
+        //}
 
         // 7.
         return;
@@ -1074,7 +1074,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_16) Архивирование участка обслуживания
-    @Override @LogESU(AreaInfoEvent.class)
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void archiveArea(long areaId) throws ContingentException {
         Validation validation = new Validation();
 
@@ -1104,13 +1104,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         // 7.
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEvent(area, "archiveArea");
-        }
+        //if (areaHelper.isAreaPrimary(area)) {
+        //    esuHelperService.sendAreaInfoEvent(area, "archiveArea");
+        //}
     }
 
     // (К_УУ_17) Восстановление архивного участка обслуживания
-    @Override
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void restoreArea(Long areaId) throws ContingentException {
         Validation validation = new Validation();
 
@@ -1156,9 +1156,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 9.
-        if (areaHelper.isAreaPrimary(area)) {
-            esuHelperService.sendAreaInfoEvent(area, "restoreArea");
-        }
+        //if (areaHelper.isAreaPrimary(area)) {
+        //    esuHelperService.sendAreaInfoEvent(area, "restoreArea");
+        //}
 
         // 10.
         return;
