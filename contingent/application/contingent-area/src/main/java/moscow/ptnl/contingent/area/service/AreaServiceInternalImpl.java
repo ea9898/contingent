@@ -607,7 +607,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAgeMMin(ageMinM == null ? area.getAgeMMin() : ageMinM);
         area.setAgeWMax(ageMaxW == null ? area.getAgeWMax() : ageMaxW);
         area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
-        area.setAutoAssignForAttach(autoAssignForAttachment);
+        area.setAutoAssignForAttach(autoAssignForAttachment == null ? area.getAutoAssignForAttach() : autoAssignForAttachment);
 //        area.setAttachByMedicalReason(); TODO нет такого входного параметра
         area.setDescription(description == null ? area.getDescription() : description);
         area.setUpdateDate(LocalDateTime.now());
