@@ -9,6 +9,12 @@
             <subsystem name="webservices"/>
             <subsystem name="jaxrs"/>
             <subsystem name="weld"/>
+            <subsystem name="org.hibernate" />
+            <subsystem name="org.hibernate.validator" />
         </exclude-subsystems>
+        <exclusions>
+            <module name="org.hibernate" />
+            <module name="org.hibernate.validator" />
+        </exclusions>
     </deployment>
 </jboss-deployment-structure>

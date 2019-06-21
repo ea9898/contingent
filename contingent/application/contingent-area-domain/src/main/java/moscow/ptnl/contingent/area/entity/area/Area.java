@@ -47,6 +47,7 @@ public class Area implements Serializable {
     @Column(name = "MU_ID")
     private Long muId;
 
+    @LogIt
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType areaType;

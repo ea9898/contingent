@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.entity.nsi;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "AREA_TYPE")
 @Cacheable
+@Proxy(lazy=false)
 public class AreaType implements Serializable {
 
     private static final long serialVersionUID = -1047920239396677745L;
