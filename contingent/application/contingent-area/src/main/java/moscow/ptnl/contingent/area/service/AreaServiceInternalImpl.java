@@ -90,7 +90,7 @@ import java.util.stream.Collectors;
 
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 
-import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
