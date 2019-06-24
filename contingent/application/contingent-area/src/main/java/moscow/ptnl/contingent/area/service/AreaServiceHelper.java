@@ -309,7 +309,7 @@ public class AreaServiceHelper {
     public void checkTooManyAddresses(List<NsiAddress> nsiAddresses,
                                       List<NotNsiAddress> notNsiAddresses, Long maxAddresses) throws ContingentException {
         if (nsiAddresses.size() + notNsiAddresses.size() > maxAddresses) {
-            throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES);
+            throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAddresses));
         }
     }
 
