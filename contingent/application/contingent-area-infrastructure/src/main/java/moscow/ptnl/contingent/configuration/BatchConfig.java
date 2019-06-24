@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import javax.sql.DataSource;
 
-@Configuration
-@EnableBatchProcessing
+//@Configuration
+//@EnableBatchProcessing
 public class BatchConfig extends DefaultBatchConfigurer {
 
     @Autowired
