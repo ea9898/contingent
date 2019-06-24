@@ -663,6 +663,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
 
         // 13.
+        return;
     }
 
     // (К_УУ_11) Изменение медицинских работников на участке обслуживания
