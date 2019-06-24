@@ -46,7 +46,7 @@ public interface AreaServiceInternal {
 
     Page<AddressAllocationOrders> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException;
 
-    AreaInfo getAreaById(Long id) throws ContingentException;
+    AreaInfo getAreaById(Long areaId) throws ContingentException;
 
     List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addMedicalEmployees,
                                         List<ChangeMedicalEmployee> changeMedicalEmployees) throws ContingentException;
@@ -55,7 +55,7 @@ public interface AreaServiceInternal {
 
     Long getNewAreaId() throws ContingentException;
 
-    List<Long> addAreaAddress(Long id, List<NsiAddress> nsiAddresses,
+    List<Long> addAreaAddress(Long areaId, List<NsiAddress> nsiAddresses,
                               List<NotNsiAddress> notNsiAddresses) throws ContingentException;
 
     List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,

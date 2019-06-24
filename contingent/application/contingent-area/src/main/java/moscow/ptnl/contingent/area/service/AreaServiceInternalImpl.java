@@ -862,13 +862,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_13) Добавление адресов на участок обслуживания
-    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"id"})
-    public List<Long> addAreaAddress(Long id, List<NsiAddress> nsiAddresses,
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    public List<Long> addAreaAddress(Long areaId, List<NsiAddress> nsiAddresses,
                                      List<NotNsiAddress> notNsiAddresses) throws ContingentException {
         Validation validation = new Validation();
 
         // 1. и 2.
-        Area area = areaHelper.checkAndGetArea(id, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
         // 3.
