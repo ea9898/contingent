@@ -730,7 +730,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     : emplDb != null ? emplDb.getStartDate() : null;
             if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
                 validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
-                        new ValidationParameter("areaId", area.getId()),
+                        new ValidationParameter("endDate", endDate),
                         new ValidationParameter("startDate", startDate));
             }
         }
@@ -751,7 +751,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             // 5.2.
             if (empl.getEndDate() != null && empl.getStartDate().isAfter(empl.getEndDate())){
                 validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
-                        new ValidationParameter("areaId", area.getId()),
+                        new ValidationParameter("endDate", empl.getEndDate()),
                         new ValidationParameter("startDate", empl.getStartDate()));
             }
 
