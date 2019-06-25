@@ -28,7 +28,7 @@
                 </xs:element>
                 <xs:element name="dependentArea" minOccurs="1" maxOccurs="unbounded">
                     <xs:annotation>
-                        <xs:documentation>Информация по операции архивирования участка. В одном сообщении может быть указано не более одной операции</xs:documentation>
+                        <xs:documentation>Сведения зависимого участка. В одном сообщении может быть указано не более одной операции</xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
                         <xs:sequence>

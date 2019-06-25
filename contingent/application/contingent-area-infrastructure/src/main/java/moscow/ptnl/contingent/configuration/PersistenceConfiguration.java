@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jndi.JndiTemplate;
@@ -54,7 +55,7 @@ public class PersistenceConfiguration {
         return dataSource;
     }
     
-    @Bean(name = "contingentManagerFactory") 
+    @Bean(name = "contingentManagerFactory")
     public EntityManagerFactory entityManagerFactory(@Qualifier("contingentDataSource") DataSource dataSource) {
         ResourceBundle bundle = ResourceBundle.getBundle("persistence");
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -78,10 +79,11 @@ public class PersistenceConfiguration {
     }
     
     @Bean (name = "contingentTransactionManager")
+    @Primary
     public PlatformTransactionManager transactionManager(@Qualifier("contingentManagerFactory") EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager txManager = new JpaTransactionManager();
         txManager.setEntityManagerFactory(entityManagerFactory);
         return txManager;
     }
-    
+
 }

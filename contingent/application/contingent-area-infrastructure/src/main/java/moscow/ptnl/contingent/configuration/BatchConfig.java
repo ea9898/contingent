@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import javax.sql.DataSource;
 
-//@Configuration
-//@EnableBatchProcessing
+@Configuration
+@EnableBatchProcessing
 public class BatchConfig extends DefaultBatchConfigurer {
 
     @Autowired
@@ -43,17 +43,17 @@ public class BatchConfig extends DefaultBatchConfigurer {
     }
 
     @Bean
-    public Step stepOne(){
+    public Step stepOne(AttachmentPrimaryTopicTask attachmentPrimaryTopicTask) {
         return steps.get("stepOne")
-                .tasklet(attachmentPrimaryTopicTask())
+                .tasklet(attachmentPrimaryTopicTask)
                 .build();
     }
 
     @Bean
-    public Job testJob(){
+    public Job testJob(Step step) {
         return jobs.get("testJob")
                 .incrementer(new RunIdIncrementer())
-                .start(stepOne())
+                .start(step)
                 .build();
     }
 
