@@ -11,10 +11,12 @@
             <subsystem name="weld"/>
             <subsystem name="org.hibernate" />
             <subsystem name="org.hibernate.validator" />
+            <subsystem name="logging"/>
         </exclude-subsystems>
         <exclusions>
             <module name="org.hibernate" />
             <module name="org.hibernate.validator" />
+            <module name="org.slf4j" />
         </exclusions>
     </deployment>
 </jboss-deployment-structure>
