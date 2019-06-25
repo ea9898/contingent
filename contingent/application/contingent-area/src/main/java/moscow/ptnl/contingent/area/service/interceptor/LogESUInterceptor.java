@@ -77,33 +77,33 @@ public class LogESUInterceptor {
     private Long getAreaId(LogESU annotation, Method method, Object[] args, Object result) {
         if (annotation.useResult()) {
             if (result == null) {
-                throw new IllegalArgumentException("результат не может быть null");
+                throw new IllegalArgumentException("в методе " + method.getName() + " результат не может быть null");
             }
             if (result instanceof Long) {
                 return (Long) result;
             } else if (result instanceof Area) {
                 return ((Area) result).getId();
             }
-            throw new IllegalArgumentException("невозможно получить идентификатор сущности из результата выполнения метода");             
+            throw new IllegalArgumentException("в методе " + method.getName() + " невозможно получить идентификатор сущности из результата выполнения метода");             
         } else {
             if (annotation.parameters().length == 0) {
-                throw new IllegalArgumentException("в списке параметров должно быть название параметра содержащего идентификатор сущности");
+                throw new IllegalArgumentException("в методе " + method.getName() + " в списке параметров должно быть название параметра содержащего идентификатор сущности");
             }
             String parameterName = annotation.parameters()[0];
             Optional<Object> parameterValue = getParameterByName(method, args, parameterName);
             if (!parameterValue.isPresent()) {
-                throw new IllegalArgumentException("не найден параметр " + parameterName);
+                throw new IllegalArgumentException("в методе " + method.getName() + " не найден параметр " + parameterName);
             }
             Object value = parameterValue.get();
             if (value == null) {
-                throw new IllegalArgumentException("параметр " + parameterName + " не может быть null");
+                throw new IllegalArgumentException("в методе " + method.getName() + " параметр " + parameterName + " не может быть null");
             }
             if (value instanceof Long) {
                 return (Long) value;
             } else if (value instanceof Area) {
                 return ((Area) value).getId();
             }
-            throw new IllegalArgumentException("невозможно получить идентификатор сущности из параметра " + parameterName);
+            throw new IllegalArgumentException("в методе " + method.getName() + " невозможно получить идентификатор сущности из параметра " + parameterName);
         }
     }
     
@@ -117,8 +117,9 @@ public class LogESUInterceptor {
      * @return 
      */
     private Optional<Object> getParameterByName(Method method, Object[] args, String parameterName) {
-        for (int i = 0; i < method.getParameterCount(); i++) {
-            Parameter parameter = method.getParameters()[i];            
+        for (int i = 0; i < method.getParameterCount(); i++) {            
+            Parameter parameter = method.getParameters()[i];  
+            LOG.debug("PARAMETER NAME: " + parameter.getName());
             if (parameter.getName().equals(parameterName)) {
                 return Optional.of(args[i]);
             }

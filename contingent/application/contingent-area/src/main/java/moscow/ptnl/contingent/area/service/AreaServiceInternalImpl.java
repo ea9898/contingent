@@ -90,7 +90,7 @@ import java.util.stream.Collectors;
 
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 
-import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
@@ -730,8 +730,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     : emplDb != null ? emplDb.getStartDate() : null;
             if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
                 validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
-                        new ValidationParameter("startDate", startDate),
-                        new ValidationParameter("endDate", endDate));
+                        new ValidationParameter("endDate", endDate),
+                        new ValidationParameter("startDate", startDate));
             }
         }
         if (!validation.isSuccess()) {
@@ -742,13 +742,20 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaTypeSpecializations> areaTypeSpecializations = areaTypeSpecializationsRepository.
                 findByAreaTypeCode(area.getAreaType());
         for (AddMedicalEmployee empl : addEmployeesInput) {
-            //5.1
+            //5.1.
             if (empl.getStartDate().isBefore(LocalDate.now())) {
                 validation.error(AreaErrorReason.START_DATE_IN_PAST,
                         new ValidationParameter("startDate", empl.getStartDate()));
             }
 
-            //5.2
+            // 5.2.
+            if (empl.getEndDate() != null && empl.getStartDate().isAfter(empl.getEndDate())){
+                validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
+                        new ValidationParameter("endDate", empl.getEndDate()),
+                        new ValidationParameter("startDate", empl.getStartDate()));
+            }
+
+            //5.3.
             Optional<PositionNom> positionNom = positionNomCRUDRepository.findById(empl.getPositionId());
 
             if (!positionNom.isPresent()) {
@@ -756,10 +763,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 continue;
             }
 
-            //5.3
+            //5.4.
             Specialization specialization = positionNom.get().getSpecialization();
 
-            // 5.4.
+            // 5.5.
             if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
                 validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
                         new ValidationParameter("InputSpecialization", specialization.getTitle()),
@@ -768,7 +775,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
             }
 
-            // 5.5
+            // 5.6.
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
             if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
@@ -855,13 +862,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     // (К_УУ_13) Добавление адресов на участок обслуживания
-    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"id"})
-    public List<Long> addAreaAddress(Long id, List<NsiAddress> nsiAddresses,
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    public List<Long> addAreaAddress(Long areaId, List<NsiAddress> nsiAddresses,
                                      List<NotNsiAddress> notNsiAddresses) throws ContingentException {
         Validation validation = new Validation();
 
         // 1. и 2.
-        Area area = areaHelper.checkAndGetArea(id, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
         // 3.
