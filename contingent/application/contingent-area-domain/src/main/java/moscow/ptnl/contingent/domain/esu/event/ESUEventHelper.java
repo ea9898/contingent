@@ -70,11 +70,11 @@ public class ESUEventHelper {
         
         //TODO определить топик по типу события        
         if (publishObject instanceof moscow.ptnl.contingent2.area.info.AreaInfoEvent) {
-            topicName = "areaInfoEvent";
+            topicName = "AreaInfo";
         } else if (publishObject instanceof AttachToDependentAreaEvent) {
-            topicName = "attachToDependentAreaEvent";
+            topicName = "AttachToDependentArea";
         } else if (publishObject instanceof AttachOnAreaChange) {
-            topicName= "attachOnAreaChange";
+            topicName= "AttachOnAreaChange";
         }
         
         if (topicName == null) {
