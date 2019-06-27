@@ -6,7 +6,8 @@ package moscow.ptnl.contingent.util;
 
 public enum  EsuTopicsEnum {
 
-    ATTACHMENT_PRIMARY("AttachmentPrimary");
+    ATTACHMENT_PRIMARY("AttachmentPrimary"),
+    ATTACH_TO_DEPENDENT_AREA("AttachToDependentArea");
 
     private final String name;
 
