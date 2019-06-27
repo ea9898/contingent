@@ -199,6 +199,27 @@
             ALTER SEQUENCE SEQ_AREAS RESTART WITH 100000000;
         </sql>
     </changeSet>
+
+    <changeSet author="ddryuchin" id="CONTINGENT2-AREA-4-6">
+        <modifyDataType columnName="AGE_MIN"
+                        newDataType="SMALLINT"
+                        tableName="AREAS"/>
+        <modifyDataType columnName="AGE_MAX"
+                        newDataType="SMALLINT"
+                        tableName="AREAS"/>
+        <modifyDataType columnName="AGE_M_MIN"
+                        newDataType="SMALLINT"
+                        tableName="AREAS"/>
+        <modifyDataType columnName="AGE_M_MAX"
+                        newDataType="SMALLINT"
+                        tableName="AREAS"/>
+        <modifyDataType columnName="AGE_W_MIN"
+                        newDataType="SMALLINT"
+                        tableName="AREAS"/>
+        <modifyDataType columnName="AGE_W_MAX"
+                        newDataType="SMALLINT"
+                        tableName="AREAS"/>
+    </changeSet>
     <!-- !!!! AREAS !!!! -->
 
     <!-- AREA_MEDICAL_EMPLOYEE -->
@@ -300,6 +321,25 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-AREA-2-6" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+            </not>
+        </preConditions>
+        <comment>Переименование таблицы AREA_MEDICAL_EMPLOYEE</comment>
+        <renameTable newTableName="AREA_MEDICAL_EMPLOYEES"
+                     oldTableName="AREA_MEDICAL_EMPLOYEE"/>
+        <rollback>
+            <renameTable newTableName="AREA_MEDICAL_EMPLOYEE"
+                         oldTableName="AREA_MEDICAL_EMPLOYEES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-AREA-2-7" author="ddryuchin" labels="1.0.0.0">
+        <dropColumn columnName="OUZ"
+                    tableName="AREA_MEDICAL_EMPLOYEES"/>
+    </changeSet>
     <!-- !!!! AREA_MEDICAL_EMPLOYEE !!!! -->
 
     <!-- ADDRESS_ALLOCATION_ORDERS -->
