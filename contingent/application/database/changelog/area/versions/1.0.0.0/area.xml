@@ -994,6 +994,19 @@
                                  referencedTableName="ADDRESSES"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-AREA-10-6" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AREA_ADDRESS"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы AREA_ADDRESS</comment>
+        <createSequence sequenceName="SEQ_AREA_ADDRESS"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_AREA_ADDRESS"/>
+        </rollback>
+    </changeSet>
+
     <changeSet id="CONTINGENT2-148" author="shnaider">
         <preConditions onFail="MARK_RAN">
             <not>
