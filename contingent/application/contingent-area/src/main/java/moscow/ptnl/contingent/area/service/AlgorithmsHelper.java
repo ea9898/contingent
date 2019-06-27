@@ -273,9 +273,13 @@ public class AlgorithmsHelper {
         addresses4Algoritm.forEach(al -> {
             if (!AddressLevelType.ID.getLevel().equals(al.getLevel())) {
                 // 3.1.
-                addressWrappers.addAll(addressFormingElementRepository.findAfeByIdAndLevel(
-                        al.getAddressId(), al.getLevel()).stream().map(AddressWrapper::new)
-                        .collect(Collectors.toList()));
+                List<AddressFormingElement> addressFormingElements = addressFormingElementRepository.findAfeByIdAndLevel(
+                        al.getAddressId(), al.getLevel());
+                if (!addressFormingElements.isEmpty()) {
+                    AddressWrapper addressWrapper = new AddressWrapper(addressFormingElements.get(0));
+                    addressWrapper.setAddress(al.getAddresses());
+                    addressWrappers.add(addressWrapper);
+                }
             } else {
                 // 3.2.
                 // a.
@@ -295,6 +299,8 @@ public class AlgorithmsHelper {
                     // d.
                     addressWrapper.setAddressLevelType(AddressLevelType.ID);
                     addressWrapper.setBrGlobalId(buildingRegistry.getGlobalId());
+
+                    addressWrapper.setAddress(al.getAddresses());
 
                     addressWrappers.add(addressWrapper);
                 }

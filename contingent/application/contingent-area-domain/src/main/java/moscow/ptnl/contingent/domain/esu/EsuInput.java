@@ -57,6 +57,8 @@ public class EsuInput implements Serializable {
     @Convert(converter = StatusConverter.class)
     private EsuStatusType status;
 
+    public EsuInput() {}
+
     public EsuInput(String esuId, Long esuOffset, Integer partition, String topic, String message, LocalDateTime receivedTime, LocalDateTime updateTime) {
         this.esuId = esuId;
         this.esuOffset = esuOffset;

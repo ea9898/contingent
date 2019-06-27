@@ -9,6 +9,8 @@ public class Address4Algoritm {
 
     private int level;
 
+    private Addresses addresses;
+
     public Address4Algoritm(Long addressId, int level) {
         this.addressId = addressId;
         this.level = level;
@@ -21,6 +23,7 @@ public class Address4Algoritm {
 
     public Address4Algoritm(AreaAddress areaAddress) {
         this.level = areaAddress.getAddress().getLevel();
+        this.addresses = areaAddress.getAddress();
         this.addressId = areaAddress.getAddress().getBuildingRegistry() != null ?
             areaAddress.getAddress().getBuildingRegistry().getId() :
             areaAddress.getAddress().getAddressFormingElement().getId();
@@ -34,4 +37,12 @@ public class Address4Algoritm {
     public int getLevel() { return level; }
 
     public void setLevel(int level) { this.level = level; }
+
+    public Addresses getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Addresses addresses) {
+        this.addresses = addresses;
+    }
 }
