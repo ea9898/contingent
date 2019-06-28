@@ -28,4 +28,12 @@ public class EsuInputRepositoryImpl extends BaseRepository implements EsuInputRe
 
         return esuInputCRUDRepository.findAll(specification);
     }
+
+    @Override
+    public List<EsuInput> findByEventId(String eventId) {
+        Specification<EsuInput> specification =
+                (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get(EsuInput_.eventId), eventId);
+
+        return esuInputCRUDRepository.findAll(specification);
+    }
 }

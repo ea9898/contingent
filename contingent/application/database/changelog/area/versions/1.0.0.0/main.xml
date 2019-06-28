@@ -193,4 +193,19 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-152" author="shnaider" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ESU_INPUT"/>
+            <not>
+                <columnExists tableName="ESU_INPUT" columnName="event_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ESU_INPUT">
+            <column name="event_id" type="VARCHAR2(36)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="event_id" tableName="ESU_INPUT"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
