@@ -207,9 +207,9 @@ public class AreaServiceHelper {
         return (ageMin == null && ageMinAreaType != null) || (ageMax == null && ageMaxAreaType != null);
     }
 
-    private void checkAgeSetupRange(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType,
+    public void checkAgeSetupRange(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType,
                                        String paramMinCode, String paramMaxCode, Validation validation) {
-        if (!(ageMin == null || ageMin >= ageMinAreaType) && (ageMax == null || ageMax <= ageMaxAreaType)) {
+        if (!(ageMin == null || ageMin >= ageMinAreaType) && !(ageMax == null || ageMax <= ageMaxAreaType)) {
             validation.error(AreaErrorReason.AREA_AGE_SETUP_EXCEEDED,
                     new ValidationParameter(paramMinCode, ageMin), new ValidationParameter(paramMaxCode, ageMax),
                     new ValidationParameter(paramMinCode, ageMinAreaType), new ValidationParameter(paramMaxCode, ageMaxAreaType));
