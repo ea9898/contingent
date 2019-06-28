@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug">
+<Configuration status="INFO">
     <Properties>
         <Property name="log-path">$${sys:jboss.server.log.dir:-env:LOG_HOME}/contingent2-area-service/</Property>
         <Property name="log-pattern">[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %C:%c{1}:%L - %msg%n</Property>
@@ -81,11 +81,11 @@
             <appender-ref ref="CXF_SOAP" level="INFO"/>
         </Logger>
         
-        <Logger name="moscow.ptnl.metrics" level="INFO" additivity="false" includeLocation="true">
+        <Logger name="moscow.ptnl.metrics" level="INFO" includeLocation="true">
             <appender-ref ref="METRICS" level="INFO"/>
         </Logger>
 
-        <Logger name="moscow.ptnl" level="INFO" includeLocation="true">
+        <Logger name="moscow.ptnl" level="INFO" additivity="false" includeLocation="true">
             <appender-ref ref="CONTINGENT_SERVICE" level="INFO"/>
         </Logger>
         
@@ -96,7 +96,7 @@
         <Logger name="org.springframework.jdbc" level="INFO" additivity="false" includeLocation="true">
             <appender-ref ref="SPRING_JDBC" level="INFO"/>
         </Logger>
-        
+                
         <Logger name="org.springframework.orm.jpa" level="INFO" additivity="false" includeLocation="true">
             <appender-ref ref="SPRING_JPA" level="INFO"/>
         </Logger>

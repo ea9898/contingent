@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "AREA_MEDICAL_EMPLOYEE")
+@Table(name = "AREA_MEDICAL_EMPLOYEES")
 @SequenceGenerator(name = "seq_area_medical_employee", sequenceName = "seq_area_medical_employee", allocationSize=1)
 public class AreaMedicalEmployees implements Serializable {
 
@@ -42,10 +42,6 @@ public class AreaMedicalEmployees implements Serializable {
     @Column(name = "IS_REPLACEMENT")
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean replacement;
-
-    @Column(name = "OUZ")
-    @Size(max = 50)
-    private String ouz;
 
     @Column(name = "START_DATE")
     private LocalDate startDate;
@@ -183,14 +179,6 @@ public class AreaMedicalEmployees implements Serializable {
 
     public void setSubdivisionId(Long subdivisionId) {
         this.subdivisionId = subdivisionId;
-    }
-
-    public String getOuz() {
-        return ouz;
-    }
-
-    public void setOuz(String ouz) {
-        this.ouz = ouz;
     }
 
     @Override
