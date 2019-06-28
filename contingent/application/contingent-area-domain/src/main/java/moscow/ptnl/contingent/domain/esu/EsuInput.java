@@ -57,7 +57,11 @@ public class EsuInput implements Serializable {
     @Convert(converter = StatusConverter.class)
     private EsuStatusType status;
 
-    public EsuInput() {}
+    @Column(name = "EVENT_ID")
+    private String eventId;
+
+    public EsuInput() {
+    }
 
     public EsuInput(String esuId, Long esuOffset, Integer partition, String topic, String message, LocalDateTime receivedTime, LocalDateTime updateTime) {
         this.esuId = esuId;
@@ -148,7 +152,15 @@ public class EsuInput implements Serializable {
     public void setStatus(EsuStatusType status) {
         this.status = status;
     }
-    
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

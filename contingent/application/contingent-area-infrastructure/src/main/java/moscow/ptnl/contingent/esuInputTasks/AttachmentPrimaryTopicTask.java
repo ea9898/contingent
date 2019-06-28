@@ -80,13 +80,19 @@ public class AttachmentPrimaryTopicTask implements Tasklet {
         List<EsuInput> messages = esuInputRepository.findByTopic(EsuTopicsEnum.ATTACHMENT_PRIMARY.getName());
 
         for (EsuInput message : messages) {
-            AttachPrimaryPatientEvent event = convertAttachment(message.getMessage());
+            AttachPrimaryPatientEvent event = convertAttachment(message);
+            if (event == null) {
+                updateStatus(message, EsuStatusType.UNSUCCESS,null, "Некорректные данные");
+                continue;
+            }
+            List<EsuInput> repeatedMessages = esuInputRepository.findByEventId(String.valueOf(event.getId()));
+            if (!repeatedMessages.isEmpty()) {
+                updateStatus(message, EsuStatusType.UNSUCCESS, String.valueOf(event.getId()), "Повторное сообщение");
+                continue;
+            }
             AreaType areaType = areaTypesCRUDRepository.findById(event.getPrimaryAreaId()).orElse(null);
             if (areaType == null || !areaType.getAreaTypeClass().getCode().equals(AreaTypeClassEnum.PRIMARY.getClazz())) {
-                message.setErrorMessage("Тип участка не первичный");
-                message.setStatus(EsuStatusType.UNSUCCESS);
-                message.setUpdateTime(LocalDateTime.now());
-                esuInputCRUDRepository.save(message);
+                updateStatus(message, EsuStatusType.UNSUCCESS, String.valueOf(event.getId()), "Тип участка не первичный");
                 continue;
             }
             Area area = areaCRUDRepository.findById(event.getPrimaryAreaId()).orElse(null);
@@ -94,17 +100,12 @@ public class AttachmentPrimaryTopicTask implements Tasklet {
                 List<Area> dependentAreas = areaRepository.findAreas(null, area.getMuId(), areaType.getCode(), null, true);
                 dependentAreas.addAll(areaRepository.findAreasWithMuIdNull(area.getMoId(), areaType.getCode(), null, true));
                 if (dependentAreas.isEmpty()) {
-                    message.setErrorMessage("Зависимые участки не найдены");
-                    message.setStatus(EsuStatusType.UNSUCCESS);
-                    message.setUpdateTime(LocalDateTime.now());
-                    esuInputCRUDRepository.save(message);
+                    updateStatus(message, EsuStatusType.UNSUCCESS,String.valueOf(event.getId()), "Зависимые участки не найдены");
                     continue;
                 }
                 AttachToDependentAreaEvent eventDto = AttachToDependentAreaEventMapper.entityToDtoTransform(area, areaType, dependentAreas);
                 esuService.saveAndPublishToESU(EsuTopicsEnum.ATTACH_TO_DEPENDENT_AREA.getName(), eventDto);
-                message.setUpdateTime(LocalDateTime.now());
-                message.setStatus(EsuStatusType.SUCCESS);
-                esuInputCRUDRepository.save(message);
+                updateStatus(message, EsuStatusType.SUCCESS, String.valueOf(event.getId()),null);
             }
         }
 
@@ -112,7 +113,7 @@ public class AttachmentPrimaryTopicTask implements Tasklet {
         return RepeatStatus.FINISHED;
     }
 
-    private AttachPrimaryPatientEvent convertAttachment(String body) {
+    private AttachPrimaryPatientEvent convertAttachment(EsuInput message) {
         JAXBContext jaxbContext;
         AttachPrimaryPatientEvent attachPrimaryPatientEvent = null;
         try {
@@ -122,11 +123,23 @@ public class AttachmentPrimaryTopicTask implements Tasklet {
                     Thread.currentThread().getContextClassLoader().getResource(XSD_PATH)));
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             jaxbUnmarshaller.setSchema(schema);
-            StringReader reader = new StringReader(body);
+            StringReader reader = new StringReader(message.getMessage());
             attachPrimaryPatientEvent = (AttachPrimaryPatientEvent) jaxbUnmarshaller.unmarshal(reader);
         } catch (JAXBException | SAXException e) {
-            LOG.error("Некорректные данные; ", e.getMessage());
+            LOG.error("Некорректные данные", e.getMessage());
         }
         return attachPrimaryPatientEvent;
+    }
+
+    private void updateStatus(EsuInput message, EsuStatusType status, String eventId, String errorMessage) {
+        if (status.equals(EsuStatusType.UNSUCCESS)) {
+            message.setErrorMessage(errorMessage);
+        }
+        if (eventId != null) {
+            message.setEventId(eventId);
+        }
+        message.setStatus(status);
+        message.setUpdateTime(LocalDateTime.now());
+        esuInputCRUDRepository.save(message);
     }
 }
