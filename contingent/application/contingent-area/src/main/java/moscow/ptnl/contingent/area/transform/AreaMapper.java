@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.Area;
 import ru.mos.emias.contingent2.core.AreaTypeShort;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -57,7 +58,7 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
         if (!entityObject.getArea().getPrimaryAreaTypes().isEmpty()) {
             Area.PrimaryAreaTypeCodes areaTypeCodes = new Area.PrimaryAreaTypeCodes();
 
-            entityObject.getArea().getPrimaryAreaTypes()
+            areaTypeCodes.getAreaTypes().addAll(entityObject.getArea().getPrimaryAreaTypes()
                 .stream().map(AreaToAreaType::getAreaType)
                     .map(aat -> {
                         AreaTypeShort areaTypeShort = new AreaTypeShort();
@@ -65,7 +66,7 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
                         areaTypeShort.setName(aat.getTitle());
                         return areaTypeShort;
                     })
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()));
             area.setPrimaryAreaTypeCodes(areaTypeCodes);
         }
         return area;
