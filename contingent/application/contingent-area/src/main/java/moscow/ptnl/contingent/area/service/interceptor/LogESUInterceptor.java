@@ -3,7 +3,11 @@ package moscow.ptnl.contingent.area.service.interceptor;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
@@ -55,17 +59,22 @@ public class LogESUInterceptor {
         final Object result = joinPoint.proceed();
         
         if (annotation.type().isAssignableFrom(AreaInfoEvent.class)) {
-            Long areaId = getAreaId(annotation, method, args, result);
-            if (areaId == null) {
+            List<Long> areaIds = getAreaId(annotation, method, args, result);
+
+            if (areaIds.isEmpty()) {
                 throw new IllegalArgumentException("идентификатор сущности null");
             }
-            Optional<Area> area = areaCRUDRepository.findById(areaId);
-            if (!area.isPresent()) {
-                throw new IllegalArgumentException("сущность с идентификатором " + areaId + " не найдена");
-            }
-            Area areaObject = area.get();
-            if (areaHelper.isAreaPrimary(areaObject)) { 
-                esuHelperService.sendAreaInfoEvent(areaObject, methodName);
+            for (Long areaId : areaIds) {
+                Optional<Area> area = areaCRUDRepository.findById(areaId);
+
+                if (!area.isPresent()) {
+                    throw new IllegalArgumentException("сущность с идентификатором " + areaId + " не найдена");
+                }
+                Area areaObject = area.get();
+
+                if (areaHelper.isAreaPrimary(areaObject)) {
+                    esuHelperService.sendAreaInfoEvent(areaObject, methodName);
+                }
             }
         } else {
             throw new RuntimeException("не поддерживаемый тип события");
@@ -74,17 +83,14 @@ public class LogESUInterceptor {
         return result;
     }
     
-    private Long getAreaId(LogESU annotation, Method method, Object[] args, Object result) {
+    private List<Long> getAreaId(LogESU annotation, Method method, Object[] args, Object result) {
+        Object value;
+
         if (annotation.useResult()) {
             if (result == null) {
                 throw new IllegalArgumentException("в методе " + method.getName() + " результат не может быть null");
             }
-            if (result instanceof Long) {
-                return (Long) result;
-            } else if (result instanceof Area) {
-                return ((Area) result).getId();
-            }
-            throw new IllegalArgumentException("в методе " + method.getName() + " невозможно получить идентификатор сущности из результата выполнения метода");             
+            value = result;
         } else {
             if (annotation.parameters().length == 0) {
                 throw new IllegalArgumentException("в методе " + method.getName() + " в списке параметров должно быть название параметра содержащего идентификатор сущности");
@@ -94,17 +100,33 @@ public class LogESUInterceptor {
             if (!parameterValue.isPresent()) {
                 throw new IllegalArgumentException("в методе " + method.getName() + " не найден параметр " + parameterName);
             }
-            Object value = parameterValue.get();
+            value = parameterValue.get();
+
             if (value == null) {
                 throw new IllegalArgumentException("в методе " + method.getName() + " параметр " + parameterName + " не может быть null");
             }
-            if (value instanceof Long) {
-                return (Long) value;
-            } else if (value instanceof Area) {
-                return ((Area) value).getId();
-            }
-            throw new IllegalArgumentException("в методе " + method.getName() + " невозможно получить идентификатор сущности из параметра " + parameterName);
         }
+        List<Long> areaIds = mapObjectToAreaIds(value);
+
+        if (areaIds.isEmpty()) {
+            throw new IllegalArgumentException("в методе " + method.getName() + " невозможно получить идентификатор сущности из результата выполнения метода");
+        }
+        return areaIds;
+    }
+
+    private List<Long> mapObjectToAreaIds(Object obj) {
+        List<Long> result = new ArrayList<>();
+
+        if (obj instanceof Long) {
+            result.add((Long) obj);
+        }
+        else if (obj instanceof Area) {
+            result.add(((Area) obj).getId());
+        }
+        else if (obj instanceof Collection) {
+            ((Collection<?>) obj).forEach(o -> result.addAll(mapObjectToAreaIds(o)));
+        }
+        return result;
     }
     
     /**

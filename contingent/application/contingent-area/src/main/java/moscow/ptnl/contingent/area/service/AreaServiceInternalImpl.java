@@ -1380,21 +1380,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        //Система закрывает территории обслуживания участка, созданные в соответствии с архивируемой территорией обслуживания МО
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(addresses.stream()
-                .map(MoAddress::getId)
-                .collect(Collectors.toList()));
-        areaHelper.delAreaAddresses(areaAddresses);
-        //Система закрывает территории обслуживания МО
-        addresses.forEach(a -> {
-            if (a.getStartDate().equals(LocalDate.now())) {
-                moAddressCRUDRepository.delete(a);
-            }
-            else {
-                a.setEndDate(LocalDate.now().minusDays(1));
-                moAddressCRUDRepository.save(a);
-            }
-        });
+        areaHelper.deleteMoAddresses(addresses);
     }
 
     // (К_УУ_23) Получение списка территорий обслуживания МО
