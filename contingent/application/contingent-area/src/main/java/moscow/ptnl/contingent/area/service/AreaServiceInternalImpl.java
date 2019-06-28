@@ -345,7 +345,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
 
         // 6
-        areaHelper.checkPolicyTypesIsOMS(Collections.singletonList(areaTypeCode), validation);
+        areaHelper.checkPolicyTypesIsOMS(policyTypesIds, validation);
 
         // 7
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
