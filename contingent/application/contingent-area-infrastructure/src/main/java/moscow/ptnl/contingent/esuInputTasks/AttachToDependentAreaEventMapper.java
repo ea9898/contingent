@@ -27,7 +27,7 @@ public class AttachToDependentAreaEventMapper {
                     dependentArea.setMuId(depArea.getMuId());
                     dependentArea.setAreaId(depArea.getId());
                     AreaRestriction restriction = new AreaRestriction();
-                    restriction.setGender(Long.valueOf(area.getAreaType().getGender()));
+                    restriction.setGender(area.getAreaType().getCode());
                     AreaType depAreaType = area.getAreaType();
                     if (depAreaType.getAgeMin() == null && depAreaType.getAgeMax() == null
                             && depAreaType.getAgeMMin() == null && depAreaType.getAgeMMax() == null
