@@ -23,7 +23,9 @@ public class EsuInputRepositoryImpl extends BaseRepository implements EsuInputRe
         Specification<EsuInput> specification =
                 (root, criteriaQuery, criteriaBuilder) ->
                         criteriaBuilder.and(
-                                criteriaBuilder.equal(root.get(EsuInput_.topic), topic),
+                                criteriaBuilder.equal(
+                                        criteriaBuilder.substring(root.get(EsuInput_.topic), 1, topic.length()),
+                                        topic),
                                 criteriaBuilder.isNull(root.get(EsuInput_.status)));
 
         return esuInputCRUDRepository.findAll(specification);
