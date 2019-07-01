@@ -553,7 +553,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 3.
         if (muId != null && !muId.equals(area.getMuId()) && area.getAreaType().getAreaTypeKind() != null
                 && !Objects.equals(area.getAreaType().getAreaTypeKind().getCode(),
-                3L)) {
+                AreaTypeKindEnum.PERSONAL.getCode())) {
             validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
         }
         if (!validation.isSuccess()) {
@@ -572,13 +572,29 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 5.
+        List<AreaToAreaType> areaTypeToDeleteBd = null;
+        if (!primaryAreaTypeCodesDelIds.isEmpty()) {
+            areaTypeToDeleteBd = areaToAreaTypeRepository.findAreaTypesByAreaAndTypeCode(area, primaryAreaTypeCodesDelIds);
+            for (Long areaTypeToDelete : primaryAreaTypeCodesDelIds) {
+                if (areaTypeToDeleteBd.stream().noneMatch(areaType -> areaType.getAreaType().getCode().equals(areaTypeToDelete))) {
+                    validation.error(AreaErrorReason.AREA_NOT_DEPEND_ON_AREA_TYPE,
+                            new ValidationParameter("areaId", areaId),
+                            new ValidationParameter("areTypeTitle", areaTypesCRUDRepository.findById(areaTypeToDelete).get().getTitle()));
+                }
+            }
+            if (!validation.isSuccess()) {
+                throw new ContingentException(validation);
+            }
+        }
+
+        // 6.
         areaHelper.checkPolicyTypesDepArea(policyTypesAddIds, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
         List<PolicyType> policyTypesAdd = policyTypeRepository.findByIds(policyTypesAddIds);
 
-        // 6.
+        // 7.
         List<PolicyType> policyTypesDel = policyTypeRepository.findByIds(policyTypesDelIds);
         policyTypesDel.forEach(ptd -> {
             List<AreaPolicyTypes> areaPolicyTypes = areaPolicyTypesRepository.findAll(area, ptd);
@@ -592,13 +608,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 7.
+        // 8.
         areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 8.
+        // 9.
         Long muIdFinal = muId == null ? area.getMuId() : muId;
         area.setMuId(muIdFinal);
         area.setNumber(number == null ? area.getNumber() : number);
@@ -614,8 +630,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setUpdateDate(LocalDateTime.now());
         areaCRUDRepository.save(area);
 
-        // 9.
-        // 9.1.
+        // 10.
+        // 10.1.
         primaryAreaTypeCodesAddIds.forEach(pata -> {
             AreaType areaType = areaTypesCRUDRepository.findById(pata).get();
             AreaToAreaType areaToAreaType = new AreaToAreaType();
@@ -623,36 +639,34 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaToAreaType.setAreaType(areaType);
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
-        // 9.2.
-        primaryAreaTypeCodesDelIds.forEach(patd -> {
-            AreaType areaType = areaTypesCRUDRepository.findById(patd).get();
-            List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.findAreaTypesByAreaAndTypeCode(area, Collections.singletonList(areaType));
-            areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypes);
-        });
+        // 10.2.
+        if (!primaryAreaTypeCodesDelIds.isEmpty()) {
+            areaToAreaTypeCRUDRepository.deleteAll(areaTypeToDeleteBd);
+        }
 
-        // 10.
+        // 11.
         areaHelper.saveAndDeleteAreaPolicyTypes(area, policyTypesAdd, policyTypesDel);
 
         // Вид участка не именной
         if (area.getAreaType() != null && area.getAreaType().getAreaTypeKind() != null &&
-                !area.getAreaType().getAreaTypeKind().getCode().equals(4L)) {
-            // 11.
+                !area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.DEPERSONALIZED.getCode())) {
+            // 12.
             if (!primaryAreaTypeCodesAddIds.isEmpty()) {
-                // 11.1.
+                // 12.1.
                 List<Area> primAreasAdd = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesAddIds, null, true);
 
-                // 11.2.
+                // 12.2.
                 primAreasAdd.forEach(primArea ->
                         esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(area.getId()),
                                 null, primArea)
                 );
             }
 
-            // 12.
+            // 13.
             if (!primaryAreaTypeCodesDelIds.isEmpty()) {
-                // 12.1.
+                // 13.1.
                 List<Area> primAreasDel = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesDelIds, null, true);
-                // 12.2.
+                // 13.2.
                 primAreasDel.forEach(primArea ->
                         esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(area.getId()),
                                 null, primArea)
@@ -663,7 +677,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // Логирование изменений
         historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
 
-        // 13.
+        // 14.
         return;
     }
 

@@ -775,7 +775,7 @@ public class AreaServiceHelper {
 
     public void checkPolicyTypesDepArea(List<Long> policyTypeCodes, Validation validation) {
         if (policyTypeCodes != null && !policyTypeCodes.isEmpty() &&
-                !policyTypeCodes.stream().allMatch(ptc -> ptc.equals(1L))) {
+                !policyTypeCodes.stream().allMatch(ptc -> ptc.equals(PolicyTypeEnum.OMS.getCode()))) {
             validation.error(AreaErrorReason.NO_PRIMARY_AREA);
         }
     }
