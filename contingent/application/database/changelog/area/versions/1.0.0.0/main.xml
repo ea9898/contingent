@@ -208,4 +208,18 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-152-1" author="shnaider" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_ESU_INPUT_EVENT_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки EVENT_ID таблицы ESU_INPUT</comment>
+        <createIndex indexName="IDX_ESU_INPUT_EVENT_ID"
+                     tableName="ESU_INPUT"
+                     unique="false">
+            <column name="EVENT_ID" type="VARCHAR2(36)"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
