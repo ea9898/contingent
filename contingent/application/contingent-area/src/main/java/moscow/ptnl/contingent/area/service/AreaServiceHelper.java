@@ -21,8 +21,11 @@ import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
+import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
+import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
@@ -55,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -120,6 +124,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private AreaPolicyTypesCRUDRepository areaPolicyTypesCRUDRepository;
+
+    @Autowired
+    private AreaAddressRepository areaAddressRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -490,7 +497,10 @@ public class AreaServiceHelper {
                 empl.getSubdivisionId())));
     }
 
-
+    /**
+     * Система закрывает территории обслуживания участка
+     * @param addresses
+     */
     public void delAreaAddresses(List<AreaAddress> addresses) {
         addresses.forEach(a -> {
             if (a.getStartDate().equals(LocalDate.now())) {
@@ -498,6 +508,22 @@ public class AreaServiceHelper {
             }
             else {
                 a.setEndDate(LocalDate.now().minusDays(1));
+            }
+        });
+    }
+
+    /**
+     * Система закрывает территории обслуживания МО
+     * @param addresses
+     */
+    public void delMoAddresses(List<MoAddress> addresses) {
+        addresses.forEach(a -> {
+            if (a.getStartDate().equals(LocalDate.now())) {
+                moAddressCRUDRepository.delete(a);
+            }
+            else {
+                a.setEndDate(LocalDate.now().minusDays(1));
+                moAddressCRUDRepository.save(a);
             }
         });
     }
@@ -826,5 +852,18 @@ public class AreaServiceHelper {
                     new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
                     new ValidationParameter("attachByMedicalReason", areaType.getAttachByMedicalReason()));
         }
+    }
+
+    @LogESU(type = AreaInfoEvent.class, useResult = true)
+    public Set<Area> deleteMoAddresses(List<MoAddress> addresses) {
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(addresses.stream()
+                .map(MoAddress::getId)
+                .collect(Collectors.toList()));
+        Set<Area> areas = areaAddresses.stream().map(AreaAddress::getArea).collect(Collectors.toSet());
+        delAreaAddresses(areaAddresses);
+        delMoAddresses(addresses);
+
+        //Возвращаем участки, адреса которых были удалены, для передачи в ЕСУ
+        return areas;
     }
 }
