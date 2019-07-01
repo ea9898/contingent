@@ -68,8 +68,8 @@ public class ItemAttribute {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Items }
      * {@link String }
+     * {@link Items }
      * 
      * 
      */
