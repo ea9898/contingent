@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.esuInputTasks;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClassEnum;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.domain.esu.EsuInput;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
@@ -75,41 +76,56 @@ public class AttachmentPrimaryTopicTask implements Tasklet {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        System.out.println("MyTaskOne start..");
+        LOG.info("AttachmentPrimaryTopicTask start..");
 
+        // 1
         List<EsuInput> messages = esuInputRepository.findByTopic(EsuTopicsEnum.ATTACHMENT_PRIMARY.getName());
 
         for (EsuInput message : messages) {
             AttachPrimaryPatientEvent event = convertAttachment(message);
+            // 2
             if (event == null) {
                 updateStatus(message, EsuStatusType.UNSUCCESS,null, "Некорректные данные");
                 continue;
             }
+
             List<EsuInput> repeatedMessages = esuInputRepository.findByEventId(String.valueOf(event.getId()));
             if (!repeatedMessages.isEmpty()) {
                 updateStatus(message, EsuStatusType.UNSUCCESS, String.valueOf(event.getId()), "Повторное сообщение");
                 continue;
             }
+
+            // 3.1
             AreaType areaType = areaTypesCRUDRepository.findById(event.getPrimaryAreaId()).orElse(null);
+            // 3.2
             if (areaType == null || !areaType.getAreaTypeClass().getCode().equals(AreaTypeClassEnum.PRIMARY.getClazz())) {
                 updateStatus(message, EsuStatusType.UNSUCCESS, String.valueOf(event.getId()), "Тип участка не первичный");
                 continue;
             }
+            // 3.3
             Area area = areaCRUDRepository.findById(event.getPrimaryAreaId()).orElse(null);
             if (area != null) {
-                List<Area> dependentAreas = areaRepository.findAreas(null, area.getMuId(), areaType.getCode(), null, true);
-                dependentAreas.addAll(areaRepository.findAreasWithMuIdNull(area.getMoId(), areaType.getCode(), null, true));
+                // 3.4.1
+                List<Area> dependentAreas = areaRepository.findAreasWithNotAreaTypeKindCode(null, area.getMuId(),
+                        areaType.getCode(), AreaTypeKindEnum.DEPERSONALIZED.getCode(), null, true);
+                // 3.4.2
+                dependentAreas.addAll(areaRepository.findAreasWithMuIdNullAndNotAreaTypeKindCode(
+                        area.getMoId(), areaType.getCode(), AreaTypeKindEnum.DEPERSONALIZED.getCode(), null, true));
+                // 3.4.3
                 if (dependentAreas.isEmpty()) {
                     updateStatus(message, EsuStatusType.UNSUCCESS,String.valueOf(event.getId()), "Зависимые участки не найдены");
                     continue;
                 }
+                // 3.5
                 AttachToDependentAreaEvent eventDto = AttachToDependentAreaEventMapper.entityToDtoTransform(area, areaType, dependentAreas);
+                // 4
                 esuService.saveAndPublishToESU(EsuTopicsEnum.ATTACH_TO_DEPENDENT_AREA.getName(), eventDto);
+                // 5
                 updateStatus(message, EsuStatusType.SUCCESS, String.valueOf(event.getId()),null);
             }
         }
 
-        System.out.println("MyTaskOne done..");
+        LOG.info("AttachmentPrimaryTopicTask done..");
         return RepeatStatus.FINISHED;
     }
 
