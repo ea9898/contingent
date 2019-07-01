@@ -59,7 +59,6 @@ public class BatchConfig extends DefaultBatchConfigurer {
 
     @Scheduled(fixedRate = 60000)
     public void schedule() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        System.out.println("Task test... every 60 seconds");
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
