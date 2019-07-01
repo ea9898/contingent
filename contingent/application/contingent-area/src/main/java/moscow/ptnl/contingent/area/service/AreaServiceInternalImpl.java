@@ -542,12 +542,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Validation validation = new Validation();
         //1. и 2.
         Area area = areaHelper.checkAndGetArea(areaId, validation);
-        Area oldArea = historyService.clone(area);
 
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+
+        Area oldArea = historyService.clone(area);
 
         // 3.
         if (muId != null && !muId.equals(area.getMuId()) && area.getAreaType().getAreaTypeKind() != null
@@ -581,9 +582,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<PolicyType> policyTypesDel = policyTypeRepository.findByIds(policyTypesDelIds);
         policyTypesDel.forEach(ptd -> {
             List<AreaPolicyTypes> areaPolicyTypes = areaPolicyTypesRepository.findAll(area, ptd);
-            if (!areaPolicyTypes.isEmpty()) {
+            if (areaPolicyTypes.isEmpty()) {
                 validation.error(AreaErrorReason.POLICY_TYPE_NOT_SET_FOR_AREA,
-                        new ValidationParameter("policyCode", ptd),
+                        new ValidationParameter("policyCode", ptd.getCode()),
                         new ValidationParameter("areaId", area.getId()));
             }
         });
@@ -625,8 +626,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 9.2.
         primaryAreaTypeCodesDelIds.forEach(patd -> {
             AreaType areaType = areaTypesCRUDRepository.findById(patd).get();
-            AreaToAreaType areaToAreaType = areaToAreaTypeRepository.findAreaTypesByAreaAndTypeCode(area, Collections.singletonList(areaType)).get(0);
-            areaToAreaTypeCRUDRepository.delete(areaToAreaType);
+            List<AreaToAreaType> areaToAreaTypes = areaToAreaTypeRepository.findAreaTypesByAreaAndTypeCode(area, Collections.singletonList(areaType));
+            areaToAreaTypeCRUDRepository.deleteAll(areaToAreaTypes);
         });
 
         // 10.
