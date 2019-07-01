@@ -551,9 +551,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Area oldArea = historyService.clone(area);
 
         // 3.
-        if (muId != null && !muId.equals(area.getMuId()) && area.getAreaType().getAreaTypeKind() != null
-                && !Objects.equals(area.getAreaType().getAreaTypeKind().getCode(),
-                AreaTypeKindEnum.PERSONAL.getCode())) {
+        if (muId != null && (area.getAreaType().getAreaTypeKind() == null ||
+                !Objects.equals(area.getAreaType().getAreaTypeKind().getCode(), AreaTypeKindEnum.PERSONAL.getCode()))) {
             validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
         }
         if (!validation.isSuccess()) {
