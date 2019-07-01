@@ -63,7 +63,8 @@ public enum AreaErrorReason implements ErrorReason {
     ADDRESS_NOT_SERVICED_MO_NOTNSI("UE082", "Адрес ИД: %s, %s: %s %s не включен в территорию обслуживания МО %s."),
     ADDRESS_ALREADY_SERVICED_NSI("UE083", "Адрес уровень: %s, ИД: %s уже обслуживается данным участком."),
     ADDRESS_ALREADY_SERVICED_NOTNSI("UE083", "Адрес ИД: %s, %s: %s %s уже обслуживается данным участком."),
-    POLICY_TYPE_NOT_SET_FOR_AREA("UE084", "Тип полиса с кодом %s не задан для участка с ИД %s")
+    POLICY_TYPE_NOT_SET_FOR_AREA("UE084", "Тип полиса с кодом %s не задан для участка с ИД %s"),
+    AREA_NOT_DEPEND_ON_AREA_TYPE("UE085", "Участок с ИД %s не зависит от первичного типа участка %s")
     ;
 
     private final String description;
