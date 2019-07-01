@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://emias.mos.ru/nsiProduct/nsiService/v1/types/" elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
+        xmlns:core="http://emias.mos.ru/nsiProduct/core/v1/">
+    <xs:import namespace="http://emias.mos.ru/nsiProduct/core/v1/" schemaLocation="nsiProduct.core.v1.xsd"/>
+
+    <xs:element name="getAllDictRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getAllDict</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getAllDictResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getAllDict</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdDictionaries" type="core:ehdDictionaries"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCatalogItemsRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getCatalogItems</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="idCatalog" type="xs:int"/>
+                <!--<xs:element name="start" type="xs:integer"/>
+                <xs:element name="end" type="xs:integer"/>-->
+                <!--<xs:element name="hideDeleted" type="xs:boolean"/>
+                <xs:element name="idGlobalObject" type="xs:int" nillable="true"/>
+                <xs:element name="filters" type="xs:string" nillable="true"/>
+                <xs:element name="status" type="xs:string" nillable="true"/>
+                <xs:element name="idParentCatalog" type="xs:int" nillable="true"/>
+                <xs:element name="fetchGeodata" type="xs:boolean" nillable="true"/>-->
+                <xs:element ref="core:options" minOccurs="0"/>
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getCatalogItemsResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getCatalogItems</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="ehdCatalogItems" type="core:ehdCatalogItems"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCatalogListRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getCatalogList</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getCatalogListResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getCatalogList</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdCatalogs" type="core:ehdCatalogs"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCatalogSpecRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getCatalogSpec</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="idCatalog" type="xs:int"/>
+                <xs:element name="version" type="xs:int" nillable="true"/>
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getCatalogSpecResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getCatalogSpec</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdAttrSpec" type="core:ehdAttrSpec"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCatalogStatsRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getCatalogStats</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="idCatalog" type="xs:int"/>
+                <!--<xs:element name="countSubscribe" type="xs:int"/>-->
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getCatalogStatsResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getCatalogStats</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdCatalogStats" type="core:ehdCatalogStats"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getDictItemRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getDictItem</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long" nillable="true"/>
+                <!--<xs:element name="begin" type="xs:int" nillable="true"/>
+                <xs:element name="end" type="xs:int" nillable="true"/>-->
+                <xs:element name="elementId" type="xs:string"/>
+                <!--<xs:element name="version" type="xs:int" nillable="true"/>
+                <xs:element name="showDeleted" type="xs:boolean" nillable="true"/>-->
+                <xs:element ref="core:options" minOccurs="0"/>
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getDictItemResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getDictItem</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="ehdDictionaryItems" type="core:ehdDictionaryItems"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="setDataInRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода setDataIn</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="package" type="core:dataInMessage"/>
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="setDataInResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода setDataIn</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="listResultInfo" type="core:listResultInfo"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="setDataInAsyncRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода setDataInAsync</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="package" type="core:dataInMessage"/>
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="setDataInAsyncResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода setDataInAsync</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="core:operationId"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="setDataInAsyncGetStatusRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода setDataInGetStatusAsync</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="core:operationId"/>
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="setDataInAsyncGetStatusResponse" type="core:OperationExecutionStatus">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода setDataInGetStatusAsync</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+</xs:schema>

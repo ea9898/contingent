@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://emias.mos.ru/nsiProductPublication/publicationService/v1/types/" elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
+        xmlns:core="http://emias.mos.ru/nsiProductPublication/core/v1/">
+    <xs:import namespace="http://emias.mos.ru/nsiProductPublication/core/v1/" schemaLocation="nsiProductPublication.core.v1.xsd"/>
+
+    <xs:element name="getCatalogItemsRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getCatalogItems</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="offset" type="xs:int" nillable="true" default="0"/>
+                <xs:element name="limit" type="xs:int" nillable="true" default="1"/>
+                <xs:element name="id"  type="xs:int" nillable="false"/>
+                <xs:element name="criteria" type="xs:string"/>
+                <xs:element name="projection" type="xs:string"/>
+                <xs:element name="sorting" type="xs:string"/>
+                <xs:element name="useAntiProjection" type="xs:boolean"/>
+                <xs:element name="includeDeleted" type="xs:boolean"/>
+                <xs:element name="fetchGeodata" type="xs:boolean"/>
+                <xs:element name="epoch" type="xs:string" nillable="true"/>
+                <xs:element name="sortByPolygon" type="xs:string" nillable="true"/>
+                <xs:element name="timestamp" type="xs:int" nillable="true"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getCatalogItemsResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getCatalogItems</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdCatalogItems" type="core:ehdCatalogItems"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCatalogItemsFeaturesRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getCatalogItemsFeatures</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="offset" type="xs:int" nillable="true" default="0"/>
+                <xs:element name="limit" type="xs:int" nillable="true" default="1"/>
+                <xs:element name="id"  type="xs:int" nillable="false"/>
+                <xs:element name="criteria" type="xs:string"/>
+                <xs:element name="projection" type="xs:string"/>
+                <xs:element name="sorting" type="xs:string"/>
+                <xs:element name="useAntiProjection" type="xs:boolean"/>
+                <xs:element name="includeDeleted" type="xs:boolean"/>
+                <xs:element name="fetchGeodata" type="xs:boolean"/>
+                <xs:element name="epoch" type="xs:string" nillable="true"/>
+                <xs:element name="sortByPolygon" type="xs:string" nillable="true"/>
+                <xs:element name="timestamp" type="xs:int" nillable="true"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getCatalogItemsFeaturesResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getCatalogItemsFeatures</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdCatalogItemsFeatures" type="core:ehdCatalogItemsFeatures"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCatalogChangesRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getCatalogChanges</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="offset" type="xs:int" nillable="true" default="0"/>
+                <xs:element name="limit" type="xs:int" nillable="true" default="1"/>
+                <xs:element name="id"  type="xs:int" nillable="false"/>
+                <xs:element name="criteria" type="xs:string"/>
+                <xs:element name="sorting" type="xs:string"/>
+                <xs:element name="from" type="xs:string" nillable="false"/>
+                <xs:element name="until" type="xs:string" nillable="false"/>
+                <xs:element name="state" type="xs:string" nillable="false"/>
+                <xs:element name="translated" type="xs:boolean"/>
+                <xs:element name="fetchGeodata" type="xs:boolean"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getCatalogChangesResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getCatalogChanges</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdCatalogItems" type="core:ehdCatalogItems"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getObjectChangesRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getObjectChanges</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="offset" type="xs:int" nillable="true" default="0"/>
+                <xs:element name="limit" type="xs:int" nillable="true" default="1"/>
+                <xs:element name="id"  type="xs:int" nillable="false"/>
+                <xs:element name="catalog"  type="xs:int" nillable="false"/>
+                <xs:element name="criteria" type="xs:string"/>
+                <xs:element name="from" type="xs:string" nillable="false"/>
+                <xs:element name="until" type="xs:string" nillable="false"/>
+                <xs:element name="state" type="xs:string" nillable="false"/>
+                <xs:element name="translated" type="xs:boolean"/>
+                <xs:element name="fetchGeodata" type="xs:boolean"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getObjectChangesResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getObjectChanges</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdCatalogItems" type="core:ehdCatalogItems"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCatalogListRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getCatalogList</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="offset" type="xs:int" nillable="true" default="0"/>
+                <xs:element name="limit" type="xs:int" nillable="true" default="1"/>
+                <!--<xs:element name="id"  type="core:intList" nillable="true"/>-->
+                <xs:element name="id" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="epoch" type="xs:string" nillable="true"/>
+                <xs:element name="projection" type="xs:string"/>
+                <xs:element name="timestamp" type="xs:int" nillable="true"/>
+                <xs:element name="systemSort" type="xs:boolean" nillable="true"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getCatalogListResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getCatalogList</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdCatalogs" type="core:ehdCatalogs"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getCatalogCountRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getCatalogCount</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:int"/>
+                <xs:element name="criteria" type="xs:string"/>
+                <xs:element name="includeDeleted" type="xs:boolean"/>
+                <xs:element name="epoch" type="xs:string"/>
+                <xs:element name="timestamp" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getCatalogCountResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getCatalogCount</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ehdCatalogStats" type="core:ehdCatalogStats"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="catalogExportRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода catalogExport</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="offset" type="xs:int" nillable="true" default="0"/>
+                <xs:element name="limit" type="xs:int" nillable="true" default="1000"/>
+                <xs:element name="id"  type="xs:int" nillable="false"/>
+                <xs:element name="criteria" type="xs:string"/>
+                <xs:element name="epoch" type="xs:string"/>
+                <xs:element name="format" type="xs:string"/>
+                <xs:element name="translate" type="xs:boolean"/>
+                <xs:element name="file_id"  type="core:intList" nillable="true"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="catalogExportResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода catalogExport</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="catalogExports" type="core:catalogExport"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getDictionaryItemRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода getDictionaryItem</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="offset" type="xs:int" nillable="true" default="0"/>
+                <xs:element name="limit" type="xs:int" nillable="true" default="1000"/>
+                <xs:element name="id"  type="xs:int" nillable="false"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getDictionaryItemResponse">
+        <xs:annotation>
+            <xs:documentation>Выходные параметры метода getDictionaryItem</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="dictionaryItems" type="core:ehdDictionaryItems"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

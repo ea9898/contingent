@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:uctx="http://emias.mos.ru/system/v1/userContext/"
+                  xmlns:nsf="http://emias.mos.ru/system/v1/faults/"
+                  xmlns:ns1="http://emias.mos.ru/nsiProduct/nsiService/v1/types/"
+                  xmlns:wsp="http://www.w3.org/ns/ws-policy"
+                  xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+                  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+                  xmlns:tns="http://emias.mos.ru/nsiProduct/nsiServiceAsyncFasad/v1/" name="nsiServiceAsyncFasad"
+                  targetNamespace="http://emias.mos.ru/nsiProduct/nsiServiceAsyncFasad/v1/">
+    <wsdl:types>
+        <xs:schema>
+            <xs:import namespace="http://emias.mos.ru/system/v1/userContext/"
+                       schemaLocation="emias.system.v1.userContext.xsd"/>
+            <xs:import namespace="http://emias.mos.ru/system/v1/faults/" schemaLocation="emias.system.v1.faults.xsd"/>
+            <xs:import namespace="http://emias.mos.ru/nsiProduct/nsiService/v1/types/"
+                       schemaLocation="nsiProduct.nsiService.v1.types.xsd"/>
+        </xs:schema>
+    </wsdl:types>
+
+    <wsdl:message name="fault">
+        <wsdl:part name="body" element="nsf:fault"/>
+    </wsdl:message>
+    <wsdl:message name="userContext">
+        <wsdl:part name="userContext" element="uctx:userContext"/>
+    </wsdl:message>
+
+    <wsdl:message name="getAllDictInput">
+        <wsdl:part name="body" element="ns1:getAllDictRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getAllDictOutput">
+        <wsdl:part name="body" element="ns1:getAllDictResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getCatalogItemsInput">
+        <wsdl:part name="body" element="ns1:getCatalogItemsRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getCatalogItemsOutput">
+        <wsdl:part name="body" element="ns1:getCatalogItemsResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getCatalogListInput">
+        <wsdl:part name="body" element="ns1:getCatalogListRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getCatalogListOutput">
+        <wsdl:part name="body" element="ns1:getCatalogListResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getCatalogSpecInput">
+        <wsdl:part name="body" element="ns1:getCatalogSpecRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getCatalogSpecOutput">
+        <wsdl:part name="body" element="ns1:getCatalogSpecResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getCatalogStatsInput">
+        <wsdl:part name="body" element="ns1:getCatalogStatsRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getCatalogStatsOutput">
+        <wsdl:part name="body" element="ns1:getCatalogStatsResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getDictItemInput">
+        <wsdl:part name="body" element="ns1:getDictItemRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getDictItemOutput">
+        <wsdl:part name="body" element="ns1:getDictItemResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="setDataInAsyncInput">
+        <wsdl:part name="body" element="ns1:setDataInAsyncRequest"/>
+    </wsdl:message>
+    <wsdl:message name="setDataInAsyncOutput">
+        <wsdl:part name="body" element="ns1:setDataInAsyncResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="setDataInAsyncGetStatusInput">
+        <wsdl:part name="body" element="ns1:setDataInAsyncGetStatusRequest"/>
+    </wsdl:message>
+    <wsdl:message name="setDataInAsyncGetStatusOutput">
+        <wsdl:part name="body" element="ns1:setDataInAsyncGetStatusResponse"/>
+    </wsdl:message>
+
+    <wsdl:portType name="nsiServiceAsyncFasadPortType">
+        <wsdl:operation name="getAllDict">
+            <wsdl:input message="tns:getAllDictInput"/>
+            <wsdl:output message="tns:getAllDictOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getCatalogItems">
+            <wsdl:input message="tns:getCatalogItemsInput"/>
+            <wsdl:output message="tns:getCatalogItemsOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getCatalogList">
+            <wsdl:input message="tns:getCatalogListInput"/>
+            <wsdl:output message="tns:getCatalogListOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getCatalogSpec">
+            <wsdl:input message="tns:getCatalogSpecInput"/>
+            <wsdl:output message="tns:getCatalogSpecOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getCatalogStats">
+            <wsdl:input message="tns:getCatalogStatsInput"/>
+            <wsdl:output message="tns:getCatalogStatsOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getDictItem">
+            <wsdl:input message="tns:getDictItemInput"/>
+            <wsdl:output message="tns:getDictItemOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="setDataInAsync">
+            <wsdl:input message="tns:setDataInAsyncInput"/>
+            <wsdl:output message="tns:setDataInAsyncOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="setDataInAsyncGetStatus">
+            <wsdl:input message="tns:setDataInAsyncGetStatusInput"/>
+            <wsdl:output message="tns:setDataInAsyncGetStatusOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="nsiServiceAsyncFasadBinding" type="tns:nsiServiceAsyncFasadPortType">
+        <wsp:PolicyReference URI="#authPolicy" />
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getAllDict">
+            <soap:operation soapAction="getAllDict"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getCatalogItems">
+            <soap:operation soapAction="getCatalogItems"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getCatalogList">
+            <soap:operation soapAction="getCatalogList"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getCatalogSpec">
+            <soap:operation soapAction="getCatalogSpec"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getCatalogStats">
+            <soap:operation soapAction="getCatalogStats"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getDictItem">
+            <soap:operation soapAction="getDictItem"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="setDataInAsync">
+            <soap:operation soapAction="setDataInAsync"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="setDataInAsyncGetStatus">
+            <soap:operation soapAction="setDataInAsyncGetStatus"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="nsiServiceAsyncFasad">
+        <wsdl:port name="nsiServiceAsyncFasadPort" binding="tns:nsiServiceAsyncFasadBinding">
+            <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+        </wsdl:port>
+    </wsdl:service>
+
+    <wsp:Policy wsu:Id="authPolicy" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+        <sp:SupportingTokens xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+            <wsp:Policy>
+                <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                    <wsp:Policy>
+                        <sp:NoPassword/>
+                    </wsp:Policy>
+                </sp:UsernameToken>
+            </wsp:Policy>
+        </sp:SupportingTokens>
+    </wsp:Policy>
+</wsdl:definitions>
