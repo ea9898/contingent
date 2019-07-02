@@ -79,6 +79,7 @@ import ru.mos.emias.contingent2.area.AreaPT;
 
 
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -134,9 +135,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
             CreatePrimaryAreaResponse response = new CreatePrimaryAreaResponse();
-            Long id = areaService.createPrimaryArea(body.getMoId(), body.getMuId(), body.getNumber(),
-                    body.getAreaTypeCode(), body.getPolicyTypes().getPolicyTypeCodes(), body.getAgeMin(),
-                    body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
+            Long id = areaService.createPrimaryArea(body.getMoId(), body.getMuId(), body.getNumber(), body.getAreaTypeCode(),
+                    body.getPolicyTypes() == null ? new ArrayList<>() : body.getPolicyTypes().getPolicyTypeCodes(),
+                    body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
                     body.isAutoAssignForAttachment(), body.isAttachByMedicalReason(), body.getDescription());
 
             response.setId(id);
