@@ -318,7 +318,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
     @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
-    public Long createPrimaryArea(long moId, long muId, Integer muTypeCode, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
+    public Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();

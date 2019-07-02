@@ -57,7 +57,6 @@
             <xs:sequence>
                 <xs:element name="moId" type="xs:long" />
                 <xs:element name="muId" type="xs:long" />
-                <xs:element name="muTypeId" type="xs:int" />
                 <xs:element name="number" type="xs:int" minOccurs="0" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
                 <xs:element name="areaTypeCode" type="xs:long" />
