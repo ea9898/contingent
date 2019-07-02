@@ -455,7 +455,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void updatePrimaryArea(long areaId, Integer number, List<Long> policyTypesAddIds, List<Long> policyTypesDelIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                  boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
+                                  Boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
 
         Validation validation = new Validation();
 
@@ -513,7 +513,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAgeMMin(ageMinM == null ? area.getAgeMMin() : ageMinM);
         area.setAgeWMax(ageMaxW == null ? area.getAgeWMax() : ageMaxW);
         area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
-        area.setAutoAssignForAttach(autoAssignForAttachment);
+        area.setAutoAssignForAttach(autoAssignForAttachment != null ? autoAssignForAttachment : area.getAutoAssignForAttach());
         area.setAttachByMedicalReason(attachByMedicalReason == null ? area.getAttachByMedicalReason() : attachByMedicalReason);
         area.setDescription(description == null ? area.getDescription() : description);
         area.setUpdateDate(LocalDateTime.now());
