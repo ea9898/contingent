@@ -35,7 +35,8 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         event.setMuId(area.getMuId());
         event.setAreaType(area.getAreaType().getCode());
         event.setArchive(area.getArchived());
-        event.setNumber(area.getNumber());
+        //Todo исправить обязательность поля в событии или участке
+        event.setNumber(area.getNumber() == null ? 0 : area.getNumber());
         event.setName(area.getDescription());
         event.setAutoAssignForAttachment(Boolean.TRUE.equals(area.getAutoAssignForAttach()));
         event.setResidentsBindRate((area.getAreaType().getResidentsBindRate() != null) ? area.getAreaType().getResidentsBindRate().longValue() : null);

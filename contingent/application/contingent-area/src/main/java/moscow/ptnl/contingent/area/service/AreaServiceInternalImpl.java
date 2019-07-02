@@ -324,9 +324,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Validation validation = new Validation();
 
         // 1
-        AreaType areaType = areaHelper.checkAndGetAreaTypesExist(
-                Collections.singletonList(areaTypeCode), validation, "areaTypeCode").get(0);
+        List<AreaType> areaTypeList = areaHelper.checkAndGetAreaTypesExist(
+                Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
 
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        AreaType areaType = areaTypeList.get(0);
         // 2
         areaHelper.checkAreaTypeAvailable(areaType, validation);
 
@@ -356,6 +360,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 9
         areaHelper.checkAttachByMedicalReason(areaType, attachByMedicalReason, validation);
 
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
         // 10
         Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
                 attachByMedicalReason, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
@@ -366,11 +373,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaPolicyTypes> areaPolicyTypes = policyTypes.stream().map(policyType ->
                 new AreaPolicyTypes(area, policyType)).collect(Collectors.toList());
         areaPolicyTypesCRUDRepository.saveAll(areaPolicyTypes);
-
-        // 12
-        //if (areaHelper.isAreaPrimary(area)) {
-        //    esuHelperService.sendAreaInfoEvent(area, "createPrimaryArea");
-        //}
 
         // 13
         return area.getId();
