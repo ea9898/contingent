@@ -19,6 +19,8 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -302,6 +304,10 @@ public class Area implements Serializable {
     }
 
     public Set<AreaMedicalEmployees> getActualMedicalEmployees() {
+        if (medicalEmployees == null || medicalEmployees.isEmpty()) {
+            return new HashSet<>();
+        }
+
         LocalDate now = LocalDate.now();
 
         return medicalEmployees.stream()
@@ -346,6 +352,10 @@ public class Area implements Serializable {
     }
 
     public Set<AreaAddress> getActualAreaAddresses() {
+        if (areaAddresses == null || areaAddresses.isEmpty()) {
+            return new HashSet<>();
+        }
+
         LocalDate now = LocalDate.now();
 
         return areaAddresses.stream()
