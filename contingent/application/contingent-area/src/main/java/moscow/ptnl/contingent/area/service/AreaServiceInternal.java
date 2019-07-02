@@ -32,7 +32,7 @@ public interface AreaServiceInternal {
 
     void updatePrimaryArea(long areaId, Integer number, List<Long> policyTypesAdd, List<Long> policyTypesDel,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                           boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
+                           Boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
     void updateDependentArea(long areaId, Long muId, Integer number, String description,
                              List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
