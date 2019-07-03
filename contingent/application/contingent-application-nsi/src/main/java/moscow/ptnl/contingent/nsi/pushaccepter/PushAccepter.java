@@ -9,10 +9,6 @@ import org.springframework.stereotype.Component;
 import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ChangeElement;
 import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ResponseElement;
 
-//import pushaccepter.xmlparsing.XmlUnmarshaller;
-//import pushaccepter.xmlparsingS.Table;
-//import pushaccepter.xmlparsingS.XmlUnmarshallerS;
-
 @Component
 public abstract class PushAccepter {
 
@@ -32,9 +28,6 @@ public abstract class PushAccepter {
                 answer = getPushSpec(table);
             } else if ("FU".equals(changeElement.getIntype())) {
                 answer = getPushForm(changeElement.getIn());
-                    /*} else {
-                        throw new Exception("InType not found!");
-                    }*/
             } else {
                 XmlUnmarshaller xmlUnmarshaller = new XmlUnmarshaller();
                 Package pack = xmlUnmarshaller.getPackageIntoString(changeElement.getIn());
