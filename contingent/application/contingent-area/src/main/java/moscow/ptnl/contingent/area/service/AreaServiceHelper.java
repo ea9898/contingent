@@ -750,7 +750,7 @@ public class AreaServiceHelper {
             for (PolicyType policy : policyTypesDel) {
                 if (areaPolicyTypesRepository.findAll(area, policy).isEmpty()) {
                     validation.error(AreaErrorReason.POLICY_TYPE_NOT_SET_FOR_AREA,
-                            new ValidationParameter("areaTypeCode", policy),
+                            new ValidationParameter("areaTypeCode", policy.getCode()),
                             new ValidationParameter("areaid", area.getId()));
                 }
             }
