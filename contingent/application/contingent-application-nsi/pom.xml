@@ -43,6 +43,9 @@
                         <id>generate-sources</id>
                         <phase>generate-sources</phase>
                         <configuration>
+                            <sourceRoot>
+                                ${basedir}/target/generated-sources
+                            </sourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>
                                     <wsdl>${basedir}/src/main/resources/META-INF/wsdl/pushaccepterProduct.pushaccepterService.v1.wsdl</wsdl>
@@ -52,6 +55,13 @@
                                     <serviceName>getService</serviceName>
                                     <extraargs>
                                     </extraargs>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>
+                                        ${basedir}/src/main/resources/META-INF/wsdl/formProduct.formService.v1.wsdl
+                                    </wsdl>
+                                    <wsdlLocation>classpath:formProduct.formService.v1.wsdl</wsdlLocation>
+                                    <extendedSoapHeaders>true</extendedSoapHeaders>
                                 </wsdlOption>
                             </wsdlOptions>
                         </configuration>
