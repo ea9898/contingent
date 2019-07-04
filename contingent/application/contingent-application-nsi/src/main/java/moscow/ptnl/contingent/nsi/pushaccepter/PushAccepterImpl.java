@@ -7,16 +7,16 @@ public class PushAccepterImpl extends PushAccepter {
 
     @Override
     public Answer getPush(Package pack) {
-        return null;
+        return new Answer(true, "ok");
     }
 
     @Override
     public Answer getPushSpec(Table table) {
-        return null;
+        return new Answer(true, "ok");
     }
 
     @Override
     public Answer getPushForm(String response) {
-        return null;
+        return new Answer(true, "ok");
     }
 }
