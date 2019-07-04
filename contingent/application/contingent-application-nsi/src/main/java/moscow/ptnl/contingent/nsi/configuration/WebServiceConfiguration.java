@@ -51,8 +51,8 @@ public class WebServiceConfiguration  {
         return endpoint;
     }
 
-    @Bean
+/*    @Bean
     public PushAccepter pushAccepter() {
         return new PushAccepterImpl();
-    }
+    }*/
 }

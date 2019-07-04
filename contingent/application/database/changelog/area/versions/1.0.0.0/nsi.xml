@@ -651,6 +651,43 @@
             <dropSequence sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
         </rollback>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-12-1" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_NSI_PUSH_LOG"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы NSI_PUSH_LOG</comment>
+        <createSequence sequenceName="SEQ_NSI_PUSH_LOG"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_NSI_PUSH_LOG"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-12-2" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="NSI_PUSH_LOG"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы логирования входящих пуш запросов NSI_PUSH_LOG</comment>
+        <createTable tableName="NSI_PUSH_LOG">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="in_type" type="VARCHAR2(100)"/>
+            <column name="received_time" type="timestamp(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="in" type="text">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="NSI_PUSH_LOG"/>
+        </rollback>
+    </changeSet>
     <!-- !!!! AREA_TYPE_SPECIALIZATIONS !!!! -->
 
 
