@@ -28,11 +28,16 @@ public class EsuConsumerService {
 
     private EsuTopicConsumer consumerPrimaryAreaAttachment;
 
+    private EsuTopicConsumer consumerJobExecutionInfoMsg;
+
     @Autowired
     private EsuConsumerDatabaseProcessor esuConsumerDatabaseProcessor;
 
     @Value("${esu.consumer.topic.primary.area.attachment}")
     private String primaryAreaAttachmentTopicName;
+
+    @Value("${esu.consumer.topic.job.execution.info.msg}")
+    private String jobExecutionInfoMsgTopicName;
 
     @Value("${esu.service.address}")
     private String bootstrapServers;
@@ -54,6 +59,8 @@ public class EsuConsumerService {
 
     @PostConstruct
     public void subscribeTopics() {
+        //К_УУ_ЕСУ_1
+        consumerJobExecutionInfoMsg = subscribeTopic(jobExecutionInfoMsgTopicName, esuConsumerDatabaseProcessor);
         //К_УУ_ЕСУ_3
         consumerPrimaryAreaAttachment = subscribeTopic(primaryAreaAttachmentTopicName, esuConsumerDatabaseProcessor);
     }
