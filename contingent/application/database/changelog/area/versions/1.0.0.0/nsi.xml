@@ -690,6 +690,32 @@
     </changeSet>
     <!-- !!!! AREA_TYPE_SPECIALIZATIONS !!!! -->
 
-
+    <!-- GENDER -->
+    <changeSet id="CONTINGENT2-NSI-12" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="GENDER"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы GENDER</comment>
+        <createTable tableName="GENDER">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="CODE" type="BIGINT" remarks="Код">
+                <constraints nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(50)" remarks="Наименование">
+                <constraints nullable="false" />
+            </column>
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="GENDER"/>
+        </rollback>
+    </changeSet>
+    <!-- !!!! GENDER !!!! -->
 
 </databaseChangeLog>
