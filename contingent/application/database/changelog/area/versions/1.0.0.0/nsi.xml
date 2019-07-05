@@ -680,6 +680,13 @@
             <dropTable tableName="GENDER"/>
         </rollback>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-12-5" author="ddryuchin" labels="1.0.0.0">
+        <modifyDataType columnName="CODE"
+                        newDataType="VARCHAR(50)"
+                        tableName="GENDER"/>
+    </changeSet>
+
     <!-- !!!! GENDER !!!! -->
 
     <changeSet id="CONTINGENT2-NSI-12-1" author="shnaider_ab">
@@ -738,5 +745,44 @@
             <column header="archived" name="archived" type="NUMERIC"/>
         </loadData>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-13-2" author="ddryuchin"  labels="1.0.0.0">
+        <comment>Заполнение справочника</comment>
+        <loadData encoding="UTF-8" separator=";" tableName="GENDER" file="changelog/area/versions/1.0.0.0/files/Пол_GENDER.csv">
+            <column header="system_object_id" name="id" type="NUMERIC"/>
+            <column header="code" name="CODE" type="string"/>
+            <column header="title" name="TITLE" type="string"/>
+            <column header="archived" name="archived" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-13-3" author="ddryuchin"  labels="1.0.0.0">
+        <comment>Заполнение справочника</comment>
+        <loadData encoding="UTF-8" separator=";" tableName="SPECIALIZATION" file="changelog/area/versions/1.0.0.0/files/Медицинская специализация_SPECIALIZATION.csv">
+            <column header="id" name="id" type="NUMERIC"/>
+            <column header="code" name="CODE" type="NUMERIC"/>
+            <column header="title" name="TITLE" type="string"/>
+            <column header="archived" name="archived" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-13-4" author="ddryuchin"  labels="1.0.0.0">
+        <comment>Заполнение справочника</comment>
+        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPES_CLASS" file="changelog/area/versions/1.0.0.0/files/Классы типа участка_AREA_TYPES_CLASS.csv">
+            <column header="CODE" name="CODE" type="NUMERIC"/>
+            <column header="TITLE" name="TITLE" type="string"/>
+            <column header="archived" name="archived" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-13-5" author="ddryuchin"  labels="1.0.0.0">
+        <comment>Заполнение справочника</comment>
+        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPES_KIND" file="changelog/area/versions/1.0.0.0/files/Вид типа участка_AREA_TYPES_KIND.csv">
+            <column header="CODE" name="CODE" type="NUMERIC"/>
+            <column header="TITLE" name="TITLE" type="string"/>
+            <column header="archived" name="archived" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
 
 </databaseChangeLog>
