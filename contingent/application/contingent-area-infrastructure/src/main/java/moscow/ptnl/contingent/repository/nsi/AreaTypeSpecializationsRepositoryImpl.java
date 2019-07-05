@@ -32,4 +32,10 @@ public class AreaTypeSpecializationsRepositoryImpl implements AreaTypeSpecializa
         return areaTypeSpecializationsCRUDRepository.findAll(specification);
     }
 
+    @Override
+    public List<AreaTypeSpecializations> findByAreaTypeCode(List<AreaType> areaTypes) {
+        Specification<AreaTypeSpecializations> specification = (root, criteriaQuery, criteriaBuilder) ->
+                root.get(AreaTypeSpecializations_.areaType.getName()).in(areaTypes);
+        return areaTypeSpecializationsCRUDRepository.findAll(specification);
+    }
 }
