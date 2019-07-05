@@ -2,7 +2,9 @@ package moscow.ptnl.contingent.nsi.pushaccepter;
 
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsingS.Table;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PushAccepterImpl extends PushAccepter {
 
     @Override
