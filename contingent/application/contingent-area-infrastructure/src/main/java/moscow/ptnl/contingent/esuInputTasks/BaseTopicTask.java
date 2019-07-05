@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.esuInputTasks;
 import moscow.ptnl.contingent.domain.esu.EsuInput;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.esu.EsuInputRepository;
+import moscow.ptnl.contingent.service.TransactionRunner;
 import moscow.ptnl.contingent.util.EsuTopicsEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,9 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Базовый класс обработчика входящих сообщений ЕСУ
@@ -36,6 +40,9 @@ abstract class BaseTopicTask<T> implements Tasklet {
 
     @Autowired
     private EsuInputRepository esuInputRepository;
+
+    @Autowired
+    private TransactionRunner transactionRunner;
 
     private final Class<T> typeClass;
 
@@ -57,21 +64,32 @@ abstract class BaseTopicTask<T> implements Tasklet {
         List<EsuInput> messages = esuInputRepository.findByTopic(topic.getName());
 
         for (EsuInput message : messages) {
-            String esuId = null;
+            String eventId = null;
 
             try {
                 T event = convertEvent(message.getMessage());
-                esuId = getEsuId(event);
+                eventId = getEventId(event);
 
-                if (!esuInputRepository.findByEventId(esuId).isEmpty()) {
+                if (!esuInputRepository.findByEventId(eventId).isEmpty()) {
                     throw new RuntimeException("Повторное сообщение");
                 }
-                processMessage(event);
-                updateStatus(message, EsuStatusType.SUCCESS, esuId, null);
+                //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
+                Future future = CompletableFuture.runAsync(() -> transactionRunner.run(() -> processMessage(event)));
+
+                try {
+                    future.get();
+                }
+                catch (InterruptedException ex) {
+                    break;
+                }
+                catch (ExecutionException ex) {
+                    throw ex.getCause();
+                }
+                updateStatus(message, EsuStatusType.SUCCESS, eventId, null);
             }
-            catch (Exception ex) {
+            catch (Throwable ex) {
                 LOG.debug("Ошибка обработки входящего сообщения ЕСУ", ex);
-                updateStatus(message, EsuStatusType.UNSUCCESS, esuId, ex.getMessage());
+                updateStatus(message, EsuStatusType.UNSUCCESS, eventId, ex.getMessage());
             }
         }
         LOG.info(typeClass.getSimpleName() + " task done");
@@ -79,7 +97,7 @@ abstract class BaseTopicTask<T> implements Tasklet {
         return RepeatStatus.FINISHED;
     }
 
-    protected abstract String getEsuId(T event);
+    protected abstract String getEventId(T event);
 
     public abstract void processMessage(T event);
 

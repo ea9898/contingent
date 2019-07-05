@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional(propagation= Propagation.MANDATORY)
@@ -31,5 +32,14 @@ public class PositionNomRepositoryImpl extends BaseRepository implements Positio
                     criteriaBuilder.equal(root.get(PositionNom_.archived.getName()), false)
             );
         return positionNomCRUDRepository.findAll(specification);
+    }
+
+    @Override
+    public Optional<PositionNom> getByCode(String code) {
+        Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(root.get(PositionNom_.code.getName()), code)
+                );
+        return positionNomCRUDRepository.findOne(specification);
     }
 }

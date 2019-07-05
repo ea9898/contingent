@@ -11,4 +11,6 @@ public interface AreaTypeSpecializationsRepository {
     List<AreaTypeSpecializations> findBySpecializationCode(Long specializationCode);
 
     List<AreaTypeSpecializations> findByAreaTypeCode(AreaType areaType);
+
+    List<AreaTypeSpecializations> findByAreaTypeCode(List<AreaType> areaTypes);
 }

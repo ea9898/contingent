@@ -46,12 +46,11 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
     }
 
     @Override
-    protected String getEsuId(AttachPrimaryPatientEvent event) {
+    protected String getEventId(AttachPrimaryPatientEvent event) {
         return String.valueOf(event.getId());
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void processMessage(AttachPrimaryPatientEvent event) {
         // 3.1
         AreaType areaType = areaTypesCRUDRepository.findById(event.getPrimaryAreaId()).orElse(null);
