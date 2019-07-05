@@ -680,7 +680,7 @@
             <column name="received_time" type="timestamp(6)" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false" />
             </column>
-            <column name="in" type="text">
+            <column name="input_message" type="text">
                 <constraints nullable="false" />
             </column>
         </createTable>
