@@ -1,11 +1,9 @@
 package moscow.ptnl.contingent.configuration;
 
-import moscow.ptnl.contingent.esuInputTasks.AttachmentPrimaryTopicTask;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -15,8 +13,9 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import javax.sql.DataSource;
@@ -32,37 +31,48 @@ public class BatchConfig extends DefaultBatchConfigurer {
     private StepBuilderFactory steps;
 
     @Autowired
-    JobLauncher jobLauncher;
+    private JobLauncher jobLauncher;
 
     @Autowired
-    Job job;
+    @Qualifier("attachmentPrimaryTopicTask")
+    private Tasklet attachmentPrimaryTopicTask;
 
-    @Bean
-    public AttachmentPrimaryTopicTask attachmentPrimaryTopicTask() {
-        return new AttachmentPrimaryTopicTask();
-    }
+    @Autowired
+    @Qualifier("jobExecutionInfoMsgTopicTask")
+    private Tasklet jobExecutionInfoMsgTopicTask;
 
-    @Bean
-    public Step stepOne(AttachmentPrimaryTopicTask attachmentPrimaryTopicTask) {
-        return steps.get("stepOne")
-                .tasklet(attachmentPrimaryTopicTask)
+    private Job buildJobAttachmentPrimaryTopicTask() {
+        return jobs.get("jobAttachmentPrimaryTopicTask")
+                .incrementer(new RunIdIncrementer())
+                .start(steps.get("stepAttachmentPrimaryTopicTask")
+                        .tasklet(attachmentPrimaryTopicTask)
+                        .build())
                 .build();
     }
 
-    @Bean
-    public Job testJob(Step step) {
-        return jobs.get("testJob")
+    private Job buildJobJobExecutionInfoMsg() {
+        return jobs.get("jobJobExecutionInfoMsg")
                 .incrementer(new RunIdIncrementer())
-                .start(step)
+                .start(steps.get("stepJobExecutionInfoMsg")
+                        .tasklet(jobExecutionInfoMsgTopicTask)
+                        .build())
                 .build();
     }
 
     @Scheduled(fixedRate = 60000)
-    public void schedule() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    public void schedule1() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
-        jobLauncher.run(job, params);
+        jobLauncher.run(buildJobAttachmentPrimaryTopicTask(), params);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void schedule2() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        JobParameters params = new JobParametersBuilder()
+                .addString("JobID", String.valueOf(System.currentTimeMillis()))
+                .toJobParameters();
+        jobLauncher.run(buildJobJobExecutionInfoMsg(), params);
     }
 
     @Override
