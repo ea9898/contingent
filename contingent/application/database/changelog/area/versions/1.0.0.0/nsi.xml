@@ -730,4 +730,13 @@
                       tableName="NSI_PUSH_LOG"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-NSI-13-1" author="ddryuchin"  labels="1.0.0.0">
+        <comment>Заполнение справочника</comment>
+        <loadData encoding="UTF-8" separator=";" tableName="POLICY_TYPE" file="changelog/area/versions/1.0.0.0/files/Тип полиса_POLICY_TYPE.csv">
+            <column header="CODE" name="CODE" type="NUMERIC"/>
+            <column header="TITLE" name="TITLE" type="string"/>
+            <column header="archived" name="archived" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
 </databaseChangeLog>
