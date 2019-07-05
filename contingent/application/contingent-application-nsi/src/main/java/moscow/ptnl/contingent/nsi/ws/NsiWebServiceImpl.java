@@ -27,8 +27,8 @@ public class NsiWebServiceImpl implements PushaccepterServicePortType {
 
     @Override
     public ResponseElement get(ChangeElement getChangeElement) {
-        nsiPushEventCRUDRepository.save(
-                new NsiPushEvent(getChangeElement.getIntype(), LocalDateTime.now(), getChangeElement.getIn()));
+        NsiPushEvent event = new NsiPushEvent(getChangeElement.getIntype(), LocalDateTime.now(), getChangeElement.getIn());
+        nsiPushEventCRUDRepository.save(event);
         return pushAccepter.get(getChangeElement);
     }
 }

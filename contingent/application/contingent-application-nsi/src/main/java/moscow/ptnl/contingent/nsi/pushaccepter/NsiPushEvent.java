@@ -30,16 +30,16 @@ public class NsiPushEvent implements Serializable {
     @Column(name = "received_time")
     private LocalDateTime receivedTime;
 
-    @Column(name = "in")
-    private String in;
+    @Column(name = "input_message")
+    private String inputMessage;
 
     public NsiPushEvent() {
     }
 
-    public NsiPushEvent(String inType, LocalDateTime receivedTime, String in) {
+    public NsiPushEvent(String inType, LocalDateTime receivedTime, String inputMessage) {
         this.inType = inType;
         this.receivedTime = receivedTime;
-        this.in = in;
+        this.inputMessage = inputMessage;
     }
 
     public Long getId() {
@@ -62,12 +62,12 @@ public class NsiPushEvent implements Serializable {
         this.receivedTime = receivedTime;
     }
 
-    public String getIn() {
-        return in;
+    public String getInputMessage() {
+        return inputMessage;
     }
 
-    public void setIn(String in) {
-        this.in = in;
+    public void setInputMessage(String inputMessage) {
+        this.inputMessage = inputMessage;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class NsiPushEvent implements Serializable {
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (inType != null ? !inType.equals(that.inType) : that.inType != null) return false;
         if (receivedTime != null ? !receivedTime.equals(that.receivedTime) : that.receivedTime != null) return false;
-        return in != null ? in.equals(that.in) : that.in == null;
+        return inputMessage != null ? inputMessage.equals(that.inputMessage) : that.inputMessage == null;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class NsiPushEvent implements Serializable {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (inType != null ? inType.hashCode() : 0);
         result = 31 * result + (receivedTime != null ? receivedTime.hashCode() : 0);
-        result = 31 * result + (in != null ? in.hashCode() : 0);
+        result = 31 * result + (inputMessage != null ? inputMessage.hashCode() : 0);
         return result;
     }
 }
