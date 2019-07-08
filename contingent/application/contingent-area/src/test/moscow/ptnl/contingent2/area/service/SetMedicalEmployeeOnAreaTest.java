@@ -139,7 +139,7 @@ public class SetMedicalEmployeeOnAreaTest {
         } catch (ContingentException e) {
             Assert.assertEquals(1, e.getValidation().getMessages().size());
             Assert.assertEquals(String.format(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP.getDescription(),
-                    employee3.getMedicalEmployeeJobInfoId(), employee4.getMedicalEmployeeJobInfoId()),
+                    employee3.getMedicalEmployeeJobId(), employee4.getMedicalEmployeeJobId()),
                     e.getValidation().getMessages().get(0).getMessage());
             return;
         }
@@ -155,10 +155,10 @@ public class SetMedicalEmployeeOnAreaTest {
         } catch (ContingentException e) {
             Assert.assertEquals(2, e.getValidation().getMessages().size());
             Assert.assertEquals(String.format(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP.getDescription(),
-                    employee3.getMedicalEmployeeJobInfoId(), employee5.getMedicalEmployeeJobInfoId()),
+                    employee3.getMedicalEmployeeJobId(), employee5.getMedicalEmployeeJobId()),
                     e.getValidation().getMessages().get(0).getMessage());
             Assert.assertEquals(String.format(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP.getDescription(),
-                    employee6.getMedicalEmployeeJobInfoId(), employee7.getMedicalEmployeeJobInfoId()),
+                    employee6.getMedicalEmployeeJobId(), employee7.getMedicalEmployeeJobId()),
                     e.getValidation().getMessages().get(1).getMessage());
             return;
         }
@@ -248,7 +248,7 @@ public class SetMedicalEmployeeOnAreaTest {
         } catch (ContingentException e) {
             Assert.assertEquals(1, e.getValidation().getMessages().size());
             Assert.assertEquals(String.format(AreaErrorReason.JOB_ID_DATE_OVERLAP.getDescription(),
-                    employee1.getMedicalEmployeeJobInfoId(), area1.getId(), employee1.getStartDate(),
+                    employee1.getMedicalEmployeeJobId(), area1.getId(), employee1.getStartDate(),
                     Period.MAX_DATE, employee2.getStartDate(), employee2.getEndDate()),
                     e.getValidation().getMessages().get(0).getMessage());
             return;
@@ -265,15 +265,15 @@ public class SetMedicalEmployeeOnAreaTest {
         } catch (ContingentException e) {
             Assert.assertEquals(3, e.getValidation().getMessages().size());
             Assert.assertEquals(String.format(AreaErrorReason.JOB_ID_DATE_OVERLAP.getDescription(),
-                    employee9.getMedicalEmployeeJobInfoId(), area2.getId(), employee8.getStartDate(),
+                    employee9.getMedicalEmployeeJobId(), area2.getId(), employee8.getStartDate(),
                     employee8.getEndDate(), employee11.getStartDate(), employee11.getEndDate()),
                     e.getValidation().getMessages().get(0).getMessage());
             Assert.assertEquals(String.format(AreaErrorReason.JOB_ID_DATE_OVERLAP.getDescription(),
-                    employee9.getMedicalEmployeeJobInfoId(), area2.getId(), employee11.getStartDate(),
+                    employee9.getMedicalEmployeeJobId(), area2.getId(), employee11.getStartDate(),
                     employee11.getEndDate(), employee9.getStartDate(), employee9.getEndDate()),
                     e.getValidation().getMessages().get(1).getMessage());
             Assert.assertEquals(String.format(AreaErrorReason.JOB_ID_DATE_OVERLAP.getDescription(),
-                    employee9.getMedicalEmployeeJobInfoId(), area2.getId(), employee9.getStartDate(),
+                    employee9.getMedicalEmployeeJobId(), area2.getId(), employee9.getStartDate(),
                     employee9.getEndDate(), employee10.getStartDate(), employee10.getEndDate()),
                     e.getValidation().getMessages().get(2).getMessage());
             return;

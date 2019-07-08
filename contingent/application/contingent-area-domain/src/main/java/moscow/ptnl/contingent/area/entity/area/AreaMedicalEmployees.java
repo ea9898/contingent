@@ -33,7 +33,7 @@ public class AreaMedicalEmployees implements Serializable {
     private Long id;
 
     @Column(name = "MEDICAL_EMPLOYEE_JOB_ID")
-    private Long medicalEmployeeJobInfoId;
+    private Long medicalEmployeeJobId;
 
     @JoinColumn(name = "AREA_ID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -69,17 +69,17 @@ public class AreaMedicalEmployees implements Serializable {
     public AreaMedicalEmployees() {
     }
 
-    public AreaMedicalEmployees(Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
+    public AreaMedicalEmployees(Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
                                 LocalDate endDate, String snils, PositionNom positionNom,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
-        this(null, medicalEmployeeJobInfoId, area, replacement, startDate, endDate, snils, positionNom, createDate, updateDate, subdivisionId);
+        this(null, medicalEmployeeJobId, area, replacement, startDate, endDate, snils, positionNom, createDate, updateDate, subdivisionId);
     }
 
-    public AreaMedicalEmployees(Long id, Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
+    public AreaMedicalEmployees(Long id, Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
                                 LocalDate endDate, String snils, PositionNom positionNom,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
         this.id = id;
-        this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
+        this.medicalEmployeeJobId = medicalEmployeeJobId;
         this.area = area;
         this.replacement = replacement;
         this.startDate = startDate;
@@ -101,12 +101,12 @@ public class AreaMedicalEmployees implements Serializable {
         this.id = id;
     }
 
-    public Long getMedicalEmployeeJobInfoId() {
-        return medicalEmployeeJobInfoId;
+    public Long getMedicalEmployeeJobId() {
+        return medicalEmployeeJobId;
     }
 
-    public void setMedicalEmployeeJobInfoId(Long medicalEmployeeJobInfoId) {
-        this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
+    public void setMedicalEmployeeJobId(Long medicalEmployeeJobId) {
+        this.medicalEmployeeJobId = medicalEmployeeJobId;
     }
 
     public Area getArea() {

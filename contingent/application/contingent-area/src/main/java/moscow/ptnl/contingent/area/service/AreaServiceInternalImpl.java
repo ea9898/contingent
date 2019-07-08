@@ -787,7 +787,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
                 validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
                         new ValidationParameter("InputSpecialization", specialization.getTitle()),
-                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
+                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
                         new ValidationParameter("AreaSpecialization", area.getAreaType().getCode()));
 
             }
@@ -797,7 +797,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionNom.get().getTitle()),
-                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
+                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
                         new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
             }
         }

@@ -44,7 +44,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
 
     private Specification<AreaMedicalEmployees> getEmployeesByJobIdSpec(long jobId) {
         return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(AreaMedicalEmployees_.medicalEmployeeJobInfoId), jobId);
+                criteriaBuilder.equal(root.get(AreaMedicalEmployees_.medicalEmployeeJobId), jobId);
     }
 
     @Override

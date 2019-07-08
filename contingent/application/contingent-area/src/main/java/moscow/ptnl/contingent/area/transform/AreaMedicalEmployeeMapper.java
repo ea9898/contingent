@@ -15,7 +15,7 @@ public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, Are
     public MedicalEmployee entityToDtoTransform(AreaMedicalEmployees entityObject) {
         MedicalEmployee employee = new MedicalEmployee();
         employee.setId(entityObject.getId());
-        employee.setMedicalEmployeeJobInfoId(entityObject.getMedicalEmployeeJobInfoId());
+        employee.setMedicalEmployeeJobId(entityObject.getMedicalEmployeeJobId());
         employee.setSnils(entityObject.getSnils());
         employee.setIsReplacement(entityObject.getReplacement());
         employee.setStartDate(entityObject.getStartDate());
