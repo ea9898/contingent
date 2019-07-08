@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Базовый класс обработчика входящих сообщений ЕСУ
@@ -77,7 +78,8 @@ abstract class BaseTopicTask<T> implements Tasklet {
                 Future future = CompletableFuture.runAsync(() -> transactionRunner.run(() -> processMessage(event)));
 
                 try {
-                    future.get();
+                    // Если за 5 секунд не закомителось, то что то идет не так...
+                    future.get(5, TimeUnit.SECONDS);
                 }
                 catch (InterruptedException ex) {
                     break;
