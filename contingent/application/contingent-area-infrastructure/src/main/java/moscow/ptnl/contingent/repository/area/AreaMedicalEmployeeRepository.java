@@ -13,4 +13,6 @@ public interface AreaMedicalEmployeeRepository {
     List<AreaMedicalEmployees> getEmployeesMainActualByAreaId(long areaId);
 
     List<AreaMedicalEmployees> getEmployeesReplacementActualByAreaId(long areaId);
+
+    List<AreaMedicalEmployees> findEmployees(long jobId, Boolean replacement);
 }

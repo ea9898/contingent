@@ -4,14 +4,15 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
 import moscow.ptnl.contingent.service.esu.EsuService;
 import moscow.ptnl.contingent.util.EsuTopicsEnum;
@@ -19,13 +20,10 @@ import moscow.ptnl.contingent2.rmr.event.JeChangeDateEnd;
 import moscow.ptnl.contingent2.rmr.event.JeCreate;
 import moscow.ptnl.contingent2.rmr.event.JobExecutionInfoMsg;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -48,9 +46,6 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     private static final Set<Long> SPECIALIZATION_CODES_ONCOLOGY = new HashSet<>(Arrays.asList(19L, 41L));
 
     @Autowired
-    private AreaTypesCRUDRepository areaTypesCRUDRepository;
-
-    @Autowired
     private AreaCRUDRepository areaCRUDRepository;
 
     @Autowired
@@ -69,6 +64,9 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
 
     @Autowired
+    private AreaMedicalEmployeeRepository areaMedicalEmployeeRepository;
+
+    @Autowired
     private EsuService esuService;
 
     public JobExecutionInfoMsgTopicTask() {
@@ -82,50 +80,52 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
 
     @Override
     public void processMessage(JobExecutionInfoMsg event) {
-        if (event.getJeCreate() == null || event.getJeCreate().getPositionNom() == null || event.getJeCreate().getDepartment() == null) {
-            //Todo уточнить код ошибки
+        if (event.getJeCreate() != null) {
+            createAreaWithMedicalEmployee(event.getJeCreate());
+        }
+        if (event.getJeChangeDateEnd() != null) {
+            changeMedicalEmployeeEndDate(event.getJeChangeDateEnd());
+        }
+    }
+
+    private void changeMedicalEmployeeEndDate(JeChangeDateEnd jeChangeDateEnd) {
+        //6.1
+        List<AreaMedicalEmployees> employees = areaMedicalEmployeeRepository.findEmployees(jeChangeDateEnd.getId(), false).stream()
+                .filter(e -> e.getArea().isActual() &&
+                        e.getArea().getAreaType() != null &&
+                        e.getArea().getAreaType().getAreaTypeKind() != null &&
+                        Objects.equals(e.getArea().getAreaType().getAreaTypeKind().getCode(), AreaTypeKindEnum.PERSONAL.getCode()))
+                .collect(Collectors.toList());
+
+        if (employees.isEmpty()) {
+            throw new RuntimeException("Для обновления даты окончания ИДМР участок не найден");
+        }
+        //6.2
+        employees.forEach(e -> {
+            e.setEndDate(EsuInputTaskHelper.convertToLocalDate(jeChangeDateEnd.getEnd()));
+            e.setUpdateDate(LocalDateTime.now());
+        });
+    }
+
+    private void createAreaWithMedicalEmployee(JeCreate jeCreate) {
+        if (jeCreate.getPositionNom() == null || jeCreate.getDepartment() == null || jeCreate.getDepartment().getOrganization() == null) {
+            //Todo уточнить текст ошибки
             throw new RuntimeException("Некорректные данные JeCreate");
         }
-        Long moId = event.getJeCreate().getDepartment().getOrganization().getId();
+        Long moId = jeCreate.getDepartment().getOrganization().getId();
         //2.
-        PositionNom positionNom = positionNomRepository.getByCode(event.getJeCreate().getPositionNom().getCode()).get();
+        PositionNom positionNom = positionNomRepository.getByCode(jeCreate.getPositionNom().getCode()).get();
         //3.
         Optional<AreaTypeSpecializations> areaTypeSpecialization = areaTypeSpecializationsRepository.findBySpecializationCode(
                 positionNom.getSpecialization().getCode()).stream()
-                //Todo перенести код AreaTypeKind в настройки ?
-                .filter(a -> Objects.equals(a.getAreaType().getAreaTypeKind().getCode(), 4L))
+                .filter(a -> Objects.equals(a.getAreaType().getAreaTypeKind().getCode(), AreaTypeKindEnum.PERSONAL.getCode()))
                 .findFirst();
 
         if (!areaTypeSpecialization.isPresent() || areaTypeSpecialization.get().getAreaType() == null) {
             throw new RuntimeException("Специализация ИДМР не соответствует именному виду участка");
         }
-        if (event.getJeCreate() != null && event.getJeCreate().getDepartment() != null) {
-            createAreaWithMedicalEmployee(event.getJeCreate(), moId, positionNom, areaTypeSpecialization.get().getAreaType());
-        }
-        if (event.getJeChangeDateEnd() != null) {
-            changeMedicalEmployeeEndDate(event.getJeChangeDateEnd(), moId, areaTypeSpecialization.get().getAreaType(), event.getJeCreate().getId());
-        }
-    }
-
-    private void changeMedicalEmployeeEndDate(JeChangeDateEnd jeChangeDateEnd, Long moId, AreaType areaType, Long jobId) {
-        //6.1
-        List<Area> areas = areaRepository.findAreas(moId, null, areaType.getCode(), null, true);
-
-        Optional<AreaMedicalEmployees> areaMedicalEmployee = areas.stream()
-                .flatMap(a -> a.getActualMainMedicalEmployees().stream())
-                .filter(a -> Objects.equals(a.getMedicalEmployeeJobInfoId(), jobId))
-                .findFirst();
-
-        if (!areaMedicalEmployee.isPresent()) {
-            throw new RuntimeException("Для обновления даты окончания ИДМР участок не найден");
-        }
-        //6.2
-        areaMedicalEmployee.get().setEndDate(EsuInputTaskHelper.convertToLocalDate(jeChangeDateEnd.getEnd()));
-        areaMedicalEmployee.get().setUpdateDate(LocalDateTime.now());
-    }
-
-    private void createAreaWithMedicalEmployee(JeCreate jeCreate, Long moId, PositionNom positionNom, AreaType areaType) {
         Long specializationCode = positionNom.getSpecialization().getCode();
+        AreaType areaType = areaTypeSpecialization.get().getAreaType();
         //5.1
         if (!SPECIALIZATION_CODES_ONCOLOGY.contains(specializationCode)) {
             //5.1.1

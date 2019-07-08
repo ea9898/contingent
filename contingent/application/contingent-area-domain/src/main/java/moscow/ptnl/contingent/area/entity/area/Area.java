@@ -363,6 +363,10 @@ public class Area implements Serializable {
                 .collect(Collectors.toSet());
     }
 
+    public boolean isActual() {
+        return !Boolean.TRUE.equals(archived);
+    }
+
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.id);
