@@ -348,9 +348,9 @@ public class AreaServiceHelper {
                         || next.getStartDate().minusDays(1).isBefore(current.getEndDate())) {
                     validation.error(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP,
                             new ValidationParameter("specialization1",
-                                    current.getMedicalEmployeeJobInfoId()),
+                                    current.getMedicalEmployeeJobId()),
                             new ValidationParameter("specialization2",
-                                    next.getMedicalEmployeeJobInfoId()));
+                                    next.getMedicalEmployeeJobId()));
                 }
             }
             if (!validation.isSuccess()) {
@@ -414,16 +414,16 @@ public class AreaServiceHelper {
     public void checkDatesNotInterceptWithSamePosition(List<AreaMedicalEmployees> allEmployees,
                                                        Validation validation) throws ContingentException {
         if (allEmployees.size() > 1) {
-            allEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getMedicalEmployeeJobInfoId)
+            allEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getMedicalEmployeeJobId)
                     .thenComparing(AreaMedicalEmployees::getStartDate));
             for (int i = 0; i < allEmployees.size() - 1; i++) {
                 AreaMedicalEmployees current = allEmployees.get(i);
                 AreaMedicalEmployees next = allEmployees.get(i + 1);
-                if (current.getMedicalEmployeeJobInfoId() != null
-                        && current.getMedicalEmployeeJobInfoId().equals(next.getMedicalEmployeeJobInfoId())
+                if (current.getMedicalEmployeeJobId() != null
+                        && current.getMedicalEmployeeJobId().equals(next.getMedicalEmployeeJobId())
                         && (current.getEndDate() == null || next.getStartDate().isBefore(current.getEndDate().plusDays(1)))) {
                     validation.error(AreaErrorReason.JOB_ID_DATE_OVERLAP,
-                            new ValidationParameter("jobInfoId", current.getMedicalEmployeeJobInfoId()),
+                            new ValidationParameter("jobInfoId", current.getMedicalEmployeeJobId()),
                             new ValidationParameter("areaId", current.getArea().getId()),
                             new ValidationParameter("startDate1", current.getStartDate()),
                             new ValidationParameter("endDate1",
@@ -485,7 +485,7 @@ public class AreaServiceHelper {
 
     public void addNew(List<AreaMedicalEmployees> employees, List<AddMedicalEmployee> addEmployees, Area area) {
         addEmployees.forEach(empl -> employees.add(new AreaMedicalEmployees(
-                empl.getMedicalEmployeeJobInfoId(),
+                empl.getMedicalEmployeeJobId(),
                 area,
                 empl.isIsReplacement(),
                 empl.getStartDate(),

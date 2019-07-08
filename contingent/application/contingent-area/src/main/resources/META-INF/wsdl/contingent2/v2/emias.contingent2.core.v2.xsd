@@ -64,7 +64,7 @@
     <xs:complexType name="MedicalEmployee">
         <xs:sequence>
             <xs:element name="id" type="xs:long" />
-            <xs:element name="medicalEmployeeJobInfoId" type="xs:long" />
+            <xs:element name="medicalEmployeeJobId" type="xs:long" />
             <xs:element name="snils" type="xs:string" />
             <xs:element name="positionId" type="xs:long" />
             <xs:element name="isReplacement" type="xs:boolean" />

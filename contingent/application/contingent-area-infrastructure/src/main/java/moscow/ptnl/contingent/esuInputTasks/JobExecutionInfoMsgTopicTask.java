@@ -149,7 +149,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
 
             if (areas.stream()
                     .flatMap(a -> a.getActualMainMedicalEmployees().stream())
-                    .anyMatch(a -> Objects.equals(a.getMedicalEmployeeJobInfoId(), jeCreate.getId()))) {
+                    .anyMatch(a -> Objects.equals(a.getMedicalEmployeeJobId(), jeCreate.getId()))) {
                 throw new RuntimeException("Для данного ИДМР участок уже существует");
             }
             Area area;
@@ -157,7 +157,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
             Optional<AreaMedicalEmployees> areaMedicalEmployee = areas.stream()
                     .filter(a -> a.getMuId() == null)
                     .flatMap(a -> a.getActualMainMedicalEmployees().stream())
-                    .filter(a -> !Objects.equals(a.getMedicalEmployeeJobInfoId(), jeCreate.getId()) &&
+                    .filter(a -> !Objects.equals(a.getMedicalEmployeeJobId(), jeCreate.getId()) &&
                             Objects.equals(a.getSnils(), jeCreate.getEmployee().getSnils()))
                     .findFirst();
 
@@ -197,7 +197,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     private AreaMedicalEmployees createAreaMedicalEmployee(Area area, PositionNom positionNom, JeCreate jeCreate) {
         AreaMedicalEmployees medicalEmployee = new AreaMedicalEmployees();
         medicalEmployee.setArea(area);
-        medicalEmployee.setMedicalEmployeeJobInfoId(jeCreate.getId());
+        medicalEmployee.setMedicalEmployeeJobId(jeCreate.getId());
         medicalEmployee.setReplacement(false);
         medicalEmployee.setSnils(jeCreate.getEmployee().getSnils());
         medicalEmployee.setPositionNom(positionNom);

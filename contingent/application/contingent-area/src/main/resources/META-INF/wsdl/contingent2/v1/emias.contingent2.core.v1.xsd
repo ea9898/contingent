@@ -75,7 +75,7 @@
     <xs:complexType name="MedicalEmployee">
         <xs:sequence>
             <xs:element name="id" type="xs:long" />
-            <xs:element name="medicalEmployeeJobInfoId" type="xs:long" />
+            <xs:element name="medicalEmployeeJobId" type="xs:long" />
             <xs:element name="snils" type="xs:string" />
             <xs:element name="position" type="tns:PositionNomClinic" minOccurs="0" />
             <xs:element name="isReplacement" type="xs:boolean" />
@@ -131,7 +131,7 @@
             <xs:documentation>Сведения медработника для добавления на участок</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="medicalEmployeeJobInfoId" type="xs:long"/>
+            <xs:element name="medicalEmployeeJobId" type="xs:long"/>
             <xs:element name="snils" type="xs:string"/>
             <xs:element name="positionId" type="xs:long"/>
             <xs:element name="subdivisionId" type="xs:long"/>

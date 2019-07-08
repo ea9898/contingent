@@ -14,7 +14,7 @@ public class ReplacementEmployeesMapper implements Transform<AreaInfoEvent.Repla
     @Override
     public AreaInfoEvent.ReplacementEmployees entityToDtoTransform(Set<AreaMedicalEmployees> entity) {
         AreaInfoEvent.ReplacementEmployees employees = new AreaInfoEvent.ReplacementEmployees();
-        employees.getIdmr().addAll(entity.stream().map(AreaMedicalEmployees::getMedicalEmployeeJobInfoId).collect(Collectors.toList()));
+        employees.getIdmr().addAll(entity.stream().map(AreaMedicalEmployees::getMedicalEmployeeJobId).collect(Collectors.toList()));
 
         return employees;
     }
