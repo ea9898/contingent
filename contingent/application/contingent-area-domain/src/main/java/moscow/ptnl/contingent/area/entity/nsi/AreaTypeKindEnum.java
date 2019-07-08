@@ -8,8 +8,9 @@ public enum AreaTypeKindEnum {
 
     MILDLY_ASSOCIATED(1),
     TREATMENT_ROOM_ASSOCIATED(2),
-    PERSONAL(3),
-    DEPERSONALIZED(4);
+    //Именной
+    PERSONAL(4),
+    DEPERSONALIZED(3);
 
     private final long code;
 

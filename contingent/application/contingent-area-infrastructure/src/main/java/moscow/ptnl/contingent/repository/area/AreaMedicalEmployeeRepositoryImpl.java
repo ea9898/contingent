@@ -39,7 +39,12 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
 
     private Specification<AreaMedicalEmployees> replacementEmployeesSpec() {
         return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(AreaMedicalEmployees_.replacement), false);
+                criteriaBuilder.equal(root.get(AreaMedicalEmployees_.replacement), true);
+    }
+
+    private Specification<AreaMedicalEmployees> getEmployeesByJobIdSpec(long jobId) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(AreaMedicalEmployees_.medicalEmployeeJobInfoId), jobId);
     }
 
     @Override
@@ -61,4 +66,16 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
                         .and(replacementEmployeesSpec()).and(actualEmployeesSpec()));
     }
 
+    @Override
+    public List<AreaMedicalEmployees> findEmployees(long jobId, Boolean replacement) {
+        Specification<AreaMedicalEmployees> specification = getEmployeesByJobIdSpec(jobId);
+
+        if (Boolean.TRUE.equals(replacement)) {
+            specification = specification.and(replacementEmployeesSpec());
+        }
+        if (Boolean.FALSE.equals(replacement)) {
+            specification = specification.and(mainEmployeesSpec());
+        }
+        return areaMedicalEmployeeCRUDRepository.findAll(specification);
+    }
 }
