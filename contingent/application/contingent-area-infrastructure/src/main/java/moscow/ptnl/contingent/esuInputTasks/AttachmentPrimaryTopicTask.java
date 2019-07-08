@@ -75,6 +75,7 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
             // 3.5
             AttachToDependentAreaEvent eventDto = AttachToDependentAreaEventMapper.entityToDtoTransform(area, areaType, dependentAreas);
             // 4
+            // TODO Переделать на отправку по шине SI, для единообразия работы с отправкой в ESU.
             esuService.saveAndPublishToESU(EsuTopicsEnum.ATTACH_TO_DEPENDENT_AREA.getName(), eventDto);
         }
     }
