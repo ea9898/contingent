@@ -4,18 +4,18 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClassEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
+import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
+import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.service.esu.EsuService;
 import moscow.ptnl.contingent.util.EsuTopicsEnum;
 import moscow.ptnl.contingent2.attachment.changeprimarea.event.AttachPrimaryPatientEvent;
 import moscow.ptnl.contingent2.attachment.deparea.event.AttachToDependentAreaEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,8 +36,8 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
     @Autowired
     private AreaRepository areaRepository;
 
-    @Autowired
-    private EsuService esuService;
+    @Autowired @Qualifier(EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME)
+    private MessageChannel esuChannel;
 
     private static final String XSD_PATH = "META-INF/xsd/esu/attachmentprimary.v1.xsd";
 
@@ -75,8 +75,10 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
             // 3.5
             AttachToDependentAreaEvent eventDto = AttachToDependentAreaEventMapper.entityToDtoTransform(area, areaType, dependentAreas);
             // 4
-            // TODO Переделать на отправку по шине SI, для единообразия работы с отправкой в ESU.
-            esuService.saveAndPublishToESU(EsuTopicsEnum.ATTACH_TO_DEPENDENT_AREA.getName(), eventDto);
+            esuChannel.send(EsuEventBuilder
+                    .withTopic(EsuTopicsEnum.ATTACH_TO_DEPENDENT_AREA.getName())
+                    .setEventObject(eventDto)
+                    .buildMessage());
         }
     }
 }
