@@ -747,7 +747,13 @@
     </changeSet>
 
     <changeSet id="CONTINGENT2-NSI-13-2" author="ddryuchin"  labels="1.0.0.0">
-        <comment>Заполнение справочника</comment>
+	<preConditions onFail="MARK_RAN">
+		<and>
+      			<tableExists tableName="GENDER" />
+			<sqlCheck expectedResult ="0">SELECT COUNT(*) GENDER</sqlCheck>
+      		</and>
+	</preConditions>
+        <comment>Заполнение справочника</comment>	
         <loadData encoding="UTF-8" separator=";" tableName="GENDER" file="changelog/area/versions/1.0.0.0/files/Пол_GENDER.csv">
             <column header="system_object_id" name="id" type="NUMERIC"/>
             <column header="code" name="CODE" type="string"/>
@@ -781,6 +787,37 @@
             <column header="CODE" name="CODE" type="NUMERIC"/>
             <column header="TITLE" name="TITLE" type="string"/>
             <column header="archived" name="archived" type="NUMERIC"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-191-NSI-1" author="mkachalov"  labels="1.0.0.0">
+	<preConditions onFail="MARK_RAN">
+             <and>
+                    <tableExists tableName="AREA_TYPE" />		
+                    <sqlCheck expectedResult ="0">SELECT COUNT(*) AREA_TYPE</sqlCheck>
+             </and>
+	</preConditions>
+        <comment>Заполнение справочника</comment>	
+        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE.csv">
+	    <column header="CODE" name="CODE" type="NUMERIC"/>
+            <column header="TITLE" name="TITLE" type="string"/>
+            <column header="AREA_TYPE_KIND_CODE" name="AREA_TYPE_KIND_CODE" type="NUMERIC"/>
+            <column header="AREA_TYPE_CLASS_CODE" name="AREA_TYPE_CLASS_CODE" type="NUMERIC"/>
+            <column header="GENDER_CODE" name="GENDER_CODE" type="STRING"/>
+            <column header="AGE_MIN" name="AGE_MIN" type="NUMERIC"/>
+            <column header="AGE_MAX" name="AGE_MAX" type="NUMERIC"/>
+            <column header="AGE_M_MIN" name="AGE_M_MIN" type="NUMERIC"/>
+            <column header="AGE_M_MAX" name="AGE_M_MAX" type="NUMERIC"/>
+            <column header="AGE_W_MIN" name="AGE_W_MIN" type="NUMERIC"/>
+            <column header="AGE_W_MAX" name="AGE_W_MAX" type="NUMERIC"/>
+            <column header="HEAD_FINANCE" name="HEAD_FINANCE" type="NUMERIC"/>
+            <column header="HAS_SERVICE_TERRITORY" name="HAS_SERVICE_TERRITORY" type="NUMERIC"/>
+            <column header="ATTACH_BY_REQUEST" name="ATTACH_BY_REQUEST" type="NUMERIC"/>
+            <column header="ATTACH_BY_MEDICAL_REASON" name="ATTACH_BY_MEDICAL_REASON" type="NUMERIC"/>
+            <column header="MPGU_AVAILABLE" name="MPGU_AVAILABLE" type="NUMERIC"/>
+            <column header="RESIDENTS_BIND_RATE" name="RESIDENTS_BIND_RATE" type="NUMERIC"/>
+            <column header="AREA_COUNT_LIMIT_CODE" name="AREA_COUNT_LIMIT_CODE" type="NUMERIC"/>
+            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
         </loadData>
     </changeSet>
 
