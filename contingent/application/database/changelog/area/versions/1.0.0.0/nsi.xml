@@ -639,7 +639,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-11-3" author="sorlov">
+    <changeSet id="CONTINGENT2-NSI-11-4" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
@@ -794,7 +794,7 @@
 	<preConditions onFail="MARK_RAN">
              <and>
                     <tableExists tableName="AREA_TYPE" />		
-                    <sqlCheck expectedResult ="0">SELECT COUNT(*) AREA_TYPE</sqlCheck>
+                    <!-- <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE</sqlCheck> -->
              </and>
 	</preConditions>
         <comment>Заполнение справочника</comment>	
@@ -819,7 +819,64 @@
             <column header="AREA_COUNT_LIMIT_CODE" name="AREA_COUNT_LIMIT_CODE" type="NUMERIC"/>
             <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
         </loadData>
+        <rollback>
+            <sql>
+               DELETE FROM AREA_TYPE;
+            </sql>
+        </rollback>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-191-NSI-2" author="mkachalov"  labels="1.0.0.0">
+	<preConditions onFail="MARK_RAN">
+             <and>
+                    <tableExists tableName="AREA_TYPE_SPECIALIZATIONS" />		
+                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_SPECIALIZATIONS</sqlCheck>
+             </and>
+	</preConditions>
+        <comment>Заполнение справочника</comment>	
+        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE_SPECIALIZATIONS" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE_SPECIALIZATIONS.csv">
+            <column header="ID" name="ID" type="NUMERIC"/>
+            <column header="AREA_TYPE_CODE" name="AREA_TYPE_CODE" type="NUMERIC"/>
+            <column header="SPECIALIZATION_CODE" name="SPECIALIZATION_CODE" type="NUMERIC"/>
+            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
+        </loadData>
+        <rollback>
+            <sql>
+               DELETE FROM AREA_TYPE_SPECIALIZATIONS;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <!--
+    <changeSet id="CONTINGENT2-191-NSI-3" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>            
+        </preConditions>
+        <comment>Изменение типа данных в таблице AREA_TYPE_MEDICAL_POSITIONS</comment>
+        <modifyDataType tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" newDataType="VARCHAR2(50)"/>    
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-191-NSI-4" author="mkachalov"  labels="1.0.0.0">
+	<preConditions onFail="MARK_RAN">
+             <and>
+                    <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS" />		
+                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_MEDICAL_POSITIONS</sqlCheck>
+             </and>
+	</preConditions>
+        <comment>Заполнение справочника</comment>	
+        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE_MEDICAL_POSITIONS" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE_MEDICAL_POSITIONS.csv">
+            <column header="ID" name="ID" type="NUMERIC"/>
+            <column header="AREA_TYPE_CODE" name="AREA_TYPE_CODE" type="NUMERIC"/>
+            <column header="POSITION_CODE" name="POSITION_CODE" type="STRING"/>
+            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
+        </loadData>
+        <rollback>
+            <sql>
+               DELETE FROM AREA_TYPE_MEDICAL_POSITIONS;
+            </sql>
+        </rollback>
+    </changeSet>
+    -->
 
 
 </databaseChangeLog>
