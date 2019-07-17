@@ -847,6 +847,40 @@
         </rollback>
     </changeSet>
 
+    <!-- Констрэйнт удален в связи с отсутствием соответствующего ограничения (Катерина Рымова) -->
+    <changeSet id="CONTINGENT2-191-NSI-3" author="mkachalov"  labels="1.0.0.0">
+	<preConditions onFail="MARK_RAN">
+             <tableExists tableName="POSITION_NOM" />		
+	</preConditions>
+        <dropNotNullConstraint columnDataType="DATE" columnName="START" tableName="POSITION_NOM"/>
+    </changeSet>
+
+
+    <changeSet id="CONTINGENT2-191-NSI-4" author="mkachalov"  labels="1.0.0.0">
+	<preConditions onFail="MARK_RAN">
+             <and>
+                    <tableExists tableName="POSITION_NOM" />		
+                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM POSITION_NOM</sqlCheck>
+             </and>
+	</preConditions>
+        <comment>Заполнение справочника</comment>	
+        <loadData encoding="UTF-8" separator=";" tableName="POSITION_NOM" file="changelog/area/versions/1.0.0.0/files/POSITION_NOM.csv">
+            <column header="ID" name="ID" type="NUMERIC"/>
+            <column header="CODE" name="CODE" type="STRING"/>
+            <column header="TITLE" name="TITLE" type="STRING"/>
+            <column header="START" name="START" type="DATE"/>
+            <column header="END" name="end" type="DATE"/>
+            <column header="SPECIALIZATION_ID" name="SPECIALIZATION_ID" type="NUMERIC"/>
+            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
+        </loadData>
+        <rollback>
+            <sql>
+               DELETE FROM POSITION_NOM;
+            </sql>
+        </rollback>
+    </changeSet>
+
+
     <!--
     <changeSet id="CONTINGENT2-191-NSI-3" author="mkachalov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
