@@ -21,7 +21,7 @@ import java.util.List;
 
 public interface AreaServiceInternal {
 
-    Long createPrimaryArea(long moId, long muId, Integer number, Long areaTypeCode, List<Long> policyTypes,
+    Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypes,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 

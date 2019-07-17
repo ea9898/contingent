@@ -34,10 +34,13 @@ public class MuAvailableAreaTypesRepositoryImpl extends BaseRepository implement
     }
 
     @Override
-    public List<MuAvailableAreaTypes> findByAreaTypes(AreaType areaType) {
+    public List<MuAvailableAreaTypes> findByAreaTypes(AreaType areaType, Long muId) {
         Specification<MuAvailableAreaTypes> specification =
                 (root, criteriaQuery, criteriaBuilder) ->
-                        criteriaBuilder.equal(root.get(MuAvailableAreaTypes_.areaType.getName()), areaType);
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(root.get(MuAvailableAreaTypes_.areaType.getName()), areaType),
+                                muId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MuAvailableAreaTypes_.muId.getName()), muId)
+                        );
 
         return muAvailableAreaTypesCRUDRepository.findAll(specification);
     }
