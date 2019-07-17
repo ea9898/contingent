@@ -792,14 +792,17 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
             }
 
+            //FIXME временно удалено в связи с необходимостью срочно добавить справочник
             // 5.6.
+            /*
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
-            if (positions != null && positions.stream().anyMatch(pos -> pos.getPositionNom().getId() != empl.getPositionId())) {
+            if (positions != null && positions.stream().anyMatch(pos -> !pos.getPositionNomCode().equals(empl.getPositionNomCode()))) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionNom.get().getTitle()),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
                         new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
-            }
+            } 
+            */
         }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);

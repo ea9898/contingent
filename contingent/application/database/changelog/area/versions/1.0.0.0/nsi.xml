@@ -925,18 +925,40 @@
             </sql>
         </rollback>
     </changeSet>
+        
+    
 
-
-    <!--
-    <changeSet id="CONTINGENT2-191-NSI-3" author="mkachalov" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-206-1-1" author="mkachalov" labels="1.0.0.0">
+         <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>            
+         </preConditions>
+         <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="fk_area_type_me_position_no_01"/>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-206-1-2" author="mkachalov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>            
         </preConditions>
         <comment>Изменение типа данных в таблице AREA_TYPE_MEDICAL_POSITIONS</comment>
-        <modifyDataType tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" newDataType="VARCHAR2(50)"/>    
+        <modifyDataType tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>    
     </changeSet>
 
-    <changeSet id="CONTINGENT2-191-NSI-4" author="mkachalov"  labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-206-2-1" author="mkachalov" labels="1.0.0.0">
+         <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>            
+         </preConditions>
+         <dropForeignKeyConstraint baseTableName="AREA_MEDICAL_EMPLOYEES" constraintName="fk_ame_position_nom"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-206-2-2" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>            
+        </preConditions>
+        <comment>Изменение типа данных в таблице AREA_MEDICAL_EMPLOYEES</comment>
+        <modifyDataType tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>    
+    </changeSet>
+        
+    <changeSet id="CONTINGENT2-191-NSI-5" author="mkachalov"  labels="1.0.0.0">
 	<preConditions onFail="MARK_RAN">
              <and>
                     <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS" />		
@@ -956,7 +978,7 @@
             </sql>
         </rollback>
     </changeSet>
-    -->
+    
 
 
 </databaseChangeLog>
