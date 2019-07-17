@@ -22,4 +22,7 @@ public enum AreaTypeKindEnum {
         return code;
     }
 
+    public boolean equalsCode(Long code) {
+        return code != null && this.code == code;
+    }
 }

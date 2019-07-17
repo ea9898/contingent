@@ -11,5 +11,5 @@ public interface MuAvailableAreaTypesRepository {
 
     List<MuAvailableAreaTypes> findAreaTypes(long muId);
 
-    List<MuAvailableAreaTypes> findByAreaTypes(AreaType areaType);
+    List<MuAvailableAreaTypes> findByAreaTypes(AreaType areaType, Long muId);
 }
