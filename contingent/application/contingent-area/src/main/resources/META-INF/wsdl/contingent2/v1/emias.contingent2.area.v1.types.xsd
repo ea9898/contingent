@@ -40,7 +40,6 @@
                 <xs:element name="ageMaxM" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinW" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
-                <xs:element name="autoAssignForAttachment" type="xs:boolean" />
                 <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
@@ -124,7 +123,6 @@
                 <xs:element name="ageMaxM" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinW" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
-                <xs:element name="autoAssignForAttachment" type="xs:boolean" minOccurs="0" />
                 <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>

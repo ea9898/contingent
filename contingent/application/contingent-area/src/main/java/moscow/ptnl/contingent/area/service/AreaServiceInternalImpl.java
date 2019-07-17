@@ -384,7 +384,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public Long createDependentArea(long moId, Long muId, Integer number, Long areaTypeCode,
                                     List<Long> primaryAreaTypeCodesIds, List<Long> policyTypeCodesIds,
                                     Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                    boolean autoAssignForAttachment, String description) throws ContingentException {
+                                    String description) throws ContingentException {
 
         Validation validation = new Validation();
 
@@ -419,7 +419,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 6.
-        Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
+        Area area = new Area(moId, muId, areaType, number, null, false, description,
                 null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 
@@ -539,8 +539,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public void updateDependentArea(long areaId, Long muId, Integer number, String description,
                                     List<Long> primaryAreaTypeCodesAddIds, List<Long> primaryAreaTypeCodesDelIds,
                                     List<Long> policyTypesAddIds, List<Long> policyTypesDelIds,
-                                    Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                    Boolean autoAssignForAttachment) throws ContingentException {
+                                    Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW) throws ContingentException {
 
         Validation validation = new Validation();
         //1. и 2.
@@ -626,7 +625,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setAgeMMin(ageMinM == null ? area.getAgeMMin() : ageMinM);
         area.setAgeWMax(ageMaxW == null ? area.getAgeWMax() : ageMaxW);
         area.setAgeWMin(ageMinW == null ? area.getAgeWMin() : ageMinW);
-        area.setAutoAssignForAttach(autoAssignForAttachment == null ? area.getAutoAssignForAttach() : autoAssignForAttachment);
 //        area.setAttachByMedicalReason(); TODO нет такого входного параметра
         area.setDescription(description == null ? area.getDescription() : description);
         area.setUpdateDate(LocalDateTime.now());

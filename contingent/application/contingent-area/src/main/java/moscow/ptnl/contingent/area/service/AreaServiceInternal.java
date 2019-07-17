@@ -28,7 +28,7 @@ public interface AreaServiceInternal {
     Long createDependentArea(long moId, Long muId, Integer number, Long areaTypeCode,
                              List<Long> primaryAreaTypeCodes, List<Long> policyTypeCodes,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                             boolean autoAssignForAttachment, String description) throws ContingentException;
+                             String description) throws ContingentException;
 
     void updatePrimaryArea(long areaId, Integer number, List<Long> policyTypesAdd, List<Long> policyTypesDel,
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
@@ -37,8 +37,7 @@ public interface AreaServiceInternal {
     void updateDependentArea(long areaId, Long muId, Integer number, String description,
                              List<Long> primaryAreaTypeCodesAdd, List<Long> primaryAreaTypeCodesDel,
                              List<Long> policyTypesAdd, List<Long> policyTypesDel,
-                             Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                             Boolean autoAssignForAttachment) throws ContingentException;
+                             Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW) throws ContingentException;
 
     Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException;
 
