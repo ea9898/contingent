@@ -855,6 +855,26 @@
         <dropNotNullConstraint columnDataType="DATE" columnName="START" tableName="POSITION_NOM"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-191-NSI-4-1" author="mkachalov"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                 <tableExists tableName="POSITION_NOM" />
+                 <columnExists tableName="POSITION_NOM" columnName="end"/>
+            </and>
+        </preConditions>
+        <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="P_END" oldColumnName="end" tableName="POSITION_NOM"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-191-NSI-4-2" author="mkachalov"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                 <tableExists tableName="POSITION_NOM" />
+                 <columnExists tableName="POSITION_NOM" columnName="END"/>            
+            </and>
+        </preConditions>
+        <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="P_END" oldColumnName="END" tableName="POSITION_NOM"/>
+    </changeSet>
+
 
     <changeSet id="CONTINGENT2-191-NSI-4" author="mkachalov"  labels="1.0.0.0">
 	<preConditions onFail="MARK_RAN">
@@ -869,7 +889,7 @@
             <column header="CODE" name="CODE" type="STRING"/>
             <column header="TITLE" name="TITLE" type="STRING"/>
             <column header="START" name="START" type="DATE"/>
-            <column header="END" name="end" type="DATE"/>
+            <column header="END" name="P_END" type="DATE"/>
             <column header="SPECIALIZATION_ID" name="SPECIALIZATION_ID" type="NUMERIC"/>
             <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
         </loadData>
