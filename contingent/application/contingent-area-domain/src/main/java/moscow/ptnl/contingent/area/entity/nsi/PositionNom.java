@@ -35,10 +35,10 @@ public class PositionNom implements Serializable {
     @Column(name = "TITLE", nullable = false)
     private String title;
 
-    @Column(name = "START") //ограничение nullable = false снято из-за того что его нет в справочнике
+    @Column(name = "START_DATE") //ограничение nullable = false снято из-за того что его нет в справочнике
     private LocalDate startDate;
 
-    @Column(name = "P_END")
+    @Column(name = "END_DATE")
     private LocalDate endDate;
 
     @Column(name = "ARCHIVED", nullable = false)
