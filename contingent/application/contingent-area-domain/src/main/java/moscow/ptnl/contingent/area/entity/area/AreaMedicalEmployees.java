@@ -52,11 +52,10 @@ public class AreaMedicalEmployees implements Serializable {
     @Column(name = "SNILS")
     @Size(max = 20)
     private String snils;
-
-    @JoinColumn(name = "POSITION_CODE")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private PositionNom positionNom;
-
+    
+    @Column(name = "POSITION_CODE")
+    private String positionNomCode;
+    
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
@@ -85,7 +84,7 @@ public class AreaMedicalEmployees implements Serializable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
-        this.positionNom = positionNom;
+        this.positionNomCode = (positionNom != null) ? positionNom.getCode() : null;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subdivisionId = subdivisionId;
@@ -148,15 +147,15 @@ public class AreaMedicalEmployees implements Serializable {
     public void setSnils(String snils) {
         this.snils = snils;
     }
-
-    public PositionNom getPositionNom() {
-        return positionNom;
+    
+    public String getPositionNomCode() {
+        return positionNomCode;
     }
 
-    public void setPositionNom(PositionNom positionNom) {
-        this.positionNom = positionNom;
+    public void setPositionNomCode(String positionNom) {
+        this.positionNomCode = positionNom;
     }
-
+    
     public LocalDateTime getCreateDate() {
         return createDate;
     }

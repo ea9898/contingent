@@ -11,5 +11,5 @@ public interface MoAvailableAreaTypesRepository {
 
     List<MoAvailableAreaTypes> findAreaTypes(long moId);
 
-    List<MoAvailableAreaTypes> findByAreaTypes(AreaType areaType);
+    List<MoAvailableAreaTypes> findByAreaTypes(AreaType areaType, Long moId);
 }

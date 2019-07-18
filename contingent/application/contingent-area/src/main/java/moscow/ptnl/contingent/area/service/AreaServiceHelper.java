@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeCountLimitEnum;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyTypeEnum;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -225,14 +226,14 @@ public class AreaServiceHelper {
 
     // К_УУ_8 2.
     // Система проверяет наличие каждого переданного первичного типа участка
-    public void checkPrimaryAreasTypesInMUProfile(Long muId, AreaType areaType, Validation validation) {
+    public void checkPrimaryAreasTypesInMUProfile(long moId, Long muId, AreaType areaType, Validation validation) {
         List<MuAvailableAreaTypes> muAvailableAreaTypes = new ArrayList<>();
         List<MoAvailableAreaTypes> moAvailableAreaTypes = new ArrayList<>();
 
         if (muId != null) {
-            muAvailableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType);
+            muAvailableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType, muId);
         } else {
-            moAvailableAreaTypes = moAvailableAreaTypesRepository.findByAreaTypes(areaType);
+            moAvailableAreaTypes = moAvailableAreaTypesRepository.findByAreaTypes(areaType, moId);
         }
 
         if (moAvailableAreaTypes.size() + muAvailableAreaTypes.size() == 0) {
@@ -491,7 +492,7 @@ public class AreaServiceHelper {
                 empl.getStartDate(),
                 empl.getEndDate(),
                 empl.getSnils(),
-                positionNomRepository.getPositionProxy(empl.getPositionId()),
+                positionNomRepository.getByCode(empl.getPositionCode()).get(),
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 empl.getSubdivisionId())));
@@ -800,8 +801,10 @@ public class AreaServiceHelper {
                 .collect(Collectors.toList());
     }
 
-    public void checkAreaTypeAvailable(AreaType areaType, Validation validation) throws ContingentException {
-        List<MuAvailableAreaTypes> availableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType);
+    public void checkAreaTypeAvailable(long moId, Long muId, AreaType areaType, Validation validation) throws ContingentException {
+        List<?> availableAreaTypes = muId != null ? muAvailableAreaTypesRepository.findByAreaTypes(areaType, muId) :
+                moAvailableAreaTypesRepository.findByAreaTypes(areaType, moId);
+
         if (availableAreaTypes.isEmpty()) {
             throw new ContingentException(validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU,
                     new ValidationParameter("areaTypeTitle", areaType.getTitle())));
@@ -865,5 +868,12 @@ public class AreaServiceHelper {
 
         //Возвращаем участки, адреса которых были удалены, для передачи в ЕСУ
         return areas;
+    }
+
+    public void checkEmptyMuId(Long muId, AreaType areaType) throws ContingentException {
+        if (muId == null && !AreaTypeKindEnum.MILDLY_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode()) &&
+                !AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode())) {
+            throw new ContingentException(AreaErrorReason.NO_MU_ID_PARAMETER);
+        }
     }
 }
