@@ -44,7 +44,7 @@
                                     <xs:documentation>Ограничения контингента для прикрепления на участок</xs:documentation>
                                 </xs:annotation>
                             </xs:element>
-                            <xs:element name="policyType" type="tns:ID" minOccurs="1" maxOccurs="1">
+                            <xs:element name="policyType" type="tns:ID" minOccurs="1" maxOccurs="unbounded">
                                 <xs:annotation>
                                     <xs:documentation>Тип полиса первичного прикрепления (ОМС, ДМС, Платный...). Изначально в Контингент0 все прикрепления с типом ОМС</xs:documentation>
                                 </xs:annotation>

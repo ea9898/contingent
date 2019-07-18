@@ -36,7 +36,7 @@ public class AttachOnAreaChangeMapper implements Transform<AttachOnAreaChange, m
         dependentArea.setAreaRestriction(restriction);
         dependentArea.setMoId(area.getMoId());
         dependentArea.setMuId(area.getMuId());
-        dependentArea.setPolicyType(1);
+        dependentArea.getPolicyType().add(1L); //CONTINGENT2-209
         event.setDependentArea(dependentArea);
 
         if (AttachOnAreaChangeEvent.OperationType.CREATE.equals(entity.getOperationType())) {
