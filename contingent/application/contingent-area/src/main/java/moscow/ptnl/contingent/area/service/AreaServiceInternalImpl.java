@@ -772,7 +772,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
 
             //5.3.
-            Optional<PositionNom> positionNom = positionNomCRUDRepository.findById(empl.getPositionId());
+            Optional<PositionNom> positionNom = positionNomRepository.getByCode(empl.getPositionCode());
 
             if (!positionNom.isPresent()) {
                 // TODO ???
@@ -793,7 +793,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             
             // 5.6.            
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
-            PositionNom emplPositionNom = positionNomCRUDRepository.findById(empl.getPositionId()).get();
+            PositionNom emplPositionNom = positionNom.get();
+
             if (positions != null && positions.stream().anyMatch(pos -> !pos.getPositionNomCode().equals(emplPositionNom.getCode()))) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionNom.get().getTitle()),

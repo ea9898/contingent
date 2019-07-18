@@ -492,7 +492,7 @@ public class AreaServiceHelper {
                 empl.getStartDate(),
                 empl.getEndDate(),
                 empl.getSnils(),
-                positionNomRepository.getPositionProxy(empl.getPositionId()),
+                positionNomRepository.getByCode(empl.getPositionCode()).get(),
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 empl.getSubdivisionId())));
