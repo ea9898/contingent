@@ -20,9 +20,9 @@ public class AttachToDependentAreaEventMapper {
         event.setOperationDate(XMLUtil.getCurrentDate());
         event.setPatientEmiasId(event.getPatientEmiasId());
         event.setPrimaryAreaId(event.getPrimaryAreaId());
-        event.getDependentArea().addAll(dependentAreas.stream().map(
+        event.getDependendAttachment().addAll(dependentAreas.stream().map(
                 depArea -> {
-                    AttachToDependentAreaEvent.DependentArea dependentArea = new AttachToDependentAreaEvent.DependentArea();
+                    AttachToDependentAreaEvent.DependendAttachment dependentArea = new AttachToDependentAreaEvent.DependendAttachment();
                     dependentArea.setMoId(depArea.getMoId());
                     dependentArea.setMuId(depArea.getMuId());
                     dependentArea.setAreaId(depArea.getId());
