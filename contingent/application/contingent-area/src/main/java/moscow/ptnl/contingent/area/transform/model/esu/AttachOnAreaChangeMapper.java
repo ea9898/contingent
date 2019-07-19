@@ -20,8 +20,8 @@ public class AttachOnAreaChangeMapper implements Transform<AttachOnAreaChange, m
         moscow.ptnl.contingent.area.entity.area.Area area = entity.getArea();
 
         event.setOperationDate(gregorianCalendarMapper.entityToDtoTransform(entity.getOperationDate()));
-        AttachOnAreaChange.DependentArea dependentArea = new AttachOnAreaChange.DependentArea();
-        dependentArea.setAreaId(area.getId());
+        AttachOnAreaChange.DependendArea dependendArea = new AttachOnAreaChange.DependendArea();
+        dependendArea.setAreaId(area.getId());
         AreaRestriction restriction = new AreaRestriction();
         boolean empty = area.getAgeMin() == null && area.getAgeMax() == null &&
                 area.getAgeMMin() == null && area.getAgeWMax() == null &&
@@ -33,11 +33,11 @@ public class AttachOnAreaChangeMapper implements Transform<AttachOnAreaChange, m
         restriction.setMaxAge(empty ? area.getAreaType().getAgeMax() : area.getAgeMax());
         restriction.setMaxAgeMale(empty ? area.getAreaType().getAgeMMax() : area.getAgeMMax());
         restriction.setMaxAgeFemale(empty ? area.getAreaType().getAgeWMax() : area.getAgeWMax());
-        dependentArea.setAreaRestriction(restriction);
-        dependentArea.setMoId(area.getMoId());
-        dependentArea.setMuId(area.getMuId());
-        dependentArea.getPolicyType().add(1L); //CONTINGENT2-209
-        event.setDependentArea(dependentArea);
+        dependendArea.setAreaRestriction(restriction);
+        dependendArea.setMoId(area.getMoId());
+        dependendArea.setMuId(area.getMuId());
+        dependendArea.getPolicyType().add(1L); //CONTINGENT2-209
+        event.setDependendArea(dependendArea);
 
         if (AttachOnAreaChangeEvent.OperationType.CREATE.equals(entity.getOperationType())) {
             event.getPrimaryAreaAdd().addAll(entity.getPrimaryAreaIds());

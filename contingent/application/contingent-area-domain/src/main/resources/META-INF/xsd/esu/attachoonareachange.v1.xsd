@@ -18,7 +18,7 @@
                         <xs:documentation>Дата и время наступления события, инициировавшего отправку сообщения</xs:documentation>
                     </xs:annotation>
                 </xs:element>
-                <xs:element name="dependentArea" minOccurs="1" maxOccurs="1">
+                <xs:element name="dependendArea" minOccurs="1" maxOccurs="1">
                     <xs:annotation>
                         <xs:documentation>Зависимый участок</xs:documentation>
                     </xs:annotation>
