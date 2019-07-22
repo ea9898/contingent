@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.service.interceptor;
 
+import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -42,7 +43,10 @@ public class LogESUInterceptor {
     
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
-    
+
+    @Autowired
+    private SettingService settingService;
+
     @Around(
         value = "execution(public * *(..)) && @annotation(annotation)",
         argNames="annotation"
@@ -59,21 +63,23 @@ public class LogESUInterceptor {
         final Object result = joinPoint.proceed();
         
         if (annotation.type().isAssignableFrom(AreaInfoEvent.class)) {
-            List<Long> areaIds = getAreaId(annotation, method, args, result);
+            if (Boolean.TRUE.equals(settingService.getPar4())) {
+                List<Long> areaIds = getAreaId(annotation, method, args, result);
 
-            if (areaIds.isEmpty()) {
-                throw new IllegalArgumentException("идентификатор сущности null");
-            }
-            for (Long areaId : areaIds) {
-                Optional<Area> area = areaCRUDRepository.findById(areaId);
-
-                if (!area.isPresent()) {
-                    throw new IllegalArgumentException("сущность с идентификатором " + areaId + " не найдена");
+                if (areaIds.isEmpty()) {
+                    throw new IllegalArgumentException("идентификатор сущности null");
                 }
-                Area areaObject = area.get();
+                for (Long areaId : areaIds) {
+                    Optional<Area> area = areaCRUDRepository.findById(areaId);
 
-                if (areaHelper.isAreaPrimary(areaObject)) {
-                    esuHelperService.sendAreaInfoEvent(areaObject, methodName);
+                    if (!area.isPresent()) {
+                        throw new IllegalArgumentException("сущность с идентификатором " + areaId + " не найдена");
+                    }
+                    Area areaObject = area.get();
+
+                    if (areaHelper.isAreaPrimary(areaObject)) {
+                        esuHelperService.sendAreaInfoEvent(areaObject, methodName);
+                    }
                 }
             }
         } else {

@@ -8,4 +8,5 @@ public interface SettingService {
 
     Long getPar3();
 
+    Boolean getPar4();
 }

@@ -1166,18 +1166,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setArchived(false);
         areaCRUDRepository.save(area);
 
-        // 7.
-        if (areaHelper.isAreaPrimary(area)) {
-            // 7.1. Поиск зависимых участков подобного типа
-            List<Area> areas = areaRepository.findDependentAreasByAreaEqAreaType(area);
-
-
-            // 7.2.
-            areas.forEach(depArea ->
-                    esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(areaId), null, depArea)
-            );
-        }
-
         // 8.
         if (areaHelper.isAreaDependent(area)) {
             List<Area> areas = areaRepository.findPrimaryAreasByAreaEqAreaType(area);

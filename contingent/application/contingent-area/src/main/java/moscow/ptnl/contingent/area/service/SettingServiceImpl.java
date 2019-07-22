@@ -19,7 +19,7 @@ public class SettingServiceImpl implements SettingService {
         if (settingOptional.isPresent()) {
             Setting setting = settingOptional.get();
             if (setting.getType().equals(1L)) {
-                return setting.getVal();
+                return Long.parseLong(setting.getVal());
             }
         }
         return null;
@@ -27,16 +27,22 @@ public class SettingServiceImpl implements SettingService {
 
     @Override
     public Long getPar1() {
-        return Long.parseLong((String) getPar("max_addresses_for_allocation"));
+        return (Long) getPar("max_addresses_for_allocation");
     }
 
     @Override
     public Long getPar2() {
-        return Long.parseLong((String) getPar("max_addresses_for_del_allocation"));
+        return (Long) getPar("max_addresses_for_del_allocation");
     }
 
     @Override
     public Long getPar3() {
-        return Long.parseLong((String) getPar("max_page_size"));
+        return (Long) getPar("max_page_size");
+    }
+
+    @Override
+    public Boolean getPar4() {
+        Long param = (Long) getPar("synchronize_k2_and_k1");
+        return param == null ? null : param.equals(1L);
     }
 }
