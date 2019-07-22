@@ -424,11 +424,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         // 7.
-        AreaToAreaType areaToAreaType = new AreaToAreaType();
-        areaToAreaType.setArea(area);
-        areaToAreaType.setAreaType(areaTypesCRUDRepository.findById(areaTypeCode).get());
-        areaToAreaTypeCRUDRepository.save(areaToAreaType);
-
+        for (Long areaTypeCodeId : primaryAreaTypeCodesIds) {
+            AreaToAreaType areaToAreaType = new AreaToAreaType();
+            areaToAreaType.setArea(area);
+            areaToAreaType.setAreaType(areaTypesCRUDRepository.findById(areaTypeCodeId).get());
+            areaToAreaTypeCRUDRepository.save(areaToAreaType);
+        }
         // 8.
         List<PolicyType> policyTypeList = policyTypeRepository.findByIds(policyTypeCodesIds);
 
