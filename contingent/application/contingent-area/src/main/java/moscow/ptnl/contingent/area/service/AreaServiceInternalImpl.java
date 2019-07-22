@@ -657,8 +657,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
                 // 12.2.
                 primAreasAdd.forEach(primArea ->
-                        esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(area.getId()),
-                                null, primArea)
+                        esuHelperService.sendAttachOnAreaChangeEvent(
+                                Collections.singletonList(primArea.getId()),
+                                null, 
+                                area
+                        )
                 );
             }
 
@@ -668,8 +671,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 List<Area> primAreasDel = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesDelIds, null, true);
                 // 13.2.
                 primAreasDel.forEach(primArea ->
-                        esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(primArea.getId()),
-                                null, area)
+                        esuHelperService.sendAttachOnAreaChangeEvent(
+                                null,
+                                Collections.singletonList(primArea.getId()),
+                                area
+                        )
                 );
             }
         }
