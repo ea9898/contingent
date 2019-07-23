@@ -81,7 +81,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1179,9 +1178,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 8.
         if (areaHelper.isAreaDependent(area)) {
             List<Area> areas = areaRepository.findPrimaryAreasByAreaEqAreaType(area);
-
-            esuHelperService.sendAttachOnAreaChangeEvent(areas.stream().map(Area::getId).collect(Collectors.toList()),
-                            null, area);
+                                    
+            if (!areas.isEmpty()) {
+                esuHelperService.sendAttachOnAreaChangeEvent(
+                        areas.stream().map(Area::getId).collect(Collectors.toList()),
+                        null, 
+                        area
+                );
+            }
         }
 
         // 9.

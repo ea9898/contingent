@@ -68,7 +68,7 @@ public class EsuHelperService {
         LOG.debug("TRY SEND EVENT: {}", event);
         
         if (event == null) {
-            throw new IllegalArgumentException("объект не может быть null");
+            throw new IllegalArgumentException("событие не может быть null");
         }
         
         esuChannel.send(EsuEventBuilder

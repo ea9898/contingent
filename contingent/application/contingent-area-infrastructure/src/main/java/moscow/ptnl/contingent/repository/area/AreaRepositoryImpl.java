@@ -16,10 +16,14 @@ import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
 public class AreaRepositoryImpl extends BaseRepository implements AreaRepository {
+    
+    private final static Logger LOG = LoggerFactory.getLogger(AreaRepositoryImpl.class);
 
     @Autowired
     private DataSource dataSource;
@@ -137,17 +141,19 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     public List<Area> findPrimaryAreasByAreaEqAreaType(Area area) {
         Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.conjunction();
         if (area.getMuId() != null) {
-            specification.and(searchByMuIdSpec(area.getMuId()));
+            specification = specification.and(searchByMuIdSpec(area.getMuId()));
         }
 
         specification = specification.or(searchEmptyMuIdSpec().and(searchByMoIdSpec(area.getMoId())));
 
-        specification = specification.and(searchActive());
+        specification = specification.and(searchActive());        
 
         List<Area> primArea = areaCRUDRepository.findAll(specification);
 
-        return primArea.stream().filter(da -> !da.getPrimaryAreaTypes().isEmpty() &&
-                da.getPrimaryAreaTypes().contains(area.getAreaType())).collect(Collectors.toList());
+        return primArea
+                .stream()
+                .filter(da -> !da.getPrimaryAreaTypes().isEmpty() && da.getPrimaryAreaTypes().stream().map(at -> at.getAreaType()).anyMatch(t -> t.equals(area.getAreaType())))
+                .collect(Collectors.toList());
     }
 
     @Override

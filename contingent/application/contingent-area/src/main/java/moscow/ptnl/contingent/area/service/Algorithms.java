@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -252,7 +253,8 @@ public class Algorithms {
             return attachOnAreaChangeMapper.entityToDtoTransform(new AttachOnAreaChangeEvent(
                     AttachOnAreaChangeEvent.OperationType.CREATE, dependentArea, new HashSet<>(primaryAreasIdCreateAttachments)));
         }
-        return null;
+        
+        throw new IllegalArgumentException("недопустимые аргументы для создания топика");
     }
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
