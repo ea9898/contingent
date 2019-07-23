@@ -811,7 +811,7 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkAreaTypeCountLimits(long moId, long muId, AreaType areaType, Validation validation) throws ContingentException {
+    public void checkAreaTypeCountLimits(long moId, Long muId, AreaType areaType, Validation validation) throws ContingentException {
         if (areaType.getAreaCountLimit() != null) {
             if (areaType.getAreaCountLimit().equals(AreaTypeCountLimitEnum.MO.getCode())) {
                 List<Area> areas = areaRepository.findAreas(moId, null, areaType.getCode(), null, true);
@@ -871,8 +871,8 @@ public class AreaServiceHelper {
     }
 
     public void checkEmptyMuId(Long muId, AreaType areaType) throws ContingentException {
-        if (muId == null && !AreaTypeKindEnum.MILDLY_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode()) &&
-                !AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode())) {
+        if (muId == null && (AreaTypeKindEnum.MILDLY_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode()) ||
+                AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode()))) {
             throw new ContingentException(AreaErrorReason.NO_MU_ID_PARAMETER);
         }
     }
