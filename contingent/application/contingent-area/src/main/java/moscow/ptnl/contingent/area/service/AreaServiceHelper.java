@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
@@ -239,6 +240,16 @@ public class AreaServiceHelper {
         if (moAvailableAreaTypes.size() + muAvailableAreaTypes.size() == 0) {
             validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU,
                     new ValidationParameter("areaType", areaType.getCode()));
+        }
+    }
+
+    public void checkAreaDependsOnPrimaryAreaType(Area area, AreaType areaType, Validation validation) {
+        if (area.getPrimaryAreaTypes().stream()
+                .map(AreaToAreaType::getAreaType)
+                .anyMatch(a -> Objects.equals(a, areaType))) {
+            validation.error(AreaErrorReason.AREA_ALREADY_DEPENDS_ON_AREA_TYPE,
+                    new ValidationParameter("area", area.getId()),
+                    new ValidationParameter("areaType.title", areaType.getTitle()));
         }
     }
 

@@ -81,6 +81,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -396,9 +397,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         AreaType areaType = areaTypes.get(0);
 
         // 2.
-        areaHelper.checkPrimaryAreasTypesInMUProfile(moId, muId, areaType, validation);
+        primaryAreaTypeCodesIds = primaryAreaTypeCodesIds.stream().distinct().collect(Collectors.toList());
 
         // 3.
+        areaHelper.checkPrimaryAreasTypesInMUProfile(moId, muId, areaType, validation);
+
+        // 4.
         if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
         }
@@ -406,31 +410,31 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 4. TODO очень странно..
+        // 5. TODO очень странно..
         areaHelper.checkPolicyTypesDepArea(policyTypeCodesIds, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 5.
+        // 6.
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 6.
+        // 7.
         Area area = new Area(moId, muId, areaType, number, null, false, description,
                 null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 
-        // 7.
+        // 8.
         for (Long areaTypeCodeId : primaryAreaTypeCodesIds) {
             AreaToAreaType areaToAreaType = new AreaToAreaType();
             areaToAreaType.setArea(area);
             areaToAreaType.setAreaType(areaTypesCRUDRepository.findById(areaTypeCodeId).get());
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         }
-        // 8.
+        // 9.
         List<PolicyType> policyTypeList = policyTypeRepository.findByIds(policyTypeCodesIds);
 
         if (policyTypeCodesIds != null && !policyTypeCodesIds.isEmpty()) {
@@ -440,16 +444,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaPolicyTypesCRUDRepository.save(areaPolicyTypes);
         }
 
-        // 9.
+        // 10.
         List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, true);
 
-        // 10.
+        // 11.
         primAreas.forEach(primArea ->
                 esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(primArea.getId()),
                         null, area)
         );
 
-        // 11.
+        // 12.
         return area.getId();
     }
 
@@ -561,10 +565,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-
         // 4.
+        primaryAreaTypeCodesAddIds = primaryAreaTypeCodesAddIds.stream().distinct().collect(Collectors.toList());
+        primaryAreaTypeCodesDelIds = primaryAreaTypeCodesDelIds.stream().distinct().collect(Collectors.toList());
+
         primaryAreaTypeCodesAddIds.forEach(pat -> {
             AreaType areaType = areaTypesCRUDRepository.findById(pat).get();
+            // 5.1
+            areaHelper.checkAreaDependsOnPrimaryAreaType(area, areaType, validation);
+            // 5.2
             areaHelper.checkPrimaryAreasTypesInMUProfile(area.getMoId(), muId, areaType, validation);
             }
         );
@@ -573,7 +582,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 5.
+        // 6.
         List<AreaToAreaType> areaTypeToDeleteBd = null;
         if (!primaryAreaTypeCodesDelIds.isEmpty()) {
             areaTypeToDeleteBd = areaToAreaTypeRepository.findAreaTypesByAreaAndTypeCode(area, primaryAreaTypeCodesDelIds);
@@ -589,14 +598,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
         }
 
-        // 6.
+        // 7.
         areaHelper.checkPolicyTypesDepArea(policyTypesAddIds, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
         List<PolicyType> policyTypesAdd = policyTypeRepository.findByIds(policyTypesAddIds);
 
-        // 7.
+        // 8.
         List<PolicyType> policyTypesDel = policyTypeRepository.findByIds(policyTypesDelIds);
         policyTypesDel.forEach(ptd -> {
             List<AreaPolicyTypes> areaPolicyTypes = areaPolicyTypesRepository.findAll(area, ptd);
@@ -610,13 +619,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 8.
+        // 9.
         areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 9.
+        // 10.
         Long muIdFinal = muId == null ? area.getMuId() : muId;
         area.setMuId(muIdFinal);
         area.setNumber(number == null ? area.getNumber() : number);
@@ -631,8 +640,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         area.setUpdateDate(LocalDateTime.now());
         areaCRUDRepository.save(area);
 
-        // 10.
-        // 10.1.
+        // 11.
+        // 11.1.
         primaryAreaTypeCodesAddIds.forEach(pata -> {
             AreaType areaType = areaTypesCRUDRepository.findById(pata).get();
             AreaToAreaType areaToAreaType = new AreaToAreaType();
@@ -640,23 +649,23 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaToAreaType.setAreaType(areaType);
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         });
-        // 10.2.
+        // 11.2.
         if (!primaryAreaTypeCodesDelIds.isEmpty()) {
             areaToAreaTypeCRUDRepository.deleteAll(areaTypeToDeleteBd);
         }
 
-        // 11.
+        // 12.
         areaHelper.saveAndDeleteAreaPolicyTypes(area, policyTypesAdd, policyTypesDel);
 
         // Вид участка не именной
         if (area.getAreaType() != null && area.getAreaType().getAreaTypeKind() != null &&
                 !area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.DEPERSONALIZED.getCode())) {
-            // 12.
+            // 13.
             if (!primaryAreaTypeCodesAddIds.isEmpty()) {
-                // 12.1.
+                // 13.1.
                 List<Area> primAreasAdd = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesAddIds, null, true);
 
-                // 12.2.
+                // 13.2.
                 primAreasAdd.forEach(primArea ->
                         esuHelperService.sendAttachOnAreaChangeEvent(
                                 Collections.singletonList(primArea.getId()),
@@ -666,11 +675,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 );
             }
 
-            // 13.
+            // 14.
             if (!primaryAreaTypeCodesDelIds.isEmpty()) {
-                // 13.1.
+                // 14.1.
                 List<Area> primAreasDel = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesDelIds, null, true);
-                // 13.2.
+                // 14.2.
                 primAreasDel.forEach(primArea ->
                         esuHelperService.sendAttachOnAreaChangeEvent(
                                 null,
@@ -684,7 +693,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // Логирование изменений
         historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
 
-        // 14.
+        // 15.
         return;
     }
 

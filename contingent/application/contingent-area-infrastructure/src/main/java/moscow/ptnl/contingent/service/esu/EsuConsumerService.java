@@ -11,6 +11,7 @@ import ru.mos.emias.esu.consumer.EsuConsumerMessageProcessor;
 import ru.mos.emias.esu.consumer.EsuTopicConsumer;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.management.IntrospectionException;
 import javax.management.MalformedObjectNameException;
 import javax.management.ReflectionException;
@@ -63,6 +64,12 @@ public class EsuConsumerService {
         consumerJobExecutionInfoMsg = subscribeTopic(jobExecutionInfoMsgTopicName, esuConsumerDatabaseProcessor);
         //К_УУ_ЕСУ_3
         consumerPrimaryAreaAttachment = subscribeTopic(primaryAreaAttachmentTopicName, esuConsumerDatabaseProcessor);
+    }
+
+    @PreDestroy
+    public void closeTopics() {
+        consumerJobExecutionInfoMsg.shutdown();
+        consumerPrimaryAreaAttachment.shutdown();
     }
 
     private EsuTopicConsumer subscribeTopic(String topicName, EsuConsumerMessageProcessor processor) {

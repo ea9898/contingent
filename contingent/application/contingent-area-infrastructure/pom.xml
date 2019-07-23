@@ -76,7 +76,7 @@
         <dependency>
             <groupId>ru.mos.emias.esu</groupId>
             <artifactId>esu-consumer-lib</artifactId>
-            <version>2.1.0</version>
+            <version>2.1.6</version>
             <scope>${artefact.scope}</scope>
         </dependency>
         <dependency>
