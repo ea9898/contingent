@@ -14,6 +14,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaRepository;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -43,6 +44,9 @@ public class LogESUInterceptor {
     
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
+    
+    @Autowired
+    private AreaRepository areaRepository;
 
     @Autowired
     private SettingService settingService;
@@ -69,6 +73,9 @@ public class LogESUInterceptor {
                 if (areaIds.isEmpty()) {
                     throw new IllegalArgumentException("идентификатор сущности null");
                 }
+                
+                areaRepository.getEntityManager().flush(); //актуализируем данные при не завершенной транзакции
+                
                 for (Long areaId : areaIds) {
                     Optional<Area> area = areaCRUDRepository.findById(areaId);
 
@@ -76,7 +83,7 @@ public class LogESUInterceptor {
                         throw new IllegalArgumentException("сущность с идентификатором " + areaId + " не найдена");
                     }
                     Area areaObject = area.get();
-
+                    
                     if (areaHelper.isAreaPrimary(areaObject)) {
                         esuHelperService.sendAreaInfoEvent(areaObject, methodName);
                     }

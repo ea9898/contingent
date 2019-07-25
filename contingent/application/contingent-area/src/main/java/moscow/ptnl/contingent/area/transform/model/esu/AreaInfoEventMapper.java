@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.transform.model.esu;
 import moscow.ptnl.contingent.area.transform.Transform;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import moscow.ptnl.util.CollectionsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,10 +41,10 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         event.setAutoAssignForAttachment(Boolean.TRUE.equals(area.getAutoAssignForAttach()));
         event.setResidentsBindRate((area.getAreaType().getResidentsBindRate() != null) ? area.getAreaType().getResidentsBindRate().longValue() : null);
         event.setAreaRestriction(areaRestrictionMapper.entityToDtoTransform(area));
-        if (area.getActualMainMedicalEmployees() != null && !area.getActualMainMedicalEmployees().isEmpty()) {
+        if (!CollectionsUtil.isNullOrEmpty(area.getActualMainMedicalEmployees())) {
             event.setMainEmployees(mainEmployeesMapper.entityToDtoTransform(area.getActualMainMedicalEmployees()));
         }
-        if (area.getActualReplacementMedicalEmployees() != null && !area.getActualReplacementMedicalEmployees().isEmpty()) {
+        if (!CollectionsUtil.isNullOrEmpty(area.getActualReplacementMedicalEmployees())) {
             event.setReplacementEmployees(replacementEmployeesMapper.entityToDtoTransform(area.getActualReplacementMedicalEmployees()));
         }
         event.setAddresses(addressesMapper.entityToDtoTransform(area.getActualAreaAddresses()));

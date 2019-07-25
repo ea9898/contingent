@@ -27,7 +27,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
     @Autowired
     private DataSource dataSource;
-
+    
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
 

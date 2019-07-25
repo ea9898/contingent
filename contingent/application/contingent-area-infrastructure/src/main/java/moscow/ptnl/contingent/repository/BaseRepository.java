@@ -8,5 +8,9 @@ public class BaseRepository {
 
     @PersistenceContext(unitName = PersistenceConfiguration.PU_CONTINGENT_NAME)
     protected EntityManager entityManager;
+    
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 
 }

@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -258,7 +257,7 @@ public class Algorithms {
     }
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
-    public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {
+    public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {        
         return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
     }
 }
