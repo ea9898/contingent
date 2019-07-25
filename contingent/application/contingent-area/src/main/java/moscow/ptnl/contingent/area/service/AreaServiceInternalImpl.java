@@ -677,7 +677,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             // 14.
             if (!primaryAreaTypeCodesDelIds.isEmpty()) {
                 // 14.1.
-                List<Area> primAreasDel = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesDelIds, null, true);
+                List<Area> primAreasDel = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesDelIds, null, null);
                 // 14.2.
                 primAreasDel.forEach(primArea ->
                         esuHelperService.sendAttachOnAreaChangeEvent(
