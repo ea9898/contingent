@@ -300,12 +300,11 @@ public class AreaServiceHelper {
     }
 
     //Todo т.к. МУ ИД теперь не обязательный, видимо нужно учитывать МО ИД ?
-    public void checkAreaExistsInMU(long muId, long areaTypeCode, Integer number, Long excludeAreaId, Validation validation) {
-        List<Area> areas = areaRepository.findAreas(null, muId, areaTypeCode, number, true);
-
+    public void checkAreaExistsInMU(long muId, AreaType areaType, Integer number, Long excludeAreaId, Validation validation) {
+        List<Area> areas = areaRepository.findAreas(null, muId, areaType.getCode(), number, true);
         if (areas.stream().anyMatch(a -> excludeAreaId == null || !Objects.equals(a.getId(), excludeAreaId))) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO,
-                    new ValidationParameter("areaTypeCode", areaTypeCode),
+                    new ValidationParameter("areaType", areaType.getTitle()),
                     new ValidationParameter("number", number));
         }
     }
@@ -851,7 +850,7 @@ public class AreaServiceHelper {
             if (areaType.getMpguAvailable() != null
                     && !Boolean.TRUE.equals(areaType.getMpguAvailable())) {
                 validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
-                        new ValidationParameter("areaTypeCode", areaType.getCode()));
+                        new ValidationParameter("areaType", areaType.getTitle() ));
             }
             if (Boolean.TRUE.equals(attachByMedicalReason)) {
                 validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);

@@ -347,7 +347,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 6
-        areaHelper.checkAreaExistsInMU(muId, areaTypeCode, number, null, validation);
+        areaHelper.checkAreaExistsInMU(muId, areaType, number, null, validation);
 
         // 7
         areaHelper.checkPolicyTypesIsOMS(policyTypesIds, validation);
@@ -474,7 +474,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 3
         if (number != null) {
-            areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), number, area.getId(), validation);
+            areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType(), number, area.getId(), validation);
         }
 
         // 4
@@ -489,7 +489,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (area.getAreaType().getMpguAvailable() != null
                     && !Boolean.TRUE.equals(area.getAreaType().getMpguAvailable())) {
                 validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
-                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+                        new ValidationParameter("areaType", area.getAreaType().getTitle()));
             }
            if (Boolean.TRUE.equals(attachByMedicalReason)) {
                 validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
@@ -1163,7 +1163,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaHelper.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
 
             // 4.
-            areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType().getCode(), area.getNumber(), area.getId(), validation);
+            areaHelper.checkAreaExistsInMU(area.getMuId(), area.getAreaType(), area.getNumber(), area.getId(), validation);
         }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
