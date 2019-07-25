@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.Area_;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
 import moscow.ptnl.contingent.repository.BaseRepository;
@@ -15,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,7 +154,8 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
         return primArea
                 .stream()
-                .filter(da -> !da.getPrimaryAreaTypes().isEmpty() && da.getPrimaryAreaTypes().stream().map(at -> at.getAreaType()).anyMatch(t -> t.equals(area.getAreaType())))
+                .filter(da -> area.getPrimaryAreaTypes() != null &&
+                        area.getPrimaryAreaTypes().stream().map(AreaToAreaType::getAreaType).anyMatch(a -> Objects.equals(a, da.getAreaType())))
                 .collect(Collectors.toList());
     }
 
