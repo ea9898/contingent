@@ -352,9 +352,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 7
         areaHelper.checkPolicyTypesIsOMS(policyTypesIds, validation);
 
-        // 8
-        areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
-
+        if (validation.getMessages().stream().noneMatch(m -> AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED.getCode().equals(m.getCode()))) {
+            // 8
+            areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+        }
         // 9
         areaHelper.checkAutoAssignForAttachment(areaType, autoAssignForAttachment, attachByMedicalReason, validation);
 
