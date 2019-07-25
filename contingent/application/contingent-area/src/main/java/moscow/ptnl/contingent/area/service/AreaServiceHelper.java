@@ -239,7 +239,7 @@ public class AreaServiceHelper {
 
         if (moAvailableAreaTypes.size() + muAvailableAreaTypes.size() == 0) {
             validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU,
-                    new ValidationParameter("areaType", areaType.getCode()));
+                    new ValidationParameter("areaType", areaType.getTitle()));
         }
     }
 

@@ -400,7 +400,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         primaryAreaTypeCodesIds = primaryAreaTypeCodesIds.stream().distinct().collect(Collectors.toList());
 
         // 3.
-        areaHelper.checkPrimaryAreasTypesInMUProfile(moId, muId, areaType, validation);
+        primaryAreaTypeCodesIds.forEach(code -> {
+            // TODO позже добавить проверку что primaryAreaTypeCode есть в таблице areaTypes
+            AreaType primaryAreaType = areaTypesCRUDRepository.findById(code).get();
+            areaHelper.checkPrimaryAreasTypesInMUProfile(moId, muId, primaryAreaType, validation);
+        });
 
         // 4.
         if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
@@ -570,6 +574,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         primaryAreaTypeCodesDelIds = primaryAreaTypeCodesDelIds.stream().distinct().collect(Collectors.toList());
 
         primaryAreaTypeCodesAddIds.forEach(pat -> {
+            // TODO позже добавить проверку что primaryAreaTypeCode есть в таблице areaTypes
             AreaType areaType = areaTypesCRUDRepository.findById(pat).get();
             // 5.1
             areaHelper.checkAreaDependsOnPrimaryAreaType(area, areaType, validation);
