@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Table(name = "AREA_MEDICAL_EMPLOYEES")
@@ -69,13 +70,13 @@ public class AreaMedicalEmployees implements Serializable {
     }
 
     public AreaMedicalEmployees(Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
-                                LocalDate endDate, String snils, PositionNom positionNom,
+                                LocalDate endDate, String snils, Optional<PositionNom> positionNom,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
         this(null, medicalEmployeeJobId, area, replacement, startDate, endDate, snils, positionNom, createDate, updateDate, subdivisionId);
     }
 
     public AreaMedicalEmployees(Long id, Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
-                                LocalDate endDate, String snils, PositionNom positionNom,
+                                LocalDate endDate, String snils, Optional<PositionNom> positionNom,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
         this.id = id;
         this.medicalEmployeeJobId = medicalEmployeeJobId;
@@ -84,7 +85,7 @@ public class AreaMedicalEmployees implements Serializable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
-        this.positionNomCode = (positionNom != null) ? positionNom.getCode() : null;
+        this.positionNomCode = (positionNom.isPresent()) ? positionNom.get().getCode() : null;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subdivisionId = subdivisionId;

@@ -503,7 +503,7 @@ public class AreaServiceHelper {
                 empl.getStartDate(),
                 empl.getEndDate(),
                 empl.getSnils(),
-                positionNomRepository.getByCode(empl.getPositionCode()).get(),
+                positionNomRepository.getByCode(empl.getPositionCode()),
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 empl.getSubdivisionId())));
