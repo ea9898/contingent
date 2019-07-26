@@ -836,14 +836,14 @@ public class AreaServiceHelper {
                 if (areas.size() >= AreaTypeCountLimitEnum.MO.getLimit()) {
                     validation.error(AreaErrorReason.AREAS_NUMBER_LIMIT_EXCEEDED,
                             new ValidationParameter("areaTypeTitle", areaType.getTitle()),
-                            new ValidationParameter("areaTypeLimit", AreaTypeCountLimitEnum.MO.getLimit()));
+                            new ValidationParameter("areaTypeLimit", AreaTypeCountLimitEnum.MO.getDescription()));
                 }
             } else if (areaType.getAreaCountLimit().equals(AreaTypeCountLimitEnum.MU.getCode())) {
                 List<Area> areas = areaRepository.findAreas(null, muId, areaType.getCode(), null, true);
                 if (areas.size() >= AreaTypeCountLimitEnum.MU.getLimit()) {
                     validation.error(AreaErrorReason.AREAS_NUMBER_LIMIT_EXCEEDED,
                             new ValidationParameter("areaTypeTitle", areaType.getTitle()),
-                            new ValidationParameter("areaTypeLimit", AreaTypeCountLimitEnum.MU.getLimit()));
+                            new ValidationParameter("areaTypeLimit", AreaTypeCountLimitEnum.MU.getDescription()));
                 }
             }
         }
