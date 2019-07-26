@@ -23,6 +23,9 @@ import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
+import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
+import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
+import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
@@ -41,9 +44,6 @@ import moscow.ptnl.contingent.repository.nsi.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
-import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
-import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
-import moscow.ptnl.contingent.area.util.Period;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -299,9 +299,13 @@ public class AreaServiceHelper {
         }
     }
 
-    //Todo т.к. МУ ИД теперь не обязательный, видимо нужно учитывать МО ИД ?
-    public void checkAreaExistsInMU(long muId, AreaType areaType, Integer number, Long excludeAreaId, Validation validation) {
-        List<Area> areas = areaRepository.findAreas(null, muId, areaType.getCode(), number, true);
+    public void checkAreaExistsInMU(Long muId, long moId, AreaType areaType, Integer number, Long excludeAreaId, Validation validation) {
+        List<Area> areas;
+        if (muId == null) {
+            areas = areaRepository.findAreas(moId, null, areaType.getCode(), number, true);
+        } else {
+            areas = areaRepository.findAreas(null, muId, areaType.getCode(), number, true);
+        }
         if (areas.stream().anyMatch(a -> excludeAreaId == null || !Objects.equals(a.getId(), excludeAreaId))) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO,
                     new ValidationParameter("areaType", areaType.getTitle()),
