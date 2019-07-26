@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class SetMedicalEmployeeOnAreaTest {
 
@@ -29,7 +30,7 @@ public class SetMedicalEmployeeOnAreaTest {
     private Specialization specialization;
     private AreaType areaType;
     private Area area1, area2;
-    private PositionNom position;
+    private Optional<PositionNom> position;
     private AreaMedicalEmployees employee1, employee2, employee3, employee4, employee5, employee6, employee7,
             employee8, employee9, employee10, employee11;
     private Validation validation;
@@ -41,7 +42,7 @@ public class SetMedicalEmployeeOnAreaTest {
         areaType = new AreaType(3L, "школьный", false);
         area1 = new Area(1L, 1L, 1L, areaType, false, LocalDateTime.now());
         area2 = new Area(2L, 1L, 1L, areaType, false, LocalDateTime.now());
-        position = new PositionNom(7L, "1", "врач-хирург", LocalDate.now(), null, false);
+        position = Optional.of(new PositionNom(7L, "1", "врач-хирург", LocalDate.now(), null, false));
         employee1 = new AreaMedicalEmployees(1L, 1L, area1, true, LocalDate.of(2019, 1, 10), null, "123", position, LocalDateTime.now(), null, 1L);
         employee2 = new AreaMedicalEmployees(2L, 1L, area1, false, LocalDate.of(2019, 2, 3), LocalDate.of(2019, 2, 10), "123", position, LocalDateTime.now(), null, 1L);
         employee3 = new AreaMedicalEmployees(3L, 3L, area1, false, LocalDate.of(2019, 3, 2), LocalDate.of(2019, 3, 10), "123", position, LocalDateTime.now(), null, 1L);

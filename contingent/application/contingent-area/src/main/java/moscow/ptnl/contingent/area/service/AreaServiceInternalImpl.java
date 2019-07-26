@@ -334,7 +334,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 2
         areaHelper.checkEmptyMuId(muId, areaType);
         // 3
-        areaHelper.checkAreaTypeAvailable(moId, muId, areaType, validation);
+//        areaHelper.checkAreaTypeAvailable(moId, muId, areaType, validation);
         // 4
         areaHelper.checkAreaTypeCountLimits(moId, muId, areaType, validation);
 
@@ -352,10 +352,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 7
         areaHelper.checkPolicyTypesIsOMS(policyTypesIds, validation);
 
-        if (validation.getMessages().stream().noneMatch(m -> AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED.getCode().equals(m.getCode()))) {
             // 8
-            areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
-        }
+        areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+
         // 9
         areaHelper.checkAutoAssignForAttachment(areaType, autoAssignForAttachment, attachByMedicalReason, validation);
 

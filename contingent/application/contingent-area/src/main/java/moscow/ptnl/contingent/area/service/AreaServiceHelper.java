@@ -201,6 +201,10 @@ public class AreaServiceHelper {
 
     public void checkAreaTypeAgeSetups(AreaType areaType, Integer ageMin, Integer ageMax,
                                        Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW, Validation validation) {
+        if (validation.getMessages().stream().anyMatch(m -> AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED.getCode().equals(m.getCode()))) {
+            return;
+        }
+
         if (checkAgeSetupFilling(ageMin, ageMax, areaType.getAgeMin(), areaType.getAgeMax()) ||
                 checkAgeSetupFilling(ageMinM, ageMaxM, areaType.getAgeMMin(), areaType.getAgeMMax()) ||
                 checkAgeSetupFilling(ageMinW, ageMaxW, areaType.getAgeWMin(), areaType.getAgeWMax())) {
