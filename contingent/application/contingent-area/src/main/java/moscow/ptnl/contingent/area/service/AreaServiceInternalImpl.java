@@ -334,7 +334,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 2
         areaHelper.checkEmptyMuId(muId, areaType);
         // 3
-//        areaHelper.checkAreaTypeAvailable(moId, muId, areaType, validation);
+        areaHelper.checkAreaTypeAvailable(moId, muId, areaType, validation);
         // 4
         areaHelper.checkAreaTypeCountLimits(moId, muId, areaType, validation);
 
