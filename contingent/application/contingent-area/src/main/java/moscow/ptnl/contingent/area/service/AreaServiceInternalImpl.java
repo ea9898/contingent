@@ -811,9 +811,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             
             // 5.6.            
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
-            PositionNom emplPositionNom = positionNom.get();
 
-            if (positions != null && positions.stream().anyMatch(pos -> !pos.getPositionNomCode().equals(emplPositionNom.getCode()))) {
+            if (positions != null && positions.stream().noneMatch(pos -> pos.getPositionNomCode().equals(empl.getPositionCode()))) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionNom.get().getTitle()),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
