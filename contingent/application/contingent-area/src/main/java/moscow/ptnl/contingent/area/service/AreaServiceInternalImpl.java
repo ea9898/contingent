@@ -721,7 +721,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaMedicalEmployees> changeEmployeesDb = new ArrayList<>();
         areaMedicalEmployeeCRUDRepository.findAllById(changeIds).forEach(changeEmployeesDb::add);
 
-        if (!area.getAreaType().getCode().equals(1L) && !area.getAreaType().getCode().equals(3L)) {
+        if (!AreaTypeKindEnum.MILDLY_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode()) 
+                && !AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode())) 
+        {
 
             addEmployeesInput.stream().filter(empl -> !empl.isIsReplacement())
                     .forEach(empl -> validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED));
