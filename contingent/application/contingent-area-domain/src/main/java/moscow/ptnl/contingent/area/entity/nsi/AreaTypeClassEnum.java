@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
+import java.util.Objects;
+
 /**
  * Класс участка
  */
@@ -18,4 +20,7 @@ public enum AreaTypeClassEnum {
         return clazz;
     }
 
+    public boolean areaTypeClassEquals(AreaTypeClass areaTypeClass) {
+        return areaTypeClass != null && Objects.equals(clazz, areaTypeClass.getCode());
+    }
 }

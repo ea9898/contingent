@@ -53,15 +53,14 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
     @Override
     public void processMessage(AttachPrimaryPatientEvent event) {
         // 3.1
-        AreaType areaType = areaTypesCRUDRepository.findById(event.getPrimaryAreaId()).orElse(null);
-        // 3.2
-        if (areaType == null || !areaType.getAreaTypeClass().getCode().equals(AreaTypeClassEnum.PRIMARY.getClazz())) {
-            throw new RuntimeException("Тип участка не первичный");
-        }
-        // 3.3
         Area area = areaCRUDRepository.findById(event.getPrimaryAreaId()).orElse(null);
 
         if (area != null) {
+            AreaType areaType = area.getAreaType();
+            // 3.2
+            if (areaType == null || !AreaTypeClassEnum.PRIMARY.areaTypeClassEquals(areaType.getAreaTypeClass())) {
+                throw new RuntimeException("Тип участка не первичный");
+            }
             // 3.4.1
             List<Area> dependentAreas = areaRepository.findAreasWithNotAreaTypeKindCode(null, area.getMuId(),
                     areaType.getCode(), AreaTypeKindEnum.DEPERSONALIZED.getCode(), null, true);
