@@ -12,6 +12,7 @@ import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
@@ -451,10 +452,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, true);
 
         // 11.
-        primAreas.forEach(primArea ->
-                esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(primArea.getId()),
-                        null, area)
-        );
+        esuHelperService.sendAttachOnAreaChangeEvent(primAreas.stream().map(Area::getId).collect(Collectors.toList()),
+                null, area);
 
         // 12.
         return area.getId();
@@ -663,19 +662,17 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // Вид участка не именной
         if (area.getAreaType() != null && area.getAreaType().getAreaTypeKind() != null &&
-                !area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.DEPERSONALIZED.getCode())) {
+                !area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.PERSONAL.getCode())) {
             // 13.
             if (!primaryAreaTypeCodesAddIds.isEmpty()) {
                 // 13.1.
                 List<Area> primAreasAdd = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesAddIds, null, true);
 
                 // 13.2.
-                primAreasAdd.forEach(primArea ->
-                        esuHelperService.sendAttachOnAreaChangeEvent(
-                                Collections.singletonList(primArea.getId()),
-                                null, 
-                                area
-                        )
+                esuHelperService.sendAttachOnAreaChangeEvent(
+                        primAreasAdd.stream().map(Area::getId).collect(Collectors.toList()),
+                        null,
+                        area
                 );
             }
 
@@ -684,12 +681,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 // 14.1.
                 List<Area> primAreasDel = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesDelIds, null, null);
                 // 14.2.
-                primAreasDel.forEach(primArea ->
-                        esuHelperService.sendAttachOnAreaChangeEvent(
-                                null,
-                                Collections.singletonList(primArea.getId()),
-                                area
-                        )
+                esuHelperService.sendAttachOnAreaChangeEvent(
+                        null,
+                        primAreasDel.stream().map(Area::getId).collect(Collectors.toList()),
+                        area
                 );
             }
         }

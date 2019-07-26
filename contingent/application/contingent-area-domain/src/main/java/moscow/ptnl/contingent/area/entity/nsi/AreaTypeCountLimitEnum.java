@@ -26,4 +26,8 @@ public enum AreaTypeCountLimitEnum {
     public int getLimit() {
         return limit;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }
