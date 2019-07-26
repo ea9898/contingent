@@ -33,7 +33,7 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         event.setOperationDate(gregorianCalendarMapper.entityToDtoTransform(entity.getOperationDate()));
         event.setOperationType(entity.getOperationType());
         event.setAreaId(area.getId());
-        event.setMuId(area.getMuId());
+        event.setMuId(area.getMuId() == null ? area.getMoId() : area.getMuId());
         event.setAreaType(area.getAreaType().getCode());
         event.setArchive(area.getArchived());
         event.setNumber(area.getNumber());
