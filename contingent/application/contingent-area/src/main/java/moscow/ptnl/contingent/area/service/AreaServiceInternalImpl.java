@@ -353,7 +353,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 7
         areaHelper.checkPolicyTypesIsOMS(policyTypesIds, validation);
 
-            // 8
+        // 8
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
         // 9
@@ -624,6 +624,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 9.
         areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
