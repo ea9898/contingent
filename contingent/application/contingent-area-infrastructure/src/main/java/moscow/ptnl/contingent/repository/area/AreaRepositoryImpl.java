@@ -144,11 +144,11 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.conjunction();
         if (area.getMuId() != null) {
             specification = specification.and(searchByMuIdSpec(area.getMuId()));
+        } else {
+            specification = specification.and(searchEmptyMuIdSpec().and(searchByMoIdSpec(area.getMoId())));
         }
 
-        specification = specification.or(searchEmptyMuIdSpec().and(searchByMoIdSpec(area.getMoId())));
-
-        specification = specification.and(searchActive());        
+        specification = specification.and(searchActive());
 
         List<Area> primArea = areaCRUDRepository.findAll(specification);
 
