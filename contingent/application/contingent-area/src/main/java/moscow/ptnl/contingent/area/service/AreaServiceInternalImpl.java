@@ -452,10 +452,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, true);
 
         // 11.
-        primAreas.forEach(primArea ->
-                esuHelperService.sendAttachOnAreaChangeEvent(Collections.singletonList(primArea.getId()),
-                        null, area)
-        );
+        esuHelperService.sendAttachOnAreaChangeEvent(primAreas.stream().map(Area::getId).collect(Collectors.toList()),
+                null, area);
 
         // 12.
         return area.getId();
