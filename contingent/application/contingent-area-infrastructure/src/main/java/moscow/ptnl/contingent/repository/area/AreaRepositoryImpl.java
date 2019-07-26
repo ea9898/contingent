@@ -145,7 +145,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         if (area.getMuId() != null) {
             specification = specification.and(searchByMuIdSpec(area.getMuId()));
         } else {
-            specification = specification.and(searchEmptyMuIdSpec().and(searchByMoIdSpec(area.getMoId())));
+            specification = specification.and(searchByMoIdSpec(area.getMoId()));
         }
 
         specification = specification.and(searchActive());
