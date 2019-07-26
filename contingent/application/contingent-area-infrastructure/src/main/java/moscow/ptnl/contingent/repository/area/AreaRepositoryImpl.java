@@ -37,17 +37,17 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
     private Specification<Area> searchByMuIdSpec(Long muId) {
         return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(Area_.muId), muId);
+                criteriaBuilder.equal(root.get(Area_.muId.getName()), muId);
     }
 
     private Specification<Area> searchByMoIdSpec(Long moId) {
         return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(Area_.moId), moId);
+                criteriaBuilder.equal(root.get(Area_.moId.getName()), moId);
     }
 
     private Specification<Area> searchEmptyMuIdSpec() {
         return (root, criteriaQuery, criteriaBuilder) ->
-                root.get(Area_.muId).isNull();
+                root.get(Area_.muId.getName()).isNull();
     }
 
 
