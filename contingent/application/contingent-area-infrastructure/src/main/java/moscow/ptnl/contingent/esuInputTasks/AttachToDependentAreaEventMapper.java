@@ -30,7 +30,7 @@ public class AttachToDependentAreaEventMapper {
                     attachment.setAreaId(depArea.getId());
                     AreaRestriction restriction = new AreaRestriction();
                     AreaType depAreaType = depArea.getAreaType();
-                    if (depAreaType.getGender() != null ) {
+                    if (depAreaType.getGender() != null && depAreaType.getGender().length() != 0) {
                         restriction.setGender(Long.valueOf(depAreaType.getGender()));
                     }
                     if (depArea.getAgeMin() == null && depArea.getAgeMax() == null
