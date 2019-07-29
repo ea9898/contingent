@@ -670,11 +670,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 List<Area> primAreasAdd = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesAddIds, null, true);
 
                 // 13.2.
-                esuHelperService.sendAttachOnAreaChangeEvent(
-                        primAreasAdd.stream().map(Area::getId).collect(Collectors.toList()),
-                        null,
-                        area
-                );
+                if (primAreasAdd != null && !primAreasAdd.isEmpty()) {
+                    esuHelperService.sendAttachOnAreaChangeEvent(
+                            primAreasAdd.stream().map(Area::getId).collect(Collectors.toList()),
+                            null,
+                            area);
+                }
             }
 
             // 14.
@@ -682,11 +683,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 // 14.1.
                 List<Area> primAreasDel = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesDelIds, null, true);
                 // 14.2.
-                esuHelperService.sendAttachOnAreaChangeEvent(
-                        null,
-                        primAreasDel.stream().map(Area::getId).collect(Collectors.toList()),
-                        area
-                );
+                if (primAreasDel != null && !primAreasDel.isEmpty()) {
+                    esuHelperService.sendAttachOnAreaChangeEvent(
+                            null,
+                            primAreasDel.stream().map(Area::getId).collect(Collectors.toList()),
+                            area);
+                }
             }
         }
 
