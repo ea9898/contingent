@@ -74,9 +74,8 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
                 throw new RuntimeException("Зависимые участки не найдены");
             }
             // 3.5
-            AttachToDependentAreaEvent eventDto = AttachToDependentAreaEventMapper.entityToDtoTransform(area, areaType, dependentAreas);
-            eventDto.setPatientEmiasId(event.getPatientEmiasId());
-            eventDto.setPrimaryAreaId(event.getPrimaryAreaId());
+            AttachToDependentAreaEvent eventDto = AttachToDependentAreaEventMapper
+                    .entityToDtoTransform(event, dependentAreas);
 
             // 4
             esuChannel.send(EsuEventBuilder
