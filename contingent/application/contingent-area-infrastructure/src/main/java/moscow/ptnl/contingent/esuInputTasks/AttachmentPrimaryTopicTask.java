@@ -62,11 +62,13 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
                 throw new RuntimeException("Тип участка не первичный");
             }
             // 3.4.1
-            List<Area> dependentAreas = areaRepository.findAreasWithNotAreaTypeKindCode(null, area.getMuId(),
-                    areaType.getCode(), AreaTypeKindEnum.PERSONAL.getCode(), null, true);
+            List<Area> dependentAreas = areaRepository.findDependentAreasByMuMoIdAndType(area.getMuId(), null,
+                    areaType.getCode(), AreaTypeKindEnum.PERSONAL.getCode());
+
             // 3.4.2
-            dependentAreas.addAll(areaRepository.findAreasWithMuIdNullAndNotAreaTypeKindCode(
-                    area.getMoId(), areaType.getCode(), AreaTypeKindEnum.PERSONAL.getCode(), null, true));
+            dependentAreas.addAll(areaRepository.findDependentAreasByMuMoIdAndType( null,
+                    area.getMoId(), areaType.getCode(), AreaTypeKindEnum.PERSONAL.getCode()));
+
             // 3.4.3
             if (dependentAreas.isEmpty()) {
                 throw new RuntimeException("Зависимые участки не найдены");

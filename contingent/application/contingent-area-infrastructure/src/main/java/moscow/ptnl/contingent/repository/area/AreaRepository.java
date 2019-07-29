@@ -17,6 +17,8 @@ public interface AreaRepository {
 
     List<Area> findAreasWithMuIdNullAndNotAreaTypeKindCode(Long moId, Long areaTypeCode, Long areaTypeKindCode, Integer number, Boolean actual);
 
+    List<Area> findDependentAreasByMuMoIdAndType(Long muId, Long moId, Long areaTypeCode, Long areaTypeKindCode);
+
     List<Area> findDependentAreasByAreaEqAreaType(Area area);
 
     List<Area> findPrimaryAreasByAreaEqAreaType(Area area);
