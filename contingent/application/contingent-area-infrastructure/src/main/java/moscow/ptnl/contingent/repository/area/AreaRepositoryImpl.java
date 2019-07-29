@@ -91,7 +91,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                         areaTypeCode == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.areaType.getName()), areaTypeCode),
                         areaTypeKindCode == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.notEqual(root.get(Area_.areaType).get(AreaType_.areaTypeKind), areaTypeKindCode),
+                                criteriaBuilder.notEqual(root.get(Area_.areaType).get(AreaType_.areaTypeKind.getName()), areaTypeKindCode),
                         actual == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.archived.getName()), !actual));
         return areaCRUDRepository.findAll(specification);
@@ -115,7 +115,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                         areaTypeCode == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.areaType.getName()), areaTypeCode),
                         areaTypeKindCode == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.notEqual(root.get(Area_.areaType).get(AreaType_.areaTypeKind), areaTypeKindCode),
+                                criteriaBuilder.notEqual(root.get(Area_.areaType).get(AreaType_.areaTypeKind.getName()), areaTypeKindCode),
                         actual == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.archived.getName()), !actual));
         return areaCRUDRepository.findAll(specification);
