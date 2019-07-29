@@ -63,16 +63,19 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
             }
             // 3.4.1
             List<Area> dependentAreas = areaRepository.findAreasWithNotAreaTypeKindCode(null, area.getMuId(),
-                    areaType.getCode(), AreaTypeKindEnum.DEPERSONALIZED.getCode(), null, true);
+                    areaType.getCode(), AreaTypeKindEnum.PERSONAL.getCode(), null, true);
             // 3.4.2
             dependentAreas.addAll(areaRepository.findAreasWithMuIdNullAndNotAreaTypeKindCode(
-                    area.getMoId(), areaType.getCode(), AreaTypeKindEnum.DEPERSONALIZED.getCode(), null, true));
+                    area.getMoId(), areaType.getCode(), AreaTypeKindEnum.PERSONAL.getCode(), null, true));
             // 3.4.3
             if (dependentAreas.isEmpty()) {
                 throw new RuntimeException("Зависимые участки не найдены");
             }
             // 3.5
             AttachToDependentAreaEvent eventDto = AttachToDependentAreaEventMapper.entityToDtoTransform(area, areaType, dependentAreas);
+            eventDto.setPatientEmiasId(event.getPatientEmiasId());
+            eventDto.setPrimaryAreaId(event.getPrimaryAreaId());
+
             // 4
             esuChannel.send(EsuEventBuilder
                     .withTopic(EsuTopicsEnum.ATTACH_TO_DEPENDENT_AREA.getName())
