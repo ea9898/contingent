@@ -16,6 +16,11 @@
        <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <junit-jupiter.version>5.3.2</junit-jupiter.version>
+        <mockito-junit-jupiter.version>2.19.0</mockito-junit-jupiter.version>
+        <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
+    </properties>
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <resources>
@@ -173,7 +178,12 @@
                     </annotationProcessorPaths>                    
                 </configuration>
             </plugin>
-                <plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+            <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <executions>
@@ -499,12 +509,6 @@
             <scope>${artefact.scope}</scope>
         </dependency>		
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>spring-ws-security</artifactId>
             <version>3.0.7.RELEASE</version>
@@ -538,6 +542,18 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito-junit-jupiter.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

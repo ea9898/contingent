@@ -2,14 +2,15 @@ package moscow.ptnl.contingent.area.service;
 
 
 import moscow.ptnl.contingent.area.error.Validation;
-import org.junit.Before;
-import org.junit.Test;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AreaServiceHelperTest {
 
     private AreaServiceHelper areaServiceHelper;
 
-    @Before
+    @BeforeEach
     public void setup() {
          areaServiceHelper = new AreaServiceHelper();
     }

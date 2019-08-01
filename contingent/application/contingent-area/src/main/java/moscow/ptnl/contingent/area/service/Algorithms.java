@@ -64,6 +64,14 @@ public class Algorithms {
     @Autowired
     private AreaAddressRepository areaAddressRepository;
 
+    public Algorithms() {
+        super();
+    }
+
+    public Algorithms(AlgorithmsHelper algorithmsHelper) {
+        this.algorithmsHelper = algorithmsHelper;
+    }
+
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public MoAddress searchServiceDistrictMOByAddress (
             Long moId,
