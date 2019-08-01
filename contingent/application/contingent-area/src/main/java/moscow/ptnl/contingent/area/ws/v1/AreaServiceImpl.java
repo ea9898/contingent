@@ -288,8 +288,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             AddAreaAddressResponse response = new AddAreaAddressResponse();
             response.getAreaAddressIds().addAll(areaService.addAreaAddress(body.getAreaId(),
-                    body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList()),
-                    body.getNotNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNotNsiAddresses().stream().map(notNsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
+                    body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
             return response;
         }
         catch (Exception ex) {
@@ -315,8 +314,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             AddMoAddressResponse response = new AddMoAddressResponse();
             response.getMoAddressIds().addAll(
                     areaService.addMoAddress(body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
-                            body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList()),
-                            body.getNotNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNotNsiAddresses().stream().map(notNsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
+                            body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
 
             return response;
         }

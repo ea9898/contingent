@@ -7,7 +7,6 @@ import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
-import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -53,11 +52,9 @@ public interface AreaServiceInternal {
 
     Long getNewAreaId() throws ContingentException;
 
-    List<Long> addAreaAddress(Long areaId, List<NsiAddress> nsiAddresses,
-                              List<NotNsiAddress> notNsiAddresses) throws ContingentException;
+    List<Long> addAreaAddress(Long areaId, List<NsiAddress> nsiAddresses) throws ContingentException;
 
-    List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
-                            List<NotNsiAddress> notNsiAddresses) throws ContingentException;
+    List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses) throws ContingentException;
 
     Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
 

@@ -12,7 +12,6 @@ import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
@@ -29,7 +28,6 @@ import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
-import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
@@ -99,12 +97,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private final static Logger LOG = LoggerFactory.getLogger(AreaServiceInternalImpl.class);
 
     @Autowired
-    private MuAddlAreaTypesRepository muAddlAreaTypesRepository;
-
-    @Autowired
-    private MuAddlAreaTypesCRUDRepository muAddlAreaTypesCRUDRepository;
-
-    @Autowired
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Autowired
@@ -129,19 +121,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
 
     @Autowired
-    private SpecializationToPositionNomRepository specializationToPositionNomRepository;
-
-    @Autowired
     private AreaTypeMedicalPositionsRepository areaTypeMedicalPositionsRepository;
 
     @Autowired
     private AreaMedicalEmployeeRepository areaMedicalEmployeeRepository;
-
-    @Autowired
-    private PositionNomCRUDRepository positionNomCRUDRepository;
-
-    @Autowired
-    private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
 
     @Autowired
     private BuildingRegistryRepository buildingRegistryRepository;
@@ -900,8 +883,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_13) Добавление адресов на участок обслуживания
     @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
-    public List<Long> addAreaAddress(Long areaId, List<NsiAddress> nsiAddresses,
-                                     List<NotNsiAddress> notNsiAddresses) throws ContingentException {
+    public List<Long> addAreaAddress(Long areaId, List<NsiAddress> nsiAddresses) throws ContingentException {
         Validation validation = new Validation();
 
         // 1. и 2.
@@ -909,62 +891,35 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
         // 3.
-        areaHelper.checkNoAddresses(nsiAddresses, notNsiAddresses);
+        areaHelper.checkTooManyAddresses(nsiAddresses, settingService.getPar1());
 
         // 4.
-        areaHelper.checkTooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
-
-        // 5.
         areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
-
-        // 6.
-        areaAddressChecker.checkNotNsiAddresses(notNsiAddresses, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
         // Список все адресов с привязанными мета-данными
-        List<AddressWrapper> addressWrapperList = areaHelper.convertToAddressWarapper(nsiAddresses, notNsiAddresses);
+        List<AddressWrapper> addressWrapperList = areaHelper.convertToAddressWrapper(nsiAddresses);
 
-        // 7. Обогащение обертки объектами территорией обслуживания МО
+        // 5. Обогащение обертки объектами территорией обслуживания МО
         areaHelper.addMoAddressToAddressWrapper(area, addressWrapperList, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 8.
-        areaHelper.checkAddressNotServiceByAreatype(area, addressWrapperList, validation);
+        // 6.
+        areaHelper.checkAddressNotServiceByAreaType(area, addressWrapperList, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 9.
-        addressWrapperList.forEach(addressWrapper -> {
-            if (addressWrapper.getNotNsiAddress() != null) {
-                NotNsiAddress nna = addressWrapper.getNotNsiAddress();
-                Optional<BuildingRegistry> buildingRegistryOptional = buildingRegistryRepository.findRegistryBuildings(
-                        nna.getHouse(), nna.getBuilding(), nna.getConstruction(),
-                        nna.getParentId()).stream().findFirst();
-                if (!buildingRegistryOptional.isPresent()) {
-                    BuildingRegistry buildingRegistry = new BuildingRegistry(
-                            nna.getParentId(), addressFormingElementRepository.findAfeByIdAndLevel(nna.getParentId(), nna.getLevelParentId()).get(0),
-                            nna.getHouseType(), nna.getHouse(),
-                            nna.getBuildingType(), nna.getBuilding(),
-                            nna.getConstructionType(), nna.getConstruction());
-                    addressWrapper.setBuildingRegistry(buildingRegistry);
-                } else {
-                    addressWrapper.setBuildingRegistry(buildingRegistryOptional.get());
-                }
-            }
-        });
-
-        // 10.
+        // 7.
         addressWrapperList.forEach(addressWrapper -> {
             if (addressWrapper.getNsiAddress() != null) {
-                // НСИ
                 NsiAddress nsiAddress = addressWrapper.getNsiAddress();
                 AddressFormingElement addressFormingElement = null;
                 BuildingRegistry buildingRegistry = null;
@@ -987,26 +942,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     addressWrapper.setAddress(addressesCRUDRepository.save(address));
                 }
 
-            } else {
-                // неНСИ
-                BuildingRegistry buildingRegistry = addressWrapper.getBuildingRegistry();
-
-                List<Addresses> foundAddresses = addressesRepository.findAddresses(8L, buildingRegistry, null);
-
-                if (!foundAddresses.isEmpty()) {
-                    addressWrapper.setAddress(foundAddresses.get(0));
-                } else {
-                    Addresses address = new Addresses();
-                    address.setLevel(8);
-                    address.setBuildingRegistry(buildingRegistry);
-                    addressWrapper.setAddress(addressesCRUDRepository.save(address));
-                }
-
             }
-
         });
 
-        // 11.
+        // 8.
         List<Long> areaAddressIds = new ArrayList<>();
         addressWrapperList.forEach(addressWrapper -> {
             AreaAddress areaAddress = new AreaAddress();
@@ -1018,10 +957,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaAddressIds.add(areaAddressCRUDRepository.save(areaAddress).getId());
         });
 
-        // 12.
-        //if (areaHelper.isAreaPrimary(area)) {
-        //    esuHelperService.sendAreaInfoEvent(area, "addAreaAddress");
-        //}
+        // 9. аннотация @LogESU
 
         return areaAddressIds;
     }
@@ -1284,35 +1220,31 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_21) Распределение жилых домов к территории обслуживания МО
     @Override
-    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses,
-                                   List<NotNsiAddress> notNsiAddresses) throws ContingentException {
+    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses)
+            throws ContingentException {
         Validation validation = new Validation();
         // 1.
-        areaHelper.checkNoAddresses(nsiAddresses, notNsiAddresses);
+        areaHelper.checkTooManyAddresses(nsiAddresses, settingService.getPar1());
         // 2.
-        areaHelper.checkTooManyAddresses(nsiAddresses, notNsiAddresses, settingService.getPar1());
-        // 3.
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode),
                 validation, "areaTypeCode");
-        // 4.
+        // 3.
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
         if (order == null || Boolean.TRUE.equals(order.getArchived())) {
             throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
                     new ValidationParameter("orderId", orderId));
         }
-        // 5.
+        // 4.
         areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
-        // 6.
-        areaAddressChecker.checkNotNsiAddresses(notNsiAddresses, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        // 7. Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
+        // 5. Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
         for (NsiAddress nsiAddress : nsiAddresses) {
             MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaTypes.get(0), orderId,
-                    Collections.singletonList(nsiAddress), Collections.EMPTY_LIST, validation);
+                    Collections.singletonList(nsiAddress), validation);
 
             if (moAddress != null) {
                 validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_1,
@@ -1322,28 +1254,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                         new ValidationParameter("areaTypeCode", moAddress.getAreaType().getCode()));
             }
         }
-        for (NotNsiAddress notNsiAddress : notNsiAddresses) {
-            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaTypes.get(0), orderId,
-                    Collections.EMPTY_LIST, Collections.singletonList(notNsiAddress), validation);
 
-            if (moAddress != null) {
-                String parameters = notNsiAddress.getHouseType() + ": " +
-                        notNsiAddress.getHouse() + ", " +
-                        notNsiAddress.getBuildingType() + ": " +
-                        notNsiAddress.getBuilding() + ", " +
-                        notNsiAddress.getConstructionType() + ": " +
-                        notNsiAddress.getConstruction();
-                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_2,
-                        new ValidationParameter("parentId", notNsiAddress.getParentId()),
-                        new ValidationParameter("address", parameters),
-                        new ValidationParameter("moId", moAddress.getMoId()),
-                        new ValidationParameter("areaTypeCode", moAddress.getAreaType().getCode()));
-            }
-        }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses, notNsiAddresses);
+        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses);
 
         addresses.forEach(a -> {
             Addresses address = new Addresses();
@@ -1351,35 +1266,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (a.nsiAddress != null) {
                 address.setLevel(a.nsiAddress.getLevelAddress());
 
-                if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
+                if (!Objects.equals(a.nsiAddress.getLevelAddress(), AddressLevelType.ID.getLevel())) {
                     address.setAddressFormingElement(a.addressFormingElement);
                 }
                 else {
                     address.setBuildingRegistry(a.buildingRegistry);
                 }
             }
-            else {
-                // 8.
-                address.setLevel(AreaServiceHelper.NOT_NSI_ADDRESS_LEVEL);
-                a.buildingRegistry = buildingRegistryRepository.findRegistryBuildings(
-                        a.notNsiAddress.getHouse(), a.notNsiAddress.getBuilding(), a.notNsiAddress.getConstruction(),
-                        a.notNsiAddress.getParentId()).stream()
-                        .findFirst()
-                        .orElseGet(() -> {
-                            BuildingRegistry buildingRegistry = new BuildingRegistry(
-                                    a.notNsiAddress.getParentId(), a.addressFormingElement,
-                                    a.notNsiAddress.getHouseType(), a.notNsiAddress.getHouse(),
-                                    a.notNsiAddress.getBuildingType(), a.notNsiAddress.getBuilding(),
-                                    a.notNsiAddress.getConstructionType(), a.notNsiAddress.getConstruction());
-                            buildingRegistryCRUDRepository.save(buildingRegistry);
-                            return buildingRegistry;
-                        });
-                address.setBuildingRegistry(a.buildingRegistry);
-            }
-            // 9.
+            // 6.
             a.address = addressesRepository.findAddresses(address.getLevel(), address.getBuildingRegistry(), address.getAddressFormingElement())
                     .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
         });
+
+        // 7.
         AreaType areaType = areaTypes.get(0);
         addresses.forEach(a -> {
             a.moAddress = new MoAddress();

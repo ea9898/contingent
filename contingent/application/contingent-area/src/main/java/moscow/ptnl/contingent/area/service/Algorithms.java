@@ -11,27 +11,22 @@ import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
-import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
+import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
+import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
+import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.repository.nsi.AddressFormingElementRepository;
-import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
-import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
-import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
-import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
-
 
 /**
  * Это класс с алгоритмами А_УУ_хх
@@ -44,16 +39,10 @@ public class Algorithms {
     private MoAddressRepository moAddressRepository;
 
     @Autowired
-    private AddressesCRUDRepository addressesCRUDRepository;
-
-    @Autowired
     private AddressFormingElementRepository addressFormingElementRepository;
 
     @Autowired
     private AlgorithmsHelper algorithmsHelper;
-
-    @Autowired
-    private XMLGregorianCalendarMapper xmlGregorianCalendarMapper;
 
     @Autowired
     private AreaInfoEventMapper areaInfoEventMapper;
@@ -73,12 +62,8 @@ public class Algorithms {
     }
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
-    public MoAddress searchServiceDistrictMOByAddress (
-            Long moId,
-            AreaType areaType,
-            Long orderId,
-            List<NsiAddress> nsiAddressList,
-            List<NotNsiAddress> notNsiAddressList, Validation validation) throws ContingentException {
+    public MoAddress searchServiceDistrictMOByAddress (Long moId, AreaType areaType, Long orderId,
+            List<NsiAddress> nsiAddressList, Validation validation) throws ContingentException {
 
         // 1.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
@@ -92,7 +77,7 @@ public class Algorithms {
         List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
 
         // 4.
-        List<AddressWrapper> addressWrapperList = findIntersectingAddresses(addressWrappers, nsiAddressList, notNsiAddressList);
+        List<AddressWrapper> addressWrapperList = findIntersectingAddresses(addressWrappers, nsiAddressList);
 
         // 5.
         MoAddress serviceDestriceMo = null;
@@ -108,8 +93,7 @@ public class Algorithms {
     public Long searchAreaByAddress(
             Long moId,
             AreaType areaTypeCode,
-            List<NsiAddress> nsiAddressList,
-            List<NotNsiAddress> notNsiAddressList) throws ContingentException {
+            List<NsiAddress> nsiAddressList) throws ContingentException {
 
         // 1.
         List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddresses(moId, areaTypeCode.getCode());
@@ -125,7 +109,7 @@ public class Algorithms {
         List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
 
         // 4.
-        List<AddressWrapper> crossAddresses = findIntersectingAddresses(addressWrappers, nsiAddressList, notNsiAddressList);
+        List<AddressWrapper> crossAddresses = findIntersectingAddresses(addressWrappers, nsiAddressList);
 
         // 5.
         if (!crossAddresses.isEmpty()) {
@@ -137,13 +121,13 @@ public class Algorithms {
 
 
     // Поиск пересекающихся адресов (А_УУ_3)
-    public List<AddressWrapper> findIntersectingAddresses(List<AddressWrapper> afeAndBr, List<NsiAddress> nsiAddresses, List<NotNsiAddress> notNsiAddresses) throws ContingentException {
-        List<AddressWrapper> intersectingAddresses = new ArrayList<>();
+    public List<AddressWrapper> findIntersectingAddresses(List<AddressWrapper> afeAndBr
+            , List<NsiAddress> nsiAddresses) throws ContingentException {
 
         List<AddressWrapper> crossAddresses = new ArrayList<>();
 
         // А_УУ_3 1. - 7.
-        for (NsiAddress nsiAddress: nsiAddresses) {
+        for (NsiAddress nsiAddress : nsiAddresses) {
             AddressFormingElement addressFormingElement =
                     addressFormingElementRepository.findAfeByGlobalId(nsiAddress.getGlobalId());
 
@@ -188,57 +172,6 @@ public class Algorithms {
 
         if (!crossAddresses.isEmpty()) {
             return crossAddresses;
-        }
-
-        // 8.
-        // 8.	Если во входных параметрах передан «Адрес вне справочника», то в перечне адресов AFE+BR выполняет поиск адресов, удовлетворяющих условию:
-        //•	L1_VALUE = Дом;
-        //•	L2_VALUE = Корпус;
-        //•	L3_VALUE = Строение;
-        //•	ADDR_ID = ИД вышестоящего элемента.
-        for (NotNsiAddress notNsiAddress: notNsiAddresses) {
-            crossAddresses = afeAndBr.stream()
-                    .filter(aw ->aw.getBuildingRegistry() != null &&
-                            aw.getBuildingRegistry().getL1Value().equals(notNsiAddress.getHouse()) &&
-                                    aw.getBuildingRegistry().getL2Value().equals(notNsiAddress.getConstruction()) &&
-                                    aw.getBuildingRegistry().getL3Value().equals(notNsiAddress.getBuilding()) &&
-                                    aw.getBuildingRegistry().getAddrId().equals(notNsiAddress.getParentId())).collect(Collectors.toList());
-
-            // Если найдена хотя бы одна запись найдена, то алгоритм возвращает перечень найденных адресов.
-            if (!crossAddresses.isEmpty()) {
-                break;
-            }
-
-            // Иначе в перечне адресов AFE выполняет поиск адресов, удовлетворяющих условиям:
-            //•	GLOBAL_ID = ИД адреса вышестоящего элемента;
-            //•	AOLEVEL = Уровень адреса вышестоящего элемента.
-            List<AddressFormingElement> addressFormingElements = addressFormingElementRepository
-                    .findAfeByIdAndLevel(notNsiAddress.getParentId(), notNsiAddress.getLevelParentId());
-
-            // Если найдена хотя бы одна запись найдена, то алгоритм возвращает перечень найденных адресов.
-            if (!addressFormingElements.isEmpty()) {
-                return addressFormingElements.stream().map(AddressWrapper::new).collect(Collectors.toList());
-            } else {
-                // По parentId ищется AFE
-                AddressFormingElement addressFormingElement =
-                        addressFormingElementRepository.findAfeByGlobalId(notNsiAddress.getParentId());
-
-                List<AddressWrapper> crossNotNsiAddresses = null;
-                if (notNsiAddress.getLevelParentId().equals(AddressLevelType.STREET.getLevel())) {
-                    // Если уровень вышестоящего элемента = 7, то выполняется алгоритм, описанный на шаге 1, начиная с п.  1.1, b.2.
-                    crossNotNsiAddresses = AlgorithmsHelper.checkPlanIdExist.apply(addressFormingElement, afeAndBr);
-                } else {
-                    // Иначе выполняется алгоритм, описанный на шаге 1, начиная с п.  1.1, b.2.2.
-                    crossNotNsiAddresses = AlgorithmsHelper.checkPlaceIdExist.apply(addressFormingElement, afeAndBr);
-                }
-                if (crossNotNsiAddresses != null && !crossNotNsiAddresses.isEmpty()) {
-                    crossAddresses.addAll(crossNotNsiAddresses);
-                }
-
-                if (!crossAddresses.isEmpty()) {
-                    break;
-                }
-            }
         }
 
         return crossAddresses;

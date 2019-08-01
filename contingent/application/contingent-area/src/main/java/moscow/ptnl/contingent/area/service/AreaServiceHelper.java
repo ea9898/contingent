@@ -327,16 +327,14 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkNoAddresses(List<NsiAddress> nsiAddresses,
-                                 List<NotNsiAddress> notNsiAddresses) throws ContingentException {
-        if (nsiAddresses.size() + notNsiAddresses.size() == 0) {
+    public void checkNoAddresses(List<NsiAddress> nsiAddresses) throws ContingentException {
+        if (nsiAddresses.size() == 0) {
             throw new ContingentException(AreaErrorReason.NO_ADDRESS);
         }
     }
 
-    public void checkTooManyAddresses(List<NsiAddress> nsiAddresses,
-                                      List<NotNsiAddress> notNsiAddresses, Long maxAddresses) throws ContingentException {
-        if (nsiAddresses.size() + notNsiAddresses.size() > maxAddresses) {
+    public void checkTooManyAddresses(List<NsiAddress> nsiAddresses, Long maxAddresses) throws ContingentException {
+        if (nsiAddresses.size() > maxAddresses) {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAddresses));
         }
     }
@@ -380,13 +378,12 @@ public class AreaServiceHelper {
         }
     }
 
-    public List<AddressWrapper> convertAddressToWrapper(List<NsiAddress> nsiAddresses,
-                                                        List<NotNsiAddress> notNsiAddresses) {
+    public List<AddressWrapper> convertAddressToWrapper(List<NsiAddress> nsiAddresses) {
         //Сформируем список адресов по справочнику
-        List<AddressWrapper> addresses = nsiAddresses.stream()
+        return nsiAddresses.stream()
                 .map(AddressWrapper::new)
                 .peek(a -> {
-                    if (a.nsiAddress.getLevelAddress() != AddressLevelType.ID.getLevel()) {
+                    if (!Objects.equals(a.nsiAddress.getLevelAddress(), AddressLevelType.ID.getLevel())) {
                         a.addressFormingElement = addressFormingElementRepository.getAddressFormingElements(
                                 a.nsiAddress.getGlobalId(), a.nsiAddress.getLevelAddress()).get(0);
                     }
@@ -395,17 +392,6 @@ public class AreaServiceHelper {
                     }
                 })
                 .collect(Collectors.toList());
-
-        //Сформируем список адресов вне справочника
-        addresses.addAll(notNsiAddresses.stream()
-                .map(notNsi -> {
-                    AddressWrapper addressWrapper = new AddressWrapper();
-                    addressWrapper.setNotNsiAddress(notNsi);
-                    addressWrapper.setAddressFormingElement(addressFormingElementRepository.getAddressFormingElements(notNsi.getParentId(), notNsi.getLevelParentId()).get(0));
-                    return addressWrapper;
-                }).collect(Collectors.toList()));
-
-        return addresses;
     }
 
 
@@ -613,12 +599,12 @@ public class AreaServiceHelper {
     }
 
     /* К_УУ_13 Система проверяет, что каждый из списка адресов не обслуживается участком такого же типа, как и участок из входных параметров */
-    public void checkAddressNotServiceByAreatype(Area area, List<AddressWrapper> addressWrapperList, Validation validation) throws ContingentException {
+    public void checkAddressNotServiceByAreaType(Area area, List<AddressWrapper> addressWrapperList, Validation validation) throws ContingentException {
         for (AddressWrapper addressWrapper: addressWrapperList) {
             if (addressWrapper.getNsiAddress() != null) {
                 NsiAddress nsiAddress = addressWrapper.getNsiAddress();
                 Long foundAreaId = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(),
-                        Collections.singletonList(nsiAddress), new ArrayList<>());
+                        Collections.singletonList(nsiAddress));
                 if (foundAreaId != null) {
                     if (!foundAreaId.equals(area.getId())) {
                         validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
@@ -629,31 +615,14 @@ public class AreaServiceHelper {
                                 new ValidationParameter("level", nsiAddress.getLevelAddress()));
                     }
                 }
-            } else {
-                NotNsiAddress notNsiAddress = addressWrapper.getNotNsiAddress();
-                Long foundAreaId = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(),
-                        new ArrayList<>(), Collections.singletonList(notNsiAddress));
-                if (foundAreaId != null) {
-                    if (!foundAreaId.equals(area.getId())) {
-                        validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
-                                new ValidationParameter("areaId", foundAreaId));
-                    } else {
-                        List<ValidationParameter> validationParameters = getValidationParamsForNotNsiAddress(notNsiAddress);
-                        validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NOTNSI,
-                                validationParameters.toArray(new ValidationParameter[validationParameters.size()]));
-                    }
-                }
             }
         }
     }
 
-    public List<AddressWrapper> convertToAddressWarapper(List<NsiAddress> nsiAddresses, List<NotNsiAddress> notNsiAddresses) {
+    public List<AddressWrapper> convertToAddressWrapper(List<NsiAddress> nsiAddresses) {
         List<AddressWrapper> addressWrapperList = new ArrayList<>();
         if (nsiAddresses != null) {
             addressWrapperList.addAll(nsiAddresses.stream().map(AddressWrapper::new).collect(Collectors.toList()));
-        }
-        if (notNsiAddresses != null) {
-            addressWrapperList.addAll(notNsiAddresses.stream().map(AddressWrapper::new).collect(Collectors.toList()));
         }
         return addressWrapperList;
     }
@@ -663,7 +632,6 @@ public class AreaServiceHelper {
         for (AddressWrapper addressWrapper: addressWrapperList) {
             MoAddress serviceDistrictMO = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
                     addressWrapper.getNsiAddress() != null ? Collections.singletonList(addressWrapper.getNsiAddress()) : new ArrayList<>(),
-                    addressWrapper.getNotNsiAddress() != null ? Collections.singletonList(addressWrapper.getNotNsiAddress()) : new ArrayList<>(),
                     validation);
 
             if (serviceDistrictMO != null && serviceDistrictMO.getMoId().equals(area.getMoId())) {
@@ -681,12 +649,6 @@ public class AreaServiceHelper {
                             new ValidationParameter("levelAddress", addressWrapper.getNsiAddress().getLevelAddress()),
                             new ValidationParameter("globalId", addressWrapper.getNsiAddress().getGlobalId()),
                             new ValidationParameter("moId", area.getMoId()));
-                } else {
-                    // НеНСИ адрес
-                    NotNsiAddress notNsiAddress = addressWrapper.getNotNsiAddress();
-                    List<ValidationParameter> validationParameters = getValidationParamsForNotNsiAddress(notNsiAddress);
-                    validationParameters.add(new ValidationParameter("moId", area.getMoId()));
-                    validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NOTNSI, validationParameters.toArray(new ValidationParameter[validationParameters.size()]));
                 }
             }
         }

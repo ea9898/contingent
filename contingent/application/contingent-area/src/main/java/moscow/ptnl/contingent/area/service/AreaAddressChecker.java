@@ -9,10 +9,8 @@ import moscow.ptnl.contingent.area.model.area.AddressDetailsElementType;
 import moscow.ptnl.contingent.area.model.area.AddressDetailsType;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
-import moscow.ptnl.contingent.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.repository.nsi.BuildingRegistryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +30,6 @@ public class AreaAddressChecker {
     private AddressFormingElementRepository addressFormingElementRepository;
 
     @Autowired
-    private MoAddressRepository moAddressRepository;
-
-    @Autowired
     private AreaAddressRepository areaAddressRepository;
 
     public void checkNsiAddresses(List<NsiAddress> addresses, Validation validation) {
@@ -42,7 +37,7 @@ public class AreaAddressChecker {
             if (a.getLevelAddress() == 1) {
                 validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
             }
-            else if (a.getLevelAddress() == AddressLevelType.ID.getLevel()) {
+            else if (Objects.equals(a.getLevelAddress(), AddressLevelType.ID.getLevel())) {
                 if (buildingRegistryRepository.getBuildingsRegistry(a.getGlobalId()).isEmpty()) {
                     validation.error(AreaErrorReason.NO_ADDRESS_IN_CATALOG,
                             new ValidationParameter("globalId", a.getGlobalId()),
@@ -55,24 +50,6 @@ public class AreaAddressChecker {
                             new ValidationParameter("globalId", a.getGlobalId()),
                             new ValidationParameter("levelAddress", a.getLevelAddress()));
                 }
-            }
-        });
-    }
-
-    public void checkNotNsiAddresses(List<NotNsiAddress> addresses, Validation validation) {
-        addresses.forEach(a -> {
-            if (a.getLevelParentId() != AddressLevelType.STREET.getLevel() &&
-                    a.getLevelParentId() != AddressLevelType.PLAN.getLevel()) {
-                validation.error(AreaErrorReason.ADDRESS_INCORRECT_LEVEL, new ValidationParameter("levelParentId", a.getLevelParentId()));
-            }
-            else if (addressFormingElementRepository.getAddressFormingElements(a.getParentId(), a.getLevelParentId()).isEmpty()) {
-                validation.error(AreaErrorReason.NO_ADDRESS_IN_CATALOG,
-                        new ValidationParameter("parentId", a.getParentId()),
-                        new ValidationParameter("levelParentId", a.getLevelParentId()));
-            }
-            else {
-                checkAddressDetails(a.getBuildingType(), a.getBuilding(), a.getConstructionType(),
-                        a.getConstruction(), a.getHouseType(), a.getHouse(), validation);
             }
         });
     }
@@ -119,7 +96,6 @@ public class AreaAddressChecker {
             existingAddresses.add(wrapper);
         });
         Map<AddressWrapper, List<AddressWrapper>> foundAddresses = findCrossedNsiAddresses(existingAddresses, newAddresses);
-        foundAddresses.putAll(findCrossedNotNsiAddresses(existingAddresses, newAddresses));
 
         foundAddresses.forEach((key, value) -> {
             if (value.isEmpty() && key.addressFormingElement.getAreaTeId() == null) {
@@ -141,19 +117,6 @@ public class AreaAddressChecker {
                             new ValidationParameter("moId", moIdFound),
                             new ValidationParameter("areaTypeCode", areaTypeIdFound));
                 }
-                else if (key.notNsiAddress != null) {
-                    String parameters = key.notNsiAddress.getHouseType() + ": " +
-                            key.notNsiAddress.getHouse() + ", " +
-                            key.notNsiAddress.getBuildingType() + ": " +
-                            key.notNsiAddress.getBuilding() + ", " +
-                            key.notNsiAddress.getConstructionType() + ": " +
-                            key.notNsiAddress.getConstruction();
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_2,
-                            new ValidationParameter("parentId", key.notNsiAddress.getParentId()),
-                            new ValidationParameter("address", parameters),
-                            new ValidationParameter("moId", moIdFound),
-                            new ValidationParameter("areaTypeCode", areaTypeIdFound));
-                }
             }
         });
     }
@@ -171,7 +134,7 @@ public class AreaAddressChecker {
                 .forEach(a -> {
                     List<AddressWrapper> found = new ArrayList<>();
 
-                    if (a.nsiAddress.getLevelAddress() == AddressLevelType.ID.getLevel()) {
+                    if (Objects.equals(a.nsiAddress.getLevelAddress(), AddressLevelType.ID.getLevel())) {
                         found = existingAddresses.stream()
                                 .filter(b -> b.buildingRegistry != null)
                                 .filter(b -> Objects.equals(b.buildingRegistry.getGlobalId(), a.nsiAddress.getGlobalId()))
@@ -187,42 +150,6 @@ public class AreaAddressChecker {
                     else if (simpleCheck.contains(AddressLevelType.find(a.nsiAddress.getLevelAddress()))) {
                         found = findCrossedAddressesByFields(existingAddresses, a.nsiAddress.getGlobalId(),
                                 AddressLevelType.find(a.nsiAddress.getLevelAddress()),
-                                a.addressFormingElement);
-                    }
-                    result.put(a, found);
-                });
-
-        return result;
-    }
-
-    private Map<AddressWrapper, List<AddressWrapper>> findCrossedNotNsiAddresses(
-            List<AddressWrapper> existingAddresses, List<AddressWrapper> newAddresses) {
-        Map<AddressWrapper, List<AddressWrapper>> result = new HashMap<>();
-        //По адресам вне справочника
-        newAddresses.stream()
-                .filter(a -> a.notNsiAddress != null)
-                .forEach(a -> {
-                    List<AddressWrapper> found = existingAddresses.stream()
-                            .filter(b -> b.buildingRegistry != null)
-                            .filter(b -> Objects.equals(b.buildingRegistry.getAddrId(), a.notNsiAddress.getParentId()) &&
-                                    Objects.equals(b.buildingRegistry.getL1Value(), a.notNsiAddress.getHouse()) &&
-                                    Objects.equals(b.buildingRegistry.getL2Value(), a.notNsiAddress.getBuilding()) &&
-                                    Objects.equals(b.buildingRegistry.getL3Value(), a.notNsiAddress.getConstruction()))
-                            .map(AddressWrapper::new)
-                            .collect(Collectors.toList());
-
-                    if (found.isEmpty()) {
-                        found = existingAddresses.stream()
-                                .filter(b -> b.buildingRegistry != null)
-                                .filter(b -> Objects.equals(b.buildingRegistry.getGlobalId(), a.notNsiAddress.getParentId()) &&
-                                        Objects.equals(b.address.getLevel(), a.notNsiAddress.getLevelParentId()))
-                                .map(AddressWrapper::new)
-                                .collect(Collectors.toList());
-                    }
-                    if (found.isEmpty()) {
-                        found = findCrossedAddressesByFields(existingAddresses, null,
-                                a.notNsiAddress.getLevelParentId() == AddressLevelType.STREET.getLevel() ?
-                                        AddressLevelType.STREET : AddressLevelType.PLAN,
                                 a.addressFormingElement);
                     }
                     result.put(a, found);
