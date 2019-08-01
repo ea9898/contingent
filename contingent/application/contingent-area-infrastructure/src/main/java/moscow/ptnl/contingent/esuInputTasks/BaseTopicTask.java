@@ -12,6 +12,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
@@ -45,6 +46,9 @@ abstract class BaseTopicTask<T> implements Tasklet {
     @Autowired
     private TransactionRunner transactionRunner;
 
+    @Value("${esu.consumer.group.id}")
+    private String consumerGroupId;
+
     private final Class<T> typeClass;
 
     private final EsuTopicsEnum topic;
@@ -62,7 +66,8 @@ abstract class BaseTopicTask<T> implements Tasklet {
     final public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         LOG.info(typeClass.getSimpleName() + " task start");
 
-        List<EsuInput> messages = esuInputRepository.findByTopic(topic.getName());
+        String personalTopic = topic.getName() + "." + consumerGroupId;
+        List<EsuInput> messages = esuInputRepository.findByTopic(topic.getName(), personalTopic);
 
         for (EsuInput message : messages) {
             String eventId = null;

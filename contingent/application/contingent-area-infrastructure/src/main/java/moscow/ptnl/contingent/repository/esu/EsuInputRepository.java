@@ -7,7 +7,7 @@ import java.util.List;
 @NoRepositoryBean
 public interface EsuInputRepository {
 
-    List<EsuInput> findByTopic(String topic);
+    List<EsuInput> findByTopic(String topic, String personalTopic);
 
     List<EsuInput> findByEventId(String eventId);
 }

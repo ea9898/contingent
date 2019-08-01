@@ -12,21 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-@Transactional(propagation= Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY)
 public class EsuInputRepositoryImpl extends BaseRepository implements EsuInputRepository {
 
     @Autowired
     EsuInputCRUDRepository esuInputCRUDRepository;
 
     @Override
-    public List<EsuInput> findByTopic(String topic) {
+    public List<EsuInput> findByTopic(String topic, String personalTopic) {
         Specification<EsuInput> specification =
                 (root, criteriaQuery, criteriaBuilder) ->
                         criteriaBuilder.and(
-                                criteriaBuilder.equal(
-                                        criteriaBuilder.substring(root.get(EsuInput_.topic), 1, topic.length()),
-                                        topic),
-                                criteriaBuilder.isNull(root.get(EsuInput_.status)));
+                                        criteriaBuilder.or(
+                                                criteriaBuilder.equal(root.get(EsuInput_.topic), topic),
+                                                criteriaBuilder.equal(root.get(EsuInput_.topic), personalTopic)),
+                                        criteriaBuilder.isNull(root.get(EsuInput_.status)));
 
         return esuInputCRUDRepository.findAll(specification);
     }
