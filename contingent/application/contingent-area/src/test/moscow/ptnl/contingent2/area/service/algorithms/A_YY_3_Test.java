@@ -75,7 +75,7 @@ public class A_YY_3_Test {
         List<NsiAddress> nsiAddresses = new ArrayList<>();
 
         try {
-            List<AddressWrapper> addressWrapperList = algorithms.findIntersectingAddresses(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            List<AddressWrapper> addressWrapperList = algorithms.findIntersectingAddresses(new ArrayList<>(), nsiAddresses);
         } catch (ContingentException e) {
             throw new RuntimeException(e);
         }
