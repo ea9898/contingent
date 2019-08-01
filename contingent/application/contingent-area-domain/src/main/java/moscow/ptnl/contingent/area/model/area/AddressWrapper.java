@@ -9,8 +9,6 @@ public class AddressWrapper {
 
     public NsiAddress nsiAddress;
 
-    public NotNsiAddress notNsiAddress;
-
     public BuildingRegistry buildingRegistry;
 
     public AddressFormingElement addressFormingElement;
@@ -30,11 +28,8 @@ public class AddressWrapper {
         this.nsiAddress = nsiAddress;
     }
 
-    public AddressWrapper(NotNsiAddress notNsiAddress) { this.notNsiAddress = notNsiAddress; }
-
     public AddressWrapper(AddressWrapper addressWrapper) {
         this.nsiAddress = addressWrapper.nsiAddress;
-        this.notNsiAddress = addressWrapper.notNsiAddress;
         this.buildingRegistry = addressWrapper.buildingRegistry;
         this.addressFormingElement = addressWrapper.addressFormingElement;
         this.address = addressWrapper.address;
@@ -45,25 +40,12 @@ public class AddressWrapper {
         this.addressFormingElement = addressFormingElement;
     }
 
-    public AddressWrapper(BuildingRegistry buildingRegistry, AddressFormingElement addressFormingElement) {
-        this.buildingRegistry = buildingRegistry;
-        this.addressFormingElement = addressFormingElement;
-    }
-
     public NsiAddress getNsiAddress() {
         return nsiAddress;
     }
 
     public void setNsiAddress(NsiAddress nsiAddress) {
         this.nsiAddress = nsiAddress;
-    }
-
-    public NotNsiAddress getNotNsiAddress() {
-        return notNsiAddress;
-    }
-
-    public void setNotNsiAddress(NotNsiAddress notNsiAddress) {
-        this.notNsiAddress = notNsiAddress;
     }
 
     public BuildingRegistry getBuildingRegistry() {
