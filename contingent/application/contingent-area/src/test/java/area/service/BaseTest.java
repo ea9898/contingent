@@ -2,6 +2,9 @@ package service;
 
 import moscow.ptnl.contingent.area.service.Algorithms;
 import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
+import moscow.ptnl.contingent.area.service.AreaServiceHelper;
+import moscow.ptnl.contingent.area.service.AreaServiceInternal;
+import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
@@ -57,6 +60,12 @@ public class BaseTest {
 
     @InjectMocks
     public Algorithms algorithms = new Algorithms(algorithmsHelper);
+
+    @InjectMocks
+    public AreaServiceHelper areaHelper = new AreaServiceHelper();
+
+    @InjectMocks
+    public AreaServiceInternal areaServiceInternal = new AreaServiceInternalImpl(algorithms, areaHelper);
 
     @BeforeEach
     public void init() {

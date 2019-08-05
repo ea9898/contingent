@@ -195,6 +195,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Autowired
     private PolicyTypeRepository policyTypeRepository;
 
+    public AreaServiceInternalImpl() {
+    }
+
+    public AreaServiceInternalImpl(Algorithms algorithms, AreaServiceHelper areaHelper) {
+        this.algorithms = algorithms;
+        this.areaHelper = areaHelper;
+    }
+
     // (К_УУ_1) Добавление типов участков, доступных для МО
     @Override
     public void addMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
