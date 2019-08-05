@@ -140,6 +140,46 @@ public class AddressFormingElement implements Serializable {
     @Column(name = "ADDRESS")
     private String address;
 
+    public AddressFormingElement() {
+        super();
+    }
+
+    public AddressFormingElement(Long id, Long globalId, String aoLevel, Long regionTeId, String regionTeCode, String regionTeName, String regionTeTypeName, Long areaTeId, String areaCodeOmkTe, String areaTeName, String areaTeTypeName, Long areaId, String areaCode, String areaName, String areaTypeName, Long cityId, String cityCode, String cityName, String cityTypeName, Long placeId, String placeCode, String placeName, String placeTypeName, Long planId, String planCode, String planName, String planTypeName, Long streetId, String streetCode, String streetName, String streetOmkUm, String streetTypeName, String address) {
+        this.id = id;
+        this.globalId = globalId;
+        this.aoLevel = aoLevel;
+        this.regionTeId = regionTeId;
+        this.regionTeCode = regionTeCode;
+        this.regionTeName = regionTeName;
+        this.regionTeTypeName = regionTeTypeName;
+        this.areaTeId = areaTeId;
+        this.areaCodeOmkTe = areaCodeOmkTe;
+        this.areaTeName = areaTeName;
+        this.areaTeTypeName = areaTeTypeName;
+        this.areaId = areaId;
+        this.areaCode = areaCode;
+        this.areaName = areaName;
+        this.areaTypeName = areaTypeName;
+        this.cityId = cityId;
+        this.cityCode = cityCode;
+        this.cityName = cityName;
+        this.cityTypeName = cityTypeName;
+        this.placeId = placeId;
+        this.placeCode = placeCode;
+        this.placeName = placeName;
+        this.placeTypeName = placeTypeName;
+        this.planId = planId;
+        this.planCode = planCode;
+        this.planName = planName;
+        this.planTypeName = planTypeName;
+        this.streetId = streetId;
+        this.streetCode = streetCode;
+        this.streetName = streetName;
+        this.streetOmkUm = streetOmkUm;
+        this.streetTypeName = streetTypeName;
+        this.address = address;
+    }
+
     public Long getId() {
         return id;
     }

@@ -121,8 +121,7 @@ public class Algorithms {
 
 
     // Поиск пересекающихся адресов (А_УУ_3)
-    public List<AddressWrapper> findIntersectingAddresses(List<AddressWrapper> afeAndBr
-            , List<NsiAddress> nsiAddresses) throws ContingentException {
+    public List<AddressWrapper> findIntersectingAddresses(List<AddressWrapper> afeAndBr, List<NsiAddress> nsiAddresses) throws ContingentException {
 
         List<AddressWrapper> crossAddresses = new ArrayList<>();
 

@@ -1,35 +1,17 @@
 package service.algorithms;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
-import moscow.ptnl.contingent.area.service.Algorithms;
-import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
-import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
-import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
-import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
-import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
-import moscow.ptnl.contingent.repository.area.MoAddressRepository;
-import moscow.ptnl.contingent.repository.nsi.AddressFormingElementCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.AddressFormingElementRepository;
-import moscow.ptnl.contingent.repository.nsi.BuildingRegistryCRUDRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
+import service.BaseTest;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
 public class A_YY_3_Test extends BaseTest {
 
     /**
