@@ -207,7 +207,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Override
     public void addMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
         Validation validation = new Validation();
-        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaTypeCode");
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation);
         areaHelper.checkAreaTypesExistInMO(moId, areaTypes, validation);
 
         if (!validation.isSuccess()) {
@@ -317,7 +317,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 1
         List<AreaType> areaTypeList = areaHelper.checkAndGetAreaTypesExist(
-                Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+                Collections.singletonList(areaTypeCode), validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -381,7 +381,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         Validation validation = new Validation();
 
         // 1.
-        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation, "areaTypeCode");
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
@@ -1234,8 +1234,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 1.
         areaHelper.checkTooManyAddresses(nsiAddresses, settingService.getPar1());
         // 2.
-        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode),
-                validation, "areaTypeCode");
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation);
         // 3.
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
@@ -1331,7 +1330,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation, "areaType");
+        areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);

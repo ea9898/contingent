@@ -12,8 +12,11 @@ import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
+import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.nsi.AddressFormingElementCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AddressFormingElementRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.BuildingRegistryCRUDRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,6 +57,15 @@ public class BaseTest {
 
     @Mock
     public AreaRepository areaRepository;
+
+    @Mock
+    public AreaTypesCRUDRepository areaTypesCRUDRepository;
+
+    @Mock
+    public MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
+
+    @Mock
+    public MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
 
     @InjectMocks
     public AlgorithmsHelper algorithmsHelper = new AlgorithmsHelper();

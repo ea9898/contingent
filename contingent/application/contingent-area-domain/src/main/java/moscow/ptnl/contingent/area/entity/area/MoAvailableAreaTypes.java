@@ -44,6 +44,17 @@ public class MoAvailableAreaTypes implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "moAvailableAreaType")
     private Set<MuAvailableAreaTypes> muAvailableAreaTypes;
 
+    public MoAvailableAreaTypes() {
+    }
+
+    public MoAvailableAreaTypes(Long moId, AreaType areaType, LocalDateTime createDate, Set<MuAvailableAreaTypes> muAvailableAreaTypes) {
+        this.moId = moId;
+        this.areaType = areaType;
+        this.createDate = createDate;
+        this.muAvailableAreaTypes = muAvailableAreaTypes;
+    }
+
+
     public Long getId() {
         return id;
     }
@@ -81,13 +92,16 @@ public class MoAvailableAreaTypes implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj != null && obj instanceof MoAvailableAreaTypes) {
-            return ((MoAvailableAreaTypes) obj).getId().equals(this.id);
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MoAvailableAreaTypes)) return false;
+
+        MoAvailableAreaTypes that = (MoAvailableAreaTypes) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (moId != null ? !moId.equals(that.moId) : that.moId != null) return false;
+        if (areaType != null ? !areaType.equals(that.areaType) : that.areaType != null) return false;
+        return muAvailableAreaTypes != null ? muAvailableAreaTypes.equals(that.muAvailableAreaTypes) : that.muAvailableAreaTypes == null;
     }
 
     @Override
