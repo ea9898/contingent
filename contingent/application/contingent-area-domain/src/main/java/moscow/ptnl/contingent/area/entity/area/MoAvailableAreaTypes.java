@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.domain.history.meta.LogIt;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -89,6 +88,10 @@ public class MoAvailableAreaTypes implements Serializable {
 
     public Set<MuAvailableAreaTypes> getMuAvailableAreaTypes() {
         return muAvailableAreaTypes;
+    }
+
+    public void setMuAvailableAreaTypes(Set<MuAvailableAreaTypes> muAvailableAreaTypes) {
+        this.muAvailableAreaTypes = muAvailableAreaTypes;
     }
 
     @Override
