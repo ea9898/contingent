@@ -1,4 +1,4 @@
-package service;
+package area.service;
 
 
 import moscow.ptnl.contingent.area.error.Validation;

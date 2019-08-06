@@ -1,9 +1,9 @@
-package service.methods;
+package area.service.methods;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import service.BaseTest;
+import area.service.BaseTest;
 
 public class GetNewAreaIdTest extends BaseTest {
 

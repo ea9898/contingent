@@ -1,4 +1,4 @@
-package service;
+package area.service;
 
 import moscow.ptnl.contingent.area.service.Algorithms;
 import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,9 +51,6 @@ public class BaseTest {
     public AreaInfoEventMapper areaInfoEventMapper;
 
     @Mock
-    public AttachOnAreaChangeMapper attachOnAreaChangeMapper;
-
-    @Mock
     public AreaAddressRepository areaAddressRepository;
 
     @Mock
@@ -67,17 +65,25 @@ public class BaseTest {
     @Mock
     public MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
 
+    @Spy
+    public AlgorithmsHelper algorithmsHelper;
+
+    @Spy
+    public XMLGregorianCalendarMapper gregorianCalendarMapper;
+
+    @Spy
     @InjectMocks
-    public AlgorithmsHelper algorithmsHelper = new AlgorithmsHelper();
+    public AttachOnAreaChangeMapper attachOnAreaChangeMapper;
 
     @InjectMocks
-    public Algorithms algorithms = new Algorithms(algorithmsHelper);
+    public Algorithms algorithms;
+
+    @Spy
+    @InjectMocks
+    public AreaServiceHelper areaHelper;
 
     @InjectMocks
-    public AreaServiceHelper areaHelper = new AreaServiceHelper();
-
-    @InjectMocks
-    public AreaServiceInternal areaServiceInternal = new AreaServiceInternalImpl(algorithms, areaHelper);
+    public AreaServiceInternalImpl areaServiceInternal;
 
     @BeforeEach
     public void init() {
