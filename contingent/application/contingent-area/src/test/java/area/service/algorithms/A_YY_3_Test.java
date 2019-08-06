@@ -1,4 +1,4 @@
-package service.algorithms;
+package area.service.algorithms;
 
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.error.ContingentException;

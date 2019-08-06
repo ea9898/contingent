@@ -42,6 +42,16 @@ public class MuAvailableAreaTypes implements Serializable {
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
+    public MuAvailableAreaTypes() {
+    }
+
+    public MuAvailableAreaTypes(Long muId, AreaType areaType, MoAvailableAreaTypes moAvailableAreaType, LocalDateTime createDate) {
+        this.muId = muId;
+        this.areaType = areaType;
+        this.moAvailableAreaType = moAvailableAreaType;
+        this.createDate = createDate;
+    }
+
     public Long getId() {
         return id;
     }

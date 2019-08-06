@@ -1,4 +1,4 @@
-package service.algorithms;
+package area.service.algorithms;
 
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import org.junit.jupiter.api.Test;

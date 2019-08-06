@@ -1,4 +1,4 @@
-package service.esu;
+package area.service.esu;
 
 public class K_YY_ECY_6_Test {
 }
