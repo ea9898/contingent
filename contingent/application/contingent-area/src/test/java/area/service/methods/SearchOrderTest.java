@@ -1,6 +1,6 @@
-package service.methods;
+package area.service.methods;
 
-import service.BaseTest;
+import area.service.BaseTest;
 
 public class SearchOrderTest extends BaseTest {
     /**

@@ -1,4 +1,4 @@
-package service.methods;
+package area.service.methods;
 
 /**
  * Тест (К_УУ_2) Удаление типов участков из доступных для МО

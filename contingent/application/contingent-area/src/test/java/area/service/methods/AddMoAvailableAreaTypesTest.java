@@ -1,4 +1,4 @@
-package service.methods;
+package area.service.methods;
 
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
@@ -7,7 +7,7 @@ import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.BaseTest;
+import area.service.BaseTest;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

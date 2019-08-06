@@ -1,4 +1,4 @@
-package service.algorithms;
+package area.service.algorithms;
 
 import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -7,7 +7,7 @@ import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import service.BaseTest;
+import area.service.BaseTest;
 
 import java.util.ArrayList;
 import java.util.List;

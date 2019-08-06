@@ -1,6 +1,6 @@
-package service.methods;
+package area.service.methods;
 
-import service.BaseTest;
+import area.service.BaseTest;
 
 /**
  * (К_УУ_4)	Добавление типов, доступных для МУ

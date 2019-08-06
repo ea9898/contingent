@@ -1,6 +1,6 @@
-package service.methods;
+package area.service.methods;
 
-import service.BaseTest;
+import area.service.BaseTest;
 
 /**
  * (К_УУ_5)	Удаление типов участков из доступных для МУ
