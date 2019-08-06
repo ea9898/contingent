@@ -1,6 +1,6 @@
-package area.service.methods;
+package service.methods;
 
-import area.service.BaseTest;
+import service.BaseTest;
 
 public class GetAreaByIdTest extends BaseTest {
     /**

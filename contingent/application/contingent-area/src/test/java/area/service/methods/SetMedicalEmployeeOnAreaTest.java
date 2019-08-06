@@ -1,4 +1,4 @@
-package area.service.methods;
+package service.methods;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
-import area.service.BaseTest;
+import service.BaseTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

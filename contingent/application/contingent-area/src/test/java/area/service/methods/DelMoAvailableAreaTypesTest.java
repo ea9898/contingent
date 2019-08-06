@@ -1,4 +1,4 @@
-package area.service.methods;
+package service.methods;
 
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;

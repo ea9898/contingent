@@ -1,4 +1,6 @@
-package area.service.methods;
+package service.methods;
 
-public class GetMoAddressTest {
+import service.BaseTest;
+
+public class GetMoAddressTest extends BaseTest {
 }

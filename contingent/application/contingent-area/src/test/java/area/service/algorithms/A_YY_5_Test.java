@@ -2,7 +2,7 @@ package area.service.algorithms;
 
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import org.junit.jupiter.api.Test;
-import area.service.BaseTest;
+import service.BaseTest;
 
 public class A_YY_5_Test extends BaseTest {
 

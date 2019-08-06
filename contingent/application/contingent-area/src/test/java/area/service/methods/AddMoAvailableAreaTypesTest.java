@@ -1,4 +1,4 @@
-package area.service.methods;
+package service.methods;
 
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;

@@ -1,4 +1,4 @@
-package area.service.methods;
+package service.methods;
 
 public class AddAreaAddressTest {
 }

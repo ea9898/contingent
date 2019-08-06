@@ -1,6 +1,6 @@
-package area.service.methods;
+package service.methods;
 
-import area.service.BaseTest;
+import service.BaseTest;
 
 /**
  * (К_УУ_6)	Предоставление типов участков, доступных для МУ

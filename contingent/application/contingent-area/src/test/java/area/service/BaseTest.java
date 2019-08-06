@@ -1,4 +1,4 @@
-package area.service;
+package service;
 
 import moscow.ptnl.contingent.area.service.Algorithms;
 import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
@@ -14,6 +14,8 @@ import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.nsi.AddressFormingElementCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
@@ -64,6 +66,12 @@ public class BaseTest {
 
     @Mock
     public MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
+
+    @Mock
+    public MuAvailableAreaTypesCRUDRepository muAvailableAreaTypesCRUDRepository;
+
+    @Mock
+    public MuAvailableAreaTypesRepository muAvailableAreaTypesRepository;
 
     @Spy
     public AlgorithmsHelper algorithmsHelper;

@@ -1,7 +1,7 @@
-package area.service.algorithms;
+package service.algorithms;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
-import area.service.BaseTest;
+import service.BaseTest;
 
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
