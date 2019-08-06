@@ -1,16 +1,10 @@
 package area.service.methods;
 
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
-import moscow.ptnl.contingent.area.error.Validation;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.BaseTest;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -25,31 +19,7 @@ import static org.mockito.Mockito.doReturn;
 /**
  * Тест (К_УУ_2) Удаление типов участков из доступных для МО
  */
-public class DelMoAvailableAreaTypesTest extends BaseTest {
-
-    private AreaType areaType1;
-    private AreaType areaType2;
-    private AreaType areaType3;
-    private Long moId = 204L;
-    private LocalDateTime createDate = LocalDateTime.now();
-    private MoAvailableAreaTypes moAvailableAreaType1;
-    private MoAvailableAreaTypes moAvailableAreaType2;
-    private MuAvailableAreaTypes muAvailableAreaType1;
-    private MuAvailableAreaTypes muAvailableAreaType2;
-    private Validation validation;
-
-
-    @BeforeEach
-    public void init() {
-        areaType1 = new AreaType(10L, "Терапевтический", false);
-        areaType2 = new AreaType(20L, "Педиатрический", false);
-        areaType3 = new AreaType(30L, "Взрослый стоматологический", true);
-        moAvailableAreaType1 = new MoAvailableAreaTypes(204L, areaType1, createDate, null);
-        moAvailableAreaType2 = new MoAvailableAreaTypes(204L, areaType2, createDate, null);
-        muAvailableAreaType1 = new MuAvailableAreaTypes(123L, areaType1, moAvailableAreaType1, null);
-        muAvailableAreaType2 = new MuAvailableAreaTypes(129L, areaType2, moAvailableAreaType2, null);
-        validation = new Validation();
-    }
+public class DelMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
 
     /**
      * Тест С_УУ_73
