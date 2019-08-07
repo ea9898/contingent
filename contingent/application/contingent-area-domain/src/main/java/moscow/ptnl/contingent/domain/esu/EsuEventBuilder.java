@@ -3,7 +3,11 @@ package moscow.ptnl.contingent.domain.esu;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
-// Заглушка для формирования сообщения для сохранения в БД топика и отправки в ЕСУ
+/**
+ * Вспомогательный класс для формирования сообщения для сохранения в БД топика 
+ * и отправки в ЕСУ.
+ * 
+ */
 public class EsuEventBuilder {
     
     public static final String TOPIC_HEADER_NAME = "ESU_TOPIC";
