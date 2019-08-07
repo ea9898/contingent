@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.nsi.ws;
 
-import moscow.ptnl.contingent.nsi.pushaccepter.NsiPushEvent;
-import moscow.ptnl.contingent.nsi.infrastructure.repository.NsiPushEventCRUDRepository;
+import moscow.ptnl.contingent.domain.nsi.entity.NsiPushEvent;
+import moscow.ptnl.contingent.repository.nsi.NsiPushEventCRUDRepository;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.springframework.beans.factory.annotation.Autowired;
