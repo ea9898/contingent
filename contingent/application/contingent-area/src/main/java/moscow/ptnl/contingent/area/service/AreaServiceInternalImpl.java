@@ -206,6 +206,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     // (К_УУ_1) Добавление типов участков, доступных для МО
     @Override
     public void addMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
+        areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
         Validation validation = new Validation();
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation);
         areaHelper.checkAreaTypesExistInMO(moId, areaTypes, validation);
@@ -229,6 +230,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     // (К_УУ_2)	Удаление типов участков из доступных для МО
     @Override
     public void delMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
+        areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
         Validation validation = new Validation();
         List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
         areaHelper.checkAndGetAreaTypesNotExistInMU(moAvailableAreaTypes, areaTypeCodes, validation);
@@ -251,6 +253,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     // (К_УУ_4)	Добавление типов, доступных для МУ
     @Override
     public void addMuAvailableAreaTypes(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException {
+        areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
         Validation validation = new Validation();
         // 1.
         List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
@@ -276,6 +279,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     // (К_УУ_5)	Удаление типов участков из доступных для МУ
     @Override
     public void delMuAvailableAreaTypes(long muId, List<Long> areaTypeCodes) throws ContingentException {
+        areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
         Validation validation = new Validation();
         // 1.
         List<MuAvailableAreaTypes> areaTypes = areaHelper.checkAndGetAreaTypesNotExistInMU(muId, areaTypeCodes, validation);
