@@ -545,6 +545,12 @@ public class AreaServiceHelper {
         }
     }
 
+    public void checkAreaTypeIsDependent(AreaType areaType, Validation validation) {
+        if (!isAreaTypeDependent(areaType)) {
+            validation.error(AreaErrorReason.AREA_TYPE_IS_NOT_DEPENDENT, new ValidationParameter("areaType", areaType.getTitle()));
+        }
+    }
+
     public boolean isAreaTypePrimary(AreaType areaType) {
         return areaType != null && areaType.getAreaTypeClass() != null &&
                 Objects.equals(PRIMARY_AREA_TYPE_CLASS, areaType.getAreaTypeClass().getCode());
@@ -554,9 +560,13 @@ public class AreaServiceHelper {
         return isAreaTypePrimary(area.getAreaType());
     }
 
+    public boolean isAreaTypeDependent(AreaType areaType) {
+        return areaType != null && areaType.getAreaTypeClass() != null &&
+                Objects.equals(DEPENDENT_AREA_TYPE_CLASS, areaType.getAreaTypeClass().getCode());
+    }
+
     public boolean isAreaDependent(Area area) {
-        return area.getAreaType() != null && area.getAreaType().getAreaTypeClass() != null &&
-                Objects.equals(DEPENDENT_AREA_TYPE_CLASS, area.getAreaType().getAreaTypeClass().getCode());
+        return isAreaTypeDependent(area.getAreaType());
     }
 
     // К_УУ_11 3.

@@ -397,6 +397,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         AreaType areaType = areaTypes.get(0);
 
+        areaHelper.checkAreaTypeIsDependent(areaType, validation);
         // 2.
         primaryAreaTypeCodesIds = primaryAreaTypeCodesIds.stream().distinct().collect(Collectors.toList());
 
@@ -404,9 +405,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         primaryAreaTypeCodesIds.forEach(code -> {
             // TODO позже добавить проверку что primaryAreaTypeCode есть в таблице areaTypes
             AreaType primaryAreaType = areaTypesCRUDRepository.findById(code).get();
+            areaHelper.checkAreaTypeIsPrimary(primaryAreaType, validation);
             areaHelper.checkPrimaryAreasTypesInMUProfile(moId, muId, primaryAreaType, validation);
         });
-
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
         // 4.
         if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
@@ -578,6 +582,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             // 5.1
             areaHelper.checkAreaDependsOnPrimaryAreaType(area, areaType, validation);
             // 5.2
+            areaHelper.checkAreaTypeIsPrimary(areaType, validation);
+            // 5.3
             areaHelper.checkPrimaryAreasTypesInMUProfile(area.getMoId(), muId, areaType, validation);
             }
         );
