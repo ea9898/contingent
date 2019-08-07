@@ -328,13 +328,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         AreaType areaType = areaTypeList.get(0);
         // 2
-        areaHelper.checkEmptyMuId(muId, areaType);
+        areaHelper.checkAreaTypeIsPrimary(areaType, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
         // 3
-        areaHelper.checkAreaTypeAvailable(moId, muId, areaType, validation);
+        areaHelper.checkEmptyMuId(muId, areaType);
         // 4
+        areaHelper.checkAreaTypeAvailable(moId, muId, areaType, validation);
+        // 5
         areaHelper.checkAreaTypeCountLimits(moId, muId, areaType, validation);
 
-        // 5
+        // 6
         if (areaType.getAreaTypeKind() != null &&
                 Objects.equals(areaType.getAreaTypeKind().getCode(), AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) &&
                 (Strings.isNullOrEmpty(description) || number == null ||
@@ -342,36 +348,36 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             validation.error(AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED);
         }
 
-        // 6
+        // 7
         areaHelper.checkAreaExistsInMU(muId, moId, areaType, number, null, validation);
 
-        // 7
+        // 8
         areaHelper.checkPolicyTypesIsOMS(policyTypesIds, validation);
 
-        // 8
+        // 9
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
-        // 9
+        // 10
         areaHelper.checkAutoAssignForAttachment(areaType, autoAssignForAttachment, attachByMedicalReason, validation);
 
-        // 10
+        // 11
         areaHelper.checkAttachByMedicalReason(areaType, attachByMedicalReason, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        // 11
+        // 12
         Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
                 attachByMedicalReason, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 
-        // 12
+        // 13
         List<PolicyType> policyTypes = policyTypeRepository.findByIds(policyTypesIds);
         List<AreaPolicyTypes> areaPolicyTypes = policyTypes.stream().map(policyType ->
                 new AreaPolicyTypes(area, policyType)).collect(Collectors.toList());
         areaPolicyTypesCRUDRepository.saveAll(areaPolicyTypes);
 
-        // 14
+        // 15
         return area.getId();
     }
 
