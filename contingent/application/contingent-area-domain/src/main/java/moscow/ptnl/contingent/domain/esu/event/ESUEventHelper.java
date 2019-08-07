@@ -82,5 +82,14 @@ public class ESUEventHelper {
         }
         return topicName;
     }
+
+    public static String resolveMethodName(Object publishObject) {
+        if (publishObject instanceof AreaInfoEvent) {
+            AreaInfoEvent event = (AreaInfoEvent) publishObject;
+            return event.getOperationType();
+        }
+
+        return null;
+    }
     
 }

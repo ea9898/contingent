@@ -326,12 +326,6 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkNoAddresses(List<NsiAddress> nsiAddresses) throws ContingentException {
-        if (nsiAddresses.size() == 0) {
-            throw new ContingentException(AreaErrorReason.NO_ADDRESS);
-        }
-    }
-
     public void checkTooManyAddresses(List<NsiAddress> nsiAddresses, Long maxAddresses) throws ContingentException {
         if (nsiAddresses.size() > maxAddresses) {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAddresses));
@@ -545,14 +539,34 @@ public class AreaServiceHelper {
         });
     }
 
+    public void checkAreaTypeIsPrimary(AreaType areaType, Validation validation) {
+        if (!isAreaTypePrimary(areaType)) {
+            validation.error(AreaErrorReason.AREA_TYPE_IS_NOT_PRIMARY, new ValidationParameter("areaType", areaType.getTitle()));
+        }
+    }
+
+    public void checkAreaTypeIsDependent(AreaType areaType, Validation validation) {
+        if (!isAreaTypeDependent(areaType)) {
+            validation.error(AreaErrorReason.AREA_TYPE_IS_NOT_DEPENDENT, new ValidationParameter("areaType", areaType.getTitle()));
+        }
+    }
+
+    public boolean isAreaTypePrimary(AreaType areaType) {
+        return areaType != null && areaType.getAreaTypeClass() != null &&
+                Objects.equals(PRIMARY_AREA_TYPE_CLASS, areaType.getAreaTypeClass().getCode());
+    }
+
     public boolean isAreaPrimary(Area area) {
-        return area.getAreaType() != null && area.getAreaType().getAreaTypeClass() != null &&
-                Objects.equals(PRIMARY_AREA_TYPE_CLASS, area.getAreaType().getAreaTypeClass().getCode());
+        return isAreaTypePrimary(area.getAreaType());
+    }
+
+    public boolean isAreaTypeDependent(AreaType areaType) {
+        return areaType != null && areaType.getAreaTypeClass() != null &&
+                Objects.equals(DEPENDENT_AREA_TYPE_CLASS, areaType.getAreaTypeClass().getCode());
     }
 
     public boolean isAreaDependent(Area area) {
-        return area.getAreaType() != null && area.getAreaType().getAreaTypeClass() != null &&
-                Objects.equals(DEPENDENT_AREA_TYPE_CLASS, area.getAreaType().getAreaTypeClass().getCode());
+        return isAreaTypeDependent(area.getAreaType());
     }
 
     // К_УУ_11 3.

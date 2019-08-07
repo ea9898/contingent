@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.nsi.pushaccepter;
+package moscow.ptnl.contingent.domain.nsi.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

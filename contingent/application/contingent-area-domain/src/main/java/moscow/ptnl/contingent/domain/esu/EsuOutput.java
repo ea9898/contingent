@@ -52,6 +52,9 @@ public class EsuOutput implements Serializable {
     @Convert(converter = StatusConverter.class)
     private EsuStatusType status = EsuStatusType.UNSUCCESS;
 
+    @Column(name = "METHOD_NAME", nullable = true)
+    private String method;
+
     public Long getId() {
         return id;
     }
@@ -115,7 +118,15 @@ public class EsuOutput implements Serializable {
     public void setStatus(EsuStatusType status) {
         this.status = status;
     }
-    
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

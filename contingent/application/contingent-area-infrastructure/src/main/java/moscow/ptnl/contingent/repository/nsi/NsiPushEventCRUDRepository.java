@@ -1,7 +1,7 @@
-package moscow.ptnl.contingent.nsi.infrastructure.repository;
+package moscow.ptnl.contingent.repository.nsi;
 
-import moscow.ptnl.contingent.nsi.infrastructure.CommonRepository;
-import moscow.ptnl.contingent.nsi.pushaccepter.NsiPushEvent;
+import moscow.ptnl.contingent.domain.nsi.entity.NsiPushEvent;
+import moscow.ptnl.contingent.repository.CommonRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

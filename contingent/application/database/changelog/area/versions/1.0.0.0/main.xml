@@ -222,4 +222,21 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-263" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ESU_OUTPUT"/>
+            <not>
+                <columnExists tableName="ESU_OUTPUT" columnName="method_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ESU_OUTPUT">
+            <column name="method_name" type="VARCHAR2(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="method_name" tableName="ESU_OUTPUT"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

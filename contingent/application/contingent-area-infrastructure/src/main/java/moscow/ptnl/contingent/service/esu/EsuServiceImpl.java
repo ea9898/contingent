@@ -69,7 +69,8 @@ public class EsuServiceImpl implements EsuService {
             
             String message = ESUEventHelper.toESUMessage(event, esuOutput.getId());
             LOG.debug(message);
-            esuOutput.setMessage(message); 
+            esuOutput.setMessage(message);
+            esuOutput.setMethod(ESUEventHelper.resolveMethodName(event));
             esuOutputRepository.updateMessage(esuOutput.getId(), message);
             
             //здесь нужна асинхронность, чтобы не блокировать базу             
