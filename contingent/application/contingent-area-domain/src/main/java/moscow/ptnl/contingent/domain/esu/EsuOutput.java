@@ -55,6 +55,9 @@ public class EsuOutput implements Serializable {
     @Column(name = "METHOD_NAME", nullable = true)
     private String method;
 
+    @Column(name = "HOST")
+    private String host;
+
     public Long getId() {
         return id;
     }
@@ -125,6 +128,14 @@ public class EsuOutput implements Serializable {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 
     @Override
