@@ -20,12 +20,12 @@ public class AreaTypeClass implements Serializable {
     private static final long serialVersionUID = 4979698890748802824L;
 
     @Id
-	@Column(name = "CODE", unique = true, nullable = false)
-	private Long code;
+    @Column(name = "CODE", unique = true, nullable = false)
+    private Long code;
 
     @Size(max = 255)
-	@Column(name = "TITLE")
-	private String title;
+    @Column(name = "TITLE")
+    private String title;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
@@ -63,10 +63,10 @@ public class AreaTypeClass implements Serializable {
     }
 
     @Override
-    public int hashCode() {        
+    public int hashCode() {
         return Objects.hashCode(this.code);
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -75,5 +75,11 @@ public class AreaTypeClass implements Serializable {
             return ((AreaTypeClass) obj).getCode().equals(this.code);
         }
         return false;
+    }
+
+    public enum FieldsEnum {
+        CODE,
+        TITLE,
+        ARCHIVED
     }
 }

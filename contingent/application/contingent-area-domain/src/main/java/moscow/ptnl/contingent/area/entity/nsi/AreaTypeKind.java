@@ -77,4 +77,10 @@ public class AreaTypeKind implements Serializable {
     public int hashCode() {        
         return Objects.hashCode(this.code);
     }
+
+    public enum FieldsEnum {
+        CODE,
+        TITLE,
+        ARCHIVED
+    }
 }

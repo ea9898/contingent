@@ -96,6 +96,10 @@ public class AreaType implements Serializable {
     public AreaType() {
     }
 
+    public AreaType(Long code) {
+        this.code = code;
+    }
+
     public AreaType(Long code, String title, Boolean archive) {
         this.code = code;
         this.title = title;
