@@ -60,6 +60,9 @@ public class EsuInput implements Serializable {
     @Column(name = "EVENT_ID")
     private String eventId;
 
+    @Column(name = "HOST")
+    private String host;
+
     public EsuInput() {
     }
 
@@ -159,6 +162,14 @@ public class EsuInput implements Serializable {
 
     public void setEventId(String eventId) {
         this.eventId = eventId;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 
     @Override

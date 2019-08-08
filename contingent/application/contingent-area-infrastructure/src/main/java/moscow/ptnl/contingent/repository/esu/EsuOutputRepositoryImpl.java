@@ -61,7 +61,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
     }
 
     @Override
-    public void updateStatus(List<Long> ids, EsuStatusType fromStatus, EsuStatusType toStatus) {
+    public void updateStatus(List<Long> ids, EsuStatusType fromStatus, EsuStatusType toStatus, String hostName) {
         if (ids == null || ids.isEmpty())
             return;
         
@@ -71,13 +71,14 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
         Root<EsuOutput> template = updateCriteria.from(EsuOutput.class);
         
         updateCriteria
-                    .set(template.get(EsuOutput_.status.getName()), toStatus)
-                    .where(
-                        criteriaBuilder.and(
-                            criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), fromStatus),   
-                            template.get(EsuOutput_.id).in(ids)
-                        )
-                    );
+                .set(template.get(EsuOutput_.status.getName()), toStatus)
+                .set(template.get(EsuOutput_.host.getName()), hostName)
+                .where(
+                    criteriaBuilder.and(
+                        criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), fromStatus),
+                        template.get(EsuOutput_.id).in(ids)
+                    )
+                );
         
         entityManager
                 .createQuery(updateCriteria)
@@ -85,7 +86,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
     }
 
     @Override
-    public void updateStatus(Long id, EsuStatusType fromStatus, EsuStatusType toStatus) {
+    public void updateStatus(Long id, EsuStatusType fromStatus, EsuStatusType toStatus, String hostName) {
         if (id == null)
             return;
         
@@ -95,13 +96,14 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
         Root<EsuOutput> template = updateCriteria.from(EsuOutput.class);
         
         updateCriteria
-                    .set(template.get(EsuOutput_.status.getName()), toStatus)
-                    .where(
-                        criteriaBuilder.and(
-                            criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), fromStatus),   
-                            criteriaBuilder.equal(template.get(EsuOutput_.id), id)
-                        )
-                    );
+                .set(template.get(EsuOutput_.status.getName()), toStatus)
+                .set(template.get(EsuOutput_.host.getName()), hostName)
+                .where(
+                    criteriaBuilder.and(
+                        criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), fromStatus),
+                        criteriaBuilder.equal(template.get(EsuOutput_.id), id)
+                    )
+                );
         
         entityManager
                 .createQuery(updateCriteria)

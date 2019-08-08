@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.domain.esu.EsuInput;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.esu.EsuInputRepository;
 import moscow.ptnl.contingent.service.TransactionRunner;
+import moscow.ptnl.contingent.util.CommonUtils;
 import moscow.ptnl.contingent.util.EsuTopicsEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,10 +56,13 @@ abstract class BaseTopicTask<T> implements Tasklet {
 
     private final String xsdPath;
 
+    private final String host;
+
     BaseTopicTask(EsuTopicsEnum topic, String xsdPath, Class<T> typeClass) {
         this.topic = topic;
         this.xsdPath = xsdPath;
         this.typeClass = typeClass;
+        this.host = CommonUtils.getHostName();
     }
 
     @Override
@@ -134,5 +138,6 @@ abstract class BaseTopicTask<T> implements Tasklet {
         }
         message.setStatus(status);
         message.setUpdateTime(LocalDateTime.now());
+        message.setHost(host);
     }
 }

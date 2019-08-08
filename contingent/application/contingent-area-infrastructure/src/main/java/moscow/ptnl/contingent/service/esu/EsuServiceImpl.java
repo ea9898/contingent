@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.domain.esu.EsuOutput;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.esu.EsuOutputCRUDRepository;
 import moscow.ptnl.contingent.repository.esu.EsuOutputRepository;
+import moscow.ptnl.contingent.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+
 @Service
 @PropertySource("classpath:application-esu.properties")
 public class EsuServiceImpl implements EsuService {
@@ -46,6 +49,13 @@ public class EsuServiceImpl implements EsuService {
     
     @Autowired
     private AsyncEsuExecutor asyncEsuExecutor;
+
+    private String host;
+
+    @PostConstruct
+    public void initHostName() {
+        host = CommonUtils.getHostName();
+    }
 
     /**
      * Сохраняет информацию о событии в БД и пытается отправить ее в ЕСУ.
@@ -123,7 +133,7 @@ public class EsuServiceImpl implements EsuService {
         
         try {
             if (esuAnswer == null) {
-                esuOutputRepository.updateStatus(recordId, EsuStatusType.INPROGRESS, EsuStatusType.UNSUCCESS);
+                esuOutputRepository.updateStatus(recordId, EsuStatusType.INPROGRESS, EsuStatusType.UNSUCCESS, host);
             } else {
                 Optional<EsuOutput> result = esuOutputCRUDRepository.findById(recordId);
                 if (result.isPresent()) {
@@ -133,6 +143,7 @@ public class EsuServiceImpl implements EsuService {
                     esuOutput.setPartition(esuAnswer.getPartition());
                     esuOutput.setSentTime(toLocalDateTime(esuAnswer.getTimestamp()));
                     esuOutput.setStatus(EsuStatusType.SUCCESS);
+                    esuOutput.setHost(host);
                     esuOutputCRUDRepository.save(esuOutput);
                 } else {
                     LOG.warn("не найдено событие в ESU_OUTPUT с идентификатором: {}", recordId);
@@ -140,7 +151,7 @@ public class EsuServiceImpl implements EsuService {
             }
         } catch (Exception e) {
             LOG.error("ошибка при публикации данных о событии в ЕСУ", e);
-            esuOutputRepository.updateStatus(recordId, EsuStatusType.INPROGRESS, EsuStatusType.UNSUCCESS);
+            esuOutputRepository.updateStatus(recordId, EsuStatusType.INPROGRESS, EsuStatusType.UNSUCCESS, host);
         }
     }
     
