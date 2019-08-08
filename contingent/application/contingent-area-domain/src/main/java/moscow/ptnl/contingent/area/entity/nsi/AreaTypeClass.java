@@ -31,6 +31,13 @@ public class AreaTypeClass implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    public AreaTypeClass() {
+    }
+
+    public AreaTypeClass(Long code) {
+        this.code = code;
+    }
+
     public Long getCode() {
         return code;
     }
@@ -64,7 +71,7 @@ public class AreaTypeClass implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AreaTypeClass) {
+        if (obj instanceof AreaTypeClass) {
             return ((AreaTypeClass) obj).getCode().equals(this.code);
         }
         return false;
