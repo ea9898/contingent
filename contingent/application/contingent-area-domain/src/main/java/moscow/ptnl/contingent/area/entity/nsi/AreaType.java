@@ -96,6 +96,10 @@ public class AreaType implements Serializable {
     public AreaType() {
     }
 
+    public AreaType(Long code) {
+        this.code = code;
+    }
+
     public AreaType(Long code, String title, Boolean archive) {
         this.code = code;
         this.title = title;
@@ -259,9 +263,31 @@ public class AreaType implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AreaType) {
+        if (obj instanceof AreaType) {
             return ((AreaType) obj).getCode().equals(this.code);
         }
         return false;
+    }
+
+    public enum FieldsEnum {
+        CODE,
+        TITLE,
+        AREA_TYPE_KIND_CODE,
+        AREA_TYPE_CLASS_CODE,
+        GENDER_CODE,
+        AGE_MIN,
+        AGE_MAX,
+        AGE_M_MIN,
+        AGE_M_MAX,
+        AGE_W_MIN,
+        AGE_W_MAX,
+        HEAD_FINANCE,
+        HAS_SERVICE_TERRITORY,
+        ATTACH_BY_REQUEST,
+        ATTACH_BY_MEDICAL_REASON,
+        MPGU_AVAILABLE,
+        RESIDENTS_BIND_RATE,
+        AREA_COUNT_LIMIT_CODE,
+        ARCHIVED
     }
 }

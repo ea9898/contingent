@@ -14,7 +14,6 @@ import java.util.Objects;
 import javax.persistence.IdClass;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 
 @Entity
 @IdClass(AreaTypeRelations.Key.class)
@@ -46,6 +45,22 @@ public class AreaTypeRelations implements Serializable {
         return new Key(dependentAreaType, primaryAreaType);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
     public AreaType getDependentAreaType() {
         return dependentAreaType;
     }
@@ -66,7 +81,7 @@ public class AreaTypeRelations implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AreaTypeRelations) {
+        if (obj instanceof AreaTypeRelations) {
             return ((AreaTypeRelations) obj).getKey().equals(this.getKey());
         }
         return false;
@@ -112,7 +127,7 @@ public class AreaTypeRelations implements Serializable {
         public boolean equals(Object obj) {
             if(this == obj)
                 return true;
-            if (obj != null && obj instanceof Key) {
+            if (obj instanceof Key) {
                 Key other = (Key) obj;
                 if (other.getDependentAreaType() == null || other.getPrimaryAreaType() == null)
                     return false;
@@ -125,6 +140,12 @@ public class AreaTypeRelations implements Serializable {
         public int hashCode() {
             return Objects.hash(this.getDependentAreaType(), this.getPrimaryAreaType());
         }
-        
+    }
+
+    public enum FieldsEnum {
+        ID,
+        DEPENDENT_AREA_TYPE_CODE,
+        PRIMARY_AREA_TYPE_CODE,
+        ARCHIVED
     }
 }

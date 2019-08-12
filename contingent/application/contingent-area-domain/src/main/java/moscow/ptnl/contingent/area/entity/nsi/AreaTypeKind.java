@@ -32,6 +32,13 @@ public class AreaTypeKind implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    public AreaTypeKind() {
+    }
+
+    public AreaTypeKind(Long code) {
+        this.code = code;
+    }
+
     public Long getCode() {
         return code;
     }
@@ -60,7 +67,7 @@ public class AreaTypeKind implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AreaTypeKind) {
+        if (obj instanceof AreaTypeKind) {
             return ((AreaTypeKind) obj).getCode().equals(this.code);
         }
         return false;
@@ -69,5 +76,11 @@ public class AreaTypeKind implements Serializable {
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.code);
+    }
+
+    public enum FieldsEnum {
+        CODE,
+        TITLE,
+        ARCHIVED
     }
 }

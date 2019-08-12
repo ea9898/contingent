@@ -72,7 +72,7 @@ public class AreaTypeMedicalPositions implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AreaTypeMedicalPositions) {
+        if (obj instanceof AreaTypeMedicalPositions) {
             return ((AreaTypeMedicalPositions) obj).getId().equals(this.id);
         }
         return false;
@@ -81,5 +81,12 @@ public class AreaTypeMedicalPositions implements Serializable {
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.id);
+    }
+
+    public enum FieldsEnum {
+        ID,
+        AREA_TYPE_CODE,
+        POSITION_CODE,
+        ARCHIVED
     }
 }

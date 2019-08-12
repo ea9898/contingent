@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
-import moscow.ptnl.contingent.domain.history.meta.LogIt;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -11,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -90,5 +88,12 @@ public class AreaTypeSpecializations implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, areaType, specializationCode, archived);
+    }
+
+    public enum FieldsEnum {
+        ID,
+        AREA_TYPE_CODE,
+        SPECIALIZATION_CODE,
+        ARCHIVED
     }
 }

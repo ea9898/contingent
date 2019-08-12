@@ -239,4 +239,34 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-264-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ESU_INPUT"/>
+            <not>
+                <columnExists tableName="ESU_INPUT" columnName="host"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ESU_INPUT">
+            <column name="host" type="VARCHAR2(36)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="host" tableName="ESU_INPUT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-264-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ESU_OUTPUT"/>
+            <not>
+                <columnExists tableName="ESU_OUTPUT" columnName="host"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ESU_OUTPUT">
+            <column name="host" type="VARCHAR2(50)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="host" tableName="ESU_OUTPUT"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

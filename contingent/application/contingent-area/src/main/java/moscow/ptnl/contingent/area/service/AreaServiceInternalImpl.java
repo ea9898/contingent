@@ -45,8 +45,6 @@ import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.repository.area.MuAddlAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.nsi.AddressFormingElementRepository;
@@ -55,12 +53,9 @@ import moscow.ptnl.contingent.repository.nsi.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.repository.nsi.PolicyTypeRepository;
-import moscow.ptnl.contingent.repository.nsi.PositionNomCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
-import moscow.ptnl.contingent.repository.nsi.SpecializationToPositionNomRepository;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import moscow.ptnl.util.Strings;
@@ -844,7 +839,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.applyChanges(mainEmployees, changeEmployeesInput);
         areaHelper.addNew(mainEmployees, addEmployeesInput.stream()
                 .filter(empl -> !empl.isIsReplacement()).collect(Collectors.toList()), area);
-        if (area.getAreaType().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) {
+        if (area.getAreaType() != null && area.getAreaType().getAreaTypeKind() != null &&
+                area.getAreaType().getAreaTypeKind().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) {
             areaHelper.checkMainEmployeesOverlappingDates(mainEmployees, validation);
         }
 
