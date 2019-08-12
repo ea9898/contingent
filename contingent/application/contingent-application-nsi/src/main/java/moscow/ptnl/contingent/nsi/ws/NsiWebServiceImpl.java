@@ -27,6 +27,13 @@ public class NsiWebServiceImpl implements PushaccepterServicePortType {
 
     @Override
     public ResponseElement get(ChangeElement getChangeElement) {
+        /* TODO:
+            все что касается маппинга в объект и сохранения данных в таблицу нужно вынести в отдельный поток с транзакционностью,
+            в случае ошибки обработки входного сообщения нам нужно записать в БД ошибку обработки входного сообщения.
+            В случае успешной обработки входного сообщения, объект нужно передавать по шине SI по новому
+            асинхронному каналу NsiEventChannel (заглушка есть)
+            Со стороны приложения NSI нужно реализовать отправку в канал NsiEventChannel.
+         */
         NsiPushEvent event = new NsiPushEvent(getChangeElement.getIntype(), LocalDateTime.now(), getChangeElement.getIn());
         nsiPushEventCRUDRepository.save(event);
         return pushAccepter.get(getChangeElement);

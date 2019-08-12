@@ -39,7 +39,8 @@ public class EventChannelsConfiguration {
     
     public static final String HISTORY_EVENT_CHANNEL_NAME = "HistoryEventChannel";
     public static final String ESU_EVENT_CHANNEL_NAME = "ESUEventChannel";
-    
+    public static final String NSI_EVENT_CHANNEL_NAME = "NSIEventChannel";
+
     private static final int QUEUE_LENGTH = 1000;
     private static final int QUEUE_DELIVERY_INTERVAL = 5; //msec 
         
@@ -66,6 +67,17 @@ public class EventChannelsConfiguration {
         return new QueueChannel(QUEUE_LENGTH);
     }
     
+    /**
+     * Канал для отправки сообщений в НСИ.
+     *
+     * @return
+     */
+    @Bean(name = NSI_EVENT_CHANNEL_NAME)
+    public MessageChannel createNSIEventChannel() {
+        //return new DirectChannel();
+        return new QueueChannel(QUEUE_LENGTH);
+    }
+
     @Bean(name = PollerMetadata.DEFAULT_POLLER_METADATA_BEAN_NAME)
     public PollerMetadata defaultPoller() {
         PollerMetadata pollerMetadata = new PollerMetadata();
