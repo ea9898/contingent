@@ -36,9 +36,9 @@ public class A_YY_4_Test  extends BaseTest {
         areaTypeClass1.setTitle("Primary test");
         areaTypeClass1.setArchived(false);
         AreaTypeClass areaTypeClass2 = new AreaTypeClass();
-        areaTypeClass1.setCode(10L);
-        areaTypeClass1.setTitle("Dependent test");
-        areaTypeClass1.setArchived(false);
+        areaTypeClass2.setCode(10L);
+        areaTypeClass2.setTitle("Dependent test");
+        areaTypeClass2.setArchived(false);
         areaTypePrimary1 = new AreaType(10L, "Терапевтический", false);
         areaTypePrimary1.setAreaTypeClass(areaTypeClass1);
         areaTypeDependent1 = new AreaType(20L, "Терапевтический 2", false);
