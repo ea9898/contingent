@@ -845,12 +845,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         //6.3
-        if (area.getAreaType().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()
-                || area.getAreaType().getCode() == AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode()) {
-            //6.4
+        if (area.getAreaType() != null &&
+            area.getAreaType().getAreaTypeKind() != null &&
+            (area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) ||
+            area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode()))) {
+            //6.3.1.
             List<Period> periodsWithoutMainEmpl = areaHelper.getPeriodsWithoutMainEmployee(mainEmployees);
             if (periodsWithoutMainEmpl.size() > 0) {
-                //6.5
+                //6.3.2.
                 List<AreaMedicalEmployees> replacementEmployees = areaEmployeesDb.stream()
                         .filter(AreaMedicalEmployees::getReplacement).collect(Collectors.toList());
                 areaHelper.applyChanges(replacementEmployees, changeEmployeesInput);
