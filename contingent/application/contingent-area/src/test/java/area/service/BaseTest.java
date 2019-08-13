@@ -8,6 +8,9 @@ import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
+import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
+import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
@@ -20,6 +23,8 @@ import moscow.ptnl.contingent.repository.nsi.AddressFormingElementCRUDRepository
 import moscow.ptnl.contingent.repository.nsi.AddressFormingElementRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.BuildingRegistryCRUDRepository;
+import moscow.ptnl.contingent.service.history.HistoryService;
+import moscow.ptnl.contingent.service.history.HistoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +32,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.messaging.MessageChannel;
 
 @ExtendWith(MockitoExtension.class)
 public class BaseTest {
@@ -73,6 +81,16 @@ public class BaseTest {
     @Mock
     public MuAvailableAreaTypesRepository muAvailableAreaTypesRepository;
 
+    @Mock
+    public AddressAllocationOrderRepository addressAllocationOrderRepository;
+
+    @Mock
+    public AddressAllocationOrderCRUDRepository addressAllocationOrderCRUDRepository;
+
+    @Mock
+    @Qualifier(EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME)
+    private MessageChannel historyChannel;
+
     @Spy
     public AlgorithmsHelper algorithmsHelper;
 
@@ -85,6 +103,10 @@ public class BaseTest {
 
     @InjectMocks
     public Algorithms algorithms;
+
+    @Spy
+    @InjectMocks
+    public HistoryServiceImpl historyService;
 
     @Spy
     @InjectMocks
