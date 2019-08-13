@@ -13,7 +13,6 @@ import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ResponseEle
 import java.time.LocalDateTime;
 
 @Service(NsiWebServiceImpl.SERVICE_NAME)
-//@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
 public class NsiWebServiceImpl implements PushaccepterServicePortType {
 
@@ -27,15 +26,14 @@ public class NsiWebServiceImpl implements PushaccepterServicePortType {
 
     @Override
     public ResponseElement get(ChangeElement getChangeElement) {
-        /* TODO:
-            все что касается маппинга в объект и сохранения данных в таблицу нужно вынести в отдельный поток с транзакционностью,
-            в случае ошибки обработки входного сообщения нам нужно записать в БД ошибку обработки входного сообщения.
-            В случае успешной обработки входного сообщения, объект нужно передавать по шине SI по новому
-            асинхронному каналу NsiEventChannel (заглушка есть)
-            Со стороны приложения NSI нужно реализовать отправку в канал NsiEventChannel.
-         */
-        NsiPushEvent event = new NsiPushEvent(getChangeElement.getIntype(), LocalDateTime.now(), getChangeElement.getIn());
-        nsiPushEventCRUDRepository.save(event);
-        return pushAccepter.get(getChangeElement);
+        NsiPushEvent event = new NsiPushEvent(getChangeElement.getIntype(), LocalDateTime.now(), getChangeElement.getIn(), false);
+        NsiPushEvent savedEvent = nsiPushEventCRUDRepository.save(event);
+        ResponseElement responseElement = pushAccepter.get(getChangeElement, savedEvent.getId());
+        if (responseElement.getOut().startsWith("ERROR")) {
+            savedEvent.setError(true);
+            savedEvent.setErrorMessage(responseElement.getOut());
+            nsiPushEventCRUDRepository.save(savedEvent);
+        }
+        return responseElement;
     }
 }

@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.nsi.pushaccepter;
+package moscow.ptnl.contingent.domain.nsi.entity;
 
 import java.util.Arrays;
 
@@ -22,6 +22,6 @@ public enum NsiTablesEnum {
 
     public static NsiTablesEnum getByName(String name) {
         return Arrays.stream(NsiTablesEnum.values()).filter(e -> e.getName().equals(name)).findFirst()
-                .orElseThrow(() -> new IllegalStateException(String.format("Нет такой таблицы: %s", name)));
+                .orElseThrow(() -> new IllegalStateException(String.format("Таблица %s не поддерживается", name)));
     }
 }

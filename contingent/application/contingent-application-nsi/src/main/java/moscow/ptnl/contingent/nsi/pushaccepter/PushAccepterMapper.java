@@ -7,19 +7,8 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
-import moscow.ptnl.contingent.repository.CommonRepository;
-
-import java.io.Serializable;
 
 public class PushAccepterMapper {
-
-    public static <T, K extends Serializable> void saveOrDelete(CommonRepository<T, K> repository, T entity, String action) {
-        if (action.equalsIgnoreCase(NsiActionsEnum.DELETED.toString())) {
-            repository.delete(entity);
-        } else {
-            repository.save(entity);
-        }
-    }
 
     private static String getValue(Package pack, String parameterName) {
         return pack.catalog.data.attribute.stream().filter(atr -> atr.name.equalsIgnoreCase(parameterName)).findFirst()

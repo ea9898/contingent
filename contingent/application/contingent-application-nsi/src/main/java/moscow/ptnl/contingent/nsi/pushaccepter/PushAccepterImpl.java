@@ -1,20 +1,15 @@
 package moscow.ptnl.contingent.nsi.pushaccepter;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKind;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
+import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
+import moscow.ptnl.contingent.domain.nsi.entity.NsiPush;
+import moscow.ptnl.contingent.domain.nsi.entity.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsingS.Table;
-import moscow.ptnl.contingent.repository.nsi.AreaTypeMedicalPositionsCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypeRelationsCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.ClassAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.KindAreaTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.NsiPushEventCRUDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.integration.support.MessageBuilder;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaType;
@@ -23,28 +18,16 @@ import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapArea
 import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaTypeMedicalPositions;
 import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaTypeRelations;
 import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaTypeSpecializations;
-import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.saveOrDelete;
 
 @Component
 public class PushAccepterImpl extends PushAccepter {
 
     @Autowired
-    AreaTypesCRUDRepository areaTypesCRUDRepository;
+    @Qualifier(EventChannelsConfiguration.NSI_EVENT_CHANNEL_NAME)
+    private MessageChannel nsiChannel;
 
     @Autowired
-    ClassAreaTypesCRUDRepository classAreaTypesCRUDRepository;
-
-    @Autowired
-    KindAreaTypesCRUDRepository kindAreaTypesCRUDRepository;
-
-    @Autowired
-    AreaTypeMedicalPositionsCRUDRepository areaTypeMedicalPositionsCRUDRepository;
-
-    @Autowired
-    AreaTypeRelationsCRUDRepository areaTypeRelationsCRUDRepository;
-
-    @Autowired
-    AreaTypeSpecializationsCRUDRepository areaTypeSpecializationsCRUDRepository;
+    NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
 
     @Override
     public Answer getPushSpec(Table table) {
@@ -57,32 +40,28 @@ public class PushAccepterImpl extends PushAccepter {
     }
 
     @Override
-    public Answer getPush(Package pack) {
+    public Answer getPush(Package pack, long savedId) {
+        NsiPush nsiPush = new NsiPush(pack.catalog.data.action, savedId);
         switch (NsiTablesEnum.getByName(pack.catalog.name)) {
             case AREA_TYPE:
-                AreaType areaType = mapAreaType(pack);
-                saveOrDelete(areaTypesCRUDRepository, areaType, pack.catalog.data.action);
+                nsiPush.setEntity(mapAreaType(pack));
                 break;
             case AREA_TYPE_CLASS:
-                AreaTypeClass areaTypeClass = mapAreaTypeClass(pack);
-                saveOrDelete(classAreaTypesCRUDRepository, areaTypeClass, pack.catalog.data.action);
+                nsiPush.setEntity(mapAreaTypeClass(pack));
                 break;
             case AREA_TYPE_KIND:
-                AreaTypeKind areaTypeKind = mapAreaTypeKind(pack);
-                saveOrDelete(kindAreaTypesCRUDRepository, areaTypeKind, pack.catalog.data.action);
+                nsiPush.setEntity(mapAreaTypeKind(pack));
                 break;
             case AREA_TYPE_MEDICAL_POSITIONS:
-                AreaTypeMedicalPositions areaTypeMedicalPositions = mapAreaTypeMedicalPositions(pack);
-                saveOrDelete(areaTypeMedicalPositionsCRUDRepository, areaTypeMedicalPositions, pack.catalog.data.action);
+                nsiPush.setEntity(mapAreaTypeMedicalPositions(pack));
                 break;
             case AREA_TYPE_RELATIONS:
-                AreaTypeRelations areaTypeRelations = mapAreaTypeRelations(pack);
-                saveOrDelete(areaTypeRelationsCRUDRepository, areaTypeRelations, pack.catalog.data.action);
+                nsiPush.setEntity(mapAreaTypeRelations(pack));
                 break;
             case AREA_TYPE_SPECIALIZATIONS:
-                AreaTypeSpecializations areaTypeSpecializations = mapAreaTypeSpecializations(pack);
-                saveOrDelete(areaTypeSpecializationsCRUDRepository, areaTypeSpecializations, pack.catalog.data.action);
+                nsiPush.setEntity(mapAreaTypeSpecializations(pack));
         }
+        nsiChannel.send(MessageBuilder.withPayload(nsiPush).build());
         return new Answer(true, "ok");
     }
 }

@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.nsi.pushaccepter;
+package moscow.ptnl.contingent.domain.nsi.entity;
 
 public enum NsiActionsEnum {
     ADDED,

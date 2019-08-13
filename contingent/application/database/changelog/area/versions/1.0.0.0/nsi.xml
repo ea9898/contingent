@@ -978,7 +978,38 @@
             </sql>
         </rollback>
     </changeSet>
-    
+
+    <changeSet id="CONTINGENT2-NSI-12-4" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="NSI_PUSH_LOG"/>
+            <not>
+                <columnExists tableName="NSI_PUSH_LOG" columnName="error"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки status в таблицу логирования входящих пуш запросов NSI_PUSH_LOG</comment>
+        <addColumn tableName="NSI_PUSH_LOG">
+            <column name="error" type="NUMBER(1)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="error" tableName="NSI_PUSH_LOG"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-12-5" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="NSI_PUSH_LOG"/>
+            <not>
+                <columnExists tableName="NSI_PUSH_LOG" columnName="error_message"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки error в таблицу логирования входящих пуш запросов NSI_PUSH_LOG</comment>
+        <addColumn tableName="NSI_PUSH_LOG">
+            <column name="error_message" type="text"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="error_message" tableName="NSI_PUSH_LOG"/>
+        </rollback>
+    </changeSet>
 
 
 </databaseChangeLog>

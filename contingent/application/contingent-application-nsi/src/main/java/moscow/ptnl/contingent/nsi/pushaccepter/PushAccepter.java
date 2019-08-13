@@ -12,13 +12,13 @@ import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ResponseEle
 @Component
 public abstract class PushAccepter {
 
-    public abstract Answer getPush(Package pack);
+    public abstract Answer getPush(Package pack, long savedId);
 
     public abstract Answer getPushSpec(Table table);
 
     public abstract Answer getPushForm(String response);
 
-    public ResponseElement get(ChangeElement changeElement) {
+    public ResponseElement get(ChangeElement changeElement, long savedId) {
         ResponseElement responseElement;
         try {
             Answer answer;
@@ -31,7 +31,7 @@ public abstract class PushAccepter {
             } else {
                 XmlUnmarshaller xmlUnmarshaller = new XmlUnmarshaller();
                 Package pack = xmlUnmarshaller.getPackageIntoString(changeElement.getIn());
-                answer = getPush(pack);
+                answer = getPush(pack, savedId);
             }
 
             if (answer != null && answer.isResult()) {

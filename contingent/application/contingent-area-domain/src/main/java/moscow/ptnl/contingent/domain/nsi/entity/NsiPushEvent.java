@@ -1,6 +1,9 @@
 package moscow.ptnl.contingent.domain.nsi.entity;
 
+import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,10 +36,18 @@ public class NsiPushEvent implements Serializable {
     @Column(name = "input_message")
     private String inputMessage;
 
+    @Column(name = "error")
+    @Convert(converter = BooleanStrictIntegerConverter.class)
+    private Boolean error;
+
+    @Column(name = "error_message")
+    private String errorMessage;
+
     public NsiPushEvent() {
     }
 
-    public NsiPushEvent(String inType, LocalDateTime receivedTime, String inputMessage) {
+    public NsiPushEvent(String inType, LocalDateTime receivedTime, String inputMessage, boolean error) {
+        this.error = error;
         this.inType = inType;
         this.receivedTime = receivedTime;
         this.inputMessage = inputMessage;
@@ -68,6 +79,22 @@ public class NsiPushEvent implements Serializable {
 
     public void setInputMessage(String inputMessage) {
         this.inputMessage = inputMessage;
+    }
+
+    public Boolean getError() {
+        return error;
+    }
+
+    public void setError(Boolean error) {
+        this.error = error;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override
