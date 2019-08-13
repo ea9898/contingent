@@ -480,6 +480,8 @@ public class AreaServiceHelper {
             if (changeEmpl.getEndDate() != null) {
                 empl.setEndDate(changeEmpl.getEndDate());
             }
+
+            empl.setUpdateDate(LocalDateTime.now());
         }
     }
 
