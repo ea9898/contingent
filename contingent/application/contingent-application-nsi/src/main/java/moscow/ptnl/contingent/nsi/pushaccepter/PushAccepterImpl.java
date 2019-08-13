@@ -62,23 +62,23 @@ public class PushAccepterImpl extends PushAccepter {
             case AREA_TYPE:
                 AreaType areaType = mapAreaType(pack);
                 saveOrDelete(areaTypesCRUDRepository, areaType, pack.catalog.data.action);
-
+                break;
             case AREA_TYPE_CLASS:
                 AreaTypeClass areaTypeClass = mapAreaTypeClass(pack);
                 saveOrDelete(classAreaTypesCRUDRepository, areaTypeClass, pack.catalog.data.action);
-
+                break;
             case AREA_TYPE_KIND:
                 AreaTypeKind areaTypeKind = mapAreaTypeKind(pack);
                 saveOrDelete(kindAreaTypesCRUDRepository, areaTypeKind, pack.catalog.data.action);
-
+                break;
             case AREA_TYPE_MEDICAL_POSITIONS:
                 AreaTypeMedicalPositions areaTypeMedicalPositions = mapAreaTypeMedicalPositions(pack);
                 saveOrDelete(areaTypeMedicalPositionsCRUDRepository, areaTypeMedicalPositions, pack.catalog.data.action);
-
+                break;
             case AREA_TYPE_RELATIONS:
                 AreaTypeRelations areaTypeRelations = mapAreaTypeRelations(pack);
                 saveOrDelete(areaTypeRelationsCRUDRepository, areaTypeRelations, pack.catalog.data.action);
-
+                break;
             case AREA_TYPE_SPECIALIZATIONS:
                 AreaTypeSpecializations areaTypeSpecializations = mapAreaTypeSpecializations(pack);
                 saveOrDelete(areaTypeSpecializationsCRUDRepository, areaTypeSpecializations, pack.catalog.data.action);
