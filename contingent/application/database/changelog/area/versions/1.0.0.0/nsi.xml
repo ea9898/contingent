@@ -30,6 +30,46 @@
     </changeSet>
     <!-- !!!! SPECIALIZATION !!!! -->
 
+    <!-- POSITION_CODE -->
+    <changeSet id="CONTINGENT2-NSI-14-1" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="POSITION_CODE" />
+            </not>
+        </preConditions>
+        <createTable tableName="POSITION_CODE">
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="NOM_TYPE" type="VARCHAR2(10)">
+                <constraints nullable="false" />
+            </column>
+            <column name="SERIAL_NUM" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="CODE" type="VARCHAR2(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="CONSTANT_TITLE" type="VARCHAR2(250)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="POSITION_CODE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-14-2" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists columnName="CODE" tableName="POSITION_CODE" />
+        </preConditions>
+        <addUniqueConstraint columnNames="CODE"
+                             constraintName="UNIQ_CODE_PC"
+                             disabled="true"
+                             tableName="POSITION_CODE"/>
+    </changeSet>
+    <!-- POSITION_CODE -->
+
     <!-- POSITION_NOM -->
     <changeSet id="CONTINGENT2-NSI-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
@@ -88,6 +128,65 @@
                      unique="false">
             <column name="SPECIALIZATION_ID" type="BIGINT"/>
         </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-2-3" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="POSITION_NOM" columnName="CODE" />
+        </preConditions>
+        <dropColumn columnName="CODE" tableName="POSITION_NOM" />
+        <rollback>
+            <addColumn tableName="POSITION_NOM">
+                <column name="CODE" type="VARCHAR2(100)">
+                    <constraints nullable="false" />
+                </column>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-2-3-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="POSITION_NOM" columnName="ARCHIVED" />
+        </preConditions>
+        <dropColumn columnName="ARCHIVED" tableName="POSITION_NOM" />
+        <rollback>
+            <addColumn tableName="POSITION_NOM">
+                <column name="ARCHIVED" type="NUMBER(1)">
+                    <constraints nullable="false" />
+                </column>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-2-3-2" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="POSITION_NOM" columnName="POSITION_CODE_ID" />
+            </not>
+        </preConditions>
+        <addColumn tableName="POSITION_NOM">
+            <column name="POSITION_CODE_ID" type="BIGINT" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="POSITION_CODE_ID" tableName="POSITION_NOM" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-2-3-3" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="POSITION_NOM" columnName="GLOBAL_ID" />
+            </not>
+        </preConditions>
+        <renameColumn
+            newColumnName="GLOBAL_ID"
+            oldColumnName="ID"
+            tableName="POSITION_NOM" />
+        <rollback>
+            <dropColumn columnName="POSITION_CODE_ID" tableName="POSITION_NOM" />
+        </rollback>
     </changeSet>
     <!-- !!!! POSITION_NOM !!!! -->
 
@@ -308,6 +407,87 @@
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-5-0" author="ddryuchin" labels="1.0.0.0">
+        <delete tableName="AREA_TYPE_MEDICAL_POSITIONS" />
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-5" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_NOM_ID" />
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_TYPE_MEDICAL_POSITIONS">
+            <column name="POSITION_NOM_ID" type="BIGINT" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_NOM_ID" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-5-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_ATMP_PNGI_01"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="IXFK_ATMP_PNGI_01"
+                     tableName="AREA_TYPE_MEDICAL_POSITIONS"
+                     unique="false">
+            <column name="POSITION_NOM_ID" type="BIGINT"/>
+        </createIndex>
+        <rollback>
+            <dropIndex indexName="IXFK_ATMP_PNGI_01"
+                       tableName="AREA_TYPE_MEDICAL_POSITIONS" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-5-2" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_NOM_ID" />
+            <columnExists tableName="POSITION_NOM" columnName="GLOBAL_ID" />
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_ID"
+                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
+                                 constraintName="FK_ATMP_PNGI"
+                                 referencedColumnNames="GLOBAL_ID"
+                                 referencedTableName="POSITION_NOM"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="FK_ATMP_PNGI"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-5-3" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists  foreignKeyTableName="AREA_TYPE_MEDICAL_POSITIONS" foreignKeyName="FK_AREA_TYPE_ME_POSITION_NO_01" />
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="FK_AREA_TYPE_ME_POSITION_NO_01"/>
+        <rollback>
+            <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
+                                     baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
+                                     constraintName="FK_AREA_TYPE_ME_POSITION_NO_01"
+                                     referencedColumnNames="ID"
+                                     referencedTableName="POSITION_NOM"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-5-4" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" />
+            <columnExists tableName="POSITION_CODE" columnName="CODE" />
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="POSITION_CODE "
+                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
+                                 constraintName="FK_ATMP_PCC"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="POSITION_CODE"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="FK_ATMP_PCC"/>
+        </rollback>
+    </changeSet>
+
+
     <!-- !!!! AREA_TYPE_MEDICAL_POSITIONS !!!! -->
 
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
@@ -957,27 +1137,28 @@
         <comment>Изменение типа данных в таблице AREA_MEDICAL_EMPLOYEES</comment>
         <modifyDataType tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>    
     </changeSet>
-        
-    <changeSet id="CONTINGENT2-191-NSI-5" author="mkachalov"  labels="1.0.0.0">
-	<preConditions onFail="MARK_RAN">
-             <and>
-                    <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS" />		
-                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_MEDICAL_POSITIONS</sqlCheck>
-             </and>
-	</preConditions>
-        <comment>Заполнение справочника</comment>	
-        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE_MEDICAL_POSITIONS" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE_MEDICAL_POSITIONS.csv">
-            <column header="ID" name="ID" type="NUMERIC"/>
-            <column header="AREA_TYPE_CODE" name="AREA_TYPE_CODE" type="NUMERIC"/>
-            <column header="POSITION_CODE" name="POSITION_CODE" type="STRING"/>
-            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
-        </loadData>
-        <rollback>
-            <sql>
-               DELETE FROM AREA_TYPE_MEDICAL_POSITIONS;
-            </sql>
-        </rollback>
-    </changeSet>
+
+<!--    CONTINGENT2-280 -->
+<!--    <changeSet id="CONTINGENT2-191-NSI-5" author="mkachalov"  labels="1.0.0.0">-->
+<!--	<preConditions onFail="MARK_RAN">-->
+<!--             <and>-->
+<!--                    <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS" />		-->
+<!--                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_MEDICAL_POSITIONS</sqlCheck>-->
+<!--             </and>-->
+<!--	</preConditions>-->
+<!--        <comment>Заполнение справочника</comment>	-->
+<!--        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE_MEDICAL_POSITIONS" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE_MEDICAL_POSITIONS.csv">-->
+<!--            <column header="ID" name="ID" type="NUMERIC"/>-->
+<!--            <column header="AREA_TYPE_CODE" name="AREA_TYPE_CODE" type="NUMERIC"/>-->
+<!--            <column header="POSITION_CODE" name="POSITION_CODE" type="STRING"/>-->
+<!--            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>-->
+<!--        </loadData>-->
+<!--        <rollback>-->
+<!--            <sql>-->
+<!--               DELETE FROM AREA_TYPE_MEDICAL_POSITIONS;-->
+<!--            </sql>-->
+<!--        </rollback>-->
+<!--    </changeSet>-->
 
     <changeSet id="CONTINGENT2-NSI-12-4" author="shnaider_ab">
         <preConditions onFail="MARK_RAN">
