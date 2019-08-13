@@ -890,7 +890,7 @@
         </preConditions>
         <comment>Создание таблицы логирования входящих пуш запросов NSI_PUSH_LOG</comment>
         <createTable tableName="NSI_PUSH_LOG">
-            <column name="globalId" type="BIGINT">
+            <column name="id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="in_type" type="VARCHAR2(100)"/>
@@ -935,7 +935,7 @@
         </preConditions>
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="GENDER" file="changelog/area/versions/1.0.0.0/files/Пол_GENDER.csv">
-            <column header="system_object_id" name="globalId" type="NUMERIC"/>
+            <column header="system_object_id" name="id" type="NUMERIC"/>
             <column header="code" name="CODE" type="string"/>
             <column header="title" name="TITLE" type="string"/>
             <column header="archived" name="archived" type="NUMERIC"/>
@@ -945,7 +945,7 @@
     <changeSet id="CONTINGENT2-NSI-13-3" author="ddryuchin"  labels="1.0.0.0">
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="SPECIALIZATION" file="changelog/area/versions/1.0.0.0/files/Медицинская специализация_SPECIALIZATION.csv">
-            <column header="globalId" name="globalId" type="NUMERIC"/>
+            <column header="id" name="id" type="NUMERIC"/>
             <column header="code" name="CODE" type="NUMERIC"/>
             <column header="title" name="TITLE" type="string"/>
             <column header="archived" name="archived" type="NUMERIC"/>
