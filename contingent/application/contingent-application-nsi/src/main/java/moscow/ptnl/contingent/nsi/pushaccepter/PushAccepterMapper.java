@@ -159,10 +159,11 @@ public class PushAccepterMapper {
             areaTypeMedicalPositions.setAreaType(new AreaType(Long.valueOf(areaTypeCode)));
         }
 
-        String positionCode = getValue(pack, AreaTypeMedicalPositions.FieldsEnum.POSITION_CODE.toString());
-        if (positionCode.length() > 0) {
-            areaTypeMedicalPositions.setPositionNomCode(positionCode);
-        }
+//        СONTINGENT2-280
+//        String positionCode = getValue(pack, AreaTypeMedicalPositions.FieldsEnum.POSITION_CODE.toString());
+//        if (positionCode.length() > 0) {
+//            areaTypeMedicalPositions.setPositionNomCode(positionCode);
+//        }
 
         String archived = getValue(pack, AreaTypeMedicalPositions.FieldsEnum.ARCHIVED.toString());
         if (archived.length() > 0) {

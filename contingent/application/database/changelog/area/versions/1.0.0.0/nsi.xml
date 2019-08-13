@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
     <!-- SPECIALIZATION -->
-    <changeSet id="CONTINGENT2-NSI-1" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="SPECIALIZATION"/>
@@ -31,7 +31,7 @@
     <!-- !!!! SPECIALIZATION !!!! -->
 
     <!-- POSITION_CODE -->
-    <changeSet id="CONTINGENT2-NSI-14-1" author="ddryuchin">
+    <changeSet globalId="CONTINGENT2-NSI-14-1" author="ddryuchin">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="POSITION_CODE" />
@@ -59,7 +59,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-14-2" author="ddryuchin">
+    <changeSet globalId="CONTINGENT2-NSI-14-2" author="ddryuchin">
         <preConditions onFail="MARK_RAN">
             <columnExists columnName="CODE" tableName="POSITION_CODE" />
         </preConditions>
@@ -71,7 +71,7 @@
     <!-- POSITION_CODE -->
 
     <!-- POSITION_NOM -->
-    <changeSet id="CONTINGENT2-NSI-2" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="POSITION_NOM"/>
@@ -103,7 +103,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-2-1" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-2-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="SPECIALIZATION" columnName="ID" />
             <columnExists tableName="POSITION_NOM" columnName="SPECIALIZATION_ID" />
@@ -116,7 +116,7 @@
                                  referencedTableName="SPECIALIZATION"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-2-2" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-2-2" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_POSITION_NOM_SPECIALIZATIONO01"/>
@@ -130,7 +130,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-2-3" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-2-3" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="POSITION_NOM" columnName="CODE" />
         </preConditions>
@@ -144,7 +144,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-2-3-1" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-2-3-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="POSITION_NOM" columnName="ARCHIVED" />
         </preConditions>
@@ -158,7 +158,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-2-3-2" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-2-3-2" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="POSITION_NOM" columnName="POSITION_CODE_ID" />
@@ -174,16 +174,16 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-2-3-3" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-2-3-3" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="POSITION_NOM" columnName="GLOBAL_ID" />
             </not>
         </preConditions>
         <renameColumn
-            newColumnName="GLOBAL_ID"
-            oldColumnName="ID"
-            tableName="POSITION_NOM" />
+                newColumnName="GLOBAL_ID"
+                oldColumnName="ID"
+                tableName="POSITION_NOM" />
         <rollback>
             <dropColumn columnName="POSITION_CODE_ID" tableName="POSITION_NOM" />
         </rollback>
@@ -191,7 +191,7 @@
     <!-- !!!! POSITION_NOM !!!! -->
 
     <!-- AREA_TYPES_CLASS -->
-    <changeSet id="CONTINGENT2-NSI-3" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREA_TYPES_CLASS"/>
@@ -214,7 +214,7 @@
     <!-- !!!! AREA_TYPES_CLASS !!!! -->
 
     <!-- AREA_TYPES_KIND -->
-    <changeSet id="CONTINGENT2-NSI-4" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREA_TYPES_KIND"/>
@@ -237,7 +237,7 @@
     <!-- !!!! AREA_TYPES_KIND !!!! -->
 
     <!-- AREA_TYPE -->
-    <changeSet id="CONTINGENT2-NSI-5" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-5" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREA_TYPE"/>
@@ -275,7 +275,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-5-1" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-5-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_TYPE_CLASS_ARE01"/>
@@ -289,7 +289,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-5-2" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-5-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_TYPE_KIND_AREA01"/>
@@ -303,7 +303,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-5-3" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-5-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE" columnName="AREA_TYPE_CLASS_CODE" />
             <columnExists tableName="AREA_TYPES_CLASS" columnName="CODE" />
@@ -316,7 +316,7 @@
                                  referencedTableName="AREA_TYPES_CLASS"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-5-4" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-5-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE" columnName="AREA_TYPE_KIND_CODE" />
             <columnExists tableName="AREA_TYPES_KIND" columnName="CODE" />
@@ -331,7 +331,7 @@
     <!-- !!!! AREA_TYPE !!!! -->
 
     <!-- AREA_TYPE_MEDICAL_POSITIONS -->
-    <changeSet id="CONTINGENT2-NSI-6" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
@@ -354,7 +354,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-1" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_TYPE_ME_POSITIO01"/>
@@ -368,7 +368,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-2" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_TYPE_MEDI_AREA_01"/>
@@ -382,7 +382,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-3" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
             <columnExists tableName="POSITION_NOM" columnName="ID" />
@@ -395,7 +395,7 @@
                                  referencedTableName="POSITION_NOM"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-4" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
             <columnExists tableName="AREA_TYPE" columnName="CODE" />
@@ -408,11 +408,11 @@
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-5-0" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-5-0" author="ddryuchin" labels="1.0.0.0">
         <delete tableName="AREA_TYPE_MEDICAL_POSITIONS" />
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-5" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-5" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_NOM_ID" />
@@ -426,7 +426,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-5-1" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-5-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_ATMP_PNGI_01"/>
@@ -443,7 +443,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-5-2" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-5-2" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_NOM_ID" />
             <columnExists tableName="POSITION_NOM" columnName="GLOBAL_ID" />
@@ -458,7 +458,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-5-3" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-5-3" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <foreignKeyConstraintExists  foreignKeyTableName="AREA_TYPE_MEDICAL_POSITIONS" foreignKeyName="FK_AREA_TYPE_ME_POSITION_NO_01" />
         </preConditions>
@@ -472,7 +472,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-5-4" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-6-5-4" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" />
             <columnExists tableName="POSITION_CODE" columnName="CODE" />
@@ -491,7 +491,7 @@
     <!-- !!!! AREA_TYPE_MEDICAL_POSITIONS !!!! -->
 
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
-    <changeSet id="CONTINGENT2-NSI-7" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-7" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREA_TYPE_RELATIONS"/>
@@ -518,7 +518,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-7-1" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-7-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_TYPE_RELA_AREA_DEP"/>
@@ -532,7 +532,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-7-2" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-7-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AREA_TYPE_RELA_AREA_PRIM"/>
@@ -546,7 +546,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-7-3" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-7-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_RELATIONS" columnName="DEPENDENT_AREA_TYPE_CODE" />
             <columnExists tableName="AREA_TYPE" columnName="CODE" />
@@ -559,7 +559,7 @@
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-7-4" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-7-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_RELATIONS" columnName="PRIMARY_AREA_TYPE_CODE" />
             <columnExists tableName="AREA_TYPE" columnName="CODE" />
@@ -574,7 +574,7 @@
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
 
     <!-- ADDRESS_FORMING_ELEMENT -->
-    <changeSet id="CONTINGENT2-NSI-8" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-8" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
@@ -624,7 +624,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-8-1" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-8-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IXFK_AFE_GLOBAL_ID"/>
@@ -640,7 +640,7 @@
     <!-- !!!! ADDRESS_FORMING_ELEMENT !!!! -->
 
     <!-- POLICY_TYPE -->
-    <changeSet id="CONTINGENT2-NSI-9" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-9" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="POLICY_TYPE"/>
@@ -666,7 +666,7 @@
     <!-- !!!! POLICY_TYPE !!!! -->
 
     <!-- BUILDING_REGISTRY -->
-    <changeSet id="CONTINGENT2-NSI-10" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-10" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="BUILDING_REGISTRY"/>
@@ -696,7 +696,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-10-1" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-10-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IDX_BUILDING_REGISTRY_AFE_ID"/>
@@ -710,7 +710,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-10-2" author="sorlov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-10-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="BUILDING_REGISTRY" columnName="AFE_ID" />
             <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="ID" />
@@ -723,7 +723,7 @@
                                  referencedTableName="ADDRESS_FORMING_ELEMENT"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-10-3" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-10-3" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IDX_BUILDING_REGISTRY_GLOBAL_ID"/>
@@ -737,7 +737,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-10-4" author="sorlov">
+    <changeSet globalId="CONTINGENT2-NSI-10-4" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SEQ_BUILDING_REGISTRY"/>
@@ -752,7 +752,7 @@
     <!-- !!!! BUILDING_REGISTRY !!!! -->
 
     <!-- AREA_TYPE_SPECIALIZATIONS -->
-    <changeSet id="CONTINGENT2-NSI-11" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-11" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="AREA_TYPE_SPECIALIZATIONS"/>
@@ -778,7 +778,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-11-1" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-11-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_SPECIALIZATIONS" columnName="AREA_TYPE_CODE" />
             <columnExists tableName="AREA_TYPE" columnName="CODE" />
@@ -791,7 +791,7 @@
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-11-2" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-11-2" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IDX_ATS_ATC"/>
@@ -805,7 +805,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-11-3" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-11-3" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <indexExists indexName="IDX_ATS_SPEC_CODE"/>
@@ -819,7 +819,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-11-4" author="sorlov">
+    <changeSet globalId="CONTINGENT2-NSI-11-4" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
@@ -835,7 +835,7 @@
     <!-- !!!! AREA_TYPE_SPECIALIZATIONS !!!! -->
 
     <!-- GENDER -->
-    <changeSet id="CONTINGENT2-NSI-12" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-12" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="GENDER"/>
@@ -861,7 +861,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-12-5" author="ddryuchin" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-12-5" author="ddryuchin" labels="1.0.0.0">
         <modifyDataType columnName="CODE"
                         newDataType="VARCHAR(50)"
                         tableName="GENDER"/>
@@ -869,7 +869,7 @@
 
     <!-- !!!! GENDER !!!! -->
 
-    <changeSet id="CONTINGENT2-NSI-12-1" author="shnaider_ab">
+    <changeSet globalId="CONTINGENT2-NSI-12-1" author="shnaider_ab">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SEQ_NSI_PUSH_LOG"/>
@@ -882,7 +882,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-12-2" author="shnaider_ab">
+    <changeSet globalId="CONTINGENT2-NSI-12-2" author="shnaider_ab">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="NSI_PUSH_LOG"/>
@@ -890,7 +890,7 @@
         </preConditions>
         <comment>Создание таблицы логирования входящих пуш запросов NSI_PUSH_LOG</comment>
         <createTable tableName="NSI_PUSH_LOG">
-            <column name="id" type="BIGINT">
+            <column name="globalId" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="in_type" type="VARCHAR2(100)"/>
@@ -906,7 +906,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-12-3" author="shnaider_ab">
+    <changeSet globalId="CONTINGENT2-NSI-12-3" author="shnaider_ab">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="NSI_PUSH_LOG" columnName="input_message" />
@@ -917,7 +917,7 @@
                       tableName="NSI_PUSH_LOG"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-13-1" author="ddryuchin"  labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-13-1" author="ddryuchin"  labels="1.0.0.0">
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="POLICY_TYPE" file="changelog/area/versions/1.0.0.0/files/Тип полиса_POLICY_TYPE.csv">
             <column header="CODE" name="CODE" type="NUMERIC"/>
@@ -926,33 +926,33 @@
         </loadData>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-13-2" author="ddryuchin"  labels="1.0.0.0">
-	<preConditions onFail="MARK_RAN">
-		<and>
-      			<tableExists tableName="GENDER" />
-			<sqlCheck expectedResult ="0">SELECT COUNT(*) GENDER</sqlCheck>
-      		</and>
-	</preConditions>
-        <comment>Заполнение справочника</comment>	
+    <changeSet globalId="CONTINGENT2-NSI-13-2" author="ddryuchin"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="GENDER" />
+                <sqlCheck expectedResult ="0">SELECT COUNT(*) GENDER</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="GENDER" file="changelog/area/versions/1.0.0.0/files/Пол_GENDER.csv">
-            <column header="system_object_id" name="id" type="NUMERIC"/>
+            <column header="system_object_id" name="globalId" type="NUMERIC"/>
             <column header="code" name="CODE" type="string"/>
             <column header="title" name="TITLE" type="string"/>
             <column header="archived" name="archived" type="NUMERIC"/>
         </loadData>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-13-3" author="ddryuchin"  labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-13-3" author="ddryuchin"  labels="1.0.0.0">
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="SPECIALIZATION" file="changelog/area/versions/1.0.0.0/files/Медицинская специализация_SPECIALIZATION.csv">
-            <column header="id" name="id" type="NUMERIC"/>
+            <column header="globalId" name="globalId" type="NUMERIC"/>
             <column header="code" name="CODE" type="NUMERIC"/>
             <column header="title" name="TITLE" type="string"/>
             <column header="archived" name="archived" type="NUMERIC"/>
         </loadData>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-13-4" author="ddryuchin"  labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-13-4" author="ddryuchin"  labels="1.0.0.0">
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPES_CLASS" file="changelog/area/versions/1.0.0.0/files/Классы типа участка_AREA_TYPES_CLASS.csv">
             <column header="CODE" name="CODE" type="NUMERIC"/>
@@ -961,7 +961,7 @@
         </loadData>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-13-5" author="ddryuchin"  labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-NSI-13-5" author="ddryuchin"  labels="1.0.0.0">
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPES_KIND" file="changelog/area/versions/1.0.0.0/files/Вид типа участка_AREA_TYPES_KIND.csv">
             <column header="CODE" name="CODE" type="NUMERIC"/>
@@ -970,16 +970,16 @@
         </loadData>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-191-NSI-1" author="mkachalov"  labels="1.0.0.0">
-	<preConditions onFail="MARK_RAN">
-             <and>
-                    <tableExists tableName="AREA_TYPE" />		
-                    <!-- <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE</sqlCheck> -->
-             </and>
-	</preConditions>
-        <comment>Заполнение справочника</comment>	
+    <changeSet globalId="CONTINGENT2-191-NSI-1" author="mkachalov"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AREA_TYPE" />
+                <!-- <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE</sqlCheck> -->
+            </and>
+        </preConditions>
+        <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE.csv">
-	    <column header="CODE" name="CODE" type="NUMERIC"/>
+            <column header="CODE" name="CODE" type="NUMERIC"/>
             <column header="TITLE" name="TITLE" type="string"/>
             <column header="AREA_TYPE_KIND_CODE" name="AREA_TYPE_KIND_CODE" type="NUMERIC"/>
             <column header="AREA_TYPE_CLASS_CODE" name="AREA_TYPE_CLASS_CODE" type="NUMERIC"/>
@@ -1001,19 +1001,19 @@
         </loadData>
         <rollback>
             <sql>
-               DELETE FROM AREA_TYPE;
+                DELETE FROM AREA_TYPE;
             </sql>
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-191-NSI-2" author="mkachalov"  labels="1.0.0.0">
-	<preConditions onFail="MARK_RAN">
-             <and>
-                    <tableExists tableName="AREA_TYPE_SPECIALIZATIONS" />		
-                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_SPECIALIZATIONS</sqlCheck>
-             </and>
-	</preConditions>
-        <comment>Заполнение справочника</comment>	
+    <changeSet globalId="CONTINGENT2-191-NSI-2" author="mkachalov"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AREA_TYPE_SPECIALIZATIONS" />
+                <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_SPECIALIZATIONS</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE_SPECIALIZATIONS" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE_SPECIALIZATIONS.csv">
             <column header="ID" name="ID" type="NUMERIC"/>
             <column header="AREA_TYPE_CODE" name="AREA_TYPE_CODE" type="NUMERIC"/>
@@ -1022,7 +1022,7 @@
         </loadData>
         <rollback>
             <sql>
-               DELETE FROM AREA_TYPE_SPECIALIZATIONS;
+                DELETE FROM AREA_TYPE_SPECIALIZATIONS;
             </sql>
         </rollback>
     </changeSet>
@@ -1031,48 +1031,48 @@
     <!-- Тут начинается фигня которую лучше бы сразу при создании таблицы POSITION_NOM учесть -->
 
     <!-- Констрэйнт удален в связи с отсутствием соответствующего ограничения (Катерина Рымова) -->
-    <changeSet id="CONTINGENT2-191-NSI-3" author="mkachalov"  labels="1.0.0.0">
-	<preConditions onFail="MARK_RAN">
-             <tableExists tableName="POSITION_NOM" />		
-	</preConditions>
+    <changeSet globalId="CONTINGENT2-191-NSI-3" author="mkachalov"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="POSITION_NOM" />
+        </preConditions>
         <dropNotNullConstraint columnDataType="DATE" columnName="START" tableName="POSITION_NOM"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-191-NSI-4-1" author="mkachalov"  labels="1.0.0.0" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet globalId="CONTINGENT2-191-NSI-4-1" author="mkachalov"  labels="1.0.0.0" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <preConditions onFail="MARK_RAN">
             <and>
-                 <tableExists tableName="position_nom" />
-                 <sqlCheck expectedResult ="1">SELECT COUNT(column_name) FROM information_schema.columns WHERE table_name='position_nom' AND column_name='end'</sqlCheck>
+                <tableExists tableName="position_nom" />
+                <sqlCheck expectedResult ="1">SELECT COUNT(column_name) FROM information_schema.columns WHERE table_name='position_nom' AND column_name='end'</sqlCheck>
             </and>
         </preConditions>
         <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="p_end" oldColumnName="end" tableName="position_nom"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-191-NSI-4-2" author="mkachalov"  labels="1.0.0.0" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet globalId="CONTINGENT2-191-NSI-4-2" author="mkachalov"  labels="1.0.0.0" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <preConditions onFail="MARK_RAN">
             <and>
-                 <tableExists tableName="position_nom" />
-                 <sqlCheck expectedResult ="1">SELECT COUNT(column_name) FROM information_schema.columns WHERE table_name='position_nom' AND column_name='END'</sqlCheck>
+                <tableExists tableName="position_nom" />
+                <sqlCheck expectedResult ="1">SELECT COUNT(column_name) FROM information_schema.columns WHERE table_name='position_nom' AND column_name='END'</sqlCheck>
             </and>
         </preConditions>
         <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="p_end" oldColumnName="END" tableName="position_nom"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-206-3-1" author="mkachalov"  labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-206-3-1" author="mkachalov"  labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <and>
-                 <tableExists tableName="position_nom" />
-                 <columnExists tableName="position_nom" columnName="p_end" />
+                <tableExists tableName="position_nom" />
+                <columnExists tableName="position_nom" columnName="p_end" />
             </and>
         </preConditions>
         <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="end_date" oldColumnName="p_end" tableName="position_nom"  remarks="Дата окончания действия"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-206-3-2" author="mkachalov"  labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-206-3-2" author="mkachalov"  labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <and>
-                 <tableExists tableName="position_nom" />
-                 <columnExists tableName="position_nom" columnName="start" />
+                <tableExists tableName="position_nom" />
+                <columnExists tableName="position_nom" columnName="start" />
             </and>
         </preConditions>
         <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="start_date" oldColumnName="start" tableName="position_nom" remarks="Дата начала действия"/>
@@ -1082,14 +1082,14 @@
 
 
 
-    <changeSet id="CONTINGENT2-191-NSI-4" author="mkachalov"  labels="1.0.0.0">
-	<preConditions onFail="MARK_RAN">
-             <and>
-                    <tableExists tableName="POSITION_NOM" />		
-                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM POSITION_NOM</sqlCheck>
-             </and>
-	</preConditions>
-        <comment>Заполнение справочника POSITION_NOM</comment>	
+    <changeSet globalId="CONTINGENT2-191-NSI-4" author="mkachalov"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="POSITION_NOM" />
+                <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM POSITION_NOM</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Заполнение справочника POSITION_NOM</comment>
         <loadData encoding="UTF-8" separator=";" tableName="POSITION_NOM" file="changelog/area/versions/1.0.0.0/files/POSITION_NOM.csv">
             <column header="ID" name="ID" type="NUMERIC"/>
             <column header="CODE" name="CODE" type="STRING"/>
@@ -1101,66 +1101,66 @@
         </loadData>
         <rollback>
             <sql>
-               DELETE FROM POSITION_NOM;
+                DELETE FROM POSITION_NOM;
             </sql>
         </rollback>
     </changeSet>
-        
-    
 
-    <changeSet id="CONTINGENT2-206-1-1" author="mkachalov" labels="1.0.0.0">
-         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>            
-         </preConditions>
-         <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="fk_area_type_me_position_no_01"/>
-    </changeSet>
-    
-    <changeSet id="CONTINGENT2-206-1-2" author="mkachalov" labels="1.0.0.0">
+
+
+    <changeSet globalId="CONTINGENT2-206-1-1" author="mkachalov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>            
+            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="fk_area_type_me_position_no_01"/>
+    </changeSet>
+
+    <changeSet globalId="CONTINGENT2-206-1-2" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
         </preConditions>
         <comment>Изменение типа данных в таблице AREA_TYPE_MEDICAL_POSITIONS</comment>
-        <modifyDataType tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>    
+        <modifyDataType tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-206-2-1" author="mkachalov" labels="1.0.0.0">
-         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>            
-         </preConditions>
-         <dropForeignKeyConstraint baseTableName="AREA_MEDICAL_EMPLOYEES" constraintName="fk_ame_position_nom"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-206-2-2" author="mkachalov" labels="1.0.0.0">
+    <changeSet globalId="CONTINGENT2-206-2-1" author="mkachalov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>            
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="AREA_MEDICAL_EMPLOYEES" constraintName="fk_ame_position_nom"/>
+    </changeSet>
+
+    <changeSet globalId="CONTINGENT2-206-2-2" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
         </preConditions>
         <comment>Изменение типа данных в таблице AREA_MEDICAL_EMPLOYEES</comment>
-        <modifyDataType tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>    
+        <modifyDataType tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>
     </changeSet>
 
-<!--    CONTINGENT2-280 -->
-<!--    <changeSet id="CONTINGENT2-191-NSI-5" author="mkachalov"  labels="1.0.0.0">-->
-<!--	<preConditions onFail="MARK_RAN">-->
-<!--             <and>-->
-<!--                    <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS" />		-->
-<!--                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_MEDICAL_POSITIONS</sqlCheck>-->
-<!--             </and>-->
-<!--	</preConditions>-->
-<!--        <comment>Заполнение справочника</comment>	-->
-<!--        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE_MEDICAL_POSITIONS" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE_MEDICAL_POSITIONS.csv">-->
-<!--            <column header="ID" name="ID" type="NUMERIC"/>-->
-<!--            <column header="AREA_TYPE_CODE" name="AREA_TYPE_CODE" type="NUMERIC"/>-->
-<!--            <column header="POSITION_CODE" name="POSITION_CODE" type="STRING"/>-->
-<!--            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>-->
-<!--        </loadData>-->
-<!--        <rollback>-->
-<!--            <sql>-->
-<!--               DELETE FROM AREA_TYPE_MEDICAL_POSITIONS;-->
-<!--            </sql>-->
-<!--        </rollback>-->
-<!--    </changeSet>-->
+    <!--    CONTINGENT2-280 -->
+    <!--    <changeSet globalId="CONTINGENT2-191-NSI-5" author="mkachalov"  labels="1.0.0.0">-->
+    <!--	<preConditions onFail="MARK_RAN">-->
+    <!--             <and>-->
+    <!--                    <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS" />		-->
+    <!--                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_MEDICAL_POSITIONS</sqlCheck>-->
+    <!--             </and>-->
+    <!--	</preConditions>-->
+    <!--        <comment>Заполнение справочника</comment>	-->
+    <!--        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE_MEDICAL_POSITIONS" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE_MEDICAL_POSITIONS.csv">-->
+    <!--            <column header="ID" name="ID" type="NUMERIC"/>-->
+    <!--            <column header="AREA_TYPE_CODE" name="AREA_TYPE_CODE" type="NUMERIC"/>-->
+    <!--            <column header="POSITION_CODE" name="POSITION_CODE" type="STRING"/>-->
+    <!--            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>-->
+    <!--        </loadData>-->
+    <!--        <rollback>-->
+    <!--            <sql>-->
+    <!--               DELETE FROM AREA_TYPE_MEDICAL_POSITIONS;-->
+    <!--            </sql>-->
+    <!--        </rollback>-->
+    <!--    </changeSet>-->
 
-    <changeSet id="CONTINGENT2-NSI-12-4" author="shnaider_ab">
+    <changeSet globalId="CONTINGENT2-NSI-12-4" author="shnaider_ab">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="NSI_PUSH_LOG"/>
             <not>
@@ -1176,7 +1176,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-12-5" author="shnaider_ab">
+    <changeSet globalId="CONTINGENT2-NSI-12-5" author="shnaider_ab">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="NSI_PUSH_LOG"/>
             <not>

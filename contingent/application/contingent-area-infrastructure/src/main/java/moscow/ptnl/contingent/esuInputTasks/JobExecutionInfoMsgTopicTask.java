@@ -200,7 +200,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         medicalEmployee.setMedicalEmployeeJobId(jeCreate.getId());
         medicalEmployee.setReplacement(false);
         medicalEmployee.setSnils(jeCreate.getEmployee().getSnils());
-        medicalEmployee.setPositionNomCode(positionNom.getCode());
+//        medicalEmployee.setPositionNomCode(positionNom.getCode()); CONTINGENT2-280
         medicalEmployee.setSubdivisionId(jeCreate.getDepartment().getId());
         medicalEmployee.setStartDate(EsuInputTaskHelper.convertToLocalDate(jeCreate.getPeriod().getStart()));
         medicalEmployee.setEndDate(jeCreate.getPeriod().getEnd().isNil() ? null :

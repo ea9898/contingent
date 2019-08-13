@@ -816,12 +816,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             // 5.6.            
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
 
-            if (positions != null && positions.stream().noneMatch(pos -> pos.getPositionNomCode().equals(empl.getPositionCode()))) {
-                validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
-                        new ValidationParameter("positionTitle", positionNom.get().getTitle()),
-                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
-                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
-            }            
+//            if (positions != null && positions.stream().noneMatch(pos -> pos.getPositionNomCode().equals(empl.getPositionCode()))) {
+//                validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
+//                        new ValidationParameter("positionTitle", positionNom.get().getTitle()),
+//                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
+//                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
+//            }
+//            CONTINGENT2-280
         }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);

@@ -11,7 +11,7 @@ public class PositionNomMapper implements Transform<PositionNomClinic, PositionN
     @Override
     public PositionNomClinic entityToDtoTransform(PositionNom entityObject) {
         PositionNomClinic employee = new PositionNomClinic();
-        employee.setCode(entityObject.getCode());
+//        employee.setCode(entityObject.getCode()); CONTINGENT2-280
         employee.setName(entityObject.getTitle());
 
         return employee;

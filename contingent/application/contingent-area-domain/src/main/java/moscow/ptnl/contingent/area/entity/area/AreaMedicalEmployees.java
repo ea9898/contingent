@@ -85,7 +85,8 @@ public class AreaMedicalEmployees implements Serializable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
-        this.positionNomCode = (positionNom.isPresent()) ? positionNom.get().getCode() : null;
+//        this.positionNomCode = (positionNom.isPresent()) ? positionNom.get().getCode() : null;
+//        CONTINGENT2-280
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subdivisionId = subdivisionId;

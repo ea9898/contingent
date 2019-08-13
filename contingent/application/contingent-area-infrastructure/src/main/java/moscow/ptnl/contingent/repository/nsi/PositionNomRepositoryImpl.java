@@ -28,18 +28,19 @@ public class PositionNomRepositoryImpl extends BaseRepository implements Positio
     public List<PositionNom> searchPostitionNomActualByCode(Long positionId) {
         Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
             criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(PositionNom_.id.getName()), positionId),
-                    criteriaBuilder.equal(root.get(PositionNom_.archived.getName()), false)
+                    criteriaBuilder.equal(root.get(PositionNom_.globalId.getName()), positionId)
+//                    criteriaBuilder.equal(root.get(PositionNom_.archived.getName()), false) CONTINGENT2-280
             );
         return positionNomCRUDRepository.findAll(specification);
     }
 
     @Override
     public Optional<PositionNom> getByCode(String code) {
-        Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(root.get(PositionNom_.code.getName()), code)
-                );
-        return positionNomCRUDRepository.findOne(specification);
+        return null;
+//        Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
+//                criteriaBuilder.and(
+//                        criteriaBuilder.equal(root.get(PositionNom_.code.getName()), code)
+//                );
+//        return positionNomCRUDRepository.findOne(specification);
     }
 }

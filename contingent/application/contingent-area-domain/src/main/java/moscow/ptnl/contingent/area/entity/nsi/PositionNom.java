@@ -1,10 +1,7 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -24,26 +21,21 @@ public class PositionNom implements Serializable {
     private static final long serialVersionUID = 3663299049984020497L;
 
     @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    private Long id;
-
-    @Size(max = 100)
-    @Column(name = "CODE", nullable = false)
-    private String code;
+    @Column(name = "GLOBAL_ID", unique = true, nullable = false)
+    private Long globalId;
 
     @Size(max = 1000)
     @Column(name = "TITLE", nullable = false)
     private String title;
+
+    @Column(name = "POSITION_CODE_ID", nullable = false)
+    private Long positionCodeId;
 
     @Column(name = "START_DATE") //ограничение nullable = false снято из-за того что его нет в справочнике
     private LocalDate startDate;
 
     @Column(name = "END_DATE")
     private LocalDate endDate;
-
-    @Column(name = "ARCHIVED", nullable = false)
-    @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archived;
 
     @JoinColumn(name = "SPECIALIZATION_ID", nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
@@ -52,31 +44,22 @@ public class PositionNom implements Serializable {
     public PositionNom() {
     }
 
-    public PositionNom(Long id, String code, String title,
-                       LocalDate startDate, LocalDate endDate, Boolean archived) {
-        this.id = id;
-        this.code = code;
+    public PositionNom(Long globalId, String title,
+                       LocalDate startDate, LocalDate endDate) {
+        this.globalId = globalId;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.archived = archived;
     }
 
-    public Long getId() {
-        return id;
+    public Long getGlobalId() {
+        return globalId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 
     public String getTitle() {
         return title;
@@ -102,14 +85,6 @@ public class PositionNom implements Serializable {
         this.endDate = endDate;
     }
 
-    public Boolean getArchived() {
-        return archived;
-    }
-
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
-    }
-
     public Specialization getSpecialization() {
         return specialization;
     }
@@ -123,13 +98,13 @@ public class PositionNom implements Serializable {
         if (this == obj)
             return true;
         if (obj != null && obj instanceof PositionNom) {
-            return ((PositionNom) obj).getId().equals(this.id);
+            return ((PositionNom) obj).getGlobalId().equals(this.globalId);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.id);
+        return Objects.hashCode(this.globalId);
     }
 }
