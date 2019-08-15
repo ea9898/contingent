@@ -492,7 +492,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkPolicyTypesDel(area, policyTypesDel, validation);
 
         // 6
-        if (autoAssignForAttachment) {
+        if (Boolean.TRUE.equals(autoAssignForAttachment)) {
             if (area.getAreaType().getMpguAvailable() != null
                     && !Boolean.TRUE.equals(area.getAreaType().getMpguAvailable())) {
                 validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
