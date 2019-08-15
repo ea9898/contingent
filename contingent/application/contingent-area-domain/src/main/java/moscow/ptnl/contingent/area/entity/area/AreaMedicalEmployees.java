@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 
 import javax.persistence.Column;
@@ -55,7 +56,7 @@ public class AreaMedicalEmployees implements Serializable {
     private String snils;
     
     @Column(name = "POSITION_CODE")
-    private String positionNomCode;
+    private String positionCode;
     
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
@@ -70,13 +71,13 @@ public class AreaMedicalEmployees implements Serializable {
     }
 
     public AreaMedicalEmployees(Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
-                                LocalDate endDate, String snils, Optional<PositionNom> positionNom,
+                                LocalDate endDate, String snils, Optional<PositionCode> positionCode,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
-        this(null, medicalEmployeeJobId, area, replacement, startDate, endDate, snils, positionNom, createDate, updateDate, subdivisionId);
+        this(null, medicalEmployeeJobId, area, replacement, startDate, endDate, snils, positionCode, createDate, updateDate, subdivisionId);
     }
 
     public AreaMedicalEmployees(Long id, Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
-                                LocalDate endDate, String snils, Optional<PositionNom> positionNom,
+                                LocalDate endDate, String snils, Optional<PositionCode> positionCode,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
         this.id = id;
         this.medicalEmployeeJobId = medicalEmployeeJobId;
@@ -85,8 +86,7 @@ public class AreaMedicalEmployees implements Serializable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
-//        this.positionNomCode = (positionNom.isPresent()) ? positionNom.get().getCode() : null;
-//        CONTINGENT2-280
+        this.positionCode = positionCode.map(PositionCode::getCode).orElse(null);
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subdivisionId = subdivisionId;
@@ -150,14 +150,6 @@ public class AreaMedicalEmployees implements Serializable {
         this.snils = snils;
     }
     
-    public String getPositionNomCode() {
-        return positionNomCode;
-    }
-
-    public void setPositionNomCode(String positionNom) {
-        this.positionNomCode = positionNom;
-    }
-    
     public LocalDateTime getCreateDate() {
         return createDate;
     }
@@ -166,20 +158,20 @@ public class AreaMedicalEmployees implements Serializable {
         this.createDate = createDate;
     }
 
-    public LocalDateTime getUpdateDate() {
-        return updateDate;
-    }
-
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
     }
 
-    public Long getSubdivisionId() {
-        return subdivisionId;
-    }
-
     public void setSubdivisionId(Long subdivisionId) {
         this.subdivisionId = subdivisionId;
+    }
+
+    public String getPositionCode() {
+        return positionCode;
+    }
+
+    public void setPositionCode(String positionCode) {
+        this.positionCode = positionCode;
     }
 
     @Override

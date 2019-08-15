@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
+import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
@@ -13,6 +14,7 @@ import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsRepository;
+import moscow.ptnl.contingent.repository.nsi.PositionCodeRepository;
 import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
 import moscow.ptnl.contingent.service.esu.EsuService;
 import moscow.ptnl.contingent.util.EsuTopicsEnum;
@@ -67,6 +69,9 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     private AreaMedicalEmployeeRepository areaMedicalEmployeeRepository;
 
     @Autowired
+    private PositionCodeRepository positionCodeRepository;
+
+    @Autowired
     private EsuService esuService;
 
     public JobExecutionInfoMsgTopicTask() {
@@ -112,9 +117,13 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
             //Todo уточнить текст ошибки
             throw new RuntimeException("Некорректные данные JeCreate");
         }
+/*
+        TODO: доработки в рамках CONTINGENT2-283
         Long moId = jeCreate.getDepartment().getOrganization().getId();
         //2.
-        PositionNom positionNom = positionNomRepository.getByCode(jeCreate.getPositionNom().getCode()).get();
+        PositionCode positionCodeOptional = positionCodeRepository.getByCode(jeCreate.getPositionNom().getCode()).get();
+        Optional<PositionNom> positionNom = positionNomRepository.getByPositionCodeId(positionCode.getGlobalId());
+
         //3.
         Optional<AreaTypeSpecializations> areaTypeSpecialization = areaTypeSpecializationsRepository.findBySpecializationCode(
                 positionNom.getSpecialization().getCode()).stream()
@@ -181,6 +190,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
                 throw new RuntimeException("Ошибка добавления МР на участок: " + e.getMessage(), e);
             }
         }
+ */
     }
 
     private Area createArea(Long moId, AreaType areaType) {

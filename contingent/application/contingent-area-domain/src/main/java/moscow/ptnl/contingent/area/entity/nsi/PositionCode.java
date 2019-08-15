@@ -47,6 +47,46 @@ public class PositionCode implements Serializable {
         this.constantTitle = constantTitle;
     }
 
+    public Long getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
+    }
+
+    public String getNomType() {
+        return nomType;
+    }
+
+    public void setNomType(String nomType) {
+        this.nomType = nomType;
+    }
+
+    public Long getSerialNum() {
+        return serialNum;
+    }
+
+    public void setSerialNum(Long serialNum) {
+        this.serialNum = serialNum;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getConstantTitle() {
+        return constantTitle;
+    }
+
+    public void setConstantTitle(String constantTitle) {
+        this.constantTitle = constantTitle;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

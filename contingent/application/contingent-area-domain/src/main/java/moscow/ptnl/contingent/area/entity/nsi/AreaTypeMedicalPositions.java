@@ -66,6 +66,22 @@ public class AreaTypeMedicalPositions implements Serializable {
         this.archived = archived;
     }
 
+    public PositionCode getPositionCode() {
+        return positionCode;
+    }
+
+    public void setPositionCode(PositionCode positionCode) {
+        this.positionCode = positionCode;
+    }
+
+    public PositionNom getPositionNom() {
+        return positionNom;
+    }
+
+    public void setPositionNom(PositionNom positionNom) {
+        this.positionNom = positionNom;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

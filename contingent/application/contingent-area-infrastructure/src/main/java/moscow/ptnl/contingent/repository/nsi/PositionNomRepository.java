@@ -8,9 +8,5 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface PositionNomRepository {
-    PositionNom getPositionProxy(long positionId);
-
-    List<PositionNom> searchPostitionNomActualByCode(Long positionId);
-
-    Optional<PositionNom> getByCode(String code);
+    Optional<PositionNom> getByPositionCodeId(Long positionCode);
 }

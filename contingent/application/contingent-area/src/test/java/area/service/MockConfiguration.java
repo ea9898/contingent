@@ -52,6 +52,7 @@ import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.repository.nsi.PolicyTypeRepository;
+import moscow.ptnl.contingent.repository.nsi.PositionCodeRepository;
 import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
 import moscow.ptnl.contingent.service.esu.EsuService;
 import moscow.ptnl.contingent.service.history.HistoryService;
@@ -250,5 +251,8 @@ public class MockConfiguration {
     
     @MockBean
     public NotNsiAddressMapper notNsiAddressMapper;
-    
+
+    @MockBean
+    private PositionCodeRepository positionCodeRepository;
+
 }

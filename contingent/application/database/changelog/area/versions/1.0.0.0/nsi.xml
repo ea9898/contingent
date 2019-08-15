@@ -68,6 +68,23 @@
                              disabled="true"
                              tableName="POSITION_CODE"/>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-14-3" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_POSITION_CODE_CODE01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки SPECIALIZATION_ID таблицы POSITION_NOM</comment>
+        <createIndex indexName="IXFK_POSITION_CODE_CODE01"
+                     tableName="POSITION_CODE"
+                     unique="false">
+            <column name="CODE" type="VARCHAR2(100)"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="POSITION_CODE" indexName="IXFK_POSITION_CODE_CODE01" />
+        </rollback>
+    </changeSet>
     <!-- POSITION_CODE -->
 
     <!-- POSITION_NOM -->

@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.repository.nsi;
 
+import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
+import moscow.ptnl.contingent.area.entity.nsi.PositionCode_;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom_;
 import moscow.ptnl.contingent.repository.BaseRepository;
@@ -14,17 +16,15 @@ import java.util.Optional;
 
 @Repository
 @Transactional(propagation= Propagation.MANDATORY)
-public class PositionNomRepositoryImpl extends BaseRepository implements PositionNomRepository {
+public class PositionCodeRepositoryImpl extends BaseRepository implements PositionCodeRepository {
 
     @Autowired
-    PositionNomCRUDRepository positionNomCRUDRepository;
+    PositionCodeCRUDRepository positionCodeCRUDRepository;
 
     @Override
-    public Optional<PositionNom> getByPositionCodeId(Long positionCode) {
-        Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(root.get(PositionNom_.positionCodeId.getName()), positionCode)
-                );
-        return positionNomCRUDRepository.findOne(specification);
+    public Optional<PositionCode> getByCode(String code) {
+        Specification<PositionCode> specification = (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(PositionCode_.code.getName()), code);
+        return positionCodeCRUDRepository.findOne(specification);
     }
 }
