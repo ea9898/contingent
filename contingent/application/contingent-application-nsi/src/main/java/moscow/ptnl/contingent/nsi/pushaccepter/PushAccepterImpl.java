@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.nsi.pushaccepter;
 
 import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
-import moscow.ptnl.contingent.domain.nsi.entity.NsiPush;
 import moscow.ptnl.contingent.domain.nsi.entity.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsingS.Table;
@@ -40,28 +39,32 @@ public class PushAccepterImpl extends PushAccepter {
     }
 
     @Override
-    public Answer getPush(Package pack, long savedId) {
-        NsiPush nsiPush = new NsiPush(pack.catalog.data.action, savedId);
+    public Answer getPush(Package pack, Long pushEventId) {
+        Object pushEventEntity = null;
         switch (NsiTablesEnum.getByName(pack.catalog.name)) {
             case AREA_TYPE:
-                nsiPush.setEntity(mapAreaType(pack));
+                pushEventEntity = mapAreaType(pack);
                 break;
             case AREA_TYPE_CLASS:
-                nsiPush.setEntity(mapAreaTypeClass(pack));
+                pushEventEntity = mapAreaTypeClass(pack);
                 break;
             case AREA_TYPE_KIND:
-                nsiPush.setEntity(mapAreaTypeKind(pack));
+                pushEventEntity = mapAreaTypeKind(pack);
                 break;
             case AREA_TYPE_MEDICAL_POSITIONS:
-                nsiPush.setEntity(mapAreaTypeMedicalPositions(pack));
+                pushEventEntity = mapAreaTypeMedicalPositions(pack);
                 break;
             case AREA_TYPE_RELATIONS:
-                nsiPush.setEntity(mapAreaTypeRelations(pack));
+                pushEventEntity = mapAreaTypeRelations(pack);
                 break;
             case AREA_TYPE_SPECIALIZATIONS:
-                nsiPush.setEntity(mapAreaTypeSpecializations(pack));
+                pushEventEntity = mapAreaTypeSpecializations(pack);
         }
-        nsiChannel.send(MessageBuilder.withPayload(nsiPush).build());
+        nsiChannel.send(MessageBuilder
+                .withPayload(pushEventEntity)
+                .setHeader("pushEventId", pushEventId)
+                .setHeader("action", pack.catalog.data.action)
+                .build());
         return new Answer(true, "ok");
     }
 }

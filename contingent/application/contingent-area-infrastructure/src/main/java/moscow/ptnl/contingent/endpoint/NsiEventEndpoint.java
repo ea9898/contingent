@@ -7,7 +7,6 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.domain.nsi.entity.NsiActionsEnum;
-import moscow.ptnl.contingent.domain.nsi.entity.NsiPush;
 import moscow.ptnl.contingent.domain.nsi.entity.NsiPushEvent;
 import moscow.ptnl.contingent.repository.CommonRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeMedicalPositionsCRUDRepository;
@@ -65,9 +64,9 @@ public class NsiEventEndpoint {
     NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
 
     @ServiceActivator(inputChannel = NSI_EVENT_CHANNEL_NAME)
-    public void nsiPushConsumer(Message<NsiPush> msg) {
-        Object entity = msg.getPayload().getEntity();
-        String action = msg.getPayload().getAction();
+    public void nsiPushConsumer(Message<Object> msg) {
+        Object entity = msg.getPayload();
+        String action = (String) msg.getHeaders().get("action");
         try {
             if (entity instanceof AreaType) {
                 saveOrDelete(areaTypesCRUDRepository, (AreaType) entity, action);
@@ -93,9 +92,11 @@ public class NsiEventEndpoint {
                 saveOrDelete(areaTypeSpecializationsCRUDRepository, (AreaTypeSpecializations) entity, action);
             }
         } catch (Exception e) {
-            NsiPushEvent event = nsiPushEventCRUDRepository.findById(msg.getPayload().getId()).get();
+            NsiPushEvent event = nsiPushEventCRUDRepository.findById((Long) msg.getHeaders().get("pushEventId")).get();
             event.setError(true);
             event.setErrorMessage(e.getMessage());
+            //TODO сохранить ошибку не удаётся, не получается побороть ошибку
+            // org.hibernate.TransactionException: Transaction was marked for rollback only; cannot commit
             nsiPushEventCRUDRepository.save(event);
         }
     }
