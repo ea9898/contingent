@@ -12,7 +12,7 @@ import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ResponseEle
 @Component
 public abstract class PushAccepter {
 
-    public abstract Answer getPush(Package pack, long savedId);
+    public abstract Answer getPush(Package pack, Long pushEventId);
 
     public abstract Answer getPushSpec(Table table);
 
