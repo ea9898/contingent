@@ -1098,39 +1098,39 @@
     <!-- Тут крнчается фигня которую лучше бы сразу при создании таблицы POSITION_NOM учесть -->
 
 
+<!-- Не накатывает на чистой базе, ругается на отсутствующие поля -->
+<!--    <changeSet id="CONTINGENT2-191-NSI-4" author="mkachalov"  labels="1.0.0.0">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <and>-->
+<!--                <tableExists tableName="POSITION_NOM" />-->
+<!--                <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM POSITION_NOM</sqlCheck>-->
+<!--            </and>-->
+<!--        </preConditions>-->
+<!--        <comment>Заполнение справочника POSITION_NOM</comment>-->
+<!--        <loadData encoding="UTF-8" separator=";" tableName="POSITION_NOM" file="changelog/area/versions/1.0.0.0/files/POSITION_NOM.csv">-->
+<!--            <column header="ID" name="ID" type="NUMERIC"/>-->
+<!--            <column header="CODE" name="CODE" type="STRING"/>-->
+<!--            <column header="TITLE" name="TITLE" type="STRING"/>-->
+<!--            <column header="START" name="start_date" type="DATE"/>-->
+<!--            <column header="END" name="end_date" type="DATE"/>-->
+<!--            <column header="SPECIALIZATION_ID" name="SPECIALIZATION_ID" type="NUMERIC"/>-->
+<!--            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>-->
+<!--        </loadData>-->
+<!--        <rollback>-->
+<!--            <sql>-->
+<!--                DELETE FROM POSITION_NOM;-->
+<!--            </sql>-->
+<!--        </rollback>-->
+<!--    </changeSet>-->
 
-    <changeSet id="CONTINGENT2-191-NSI-4" author="mkachalov"  labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <and>
-                <tableExists tableName="POSITION_NOM" />
-                <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM POSITION_NOM</sqlCheck>
-            </and>
-        </preConditions>
-        <comment>Заполнение справочника POSITION_NOM</comment>
-        <loadData encoding="UTF-8" separator=";" tableName="POSITION_NOM" file="changelog/area/versions/1.0.0.0/files/POSITION_NOM.csv">
-            <column header="ID" name="ID" type="NUMERIC"/>
-            <column header="CODE" name="CODE" type="STRING"/>
-            <column header="TITLE" name="TITLE" type="STRING"/>
-            <column header="START" name="start_date" type="DATE"/>
-            <column header="END" name="end_date" type="DATE"/>
-            <column header="SPECIALIZATION_ID" name="SPECIALIZATION_ID" type="NUMERIC"/>
-            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
-        </loadData>
-        <rollback>
-            <sql>
-                DELETE FROM POSITION_NOM;
-            </sql>
-        </rollback>
-    </changeSet>
 
-
-
-    <changeSet id="CONTINGENT2-206-1-1" author="mkachalov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
-        </preConditions>
-        <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="fk_area_type_me_position_no_01"/>
-    </changeSet>
+<!-- Уже есть: CONTINGENT2-NSI-6-5-3 -->
+<!--    <changeSet id="CONTINGENT2-206-1-1" author="mkachalov" labels="1.0.0.0">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>-->
+<!--        </preConditions>-->
+<!--        <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="fk_area_type_me_position_no_01"/>-->
+<!--    </changeSet>-->
 
     <changeSet id="CONTINGENT2-206-1-2" author="mkachalov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">

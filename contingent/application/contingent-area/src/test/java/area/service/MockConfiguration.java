@@ -74,7 +74,6 @@ import org.springframework.messaging.MessageChannel;
 @EnableAspectJAutoProxy
 public class MockConfiguration {
     
-    
     @Bean
     public EsuHelperService esuHelperService() {
         return new EsuHelperService();
@@ -84,13 +83,7 @@ public class MockConfiguration {
     public Algorithms algorithms(){
         return new Algorithms(Mockito.mock(AlgorithmsHelper.class));
     }
-    
-    @MockBean
-    public MoAddressRepository moAddressRepository;
-    
-    @MockBean
-    public AddressFormingElementRepository addressFormingElementRepository;
-    
+
     @MockBean
     public AlgorithmsHelper algorithmsHelper;
     
@@ -128,10 +121,7 @@ public class MockConfiguration {
     public AddressesMapper addressesMapper() {
         return new AddressesMapper();
     }
-    
-    @MockBean
-    public AreaAddressRepository areaAddressRepository;
-    
+
     @Bean(name = EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME)
     public MessageChannel esuChannel() {
         return new DirectChannel();
@@ -156,58 +146,7 @@ public class MockConfiguration {
     public LogESUInterceptor logESUInterceptor() {
         return new LogESUInterceptor();
     }
-    
-    @MockBean
-    public AreaRepository areaRepository;
-    
-    @MockBean
-    public AreaTypesCRUDRepository areaTypesCRUDRepository;
-    
-    @MockBean
-    public AreaCRUDRepository areaCRUDRepository;
-    
-    @MockBean
-    public AreaToAreaTypeCRUDRepository areaToAreaTypeCRUDRepository;
-    
-    @MockBean
-    public AreaToAreaTypeRepository areaToAreaTypeRepository;
-    
-    @MockBean
-    public AddressAllocationOrderCRUDRepository addressAllocationOrderCRUDRepository;
-    
-    @MockBean
-    public AddressAllocationOrderRepository addressAllocationOrderRepository;
-    
-    @MockBean
-    public AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
-    
-    @MockBean
-    public AreaTypeMedicalPositionsRepository areaTypeMedicalPositionsRepository;
-    
-    @MockBean
-    public AreaMedicalEmployeeRepository areaMedicalEmployeeRepository;
-    
-    @MockBean
-    public BuildingRegistryRepository buildingRegistryRepository;
-    
-    @MockBean
-    public AddressesCRUDRepository addressesCRUDRepository;
-    
-    @MockBean
-    public AddressesRepository addressesRepository;
-    
-    @MockBean
-    public MoAddressCRUDRepository moAddressCRUDRepository;
-    
-    @MockBean
-    public AreaAddressCRUDRepository areaAddressCRUDRepository;
-    
-    @MockBean
-    public MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
-    
-    @MockBean
-    public MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
-    
+
     @Bean
     public AreaServiceHelper areaServiceHelper(){
         return new AreaServiceHelper();
@@ -218,41 +157,13 @@ public class MockConfiguration {
     
     @MockBean
     public SettingService settingService;
-    
-    @MockBean
-    public MuAvailableAreaTypesCRUDRepository muAvailableAreaTypesCRUDRepository;
-    
-    @MockBean
-    public MuAvailableAreaTypesRepository muAvailableAreaTypesRepository;
-    
+
     @MockBean
     public HistoryService historyService;
-    
-    @MockBean
-    public PositionNomRepository positionNomRepository;
-    
-    @MockBean
-    public AreaTypeSpecializationsRepository areaTypeSpecializationsRepository;
-    
-    @MockBean
-    public AreaPolicyTypesCRUDRepository areaPolicyTypesCRUDRepository;
-    
-    @MockBean
-    public AreaPolicyTypesRepository areaPolicyTypesRepository;
-    
-    @MockBean
-    public PolicyTypeRepository policyTypeRepository;
-    
-    @MockBean
-    public MuAddlAreaTypesRepository muAddlAreaTypesRepository;
-    
+
     @MockBean
     public NsiAddressMapper nsiAddressMapper;
     
     @MockBean
     public NotNsiAddressMapper notNsiAddressMapper;
-
-    @MockBean
-    private PositionCodeRepository positionCodeRepository;
-
 }

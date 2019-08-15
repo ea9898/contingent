@@ -2,6 +2,7 @@ package area.service.methods;
 
 import area.service.MockConfiguration;
 import area.service.MockEsuService;
+import area.service.MockRepositoriesConfiguration;
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
@@ -39,7 +40,7 @@ import static org.xmlunit.assertj.XmlAssert.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes= {MockConfiguration.class})
+@ContextConfiguration(classes= {MockConfiguration.class, MockRepositoriesConfiguration.class})
 public class ArchiveAreaTest {
 
     @Autowired
