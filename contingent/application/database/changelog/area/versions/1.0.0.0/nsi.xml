@@ -1209,5 +1209,24 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-277-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="BUILDING_REGISTRY"/>
+        </preConditions>
+        <renameTable oldTableName="BUILDING_REGISTRY" newTableName="NSI_BUILDING_REGISTRY"/>
+        <rollback>
+            <renameTable oldTableName="NSI_BUILDING_REGISTRY" newTableName="BUILDING_REGISTRY"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-277-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
+        </preConditions>
+        <renameTable oldTableName="ADDRESS_FORMING_ELEMENT" newTableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+        <rollback>
+            <renameTable oldTableName="NSI_ADDRESS_FORMING_ELEMENT" newTableName="ADDRESS_FORMING_ELEMENT"/>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

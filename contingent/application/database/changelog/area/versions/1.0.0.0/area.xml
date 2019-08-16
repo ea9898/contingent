@@ -1034,4 +1034,147 @@
         </rollback>
     </changeSet>
     <!-- !!!! AREA_ADDRESSES !!!! -->
+
+    <changeSet id="CONTINGENT2-277-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESSES" columnName="AFE_ID"/>
+            <columnExists tableName="ADDRESSES" columnName="BR_ID"/>
+        </preConditions>
+        <dropColumn tableName="ADDRESSES" columnName="AFE_ID"/>
+        <dropColumn tableName="ADDRESSES" columnName="BR_ID"/>
+        <rollback>
+            <addColumn tableName="ADDRESSES">
+                <column name="AFE_ID" type="BIGINT" />
+                <column name="BR_ID" type="BIGINT" />
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-277-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESSES" columnName="LEVEL"/>
+        </preConditions>
+        <dropColumn tableName="ADDRESSES" columnName="LEVEL"/>
+        <addColumn tableName="ADDRESSES">
+            <column name="AOLEVEL" type="VARCHAR2(2)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESSES" columnName="AOLEVEL"/>
+            <addColumn tableName="ADDRESSES">
+                <column name="LEVEL" type="SMALLINT">
+                    <constraints nullable="false" />
+                </column>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-277-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESSES"/>
+            <not>
+                <columnExists tableName="ADDRESSES" columnName="GLOBAL_ID"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ADDRESSES">
+            <column name="GLOBAL_ID" type="BIGINT" remarks="ИД НСИ" />
+            <column name="REGION_TE_CODE" type="VARCHAR2(4)" remarks="Код округа ОМК ТЕ"/>
+            <column name="REGION_TE_NAME" type="VARCHAR2(4000)" />
+            <column name="REGION_TE_TYPENAME" type="VARCHAR2(256)" />
+            <column name="REGION_TE_TYPENAME_SHORT" type="VARCHAR2(256)" />
+            <column name="AREACODE_OMK_TE" type="VARCHAR2(4000)" remarks="Код района ОМК ТЕ"/>
+            <column name="AREA_TE_NAME" type="VARCHAR2(4000)" />
+            <column name="AREA_TE_TYPENAME" type="VARCHAR2(128)" />
+            <column name="AREA_TE_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="AREACODE" type="VARCHAR2(3)" remarks="Код района"/>
+            <column name="AREA_BTI_CODE" type="VARCHAR2(11)"/>
+            <column name="AREA_NAME" type="VARCHAR2(4000)" />
+            <column name="AREA_TYPENAME" type="VARCHAR2(128)" />
+            <column name="AREA_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="CITYCODE" type="VARCHAR2(3)" remarks="Код города"/>
+            <column name="CITY_BTI_CODE" type="VARCHAR2(11)"/>
+            <column name="CITY_NAME" type="VARCHAR2(4000)" />
+            <column name="CITY_TYPENAME" type="VARCHAR2(128)" />
+            <column name="CITY_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="PLACECODE" type="VARCHAR2(3)" remarks="Код населенного пункта"/>
+            <column name="PLACE_BTI_CODE" type="VARCHAR2(11)" remarks="Код населенного пункта"/>
+            <column name="PLACE_NAME" type="VARCHAR2(4000)" />
+            <column name="PLACE_TYPENAME" type="VARCHAR2(128)" />
+            <column name="PLACE_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="PLANCODE" type="VARCHAR2(4)" remarks="Код элемента планировочной структуры"/>
+            <column name="PLAN_BTI_CODE" type="VARCHAR2(11)"/>
+            <column name="PLAN_NAME" type="VARCHAR2(4000)" />
+            <column name="PLAN_TYPENAME" type="VARCHAR2(128)" />
+            <column name="PLAN_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="STREETCODE" type="VARCHAR2(4)" remarks="Код улицы"/>
+            <column name="STREET_NAME" type="VARCHAR2(4000)" />
+            <column name="STREET_OMK_UM" type="VARCHAR2(10)" remarks="Код ОМК УМ улицы"/>
+            <column name="STREET_TYPENAME" type="VARCHAR2(128)" />
+            <column name="STREET_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="STREET_BTI_CODE" type="VARCHAR2(11)" />
+            <column name="L1_TYPE" type="VARCHAR2(256)" remarks="Тип номера дома, владения"/>
+            <column name="L1_TYPE_SHORT" type="VARCHAR2(16)"/>
+            <column name="L1_VALUE" type="VARCHAR2(256)" remarks="Номер дома, владения"/>
+            <column name="L2_TYPE" type="VARCHAR2(256)" remarks="Тип номера корпуса"/>
+            <column name="L2_TYPE_SHORT" type="VARCHAR2(16)"/>
+            <column name="L2_VALUE" type="VARCHAR2(256)" remarks="Номер корпуса"/>
+            <column name="L3_TYPE" type="VARCHAR2(256)" remarks="Тип номера строения, сооружения"/>
+            <column name="L3_TYPE_SHORT" type="VARCHAR2(16)"/>
+            <column name="L3_VALUE" type="VARCHAR2(256)" remarks="Номер строения, сооружения"/>
+            <column name="ADDRESS" type="VARCHAR2(4000)" defaultValue="">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESSES" columnName="GLOBAL_ID"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TE_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TE_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TE_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TE_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREACODE_OMK_TE"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TE_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TE_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TE_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREACODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITYCODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITY_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITY_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITY_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITY_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACECODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACE_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACE_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACE_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACE_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLANCODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLAN_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLAN_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLAN_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLAN_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREETCODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_OMK_UM"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L1_TYPE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L1_TYPE_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="L1_VALUE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L2_TYPE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L2_TYPE_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="L2_VALUE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L3_TYPE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L3_TYPE_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="L3_VALUE"/>
+            <dropColumn tableName="ADDRESSES" columnName="ADDRESS"/>
+            <dropColumn tableName="ADDRESSES" columnName="UPDATE_DATE"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
