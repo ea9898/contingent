@@ -3,14 +3,10 @@ package moscow.ptnl.contingent.area.entity.nsi;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -38,6 +34,46 @@ public class PositionCode implements Serializable {
     @Size(max = 250)
     @Column(name = "CONSTANT_TITLE", nullable = false)
     private String constantTitle;
+
+    public Long getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
+    }
+
+    public String getNomType() {
+        return nomType;
+    }
+
+    public void setNomType(String nomType) {
+        this.nomType = nomType;
+    }
+
+    public Long getSerialNum() {
+        return serialNum;
+    }
+
+    public void setSerialNum(Long serialNum) {
+        this.serialNum = serialNum;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getConstantTitle() {
+        return constantTitle;
+    }
+
+    public void setConstantTitle(String constantTitle) {
+        this.constantTitle = constantTitle;
+    }
 
     public PositionCode(Long globalId, String nomType, Long serialNum, String code, String constantTitle) {
         this.globalId = globalId;

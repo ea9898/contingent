@@ -29,7 +29,7 @@ public class PositionNom implements Serializable {
     private String title;
 
     @Column(name = "POSITION_CODE_ID", nullable = false)
-    private Long positionCodeId;
+    private PositionCode positionCode;
 
     @Column(name = "START_DATE") //ограничение nullable = false снято из-за того что его нет в справочнике
     private LocalDate startDate;
@@ -91,6 +91,14 @@ public class PositionNom implements Serializable {
 
     public void setSpecialization(Specialization specialization) {
         this.specialization = specialization;
+    }
+
+    public PositionCode getPositionCode() {
+        return positionCode;
+    }
+
+    public void setPositionCode(PositionCode positionCode) {
+        this.positionCode = positionCode;
     }
 
     @Override

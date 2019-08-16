@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
@@ -12,6 +13,7 @@ import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
 import moscow.ptnl.contingent.service.esu.EsuService;
@@ -67,6 +69,9 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     private AreaMedicalEmployeeRepository areaMedicalEmployeeRepository;
 
     @Autowired
+    private AreaTypeMedicalPositionsRepository areaTypeMedicalPositionsRepository;
+
+    @Autowired
     private EsuService esuService;
 
     public JobExecutionInfoMsgTopicTask() {
@@ -89,7 +94,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     }
 
     private void changeMedicalEmployeeEndDate(JeChangeDateEnd jeChangeDateEnd) {
-        //6.1
+        //3.1
         List<AreaMedicalEmployees> employees = areaMedicalEmployeeRepository.findEmployees(jeChangeDateEnd.getId(), false).stream()
                 .filter(e -> e.getArea().isActual() &&
                         e.getArea().getAreaType() != null &&
@@ -100,7 +105,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         if (employees.isEmpty()) {
             throw new RuntimeException("Для обновления даты окончания ИДМР участок не найден");
         }
-        //6.2
+        //3.2
         employees.forEach(e -> {
             e.setEndDate(EsuInputTaskHelper.convertToLocalDate(jeChangeDateEnd.getEnd()));
             e.setUpdateDate(LocalDateTime.now());
@@ -113,47 +118,54 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
             throw new RuntimeException("Некорректные данные JeCreate");
         }
         Long moId = jeCreate.getDepartment().getOrganization().getId();
-        //2.
+        //2.1.1
         PositionNom positionNom = positionNomRepository.getByCode(jeCreate.getPositionNom().getCode()).get();
-        //3.
+        //2.1.2
         Optional<AreaTypeSpecializations> areaTypeSpecialization = areaTypeSpecializationsRepository.findBySpecializationCode(
                 positionNom.getSpecialization().getCode()).stream()
                 .filter(a -> Objects.equals(a.getAreaType().getAreaTypeKind().getCode(), AreaTypeKindEnum.PERSONAL.getCode()))
                 .findFirst();
-
+        //2.2
         if (!areaTypeSpecialization.isPresent() || areaTypeSpecialization.get().getAreaType() == null) {
             throw new RuntimeException("Специализация ИДМР не соответствует именному виду участка");
         }
         Long specializationCode = positionNom.getSpecialization().getCode();
-        AreaType areaType = areaTypeSpecialization.get().getAreaType();
-        //5.1
+
+        //2.3
         if (!SPECIALIZATION_CODES_ONCOLOGY.contains(specializationCode)) {
-            //5.1.1
+            //2.3.1
             List<MoAvailableAreaTypes> areaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId);
 
             if (areaTypes.isEmpty()) {
-                throw new RuntimeException("Не найден ни один разрешенный первичный тип участка");
+                throw new RuntimeException("Не найден ни один разрешенный тип участка первичного класса");
             }
-            //5.1.2
+            //2.3.2
             List<AreaTypeSpecializations> primarySpecializations = areaTypeSpecializationsRepository.findByAreaTypeCode(
                     areaTypes.stream()
                             .map(MoAvailableAreaTypes::getAreaType)
                             .collect(Collectors.toList())
             );
-            //5.1.3
+            //2.3.3
             if (primarySpecializations.stream().anyMatch(s -> Objects.equals(s.getSpecializationCode(), specializationCode))) {
                 throw new RuntimeException("Специализация ИДМР совпадает со специализацией разрешенного первичного типа участка МО");
             }
-            //5.2
+            //2.4
+            AreaType areaType = areaTypeSpecialization.get().getAreaType();
+            //2.5
+            List<AreaTypeMedicalPositions> areaTypeMedicalPositions =
+                    areaTypeMedicalPositionsRepository.getPositionsByAreaType(areaType.getCode());
+            if (areaTypeMedicalPositions != null && areaTypeMedicalPositions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(jeCreate.getPositionNom().getCode()))) {
+                throw new RuntimeException(String.format("Должность ИДМР не разрешена для типа участка %s", areaType.getTitle()));
+            }
+            //2.6
             List<Area> areas = areaRepository.findAreas(moId, null, areaType.getCode(), null, true);
-
             if (areas.stream()
                     .flatMap(a -> a.getActualMainMedicalEmployees().stream())
                     .anyMatch(a -> Objects.equals(a.getMedicalEmployeeJobId(), jeCreate.getId()))) {
                 throw new RuntimeException("Для данного ИДМР участок уже существует");
             }
             Area area;
-            //5.3
+            //2.7
             Optional<AreaMedicalEmployees> areaMedicalEmployee = areas.stream()
                     .filter(a -> a.getMuId() == null)
                     .flatMap(a -> a.getActualMainMedicalEmployees().stream())
@@ -162,11 +174,11 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
                     .findFirst();
 
             if (areaMedicalEmployee.isPresent() && areaMedicalEmployee.get().getArea() != null) {
-                //АС.1
+                //AC.1
                 area = areaMedicalEmployee.get().getArea();
             }
             else {
-                //5.4
+                //2.8
                 try {
                     area = createArea(moId, areaType);
                 } catch (Throwable e) {
@@ -174,7 +186,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
                 }
             }
             try {
-                //5.5
+                //2.9
                 createAreaMedicalEmployee(area, positionNom, jeCreate);
             }
             catch (Throwable e) {
