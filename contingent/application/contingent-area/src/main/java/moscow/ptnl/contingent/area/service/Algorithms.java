@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.area.service;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.NsiAddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
@@ -127,7 +127,7 @@ public class Algorithms {
 
         // А_УУ_3 1. - 7.
         for (NsiAddress nsiAddress : nsiAddresses) {
-            AddressFormingElement addressFormingElement =
+            NsiAddressFormingElement addressFormingElement =
                     addressFormingElementRepository.findAfeByGlobalId(nsiAddress.getGlobalId());
 
             if (addressFormingElement != null) {

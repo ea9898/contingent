@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.repository.nsi;
 
-import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
+import moscow.ptnl.contingent.area.entity.nsi.NsiBuildingRegistry;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 @NoRepositoryBean
 public interface BuildingRegistryRepository {
 
-    List<BuildingRegistry> getBuildingsRegistry(long globalId);
+    List<NsiBuildingRegistry> getBuildingsRegistry(long globalId);
 
-    List<BuildingRegistry> findRegistryBuildings(String l1Value, String l2Value, String l3Value, long addrId);
+    List<NsiBuildingRegistry> findRegistryBuildings(String l1Value, String l2Value, String l3Value, long addrId);
 }

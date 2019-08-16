@@ -9,13 +9,13 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.NsiAddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
-import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
+import moscow.ptnl.contingent.area.entity.nsi.NsiBuildingRegistry;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
@@ -957,8 +957,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         addressWrapperList.forEach(addressWrapper -> {
             if (addressWrapper.getNsiAddress() != null) {
                 NsiAddress nsiAddress = addressWrapper.getNsiAddress();
-                AddressFormingElement addressFormingElement = null;
-                BuildingRegistry buildingRegistry = null;
+                NsiAddressFormingElement addressFormingElement = null;
+                NsiBuildingRegistry buildingRegistry = null;
 
                 if (nsiAddress.getLevelAddress() != 8) {
                     addressFormingElement = addressFormingElementRepository.getAddressFormingElements(nsiAddress.getGlobalId(), nsiAddress.getLevelAddress()).get(0);
@@ -972,9 +972,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     addressWrapper.setAddress(foundAddresses.get(0));
                 } else {
                     Addresses address = new Addresses();
-                    address.setLevel(nsiAddress.getLevelAddress());
-                    address.setAddressFormingElement(addressFormingElement);
-                    address.setBuildingRegistry(buildingRegistry);
+                    //TODO fix
+//                    address.setLevel(nsiAddress.getLevelAddress());
+//                    address.setAddressFormingElement(addressFormingElement);
+//                    address.setBuildingRegistry(buildingRegistry);
                     addressWrapper.setAddress(addressesCRUDRepository.save(address));
                 }
 
@@ -1072,13 +1073,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
 
         addresses.forEach((addressId, address) -> {
-            if (address.getLevel() == 8) {
-                BuildingRegistry buildingRegistry = address.getBuildingRegistry();
-                AddressFormingElement addressFormingElement = buildingRegistry.getAddressFormingElement();
-                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, buildingRegistry, addressFormingElement));
-            } else {
-                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, address.getAddressFormingElement()));
-            }
+            //TODO fix
+//            if (address.getLevel() == 8) {
+//                NsiBuildingRegistry buildingRegistry = address.getBuildingRegistry();
+//                NsiAddressFormingElement addressFormingElement = buildingRegistry.getAddressFormingElement();
+//                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, buildingRegistry, addressFormingElement));
+//            } else {
+//                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, address.getAddressFormingElement()));
+//            }
         });
 
         // 4.
@@ -1297,20 +1299,20 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         addresses.forEach(a -> {
             Addresses address = new Addresses();
-
-            if (a.nsiAddress != null) {
-                address.setLevel(a.nsiAddress.getLevelAddress());
-
-                if (!Objects.equals(a.nsiAddress.getLevelAddress(), AddressLevelType.ID.getLevel())) {
-                    address.setAddressFormingElement(a.addressFormingElement);
-                }
-                else {
-                    address.setBuildingRegistry(a.buildingRegistry);
-                }
-            }
-            // 6.
-            a.address = addressesRepository.findAddresses(address.getLevel(), address.getBuildingRegistry(), address.getAddressFormingElement())
-                    .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
+            //TODO fix
+//            if (a.nsiAddress != null) {
+//                address.setLevel(a.nsiAddress.getLevelAddress());
+//
+//                if (!Objects.equals(a.nsiAddress.getLevelAddress(), AddressLevelType.ID.getLevel())) {
+//                    address.setAddressFormingElement(a.addressFormingElement);
+//                }
+//                else {
+//                    address.setBuildingRegistry(a.buildingRegistry);
+//                }
+//            }
+//            // 6.
+//            a.address = addressesRepository.findAddresses(address.getLevel(), address.getBuildingRegistry(), address.getAddressFormingElement())
+//                    .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
         });
 
         // 7.

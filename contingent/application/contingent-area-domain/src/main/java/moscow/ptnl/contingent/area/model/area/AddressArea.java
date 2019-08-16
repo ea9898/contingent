@@ -1,8 +1,7 @@
 package moscow.ptnl.contingent.area.model.area;
 
-import moscow.ptnl.contingent.area.entity.area.Addresses;
-import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
-import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
+import moscow.ptnl.contingent.area.entity.nsi.NsiAddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.NsiBuildingRegistry;
 
 /*
 Выходной объекта метода getAreaAddress из слоя Service
@@ -11,16 +10,16 @@ public class AddressArea {
 
     private Long areaAddressId;
 
-    private BuildingRegistry buildingRegistry;
+    private NsiBuildingRegistry buildingRegistry;
 
-    private AddressFormingElement addressFormingElement;
+    private NsiAddressFormingElement addressFormingElement;
 
-    public AddressArea(Long areaAddressId, AddressFormingElement addressFormingElement) {
+    public AddressArea(Long areaAddressId, NsiAddressFormingElement addressFormingElement) {
         this.areaAddressId = areaAddressId;
         this.addressFormingElement = addressFormingElement;
     }
 
-    public AddressArea(Long areaAddressId, BuildingRegistry buildingRegistry, AddressFormingElement addressFormingElement) {
+    public AddressArea(Long areaAddressId, NsiBuildingRegistry buildingRegistry, NsiAddressFormingElement addressFormingElement) {
         this.areaAddressId = areaAddressId;
         this.buildingRegistry = buildingRegistry;
         this.addressFormingElement = addressFormingElement;
@@ -34,19 +33,19 @@ public class AddressArea {
         this.areaAddressId = areaAddressId;
     }
 
-    public BuildingRegistry getBuildingRegistry() {
+    public NsiBuildingRegistry getBuildingRegistry() {
         return buildingRegistry;
     }
 
-    public void setBuildingRegistry(BuildingRegistry buildingRegistry) {
+    public void setBuildingRegistry(NsiBuildingRegistry buildingRegistry) {
         this.buildingRegistry = buildingRegistry;
     }
 
-    public AddressFormingElement getAddressFormingElement() {
+    public NsiAddressFormingElement getAddressFormingElement() {
         return addressFormingElement;
     }
 
-    public void setAddressFormingElement(AddressFormingElement addressFormingElement) {
+    public void setAddressFormingElement(NsiAddressFormingElement addressFormingElement) {
         this.addressFormingElement = addressFormingElement;
     }
 }

@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.NsiAddressFormingElement;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.transform.Transform;
 import moscow.ptnl.contingent2.area.info.Address;
@@ -20,35 +20,35 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
     @Override
     public AreaInfoEvent.Addresses entityToDtoTransform(Set<AreaAddress> entity) {
         AreaInfoEvent.Addresses addresses = new AreaInfoEvent.Addresses();
-
-        entity.stream()
-                .map(AreaAddress::getAddress)
-                .filter(e -> ADDRESS_LEVELS.contains(e.getLevel()))
-                .forEach(e -> {
-            if (AddressLevelType.ID.getLevel().equals(e.getLevel())
-                    && e.getBuildingRegistry().getAddressFormingElement().getStreetOmkUm() != null) {
-                AddressFormingElement afe = e.getBuildingRegistry().getAddressFormingElement();
-                Address address = new Address();
-                address.setOmkTeDistrictCode(afe.getRegionTeCode());
-                address.setOmkTeRegionCode(afe.getAreaCodeOmkTe());
-                address.setOmkUmCode(afe.getStreetOmkUm());
-                address.setHouse(e.getBuildingRegistry().getL1Value());
-                address.setBuilding(e.getBuildingRegistry().getL2Value());
-                address.setConstruction(e.getBuildingRegistry().getL3Value());
-                addresses.getAddress().add(address);
-            }
-            else if (AddressLevelType.STREET.getLevel().equals(e.getLevel()) && e.getAddressFormingElement().getStreetOmkUm() != null
-                    || AddressLevelType.AREA_TE.getLevel().equals(e.getLevel()) && e.getAddressFormingElement().getAreaCodeOmkTe() != null
-                    || AddressLevelType.REGION_TE.getLevel().equals(e.getLevel()) && e.getAddressFormingElement().getRegionTeCode() != null) {
-                Address address = new Address();
-                address.setOmkTeDistrictCode(e.getAddressFormingElement().getRegionTeCode());
-                address.setOmkTeRegionCode(AddressLevelType.REGION_TE.getLevel().equals(e.getLevel())
-                        ? null : e.getAddressFormingElement().getAreaCodeOmkTe());
-                address.setOmkUmCode(AddressLevelType.STREET.getLevel().equals(e.getLevel())
-                        ? e.getAddressFormingElement().getStreetOmkUm() : null);
-                addresses.getAddress().add(address);
-            }
-        });
+        //TODO fix
+//        entity.stream()
+//                .map(AreaAddress::getAddress)
+//                .filter(e -> ADDRESS_LEVELS.contains(e.getLevel()))
+//                .forEach(e -> {
+//            if (AddressLevelType.ID.getLevel().equals(e.getLevel())
+//                    && e.getBuildingRegistry().getAddressFormingElement().getStreetOmkUm() != null) {
+//                NsiAddressFormingElement afe = e.getBuildingRegistry().getAddressFormingElement();
+//                Address address = new Address();
+//                address.setOmkTeDistrictCode(afe.getRegionTeCode());
+//                address.setOmkTeRegionCode(afe.getAreaCodeOmkTe());
+//                address.setOmkUmCode(afe.getStreetOmkUm());
+//                address.setHouse(e.getBuildingRegistry().getL1Value());
+//                address.setBuilding(e.getBuildingRegistry().getL2Value());
+//                address.setConstruction(e.getBuildingRegistry().getL3Value());
+//                addresses.getAddress().add(address);
+//            }
+//            else if (AddressLevelType.STREET.getLevel().equals(e.getLevel()) && e.getAddressFormingElement().getStreetOmkUm() != null
+//                    || AddressLevelType.AREA_TE.getLevel().equals(e.getLevel()) && e.getAddressFormingElement().getAreaCodeOmkTe() != null
+//                    || AddressLevelType.REGION_TE.getLevel().equals(e.getLevel()) && e.getAddressFormingElement().getRegionTeCode() != null) {
+//                Address address = new Address();
+//                address.setOmkTeDistrictCode(e.getAddressFormingElement().getRegionTeCode());
+//                address.setOmkTeRegionCode(AddressLevelType.REGION_TE.getLevel().equals(e.getLevel())
+//                        ? null : e.getAddressFormingElement().getAreaCodeOmkTe());
+//                address.setOmkUmCode(AddressLevelType.STREET.getLevel().equals(e.getLevel())
+//                        ? e.getAddressFormingElement().getStreetOmkUm() : null);
+//                addresses.getAddress().add(address);
+//            }
+//        });
         return addresses;
     }
 

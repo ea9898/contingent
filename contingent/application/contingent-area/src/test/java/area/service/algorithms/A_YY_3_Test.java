@@ -1,6 +1,6 @@
 package area.service.algorithms;
 
-import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.NsiAddressFormingElement;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
@@ -32,7 +32,7 @@ public class A_YY_3_Test extends BaseTest {
         afeAndBrList.add(addressWrapper1);
 
         // Формирование в БД значений AFE
-        Mockito.when(addressFormingElementRepository.findAfeByGlobalId(100000L)).thenReturn(new AddressFormingElement(){{
+        Mockito.when(addressFormingElementRepository.findAfeByGlobalId(100000L)).thenReturn(new NsiAddressFormingElement(){{
             setId(1L);
             setGlobalId(100000L);
             setAoLevel("8");

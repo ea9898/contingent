@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.NsiAddressFormingElement;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
@@ -85,14 +85,14 @@ public class AreaAddressChecker {
             AddressWrapper wrapper = new AddressWrapper();
             wrapper.moAddress = a;
             wrapper.address = a.getAddress();
-
-            if (AddressLevelType.ID.getLevel().equals(a.getAddress().getLevel())) {
-                wrapper.buildingRegistry = a.getAddress().getBuildingRegistry();
-                wrapper.addressFormingElement = a.getAddress().getBuildingRegistry().getAddressFormingElement();
-            }
-            else {
-                wrapper.addressFormingElement = a.getAddress().getAddressFormingElement();
-            }
+            //TODO fix
+//            if (AddressLevelType.ID.getLevel().equals(a.getAddress().getLevel())) {
+//                wrapper.buildingRegistry = a.getAddress().getBuildingRegistry();
+//                wrapper.addressFormingElement = a.getAddress().getBuildingRegistry().getAddressFormingElement();
+//            }
+//            else {
+//                wrapper.addressFormingElement = a.getAddress().getAddressFormingElement();
+//            }
             existingAddresses.add(wrapper);
         });
         Map<AddressWrapper, List<AddressWrapper>> foundAddresses = findCrossedNsiAddresses(existingAddresses, newAddresses);
@@ -159,7 +159,7 @@ public class AreaAddressChecker {
     }
 
     private List<AddressWrapper> findCrossedAddressesByFields(List<AddressWrapper> existingAddresses, Long globalId,
-                                                              AddressLevelType level, AddressFormingElement afe) {
+                                                              AddressLevelType level, NsiAddressFormingElement afe) {
         //Ищем адреса в соответствии с их уровнем и заполненностью полей искомого адреса
         Map<AddressLevelType, List<AddressWrapper>> found = new HashMap<>();
         Arrays.stream(AddressLevelType.values())
@@ -168,66 +168,67 @@ public class AreaAddressChecker {
         existingAddresses.stream()
                 .filter(e -> e.addressFormingElement != null)
                 .forEach(e -> {
-                    if (afe.getStreetId() != null &&
-                            level.ordinal() < AddressLevelType.STREET.ordinal() &&
-                            afe.getStreetId().equals(e.addressFormingElement.getStreetId()) &&
-                            AddressLevelType.STREET.getLevel().equals(e.address.getLevel()) ||
-                            AddressLevelType.STREET.equals(level) &&
-                                    globalId != null &&
-                                    Objects.equals(globalId, e.addressFormingElement.getStreetId())) {
-                        found.get(AddressLevelType.STREET).add(new AddressWrapper(e));
-                    }
-                    if (afe.getPlanId() != null &&
-                            level.ordinal() < AddressLevelType.PLAN.ordinal() &&
-                            afe.getPlanId().equals(e.addressFormingElement.getPlanId()) &&
-                            AddressLevelType.PLAN.getLevel().equals(e.address.getLevel()) ||
-                            AddressLevelType.PLAN.equals(level) &&
-                                    globalId != null &&
-                                    Objects.equals(globalId, e.addressFormingElement.getPlanId())) {
-                        found.get(AddressLevelType.PLAN).add(new AddressWrapper(e));
-                    }
-                    if (afe.getPlaceId() != null &&
-                            level.ordinal() < AddressLevelType.PLACE.ordinal() &&
-                            afe.getPlaceId().equals(e.addressFormingElement.getPlaceId()) &&
-                            AddressLevelType.PLACE.getLevel().equals(e.address.getLevel()) ||
-                            AddressLevelType.PLACE.equals(level) &&
-                                    globalId != null &&
-                                    Objects.equals(globalId, e.addressFormingElement.getPlaceId())) {
-                        found.get(AddressLevelType.PLACE).add(new AddressWrapper(e));
-                    }
-                    if (afe.getCityId() != null &&
-                            level.ordinal() < AddressLevelType.CITY.ordinal() &&
-                            afe.getCityId().equals(e.addressFormingElement.getCityId()) &&
-                            AddressLevelType.CITY.getLevel().equals(e.address.getLevel()) ||
-                            AddressLevelType.CITY.equals(level) &&
-                                    globalId != null &&
-                                    Objects.equals(globalId, e.addressFormingElement.getCityId())) {
-                        found.get(AddressLevelType.CITY).add(new AddressWrapper(e));
-                    }
-                    if (afe.getAreaId() != null &&
-                            level.ordinal() < AddressLevelType.AREA.ordinal() &&
-                            afe.getAreaId().equals(e.addressFormingElement.getAreaId()) &&
-                            AddressLevelType.AREA.getLevel().equals(e.address.getLevel()) ||
-                            AddressLevelType.AREA.equals(level) &&
-                                    globalId != null &&
-                                    Objects.equals(globalId, e.addressFormingElement.getAreaId())) {
-                        found.get(AddressLevelType.AREA).add(new AddressWrapper(e));
-                    }
-                    if (afe.getAreaTeId() != null &&
-                            level.ordinal() < AddressLevelType.AREA_TE.ordinal() &&
-                            afe.getAreaTeId().equals(e.addressFormingElement.getAreaTeId()) &&
-                            AddressLevelType.AREA_TE.getLevel().equals(e.address.getLevel()) ||
-                            AddressLevelType.AREA_TE.equals(level) &&
-                                    globalId != null &&
-                                    Objects.equals(globalId, e.addressFormingElement.getAreaTeId())) {
-                        found.get(AddressLevelType.AREA_TE).add(new AddressWrapper(e));
-                    }
-                    if (afe.getRegionTeId() != null &&
-                            AddressLevelType.AREA_TE.equals(level) &&
-                            afe.getRegionTeId().equals(e.addressFormingElement.getRegionTeId()) &&
-                            AddressLevelType.REGION_TE.getLevel().equals(e.address.getLevel())) {
-                        found.get(AddressLevelType.REGION_TE).add(new AddressWrapper(e));
-                    }
+                    //TODO fix
+//                    if (afe.getStreetId() != null &&
+//                            level.ordinal() < AddressLevelType.STREET.ordinal() &&
+//                            afe.getStreetId().equals(e.addressFormingElement.getStreetId()) &&
+//                            AddressLevelType.STREET.getLevel().equals(e.address.getLevel()) ||
+//                            AddressLevelType.STREET.equals(level) &&
+//                                    globalId != null &&
+//                                    Objects.equals(globalId, e.addressFormingElement.getStreetId())) {
+//                        found.get(AddressLevelType.STREET).add(new AddressWrapper(e));
+//                    }
+//                    if (afe.getPlanId() != null &&
+//                            level.ordinal() < AddressLevelType.PLAN.ordinal() &&
+//                            afe.getPlanId().equals(e.addressFormingElement.getPlanId()) &&
+//                            AddressLevelType.PLAN.getLevel().equals(e.address.getLevel()) ||
+//                            AddressLevelType.PLAN.equals(level) &&
+//                                    globalId != null &&
+//                                    Objects.equals(globalId, e.addressFormingElement.getPlanId())) {
+//                        found.get(AddressLevelType.PLAN).add(new AddressWrapper(e));
+//                    }
+//                    if (afe.getPlaceId() != null &&
+//                            level.ordinal() < AddressLevelType.PLACE.ordinal() &&
+//                            afe.getPlaceId().equals(e.addressFormingElement.getPlaceId()) &&
+//                            AddressLevelType.PLACE.getLevel().equals(e.address.getLevel()) ||
+//                            AddressLevelType.PLACE.equals(level) &&
+//                                    globalId != null &&
+//                                    Objects.equals(globalId, e.addressFormingElement.getPlaceId())) {
+//                        found.get(AddressLevelType.PLACE).add(new AddressWrapper(e));
+//                    }
+//                    if (afe.getCityId() != null &&
+//                            level.ordinal() < AddressLevelType.CITY.ordinal() &&
+//                            afe.getCityId().equals(e.addressFormingElement.getCityId()) &&
+//                            AddressLevelType.CITY.getLevel().equals(e.address.getLevel()) ||
+//                            AddressLevelType.CITY.equals(level) &&
+//                                    globalId != null &&
+//                                    Objects.equals(globalId, e.addressFormingElement.getCityId())) {
+//                        found.get(AddressLevelType.CITY).add(new AddressWrapper(e));
+//                    }
+//                    if (afe.getAreaId() != null &&
+//                            level.ordinal() < AddressLevelType.AREA.ordinal() &&
+//                            afe.getAreaId().equals(e.addressFormingElement.getAreaId()) &&
+//                            AddressLevelType.AREA.getLevel().equals(e.address.getLevel()) ||
+//                            AddressLevelType.AREA.equals(level) &&
+//                                    globalId != null &&
+//                                    Objects.equals(globalId, e.addressFormingElement.getAreaId())) {
+//                        found.get(AddressLevelType.AREA).add(new AddressWrapper(e));
+//                    }
+//                    if (afe.getAreaTeId() != null &&
+//                            level.ordinal() < AddressLevelType.AREA_TE.ordinal() &&
+//                            afe.getAreaTeId().equals(e.addressFormingElement.getAreaTeId()) &&
+//                            AddressLevelType.AREA_TE.getLevel().equals(e.address.getLevel()) ||
+//                            AddressLevelType.AREA_TE.equals(level) &&
+//                                    globalId != null &&
+//                                    Objects.equals(globalId, e.addressFormingElement.getAreaTeId())) {
+//                        found.get(AddressLevelType.AREA_TE).add(new AddressWrapper(e));
+//                    }
+//                    if (afe.getRegionTeId() != null &&
+//                            AddressLevelType.AREA_TE.equals(level) &&
+//                            afe.getRegionTeId().equals(e.addressFormingElement.getRegionTeId()) &&
+//                            AddressLevelType.REGION_TE.getLevel().equals(e.address.getLevel())) {
+//                        found.get(AddressLevelType.REGION_TE).add(new AddressWrapper(e));
+//                    }
                 });
         for (AddressLevelType addressLevelType : AddressLevelType.values()) {
             if (!found.get(addressLevelType).isEmpty()) {

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
+import moscow.ptnl.contingent.area.entity.nsi.NsiBuildingRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.Address;
@@ -60,7 +60,7 @@ public class AreaAddressMapper implements Transform<AreaAddress, moscow.ptnl.con
         address.setStreetTypeName(entityObject.getAddressFormingElement().getStreetTypeName());
 
         if (entityObject.getBuildingRegistry() != null) {
-            BuildingRegistry buildingRegistry = entityObject.getBuildingRegistry();
+            NsiBuildingRegistry buildingRegistry = entityObject.getBuildingRegistry();
             address.setBrId(buildingRegistry.getId());
             address.setBrGlobalId(buildingRegistry.getGlobalId());
             address.setBrAfeId(buildingRegistry.getAddressFormingElement().getId());

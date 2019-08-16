@@ -10,9 +10,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ADDRESS_FORMING_ELEMENT")
+@Table(name = "NSI_ADDRESS_FORMING_ELEMENT")
 @Cacheable
-public class AddressFormingElement implements Serializable {
+public class NsiAddressFormingElement implements Serializable {
 
     private static final long serialVersionUID = 5085904638016789913L;
 
@@ -140,11 +140,11 @@ public class AddressFormingElement implements Serializable {
     @Column(name = "ADDRESS")
     private String address;
 
-    public AddressFormingElement() {
+    public NsiAddressFormingElement() {
         super();
     }
 
-    public AddressFormingElement(Long id, Long globalId, String aoLevel, Long regionTeId, String regionTeCode, String regionTeName, String regionTeTypeName, Long areaTeId, String areaCodeOmkTe, String areaTeName, String areaTeTypeName, Long areaId, String areaCode, String areaName, String areaTypeName, Long cityId, String cityCode, String cityName, String cityTypeName, Long placeId, String placeCode, String placeName, String placeTypeName, Long planId, String planCode, String planName, String planTypeName, Long streetId, String streetCode, String streetName, String streetOmkUm, String streetTypeName, String address) {
+    public NsiAddressFormingElement(Long id, Long globalId, String aoLevel, Long regionTeId, String regionTeCode, String regionTeName, String regionTeTypeName, Long areaTeId, String areaCodeOmkTe, String areaTeName, String areaTeTypeName, Long areaId, String areaCode, String areaName, String areaTypeName, Long cityId, String cityCode, String cityName, String cityTypeName, Long placeId, String placeCode, String placeName, String placeTypeName, Long planId, String planCode, String planName, String planTypeName, Long streetId, String streetCode, String streetName, String streetOmkUm, String streetTypeName, String address) {
         this.id = id;
         this.globalId = globalId;
         this.aoLevel = aoLevel;
@@ -448,8 +448,8 @@ public class AddressFormingElement implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof AddressFormingElement) {
-            return ((AddressFormingElement) obj).getId().equals(this.id);
+        if (obj != null && obj instanceof NsiAddressFormingElement) {
+            return ((NsiAddressFormingElement) obj).getId().equals(this.id);
         }
         return false;
     }

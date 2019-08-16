@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
-import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
+import moscow.ptnl.contingent.area.entity.nsi.NsiAddressFormingElement;
+import moscow.ptnl.contingent.area.entity.nsi.NsiBuildingRegistry;
 import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
@@ -30,7 +30,7 @@ public class AlgorithmsHelper {
     private BuildingRegistryCRUDRepository buildingRegistryCRUDRepository;
 
     // А_УУ_3 1.1.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchById =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchById =
             (addressFormingElement, addressWrappers) -> {
         List<AddressWrapper> outAddresses = addressWrappers.stream()
                 .filter(aw -> aw.getBrGlobalId().equals(addressFormingElement.getGlobalId()))
@@ -45,7 +45,7 @@ public class AlgorithmsHelper {
     };
 
     // А_УУ_3 b.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkStreetIdExist =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkStreetIdExist =
             (addressFormingElement, addressWrappers) -> {
         if (addressFormingElement.getCityId() != null) {
             return AlgorithmsHelper.crossByCity.apply(addressFormingElement, addressWrappers);
@@ -55,7 +55,7 @@ public class AlgorithmsHelper {
     };
 
     // А_УУ_3 1.2.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByCity =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByCity =
             (addressFormingElement, addressWrappers) -> {
         List<AddressWrapper> outAddresses = addressWrappers.stream()
                 .filter(aw -> aw.getAddressFormingElement().getStreetId().equals(addressFormingElement.getStreetId())
@@ -69,7 +69,7 @@ public class AlgorithmsHelper {
     };
 
     // А_УУ_3 b.2.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkPlanIdExist =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkPlanIdExist =
             (addressFormingElement, addressWrappers) -> {
         if (addressFormingElement.getPlanId() != null) {
             return AlgorithmsHelper.crossByPlanId.apply(addressFormingElement, addressWrappers);
@@ -79,7 +79,7 @@ public class AlgorithmsHelper {
     };
 
     // А_УУ_3 1.3.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByPlanId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByPlanId =
             (addressFormingElement, addressWrappers) -> {
                 List<AddressWrapper> outAddresses = addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getPlanId().equals(addressFormingElement.getPlanId())
@@ -93,7 +93,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 b.2.2.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkPlaceIdExist =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkPlaceIdExist =
             (addressFormingElement, addressWrappers) -> {
                 if (addressFormingElement.getPlaceId() != null) {
                     return AlgorithmsHelper.crossByPlaceId.apply(addressFormingElement, addressWrappers);
@@ -103,7 +103,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 1.4.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByPlaceId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByPlaceId =
             (addressFormingElement, addressWrappers) -> {
                   List<AddressWrapper> outAddresses = addressWrappers.stream()
                           .filter(aw -> aw.getAddressFormingElement().getPlaceId().equals(addressFormingElement.getPlaceId())
@@ -117,7 +117,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 b.2.2.2.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkCityIdExist =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkCityIdExist =
         (addressFormingElement, addressWrappers) -> {
             if (addressFormingElement.getCityId() != null) {
                 return AlgorithmsHelper.crossByCityId.apply(addressFormingElement, addressWrappers);
@@ -127,7 +127,7 @@ public class AlgorithmsHelper {
         };
 
     // А_УУ_3 1.5.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByCityId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByCityId =
             (addressFormingElement, addressWrappers) -> {
                 List<AddressWrapper> outAddresses = addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getCityId().equals(addressFormingElement.getCityId())
@@ -141,7 +141,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 b.2.2.2.2.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkAreaIdExist =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkAreaIdExist =
             (addressFormingElement, addressWrappers) -> {
                 if (addressFormingElement.getAreaId() != null) {
                     return AlgorithmsHelper.crossByAreaId.apply(addressFormingElement, addressWrappers);
@@ -151,7 +151,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 1.6.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByAreaId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByAreaId =
             (addressFormingElement, addressWrappers) -> {
                 List<AddressWrapper> outAddresses = addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getAreaId().equals(addressFormingElement.getAreaId())
@@ -166,7 +166,7 @@ public class AlgorithmsHelper {
 
 
     // А_УУ_3 b.2.2.2.2.2.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkAreaTeIdExist =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> checkAreaTeIdExist =
             (addressFormingElement, addressWrappers) -> {
                 if (addressFormingElement.getAreaTeId() != null) {
                     return AlgorithmsHelper.crossByAreaTeId.apply(addressFormingElement, addressWrappers);
@@ -177,7 +177,7 @@ public class AlgorithmsHelper {
 
 
     // А_УУ_3 1.7.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByAreaTeId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> crossByAreaTeId =
             (addressFormingElement, addressWrappers) ->
                 addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getAreaTeId().equals(addressFormingElement.getAreaTeId())
@@ -185,7 +185,7 @@ public class AlgorithmsHelper {
                         .collect(Collectors.toList());
 
     // А_УУ_3 2.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByStreetId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByStreetId =
             (addressFormingElement, addressWrappers) -> {
                 List<AddressWrapper> outAddresses = addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getStreetId().equals(addressFormingElement.getGlobalId()))
@@ -198,7 +198,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 3.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByPlanId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByPlanId =
             (addressFormingElement, addressWrappers) -> {
                 List<AddressWrapper> outAddresses = addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getPlanId().equals(addressFormingElement.getGlobalId()))
@@ -212,7 +212,7 @@ public class AlgorithmsHelper {
 
 
     // А_УУ_3 4.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByPlaceId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByPlaceId =
             (addressFormingElement, addressWrappers) -> {
                 List<AddressWrapper> outAddresses = addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getPlaceId().equals(addressFormingElement.getGlobalId()))
@@ -225,7 +225,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 5.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByCityId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByCityId =
             (addressFormingElement, addressWrappers) -> {
                 List<AddressWrapper> outAddresses = addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getCityId().equals(addressFormingElement.getGlobalId()))
@@ -238,7 +238,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 6.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByAreaId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByAreaId =
             (addressFormingElement, addressWrappers) -> {
                 List<AddressWrapper> outAddresses = addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getAreaId().equals(addressFormingElement.getGlobalId()))
@@ -251,7 +251,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 7.
-    public static BiFunction<AddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByAreaTeId =
+    public static BiFunction<NsiAddressFormingElement, List<AddressWrapper>, List<AddressWrapper>> searchByAreaTeId =
             (addressFormingElement, addressWrappers) -> {
                 List<AddressWrapper> outAddresses = addressWrappers.stream()
                         .filter(aw -> aw.getAddressFormingElement().getAreaTeId().equals(addressFormingElement.getGlobalId()))
@@ -273,7 +273,7 @@ public class AlgorithmsHelper {
         addresses4Algoritm.forEach(al -> {
             if (!AddressLevelType.ID.getLevel().equals(al.getLevel())) {
                 // 3.1.
-                List<AddressFormingElement> addressFormingElements = addressFormingElementRepository.findAfeByIdAndLevel(
+                List<NsiAddressFormingElement> addressFormingElements = addressFormingElementRepository.findAfeByIdAndLevel(
                         al.getAddressId(), al.getLevel());
                 if (!addressFormingElements.isEmpty()) {
                     AddressWrapper addressWrapper = new AddressWrapper(addressFormingElements.get(0));
@@ -283,13 +283,13 @@ public class AlgorithmsHelper {
             } else {
                 // 3.2.
                 // a.
-                Optional<BuildingRegistry> buildingRegistryOptional = buildingRegistryCRUDRepository.findById(al.getAddressId());
+                Optional<NsiBuildingRegistry> buildingRegistryOptional = buildingRegistryCRUDRepository.findById(al.getAddressId());
                 if (buildingRegistryOptional.isPresent()) {
-                    BuildingRegistry buildingRegistry = buildingRegistryOptional.get();
+                    NsiBuildingRegistry buildingRegistry = buildingRegistryOptional.get();
                     Long afeId = buildingRegistry.getAddressFormingElement().getId();
 
                     // b.
-                    AddressFormingElement addressFormingElement = addressFormingElementCRUDRepository.findById(afeId).get();
+                    NsiAddressFormingElement addressFormingElement = addressFormingElementCRUDRepository.findById(afeId).get();
 
                     // c.
                     AddressWrapper addressWrapper = new AddressWrapper();

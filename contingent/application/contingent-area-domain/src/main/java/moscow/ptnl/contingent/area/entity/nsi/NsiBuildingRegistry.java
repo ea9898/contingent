@@ -16,10 +16,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "BUILDING_REGISTRY")
+@Table(name = "NSI_BUILDING_REGISTRY")
 @SequenceGenerator(name = "SEQ_BUILDING_REGISTRY", sequenceName = "SEQ_BUILDING_REGISTRY", allocationSize=1)
 @Cacheable
-public class BuildingRegistry implements Serializable {
+public class NsiBuildingRegistry implements Serializable {
 
     private static final long serialVersionUID = 5017009667346896559L;
 
@@ -36,7 +36,7 @@ public class BuildingRegistry implements Serializable {
 
     @JoinColumn(name = "AFE_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private AddressFormingElement addressFormingElement;
+    private NsiAddressFormingElement addressFormingElement;
 
     @Size(max = 256)
     @Column(name = "L1_TYPE")
@@ -66,10 +66,10 @@ public class BuildingRegistry implements Serializable {
     @Column(name = "ADDRESS")
     private String address;
 
-    public BuildingRegistry() {
+    public NsiBuildingRegistry() {
     }
 
-    public BuildingRegistry(Long addrId, AddressFormingElement addressFormingElement, String l1Type, String l1Value, String l2Type, String l2Value, String l3Type, String l3Value) {
+    public NsiBuildingRegistry(Long addrId, NsiAddressFormingElement addressFormingElement, String l1Type, String l1Value, String l2Type, String l2Value, String l3Type, String l3Value) {
         this.addrId = addrId;
         this.addressFormingElement = addressFormingElement;
         this.l1Type = l1Type;
@@ -104,11 +104,11 @@ public class BuildingRegistry implements Serializable {
         this.addrId = addrId;
     }
 
-    public AddressFormingElement getAddressFormingElement() {
+    public NsiAddressFormingElement getAddressFormingElement() {
         return addressFormingElement;
     }
 
-    public void setAddressFormingElement(AddressFormingElement addressFormingElement) {
+    public void setAddressFormingElement(NsiAddressFormingElement addressFormingElement) {
         this.addressFormingElement = addressFormingElement;
     }
 
@@ -172,8 +172,8 @@ public class BuildingRegistry implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj != null && obj instanceof BuildingRegistry) {
-            return ((BuildingRegistry) obj).getId().equals(this.id);
+        if (obj != null && obj instanceof NsiBuildingRegistry) {
+            return ((NsiBuildingRegistry) obj).getId().equals(this.id);
         }
         return false;
     }
