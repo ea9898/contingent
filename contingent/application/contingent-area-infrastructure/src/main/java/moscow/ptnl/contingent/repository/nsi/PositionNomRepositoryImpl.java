@@ -26,16 +26,16 @@ public class PositionNomRepositoryImpl extends BaseRepository implements Positio
     public Optional<PositionNom> getByPositionCodeId(Long positionCode) {
         Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(root.get(PositionNom_.positionCodeId.getName()), positionCode)
+                        criteriaBuilder.equal(root.get(PositionNom_.positionCode.getName()), positionCode)
                 );
         return positionNomCRUDRepository.findOne(specification);
     }
 
     @Override
-    public Optional<PositionNom> getByCode(String code) {
+    public Optional<PositionNom> getByPositionCode(String positionCode) {
         Specification<PositionNom> specification = (root, query, builder) -> {
             final Join<PositionNom, PositionCode> positionCodeJoin = root.join(PositionNom_.positionCode, JoinType.LEFT);
-            return builder.equal(positionCodeJoin.get(PositionCode_.code), code);
+            return builder.equal(positionCodeJoin.get(PositionCode_.code), positionCode);
         };
         return positionNomCRUDRepository.findOne(specification);
     }

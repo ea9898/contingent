@@ -119,7 +119,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         }
         Long moId = jeCreate.getDepartment().getOrganization().getId();
         //2.1.1
-        PositionNom positionNom = positionNomRepository.getByCode(jeCreate.getPositionNom().getCode()).get();
+        PositionNom positionNom = positionNomRepository.getByPositionCode(jeCreate.getPositionNom().getCode()).get();
         //2.1.2
         Optional<AreaTypeSpecializations> areaTypeSpecialization = areaTypeSpecializationsRepository.findBySpecializationCode(
                 positionNom.getSpecialization().getCode()).stream()
