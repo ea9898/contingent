@@ -15,6 +15,8 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyTypeEnum;
+import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
+import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
@@ -43,6 +45,7 @@ import moscow.ptnl.contingent.repository.nsi.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.BuildingRegistryRepository;
+import moscow.ptnl.contingent.repository.nsi.PositionCodeRepository;
 import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -126,6 +129,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private AreaPolicyTypesCRUDRepository areaPolicyTypesCRUDRepository;
+
+    @Autowired
+    private PositionCodeRepository positionCodeRepository;
 
     @Autowired
     private AreaAddressRepository areaAddressRepository;
@@ -493,10 +499,22 @@ public class AreaServiceHelper {
                 empl.getStartDate(),
                 empl.getEndDate(),
                 empl.getSnils(),
-                positionNomRepository.getByCode(empl.getPositionCode()),
+                positionCodeRepository.getByCode(empl.getPositionCode()),
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 empl.getSubdivisionId())));
+    }
+
+    public PositionNom getPositionNomByPositionCode(String positionCodeCode) {
+        Optional<PositionCode> result = positionCodeRepository.getByCode(positionCodeCode);
+        if (result.isPresent()) {
+            PositionCode positionCode = result.get();
+            Optional<PositionNom> positionNomOptional = positionNomRepository.getByPositionCodeId(positionCode.getGlobalId());
+            if(positionNomOptional.isPresent()) {
+                return positionNomOptional.get();
+            }
+        }
+        return null;
     }
 
     /**

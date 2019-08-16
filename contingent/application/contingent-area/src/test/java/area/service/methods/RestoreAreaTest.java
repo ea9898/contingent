@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
+
+import area.service.MockRepositoriesConfiguration;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
@@ -38,7 +40,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes= {MockConfiguration.class})
+@ContextConfiguration(classes= {MockConfiguration.class, MockRepositoriesConfiguration.class})
 public class RestoreAreaTest {
         
     @Autowired

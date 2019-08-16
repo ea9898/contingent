@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.scheduler;
+package moscow.ptnl.contingent.scheduler;
 
 import moscow.ptnl.contingent.service.esu.EsuService;
 import org.slf4j.Logger;

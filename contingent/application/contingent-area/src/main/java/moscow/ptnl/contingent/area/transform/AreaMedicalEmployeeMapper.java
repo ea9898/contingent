@@ -2,7 +2,10 @@ package moscow.ptnl.contingent.area.transform;
 
 import java.util.Optional;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
+import moscow.ptnl.contingent.area.service.AreaServiceHelper;
+import moscow.ptnl.contingent.repository.nsi.PositionCodeRepository;
 import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +20,12 @@ public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, Are
     @Autowired
     private PositionNomRepository positionNomRepository;
 
+    @Autowired
+    private PositionCodeRepository positionCodeRepository;
+
+    @Autowired
+    private AreaServiceHelper areaServiceHelper;
+
     @Override
     public MedicalEmployee entityToDtoTransform(AreaMedicalEmployees entityObject) {
         MedicalEmployee employee = new MedicalEmployee();
@@ -27,11 +36,8 @@ public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, Are
         employee.setStartDate(entityObject.getStartDate());
         employee.setEndDate(entityObject.getEndDate());
 
-        if (entityObject.getPositionNomCode() != null) {
-            Optional<PositionNom> result = positionNomRepository.getByCode(entityObject.getPositionNomCode());
-            if (result.isPresent()) {
-                employee.setPosition(positionNomMapper.entityToDtoTransform(result.get()));
-            }
+        if (entityObject.getPositionCode() != null) {
+            employee.setPosition(positionNomMapper.entityToDtoTransform(areaServiceHelper.getPositionNomByPositionCode(entityObject.getPositionCode())));
         }
         return employee;
     }

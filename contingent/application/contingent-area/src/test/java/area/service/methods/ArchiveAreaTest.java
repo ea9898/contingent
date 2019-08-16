@@ -2,6 +2,7 @@ package area.service.methods;
 
 import area.service.MockConfiguration;
 import area.service.MockEsuService;
+import area.service.MockRepositoriesConfiguration;
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
@@ -14,6 +15,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.repository.nsi.PositionCodeRepository;
 import moscow.ptnl.contingent.service.esu.EsuService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +40,7 @@ import static org.xmlunit.assertj.XmlAssert.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes= {MockConfiguration.class})
+@ContextConfiguration(classes= {MockConfiguration.class, MockRepositoriesConfiguration.class})
 public class ArchiveAreaTest {
 
     @Autowired

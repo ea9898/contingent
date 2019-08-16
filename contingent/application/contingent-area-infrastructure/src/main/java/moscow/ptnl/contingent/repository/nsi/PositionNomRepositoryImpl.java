@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,18 +23,12 @@ public class PositionNomRepositoryImpl extends BaseRepository implements Positio
     PositionNomCRUDRepository positionNomCRUDRepository;
 
     @Override
-    public PositionNom getPositionProxy(long positionId) {
-        return entityManager.getReference(PositionNom.class, positionId);
-    }
-
-    @Override
-    public List<PositionNom> searchPostitionNomActualByCode(Long positionId) {
+    public Optional<PositionNom> getByPositionCodeId(Long positionCode) {
         Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(root.get(PositionNom_.globalId.getName()), positionId)
-//                    criteriaBuilder.equal(root.get(PositionNom_.archived.getName()), false) CONTINGENT2-280
+                        criteriaBuilder.equal(root.get(PositionNom_.positionCodeId.getName()), positionCode)
                 );
-        return positionNomCRUDRepository.findAll(specification);
+        return positionNomCRUDRepository.findOne(specification);
     }
 
     @Override

@@ -17,6 +17,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
+import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
@@ -55,6 +56,7 @@ import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.BuildingRegistryRepository;
 import moscow.ptnl.contingent.repository.nsi.PolicyTypeRepository;
+import moscow.ptnl.contingent.repository.nsi.PositionCodeRepository;
 import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.service.history.HistoryService;
@@ -189,6 +191,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private PolicyTypeRepository policyTypeRepository;
+
+    @Autowired
+    private PositionCodeRepository positionCodeRepository;
 
     public AreaServiceInternalImpl() {
     }
@@ -487,7 +492,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkPolicyTypesDel(area, policyTypesDel, validation);
 
         // 6
-        if (autoAssignForAttachment) {
+        if (Boolean.TRUE.equals(autoAssignForAttachment)) {
             if (area.getAreaType().getMpguAvailable() != null
                     && !Boolean.TRUE.equals(area.getAreaType().getMpguAvailable())) {
                 validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
@@ -794,7 +799,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
 
             //5.3.
-            Optional<PositionNom> positionNom = positionNomRepository.getByCode(empl.getPositionCode());
+
+            // 5.3.1.
+            Optional<PositionCode> positionCodeOptional = positionCodeRepository.getByCode(empl.getPositionCode());
+            if (!positionCodeOptional.isPresent()) {
+                continue;
+            }
+
+            // 5.3.2.
+            PositionCode positionCode = positionCodeOptional.get();
+            Optional<PositionNom> positionNom = positionNomRepository.getByPositionCodeId(positionCode.getGlobalId());
 
             if (!positionNom.isPresent()) {
                 // TODO ???
@@ -816,13 +830,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             // 5.6.            
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
 
-//            if (positions != null && positions.stream().noneMatch(pos -> pos.getPositionNomCode().equals(empl.getPositionCode()))) {
-//                validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
-//                        new ValidationParameter("positionTitle", positionNom.get().getTitle()),
-//                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
-//                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
-//            }
-//            CONTINGENT2-280
+            if (positions != null && positions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(empl.getPositionCode()))) {
+                validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
+                        new ValidationParameter("positionTitle", positionNom.get().getTitle()),
+                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
+                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
+            }
         }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
