@@ -46,14 +46,25 @@
                             <sourceRoot>
                                 ${basedir}/target/generated-sources
                             </sourceRoot>
+<!--                            <defaultOptions>-->
+<!--                                <bindingFiles>-->
+<!--                                    <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>-->
+<!--                                </bindingFiles>-->
+<!--                                <noAddressBinding>true</noAddressBinding>-->
+<!--                            </defaultOptions>-->
                             <wsdlOptions>
                                 <wsdlOption>
                                     <wsdl>${basedir}/src/main/resources/META-INF/wsdl/pushaccepterProduct.pushaccepterService.v1.wsdl</wsdl>
-                                    <bindingFiles>
-                                        <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
-                                    </bindingFiles>
                                     <serviceName>getService</serviceName>
                                     <extraargs>
+                                        <extraarg>-verbose</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/META-INF/wsdl/nsi/nsiProduct.nsiServiceAsyncFasad.v1.wsdl</wsdl>
+                                    <serviceName>nsiServiceAsyncFasad</serviceName>
+                                    <extraargs>
+                                        <extraarg>-verbose</extraarg>
                                     </extraargs>
                                 </wsdlOption>
                                 <wsdlOption>
@@ -62,6 +73,16 @@
                                     </wsdl>
                                     <wsdlLocation>classpath:formProduct.formService.v1.wsdl</wsdlLocation>
                                     <extendedSoapHeaders>true</extendedSoapHeaders>
+                                    <extraargs>
+                                        <extraarg>-verbose</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/META-INF/wsdl/pushaccepterProduct.adminService.v1.wsdl</wsdl>
+                                    <serviceName>adminService</serviceName>
+                                    <extraargs>
+                                        <extraarg>-verbose</extraarg>
+                                    </extraargs>
                                 </wsdlOption>
                             </wsdlOptions>
                         </configuration>

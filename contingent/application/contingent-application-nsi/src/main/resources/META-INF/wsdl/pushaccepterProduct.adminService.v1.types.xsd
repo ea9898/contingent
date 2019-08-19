@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://emias.mos.ru/pushaccepterProduct/adminService/v1/types/" elementFormDefault="qualified"
+        attributeFormDefault="unqualified">
+    <xs:element name="syncNsiRequest">
+        <xs:annotation>
+            <xs:documentation>Входные параметры метода catalogCode, которые требуется синхронизовать с НСИ</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="catalogCode" type="xs:int"  maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="syncNsiResponse">
+        <xs:complexType>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
