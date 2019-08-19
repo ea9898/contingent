@@ -25,12 +25,13 @@
         <wsdl:part name="body" element="ns1:syncNsiRequest"/>
     </wsdl:message>
     <wsdl:message name="syncNsiOutput">
+        <wsdl:part name="body" element="ns1:syncNsiResponse"/>
     </wsdl:message>
 
     <wsdl:portType name="adminServicePortType">
         <wsdl:operation name="syncNsi">
-            <wsdl:input message="tns:syncNsiInput" />
-            <wsdl:output message="tns:syncNsiOutput" />
+            <wsdl:input message="tns:syncNsiInput" name="syncNsiInput" />
+            <wsdl:output message="tns:syncNsiOutput" name="syncNsiOutput" />
             <wsdl:fault message="tns:fault" name="fault" />
         </wsdl:operation>
     </wsdl:portType>
@@ -53,7 +54,7 @@
     </wsdl:binding>
 
     <wsdl:service name="adminService">
-        <wsdl:port binding="adminServiceBinding" name="adminServicePort">
+        <wsdl:port binding="tns:adminServiceBinding" name="adminServiceBinding">
             <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
         </wsdl:port>
     </wsdl:service>

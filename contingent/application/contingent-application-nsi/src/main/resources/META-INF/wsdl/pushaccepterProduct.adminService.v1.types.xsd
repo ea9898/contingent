@@ -13,4 +13,7 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:element name="syncNsiResponse">
+    </xs:element>
 </xs:schema>
