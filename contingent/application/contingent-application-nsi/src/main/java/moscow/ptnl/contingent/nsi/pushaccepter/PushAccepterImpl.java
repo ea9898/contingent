@@ -1,10 +1,10 @@
 package moscow.ptnl.contingent.nsi.pushaccepter;
 
 import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
-import moscow.ptnl.contingent.domain.nsi.entity.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.NsiPushEventConstraint;
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsingS.Table;
-import moscow.ptnl.contingent.repository.nsi.NsiPushEventCRUDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.support.MessageBuilder;
@@ -24,9 +24,6 @@ public class PushAccepterImpl extends PushAccepter {
     @Autowired
     @Qualifier(EventChannelsConfiguration.NSI_EVENT_CHANNEL_NAME)
     private MessageChannel nsiChannel;
-
-    @Autowired
-    NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
 
     @Override
     public Answer getPushSpec(Table table) {
@@ -62,8 +59,8 @@ public class PushAccepterImpl extends PushAccepter {
         }
         nsiChannel.send(MessageBuilder
                 .withPayload(pushEventEntity)
-                .setHeader("pushEventId", pushEventId)
-                .setHeader("action", pack.catalog.data.action)
+                .setHeader(NsiPushEventConstraint.PUSH_EVENT_ID_HEADER, pushEventId)
+                .setHeader(NsiPushEventConstraint.PUSH_EVENT_ACTION_HEADER, pack.catalog.data.action)
                 .build());
         return new Answer(true, "ok");
     }
