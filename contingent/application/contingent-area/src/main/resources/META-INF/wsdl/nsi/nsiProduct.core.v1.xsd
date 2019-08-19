@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://emias.mos.ru/nsiProduct/core/v1/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://emias.mos.ru/nsiProduct/core/v1/" elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+    <xs:include schemaLocation="../emias/emias.core.v1.xsd"/>
+
+    <xs:complexType name="ehdDictionaries">
+        <xs:sequence>
+            <xs:element name="list" type="ehdDictionary" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ehdDictionary">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" nillable="true"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="total" type="xs:int" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ehdDictionaryItems">
+        <xs:sequence>
+            <xs:element name="list" type="ehdDictionaryItem" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ehdDictionaryItem">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="parent_id" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="enName" type="xs:string"/>
+            <xs:element name="isDeleted" type="xs:int" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ehdDictionaryItemsV2">
+        <xs:sequence>
+            <xs:element name="ehdDictionaryItemsV2" type="ehdDictionaryItemV2" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ehdDictionaryItemV2">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="parent_id" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="enName" type="xs:string"/>
+            <xs:element name="isDeleted" type="xs:int" nillable="true"/>
+            <xs:element name="dictAttrsV2" type="dictAttrV2" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="dictAttrV2">
+        <xs:sequence>
+            <xs:element name="tehName" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ehdCatalogs">
+        <xs:sequence>
+            <xs:element name="list" type="ehdCatalog" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ehdCatalog">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" nillable="true"/>
+            <xs:element name="fullName" type="xs:string"/>
+            <xs:element name="technicalName" type="xs:string"/>
+            <xs:element name="shortName" type="xs:string"/>
+            <xs:element name="accountingObject" type="xs:string"/>
+            <xs:element name="keywords" type="xs:string"/>
+            <xs:element name="vid" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="period" type="xs:string"/>
+            <xs:element name="hasGeo" type="xs:boolean" nillable="true"/>
+            <xs:element name="categories" type="xs:string"/>
+            <xs:element name="oiv" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ehdCatalogStats">
+        <xs:sequence>
+            <xs:element name="catalogId" type="xs:int" nillable="true"/>
+            <xs:element name="fullName" type="xs:string" nillable="true"/>
+            <xs:element name="technicalName" type="xs:string"/>
+            <xs:element name="cntActiveObj" type="xs:int" nillable="true"/>
+            <xs:element name="cntDelObj" type="xs:int" nillable="true"/>
+            <xs:element name="cntNotSubscribe" type="xs:int" nillable="true"/>
+            <xs:element name="cntError" type="xs:int" nillable="true"/>
+            <xs:element name="cntGeoError" type="xs:int" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ehdAttrSpec">
+        <xs:sequence>
+            <xs:element name="count" type="xs:long"/>
+            <xs:element name="list" type="ehdCommonAttribute" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="ehdException" type="ehdException" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ehdCommonAttribute">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="typeId" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="isPrimaryKey" type="xs:boolean" nillable="true"/>
+            <xs:element name="isEdit" type="xs:boolean" nillable="true"/>
+            <xs:element name="isReq" type="xs:boolean" nillable="true"/>
+            <xs:element name="fieldMask" type="xs:string"/>
+            <xs:element name="tehName" type="xs:string"/>
+            <xs:element name="maxLength" type="xs:string"/>
+            <xs:element name="maxLengthDecimal" type="xs:int" nillable="true"/>
+            <xs:element name="dictId" type="xs:int" nillable="true"/>
+            <xs:element name="refCatalog" type="xs:int" nillable="true"/>
+            <xs:element name="isDeleted" type="xs:int" nillable="true"/>
+            <xs:element name="isDeletedTmp" type="xs:int" nillable="true"/>
+            <xs:element name="isMulti" type="xs:boolean"/>
+            <xs:element name="isAutocomplete" type="xs:boolean" nillable="true"/>
+            <xs:element name="isManual" type="xs:int" nillable="true"/>
+            <xs:element name="isManualInputGeo" type="xs:int" nillable="true"/>
+            <xs:element name="colname" type="xs:string"/>
+            <xs:element name="fillFor" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ehdException">
+        <xs:sequence>
+            <xs:element name="errorCode" type="xs:string"/>
+            <xs:element name="errorText" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ehdAttrSpecNew">
+        <xs:sequence>
+            <xs:element name="count" type="xs:long"/>
+            <xs:element name="list" type="ehdCommonAttributeNew" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="ehdException" type="ehdException" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ehdCommonAttributeNew">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="typeId" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="colname" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="isPrimaryKey" type="xs:boolean" nillable="true"/>
+            <xs:element name="isEdit" type="xs:boolean" nillable="true"/>
+            <xs:element name="isReq" type="xs:boolean" nillable="true"/>
+            <xs:element name="fieldMask" type="xs:string"/>
+            <xs:element name="tehName" type="xs:string"/>
+            <xs:element name="maxLength" type="xs:string"/>
+            <xs:element name="maxLengthDecimal" type="xs:int" nillable="true"/>
+            <xs:element name="dictId" type="xs:int" nillable="true"/>
+            <xs:element name="refCatalog" type="xs:int" nillable="true"/>
+            <xs:element name="isDeleted" type="xs:int" nillable="true"/>
+            <xs:element name="isDeletedTmp" type="xs:int" nillable="true"/>
+            <xs:element name="isMulti" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ehdCatalogItems">
+        <xs:sequence>
+            <xs:element name="rows" type="ehdCatalogRow" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="ehdException" type="ehdException" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ehdCatalogRow">
+        <xs:sequence>
+            <xs:element name="item" type="ehdCatalogItem" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ehdCatalogItem">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="isDeleted" type="xs:int" nillable="true"/>
+            <xs:element name="isDeletedTmp" type="xs:int" nillable="true"/>
+            <xs:element name="tehName" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="dictValue" type="xs:string"/>
+            <xs:element name="value"/>
+            <xs:element name="groupValue" type="ehdCatalogItems"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="listResultUid">
+        <xs:sequence>
+            <xs:element name="list" type="resultUid" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="resultUid">
+        <xs:sequence>
+            <xs:element name="uid" type="xs:int" nillable="true"/>
+            <xs:element name="login" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="surname" type="xs:string"/>
+            <xs:element name="patroname" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="dataInMessage">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="catalog" type="catalog"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="catalog">
+        <xs:sequence>
+            <xs:element name="items" type="items"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="items">
+        <xs:sequence>
+            <xs:element name="item" type="item" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="item">
+        <xs:sequence>
+            <xs:element name="data" type="data"/>
+            <xs:element name="geoData" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="action" type="xs:string"/>
+        <xs:attribute name="isManualGeo" type="xs:boolean"/>
+        <xs:attribute name="systemObjectId" type="xs:string"/>
+        <xs:attribute name="globalId" type="xs:int"/>
+        <xs:attribute name="catalogId" type="xs:int"/>
+    </xs:complexType>
+    <xs:complexType name="data">
+        <xs:sequence>
+            <xs:element name="attribute" type="attribute" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="attribute">
+        <xs:sequence>
+            <xs:element name="values" type="values" nillable="true"/>
+            <xs:element name="files" type="files" nillable="true"/>
+            <xs:element name="items" type="items" nillable="true"/>
+        </xs:sequence>
+        <!--<xs:attribute name="field_id" type="xs:int"/>-->
+        <xs:attribute name="tehName" type="xs:string"/>
+        <xs:attribute name="isManual" type="xs:boolean" default="false"/>
+    </xs:complexType>
+    <xs:complexType name="values">
+        <xs:sequence>
+            <xs:element name="value" type="value" minOccurs="0" maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="value">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="occurrence" type="xs:int">
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="files">
+        <xs:sequence>
+            <xs:element name="file" type="file" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="base">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:complexType name="file">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="extension" type="xs:string"/>
+            <xs:element name="content" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="resultInfo">
+        <xs:sequence>
+            <xs:element name="status" type="xs:int" nillable="true"/>
+            <xs:element name="message" type="xs:string"/>
+            <xs:element name="detailMessage" type="xs:string"/>
+            <xs:element name="globalId" type="xs:long" nillable="true"/>
+            <xs:element name="systemObjectId" type="xs:string"/>
+            <xs:element name="action" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="listResultInfo">
+        <xs:sequence>
+            <xs:element name="resultInfo" type="resultInfo" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

@@ -5,7 +5,7 @@
            xmlns:tns="http://emias.mos.ru/contingent2/core/v1/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
-    <xs:include schemaLocation="../emias/emias.core.v1.xsd"/>
+    <xs:include schemaLocation="../../emias/emias.core.v1.xsd"/>
     <!--business entities-->
     <xs:complexType name="AreaTypeShort">
         <xs:annotation>

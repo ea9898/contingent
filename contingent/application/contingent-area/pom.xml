@@ -217,6 +217,13 @@
                                         <serviceName>receive_changes</serviceName>                                                                                                                                               
                                     </wsdlOption>
                                     <wsdlOption>
+                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/nsi/nsiProduct.nsiServiceAsyncFasad.v1.wsdl</wsdl>
+                                        <bindingFiles>
+                                            <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
+                                        </bindingFiles>
+                                        <serviceName>nsiServiceAsyncFasad</serviceName>
+                                    </wsdlOption>
+                                    <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v1/emias.contingent2.v1.wsdl</wsdl>
                                         <bindingFiles>
                                             <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
