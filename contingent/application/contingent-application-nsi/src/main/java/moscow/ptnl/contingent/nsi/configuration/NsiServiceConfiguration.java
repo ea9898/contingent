@@ -1,18 +1,14 @@
-package moscow.ptnl.contingent.area.configuration;
+package moscow.ptnl.contingent.nsi.configuration;
 
-import moscow.ptnl.contingent.area.configuration.security.SecurityHeaderGenerator;
-import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
+import moscow.ptnl.contingent.nsi.configuration.security.SecurityHeaderGenerator;
 import org.apache.cxf.binding.BindingConfiguration;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.NsiServiceAsyncFasadPortType;
 
 import javax.xml.ws.soap.SOAPBinding;
-import java.lang.invoke.MethodHandles;
 
 @Configuration
 public class NsiServiceConfiguration {

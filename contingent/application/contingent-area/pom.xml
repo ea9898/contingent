@@ -216,10 +216,6 @@
                                 </defaultOptions>
                                 <wsdlOptions>
                                     <wsdlOption>
-                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/nsi/nsiProduct.nsiServiceAsyncFasad.v1.wsdl</wsdl>
-                                        <serviceName>nsiServiceAsyncFasad</serviceName>
-                                    </wsdlOption>
-                                    <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v1/emias.contingent2.v1.wsdl</wsdl>
                                         <serviceName>AreaService</serviceName>
                                         <extraargs>

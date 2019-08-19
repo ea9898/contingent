@@ -87,10 +87,6 @@ import java.util.stream.Collectors;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
-import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetAllDictRequest;
-import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetAllDictResponse;
-import ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.Fault;
-import ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.NsiServiceAsyncFasadPortType;
 
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
@@ -198,9 +194,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private PositionCodeRepository positionCodeRepository;
-
-    @Autowired
-    private NsiServiceAsyncFasadPortType nsiServiceAsyncFasadPortType;
 
     public AreaServiceInternalImpl() {
     }

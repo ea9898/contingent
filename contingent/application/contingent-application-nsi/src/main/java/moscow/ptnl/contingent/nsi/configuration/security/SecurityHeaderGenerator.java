@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.configuration.security;
+package moscow.ptnl.contingent.nsi.configuration.security;
 
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
@@ -8,8 +8,6 @@ import org.apache.cxf.phase.Phase;
 import org.apache.wss4j.dom.WSConstants;
 import org.apache.wss4j.dom.message.WSSecHeader;
 import org.apache.wss4j.dom.message.WSSecUsernameToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import javax.xml.soap.SOAPElement;

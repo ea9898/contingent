@@ -57,6 +57,13 @@
                                     </extraargs>
                                 </wsdlOption>
                                 <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/META-INF/wsdl/nsi/nsiProduct.nsiServiceAsyncFasad.v1.wsdl</wsdl>
+                                    <serviceName>nsiServiceAsyncFasad</serviceName>
+                                    <extraargs>
+                                        <extraarg>-verbose</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                                <wsdlOption>
                                     <wsdl>
                                         ${basedir}/src/main/resources/META-INF/wsdl/formProduct.formService.v1.wsdl
                                     </wsdl>
