@@ -77,6 +77,15 @@
                                         <extraarg>-verbose</extraarg>
                                     </extraargs>
                                 </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/META-INF/wsdl/pushaccepterProduct.adminService.v1.wsdl</wsdl>
+                                    <bindingFiles>
+                                        <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
+                                    </bindingFiles>
+                                    <serviceName>adminService</serviceName>
+                                    <extraargs>
+                                    </extraargs>
+                                </wsdlOption>
                             </wsdlOptions>
                         </configuration>
                         <goals>
