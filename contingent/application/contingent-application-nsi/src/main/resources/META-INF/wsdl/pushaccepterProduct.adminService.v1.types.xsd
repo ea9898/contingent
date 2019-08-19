@@ -9,11 +9,13 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="catalogCode" type="xs:string"  maxOccurs="unbounded"/>
+                <xs:element name="catalogCode" type="xs:int"  maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
     <xs:element name="syncNsiResponse">
+        <xs:complexType>
+        </xs:complexType>
     </xs:element>
 </xs:schema>
