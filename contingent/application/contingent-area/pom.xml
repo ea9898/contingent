@@ -208,19 +208,19 @@
                             <id>generate-sources</id>
                             <phase>generate-sources</phase>
                             <configuration>
+                                <defaultOptions>
+                                    <bindingFiles>
+                                        <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
+                                    </bindingFiles>
+                                    <noAddressBinding>true</noAddressBinding>
+                                </defaultOptions>
                                 <wsdlOptions>
                                     <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/nsi/nsiProduct.nsiServiceAsyncFasad.v1.wsdl</wsdl>
-                                        <bindingFiles>
-                                            <bindingFile>${basedir}/../common/jaxb-binding-nsi.xml</bindingFile>
-                                        </bindingFiles>
                                         <serviceName>nsiServiceAsyncFasad</serviceName>
                                     </wsdlOption>
                                     <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v1/emias.contingent2.v1.wsdl</wsdl>
-                                        <bindingFiles>
-                                            <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
-                                        </bindingFiles>
                                         <serviceName>AreaService</serviceName>
                                         <extraargs>
                                             <extraarg>-verbose</extraarg>
@@ -234,10 +234,7 @@
                                     </wsdlOption>
                                     <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v2/emias.contingent2.v2.wsdl</wsdl>
-                                        <bindingFiles>
-                                            <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
-                                        </bindingFiles>
-                                        <serviceName>AreaService</serviceName>                                                                                                                                               
+                                        <serviceName>AreaService</serviceName>
                                     </wsdlOption>
                                 </wsdlOptions>
                             </configuration>
