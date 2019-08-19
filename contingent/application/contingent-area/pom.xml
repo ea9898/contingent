@@ -219,7 +219,7 @@
                                     <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/nsi/nsiProduct.nsiServiceAsyncFasad.v1.wsdl</wsdl>
                                         <bindingFiles>
-                                            <bindingFile>${basedir}/../common/jaxb-binding.xml</bindingFile>
+                                            <bindingFile>${basedir}/../common/jaxb-binding-nsi.xml</bindingFile>
                                         </bindingFiles>
                                         <serviceName>nsiServiceAsyncFasad</serviceName>
                                     </wsdlOption>
