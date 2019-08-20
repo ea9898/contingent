@@ -5,13 +5,14 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
 import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class NsiEntityMapper {
 
-    private static String getValue(EhdCatalogRow row, String parameterName, Integer tableCode) {
-        return (String) row.getItem().stream().filter(atr -> atr.getTehName().equalsIgnoreCase(parameterName))
+    private static Object getValue(EhdCatalogRow row, String parameterName, Integer tableCode) {
+        return row.getItem().stream().filter(atr -> atr.getTehName().equalsIgnoreCase(parameterName))
                 .findFirst().orElseThrow(() -> new IllegalStateException(
                         String.format("Нет такого поля %s в таблице %s", parameterName, tableCode))).getValue();
     }
@@ -29,7 +30,7 @@ public class NsiEntityMapper {
 
         AreaType areaType = new AreaType();
 
-        String code = getValue(row, AreaType.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        String code = (String) getValue(row, AreaType.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE.getCode());
         if (code.length() > 0) {
             areaType.setCode(Long.valueOf(code));
         }
@@ -120,20 +121,138 @@ public class NsiEntityMapper {
 
         AreaTypeClass areaTypeClass = new AreaTypeClass();
 
-        String code = getValue(row, AreaTypeClass.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
+        String code = (String) getValue(row, AreaTypeClass.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
         if (code.length() > 0) {
             areaTypeClass.setCode(Long.valueOf(code));
         }
 
-        String title = getValue(row, AreaTypeClass.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
+        String title = (String) getValue(row, AreaTypeClass.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
         if (title.length() > 0) {
             areaTypeClass.setTitle(title);
         }
 
-        String archived = getValue(row, AreaTypeClass.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
+        String archived = (String) getValue(row, AreaTypeClass.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
         if (archived.length() > 0) {
             areaTypeClass.setArchived(stringIsTrue(archived));
         }
+
+        BigDecimal globalId = (BigDecimal) getValue(row, AreaTypeClass.FieldsEnum.GLOBAL_ID.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
+        areaTypeClass.setGlobalId(globalId.longValue());
+
         return areaTypeClass;
     }
+
+    /*public static List<AreaTypeKind> mapAreaTypeKinds(List<EhdCatalogRow> rows) {
+
+        return rows.stream().map(NsiEntityMapper::mapAreaTypeKind).collect(Collectors.toList());
+    }
+
+    public static AreaTypeKind mapAreaTypeKind(EhdCatalogRow row) {
+
+        AreaTypeKind areaTypeKind = new AreaTypeKind();
+
+        String code = getValue(row, AreaTypeKind.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (code.length() > 0) {
+            areaTypeKind.setCode(Long.valueOf(code));
+        }
+
+        String title = getValue(row, AreaTypeKind.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (title.length() > 0) {
+            areaTypeKind.setTitle(title);
+        }
+
+        String archived = getValue(row, AreaTypeKind.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (archived.length() > 0) {
+            areaTypeKind.setArchived(stringIsTrue(archived));
+        }
+        return areaTypeKind;
+    }
+
+    public static List<AreaTypeMedicalPositions> mapAreaTypeMedicalPositions(List<EhdCatalogRow> rows) {
+
+        return rows.stream().map(NsiEntityMapper::mapAreaTypeMedicalPosition).collect(Collectors.toList());
+    }
+
+    public static AreaTypeMedicalPositions mapAreaTypeMedicalPosition(EhdCatalogRow row) {
+
+        AreaTypeMedicalPositions areaTypeMedicalPositions = new AreaTypeMedicalPositions();
+
+        String id = getValue(row, AreaTypeMedicalPositions.FieldsEnum.ID.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
+        if (id.length() > 0) {
+            areaTypeMedicalPositions.setId(Long.valueOf(id));
+        }
+
+        String areaTypeCode = getValue(row, AreaTypeMedicalPositions.FieldsEnum.AREA_TYPE_CODE.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
+        if (areaTypeCode.length() > 0) {
+            areaTypeMedicalPositions.setAreaType(new AreaType(Long.valueOf(areaTypeCode)));
+        }
+
+        String positionCode = getValue(row, AreaTypeMedicalPositions.FieldsEnum.POSITION_CODE.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
+        if (positionCode.length() > 0) {
+            areaTypeMedicalPositions.setPositionCode(new PositionCode(positionCode));
+        }
+
+        String archived = getValue(row, AreaTypeMedicalPositions.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
+        if (archived.length() > 0) {
+            areaTypeMedicalPositions.setArchived(stringIsTrue(archived));
+        }
+
+*//*        String positionCode = getValue(row, AreaTypeMedicalPositions.FieldsEnum.POSITION_NOM.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
+        if (positionCode.length() > 0) {
+            areaTypeMedicalPositions.setPositionCode(new PositionCode(positionCode));
+        }*//*
+        return areaTypeMedicalPositions;
+    }
+
+    public static List<AreaTypeKind> mapAreaTypeKinds(List<EhdCatalogRow> rows) {
+
+        return rows.stream().map(NsiEntityMapper::mapAreaTypeKind).collect(Collectors.toList());
+    }
+
+    public static AreaTypeKind mapAreaTypeKind(EhdCatalogRow row) {
+
+        AreaTypeKind areaTypeKind = new AreaTypeKind();
+
+        String code = getValue(row, AreaTypeKind.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (code.length() > 0) {
+            areaTypeKind.setCode(Long.valueOf(code));
+        }
+
+        String title = getValue(row, AreaTypeKind.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (title.length() > 0) {
+            areaTypeKind.setTitle(title);
+        }
+
+        String archived = getValue(row, AreaTypeKind.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (archived.length() > 0) {
+            areaTypeKind.setArchived(stringIsTrue(archived));
+        }
+        return areaTypeKind;
+    }
+
+    public static List<AreaTypeKind> mapAreaTypeKinds(List<EhdCatalogRow> rows) {
+
+        return rows.stream().map(NsiEntityMapper::mapAreaTypeKind).collect(Collectors.toList());
+    }
+
+    public static AreaTypeKind mapAreaTypeKind(EhdCatalogRow row) {
+
+        AreaTypeKind areaTypeKind = new AreaTypeKind();
+
+        String code = getValue(row, AreaTypeKind.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (code.length() > 0) {
+            areaTypeKind.setCode(Long.valueOf(code));
+        }
+
+        String title = getValue(row, AreaTypeKind.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (title.length() > 0) {
+            areaTypeKind.setTitle(title);
+        }
+
+        String archived = getValue(row, AreaTypeKind.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (archived.length() > 0) {
+            areaTypeKind.setArchived(stringIsTrue(archived));
+        }
+        return areaTypeKind;
+    }*/
 }
