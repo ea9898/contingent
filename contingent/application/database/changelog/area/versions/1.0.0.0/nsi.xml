@@ -85,6 +85,7 @@
             <dropIndex tableName="POSITION_CODE" indexName="IXFK_POSITION_CODE_CODE01" />
         </rollback>
     </changeSet>
+
     <!-- POSITION_CODE -->
 
     <!-- POSITION_NOM -->
@@ -205,6 +206,7 @@
             <dropColumn columnName="POSITION_CODE_ID" tableName="POSITION_NOM" />
         </rollback>
     </changeSet>
+
     <!-- !!!! POSITION_NOM !!!! -->
 
     <!-- AREA_TYPES_CLASS -->
@@ -228,6 +230,24 @@
             <dropTable tableName="AREA_TYPES_CLASS"/>
         </rollback>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-290-4" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPES_CLASS" columnName="GLOBAL_ID" />
+            </not>
+        </preConditions>
+        <comment>Создание таблицы колонки GLOBAL_ID</comment>
+        <addColumn tableName="AREA_TYPES_CLASS">
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPES_CLASS" columnName="GLOBAL_ID" />
+        </rollback>
+    </changeSet>
+
     <!-- !!!! AREA_TYPES_CLASS !!!! -->
 
     <!-- AREA_TYPES_KIND -->
@@ -249,6 +269,23 @@
         </createTable>
         <rollback>
             <dropTable tableName="AREA_TYPES_KIND"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-290-3" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPES_KIND" columnName="GLOBAL_ID" />
+            </not>
+        </preConditions>
+        <comment>Создание таблицы колонки GLOBAL_ID</comment>
+        <addColumn tableName="AREA_TYPES_KIND">
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPES_KIND" columnName="GLOBAL_ID" />
         </rollback>
     </changeSet>
     <!-- !!!! AREA_TYPES_KIND !!!! -->
@@ -345,6 +382,24 @@
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPES_KIND"/>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-290-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE" columnName="GLOBAL_ID" />
+            </not>
+        </preConditions>
+        <comment>Создание таблицы колонки GLOBAL_ID</comment>
+        <addColumn tableName="AREA_TYPE">
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE" columnName="GLOBAL_ID" />
+        </rollback>
+    </changeSet>
+
     <!-- !!!! AREA_TYPE !!!! -->
 
     <!-- AREA_TYPE_MEDICAL_POSITIONS -->
@@ -504,6 +559,22 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-290-6" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="GLOBAL_ID" />
+            </not>
+        </preConditions>
+        <comment>Создание таблицы колонки GLOBAL_ID</comment>
+        <addColumn tableName="AREA_TYPE_MEDICAL_POSITIONS">
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="GLOBAL_ID" />
+        </rollback>
+    </changeSet>
 
     <!-- !!!! AREA_TYPE_MEDICAL_POSITIONS !!!! -->
 
@@ -587,6 +658,23 @@
                                  constraintName="FK_AREA_TYPE_REL_AREA_TYPE_PRI"
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPE"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-290-2" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE_RELATIONS" columnName="GLOBAL_ID" />
+            </not>
+        </preConditions>
+        <comment>Создание таблицы колонки GLOBAL_ID</comment>
+        <addColumn tableName="AREA_TYPE_RELATIONS">
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE_RELATIONS" columnName="GLOBAL_ID" />
+        </rollback>
     </changeSet>
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
 
@@ -849,6 +937,23 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-290-8" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE_SPECIALIZATIONS" columnName="GLOBAL_ID" />
+            </not>
+        </preConditions>
+        <comment>Создание таблицы колонки GLOBAL_ID</comment>
+        <addColumn tableName="AREA_TYPE_SPECIALIZATIONS">
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE_SPECIALIZATIONS" columnName="GLOBAL_ID" />
+        </rollback>
+    </changeSet>
+
     <!-- !!!! AREA_TYPE_SPECIALIZATIONS !!!! -->
 
     <!-- GENDER -->
@@ -934,6 +1039,7 @@
                       tableName="NSI_PUSH_LOG"/>
     </changeSet>
 
+<!--
     <changeSet id="CONTINGENT2-NSI-13-1" author="ddryuchin"  labels="1.0.0.0">
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="POLICY_TYPE" file="changelog/area/versions/1.0.0.0/files/Тип полиса_POLICY_TYPE.csv">
@@ -942,7 +1048,9 @@
             <column header="archived" name="archived" type="NUMERIC"/>
         </loadData>
     </changeSet>
+-->
 
+<!--
     <changeSet id="CONTINGENT2-NSI-13-2" author="ddryuchin"  labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <and>
@@ -958,8 +1066,10 @@
             <column header="archived" name="archived" type="NUMERIC"/>
         </loadData>
     </changeSet>
+-->
 
-    <changeSet id="CONTINGENT2-NSI-13-3" author="ddryuchin"  labels="1.0.0.0">
+<!--
+    <changeSet id="CONTINGENT2-NSI-13-3" author="ddryuchin"  labels="1.0.0.0" >
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="SPECIALIZATION" file="changelog/area/versions/1.0.0.0/files/Медицинская специализация_SPECIALIZATION.csv">
             <column header="id" name="id" type="NUMERIC"/>
@@ -968,7 +1078,9 @@
             <column header="archived" name="archived" type="NUMERIC"/>
         </loadData>
     </changeSet>
+-->
 
+<!--
     <changeSet id="CONTINGENT2-NSI-13-4" author="ddryuchin"  labels="1.0.0.0">
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPES_CLASS" file="changelog/area/versions/1.0.0.0/files/Классы типа участка_AREA_TYPES_CLASS.csv">
@@ -977,7 +1089,9 @@
             <column header="archived" name="archived" type="NUMERIC"/>
         </loadData>
     </changeSet>
+-->
 
+<!--
     <changeSet id="CONTINGENT2-NSI-13-5" author="ddryuchin"  labels="1.0.0.0">
         <comment>Заполнение справочника</comment>
         <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPES_KIND" file="changelog/area/versions/1.0.0.0/files/Вид типа участка_AREA_TYPES_KIND.csv">
@@ -986,12 +1100,14 @@
             <column header="archived" name="archived" type="NUMERIC"/>
         </loadData>
     </changeSet>
+-->
 
+<!--
     <changeSet id="CONTINGENT2-191-NSI-1" author="mkachalov"  labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <and>
                 <tableExists tableName="AREA_TYPE" />
-                <!-- <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE</sqlCheck> -->
+                &lt;!&ndash; <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE</sqlCheck> &ndash;&gt;
             </and>
         </preConditions>
         <comment>Заполнение справочника</comment>
@@ -1022,7 +1138,9 @@
             </sql>
         </rollback>
     </changeSet>
+-->
 
+<!--
     <changeSet id="CONTINGENT2-191-NSI-2" author="mkachalov"  labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <and>
@@ -1043,6 +1161,7 @@
             </sql>
         </rollback>
     </changeSet>
+-->
 
 
     <!-- Тут начинается фигня которую лучше бы сразу при создании таблицы POSITION_NOM учесть -->

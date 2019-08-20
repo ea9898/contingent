@@ -42,6 +42,9 @@ public class AreaTypeSpecializations implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    @Column(name = "GLOBAL_ID")
+    private Long globalId;
+
     public Long getId() {
         return id;
     }

@@ -41,6 +41,9 @@ public class AreaTypeRelations implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    @Column(name = "GLOBAL_ID")
+    private Long globalId;
+
     public Key getKey() {
         return new Key(dependentAreaType, primaryAreaType);
     }

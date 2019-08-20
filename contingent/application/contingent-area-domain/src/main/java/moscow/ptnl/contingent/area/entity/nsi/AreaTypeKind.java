@@ -32,6 +32,9 @@ public class AreaTypeKind implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    @Column(name = "GLOBAL_ID")
+    private Long globalId;
+
     public AreaTypeKind() {
     }
 

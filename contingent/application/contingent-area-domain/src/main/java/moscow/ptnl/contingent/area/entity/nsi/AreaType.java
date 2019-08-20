@@ -93,6 +93,9 @@ public class AreaType implements Serializable {
     @Column(name = "RESIDENTS_BIND_RATE")
     private Integer residentsBindRate;
 
+    @Column(name = "GLOBAL_ID")
+    private Long globalId;
+
     public AreaType() {
     }
 

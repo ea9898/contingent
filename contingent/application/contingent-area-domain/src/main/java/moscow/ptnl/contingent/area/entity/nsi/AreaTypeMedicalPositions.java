@@ -41,6 +41,8 @@ public class AreaTypeMedicalPositions implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private PositionNom positionNom;
 
+    @Column(name = "GLOBAL_ID")
+    private Long globalId;
 
     public Long getId() {
         return id;
