@@ -1,20 +1,6 @@
 package moscow.ptnl.contingent.endpoint;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKind;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
-import moscow.ptnl.contingent.domain.nsi.entity.NsiActionsEnum;
 import moscow.ptnl.contingent.domain.nsi.entity.NsiPushEvent;
-import moscow.ptnl.contingent.repository.CommonRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypeMedicalPositionsCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypeRelationsCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.ClassAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.KindAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.NsiPushEventCRUDRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
+import java.util.concurrent.Future;
 
 import static moscow.ptnl.contingent.configuration.EventChannelsConfiguration.NSI_EVENT_CHANNEL_NAME;
+import moscow.ptnl.contingent.domain.Keyable;
+import moscow.ptnl.contingent.domain.nsi.NsiPushEventConstraint;
+import moscow.ptnl.util.ExceptionUtil;
 
 /**
  * Точка получения событий из канала NSI_EVENT_CHANNEL_NAME.
@@ -40,72 +29,38 @@ import static moscow.ptnl.contingent.configuration.EventChannelsConfiguration.NS
 @MessageEndpoint
 public class NsiEventEndpoint {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NsiEventEndpoint.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NsiEventEndpoint.class);  
+    
+    @Autowired
+    private NsiEventProcessor eventProcessor;
 
     @Autowired
-    AreaTypesCRUDRepository areaTypesCRUDRepository;
-
-    @Autowired
-    ClassAreaTypesCRUDRepository classAreaTypesCRUDRepository;
-
-    @Autowired
-    KindAreaTypesCRUDRepository kindAreaTypesCRUDRepository;
-
-    @Autowired
-    AreaTypeMedicalPositionsCRUDRepository areaTypeMedicalPositionsCRUDRepository;
-
-    @Autowired
-    AreaTypeRelationsCRUDRepository areaTypeRelationsCRUDRepository;
-
-    @Autowired
-    AreaTypeSpecializationsCRUDRepository areaTypeSpecializationsCRUDRepository;
-
-    @Autowired
-    NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
+    private NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
 
     @ServiceActivator(inputChannel = NSI_EVENT_CHANNEL_NAME)
     public void nsiPushConsumer(Message<Object> msg) {
-        Object entity = msg.getPayload();
-        String action = (String) msg.getHeaders().get("action");
+        LOG.info("получено сообщение: " + msg);
+        Keyable entity = (Keyable) msg.getPayload();
+        String action = (String) msg.getHeaders().get(NsiPushEventConstraint.PUSH_EVENT_ACTION_HEADER);
         try {
-            if (entity instanceof AreaType) {
-                saveOrDelete(areaTypesCRUDRepository, (AreaType) entity, action);
-                return;
-            }
-            if (entity instanceof AreaTypeClass) {
-                saveOrDelete(classAreaTypesCRUDRepository, (AreaTypeClass) entity, action);
-                return;
-            }
-            if (entity instanceof AreaTypeKind) {
-                saveOrDelete(kindAreaTypesCRUDRepository, (AreaTypeKind) entity, action);
-                return;
-            }
-            if (entity instanceof AreaTypeMedicalPositions) {
-                saveOrDelete(areaTypeMedicalPositionsCRUDRepository, (AreaTypeMedicalPositions) entity, action);
-                return;
-            }
-            if (entity instanceof AreaTypeRelations) {
-                saveOrDelete(areaTypeRelationsCRUDRepository, (AreaTypeRelations) entity, action);
-                return;
-            }
-            if (entity instanceof AreaTypeSpecializations) {
-                saveOrDelete(areaTypeSpecializationsCRUDRepository, (AreaTypeSpecializations) entity, action);
-            }
-        } catch (Exception e) {
-            NsiPushEvent event = nsiPushEventCRUDRepository.findById((Long) msg.getHeaders().get("pushEventId")).get();
+            Future<Void> result = eventProcessor.processMesage(entity, action);        
+            result.get(); //асинхронный вызов для создания разных транзакций
+        } catch (Throwable error) {
+            saveError(error, msg);
+        }
+    }
+    
+    private void saveError(Throwable error, Message<Object> msg) {
+        try {
+            NsiPushEvent event = nsiPushEventCRUDRepository.findById((Long) msg.getHeaders().get(NsiPushEventConstraint.PUSH_EVENT_ID_HEADER)).get();
             event.setError(true);
-            event.setErrorMessage(e.getMessage());
-            //TODO сохранить ошибку не удаётся, не получается побороть ошибку
-            // org.hibernate.TransactionException: Transaction was marked for rollback only; cannot commit
+            String errorMessage = ExceptionUtil.getStackTrace(error);
+            event.setErrorMessage(errorMessage);            
             nsiPushEventCRUDRepository.save(event);
+        } catch (Throwable e) {
+            LOG.error("ошибка сохранения сведений об ошибке", e);
         }
     }
-
-    private  <T, K extends Serializable> void saveOrDelete(CommonRepository<T, K> repository, T entity, String action) {
-        if (action.equalsIgnoreCase(NsiActionsEnum.DELETED.toString())) {
-            repository.delete(entity);
-        } else {
-            repository.save(entity);
-        }
-    }
+    
+    
 }

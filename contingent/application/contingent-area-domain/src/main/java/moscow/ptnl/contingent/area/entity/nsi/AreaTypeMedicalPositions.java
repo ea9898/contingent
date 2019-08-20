@@ -13,11 +13,12 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.domain.Keyable;
 
 @Entity
 @Table(name = "AREA_TYPE_MEDICAL_POSITIONS")
 @Cacheable
-public class AreaTypeMedicalPositions implements Serializable {
+public class AreaTypeMedicalPositions implements Serializable, Keyable {
 
     private static final long serialVersionUID = 4979698890748802824L;
 
@@ -97,6 +98,11 @@ public class AreaTypeMedicalPositions implements Serializable {
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.id);
+    }
+
+    @Override
+    public Serializable getKey() {
+        return getId();
     }
 
     public enum FieldsEnum {

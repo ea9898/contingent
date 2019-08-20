@@ -16,12 +16,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
+import moscow.ptnl.contingent.domain.Keyable;
 
 @Entity
 @Table(name = "AREA_TYPE")
 @Cacheable
 @Proxy(lazy=false)
-public class AreaType implements Serializable {
+public class AreaType implements Serializable, Keyable {
 
     private static final long serialVersionUID = -1047920239396677745L;
 
@@ -270,6 +271,11 @@ public class AreaType implements Serializable {
             return ((AreaType) obj).getCode().equals(this.code);
         }
         return false;
+    }
+
+    @Override
+    public Serializable getKey() {
+        return getCode();
     }
 
     public enum FieldsEnum {

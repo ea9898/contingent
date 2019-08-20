@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.nsi.configuration;
 
-import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
-import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterImpl;
+import moscow.ptnl.contingent.nsi.ws.NsiAdminWebServiceImpl;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import javax.xml.ws.Endpoint;
@@ -51,8 +50,14 @@ public class WebServiceConfiguration  {
         return endpoint;
     }
 
-/*    @Bean
-    public PushAccepter pushAccepter() {
-        return new PushAccepterImpl();
-    }*/
+    @Bean
+    public Endpoint adminServiceV1(@Qualifier(NsiAdminWebServiceImpl.SERVICE_NAME)
+                                          ru.mos.emias.pushaccepterproduct.adminservice.v1.AdminServicePortType adminServicePortType, SpringBus cxfBus) {
+        EndpointImpl endpoint = new EndpointImpl(cxfBus, adminServicePortType);
+        endpoint.setServiceName(new QName("http://emias.mos.ru/pushaccepterProduct/adminService/v1/", "adminService"));
+        endpoint.setWsdlLocation("classpath:META-INF/wsdl/pushaccepterProduct.adminService.v1.wsdl");
+        endpoint.setAddress("/adminService");
+        endpoint.publish(); // http://localhost:8080/nsi/adminService?wsdl
+        return endpoint;
+    }
 }

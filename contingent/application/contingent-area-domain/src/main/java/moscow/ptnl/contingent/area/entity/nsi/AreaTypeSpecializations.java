@@ -16,12 +16,13 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
+import moscow.ptnl.contingent.domain.Keyable;
 
 @Entity
 @SequenceGenerator(name = "SEQ_AREA_TYPE_SPECIALIZATIONS", sequenceName = "SEQ_AREA_TYPE_SPECIALIZATIONS", allocationSize=1)
 @Table(name = "AREA_TYPE_SPECIALIZATIONS")
 @Cacheable
-public class AreaTypeSpecializations implements Serializable {
+public class AreaTypeSpecializations implements Serializable, Keyable {
 
     private static final long serialVersionUID = -786212543217911093L;
 
@@ -91,6 +92,11 @@ public class AreaTypeSpecializations implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, areaType, specializationCode, archived);
+    }
+
+    @Override
+    public Serializable getKey() {
+        return getId();
     }
 
     public enum FieldsEnum {
