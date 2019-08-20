@@ -17,17 +17,21 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import moscow.ptnl.contingent.domain.Keyable;
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 
 @Entity
 @Table(name = "AREA_TYPE")
 @Cacheable
 @Proxy(lazy=false)
+@MapToNsi(table = NsiTablesEnum.AREA_TYPE)
 public class AreaType implements Serializable, Keyable {
 
     private static final long serialVersionUID = -1047920239396677745L;
 
     @Id
     @Column(name = "CODE", unique = true, nullable = false)
+    @MapToNsi
     private Long code;
 
     @Size(max = 100)

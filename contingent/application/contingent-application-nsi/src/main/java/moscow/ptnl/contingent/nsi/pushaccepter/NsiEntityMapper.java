@@ -7,7 +7,9 @@ import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsiHelper;
 
 public class NsiEntityMapper {
 
@@ -26,7 +28,7 @@ public class NsiEntityMapper {
         return rows.stream().map(NsiEntityMapper::mapAreaType).collect(Collectors.toList());
     }
 
-    public static AreaType mapAreaType(EhdCatalogRow row) {
+    public static AreaType mapAreaType_bak(EhdCatalogRow row) {
 
         AreaType areaType = new AreaType();
 
@@ -116,8 +118,10 @@ public class NsiEntityMapper {
 
         return rows.stream().map(NsiEntityMapper::mapAreaTypeClass).collect(Collectors.toList());
     }
+    
+    
 
-    public static AreaTypeClass mapAreaTypeClass(EhdCatalogRow row) {
+    public static AreaTypeClass mapAreaTypeClass2(EhdCatalogRow row) {
 
         AreaTypeClass areaTypeClass = new AreaTypeClass();
 
@@ -255,4 +259,44 @@ public class NsiEntityMapper {
         }
         return areaTypeKind;
     }*/
+    
+    public static AreaType mapAreaType(EhdCatalogRow row) {
+        return mapEhdCatalogRow(row, AreaType.class);
+    }
+    
+    public static AreaTypeClass mapAreaTypeClass(EhdCatalogRow row) {
+        return mapEhdCatalogRow(row, AreaTypeClass.class);
+    }
+    
+    public static <T> T mapEhdCatalogRow(EhdCatalogRow row, Class<T> clazz) {
+        try {
+            T target = clazz.newInstance();
+
+            Optional<NsiTablesEnum> defaultTable = MapToNsiHelper.getNsiTableFromClass(clazz);
+
+            MapToNsiHelper.getNsiAnnotatedFields(clazz).forEach((field, annotation) -> {
+                NsiTablesEnum table = !NsiTablesEnum.UNKNOWN.equals(annotation.table()) 
+                        ? annotation.table() 
+                        : defaultTable.isPresent() 
+                        ? defaultTable.get() 
+                        : NsiTablesEnum.UNKNOWN;
+                if (NsiTablesEnum.UNKNOWN.equals(table)) {
+                    throw new IllegalStateException("не удалось определить имя таблицы НСИ для поля: [" + field.getName() + "]");
+                }
+
+                String parameterName = MapToNsiHelper.getNsiFieldName(field, annotation);            
+                Integer tableCode = table.getCode();
+
+                Object value = getValue(row, parameterName, tableCode);
+
+                MapToNsiHelper.setFieldValue(field, target, value, annotation);
+            });
+
+            return target;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
 }

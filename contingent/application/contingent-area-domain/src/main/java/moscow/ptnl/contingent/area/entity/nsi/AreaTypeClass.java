@@ -12,27 +12,34 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import moscow.ptnl.contingent.domain.Keyable;
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 
 @Entity
 @Table(name = "AREA_TYPES_CLASS")
 @Cacheable
+@MapToNsi(table = NsiTablesEnum.AREA_TYPE_CLASS)
 public class AreaTypeClass implements Serializable, Keyable {
 
     private static final long serialVersionUID = 4979698890748802824L;
 
     @Id
     @Column(name = "CODE", unique = true, nullable = false)
+    @MapToNsi
     private Long code;
 
     @Size(max = 255)
     @Column(name = "TITLE")
+    @MapToNsi
     private String title;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
     private Boolean archived;
 
     @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     public AreaTypeClass() {
