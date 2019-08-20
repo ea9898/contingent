@@ -544,12 +544,20 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-206-1-2" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
+        </preConditions>
+        <comment>Изменение типа данных в таблице AREA_TYPE_MEDICAL_POSITIONS</comment>
+        <modifyDataType tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>
+    </changeSet>
+
     <changeSet id="CONTINGENT2-NSI-6-5-4" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" />
             <columnExists tableName="POSITION_CODE" columnName="CODE" />
         </preConditions>
-        <addForeignKeyConstraint baseColumnNames="POSITION_CODE "
+        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
                                  baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
                                  constraintName="FK_ATMP_PCC"
                                  referencedColumnNames="CODE"
@@ -575,7 +583,6 @@
             <dropColumn tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="GLOBAL_ID" />
         </rollback>
     </changeSet>
-
     <!-- !!!! AREA_TYPE_MEDICAL_POSITIONS !!!! -->
 
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
@@ -1251,29 +1258,6 @@
 <!--        <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="fk_area_type_me_position_no_01"/>-->
 <!--    </changeSet>-->
 
-    <changeSet id="CONTINGENT2-206-1-2" author="mkachalov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
-        </preConditions>
-        <comment>Изменение типа данных в таблице AREA_TYPE_MEDICAL_POSITIONS</comment>
-        <modifyDataType tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-206-2-1" author="mkachalov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
-        </preConditions>
-        <dropForeignKeyConstraint baseTableName="AREA_MEDICAL_EMPLOYEES" constraintName="fk_ame_position_nom"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-206-2-2" author="mkachalov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
-        </preConditions>
-        <comment>Изменение типа данных в таблице AREA_MEDICAL_EMPLOYEES</comment>
-        <modifyDataType tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>
-    </changeSet>
-
     <!--    CONTINGENT2-280 -->
     <!--    <changeSet id="CONTINGENT2-191-NSI-5" author="mkachalov"  labels="1.0.0.0">-->
     <!--	<preConditions onFail="MARK_RAN">-->
@@ -1346,6 +1330,21 @@
         <rollback>
             <renameTable oldTableName="NSI_ADDRESS_FORMING_ELEMENT" newTableName="ADDRESS_FORMING_ELEMENT"/>
         </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-206-2-1" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="AREA_MEDICAL_EMPLOYEES" constraintName="fk_ame_position_nom"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-206-2-2" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+        </preConditions>
+        <comment>Изменение типа данных в таблице AREA_MEDICAL_EMPLOYEES</comment>
+        <modifyDataType tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>
     </changeSet>
 
 </databaseChangeLog>
