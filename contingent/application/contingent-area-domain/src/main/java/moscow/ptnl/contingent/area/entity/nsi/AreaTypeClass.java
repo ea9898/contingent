@@ -66,6 +66,14 @@ public class AreaTypeClass implements Serializable, Keyable {
         this.archived = archived;
     }
 
+    public Long getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(this.code);
@@ -89,6 +97,7 @@ public class AreaTypeClass implements Serializable, Keyable {
     public enum FieldsEnum {
         CODE,
         TITLE,
-        ARCHIVED
+        ARCHIVED,
+        GLOBAL_ID
     }
 }
