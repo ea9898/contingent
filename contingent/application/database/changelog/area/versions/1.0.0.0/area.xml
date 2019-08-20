@@ -58,32 +58,6 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-AREA-1-4" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="ADDRESSES" columnName="AFE_ID" />
-            <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_ADDRESSES_AFE</comment>
-        <addForeignKeyConstraint baseColumnNames="AFE_ID"
-                                 baseTableName="ADDRESSES"
-                                 constraintName="FK_ADDRESSES_AFE"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="ADDRESS_FORMING_ELEMENT"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-AREA-1-5" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="ADDRESSES" columnName="BR_ID" />
-            <columnExists tableName="BUILDING_REGISTRY" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_ADDRESSES_REGISTRY_B</comment>
-        <addForeignKeyConstraint baseColumnNames="BR_ID"
-                                 baseTableName="ADDRESSES"
-                                 constraintName="FK_ADDRESSES_REGISTRY_B"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="BUILDING_REGISTRY"/>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-AREA-1-6" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -295,19 +269,6 @@
                                  referencedTableName="AREAS"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-AREA-2-4" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="POSITION_CODE" />
-            <columnExists tableName="POSITION_NOM" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AME_POSITION_NOM</comment>
-        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
-                                 baseTableName="AREA_MEDICAL_EMPLOYEE"
-                                 constraintName="FK_AME_POSITION_NOM"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="POSITION_NOM"/>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-AREA-2-5" author="shnaider_ab">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -354,6 +315,23 @@
             <column name="MEDICAL_EMPLOYEE_JOB_ID" type="number"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-206-2-1" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="AREA_MEDICAL_EMPLOYEES" constraintName="fk_ame_position_nom"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-206-2-2" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+        </preConditions>
+        <comment>Изменение типа данных в таблице AREA_MEDICAL_EMPLOYEES</comment>
+        <modifyDataType tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>
+    </changeSet>
+
+
     <!-- !!!! AREA_MEDICAL_EMPLOYEE !!!! -->
 
     <!-- ADDRESS_ALLOCATION_ORDERS -->
