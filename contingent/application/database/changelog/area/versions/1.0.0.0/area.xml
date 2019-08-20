@@ -318,7 +318,7 @@
 
     <changeSet id="CONTINGENT2-206-2-1" author="mkachalov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+            <foreignKeyConstraintExists foreignKeyName="fk_ame_position_nom"/>
         </preConditions>
         <dropForeignKeyConstraint baseTableName="AREA_MEDICAL_EMPLOYEES" constraintName="fk_ame_position_nom"/>
     </changeSet>
