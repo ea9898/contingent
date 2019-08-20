@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.nsi.ws;
 
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
-import moscow.ptnl.contingent.domain.nsi.entity.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
 import moscow.ptnl.contingent.repository.nsi.NsiPushEventCRUDRepository;

@@ -40,8 +40,14 @@ public class AreaTypeRelations implements Serializable, Keyable {
     @Column(name = "GLOBAL_ID")
     private Long globalId;
 
-    public Key getKey() {
-        return new Key(dependentAreaType, primaryAreaType);
+    @Override
+    public Serializable getKey() {
+        return getId();
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;

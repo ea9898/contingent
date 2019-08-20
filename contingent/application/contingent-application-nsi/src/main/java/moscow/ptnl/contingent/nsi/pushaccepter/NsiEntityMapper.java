@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.nsi.pushaccepter;
 
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
-import moscow.ptnl.contingent.domain.nsi.entity.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 
 import java.util.List;
