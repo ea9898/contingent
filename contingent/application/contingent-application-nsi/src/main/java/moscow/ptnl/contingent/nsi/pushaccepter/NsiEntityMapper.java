@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.nsi.pushaccepter;
 
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKind;
 import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 
@@ -33,84 +34,88 @@ public class NsiEntityMapper {
         AreaType areaType = new AreaType();
 
         String code = (String) getValue(row, AreaType.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE.getCode());
-        if (code.length() > 0) {
+        if (code != null) {
             areaType.setCode(Long.valueOf(code));
         }
 
-/*        String title = getValue(row, AreaType.FieldsEnum.TITLE.toString());
-        if (title.length() > 0) {
+        String title = (String) getValue(row, AreaType.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (title != null) {
             areaType.setTitle(title);
         }
 
-        String areaTypeKindCode = getValue(row, AreaType.FieldsEnum.AREA_TYPE_KIND_CODE.toString());
-        if (areaTypeKindCode.length() > 0) {
+        String areaTypeKindCode = (String) getValue(row, AreaType.FieldsEnum.AREA_TYPE_KIND_CODE.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (areaTypeKindCode != null) {
             areaType.setAreaTypeKind(new AreaTypeKind(Long.valueOf(areaTypeKindCode)));
         }
 
-        String areaTypeClassCode = getValue(row, AreaType.FieldsEnum.AREA_TYPE_CLASS_CODE.toString());
-        if (areaTypeClassCode.length() > 0) {
+        String areaTypeClassCode = (String) getValue(row, AreaType.FieldsEnum.AREA_TYPE_CLASS_CODE.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (areaTypeClassCode != null) {
             areaType.setAreaTypeClass(new AreaTypeClass(Long.valueOf(areaTypeClassCode)));
         }
 
-        String genderCode = getValue(row, AreaType.FieldsEnum.GENDER_CODE.toString());
-        if (genderCode.length() > 0) {
+        String genderCode = (String) getValue(row, AreaType.FieldsEnum.GENDER_CODE.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (genderCode != null) {
             areaType.setGender(genderCode);
         }
 
-        String ageMin = getValue(row, AreaType.FieldsEnum.AGE_MIN.toString());
-        if (ageMin.length() > 0) {
+        String ageMin = (String) getValue(row, AreaType.FieldsEnum.AGE_MIN.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (ageMin != null) {
             areaType.setAgeMin(Integer.valueOf(ageMin));
         }
 
-        String ageMax = getValue(row, AreaType.FieldsEnum.AGE_MAX.toString());
-        if (ageMax.length() > 0) {
+        String ageMax = (String) getValue(row, AreaType.FieldsEnum.AGE_MAX.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (ageMax != null) {
             areaType.setAgeMax(Integer.valueOf(ageMax));
         }
 
-        String ageMMin = getValue(row, AreaType.FieldsEnum.AGE_M_MIN.toString());
-        if (ageMMin.length() > 0) {
+        String ageMMin = (String) getValue(row, AreaType.FieldsEnum.AGE_M_MIN.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (ageMMin != null) {
             areaType.setAgeMMin(Integer.valueOf(ageMMin));
         }
 
-        String ageMMax = getValue(row, AreaType.FieldsEnum.AGE_M_MAX.toString());
-        if (ageMMax.length() > 0) {
+        String ageMMax = (String) getValue(row, AreaType.FieldsEnum.AGE_M_MAX.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (ageMMax != null) {
             areaType.setAgeMMax(Integer.valueOf(ageMMax));
         }
 
-        String ageWMin = getValue(row, AreaType.FieldsEnum.AGE_W_MIN.toString());
-        if (ageWMin.length() > 0) {
+        String ageWMin = (String) getValue(row, AreaType.FieldsEnum.AGE_W_MIN.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (ageWMin != null) {
             areaType.setAgeWMin(Integer.valueOf(ageWMin));
         }
 
-        String ageWMax = getValue(row, AreaType.FieldsEnum.AGE_W_MAX.toString());
-        if (ageWMax.length() > 0) {
+        String ageWMax = (String) getValue(row, AreaType.FieldsEnum.AGE_W_MAX.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (ageWMax != null) {
             areaType.setAgeWMax(Integer.valueOf(ageWMax));
         }
 
-        String headFinance = getValue(row, AreaType.FieldsEnum.HEAD_FINANCE.toString());
-        if (headFinance.length() > 0) {
+        String headFinance = (String) getValue(row, AreaType.FieldsEnum.HEAD_FINANCE.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (headFinance != null) {
             areaType.setHeadFinance(stringIsTrue(headFinance));
         }
 
-        String hasServiceTerritory = getValue(row, AreaType.FieldsEnum.HAS_SERVICE_TERRITORY.toString());
-        if (hasServiceTerritory.length() > 0) {
+        String hasServiceTerritory = (String) getValue(row, AreaType.FieldsEnum.HAS_SERVICE_TERRITORY.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (hasServiceTerritory != null) {
             areaType.setHasServiceTerritory(stringIsTrue(hasServiceTerritory));
         }
 
-        String attachByRequest = getValue(row, AreaType.FieldsEnum.ATTACH_BY_REQUEST.toString());
-        if (attachByRequest.length() > 0) {
+        String attachByRequest = (String) getValue(row, AreaType.FieldsEnum.ATTACH_BY_REQUEST.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (attachByRequest != null) {
             areaType.setAttachByRequest(stringIsTrue(attachByRequest));
         }
 
-        String attachByMedicalReason = getValue(row, AreaType.FieldsEnum.ATTACH_BY_MEDICAL_REASON.toString());
-        if (attachByMedicalReason.length() > 0) {
+        String attachByMedicalReason = (String) getValue(row, AreaType.FieldsEnum.ATTACH_BY_MEDICAL_REASON.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (attachByMedicalReason != null) {
             areaType.setAttachByMedicalReason(stringIsTrue(attachByMedicalReason));
         }
 
-        String archived = getValue(row, AreaType.FieldsEnum.ARCHIVED.toString());
-        if (archived.length() > 0) {
+        String archived = (String) getValue(row, AreaType.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE.getCode());
+        if (archived != null) {
             areaType.setArchived(stringIsTrue(archived));
-        }*/
+        }
+
+        BigDecimal globalId = (BigDecimal) getValue(row, AreaType.FieldsEnum.GLOBAL_ID.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
+        areaType.setGlobalId(globalId.longValue());
+
         return areaType;
     }
 
@@ -126,17 +131,17 @@ public class NsiEntityMapper {
         AreaTypeClass areaTypeClass = new AreaTypeClass();
 
         String code = (String) getValue(row, AreaTypeClass.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
-        if (code.length() > 0) {
+        if (code != null) {
             areaTypeClass.setCode(Long.valueOf(code));
         }
 
         String title = (String) getValue(row, AreaTypeClass.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
-        if (title.length() > 0) {
+        if (title != null) {
             areaTypeClass.setTitle(title);
         }
 
         String archived = (String) getValue(row, AreaTypeClass.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
-        if (archived.length() > 0) {
+        if (archived != null) {
             areaTypeClass.setArchived(stringIsTrue(archived));
         }
 
@@ -146,7 +151,7 @@ public class NsiEntityMapper {
         return areaTypeClass;
     }
 
-    /*public static List<AreaTypeKind> mapAreaTypeKinds(List<EhdCatalogRow> rows) {
+    public static List<AreaTypeKind> mapAreaTypeKinds(List<EhdCatalogRow> rows) {
 
         return rows.stream().map(NsiEntityMapper::mapAreaTypeKind).collect(Collectors.toList());
     }
@@ -155,24 +160,28 @@ public class NsiEntityMapper {
 
         AreaTypeKind areaTypeKind = new AreaTypeKind();
 
-        String code = getValue(row, AreaTypeKind.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
-        if (code.length() > 0) {
+        String code = (String) getValue(row, AreaTypeKind.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (code != null) {
             areaTypeKind.setCode(Long.valueOf(code));
         }
 
-        String title = getValue(row, AreaTypeKind.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
-        if (title.length() > 0) {
+        String title = (String) getValue(row, AreaTypeKind.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (title != null) {
             areaTypeKind.setTitle(title);
         }
 
-        String archived = getValue(row, AreaTypeKind.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
-        if (archived.length() > 0) {
+        String archived = (String) getValue(row, AreaTypeKind.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
+        if (archived != null) {
             areaTypeKind.setArchived(stringIsTrue(archived));
         }
+
+        BigDecimal globalId = (BigDecimal) getValue(row, AreaTypeKind.FieldsEnum.GLOBAL_ID.toString(), NsiTablesEnum.AREA_TYPE_CLASS.getCode());
+        areaTypeKind.setGlobalId(globalId.longValue());
+
         return areaTypeKind;
     }
 
-    public static List<AreaTypeMedicalPositions> mapAreaTypeMedicalPositions(List<EhdCatalogRow> rows) {
+ /*   public static List<AreaTypeMedicalPositions> mapAreaTypeMedicalPositions(List<EhdCatalogRow> rows) {
 
         return rows.stream().map(NsiEntityMapper::mapAreaTypeMedicalPosition).collect(Collectors.toList());
     }
@@ -182,27 +191,27 @@ public class NsiEntityMapper {
         AreaTypeMedicalPositions areaTypeMedicalPositions = new AreaTypeMedicalPositions();
 
         String id = getValue(row, AreaTypeMedicalPositions.FieldsEnum.ID.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
-        if (id.length() > 0) {
+        if (id != null) {
             areaTypeMedicalPositions.setId(Long.valueOf(id));
         }
 
         String areaTypeCode = getValue(row, AreaTypeMedicalPositions.FieldsEnum.AREA_TYPE_CODE.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
-        if (areaTypeCode.length() > 0) {
+        if (areaTypeCode != null) {
             areaTypeMedicalPositions.setAreaType(new AreaType(Long.valueOf(areaTypeCode)));
         }
 
         String positionCode = getValue(row, AreaTypeMedicalPositions.FieldsEnum.POSITION_CODE.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
-        if (positionCode.length() > 0) {
+        if (positionCode != null) {
             areaTypeMedicalPositions.setPositionCode(new PositionCode(positionCode));
         }
 
         String archived = getValue(row, AreaTypeMedicalPositions.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
-        if (archived.length() > 0) {
+        if (archived != null) {
             areaTypeMedicalPositions.setArchived(stringIsTrue(archived));
         }
 
 *//*        String positionCode = getValue(row, AreaTypeMedicalPositions.FieldsEnum.POSITION_NOM.toString(), NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS.getCode());
-        if (positionCode.length() > 0) {
+        if (positionCode != null) {
             areaTypeMedicalPositions.setPositionCode(new PositionCode(positionCode));
         }*//*
         return areaTypeMedicalPositions;
@@ -218,17 +227,17 @@ public class NsiEntityMapper {
         AreaTypeKind areaTypeKind = new AreaTypeKind();
 
         String code = getValue(row, AreaTypeKind.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
-        if (code.length() > 0) {
+        if (code != null) {
             areaTypeKind.setCode(Long.valueOf(code));
         }
 
         String title = getValue(row, AreaTypeKind.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
-        if (title.length() > 0) {
+        if (title != null) {
             areaTypeKind.setTitle(title);
         }
 
         String archived = getValue(row, AreaTypeKind.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
-        if (archived.length() > 0) {
+        if (archived != null) {
             areaTypeKind.setArchived(stringIsTrue(archived));
         }
         return areaTypeKind;
@@ -244,17 +253,17 @@ public class NsiEntityMapper {
         AreaTypeKind areaTypeKind = new AreaTypeKind();
 
         String code = getValue(row, AreaTypeKind.FieldsEnum.CODE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
-        if (code.length() > 0) {
+        if (code != null) {
             areaTypeKind.setCode(Long.valueOf(code));
         }
 
         String title = getValue(row, AreaTypeKind.FieldsEnum.TITLE.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
-        if (title.length() > 0) {
+        if (title != null) {
             areaTypeKind.setTitle(title);
         }
 
         String archived = getValue(row, AreaTypeKind.FieldsEnum.ARCHIVED.toString(), NsiTablesEnum.AREA_TYPE_KIND.getCode());
-        if (archived.length() > 0) {
+        if (archived != null) {
             areaTypeKind.setArchived(stringIsTrue(archived));
         }
         return areaTypeKind;

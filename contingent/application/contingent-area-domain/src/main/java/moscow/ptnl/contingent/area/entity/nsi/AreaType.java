@@ -262,6 +262,14 @@ public class AreaType implements Serializable, Keyable {
         this.areaCountLimit = areaCountLimit;
     }
 
+    public Long getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
+    }
+
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.code);
@@ -301,6 +309,7 @@ public class AreaType implements Serializable, Keyable {
         MPGU_AVAILABLE,
         RESIDENTS_BIND_RATE,
         AREA_COUNT_LIMIT_CODE,
-        ARCHIVED
+        ARCHIVED,
+        GLOBAL_ID
     }
 }

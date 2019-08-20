@@ -3,9 +3,6 @@ package moscow.ptnl.contingent.nsi.ws;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKind;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
@@ -30,7 +27,7 @@ import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.SyncNsiResponse;
 import java.util.List;
 
 import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeClasses;
-//import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeKinds;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeKinds;
 
 @Service(NsiAdminWebServiceImpl.SERVICE_NAME)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
@@ -82,11 +79,11 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                         List<AreaTypeClass> areaTypeClasses = mapAreaTypeClasses(response.getEhdCatalogItems().getRows());
                         classAreaTypesCRUDRepository.saveAll(areaTypeClasses);
                         break;
-/*                    case AREA_TYPE_KIND:
+                    case AREA_TYPE_KIND:
                         List<AreaTypeKind> areaTypeKinds = mapAreaTypeKinds(response.getEhdCatalogItems().getRows());
                         kindAreaTypesCRUDRepository.saveAll(areaTypeKinds);
                         break;
-                    case AREA_TYPE_MEDICAL_POSITIONS:
+                   /*case AREA_TYPE_MEDICAL_POSITIONS:
                         List<AreaTypeMedicalPositions> areaTypeMedicalPositions = mapAreaTypeMedicalPositions(response.getEhdCatalogItems().getRows());
                         areaTypeMedicalPositionsCRUDRepository.saveAll(areaTypeMedicalPositions);
                         break;
