@@ -230,23 +230,6 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-290-4" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPES_CLASS" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание таблицы колонки GLOBAL_ID</comment>
-        <addColumn tableName="AREA_TYPES_CLASS">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPES_CLASS" columnName="GLOBAL_ID" />
-        </rollback>
-    </changeSet>
-
     <!-- !!!! AREA_TYPES_CLASS !!!! -->
 
     <!-- AREA_TYPES_KIND -->
@@ -271,22 +254,6 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-290-3" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPES_KIND" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание таблицы колонки GLOBAL_ID</comment>
-        <addColumn tableName="AREA_TYPES_KIND">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPES_KIND" columnName="GLOBAL_ID" />
-        </rollback>
-    </changeSet>
     <!-- !!!! AREA_TYPES_KIND !!!! -->
 
     <!-- AREA_TYPE -->
@@ -380,23 +347,6 @@
                                  constraintName="FK_AREA_AREA_TYPE_KIND_TYPES"
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPES_KIND"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-290-1" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPE" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание таблицы колонки GLOBAL_ID</comment>
-        <addColumn tableName="AREA_TYPE">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPE" columnName="GLOBAL_ID" />
-        </rollback>
     </changeSet>
 
     <!-- !!!! AREA_TYPE !!!! -->
@@ -539,22 +489,6 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-290-6" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание таблицы колонки GLOBAL_ID</comment>
-        <addColumn tableName="AREA_TYPE_MEDICAL_POSITIONS">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="GLOBAL_ID" />
-        </rollback>
-    </changeSet>
     <!-- !!!! AREA_TYPE_MEDICAL_POSITIONS !!!! -->
 
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
@@ -639,22 +573,6 @@
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-290-2" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPE_RELATIONS" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание таблицы колонки GLOBAL_ID</comment>
-        <addColumn tableName="AREA_TYPE_RELATIONS">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPE_RELATIONS" columnName="GLOBAL_ID" />
-        </rollback>
-    </changeSet>
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
 
     <!-- ADDRESS_FORMING_ELEMENT -->
@@ -913,23 +831,6 @@
         <createSequence sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
         <rollback>
             <dropSequence sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-290-8" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPE_SPECIALIZATIONS" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание таблицы колонки GLOBAL_ID</comment>
-        <addColumn tableName="AREA_TYPE_SPECIALIZATIONS">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPE_SPECIALIZATIONS" columnName="GLOBAL_ID" />
         </rollback>
     </changeSet>
 

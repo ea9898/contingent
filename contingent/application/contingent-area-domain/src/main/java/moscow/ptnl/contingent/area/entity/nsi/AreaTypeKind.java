@@ -39,10 +39,6 @@ public class AreaTypeKind implements Serializable, Keyable {
     @MapToNsi
     private Boolean archived;
 
-    @Column(name = "GLOBAL_ID")
-    @MapToNsi("GLOBAL_ID")
-    private Long globalId;
-
     public AreaTypeKind() {
     }
 
@@ -72,14 +68,6 @@ public class AreaTypeKind implements Serializable, Keyable {
 
     public void setArchived(Boolean archived) {
         this.archived = archived;
-    }
-
-    public Long getGlobalId() {
-        return globalId;
-    }
-
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
     }
 
     @Override

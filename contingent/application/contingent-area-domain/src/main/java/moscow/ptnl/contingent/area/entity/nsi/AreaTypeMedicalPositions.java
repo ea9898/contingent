@@ -50,10 +50,6 @@ public class AreaTypeMedicalPositions implements Serializable, Keyable {
     @MapToNsi("POSITION_NOM_ID")
     private PositionNom positionNom;
 
-    @Column(name = "GLOBAL_ID")
-    @MapToNsi("GLOBAL_ID")
-    private Long globalId;
-
     public Long getId() {
         return id;
     }

@@ -50,10 +50,6 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
     @MapToNsi
     private Boolean archived;
 
-    @Column(name = "GLOBAL_ID")
-    @MapToNsi("GLOBAL_ID")
-    private Long globalId;
-
     public Long getId() {
         return id;
     }

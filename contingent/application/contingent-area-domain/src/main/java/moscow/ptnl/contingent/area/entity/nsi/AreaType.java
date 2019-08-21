@@ -116,10 +116,6 @@ public class AreaType implements Serializable, Keyable {
     @MapToNsi("RESIDENTS_BIND_RATE")
     private Integer residentsBindRate;
 
-    @Column(name = "GLOBAL_ID")
-    @MapToNsi("GLOBAL_ID")
-    private Long globalId;
-
     public AreaType() {
     }
 
@@ -279,14 +275,6 @@ public class AreaType implements Serializable, Keyable {
 
     public void setAreaCountLimit(Integer areaCountLimit) {
         this.areaCountLimit = areaCountLimit;
-    }
-
-    public Long getGlobalId() {
-        return globalId;
-    }
-
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
     }
 
     @Override
