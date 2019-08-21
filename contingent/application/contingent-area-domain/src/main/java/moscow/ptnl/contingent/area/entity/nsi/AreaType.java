@@ -105,12 +105,15 @@ public class AreaType implements Serializable, Keyable {
 
     @Column(name = "MPGU_AVAILABLE")
     @Convert(converter = BooleanIntegerConverter.class)
+    @MapToNsi("MPGU_AVAILABLE")
     private Boolean mpguAvailable;
 
     @Column(name = "AREA_COUNT_LIMIT_CODE")
+    @MapToNsi("AREA_COUNT_LIMIT_CODE")
     private Integer areaCountLimit;
 
     @Column(name = "RESIDENTS_BIND_RATE")
+    @MapToNsi("RESIDENTS_BIND_RATE")
     private Integer residentsBindRate;
 
     @Column(name = "GLOBAL_ID")
@@ -305,27 +308,4 @@ public class AreaType implements Serializable, Keyable {
     public Serializable getKey() {
         return getCode();
     }
-
-    public enum FieldsEnum {
-        CODE,
-        TITLE,
-        AREA_TYPE_KIND_CODE,
-        AREA_TYPE_CLASS_CODE,
-        GENDER_CODE,
-        AGE_MIN,
-        AGE_MAX,
-        AGE_M_MIN,
-        AGE_M_MAX,
-        AGE_W_MIN,
-        AGE_W_MAX,
-        HEAD_FINANCE,
-        HAS_SERVICE_TERRITORY,
-        ATTACH_BY_REQUEST,
-        ATTACH_BY_MEDICAL_REASON,
-        MPGU_AVAILABLE,
-        RESIDENTS_BIND_RATE,
-        AREA_COUNT_LIMIT_CODE,
-        ARCHIVED,
-        GLOBAL_ID
     }
-}

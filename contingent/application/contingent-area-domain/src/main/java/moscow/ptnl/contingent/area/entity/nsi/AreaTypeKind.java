@@ -101,11 +101,4 @@ public class AreaTypeKind implements Serializable, Keyable {
     public Serializable getKey() {
         return getCode();
     }
-
-    public enum FieldsEnum {
-        CODE,
-        TITLE,
-        ARCHIVED,
-        GLOBAL_ID
-    }
 }
