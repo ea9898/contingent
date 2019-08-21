@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package moscow.ptnl.contingent.domain.nsi.annotation;
 
 import java.lang.annotation.Annotation;
@@ -11,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.persistence.Entity;
 import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 
 /**
@@ -59,7 +55,7 @@ public class MapToNsiHelper {
     public static void setFieldValue(Field field, Object target, Object value, MapToNsi mapToNsi) {   
         try {
             field.setAccessible(true);
-            field.set(target, cast(value, field.getType()));
+            field.set(target, cast(value, field.getType(), (mapToNsi != null) ? mapToNsi.entityKeyName() : ""));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -74,21 +70,38 @@ public class MapToNsiHelper {
         return methodName;
     }
     
-    private static <T> T cast(Object value, Class<T> toType) {
+    private static <T> T cast(Object value, Class<T> fieldType, String fieldName) throws Exception {
         if (value == null) {
             return null;
         }
         
-        switch (toType.getSimpleName()) {
-            case "String":
-                return toType.cast(valueToString(value));
-            case "Long":
-                return toType.cast(valueToLong(value));
-            case "Boolean":
-                return toType.cast(valueToBoolean(value));
-            default:
-                throw new IllegalArgumentException("не поддерживаемый тип поля для сущности: [" + toType.getSimpleName() +"]");                
+        //если поле это связь с другой сущностью
+        if (isEntity(fieldType) && fieldName != null && !fieldName.isEmpty()) {
+            //получаем имя поля в связанной сущности на которое будет мапится поле
+            String entityFieldName = (fieldName.contains(".")) ? fieldName.substring(fieldName.lastIndexOf(".")) : fieldName;
+            return valueToEntity(value, fieldType, entityFieldName);
         }
+        
+        //если поле простого типа
+        switch (fieldType.getSimpleName()) {
+            case "String":
+                return fieldType.cast(valueToString(value));
+            case "Long":
+                return fieldType.cast(valueToLong(value));
+            case "Integer":
+                return fieldType.cast(valueToInteger(value));
+            case "Boolean":
+                return fieldType.cast(valueToBoolean(value));
+            default:
+                throw new IllegalArgumentException("не поддерживаемый тип поля для сущности: [" + fieldType.getSimpleName() +"]");                
+        }
+    }
+    
+    private static <T> T valueToEntity(Object keyValue, Class<T> entityType, String mapTo) throws InstantiationException, IllegalAccessException, NoSuchFieldException {
+        T entityObject = entityType.newInstance();
+        Field keyField = entityType.getDeclaredField(mapTo);
+        setFieldValue(keyField, entityObject, keyValue, null);
+        return entityObject;
     }
     
     private static String valueToString(Object value) {
@@ -111,6 +124,18 @@ public class MapToNsiHelper {
         throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
     }
     
+    private static Integer valueToInteger(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof BigDecimal) {
+            return ((BigDecimal) value).intValue();
+        } else if (value instanceof String) {
+            return Integer.parseInt((String) value);
+        }
+        throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
+    }
+    
     private static Boolean valueToBoolean(Object value) {
         if (value == null) {
             return null;
@@ -120,6 +145,11 @@ public class MapToNsiHelper {
             return (result.isEmpty()) ? null : "1".equals(result);
         }
         throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
+    }
+    
+    private static boolean isEntity(Class<?> type) {
+        Entity e = type.getAnnotation(Entity.class);
+        return e != null;
     }
     
 }

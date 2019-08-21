@@ -36,56 +36,71 @@ public class AreaType implements Serializable, Keyable {
 
     @Size(max = 100)
     @Column(name = "TITLE")
+    @MapToNsi
     private String title;
 
     @JoinColumn(name = "AREA_TYPE_KIND_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi(value = "AREA_TYPE_KIND_CODE", entityKeyName = "code")
     private AreaTypeKind areaTypeKind;
 
     @JoinColumn(name = "AREA_TYPE_CLASS_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi(value = "AREA_TYPE_CLASS_CODE", entityKeyName = "code")
     private AreaTypeClass areaTypeClass;
 
     @Size(max = 1)
     @Column(name = "GENDER_CODE")
+    @MapToNsi("GENDER_CODE")
     private String gender;
 
     @Column(name = "AGE_MIN")
+    @MapToNsi("AGE_MIN")
     private Integer ageMin;
 
     @Column(name = "AGE_MAX")
+    @MapToNsi("AGE_MAX")
     private Integer ageMax;
 
     @Column(name = "AGE_M_MIN")
+    @MapToNsi("AGE_M_MIN")
     private Integer ageMMin;
 
     @Column(name = "AGE_M_MAX")
+    @MapToNsi("AGE_M_MAX")
     private Integer ageMMax;
 
     @Column(name = "AGE_W_MIN")
+    @MapToNsi("AGE_W_MIN")
     private Integer ageWMin;
 
     @Column(name = "AGE_W_MAX")
+    @MapToNsi("AGE_W_MAX")
     private Integer ageWMax;
 
     @Column(name = "ARCHIVED")
     @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
     private Boolean archived;
 
     @Column(name = "HEAD_FINANCE")
     @Convert(converter = BooleanIntegerConverter.class)
+    @MapToNsi("HEAD_FINANCE")
     private Boolean headFinance;
 
     @Column(name = "HAS_SERVICE_TERRITORY")
     @Convert(converter = BooleanIntegerConverter.class)
+    @MapToNsi("HAS_SERVICE_TERRITORY")
     private Boolean hasServiceTerritory;
 
     @Column(name = "ATTACH_BY_REQUEST")
     @Convert(converter = BooleanIntegerConverter.class)
+    @MapToNsi("ATTACH_BY_REQUEST")
     private Boolean attachByRequest;
 
     @Column(name = "ATTACH_BY_MEDICAL_REASON")
     @Convert(converter = BooleanIntegerConverter.class)
+    @MapToNsi("ATTACH_BY_MEDICAL_REASON")
     private Boolean attachByMedicalReason;
 
     @Column(name = "MPGU_AVAILABLE")
@@ -99,6 +114,7 @@ public class AreaType implements Serializable, Keyable {
     private Integer residentsBindRate;
 
     @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     public AreaType() {
