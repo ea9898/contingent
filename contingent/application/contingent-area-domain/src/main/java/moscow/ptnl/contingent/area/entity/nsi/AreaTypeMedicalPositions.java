@@ -14,35 +14,44 @@ import java.util.Objects;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.domain.Keyable;
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 
 @Entity
 @Table(name = "AREA_TYPE_MEDICAL_POSITIONS")
 @Cacheable
+@MapToNsi(table = NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS)
 public class AreaTypeMedicalPositions implements Serializable, Keyable {
 
     private static final long serialVersionUID = 4979698890748802824L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
+    @MapToNsi
     private Long id;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi("AREA_TYPE_CODE")
     private AreaType areaType;
 
     @JoinColumn(name = "POSITION_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi("POSITION_CODE")
     private PositionCode positionCode;
     
     @Column(name = "ARCHIVED")
     @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
     private Boolean archived;
 
     @JoinColumn(name = "POSITION_NOM_ID")
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi("POSITION_NOM_ID")
     private PositionNom positionNom;
 
     @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     public Long getId() {
@@ -103,12 +112,5 @@ public class AreaTypeMedicalPositions implements Serializable, Keyable {
     @Override
     public Serializable getKey() {
         return getId();
-    }
-
-    public enum FieldsEnum {
-        ID,
-        AREA_TYPE_CODE,
-        POSITION_CODE,
-        ARCHIVED
     }
 }

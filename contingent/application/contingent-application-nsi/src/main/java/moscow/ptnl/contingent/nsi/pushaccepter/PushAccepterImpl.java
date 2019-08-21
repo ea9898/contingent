@@ -11,12 +11,12 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
-import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaType;
-import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaTypeClass;
-import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaTypeKind;
-import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaTypeMedicalPositions;
-import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaTypeRelations;
-import static moscow.ptnl.contingent.nsi.pushaccepter.PushAccepterMapper.mapAreaTypeSpecializations;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaType;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeClass;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeKind;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeMedicalPosition;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeRelation;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeSpecialization;
 
 @Component
 public class PushAccepterImpl extends PushAccepter {
@@ -49,13 +49,13 @@ public class PushAccepterImpl extends PushAccepter {
                 pushEventEntity = mapAreaTypeKind(pack);
                 break;
             case AREA_TYPE_MEDICAL_POSITIONS:
-                pushEventEntity = mapAreaTypeMedicalPositions(pack);
+                pushEventEntity = mapAreaTypeMedicalPosition(pack);
                 break;
             case AREA_TYPE_RELATIONS:
-                pushEventEntity = mapAreaTypeRelations(pack);
+                pushEventEntity = mapAreaTypeRelation(pack);
                 break;
             case AREA_TYPE_SPECIALIZATIONS:
-                pushEventEntity = mapAreaTypeSpecializations(pack);
+                pushEventEntity = mapAreaTypeSpecialization(pack);
         }
         nsiChannel.send(MessageBuilder
                 .withPayload(pushEventEntity)

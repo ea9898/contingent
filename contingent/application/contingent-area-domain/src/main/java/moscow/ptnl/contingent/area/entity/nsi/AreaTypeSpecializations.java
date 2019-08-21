@@ -17,11 +17,14 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 import moscow.ptnl.contingent.domain.Keyable;
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 
 @Entity
 @SequenceGenerator(name = "SEQ_AREA_TYPE_SPECIALIZATIONS", sequenceName = "SEQ_AREA_TYPE_SPECIALIZATIONS", allocationSize=1)
 @Table(name = "AREA_TYPE_SPECIALIZATIONS")
 @Cacheable
+@MapToNsi(table = NsiTablesEnum.AREA_TYPE_SPECIALIZATIONS)
 public class AreaTypeSpecializations implements Serializable, Keyable {
 
     private static final long serialVersionUID = -786212543217911093L;
@@ -29,21 +32,26 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_AREA_TYPE_SPECIALIZATIONS")
     @Column(name = "ID", unique = true, nullable = false)
+    @MapToNsi
     private Long id;
 
     @JoinColumn(name = "AREA_TYPE_CODE", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi("AREA_TYPE_CODE")
     private AreaType areaType;
 
 
     @Column(name = "SPECIALIZATION_CODE")
+    @MapToNsi("SPECIALIZATION_CODE")
     private Long specializationCode;
 
     @Column(name = "ARCHIVED")
     @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
     private Boolean archived;
 
     @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     public Long getId() {
@@ -97,12 +105,5 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
     @Override
     public Serializable getKey() {
         return getId();
-    }
-
-    public enum FieldsEnum {
-        ID,
-        AREA_TYPE_CODE,
-        SPECIALIZATION_CODE,
-        ARCHIVED
     }
 }

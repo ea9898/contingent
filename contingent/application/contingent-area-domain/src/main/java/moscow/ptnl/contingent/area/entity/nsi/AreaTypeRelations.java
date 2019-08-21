@@ -13,31 +13,39 @@ import java.io.Serializable;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.domain.Keyable;
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 
 @Entity
 @Table(name = "AREA_TYPE_RELATIONS")
 @Cacheable
+@MapToNsi(table = NsiTablesEnum.AREA_TYPE_RELATIONS)
 public class AreaTypeRelations implements Serializable, Keyable {
 
     private static final long serialVersionUID = -8346464667577347303L;
 
     @Id
     @Column(name = "ID")
+    @MapToNsi
     private Long id;
 
     @JoinColumn(name = "DEPENDENT_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi("DEPENDENT_AREA_TYPE_CODE")
     private AreaType dependentAreaType;
 
     @JoinColumn(name = "PRIMARY_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi("PRIMARY_AREA_TYPE_CODE")
     private AreaType primaryAreaType;
 
     @Column(name = "ARCHIVED")
     @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
     private Boolean archived;
 
     @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     @Override
@@ -90,12 +98,5 @@ public class AreaTypeRelations implements Serializable, Keyable {
     @Override
     public int hashCode() {        
         return this.getId().hashCode();
-    }
-
-    public enum FieldsEnum {
-        ID,
-        DEPENDENT_AREA_TYPE_CODE,
-        PRIMARY_AREA_TYPE_CODE,
-        ARCHIVED
     }
 }

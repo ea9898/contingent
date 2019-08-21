@@ -82,6 +82,8 @@ public class MapToNsiHelper {
         switch (toType.getSimpleName()) {
             case "String":
                 return toType.cast(valueToString(value));
+            // TODO разобраться с мапингом связанных сущностей
+            // case "AreaType":
             case "Long":
                 return toType.cast(valueToLong(value));
             case "Boolean":
