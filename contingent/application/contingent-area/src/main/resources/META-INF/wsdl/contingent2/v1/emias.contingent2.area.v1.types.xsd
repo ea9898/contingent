@@ -552,22 +552,4 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="archiveAreaCompositRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="areaId" type="xs:long" />
-                <xs:element name="muId" type="xs:long" />
-                <xs:element ref="core:options" minOccurs="0" />
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="archiveAreaCompositResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="fault" type="core:Fault" minOccurs="0"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
 </xs:schema>

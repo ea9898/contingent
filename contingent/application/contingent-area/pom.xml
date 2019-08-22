@@ -229,6 +229,19 @@
                                         </extraargs>
                                     </wsdlOption>
                                     <wsdlOption>
+                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v1/emias.contingent2.composit.v1.wsdl</wsdl>
+                                        <serviceName>AreaCompositService</serviceName>
+                                        <extraargs>
+                                            <extraarg>-verbose</extraarg>
+                                            <extraarg>-p</extraarg>
+                                            <extraarg>http://emias.mos.ru/contingent2/core/v1/=ru.mos.emias.contingent2.core</extraarg>
+                                            <extraarg>-p</extraarg>
+                                            <extraarg>http://emias.mos.ru/contingent2/area/composit/v1/=ru.mos.emias.contingent2.area.composit</extraarg>
+                                            <extraarg>-p</extraarg>
+                                            <extraarg>http://emias.mos.ru/contingent2/area/composit/v1/types/=ru.mos.emias.contingent2.area.composit.types</extraarg>
+                                        </extraargs>
+                                    </wsdlOption>
+                                    <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v2/emias.contingent2.v2.wsdl</wsdl>
                                         <serviceName>AreaService</serviceName>
                                     </wsdlOption>

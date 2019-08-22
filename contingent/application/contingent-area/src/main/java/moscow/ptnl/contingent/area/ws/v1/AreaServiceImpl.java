@@ -35,8 +35,6 @@ import ru.mos.emias.contingent2.area.types.AddMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.AddMuAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.AddMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.AddressAllocationOrderListResultPage;
-import ru.mos.emias.contingent2.area.types.ArchiveAreaCompositRequest;
-import ru.mos.emias.contingent2.area.types.ArchiveAreaCompositResponse;
 import ru.mos.emias.contingent2.area.types.ArchiveAreaRequest;
 import ru.mos.emias.contingent2.area.types.ArchiveAreaResponse;
 import ru.mos.emias.contingent2.area.types.CreateDependentAreaRequest;
@@ -146,16 +144,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
-        }
-    }
-
-    @Override
-    public ArchiveAreaCompositResponse archiveAreaComposit(ArchiveAreaCompositRequest body) throws Fault {
-        try {
-            areaService.archiveAreaComposit(body.getAreaId(), body.getMuId());
-            return new ArchiveAreaCompositResponse();
-        } catch (Exception ex) {
             throw mapException(ex);
         }
     }

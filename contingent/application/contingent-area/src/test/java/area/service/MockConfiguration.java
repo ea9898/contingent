@@ -58,6 +58,7 @@ import moscow.ptnl.contingent.service.esu.EsuService;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -147,10 +148,8 @@ public class MockConfiguration {
         return new LogESUInterceptor();
     }
 
-    @Bean
-    public AreaServiceHelper areaServiceHelper(){
-        return new AreaServiceHelper();
-    }
+    @SpyBean
+    public AreaServiceHelper areaServiceHelper;
     
     @MockBean
     public AreaAddressChecker areaAddressChecker;
