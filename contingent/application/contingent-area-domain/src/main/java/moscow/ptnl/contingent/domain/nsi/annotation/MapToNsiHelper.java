@@ -57,7 +57,7 @@ public class MapToNsiHelper {
             field.setAccessible(true);
             field.set(target, cast(value, field.getType(), (mapToNsi != null) ? mapToNsi.entityKeyName() : ""));
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Ошибка заполнения поля [" + field.getName() +"] для [" + target.getClass() + "] " + e.getMessage());
         }
     }
     
