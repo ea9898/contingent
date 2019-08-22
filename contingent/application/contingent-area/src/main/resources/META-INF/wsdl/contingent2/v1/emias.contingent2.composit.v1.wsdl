@@ -67,7 +67,7 @@
 
     <wsdl:service name="AreaCompositService">
         <!--<wsp:PolicyReference URI="#authPolicy"/>-->
-        <wsdl:port name="Area" binding="tns:AreaConpositPTB">
+        <wsdl:port name="AreaComposit" binding="tns:AreaConpositPTB">
             <soap:address location="http://localhost:8080/area/composit/v1/AreaCompositService?wsdl"/>
         </wsdl:port>
     </wsdl:service>
