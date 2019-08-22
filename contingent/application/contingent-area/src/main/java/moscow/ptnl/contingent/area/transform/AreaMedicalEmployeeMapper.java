@@ -42,6 +42,7 @@ public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, Are
             positionNomClinic.setCode(entityObject.getPositionCode());
             Optional<PositionCode> positionCodeOptional = positionCodeRepository.getByCode(entityObject.getPositionCode());
             positionCodeOptional.ifPresent(positionCode -> positionNomClinic.setName(positionCode.getConstantTitle()));
+            employee.setPosition(positionNomClinic);
         }
         return employee;
     }
