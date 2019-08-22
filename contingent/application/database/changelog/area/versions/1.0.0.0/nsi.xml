@@ -479,7 +479,7 @@
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" />
             <columnExists tableName="POSITION_CODE" columnName="CODE" />
         </preConditions>
-        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
+        <addForeignKeyConstraint baseColumnNames="POSITION_CODE "
                                  baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
                                  constraintName="FK_ATMP_PCC"
                                  referencedColumnNames="CODE"
