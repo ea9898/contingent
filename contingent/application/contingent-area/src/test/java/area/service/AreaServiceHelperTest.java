@@ -2,29 +2,29 @@ package area.service;
 
 
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
+import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKind;
+import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 
+import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -52,10 +52,16 @@ public class AreaServiceHelperTest {
     public AreaRepository areaRepository;
 
     @Autowired
+    public AreaCRUDRepository areaCRUDRepository;
+
+    @Autowired
     public MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
 
     @Autowired
     public MuAvailableAreaTypesRepository muAvailableAreaTypesRepository;
+
+    @Autowired
+    public AreaPolicyTypesRepository areaPolicyTypesRepository;
 
     //Тестовые данные
     private AreaType areaTypePrimary1;
@@ -65,6 +71,9 @@ public class AreaServiceHelperTest {
     private MuAvailableAreaTypes muAvailableAreaTypes;
     private Area areaPrimary1;
     private Area areaDependent1;
+    private PolicyType policyType1;
+    private PolicyType policyType2;
+    private AreaPolicyTypes areaPolicyType;
     private Long moId = 204L;
     private Long muId = 100L;
 
@@ -94,7 +103,7 @@ public class AreaServiceHelperTest {
         areaPrimary1 = new Area(3L, moId, null, areaTypePrimary1, false, LocalDateTime.now());
         areaPrimary1.setNumber(123);
         areaDependent1 = new Area(5L, moId, null, areaTypeDependent1, false, LocalDateTime.now());
-        areaPrimary1.setNumber(124);
+        areaDependent1.setNumber(124);
         areaDependent1.setAgeMin(1);
         areaDependent1.setAgeMax(16);
         areaToAreaType1 = new AreaToAreaType();
@@ -113,6 +122,18 @@ public class AreaServiceHelperTest {
         muAvailableAreaTypes.setMuId(muId);
         muAvailableAreaTypes.setMoAvailableAreaType(moAvailableAreaTypes);
         moAvailableAreaTypes.setMuAvailableAreaTypes(Collections.singleton(muAvailableAreaTypes));
+        policyType1 = new PolicyType();
+        policyType1.setCode(1L);
+        policyType1.setTitle("Test policy type");
+        policyType1.setArchived(false);
+        policyType2 = new PolicyType();
+        policyType2.setCode(3L);
+        policyType2.setTitle("Test policy type 2");
+        policyType2.setArchived(false);
+        areaPolicyType = new AreaPolicyTypes();
+        areaPolicyType.setId(1L);
+        areaPolicyType.setArea(areaPrimary1);
+        areaPolicyType.setPolicyType(policyType1);
     }
 
     @Test
@@ -143,6 +164,21 @@ public class AreaServiceHelperTest {
         assertTrue(validation.isSuccess());
         validation = new Validation();
         areaServiceHelper.checkAreaTypeIsPrimary(areaTypeDependent1, validation);
+        assertFalse(validation.isSuccess());
+    }
+
+    @Test
+    void checkAndGetArea() {
+        doReturn(Optional.of(areaPrimary1)).when(areaCRUDRepository).findById(areaPrimary1.getId());
+        Validation validation = new Validation();
+        areaServiceHelper.checkAndGetArea(areaPrimary1.getId(), validation);
+        assertTrue(validation.isSuccess());
+        validation = new Validation();
+        areaPrimary1.setArchived(true);
+        areaServiceHelper.checkAndGetArea(areaPrimary1.getId(), validation);
+        assertFalse(validation.isSuccess());
+        validation = new Validation();
+        areaServiceHelper.checkAndGetArea(11111, validation);
         assertFalse(validation.isSuccess());
     }
 
@@ -215,6 +251,19 @@ public class AreaServiceHelperTest {
         assertEquals(exception.getMessage(), "Невозможно создать/изменить участок, так как добавляемый тип полиса отличен от ОМС");
         validation.reset();
         assertDoesNotThrow(() -> areaServiceHelper.checkPolicyTypesIsOMS(Arrays.asList(1L), validation));
+    }
+
+    @Test
+    void checkPolicyTypesDel() {
+        doReturn(Collections.singletonList(areaPolicyType)).when(areaPolicyTypesRepository).findAll(areaPrimary1, policyType1);
+        Validation validation = new Validation();
+        Throwable exception = assertThrows(ContingentException.class, () -> {
+            areaServiceHelper.checkPolicyTypesDel(areaPrimary1, Arrays.asList(policyType2), validation);
+            throwValidation(validation);
+        });
+        assertEquals(exception.getMessage(), "Тип полиса с кодом " + policyType2.getCode() + " не задан для участка с ИД " + areaPrimary1.getId());
+        validation.reset();
+        assertDoesNotThrow(() -> areaServiceHelper.checkPolicyTypesDel(areaPrimary1, Arrays.asList(policyType1), validation));
     }
 
     @Test

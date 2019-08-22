@@ -756,7 +756,7 @@ public class AreaServiceHelper {
 
     public void checkPolicyTypesIsOMS(List<Long> policyTypesAdd,  Validation validation) throws ContingentException {
         if (!policyTypesAdd.isEmpty() && policyTypesAdd.stream().anyMatch(policy -> !policy.equals(PolicyTypeEnum.OMS.getCode()))) {
-            validation.error(AreaErrorReason.NO_PRIMARY_AREA);
+            validation.error(AreaErrorReason.POLICY_TYPE_IS_INCORRECT);
             throw new ContingentException(validation);
         }
     }
@@ -792,7 +792,7 @@ public class AreaServiceHelper {
     public void checkPolicyTypesDepArea(List<Long> policyTypeCodes, Validation validation) {
         if (policyTypeCodes != null && !policyTypeCodes.isEmpty() &&
                 !policyTypeCodes.stream().allMatch(ptc -> ptc.equals(PolicyTypeEnum.OMS.getCode()))) {
-            validation.error(AreaErrorReason.NO_PRIMARY_AREA);
+            validation.error(AreaErrorReason.POLICY_TYPE_IS_INCORRECT);
         }
     }
 
@@ -851,7 +851,7 @@ public class AreaServiceHelper {
 
     public void checkAutoAssignForAttachment(AreaType areaType, Boolean autoAssignForAttachment,
                                              Boolean attachByMedicalReason, Validation validation) {
-        if (autoAssignForAttachment) {
+        if (Boolean.TRUE.equals(autoAssignForAttachment)) {
             if (areaType.getMpguAvailable() != null
                     && !Boolean.TRUE.equals(areaType.getMpguAvailable())) {
                 validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,

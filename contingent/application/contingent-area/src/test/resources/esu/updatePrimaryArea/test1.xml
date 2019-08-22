@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:areaInfoEvent xmlns:ns2="http://ptnl.moscow/contingent2/event/type/area/">
+    <id>1</id>
+    <operationDate>2019-08-09T17:08:56.931+03:00</operationDate>
+    <operationType>updatePrimaryArea</operationType>
+    <areaId>1</areaId>
+    <areaType>10</areaType>
+    <muId>204</muId>
+    <number>1234</number>
+    <name>description</name>
+    <archive>false</archive>
+    <autoAssignForAttachment>true</autoAssignForAttachment>
+    <areaRestriction>
+        <minAge>2</minAge>
+        <maxAge>12</maxAge>
+    </areaRestriction>
+    <addresses/>
+</ns2:areaInfoEvent>
