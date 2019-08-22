@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:core="http://emias.mos.ru/contingent2/core/v1/"
+           targetNamespace="http://emias.mos.ru/contingent2/area/composit/v1/types/"
+           elementFormDefault="qualified">
+    <xs:import namespace="http://emias.mos.ru/contingent2/core/v1/" schemaLocation="emias.contingent2.core.v1.xsd"/>
+
+    <xs:element name="archiveAreaCompositRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element name="muId" type="xs:long" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="archiveAreaCompositResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="fault" type="core:Fault" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
