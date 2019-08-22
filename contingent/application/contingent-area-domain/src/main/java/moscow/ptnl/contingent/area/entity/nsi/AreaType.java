@@ -25,7 +25,7 @@ import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 @Cacheable
 @Proxy(lazy=false)
 @MapToNsi(table = NsiTablesEnum.AREA_TYPE)
-public class AreaType implements Serializable, Keyable {
+public class AreaType extends CodeName implements Serializable, Keyable {
 
     private static final long serialVersionUID = -1047920239396677745L;
 

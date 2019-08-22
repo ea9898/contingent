@@ -10,6 +10,7 @@ import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.MedicalEmployee;
+import ru.mos.emias.contingent2.core.PositionNomClinic;
 
 @Component
 public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, AreaMedicalEmployees> {
@@ -37,7 +38,10 @@ public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, Are
         employee.setEndDate(entityObject.getEndDate());
 
         if (entityObject.getPositionCode() != null) {
-            employee.setPosition(positionNomMapper.entityToDtoTransform(areaServiceHelper.getPositionNomByPositionCode(entityObject.getPositionCode())));
+            PositionNomClinic positionNomClinic = new PositionNomClinic();
+            positionNomClinic.setCode(entityObject.getPositionCode());
+            Optional<PositionCode> positionCodeOptional = positionCodeRepository.getByCode(entityObject.getPositionCode());
+            positionCodeOptional.ifPresent(positionCode -> positionNomClinic.setName(positionCode.getConstantTitle()));
         }
         return employee;
     }

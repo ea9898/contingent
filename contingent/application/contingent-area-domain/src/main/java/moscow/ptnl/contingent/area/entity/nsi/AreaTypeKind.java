@@ -19,7 +19,7 @@ import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 @Table(name = "AREA_TYPES_KIND")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.AREA_TYPE_KIND)
-public class AreaTypeKind implements Serializable, Keyable {
+public class AreaTypeKind extends CodeName implements Serializable, Keyable {
 
     private static final long serialVersionUID = 7174737671670446575L;
 

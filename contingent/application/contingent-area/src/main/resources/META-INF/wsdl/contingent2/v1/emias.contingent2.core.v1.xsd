@@ -6,23 +6,46 @@
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
     <xs:include schemaLocation="../../emias/emias.core.v1.xsd"/>
+
+    <xs:complexType name="CodeNameType">
+        <xs:sequence>
+            <xs:element name="code" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Код</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Наименование</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
     <!--business entities-->
     <xs:complexType name="AreaTypeShort">
         <xs:annotation>
             <xs:documentation>Типы участка в профиле МУ</xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <xs:element name="code" type="xs:long">
-                <xs:annotation>
-                    <xs:documentation>Код типа участка</xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="name" type="xs:string">
-                <xs:annotation>
-                    <xs:documentation>Наименование типа участка</xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
+        <xs:complexContent>
+            <xs:extension base="tns:CodeNameType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AreaTypeClass">
+        <xs:annotation>
+            <xs:documentation>Класс типа участка</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:CodeNameType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AreaTypeKind">
+        <xs:annotation>
+            <xs:documentation>Вид типа участка</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:CodeNameType"/>
+        </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="PrimaryAreaTypeCodes">
         <xs:sequence>
@@ -91,6 +114,8 @@
             <xs:element name="number" type="xs:int" minOccurs="0" />
             <xs:element name="description" type="xs:string" minOccurs="0" />
             <xs:element name="areaType" type="tns:AreaTypeShort" />
+            <xs:element name="areaTypeClass" type="tns:AreaTypeClass" />
+            <xs:element name="areaTypeKind" type="tns:AreaTypeKind" />
             <xs:element name="ageMin" type="xs:int" minOccurs="0" />
             <xs:element name="ageMax" type="xs:int" minOccurs="0" />
             <xs:element name="ageMinM" type="xs:int" minOccurs="0" />

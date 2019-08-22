@@ -1,9 +1,12 @@
 package moscow.ptnl.contingent.area.transform;
 
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.Area;
+import ru.mos.emias.contingent2.core.AreaTypeClass;
+import ru.mos.emias.contingent2.core.AreaTypeKind;
 import ru.mos.emias.contingent2.core.AreaTypeShort;
 
 import java.util.List;
@@ -29,6 +32,8 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
         area.setNumber(areaObj.getNumber());
         area.setDescription(areaObj.getDescription());
         area.setAreaType(areaTypeShortMapper.entityToDtoTransform(areaObj.getAreaType()));
+        area.setAreaTypeClass(new CodeNameTypeMapper<>(new AreaTypeClass(), areaObj.getAreaType().getAreaTypeClass()).entityToDtoTransform());
+        area.setAreaTypeKind(new CodeNameTypeMapper<>(new AreaTypeKind(), areaObj.getAreaType().getAreaTypeKind()).entityToDtoTransform());
         area.setAgeMin(areaObj.getAgeMin());
         area.setAgeMax(areaObj.getAgeMax());
         area.setAgeMinM(areaObj.getAgeMMin());

@@ -35,6 +35,8 @@ public class PositionCode implements Serializable {
     @Column(name = "CONSTANT_TITLE", nullable = false)
     private String constantTitle;
 
+    public PositionCode() {}
+
     public PositionCode(String code) {
         this.code = code;
     }
