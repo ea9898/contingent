@@ -312,6 +312,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 availableAreaTypes);
     }
 
+    @Override
+    public void archiveAreaComposit(long areaId, long muId) throws ContingentException {
+    }
+
     // (К_УУ_7)	Создание участка обслуживания первичного типа
     @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
