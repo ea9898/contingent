@@ -20,8 +20,8 @@ import moscow.ptnl.contingent.repository.nsi.AreaTypeMedicalPositionsCRUDReposit
 import moscow.ptnl.contingent.repository.nsi.AreaTypeRelationsCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.ClassAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.KindAreaTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaTypesClassCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaTypesKindCRUDRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +44,10 @@ public class NsiEventProcessor {
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Autowired
-    private ClassAreaTypesCRUDRepository classAreaTypesCRUDRepository;
+    private AreaTypesClassCRUDRepository areaTypesClassCRUDRepository;
 
     @Autowired
-    private KindAreaTypesCRUDRepository kindAreaTypesCRUDRepository;
+    private AreaTypesKindCRUDRepository areaTypesKindCRUDRepository;
 
     @Autowired
     private AreaTypeMedicalPositionsCRUDRepository areaTypeMedicalPositionsCRUDRepository;
@@ -64,9 +64,9 @@ public class NsiEventProcessor {
         if (entity instanceof AreaType) {
             saveOrDelete(areaTypesCRUDRepository, (AreaType) entity, action);
         } else if (entity instanceof AreaTypeClass) {
-            saveOrDelete(classAreaTypesCRUDRepository, (AreaTypeClass) entity, action);
+            saveOrDelete(areaTypesClassCRUDRepository, (AreaTypeClass) entity, action);
         } else if (entity instanceof AreaTypeKind) {
-            saveOrDelete(kindAreaTypesCRUDRepository, (AreaTypeKind) entity, action);
+            saveOrDelete(areaTypesKindCRUDRepository, (AreaTypeKind) entity, action);
         } else if (entity instanceof AreaTypeMedicalPositions) {
             saveOrDelete(areaTypeMedicalPositionsCRUDRepository, (AreaTypeMedicalPositions) entity, action);
         } else if (entity instanceof AreaTypeRelations) {

@@ -13,12 +13,15 @@ import moscow.ptnl.contingent.repository.nsi.AreaTypeMedicalPositionsCRUDReposit
 import moscow.ptnl.contingent.repository.nsi.AreaTypeRelationsCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.ClassAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.nsi.KindAreaTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaTypesClassCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.AreaTypesKindCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.NsiPushEventCRUDRepository;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsRequest;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsResponse;
 import ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.NsiServiceAsyncFasadPortType;
@@ -36,6 +39,7 @@ import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTyp
 import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeSpecializations;
 
 @Service(NsiAdminWebServiceImpl.SERVICE_NAME)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
 public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
@@ -54,10 +58,10 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Autowired
-    ClassAreaTypesCRUDRepository classAreaTypesCRUDRepository;
+    AreaTypesClassCRUDRepository areaTypesClassCRUDRepository;
 
     @Autowired
-    KindAreaTypesCRUDRepository kindAreaTypesCRUDRepository;
+    AreaTypesKindCRUDRepository areaTypesKindCRUDRepository;
 
     @Autowired
     AreaTypeMedicalPositionsCRUDRepository areaTypeMedicalPositionsCRUDRepository;
@@ -83,11 +87,11 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                         break;
                     case AREA_TYPE_CLASS:
                         List<AreaTypeClass> areaTypeClasses = mapAreaTypeClasses(response.getEhdCatalogItems().getRows());
-                        classAreaTypesCRUDRepository.saveAll(areaTypeClasses);
+                        areaTypesClassCRUDRepository.saveAll(areaTypeClasses);
                         break;
                     case AREA_TYPE_KIND:
                         List<AreaTypeKind> areaTypeKinds = mapAreaTypeKinds(response.getEhdCatalogItems().getRows());
-                        kindAreaTypesCRUDRepository.saveAll(areaTypeKinds);
+                        areaTypesKindCRUDRepository.saveAll(areaTypeKinds);
                         break;
                    case AREA_TYPE_MEDICAL_POSITIONS:
                         List<AreaTypeMedicalPositions> areaTypeMedicalPositions = mapAreaTypeMedicalPositions(response.getEhdCatalogItems().getRows());

@@ -6,6 +6,8 @@ import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.PushaccepterServicePortType;
 import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ChangeElement;
 import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ResponseElement;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 
 @Service(NsiWebServiceImpl.SERVICE_NAME)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 public class NsiWebServiceImpl implements PushaccepterServicePortType {
 
     public static final String SERVICE_NAME = "NSI_V1";
