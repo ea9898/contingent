@@ -77,4 +77,6 @@ public interface AreaServiceInternal {
     void delMuAvailableAreaTypes(long muId, List<Long> areaTypeCodes) throws ContingentException;
 
     MuAreaTypesFull getMuAvailableAreaTypes(long moId, long muId, AreaTypeStateType areaTypeState) throws ContingentException;
+
+    void archiveAreaComposit(long areaId, long muId) throws ContingentException;
 }
