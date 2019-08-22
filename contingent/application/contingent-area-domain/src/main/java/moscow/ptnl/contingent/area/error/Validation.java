@@ -77,4 +77,9 @@ public class Validation {
     public void setMessages(List<ValidationMessage> messages) {
         this.messages = messages;
     }
+
+    public void reset() {
+        messages.clear();
+        success = true;
+    }
 }
