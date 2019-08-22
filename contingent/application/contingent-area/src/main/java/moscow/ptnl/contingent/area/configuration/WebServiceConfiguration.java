@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
+
+import moscow.ptnl.contingent.area.ws.v1.AreaCompositeServiceImpl;
 import moscow.ptnl.metrics.MetricsInterceptorService;
 import moscow.ptnl.ws.security.UserContextInterceptor;
 import org.apache.cxf.Bus;
@@ -62,18 +64,18 @@ public class WebServiceConfiguration {
     }
 
     @Bean
-    public Endpoint AreaCompositServiceV1(@Qualifier(moscow.ptnl.contingent.area.ws.v1.AreaCompositServiceImpl.SERVICE_NAME) ru.mos.emias.contingent2.area.composit.AreaCompositPT areaCompositService, SpringBus cxfBus) {
+    public Endpoint AreaCompositServiceV1(@Qualifier(AreaCompositeServiceImpl.SERVICE_NAME) ru.mos.emias.contingent2.area.composit.AreaCompositePT areaCompositService, SpringBus cxfBus) {
         EndpointImpl endpoint = new EndpointImpl(cxfBus, areaCompositService);
-        endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/composit/v1/", "AreaCompositService"));
-        endpoint.setWsdlLocation("classpath:META-INF/wsdl/contingent2/v1/emias.contingent2.composit.v1.wsdl");
-        endpoint.setAddress("/composit/v1/AreaCompositService");
+        endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/composite/v1/", "AreaCompositeService"));
+        endpoint.setWsdlLocation("classpath:META-INF/wsdl/composite/emias.contingent2.composite.v1.wsdl");
+        endpoint.setAddress("/composite/v1/AreaCompositeService");
         endpoint.publish();
         endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
         interceptorService.setupInterceptors(endpoint);
         return endpoint;
     }
-    
+
 //    @Bean
 //    public Endpoint AreaServiceV5(@Qualifier(moscow.ptnl.contingent.area.ws.v2.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v2._public.area.AreaPT areaService, SpringBus cxfBus) {
 //        EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);

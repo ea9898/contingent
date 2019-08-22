@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:core="http://emias.mos.ru/contingent2/core/v1/"
-           targetNamespace="http://emias.mos.ru/contingent2/area/composit/v1/types/"
+           xmlns:core="http://emias.mos.ru/contingent2/area/composite/v1/types/"
+           xmlns:fault="http://emias.mos.ru/system/v1/faults/"
+           targetNamespace="http://emias.mos.ru/contingent2/area/composite/v1/types/"
            elementFormDefault="qualified">
-    <xs:import namespace="http://emias.mos.ru/contingent2/core/v1/" schemaLocation="emias.contingent2.core.v1.xsd"/>
+    <xs:include schemaLocation="emias.core.v1.xsd"/>
 
-    <xs:element name="archiveAreaCompositRequest">
+    <xs:element name="archiveAreaCompositeRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
@@ -15,10 +16,9 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="archiveAreaCompositResponse">
+    <xs:element name="archiveAreaCompositeResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="fault" type="core:Fault" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
