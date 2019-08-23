@@ -6,6 +6,9 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKind;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
+import moscow.ptnl.contingent.area.entity.nsi.Gender;
+import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
+import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
@@ -15,10 +18,12 @@ import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsCRUDReposito
 import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesClassCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypesKindCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.GenderCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.NsiPushEventCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.PositionCodeCRUDRepository;
+import moscow.ptnl.contingent.repository.nsi.SpecializationCRUDRepository;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +42,9 @@ import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTyp
 import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeMedicalPositions;
 import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeRelations;
 import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeSpecializations;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapGenders;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapPositionCodes;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapSpecializations;
 
 @Service(NsiAdminWebServiceImpl.SERVICE_NAME)
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -72,6 +80,15 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     @Autowired
     AreaTypeSpecializationsCRUDRepository areaTypeSpecializationsCRUDRepository;
 
+    @Autowired
+    SpecializationCRUDRepository specializationCRUDRepository;
+
+    @Autowired
+    PositionCodeCRUDRepository positionCodeCRUDRepository;
+
+    @Autowired
+    GenderCRUDRepository genderCRUDRepository;
+
 
     @Override
     public SyncNsiResponse syncNsi(SyncNsiRequest body) throws Fault {
@@ -104,6 +121,19 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                     case AREA_TYPE_SPECIALIZATIONS:
                         List<AreaTypeSpecializations> areaTypeSpecializations = mapAreaTypeSpecializations(response.getEhdCatalogItems().getRows());
                         areaTypeSpecializationsCRUDRepository.saveAll(areaTypeSpecializations);
+                        break;
+                    case SPECIALIZATIONS:
+                        List<Specialization> specializations = mapSpecializations(response.getEhdCatalogItems().getRows());
+                        specializationCRUDRepository.saveAll(specializations);
+                        break;
+                    case POSITION_CODE:
+                        List<PositionCode> positionCodes = mapPositionCodes(response.getEhdCatalogItems().getRows());
+                        positionCodeCRUDRepository.saveAll(positionCodes);
+                        break;
+                    case GENDER:
+                        List<Gender> genders = mapGenders(response.getEhdCatalogItems().getRows());
+                        genderCRUDRepository.saveAll(genders);
+                        break;
                 }
             } catch (ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.Fault fault) {
                 fault.printStackTrace();

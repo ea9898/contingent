@@ -1,5 +1,8 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,27 +15,33 @@ import java.util.Objects;
 @Entity
 @Table(name = "POSITION_CODE")
 @Cacheable
+@MapToNsi(table = NsiTablesEnum.POSITION_CODE)
 public class PositionCode implements Serializable {
 
     private static final long serialVersionUID = 3663299049984440497L;
 
     @Id
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     @Size(max = 10)
     @Column(name = "NOM_TYPE", nullable = false)
+    @MapToNsi("NOM_TYPE")
     private String nomType;
 
     @Column(name = "SERIAL_NUM", nullable = false)
+    @MapToNsi("SERIAL_NUM")
     private Long serialNum;
 
     @Size(max = 100)
     @Column(name = "CODE", nullable = false)
+    @MapToNsi
     private String code;
 
     @Size(max = 250)
     @Column(name = "CONSTANT_TITLE", nullable = false)
+    @MapToNsi("CONSTANT_TITLE")
     private String constantTitle;
 
     public PositionCode() {}

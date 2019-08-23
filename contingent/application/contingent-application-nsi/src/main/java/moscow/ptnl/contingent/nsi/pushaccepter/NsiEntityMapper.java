@@ -6,6 +6,9 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKind;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
+import moscow.ptnl.contingent.area.entity.nsi.Gender;
+import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
+import moscow.ptnl.contingent.area.entity.nsi.Specialization;
 import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
@@ -53,7 +56,18 @@ public class NsiEntityMapper {
         return rows.stream().map(NsiEntityMapper::mapAreaTypeSpecialization).collect(Collectors.toList());
     }
 
-    
+    public static List<Specialization> mapSpecializations(List<EhdCatalogRow> rows) {
+        return rows.stream().map(NsiEntityMapper::mapSpecialization).collect(Collectors.toList());
+    }
+
+    public static List<PositionCode> mapPositionCodes(List<EhdCatalogRow> rows) {
+        return rows.stream().map(NsiEntityMapper::mapPositionCode).collect(Collectors.toList());
+    }
+
+    public static List<Gender> mapGenders(List<EhdCatalogRow> rows) {
+        return rows.stream().map(NsiEntityMapper::mapGender).collect(Collectors.toList());
+    }
+
     public static AreaType mapAreaType(EhdCatalogRow row) {
         return mapEhdCatalogRow(row, AreaType.class);
     }
@@ -100,6 +114,30 @@ public class NsiEntityMapper {
 
     public static AreaTypeSpecializations mapAreaTypeSpecialization(Package row) {
         return mapEhdCatalogRow(row, AreaTypeSpecializations.class);
+    }
+
+    public static Specialization mapSpecialization(EhdCatalogRow row) {
+        return mapEhdCatalogRow(row, Specialization.class);
+    }
+
+    public static Specialization mapSpecialization(Package row) {
+        return mapEhdCatalogRow(row, Specialization.class);
+    }
+
+    public static PositionCode mapPositionCode(EhdCatalogRow row) {
+        return mapEhdCatalogRow(row, PositionCode.class);
+    }
+
+    public static PositionCode mapPositionCode(Package row) {
+        return mapEhdCatalogRow(row, PositionCode.class);
+    }
+
+    public static Gender mapGender(EhdCatalogRow row) {
+        return mapEhdCatalogRow(row, Gender.class);
+    }
+
+    public static Gender mapGender(Package row) {
+        return mapEhdCatalogRow(row, Gender.class);
     }
     
     public static <T> T mapEhdCatalogRow(Object row, Class<T> clazz) {

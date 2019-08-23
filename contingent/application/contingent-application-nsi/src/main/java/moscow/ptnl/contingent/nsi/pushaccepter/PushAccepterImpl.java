@@ -17,6 +17,9 @@ import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTyp
 import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeMedicalPosition;
 import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeRelation;
 import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeSpecialization;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapGender;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapPositionCode;
+import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapSpecialization;
 
 @Component
 public class PushAccepterImpl extends PushAccepter {
@@ -56,6 +59,15 @@ public class PushAccepterImpl extends PushAccepter {
                 break;
             case AREA_TYPE_SPECIALIZATIONS:
                 pushEventEntity = mapAreaTypeSpecialization(pack);
+                break;
+            case SPECIALIZATIONS:
+                pushEventEntity = mapSpecialization(pack);
+                break;
+            case POSITION_CODE:
+                pushEventEntity = mapPositionCode(pack);
+                break;
+            case GENDER:
+                pushEventEntity = mapGender(pack);
         }
         nsiChannel.send(MessageBuilder
                 .withPayload(pushEventEntity)

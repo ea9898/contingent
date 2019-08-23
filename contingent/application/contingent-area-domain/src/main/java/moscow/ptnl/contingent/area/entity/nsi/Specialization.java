@@ -1,6 +1,8 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -14,28 +16,30 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "SPECIALIZATION")
-//@Cacheable
+@Cacheable
+@MapToNsi(table = NsiTablesEnum.SPECIALIZATIONS)
 public class Specialization implements Serializable {
 
     private static final long serialVersionUID = -3935499028862334002L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
+    @MapToNsi
     private Long id;
 
     @Size(max = 100)
     @Column(name = "TITLE", nullable = false)
+    @MapToNsi
     private String title;
 
     @Column(name = "CODE")
+    @MapToNsi
     private Long code;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
     private Boolean archived;
-
-    @Column(name = "GLOBAL_ID")
-    private Long globalId;
 
     public Specialization() {
     }
