@@ -77,6 +77,16 @@
                         <xs:documentation>Половозрастные ограничения для участков в К2. Установление соответствия с аналогичными параметрами осуществляется на стороне К1</xs:documentation>
                     </xs:annotation>
                 </xs:element>
+                <xs:element name="streetBTICode" type="xs:long" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Код улицы БТИ</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="aolevel" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Уровень адреса</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
                 <xs:element name="mainEmployees" minOccurs="0">
                     <xs:annotation>
                         <xs:documentation>Список исполнений должностей медработников основных участковых врачей</xs:documentation>
