@@ -492,24 +492,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkPolicyTypesDel(area, policyTypesDel, validation);
 
         // 6
-        if (Boolean.TRUE.equals(autoAssignForAttachment)) {
-            if (area.getAreaType().getMpguAvailable() != null
-                    && !Boolean.TRUE.equals(area.getAreaType().getMpguAvailable())) {
-                validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
-                        new ValidationParameter("areaType", area.getAreaType().getTitle()));
-            }
-           if (Boolean.TRUE.equals(attachByMedicalReason)) {
-                validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
-            }
-        }
+        areaHelper.checkAutoAssignForAttachment(area.getAreaType(), autoAssignForAttachment, attachByMedicalReason, validation);
 
         // 7
-        if (attachByMedicalReason != null && area.getAreaType().getAttachByMedicalReason() != null &&
-                !Objects.equals(attachByMedicalReason, area.getAreaType().getAttachByMedicalReason())) {
-            validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
-                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
-                    new ValidationParameter("attachByMedicalReason", area.getAreaType().getAttachByMedicalReason()));
-        }
+        areaHelper.checkAttachByMedicalReason(area.getAreaType(), attachByMedicalReason, validation);
 
         // 8
         areaHelper.checkAreaTypeAgeSetups(area.getAreaType(), ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
@@ -536,11 +522,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 10
         List<PolicyType> policyTypesAdd = policyTypeRepository.findByIds(policyTypesAddIds);
         areaHelper.saveAndDeleteAreaPolicyTypes(area, policyTypesAdd, policyTypesDel);
-
-        // 11
-        //if (areaHelper.isAreaPrimary(area)) {
-        //    esuHelperService.sendAreaInfoEvent(area, "updatePrimaryArea");
-        //}
 
         // Логирование изменений
         historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
