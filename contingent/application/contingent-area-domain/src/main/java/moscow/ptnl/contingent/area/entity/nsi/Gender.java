@@ -22,12 +22,7 @@ public class Gender implements Serializable {
     private static final long serialVersionUID = 7174737671670446575L;
 
     @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @MapToNsi
-    private Long id;
-
-    @Size(max = 50)
-    @Column(name = "CODE", nullable = false)
+    @Column(name = "CODE", unique = true, nullable = false)
     @MapToNsi
     private String code;
 
@@ -40,14 +35,6 @@ public class Gender implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     @MapToNsi
     private Boolean archived;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
@@ -80,7 +67,6 @@ public class Gender implements Serializable {
 
         Gender gender = (Gender) o;
 
-        if (!id.equals(gender.id)) return false;
         if (code != null ? !code.equals(gender.code) : gender.code != null) return false;
         if (title != null ? !title.equals(gender.title) : gender.title != null) return false;
         return archived != null ? archived.equals(gender.archived) : gender.archived == null;
@@ -88,8 +74,7 @@ public class Gender implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + (code != null ? code.hashCode() : 0);
+        int result = code != null ? code.hashCode() : 0;
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (archived != null ? archived.hashCode() : 0);
         return result;

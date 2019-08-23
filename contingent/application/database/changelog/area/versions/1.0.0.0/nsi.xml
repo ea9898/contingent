@@ -478,6 +478,9 @@
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" />
             <columnExists tableName="POSITION_CODE" columnName="CODE" />
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_ATMP_PCC"/>
+            </not>
         </preConditions>
         <addForeignKeyConstraint baseColumnNames="POSITION_CODE "
                                  baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
@@ -845,11 +848,8 @@
         </preConditions>
         <comment>Создание таблицы GENDER</comment>
         <createTable tableName="GENDER">
-            <column name="ID" type="BIGINT">
+            <column name="CODE" type="VARCHAR2(50)" remarks="Код">
                 <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="CODE" type="BIGINT" remarks="Код">
-                <constraints nullable="false" />
             </column>
             <column name="TITLE" type="VARCHAR2(50)" remarks="Наименование">
                 <constraints nullable="false" />
