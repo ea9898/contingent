@@ -26,12 +26,11 @@ public enum NsiTablesEnum {
     }
 
     public static NsiTablesEnum getByName(String name) {
-        return Arrays.stream(NsiTablesEnum.values()).filter(e -> e.getCode() != null && ("catalog_" + e.getCode()).equals(name)).findFirst()
-                .orElseThrow(() -> new IllegalStateException(String.format("Таблица %s не поддерживается", name)));
+        return Arrays.stream(NsiTablesEnum.values()).filter(e -> e.name().equals(name)).findFirst().orElse(NsiTablesEnum.UNKNOWN);
     }
 
     public static NsiTablesEnum getByCode(Integer code) {
         return Arrays.stream(NsiTablesEnum.values()).filter(e -> e.getCode() != null && e.getCode().equals(code)).findFirst()
-                .orElseThrow(() -> new IllegalStateException(String.format("Таблица %s не поддерживается", code)));
+                .orElse(NsiTablesEnum.UNKNOWN);
     }
 }

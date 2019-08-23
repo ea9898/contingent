@@ -4,10 +4,10 @@ import moscow.ptnl.contingent.area.error.ErrorReason;
 
 public enum NsiEhdErrorReason implements ErrorReason {
 
-    UNEXPECTED_ERROR("E000", "Непредвиденная ошибка. %s"),
-    NSI_EHD_ERROR("E001", "Ошибка получения данных из НСИ. %s"),
-    CATALOG_ID_NOT_FOUND("E002", "Неверное имя справочника. %s"),
-    ;
+    UNEXPECTED_ERROR("E000", "Произошла ошибка: %s"),
+    CATALOG_ID_NOT_FOUND("E001", "Для каталога с наименованием %s на найден ИД для обращения с СУ НСИ."),
+    CANNOT_UPDATE_DICT("E002", "Данные справочника не получены"),
+    UPDATE_DICT_ERROR("E003", "Ошибка обновления справочника: %s");
 
     private final String description;
     private final String code;

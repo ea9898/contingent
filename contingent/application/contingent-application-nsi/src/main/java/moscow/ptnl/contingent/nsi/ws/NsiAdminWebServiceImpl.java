@@ -9,9 +9,14 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.area.entity.nsi.Gender;
 import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
+import moscow.ptnl.contingent.area.error.ContingentException;
+import moscow.ptnl.contingent.area.error.Validation;
+import moscow.ptnl.contingent.area.error.ValidationParameter;
 import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.error.NsiEhdErrorReason;
 import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
+import moscow.ptnl.contingent.nsi.transform.SoapExceptionMapper;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeMedicalPositionsCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeRelationsCRUDRepository;
 import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsCRUDRepository;
@@ -92,54 +97,86 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
     @Override
     public SyncNsiResponse syncNsi(SyncNsiRequest body) throws Fault {
-        body.getCatalogCode().forEach(catalog -> {
-            GetCatalogItemsRequest catalogDataRequest = new GetCatalogItemsRequest();
-            catalogDataRequest.setIdCatalog(catalog);
-            try {
-                GetCatalogItemsResponse response = nsiService.getCatalogItems(catalogDataRequest);
-                switch (NsiTablesEnum.getByCode(catalog)) {
-                    case AREA_TYPE:
-                        List<AreaType> areaTypes = NsiEntityMapper.mapAreaTypes(response.getEhdCatalogItems().getRows());
-                        areaTypesCRUDRepository.saveAll(areaTypes);
-                        break;
-                    case AREA_TYPE_CLASS:
-                        List<AreaTypeClass> areaTypeClasses = mapAreaTypeClasses(response.getEhdCatalogItems().getRows());
-                        areaTypesClassCRUDRepository.saveAll(areaTypeClasses);
-                        break;
-                    case AREA_TYPE_KIND:
-                        List<AreaTypeKind> areaTypeKinds = mapAreaTypeKinds(response.getEhdCatalogItems().getRows());
-                        areaTypesKindCRUDRepository.saveAll(areaTypeKinds);
-                        break;
-                   case AREA_TYPE_MEDICAL_POSITIONS:
-                        List<AreaTypeMedicalPositions> areaTypeMedicalPositions = mapAreaTypeMedicalPositions(response.getEhdCatalogItems().getRows());
-                        areaTypeMedicalPositionsCRUDRepository.saveAll(areaTypeMedicalPositions);
-                        break;
-                    case AREA_TYPE_RELATIONS:
-                        List<AreaTypeRelations> areaTypeRelations = mapAreaTypeRelations(response.getEhdCatalogItems().getRows());
-                        areaTypeRelationsCRUDRepository.saveAll(areaTypeRelations);
-                        break;
-                    case AREA_TYPE_SPECIALIZATIONS:
-                        List<AreaTypeSpecializations> areaTypeSpecializations = mapAreaTypeSpecializations(response.getEhdCatalogItems().getRows());
-                        areaTypeSpecializationsCRUDRepository.saveAll(areaTypeSpecializations);
-                        break;
-                    case SPECIALIZATIONS:
-                        List<Specialization> specializations = mapSpecializations(response.getEhdCatalogItems().getRows());
-                        specializationCRUDRepository.saveAll(specializations);
-                        break;
-                    case POSITION_CODE:
-                        List<PositionCode> positionCodes = mapPositionCodes(response.getEhdCatalogItems().getRows());
-                        positionCodeCRUDRepository.saveAll(positionCodes);
-                        break;
-                    case GENDER:
-                        List<Gender> genders = mapGenders(response.getEhdCatalogItems().getRows());
-                        genderCRUDRepository.saveAll(genders);
-                        break;
-                }
-            } catch (ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.Fault fault) {
-                fault.printStackTrace();
-            }
+        Validation validation = new Validation();
 
-        });
+        NsiTablesEnum nsiTablesEnum = NsiTablesEnum.getByName(body.getCatalogCode());
+        if (NsiTablesEnum.UNKNOWN.equals(nsiTablesEnum)) {
+            validation.error(NsiEhdErrorReason.CATALOG_ID_NOT_FOUND, new ValidationParameter("catalogCode", body.getCatalogCode()));
+        }
+
+        if (!validation.isSuccess()) {
+            throw SoapExceptionMapper.map(new ContingentException(validation));
+        }
+
+        GetCatalogItemsRequest catalogDataRequest = new GetCatalogItemsRequest();
+        catalogDataRequest.setIdCatalog(nsiTablesEnum.getCode());
+
+        GetCatalogItemsResponse response = null;
+        try {
+            response = nsiService.getCatalogItems(catalogDataRequest);
+        } catch (Exception e) {
+            if (e.getMessage() == null) {
+                validation.error(NsiEhdErrorReason.CANNOT_UPDATE_DICT);
+            } else {
+                validation.error(NsiEhdErrorReason.UNEXPECTED_ERROR, new ValidationParameter("error", e.getMessage()));
+            }
+        } finally {
+            if (response == null && validation.isSuccess()) {
+                validation.error(NsiEhdErrorReason.CANNOT_UPDATE_DICT);
+            }
+        }
+
+        if (!validation.isSuccess()) {
+            throw SoapExceptionMapper.map(new ContingentException(validation));
+        }
+
+        try {
+            switch (nsiTablesEnum) {
+                case AREA_TYPE:
+                    List<AreaType> areaTypes = NsiEntityMapper.mapAreaTypes(response.getEhdCatalogItems().getRows());
+                    areaTypesCRUDRepository.saveAll(areaTypes);
+                    break;
+                case AREA_TYPE_CLASS:
+                    List<AreaTypeClass> areaTypeClasses = mapAreaTypeClasses(response.getEhdCatalogItems().getRows());
+                    areaTypesClassCRUDRepository.saveAll(areaTypeClasses);
+                    break;
+                case AREA_TYPE_KIND:
+                    List<AreaTypeKind> areaTypeKinds = mapAreaTypeKinds(response.getEhdCatalogItems().getRows());
+                    areaTypesKindCRUDRepository.saveAll(areaTypeKinds);
+                    break;
+               case AREA_TYPE_MEDICAL_POSITIONS:
+                    List<AreaTypeMedicalPositions> areaTypeMedicalPositions = mapAreaTypeMedicalPositions(response.getEhdCatalogItems().getRows());
+                    areaTypeMedicalPositionsCRUDRepository.saveAll(areaTypeMedicalPositions);
+                    break;
+                case AREA_TYPE_RELATIONS:
+                    List<AreaTypeRelations> areaTypeRelations = mapAreaTypeRelations(response.getEhdCatalogItems().getRows());
+                    areaTypeRelationsCRUDRepository.saveAll(areaTypeRelations);
+                    break;
+                case AREA_TYPE_SPECIALIZATIONS:
+                    List<AreaTypeSpecializations> areaTypeSpecializations = mapAreaTypeSpecializations(response.getEhdCatalogItems().getRows());
+                    areaTypeSpecializationsCRUDRepository.saveAll(areaTypeSpecializations);
+                    break;
+                case SPECIALIZATIONS:
+                    List<Specialization> specializations = mapSpecializations(response.getEhdCatalogItems().getRows());
+                    specializationCRUDRepository.saveAll(specializations);
+                    break;
+                case POSITION_CODE:
+                    List<PositionCode> positionCodes = mapPositionCodes(response.getEhdCatalogItems().getRows());
+                    positionCodeCRUDRepository.saveAll(positionCodes);
+                    break;
+                case GENDER:
+                    List<Gender> genders = mapGenders(response.getEhdCatalogItems().getRows());
+                    genderCRUDRepository.saveAll(genders);
+                    break;
+            }
+        } catch (Exception e) {
+            validation.error(NsiEhdErrorReason.UPDATE_DICT_ERROR, new ValidationParameter("message", e.getMessage()));
+        }
+
+        if (!validation.isSuccess()) {
+            throw SoapExceptionMapper.map(new ContingentException(validation));
+        }
+
         return new SyncNsiResponse();
     }
 }
