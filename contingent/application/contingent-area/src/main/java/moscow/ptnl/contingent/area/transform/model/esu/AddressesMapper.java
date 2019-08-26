@@ -39,17 +39,17 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
                         address.setOmkTeRegionCode(e.getAreaCodeOmkTe());
                     }
                     if (AddressLevelType.AREA.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
-                        address.setStreetBTICode(Integer.valueOf(e.getAreaBtiCode()));
+                        address.setStreetBTICode(e.getAreaBtiCode());
                     }
                     if (AddressLevelType.CITY.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
-                        address.setStreetBTICode(Integer.valueOf(e.getCityBtiCode()));
+                        address.setStreetBTICode(e.getCityBtiCode());
                     }
                     if (AddressLevelType.PLACE.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
-                        address.setStreetBTICode(Integer.valueOf(e.getPlaceBtiCode()));
+                        address.setStreetBTICode(e.getPlaceBtiCode());
                     }
                     if (AddressLevelType.STREET.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
                         address.setOmkUmCode(e.getStreetOmkUm());
-                        address.setStreetBTICode(Integer.valueOf(e.getStreetBtiCode()));
+                        address.setStreetBTICode(e.getStreetBtiCode());
                     }
                     if (AddressLevelType.ID.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
                         address.setOmkUmCode(e.getStreetOmkUm());
@@ -57,23 +57,19 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
                         address.setBuilding(e.getL2Value());
                         address.setConstruction(e.getL3Value());
                         if (e.getStreetBtiCode() != null) {
-                            address.setStreetBTICode(Integer.valueOf(e.getStreetBtiCode()));
-                        }
-                        if (e.getPlanBtiCode() != null) {
-                            address.setStreetBTICode(Integer.valueOf(e.getPlanBtiCode()));
-                        }
-                        if (e.getPlaceBtiCode() != null) {
-                            address.setStreetBTICode(Integer.valueOf(e.getPlaceBtiCode()));
-                        }
-                        if (e.getCityBtiCode() != null) {
-                            address.setStreetBTICode(Integer.valueOf(e.getCityBtiCode()));
-                        }
-                        if (e.getAreaBtiCode() != null) {
-                            address.setStreetBTICode(Integer.valueOf(e.getAreaBtiCode()));
+                            address.setStreetBTICode(e.getStreetBtiCode());
+                        }else if (e.getPlanBtiCode() != null) {
+                            address.setStreetBTICode(e.getPlanBtiCode());
+                        }else if (e.getPlaceBtiCode() != null) {
+                            address.setStreetBTICode(e.getPlaceBtiCode());
+                        }else if (e.getCityBtiCode() != null) {
+                            address.setStreetBTICode(e.getCityBtiCode());
+                        }else if (e.getAreaBtiCode() != null) {
+                            address.setStreetBTICode(e.getAreaBtiCode());
                         }
                     }
                     if (AddressLevelType.PLAN.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
-                        address.setStreetBTICode(Integer.valueOf(e.getPlanBtiCode()));
+                        address.setStreetBTICode(e.getPlanBtiCode());
                     }
                     addresses.getAddress().add(address);
                 });

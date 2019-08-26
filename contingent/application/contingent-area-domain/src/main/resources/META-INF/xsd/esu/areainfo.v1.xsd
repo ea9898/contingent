@@ -153,7 +153,7 @@
                     <xs:documentation>Код улицы ОМК (AFE.STREET_OMK_UM)</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="streetBTICode" type="xs:int" minOccurs="0">
+            <xs:element name="streetBTICode" type="xs:string" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>Код улицы БТИ</xs:documentation>
                 </xs:annotation>
@@ -175,7 +175,7 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="AreaRestriction">
         <xs:sequence>
             <xs:element name="gender" type="xs:long" minOccurs="0">
