@@ -29,7 +29,7 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
     public AreaInfoEvent entityToDtoTransform(moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent entity) {
         AreaInfoEvent event = new AreaInfoEvent();
         moscow.ptnl.contingent.area.entity.area.Area area = entity.getArea();
-
+        //1
         event.setOperationDate(gregorianCalendarMapper.entityToDtoTransform(entity.getOperationDate()));
         event.setOperationType(entity.getOperationType());
         event.setAreaId(area.getId());
@@ -41,12 +41,14 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         event.setAutoAssignForAttachment(Boolean.TRUE.equals(area.getAutoAssignForAttach()));
         event.setResidentsBindRate((area.getAreaType().getResidentsBindRate() != null) ? area.getAreaType().getResidentsBindRate().longValue() : null);
         event.setAreaRestriction(areaRestrictionMapper.entityToDtoTransform(area));
+        //2
         if (!CollectionsUtil.isNullOrEmpty(area.getActualMainMedicalEmployees())) {
             event.setMainEmployees(mainEmployeesMapper.entityToDtoTransform(area.getActualMainMedicalEmployees()));
         }
         if (!CollectionsUtil.isNullOrEmpty(area.getActualReplacementMedicalEmployees())) {
             event.setReplacementEmployees(replacementEmployeesMapper.entityToDtoTransform(area.getActualReplacementMedicalEmployees()));
         }
+        //3
         event.setAddresses(addressesMapper.entityToDtoTransform(area.getActualAreaAddresses()));
 
         return event;
