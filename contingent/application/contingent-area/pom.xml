@@ -321,6 +321,13 @@
             <artifactId>area-infrastructure</artifactId>
             <version>1.0.0</version>
         </dependency>
+        
+        <!-- залипуха надо как то разделять -->
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>nsi-infrastructure</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
 <!--        <dependency>
             <groupId>org.reactivestreams</groupId>

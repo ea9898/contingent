@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.configuration;
+package moscow.ptnl.contingent.configuration.nsi;
 
 import static moscow.ptnl.contingent.configuration.nsi.Constraint.NSI_EVENT_CHANNEL_NAME;
 import org.slf4j.Logger;
@@ -14,20 +14,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.scheduling.support.PeriodicTrigger;
 
 /**
- * Для использования:
- * <pre>{@code
- * @Autowired @Qualifier(EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME)
- * private MessageChannel historyChannel;
- * ...
- * historyChannel.send(
- *          HistoryEventBuilder
- *              .withEntity(entity.getClass(), entity.getId())
- *              .setPrincipal(UserContextHolder.getPrincipal())
- *              .addValue("field1", "old-val-1", "new-val-1")
- *              .addValue("field2", "old-val-2", "new-val-2")
- *              .buildMessage()
- *      );
- * }</pre>
+ * 
  * 
  * @author mkachalov
  */
@@ -38,53 +25,31 @@ public class EventChannelsConfiguration {
     
     private static final Logger LOG = LoggerFactory.getLogger(EventChannelsConfiguration.class);
     
-    public static final String HISTORY_EVENT_CHANNEL_NAME = "HistoryEventChannel";
-    public static final String ESU_EVENT_CHANNEL_NAME = "ESUEventChannel";
-    
     private static final int QUEUE_LENGTH = 1000;
     private static final int QUEUE_DELIVERY_INTERVAL = 5; //msec 
-        
+      
     
-    /**
-     * Канал для отправки сообщений в историю.   
-     * 
-     * @return 
-     */
-    @Bean(name = HISTORY_EVENT_CHANNEL_NAME)
-    public MessageChannel createHistoryEventChannel() {        
-        //return new DirectChannel();
-        return new QueueChannel(QUEUE_LENGTH);
-    }
-    
-    /**
-     * Канал для отправки сообщений в ЕСУ.   
-     * 
-     * @return 
-     */
-    @Bean(name = ESU_EVENT_CHANNEL_NAME)
-    public MessageChannel createESUEventChannel() {        
-        //return new DirectChannel();
-        return new QueueChannel(QUEUE_LENGTH);
-    }
     
     /**
      * Канал для отправки сообщений в НСИ.
      *
      * @return
      */
-    /*
     @Bean(name = NSI_EVENT_CHANNEL_NAME)
     public MessageChannel createNSIEventChannel() {
         //return new DirectChannel();
         return new QueueChannel(QUEUE_LENGTH);
     }
-    */
 
+    
+    //FIXME временно убрано до разделения с area-infrastructure
+    /*
     @Bean(name = PollerMetadata.DEFAULT_POLLER_METADATA_BEAN_NAME)
     public PollerMetadata defaultPoller() {
         PollerMetadata pollerMetadata = new PollerMetadata();
         pollerMetadata.setTrigger(new PeriodicTrigger(QUEUE_DELIVERY_INTERVAL));
         return pollerMetadata;
     }
+    */
     
 }
