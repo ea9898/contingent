@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.Future;
+import static moscow.ptnl.contingent.configuration.nsi.Constraint.NSI_EVENT_CHANNEL_NAME;
 
-import static moscow.ptnl.contingent.configuration.EventChannelsConfiguration.NSI_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.nsi.NsiPushEventConstraint;
 import moscow.ptnl.util.ExceptionUtil;

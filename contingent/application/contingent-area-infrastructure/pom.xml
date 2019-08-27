@@ -30,6 +30,11 @@
             <artifactId>area-domain</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency> <!-- TODO временная залипуха -->
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>nsi-infrastructure</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>

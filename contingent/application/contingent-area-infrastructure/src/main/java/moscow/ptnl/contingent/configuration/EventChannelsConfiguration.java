@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.configuration;
 
+import static moscow.ptnl.contingent.configuration.nsi.Constraint.NSI_EVENT_CHANNEL_NAME;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -39,8 +40,7 @@ public class EventChannelsConfiguration {
     
     public static final String HISTORY_EVENT_CHANNEL_NAME = "HistoryEventChannel";
     public static final String ESU_EVENT_CHANNEL_NAME = "ESUEventChannel";
-    public static final String NSI_EVENT_CHANNEL_NAME = "NSIEventChannel";
-
+    
     private static final int QUEUE_LENGTH = 1000;
     private static final int QUEUE_DELIVERY_INTERVAL = 5; //msec 
         

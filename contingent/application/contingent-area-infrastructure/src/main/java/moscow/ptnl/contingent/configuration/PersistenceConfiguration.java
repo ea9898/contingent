@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import moscow.ptnl.contingent.PersistenceConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,9 +37,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class PersistenceConfiguration {
     
     private static final Logger LOG = LoggerFactory.getLogger(PersistenceConfiguration.class);
-    
-    public static final String PU_CONTINGENT_NAME = "contingent";
-    
+        
     @Value("${datasource.contingent.jndi-name}")
     private String contingentDataSourceJNDIName;
     
@@ -73,7 +72,7 @@ public class PersistenceConfiguration {
         factory.setJpaProperties(jpaProperties);
         factory.setPackagesToScan("moscow.ptnl");
         factory.setDataSource(dataSource);
-        factory.setPersistenceUnitName(PU_CONTINGENT_NAME);
+        factory.setPersistenceUnitName(PersistenceConstraint.PU_CONTINGENT_NAME);
         factory.afterPropertiesSet();
         return factory.getObject();
     }
