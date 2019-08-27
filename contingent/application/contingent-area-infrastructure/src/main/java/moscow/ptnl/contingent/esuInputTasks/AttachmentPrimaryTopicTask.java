@@ -4,11 +4,10 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClassEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
-import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
+import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.util.EsuTopicsEnum;
 import moscow.ptnl.contingent2.attachment.changeprimarea.event.AttachPrimaryPatientEvent;
 import moscow.ptnl.contingent2.attachment.deparea.event.AttachToDependentAreaEvent;
@@ -26,9 +25,6 @@ import java.util.List;
 @Component
 @Qualifier("attachmentPrimaryTopicTask")
 public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatientEvent> {
-
-    @Autowired
-    private AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;

@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.service;
 
 import java.util.List;
-import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
+import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.domain.esu.event.ESUEventHelper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;

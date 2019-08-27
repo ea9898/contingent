@@ -15,7 +15,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.repository.nsi.PositionCodeRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.service.esu.EsuService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

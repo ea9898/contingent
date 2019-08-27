@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.nsi.ws;
 
 import moscow.ptnl.contingent.domain.nsi.entity.NsiPushEvent;
-import moscow.ptnl.contingent.repository.nsi.NsiPushEventCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,10 @@ public class NsiWebServiceImpl implements PushaccepterServicePortType {
     public static final String SERVICE_NAME = "NSI_V1";
 
     @Autowired
-    PushAccepter pushAccepter;
+    private PushAccepter pushAccepter;
 
     @Autowired
-    NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
+    private NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
 
     @Override
     public ResponseElement get(ChangeElement getChangeElement) {

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.nsi.pushaccepter;
 
-import static moscow.ptnl.contingent.configuration.nsi.Constraint.NSI_EVENT_CHANNEL_NAME;
+import static moscow.ptnl.contingent.nsi.configuration.Constraint.NSI_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.nsi.NsiPushEventConstraint;
 import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;

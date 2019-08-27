@@ -13,10 +13,9 @@ import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypeMedicalPositionsRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypeSpecializationsRepository;
-import moscow.ptnl.contingent.repository.nsi.PositionNomRepository;
-import moscow.ptnl.contingent.service.esu.EsuService;
+import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 import moscow.ptnl.contingent.util.EsuTopicsEnum;
 import moscow.ptnl.contingent2.rmr.event.JeChangeDateEnd;
 import moscow.ptnl.contingent2.rmr.event.JeCreate;
@@ -71,8 +70,6 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     @Autowired
     private AreaTypeMedicalPositionsRepository areaTypeMedicalPositionsRepository;
 
-    @Autowired
-    private EsuService esuService;
 
     public JobExecutionInfoMsgTopicTask() {
         super(EsuTopicsEnum.JOB_EXECUTION_INFO_MSG, XSD_PATH, JobExecutionInfoMsg.class);

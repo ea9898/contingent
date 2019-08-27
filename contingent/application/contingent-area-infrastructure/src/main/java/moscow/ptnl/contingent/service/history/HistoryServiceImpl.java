@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import javax.persistence.Transient;
-import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
+import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.domain.history.EntityConverterHelper;
 import moscow.ptnl.contingent.domain.history.HistoryEventBuilder;
 import moscow.ptnl.contingent.domain.history.ServiceName;

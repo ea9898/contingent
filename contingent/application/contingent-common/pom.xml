@@ -2,10 +2,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <artifactId>common</artifactId>
     <groupId>moscow.ptnl.contingent</groupId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
+    
     <name>contingent-common</name>
     <url>http://maven.apache.org</url>
 
@@ -55,6 +57,12 @@
             <artifactId>infinispan-core</artifactId>
             <version>${infinispan.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+            <version>${spring.integration.version}</version>
+            <scope>${artefact.scope}</scope>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

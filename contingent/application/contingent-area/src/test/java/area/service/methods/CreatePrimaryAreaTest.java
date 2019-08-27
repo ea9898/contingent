@@ -17,7 +17,7 @@ import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.repository.nsi.AreaTypesCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.service.esu.EsuService;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.junit.jupiter.api.BeforeEach;
