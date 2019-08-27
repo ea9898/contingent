@@ -98,7 +98,7 @@ public class AreaAddressChecker {
         Map<AddressWrapper, List<AddressWrapper>> foundAddresses = findCrossedNsiAddresses(existingAddresses, newAddresses);
 
         foundAddresses.forEach((key, value) -> {
-            if (value.isEmpty() && key.addressFormingElement.getAreaTeId() == null) {
+            if (value.isEmpty() /*&& key.addressFormingElement.getAreaTeId() == null*/) {
                 validation.error(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
             }
             else if (!value.isEmpty()) {
