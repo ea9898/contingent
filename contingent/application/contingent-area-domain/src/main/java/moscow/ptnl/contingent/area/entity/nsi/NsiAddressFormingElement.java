@@ -27,9 +27,6 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "AO_LEVEL")
     private String aoLevel;
 
-    @Column(name = "REGION_TE_ID")
-    private Long regionTeId;
-
     @Size(max = 4)
     @Column(name = "REGION_TE_CODE")
     private String regionTeCode;
@@ -39,14 +36,11 @@ public class NsiAddressFormingElement implements Serializable {
     private String regionTeName;
 
     @Size(max = 256)
-    @Column(name = "REGION_TE_TYPE_NAME")
+    @Column(name = "REGION_TE_TYPENAME")
     private String regionTeTypeName;
 
-    @Column(name = "AREA_TE_ID")
-    private Long areaTeId;
-
     @Size(max = 50)
-    @Column(name = "AREA_CODE_OMK_TE")
+    @Column(name = "AREACODE_OMK_TE")
     private String areaCodeOmkTe;
 
     @Size(max = 4000)
@@ -54,75 +48,80 @@ public class NsiAddressFormingElement implements Serializable {
     private String areaTeName;
 
     @Size(max = 128)
-    @Column(name = "AREA_TE_TYPE_NAME")
+    @Column(name = "AREA_TE_TYPENAME")
     private String areaTeTypeName;
 
-    @Column(name = "AREA_ID")
-    private Long areaId;
-
     @Size(max = 3)
-    @Column(name = "AREA_CODE")
+    @Column(name = "AREACODE")
     private String areaCode;
+
+    @Size(max = 11)
+    @Column(name = "AREA_BTI_CODE")
+    private String areaBtiCode;
 
     @Size(max = 4000)
     @Column(name = "AREA_NAME")
     private String areaName;
 
     @Size(max = 128)
-    @Column(name = "AREA_TYPE_NAME")
+    @Column(name = "AREA_TYPENAME")
     private String areaTypeName;
 
-    @Column(name = "CITY_ID")
-    private Long cityId;
-
     @Size(max = 3)
-    @Column(name = "CITY_CODE")
+    @Column(name = "CITYCODE")
     private String cityCode;
+
+    @Size(max = 11)
+    @Column(name = "CITY_BTI_CODE")
+    private String cityBtiCode;
 
     @Size(max = 4000)
     @Column(name = "CITY_NAME")
     private String cityName;
 
     @Size(max = 128)
-    @Column(name = "CITY_TYPE_NAME")
+    @Column(name = "CITY_TYPENAME")
     private String cityTypeName;
 
-    @Column(name = "PLACE_ID")
-    private Long placeId;
-
     @Size(max = 3)
-    @Column(name = "PLACE_CODE")
+    @Column(name = "PLACECODE")
     private String placeCode;
+
+    @Size(max = 11)
+    @Column(name = "PLACE_BTI_CODE")
+    private String placeBtiCode;
 
     @Size(max = 4000)
     @Column(name = "PLACE_NAME")
     private String placeName;
 
     @Size(max = 128)
-    @Column(name = "PLACE_TYPE_NAME")
+    @Column(name = "PLACE_TYPENAME")
     private String placeTypeName;
 
-    @Column(name = "PLAN_ID")
-    private Long planId;
-
     @Size(max = 3)
-    @Column(name = "PLAN_CODE")
+    @Column(name = "PLANCODE")
     private String planCode;
+
+    @Size(max = 11)
+    @Column(name = "PLAN_BTI_CODE")
+    private String planBtiCode;
 
     @Size(max = 4000)
     @Column(name = "PLAN_NAME")
     private String planName;
 
     @Size(max = 128)
-    @Column(name = "PLAN_TYPE_NAME")
+    @Column(name = "PLAN_TYPENAME")
     private String planTypeName;
 
-    @Column(name = "STREET_ID")
-    private Long streetId;
-
     @Size(max = 4)
-    @Column(name = "STREET_CODE")
+    @Column(name = "STREETCODE")
     private String streetCode;
+
+    @Size(max = 11)
+    @Column(name = "STREET_BTI_CODE")
+    private String streetBtiCode;
 
     @Size(max = 4000)
     @Column(name = "STREET_NAME")
@@ -133,47 +132,52 @@ public class NsiAddressFormingElement implements Serializable {
     private String streetOmkUm;
 
     @Size(max = 128)
-    @Column(name = "STREET_TYPE_NAME")
+    @Column(name = "STREET_TYPENAME")
     private String streetTypeName;
 
     @Size(max = 4000)
-    @Column(name = "ADDRESS")
+    @Column(name = "ADDRESS", nullable = false)
     private String address;
 
     public NsiAddressFormingElement() {
         super();
     }
 
-    public NsiAddressFormingElement(Long id, Long globalId, String aoLevel, Long regionTeId, String regionTeCode, String regionTeName, String regionTeTypeName, Long areaTeId, String areaCodeOmkTe, String areaTeName, String areaTeTypeName, Long areaId, String areaCode, String areaName, String areaTypeName, Long cityId, String cityCode, String cityName, String cityTypeName, Long placeId, String placeCode, String placeName, String placeTypeName, Long planId, String planCode, String planName, String planTypeName, Long streetId, String streetCode, String streetName, String streetOmkUm, String streetTypeName, String address) {
+    public NsiAddressFormingElement(Long id, Long globalId, String aoLevel, String regionTeCode, String regionTeName,
+                                    String regionTeTypeName, String areaCodeOmkTe, String areaTeName, String areaTeTypeName,
+                                    String areaCode, String areaBtiCode, String areaName, String areaTypeName,
+                                    String cityCode, String cityBtiCode, String cityName, String cityTypeName,
+                                    String placeCode, String placeBtiCode, String placeName, String placeTypeName,
+                                    String planCode, String planBtiCode, String planName, String planTypeName,
+                                    String streetCode, String streetBtiCode, String streetName, String streetOmkUm,
+                                    String streetTypeName, String address) {
         this.id = id;
         this.globalId = globalId;
         this.aoLevel = aoLevel;
-        this.regionTeId = regionTeId;
         this.regionTeCode = regionTeCode;
         this.regionTeName = regionTeName;
         this.regionTeTypeName = regionTeTypeName;
-        this.areaTeId = areaTeId;
         this.areaCodeOmkTe = areaCodeOmkTe;
         this.areaTeName = areaTeName;
         this.areaTeTypeName = areaTeTypeName;
-        this.areaId = areaId;
         this.areaCode = areaCode;
+        this.areaBtiCode = areaBtiCode;
         this.areaName = areaName;
         this.areaTypeName = areaTypeName;
-        this.cityId = cityId;
         this.cityCode = cityCode;
+        this.cityBtiCode = cityBtiCode;
         this.cityName = cityName;
         this.cityTypeName = cityTypeName;
-        this.placeId = placeId;
         this.placeCode = placeCode;
+        this.placeBtiCode = placeBtiCode;
         this.placeName = placeName;
         this.placeTypeName = placeTypeName;
-        this.planId = planId;
         this.planCode = planCode;
+        this.planBtiCode = planBtiCode;
         this.planName = planName;
         this.planTypeName = planTypeName;
-        this.streetId = streetId;
         this.streetCode = streetCode;
+        this.streetBtiCode = streetBtiCode;
         this.streetName = streetName;
         this.streetOmkUm = streetOmkUm;
         this.streetTypeName = streetTypeName;
@@ -204,14 +208,6 @@ public class NsiAddressFormingElement implements Serializable {
         this.aoLevel = aoLevel;
     }
 
-    public Long getRegionTeId() {
-        return regionTeId;
-    }
-
-    public void setRegionTeId(Long regionTeId) {
-        this.regionTeId = regionTeId;
-    }
-
     public String getRegionTeCode() {
         return regionTeCode;
     }
@@ -234,14 +230,6 @@ public class NsiAddressFormingElement implements Serializable {
 
     public void setRegionTeTypeName(String regionTeTypeName) {
         this.regionTeTypeName = regionTeTypeName;
-    }
-
-    public Long getAreaTeId() {
-        return areaTeId;
-    }
-
-    public void setAreaTeId(Long areaTeId) {
-        this.areaTeId = areaTeId;
     }
 
     public String getAreaCodeOmkTe() {
@@ -268,20 +256,20 @@ public class NsiAddressFormingElement implements Serializable {
         this.areaTeTypeName = areaTeTypeName;
     }
 
-    public Long getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
-    }
-
     public String getAreaCode() {
         return areaCode;
     }
 
     public void setAreaCode(String areaCode) {
         this.areaCode = areaCode;
+    }
+
+    public String getAreaBtiCode() {
+        return areaBtiCode;
+    }
+
+    public void setAreaBtiCode(String areaBtiCode) {
+        this.areaBtiCode = areaBtiCode;
     }
 
     public String getAreaName() {
@@ -300,20 +288,20 @@ public class NsiAddressFormingElement implements Serializable {
         this.areaTypeName = areaTypeName;
     }
 
-    public Long getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(Long cityId) {
-        this.cityId = cityId;
-    }
-
     public String getCityCode() {
         return cityCode;
     }
 
     public void setCityCode(String cityCode) {
         this.cityCode = cityCode;
+    }
+
+    public String getCityBtiCode() {
+        return cityBtiCode;
+    }
+
+    public void setCityBtiCode(String cityBtiCode) {
+        this.cityBtiCode = cityBtiCode;
     }
 
     public String getCityName() {
@@ -332,20 +320,20 @@ public class NsiAddressFormingElement implements Serializable {
         this.cityTypeName = cityTypeName;
     }
 
-    public Long getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(Long placeId) {
-        this.placeId = placeId;
-    }
-
     public String getPlaceCode() {
         return placeCode;
     }
 
     public void setPlaceCode(String placeCode) {
         this.placeCode = placeCode;
+    }
+
+    public String getPlaceBtiCode() {
+        return placeBtiCode;
+    }
+
+    public void setPlaceBtiCode(String placeBtiCode) {
+        this.placeBtiCode = placeBtiCode;
     }
 
     public String getPlaceName() {
@@ -364,20 +352,20 @@ public class NsiAddressFormingElement implements Serializable {
         this.placeTypeName = placeTypeName;
     }
 
-    public Long getPlanId() {
-        return planId;
-    }
-
-    public void setPlanId(Long planId) {
-        this.planId = planId;
-    }
-
     public String getPlanCode() {
         return planCode;
     }
 
     public void setPlanCode(String planCode) {
         this.planCode = planCode;
+    }
+
+    public String getPlanBtiCode() {
+        return planBtiCode;
+    }
+
+    public void setPlanBtiCode(String planBtiCode) {
+        this.planBtiCode = planBtiCode;
     }
 
     public String getPlanName() {
@@ -396,20 +384,20 @@ public class NsiAddressFormingElement implements Serializable {
         this.planTypeName = planTypeName;
     }
 
-    public Long getStreetId() {
-        return streetId;
-    }
-
-    public void setStreetId(Long streetId) {
-        this.streetId = streetId;
-    }
-
     public String getStreetCode() {
         return streetCode;
     }
 
     public void setStreetCode(String streetCode) {
         this.streetCode = streetCode;
+    }
+
+    public String getStreetBtiCode() {
+        return streetBtiCode;
+    }
+
+    public void setStreetBtiCode(String streetBtiCode) {
+        this.streetBtiCode = streetBtiCode;
     }
 
     public String getStreetName() {
@@ -445,17 +433,15 @@ public class NsiAddressFormingElement implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj != null && obj instanceof NsiAddressFormingElement) {
-            return ((NsiAddressFormingElement) obj).getId().equals(this.id);
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NsiAddressFormingElement that = (NsiAddressFormingElement) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
-    public int hashCode() {        
-        return Objects.hashCode(this.id);
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

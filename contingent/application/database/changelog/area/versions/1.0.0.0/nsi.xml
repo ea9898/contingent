@@ -578,57 +578,6 @@
 
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
 
-    <!-- ADDRESS_FORMING_ELEMENT -->
-    <changeSet id="CONTINGENT2-NSI-8" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы ADDRESS_FORMING_ELEMENT</comment>
-        <createTable tableName="ADDRESS_FORMING_ELEMENT"
-                     remarks="Адресообразующий элемент">
-            <column name="ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="GLOBAL_ID" type="BIGINT" remarks="Уникальный идентификатор объекта" />
-            <column name="AO_LEVEL" type="VARCHAR2(2)" remarks="Уровень адресного объекта"/>
-            <column name="REGION_TE_ID" type="BIGINT" />
-            <column name="REGION_TE_CODE" type="VARCHAR2(4)" remarks="Код округа ОМК ТЕ"/>
-            <column name="REGION_TE_NAME" type="VARCHAR2(4000)" />
-            <column name="REGION_TE_TYPE_NAME" type="VARCHAR2(256)" />
-            <column name="AREA_TE_ID" type="BIGINT" />
-            <column name="AREA_CODE_OMK_TE" type="VARCHAR2(50)" remarks="Код района ОМК ТЕ"/>
-            <column name="AREA_TE_NAME" type="VARCHAR2(4000)" />
-            <column name="AREA_TE_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="AREA_ID" type="BIGINT" />
-            <column name="AREA_CODE" type="VARCHAR2(3)" remarks="Код района"/>
-            <column name="AREA_NAME" type="VARCHAR2(4000)" />
-            <column name="AREA_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="CITY_ID" type="BIGINT" />
-            <column name="CITY_CODE" type="VARCHAR2(3)" remarks="Код города"/>
-            <column name="CITY_NAME" type="VARCHAR2(4000)" />
-            <column name="CITY_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="PLACE_ID" type="BIGINT" />
-            <column name="PLACE_CODE" type="VARCHAR2(3)" remarks="Код населенного пункта"/>
-            <column name="PLACE_NAME" type="VARCHAR2(4000)" />
-            <column name="PLACE_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="PLAN_ID" type="BIGINT" />
-            <column name="PLAN_CODE" type="VARCHAR2(3)" remarks="Код элемента планировочной структуры"/>
-            <column name="PLAN_NAME" type="VARCHAR2(4000)" />
-            <column name="PLAN_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="STREET_ID" type="BIGINT" />
-            <column name="STREET_CODE" type="VARCHAR2(4)" remarks="Код улицы"/>
-            <column name="STREET_NAME" type="VARCHAR2(4000)" />
-            <column name="STREET_OMK_UM" type="VARCHAR2(10)" remarks="Код ОМК УМ улицы"/>
-            <column name="STREET_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="ADDRESS" type="VARCHAR2(4000)" remarks="Полное наименование адресообразующего элемента" />
-        </createTable>
-        <rollback>
-            <dropTable tableName="ADDRESS_FORMING_ELEMENT"/>
-        </rollback>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-NSI-8-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -1186,13 +1135,54 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-277-2" author="sorlov" labels="1.0.0.0">
+    <!-- ADDRESS_FORMING_ELEMENT -->
+    <changeSet id="CONTINGENT2-303-1" author="shnaider_ab" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
+            <not>
+                <tableExists tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+            </not>
         </preConditions>
-        <renameTable oldTableName="ADDRESS_FORMING_ELEMENT" newTableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+        <comment>Создание таблицы NSI_ADDRESS_FORMING_ELEMENT</comment>
+        <createTable tableName="NSI_ADDRESS_FORMING_ELEMENT"
+                     remarks="Адресообразующий элемент">
+            <column name="ID" type="BIGINT" remarks="Внутренний идентификатор">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="GLOBAL_ID" type="BIGINT" remarks="Уникальный идентификатор объекта" />
+            <column name="AOLEVEL" type="VARCHAR2(2)" remarks="Уровень адресного объекта"/>
+            <column name="REGION_TE_CODE" type="VARCHAR2(4)" remarks="Код округа ОМК ТЕ"/>
+            <column name="REGION_TE_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование округа"/>
+            <column name="REGION_TE_TYPENAME" type="VARCHAR2(256)" remarks="Наименование типа округа"/>
+            <column name="AREACODE_OMK_TE" type="VARCHAR2(4000)" remarks="Код района ОМК ТЕ"/>
+            <column name="AREA_TE_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование муниципального образования"/>
+            <column name="AREA_TE_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа муниципального образования"/>
+            <column name="AREACODE" type="VARCHAR2(3)" remarks="Код района"/>
+            <column name="AREA_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код района"/>
+            <column name="AREA_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование района"/>
+            <column name="AREA_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа района"/>
+            <column name="CITYCODE" type="VARCHAR2(3)" remarks="Код города"/>
+            <column name="CITY_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код города"/>
+            <column name="CITY_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование города"/>
+            <column name="CITY_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа города"/>
+            <column name="PLACECODE" type="VARCHAR2(3)" remarks="Код населенного пункта"/>
+            <column name="PLACE_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код населённого пункта"/>
+            <column name="PLACE_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование населённого пункта"/>
+            <column name="PLACE_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа населенного пункта"/>
+            <column name="PLANCODE" type="VARCHAR2(3)" remarks="Код элемента планировочной структуры"/>
+            <column name="PLAN_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код элемента планировочной структуры"/>
+            <column name="PLAN_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование элемента планировочной структуры"/>
+            <column name="PLAN_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа элемента планировочной структуры"/>
+            <column name="STREETCODE" type="VARCHAR2(4)" remarks="Код улицы"/>
+            <column name="STREET_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код улицы"/>
+            <column name="STREET_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование улицы"/>
+            <column name="STREET_OMK_UM" type="VARCHAR2(10)" remarks="Код ОМК УМ улицы"/>
+            <column name="STREET_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа улицы"/>
+            <column name="ADDRESS" type="VARCHAR2(4000)" remarks="Полное наименование адресообразующего элемента">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
         <rollback>
-            <renameTable oldTableName="NSI_ADDRESS_FORMING_ELEMENT" newTableName="ADDRESS_FORMING_ELEMENT"/>
+            <dropTable tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
         </rollback>
     </changeSet>
 
