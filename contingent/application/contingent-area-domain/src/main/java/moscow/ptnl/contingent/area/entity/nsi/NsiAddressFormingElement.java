@@ -27,6 +27,10 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "AO_LEVEL")
     private String aoLevel;
 
+    @Size(max = 11)
+    @Column(name = "KOD_GIVZ")
+    private String codeGivz;
+
     @Size(max = 4)
     @Column(name = "REGION_TE_CODE")
     private String regionTeCode;
@@ -143,7 +147,7 @@ public class NsiAddressFormingElement implements Serializable {
         super();
     }
 
-    public NsiAddressFormingElement(Long id, Long globalId, String aoLevel, String regionTeCode, String regionTeName,
+    public NsiAddressFormingElement(Long id, Long globalId, String aoLevel, String codeGivz, String regionTeCode, String regionTeName,
                                     String regionTeTypeName, String areaCodeOmkTe, String areaTeName, String areaTeTypeName,
                                     String areaCode, String areaBtiCode, String areaName, String areaTypeName,
                                     String cityCode, String cityBtiCode, String cityName, String cityTypeName,
@@ -154,6 +158,7 @@ public class NsiAddressFormingElement implements Serializable {
         this.id = id;
         this.globalId = globalId;
         this.aoLevel = aoLevel;
+        this.codeGivz = codeGivz;
         this.regionTeCode = regionTeCode;
         this.regionTeName = regionTeName;
         this.regionTeTypeName = regionTeTypeName;
@@ -206,6 +211,14 @@ public class NsiAddressFormingElement implements Serializable {
 
     public void setAoLevel(String aoLevel) {
         this.aoLevel = aoLevel;
+    }
+
+    public String getCodeGivz() {
+        return codeGivz;
+    }
+
+    public void setCodeGivz(String codeGivz) {
+        this.codeGivz = codeGivz;
     }
 
     public String getRegionTeCode() {
