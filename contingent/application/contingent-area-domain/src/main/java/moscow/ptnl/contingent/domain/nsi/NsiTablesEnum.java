@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public enum NsiTablesEnum {
     
-    UNKNOWN(null),
+    UNKNOWN(-1),
     AREA_TYPE(1146),
     AREA_TYPE_CLASS(1142),
     AREA_TYPE_KIND(1144),
@@ -26,7 +26,7 @@ public enum NsiTablesEnum {
     }
 
     public static NsiTablesEnum getByName(String name) {
-        return Arrays.stream(NsiTablesEnum.values()).filter(e -> e.name().equals(name)).findFirst().orElse(NsiTablesEnum.UNKNOWN);
+        return Arrays.stream(NsiTablesEnum.values()).filter(e -> e.getCode().equals(Integer.valueOf(name))).findFirst().orElse(NsiTablesEnum.UNKNOWN);
     }
 
     public static NsiTablesEnum getByCode(Integer code) {
