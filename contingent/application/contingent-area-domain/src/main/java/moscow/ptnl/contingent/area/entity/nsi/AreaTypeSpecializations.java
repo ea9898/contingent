@@ -21,7 +21,6 @@ import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
 import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 
 @Entity
-@SequenceGenerator(name = "SEQ_AREA_TYPE_SPECIALIZATIONS", sequenceName = "SEQ_AREA_TYPE_SPECIALIZATIONS", allocationSize=1)
 @Table(name = "AREA_TYPE_SPECIALIZATIONS")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.AREA_TYPE_SPECIALIZATIONS)
@@ -30,10 +29,9 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
     private static final long serialVersionUID = -786212543217911093L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_AREA_TYPE_SPECIALIZATIONS")
-    @Column(name = "ID", unique = true, nullable = false)
+    @Column(name = "GLOBAL_ID", unique = true, nullable = false)
     @MapToNsi
-    private Long id;
+    private Long globalId;
 
     @JoinColumn(name = "AREA_TYPE_CODE", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,12 +48,12 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
     @MapToNsi
     private Boolean archived;
 
-    public Long getId() {
-        return id;
+    public Long getGlobalId() {
+        return globalId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
     }
 
     public AreaType getAreaType() {
@@ -87,7 +85,7 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AreaTypeSpecializations that = (AreaTypeSpecializations) o;
-        return Objects.equals(id, that.id) &&
+        return Objects.equals(globalId, that.globalId) &&
                 Objects.equals(areaType, that.areaType) &&
                 Objects.equals(specializationCode, that.specializationCode) &&
                 Objects.equals(archived, that.archived);
@@ -95,11 +93,11 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, areaType, specializationCode, archived);
+        return Objects.hash(globalId, areaType, specializationCode, archived);
     }
 
     @Override
     public Serializable getKey() {
-        return getId();
+        return getGlobalId();
     }
 }

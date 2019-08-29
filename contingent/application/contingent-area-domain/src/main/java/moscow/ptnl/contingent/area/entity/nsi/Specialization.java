@@ -23,9 +23,9 @@ public class Specialization implements Serializable {
     private static final long serialVersionUID = -3935499028862334002L;
 
     @Id
-    @Column(name = "ID", unique = true, nullable = false)
+    @Column(name = "GLOBAL_ID", unique = true, nullable = false)
     @MapToNsi
-    private Long id;
+    private Long globalId;
 
     @Size(max = 100)
     @Column(name = "TITLE", nullable = false)
@@ -45,17 +45,17 @@ public class Specialization implements Serializable {
     }
 
     public Specialization(Long id, String title, Boolean archived) {
-        this.id = id;
+        this.globalId = id;
         this.title = title;
         this.archived = archived;
     }
 
-    public Long getId() {
-        return id;
+    public Long getGlobalId() {
+        return globalId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
     }
 
     public Long getCode() {
@@ -83,13 +83,13 @@ public class Specialization implements Serializable {
         if (this == obj)
             return true;
         if (obj != null && obj instanceof Specialization) {
-            return ((Specialization) obj).getId().equals(this.id);
+            return ((Specialization) obj).getGlobalId().equals(this.globalId);
         }
         return false;
     }
 
     @Override
     public int hashCode() {        
-        return Objects.hashCode(this.id);
+        return Objects.hashCode(this.globalId);
     }
 }

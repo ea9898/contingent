@@ -26,6 +26,10 @@ public class Gender implements Serializable {
     @MapToNsi
     private String code;
 
+    @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
+    private Long globalId;
+
     @Size(max = 50)
     @Column(name = "TITLE")
     @MapToNsi
@@ -42,6 +46,14 @@ public class Gender implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Long getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
     }
 
     public String getTitle() {

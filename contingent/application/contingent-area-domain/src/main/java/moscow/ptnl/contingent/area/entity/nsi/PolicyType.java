@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
 import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -31,12 +32,24 @@ public class PolicyType implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
 
+    @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
+    private Long globalId;
+
     public Long getCode() {
         return code;
     }
 
     public void setCode(Long code) {
         this.code = code;
+    }
+
+    public Long getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
     }
 
     public String getTitle() {

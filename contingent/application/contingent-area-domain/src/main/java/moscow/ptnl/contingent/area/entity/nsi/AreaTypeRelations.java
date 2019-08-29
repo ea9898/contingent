@@ -25,9 +25,9 @@ public class AreaTypeRelations implements Serializable, Keyable {
     private static final long serialVersionUID = -8346464667577347303L;
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "GLOBAL_ID")
     @MapToNsi
-    private Long id;
+    private Long globalId;
 
     @JoinColumn(name = "DEPENDENT_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,15 +46,15 @@ public class AreaTypeRelations implements Serializable, Keyable {
 
     @Override
     public Serializable getKey() {
-        return getId();
+        return getGlobalId();
     }
 
-    public Long getId() {
-        return id;
+    public Long getGlobalId() {
+        return globalId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
     }
 
     public Boolean getArchived() {
@@ -86,13 +86,13 @@ public class AreaTypeRelations implements Serializable, Keyable {
         if (this == obj)
             return true;
         if (obj instanceof AreaTypeRelations) {
-            return ((AreaTypeRelations) obj).getId().equals(this.getId());
+            return ((AreaTypeRelations) obj).getGlobalId().equals(this.getGlobalId());
         }
         return false;
     }
 
     @Override
     public int hashCode() {        
-        return this.getId().hashCode();
+        return this.getGlobalId().hashCode();
     }
 }

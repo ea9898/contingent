@@ -116,6 +116,10 @@ public class AreaType extends CodeName implements Serializable, Keyable {
     @MapToNsi("RESIDENTS_BIND_RATE")
     private Integer residentsBindRate;
 
+    @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
+    private Long globalId;
+
     public AreaType() {
     }
 
@@ -135,6 +139,14 @@ public class AreaType extends CodeName implements Serializable, Keyable {
 
     public void setCode(Long code) {
         this.code = code;
+    }
+
+    public Long getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
     }
 
     public String getTitle() {

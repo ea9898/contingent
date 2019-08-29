@@ -26,9 +26,9 @@ public class AreaTypeMedicalPositions implements Serializable, Keyable {
     private static final long serialVersionUID = 4979698890748802824L;
 
     @Id
-    @Column(name = "ID", unique = true, nullable = false)
+    @Column(name = "GLOBAL_ID", unique = true, nullable = false)
     @MapToNsi
-    private Long id;
+    private Long globalId;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,12 +50,12 @@ public class AreaTypeMedicalPositions implements Serializable, Keyable {
     @MapToNsi("POSITION_NOM_ID")
     private PositionNom positionNom;
 
-    public Long getId() {
-        return id;
+    public Long getGlobalId() {
+        return globalId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
     }
 
     public AreaType getAreaType() {
@@ -95,18 +95,18 @@ public class AreaTypeMedicalPositions implements Serializable, Keyable {
         if (this == obj)
             return true;
         if (obj instanceof AreaTypeMedicalPositions) {
-            return ((AreaTypeMedicalPositions) obj).getId().equals(this.id);
+            return ((AreaTypeMedicalPositions) obj).getGlobalId().equals(this.globalId);
         }
         return false;
     }
 
     @Override
     public int hashCode() {        
-        return Objects.hashCode(this.id);
+        return Objects.hashCode(this.globalId);
     }
 
     @Override
     public Serializable getKey() {
-        return getId();
+        return getGlobalId();
     }
 }
