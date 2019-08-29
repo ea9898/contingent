@@ -586,7 +586,7 @@
         </preConditions>
         <comment>Создание индекса колонки GLOBAL_ID таблицы ADDRESS_FORMING_ELEMENT</comment>
         <createIndex indexName="IXFK_AFE_GLOBAL_ID"
-                     tableName="ADDRESS_FORMING_ELEMENT"
+                     tableName="NSI_ADDRESS_FORMING_ELEMENT"
                      unique="false">
             <column name="GLOBAL_ID" type="BIGINT"/>
         </createIndex>
