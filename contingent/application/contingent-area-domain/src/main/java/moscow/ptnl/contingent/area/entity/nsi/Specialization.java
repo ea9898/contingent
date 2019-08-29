@@ -24,7 +24,7 @@ public class Specialization implements Serializable {
 
     @Id
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
-    @MapToNsi
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     @Size(max = 100)

@@ -26,7 +26,7 @@ public class AreaTypeRelations implements Serializable, Keyable {
 
     @Id
     @Column(name = "GLOBAL_ID")
-    @MapToNsi
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     @JoinColumn(name = "DEPENDENT_AREA_TYPE_CODE")

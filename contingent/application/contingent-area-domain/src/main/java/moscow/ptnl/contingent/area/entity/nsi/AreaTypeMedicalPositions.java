@@ -27,7 +27,7 @@ public class AreaTypeMedicalPositions implements Serializable, Keyable {
 
     @Id
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
-    @MapToNsi
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     @JoinColumn(name = "AREA_TYPE_CODE")
