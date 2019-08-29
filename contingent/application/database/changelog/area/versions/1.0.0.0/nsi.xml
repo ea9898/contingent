@@ -578,20 +578,6 @@
 
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
 
-    <changeSet id="CONTINGENT2-NSI-8-1" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AFE_GLOBAL_ID"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки GLOBAL_ID таблицы ADDRESS_FORMING_ELEMENT</comment>
-        <createIndex indexName="IXFK_AFE_GLOBAL_ID"
-                     tableName="NSI_ADDRESS_FORMING_ELEMENT"
-                     unique="false">
-            <column name="GLOBAL_ID" type="BIGINT"/>
-        </createIndex>
-    </changeSet>
-    <!-- !!!! ADDRESS_FORMING_ELEMENT !!!! -->
 
     <!-- POLICY_TYPE -->
     <changeSet id="CONTINGENT2-NSI-9" author="ddryuchin" labels="1.0.0.0">
@@ -1141,6 +1127,21 @@
             <dropTable tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
         </rollback>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-8-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AFE_GLOBAL_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки GLOBAL_ID таблицы ADDRESS_FORMING_ELEMENT</comment>
+        <createIndex indexName="IXFK_AFE_GLOBAL_ID"
+                     tableName="NSI_ADDRESS_FORMING_ELEMENT"
+                     unique="false">
+            <column name="GLOBAL_ID" type="BIGINT"/>
+        </createIndex>
+    </changeSet>
+    <!-- !!!! ADDRESS_FORMING_ELEMENT !!!! -->
 
     <changeSet id="CONTINGENT2-306-1" author="shnaider_ab" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
