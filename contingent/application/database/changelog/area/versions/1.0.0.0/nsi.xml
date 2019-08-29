@@ -1202,4 +1202,32 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-303-2" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+            <not>
+                <columnExists tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="KOD_GIVZ"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки KOD_GIVZ в таблицу NSI_ADDRESS_FORMING_ELEMENT</comment>
+        <addColumn tableName="NSI_ADDRESS_FORMING_ELEMENT">
+            <column name="KOD_GIVZ" type="VARCHAR2(11)" remarks="Код БТИ"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="KOD_GIVZ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-303-3" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+            <columnExists tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_TE_CODE"/>
+        </preConditions>
+        <comment>Увеличение размера колонки REGION_TE_CODE до 4000 символов</comment>
+        <modifyDataType tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_TE_CODE" newDataType="VARCHAR2(4000)"/>
+        <rollback>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_TE_CODE"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
