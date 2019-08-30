@@ -13,6 +13,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
+import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyTypeEnum;
 import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
@@ -30,6 +31,14 @@ import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
+import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaPolicyTypesCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaPolicyTypesRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
@@ -40,13 +49,6 @@ import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaPolicyTypesCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaPolicyTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -135,6 +137,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private AreaAddressRepository areaAddressRepository;
+
+    @Autowired
+    private AreaTypeRelationsRepository areaTypeRelationsRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -264,6 +269,15 @@ public class AreaServiceHelper {
         }
     }
 
+    public void checkAreaTypeRelations(AreaType dependentAreaType, AreaType primaryAreaType, Validation validation) {
+       Optional<AreaTypeRelations>areaTypeRelations = areaTypeRelationsRepository.getByDependentAndPrimaryAreaTypes(dependentAreaType, primaryAreaType);
+        if (!areaTypeRelations.isPresent()) {
+            validation.error(AreaErrorReason.AREA_TYPE_RELATIONS_NOT_EXISTS,
+                    new ValidationParameter("dependentAreaTypeTitle", dependentAreaType.getTitle()),
+                    new ValidationParameter("primaryAreaTypeTitle", primaryAreaType.getTitle()));
+        }
+    }
+
     // Проверяет существует ли участок с указанным идентификатором и не находится ли он в архиве
     public Area checkAndGetArea(long areaId, Validation validation) {
         Area area = areaCRUDRepository.findById(areaId).orElse(null);
@@ -278,7 +292,38 @@ public class AreaServiceHelper {
             if (area.getArchived()) {
             validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
+
         return area;
+    }
+
+    public void checkParametersChanged(Area area, Long muId, Integer number, String description,
+                                       List<Long> primaryAreaTypeCodesAddIds, List<Long> primaryAreaTypeCodesDelIds,
+                                       List<Long> policyTypesAddIds, List<Long> policyTypesDelIds,
+                                       Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW,
+                                       Integer ageMaxW, Validation validation) {
+        // Система проверяет, что передан хотя бы один параметр для изменения, иначе возвращает ошибку
+        if (muId == null && number == null && description == null && primaryAreaTypeCodesAddIds.isEmpty()
+                && primaryAreaTypeCodesDelIds.isEmpty() && policyTypesAddIds.isEmpty() && policyTypesDelIds.isEmpty()
+                && ageMin == null && ageMax == null && ageMinM == null && ageMaxM == null && ageMinW == null && ageMaxW == null) {
+
+            validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
+            return;
+        }
+        // Система проверяет, что переданные параметры изменены, иначе возвращает ошибку
+        if (muId == null ? area.getMuId() == null : muId.equals(area.getMuId())
+                && number == null ? area.getNumber() == null : number.equals(area.getNumber())
+                && description == null ? area.getDescription() == null : description.equals(area.getDescription())
+                && primaryAreaTypeCodesAddIds.isEmpty() && primaryAreaTypeCodesDelIds.isEmpty()
+                && policyTypesAddIds.isEmpty() && policyTypesDelIds.isEmpty()
+                && ageMin == null ? area.getAgeMin() == null : ageMin.equals(area.getAgeMin())
+                && ageMax == null ? area.getAgeMax() == null : ageMax.equals(area.getAgeMax())
+                && ageMinM == null ? area.getAgeMMin() == null : ageMinM.equals(area.getAgeMMin())
+                && ageMaxM == null ? area.getAgeMMax() == null : ageMaxM.equals(area.getAgeMMax())
+                && ageMinW == null ? area.getAgeWMin() == null : ageMinW.equals(area.getAgeWMin())
+                && ageMaxW == null ? area.getAgeWMax() == null : ageMaxW.equals(area.getAgeWMax())) {
+
+            validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
+        }
     }
 
     public Area checkAndGetArchivedArea(long areaId, Validation validation) {
