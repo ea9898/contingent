@@ -22,6 +22,7 @@ import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
+import moscow.ptnl.contingent2.area.info.Address;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,29 +73,24 @@ public class Algorithms {
 
         // 1.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
+        if (moAddresses.isEmpty()) {
+            return null;
+        }
 
         // 2.
-        List<Address4Algoritm> address4Algoritms =  moAddresses.stream().map(MoAddress::getAddress)
-                .map(Address4Algoritm::new).collect(Collectors.toList());
+        List<Addresses> moAddressesObj = moAddresses.stream().map(MoAddress::getAddress)
+                .collect(Collectors.toList());
 
 
         // 3.
-        List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
+        List<Addresses> intersectingAddresses = findIntersectingAddressesAdd(addressRegistryTypes, moAddressesObj);
 
-        // 4.
-/*
-        List<AddressWrapper> addressWrapperList = findIntersectingAddressesAdd(addressWrappers, addressRegistryTypes);
-*/
-
-        // 5.
-/*
-        MoAddress serviceDestriceMo = null;
-        if (addressWrapperList != null && !addressWrapperList.isEmpty()) {
-            serviceDestriceMo = moAddresses.get(0);
+        // 4. // 5.
+        if (intersectingAddresses != null && !intersectingAddresses.isEmpty()) {
+            return moAddresses.stream().filter(moAddress -> intersectingAddresses.contains(moAddress.getAddress()))
+                    .findFirst().orElse(null);
         }
-*/
 
-        // 6.
         return null;
     }
 
@@ -290,7 +286,8 @@ public class Algorithms {
     }
 
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
-    public List<Addresses> findIntersectingAddressesSearch(List<NsiAddress> nsiAddresses) {
+    public List<Addresses> findIntersectingAddressesSearch(List<Addresses> addresses,
+                                                           List<AddressRegistryBaseType> addressesRegistryType) {
         throw new RuntimeException("Требуется реализация.");
     }
 
