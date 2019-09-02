@@ -11,7 +11,8 @@ public enum AddressLevelType {
     CITY(4),
     AREA(3),
     AREA_TE(25),
-    REGION_TE(2);
+    REGION_TE(2),
+    MOSCOW(1);
 
     private Integer level;
 
