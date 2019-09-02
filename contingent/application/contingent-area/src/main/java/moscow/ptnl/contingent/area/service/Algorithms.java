@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
@@ -77,7 +78,7 @@ public class Algorithms {
         List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
 
         // 4.
-        List<AddressWrapper> addressWrapperList = findIntersectingAddresses(addressWrappers, nsiAddressList);
+        List<AddressWrapper> addressWrapperList = findIntersectingAddressesAdd(addressWrappers, nsiAddressList);
 
         // 5.
         MoAddress serviceDestriceMo = null;
@@ -109,7 +110,7 @@ public class Algorithms {
         List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
 
         // 4.
-        List<AddressWrapper> crossAddresses = findIntersectingAddresses(addressWrappers, nsiAddressList);
+        List<AddressWrapper> crossAddresses = findIntersectingAddressesAdd(addressWrappers, nsiAddressList);
 
         // 5.
         if (!crossAddresses.isEmpty()) {
@@ -121,7 +122,7 @@ public class Algorithms {
 
 
     // Поиск пересекающихся адресов (А_УУ_3)
-    public List<AddressWrapper> findIntersectingAddresses(List<AddressWrapper> afeAndBr, List<NsiAddress> nsiAddresses) throws ContingentException {
+    public List<AddressWrapper> findIntersectingAddressesAdd(List<AddressWrapper> afeAndBr, List<NsiAddress> nsiAddresses) throws ContingentException {
 
         List<AddressWrapper> crossAddresses = new ArrayList<>();
 
@@ -200,4 +201,15 @@ public class Algorithms {
     public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {        
         return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
     }
+
+    // Форматно-логический контроль адреса (А_УУ_6)
+    public void checkAddressFLK(List<Addresses> addresses) {
+        throw new RuntimeException("Требуется реализация");
+    }
+
+    // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
+    public List<Addresses> findIntersectingAddressesSearch(List<NsiAddress> nsiAddresses) {
+        throw new RuntimeException("Требуется реализация.");
+    }
+
 }

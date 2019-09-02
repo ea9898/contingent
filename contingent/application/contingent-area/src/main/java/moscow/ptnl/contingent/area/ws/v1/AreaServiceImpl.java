@@ -287,8 +287,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
         try {
             AddAreaAddressResponse response = new AddAreaAddressResponse();
-            response.getAreaAddressIds().addAll(areaService.addAreaAddress(body.getAreaId(),
-                    body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
+//            response.getAreaAddressIds().addAll(areaService.addAreaAddress(body.getAreaId(),
+//                    body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
             return response;
         }
         catch (Exception ex) {

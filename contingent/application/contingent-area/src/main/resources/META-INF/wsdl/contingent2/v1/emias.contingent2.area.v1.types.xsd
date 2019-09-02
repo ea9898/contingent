@@ -2,10 +2,13 @@
 <xs:schema xmlns:tns="http://emias.mos.ru/contingent2/area/v1/types/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:core="http://emias.mos.ru/contingent2/core/v1/"
+           xmlns:address="http://emias.mos.ru/contingent2/address/v1/"
            targetNamespace="http://emias.mos.ru/contingent2/area/v1/types/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
     <xs:import namespace="http://emias.mos.ru/contingent2/core/v1/" schemaLocation="emias.contingent2.core.v1.xsd"/>
+    <xs:import namespace="http://emias.mos.ru/contingent2/address/v1/" schemaLocation="emias.contingent2.address.v1.xsd" />
+
     <!--lists of entities-->
     <xs:complexType name="AddressAllocationOrderListResultPage">
         <xs:annotation>
@@ -268,7 +271,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
-                <xs:element name="nsiAddress" type="core:NsiAddress" maxOccurs="unbounded"/>
+                <xs:element name="address" type="address:AddressRegistryBaseType" maxOccurs="unbounded"/>
                 <xs:element ref="core:options" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>

@@ -40,7 +40,7 @@ public class A_YY_3_Test extends BaseTest {
 
         List<AddressWrapper> intersectingAddresses = new ArrayList<>();
         try {
-            intersectingAddresses = algorithms.findIntersectingAddresses(afeAndBrList, nsiAddresses);
+            intersectingAddresses = algorithms.findIntersectingAddressesAdd(afeAndBrList, nsiAddresses);
         } catch (ContingentException e) {
             throw new RuntimeException(e);
         }
