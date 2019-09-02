@@ -94,6 +94,7 @@
                 <artifactId>jaxb2-maven-plugin</artifactId>
                 <version>2.4</version>
                 <executions>
+                    <!--
                     <execution>
                         <id>xjc</id>
                         <phase>generate-sources</phase>
@@ -108,6 +109,7 @@
                             <packageName>moscow.ptnl.contingent2.nsi</packageName>
                         </configuration>
                     </execution>
+                     -->
                     <execution>
                         <id>xjc2</id>
                         <phase>generate-sources</phase>
