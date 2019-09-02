@@ -1,6 +1,7 @@
 package area.service.methods;
 
 import area.service.MockConfiguration;
+import area.service.MockRepositoriesForSearchOrderTestConfiguration;
 import area.service.PersistenceConfiguration;
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -13,8 +14,6 @@ import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,9 +34,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes= {PersistenceConfiguration.class, MockConfiguration.class})
+@ContextConfiguration(classes= {PersistenceConfiguration.class, MockConfiguration.class, MockRepositoriesForSearchOrderTestConfiguration.class})
 @Transactional
-@Disabled //TODO проблема конфигурации No qualifying bean of type 'moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository' available
 public class SearchOrderTest {
 
     @Autowired

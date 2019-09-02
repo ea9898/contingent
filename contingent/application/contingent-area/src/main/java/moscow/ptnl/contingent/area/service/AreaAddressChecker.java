@@ -54,28 +54,6 @@ public class AreaAddressChecker {
         });
     }
 
-    private void checkAddressDetails(String buildingType, String building, String constructionType, String construction,
-            String houseType, String house, Validation validation) {
-        if (StringUtils.isEmpty(building) && StringUtils.isEmpty(construction) && StringUtils.isEmpty(house)) {
-            validation.error(AreaErrorReason.FILL_ADDRESS_DETAILS);
-        }
-        else {
-            if (!StringUtils.isEmpty(building) && StringUtils.isEmpty(buildingType) ||
-                    !StringUtils.isEmpty(construction) && StringUtils.isEmpty(constructionType) ||
-                    !StringUtils.isEmpty(house) && StringUtils.isEmpty(houseType)) {
-                validation.error(AreaErrorReason.FILL_ADDRESS_DETAILS_TYPE);
-            }
-            if (!StringUtils.isEmpty(buildingType)
-                    && AddressDetailsType.getAddressDetailsType(buildingType, AddressDetailsElementType.BUILDING) == null ||
-                    !StringUtils.isEmpty(constructionType)
-                            && AddressDetailsType.getAddressDetailsType(constructionType, AddressDetailsElementType.CONSTRUCTION) == null ||
-                    !StringUtils.isEmpty(houseType)
-                            && AddressDetailsType.getAddressDetailsType(houseType, AddressDetailsElementType.HOUSE) == null) {
-                validation.error(AreaErrorReason.INCORRECT_ADDRESS_DETAILS_TYPE);
-            }
-        }
-    }
-
     public void checkMoAddressesExist(long moId, long areaTypeCode, List<AddressWrapper> newAddresses, Validation validation) {
         List<AddressWrapper> existingAddresses = new ArrayList<>();
 

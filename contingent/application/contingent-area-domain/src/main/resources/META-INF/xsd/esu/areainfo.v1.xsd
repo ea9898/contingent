@@ -178,7 +178,7 @@
 
     <xs:complexType name="AreaRestriction">
         <xs:sequence>
-            <xs:element name="gender" type="xs:long" minOccurs="0">
+            <xs:element name="gender" type="xs:string" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>код Пол, соответствует справочнику полов ЕМИАС</xs:documentation>
                 </xs:annotation>

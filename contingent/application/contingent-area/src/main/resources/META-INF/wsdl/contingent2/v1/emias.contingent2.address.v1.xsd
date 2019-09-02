@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://emias.mos.ru/contingent2/address/v1/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://emias.mos.ru/contingent2/address/v1/"
+           xmlns:tns="http://emias.mos.ru/contingent2/address/v1/"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+        <xs:include schemaLocation="../../emias/emias.core.address.v1.xsd"/>
+</xs:schema>

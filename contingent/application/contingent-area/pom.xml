@@ -226,6 +226,8 @@
                                             <extraarg>http://emias.mos.ru/contingent2/area/v1/=ru.mos.emias.contingent2.area</extraarg>
                                             <extraarg>-p</extraarg>
                                             <extraarg>http://emias.mos.ru/contingent2/area/v1/types/=ru.mos.emias.contingent2.area.types</extraarg>
+                                            <extraarg>-p</extraarg>
+                                            <extraarg>http://emias.mos.ru/contingent2/address/v1/=ru.mos.emias.contingent2.address</extraarg>
                                         </extraargs>
                                     </wsdlOption>
                                     <wsdlOption>
