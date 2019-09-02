@@ -678,6 +678,7 @@ public class AreaServiceHelper {
 
     /* К_УУ_13 Система проверяет, что каждый из списка адресов не обслуживается участком такого же типа, как и участок из входных параметров */
     public void checkAddressNotServiceByAreaType(Area area, List<AddressWrapper> addressWrapperList, Validation validation) throws ContingentException {
+/*
         for (AddressWrapper addressWrapper: addressWrapperList) {
             if (addressWrapper.getNsiAddress() != null) {
                 NsiAddress nsiAddress = addressWrapper.getNsiAddress();
@@ -695,6 +696,7 @@ public class AreaServiceHelper {
                 }
             }
         }
+*/
     }
 
     public List<AddressWrapper> convertToAddressWrapper(List<NsiAddress> nsiAddresses) {
@@ -707,6 +709,7 @@ public class AreaServiceHelper {
 
     public void addMoAddressToAddressWrapper(Area area, List<AddressWrapper> addressWrapperList, Validation validation) throws ContingentException {
 
+/*
         for (AddressWrapper addressWrapper: addressWrapperList) {
             MoAddress serviceDistrictMO = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
                     addressWrapper.getNsiAddress() != null ? Collections.singletonList(addressWrapper.getNsiAddress()) : new ArrayList<>(),
@@ -730,6 +733,7 @@ public class AreaServiceHelper {
                 }
             }
         }
+*/
     }
 
     // К_УУ_1 2.

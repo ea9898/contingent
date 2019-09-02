@@ -23,6 +23,7 @@ import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -64,7 +65,7 @@ public class Algorithms {
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public MoAddress searchServiceDistrictMOByAddress (Long moId, AreaType areaType, Long orderId,
-            List<NsiAddress> nsiAddressList, Validation validation) throws ContingentException {
+            List<AddressRegistryBaseType> addressRegistryTypes, Validation validation) throws ContingentException {
 
         // 1.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
@@ -78,23 +79,27 @@ public class Algorithms {
         List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
 
         // 4.
-        List<AddressWrapper> addressWrapperList = findIntersectingAddressesAdd(addressWrappers, nsiAddressList);
+/*
+        List<AddressWrapper> addressWrapperList = findIntersectingAddressesAdd(addressWrappers, addressRegistryTypes);
+*/
 
         // 5.
+/*
         MoAddress serviceDestriceMo = null;
         if (addressWrapperList != null && !addressWrapperList.isEmpty()) {
             serviceDestriceMo = moAddresses.get(0);
         }
+*/
 
         // 6.
-        return serviceDestriceMo;
+        return null;
     }
 
     // Поиск участков по адресу (А_УУ_2)
     public Long searchAreaByAddress(
             Long moId,
             AreaType areaTypeCode,
-            List<NsiAddress> nsiAddressList) throws ContingentException {
+            List<AddressRegistryBaseType> addressRegistryTypes) throws ContingentException {
 
         // 1.
         List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddresses(moId, areaTypeCode.getCode());
@@ -110,7 +115,8 @@ public class Algorithms {
         List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
 
         // 4.
-        List<AddressWrapper> crossAddresses = findIntersectingAddressesAdd(addressWrappers, nsiAddressList);
+        // TODO переделать
+        List<AddressWrapper> crossAddresses = new ArrayList<>(); //findIntersectingAddressesAdd(addressWrappers, nsiAddressList);
 
         // 5.
         if (!crossAddresses.isEmpty()) {
@@ -122,11 +128,13 @@ public class Algorithms {
 
 
     // Поиск пересекающихся адресов (А_УУ_3)
-    public List<AddressWrapper> findIntersectingAddressesAdd(List<AddressWrapper> afeAndBr, List<NsiAddress> nsiAddresses) throws ContingentException {
+    public List<Addresses> findIntersectingAddressesAdd(List<AddressRegistryBaseType> addressRegistryTypes,
+                                                        List<Addresses> addresses) throws ContingentException {
 
-        List<AddressWrapper> crossAddresses = new ArrayList<>();
+        List<Addresses> crossAddresses = new ArrayList<>();
 
         // А_УУ_3 1. - 7.
+/*
         for (NsiAddress nsiAddress : nsiAddresses) {
             NsiAddressFormingElement addressFormingElement =
                     addressFormingElementRepository.findAfeByGlobalId(nsiAddress.getGlobalId());
@@ -173,6 +181,7 @@ public class Algorithms {
         if (!crossAddresses.isEmpty()) {
             return crossAddresses;
         }
+*/
 
         return crossAddresses;
     }

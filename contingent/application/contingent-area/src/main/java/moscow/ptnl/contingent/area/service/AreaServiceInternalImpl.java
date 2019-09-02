@@ -1280,16 +1280,17 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         // 5. Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
         for (NsiAddress nsiAddress : nsiAddresses) {
-            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaTypes.get(0), orderId,
-                    Collections.singletonList(nsiAddress), validation);
-
-            if (moAddress != null) {
-                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_1,
-                        new ValidationParameter("levelAddress", nsiAddress.getLevelAddress()),
-                        new ValidationParameter("globalId", nsiAddress.getGlobalId()),
-                        new ValidationParameter("moId", moAddress.getMoId()),
-                        new ValidationParameter("areaTypeCode", moAddress.getAreaType().getCode()));
-            }
+            // TODO CONTINGENT2-309
+//            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaTypes.get(0), orderId,
+//                    Collections.singletonList(nsiAddress), validation);
+//
+//            if (moAddress != null) {
+//                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_1,
+//                        new ValidationParameter("levelAddress", nsiAddress.getLevelAddress()),
+//                        new ValidationParameter("globalId", nsiAddress.getGlobalId()),
+//                        new ValidationParameter("moId", moAddress.getMoId()),
+//                        new ValidationParameter("areaTypeCode", moAddress.getAreaType().getCode()));
+//            }
         }
 
         if (!validation.isSuccess()) {
