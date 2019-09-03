@@ -2,7 +2,7 @@ package service.methods;
 
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
-import moscow.ptnl.contingent.area.error.ContingentException;
+import moscow.ptnl.contingent.error.ContingentException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

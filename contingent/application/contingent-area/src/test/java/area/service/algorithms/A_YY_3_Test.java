@@ -1,8 +1,8 @@
 package area.service.algorithms;
 
 import jdk.nashorn.internal.ir.annotations.Ignore;
-import moscow.ptnl.contingent.area.entity.nsi.NsiAddressFormingElement;
-import moscow.ptnl.contingent.area.error.ContingentException;
+import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
+import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import org.junit.jupiter.api.Assertions;

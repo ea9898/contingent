@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.area.error;
 
+import moscow.ptnl.contingent.error.ErrorReason;
+
 /**
  * Пользовательское сообщение возвращаемое при работе с участками
  */

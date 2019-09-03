@@ -1,6 +1,6 @@
-package moscow.ptnl.contingent.nsi.repository;
+package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
+import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
 import moscow.ptnl.contingent.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;

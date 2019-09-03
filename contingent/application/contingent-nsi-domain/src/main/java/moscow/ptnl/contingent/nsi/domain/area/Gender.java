@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.entity.nsi;
+package moscow.ptnl.contingent.nsi.domain.area;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -8,38 +8,42 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Objects;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 
 @Entity
-@Table(name = "POLICY_TYPE")
+@Table(name = "Gender")
 @Cacheable
-public class PolicyType implements Serializable {
+@MapToNsi(table = NsiTablesEnum.GENDER)
+public class Gender implements Serializable {
 
-    private static final long serialVersionUID = -1047920444396677745L;
+    private static final long serialVersionUID = 7174737671670446575L;
 
     @Id
     @Column(name = "CODE", unique = true, nullable = false)
-    private Long code;
-
-    @Size(max = 100)
-    @Column(name = "TITLE")
-    private String title;
-
-    @Column(name = "ARCHIVED", nullable = false)
-    @Convert(converter = BooleanStrictIntegerConverter.class)
-    private Boolean archived;
+    @MapToNsi
+    private String code;
 
     @Column(name = "GLOBAL_ID")
     @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
-    public Long getCode() {
+    @Size(max = 50)
+    @Column(name = "TITLE")
+    @MapToNsi
+    private String title;
+
+    @Column(name = "ARCHIVED", nullable = false)
+    @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
+    private Boolean archived;
+
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Long code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -70,13 +74,20 @@ public class PolicyType implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PolicyType that = (PolicyType) o;
-        return Objects.equals(code, that.code);
+        if (!(o instanceof Gender)) return false;
+
+        Gender gender = (Gender) o;
+
+        if (code != null ? !code.equals(gender.code) : gender.code != null) return false;
+        if (title != null ? !title.equals(gender.title) : gender.title != null) return false;
+        return archived != null ? archived.equals(gender.archived) : gender.archived == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code);
+        int result = code != null ? code.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (archived != null ? archived.hashCode() : 0);
+        return result;
     }
 }

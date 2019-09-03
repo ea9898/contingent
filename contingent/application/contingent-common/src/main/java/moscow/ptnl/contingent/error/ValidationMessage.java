@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.error;
+package moscow.ptnl.contingent.error;
 
 
 import java.util.ArrayList;

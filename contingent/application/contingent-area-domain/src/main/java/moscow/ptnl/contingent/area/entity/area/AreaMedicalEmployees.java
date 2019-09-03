@@ -1,8 +1,8 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
-import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
-import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
+import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
+import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;

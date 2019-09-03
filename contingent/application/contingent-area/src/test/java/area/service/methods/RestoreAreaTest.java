@@ -12,9 +12,9 @@ import javax.persistence.EntityManager;
 
 import area.service.MockRepositoriesConfiguration;
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
-import moscow.ptnl.contingent.area.error.ContingentException;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
+import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;

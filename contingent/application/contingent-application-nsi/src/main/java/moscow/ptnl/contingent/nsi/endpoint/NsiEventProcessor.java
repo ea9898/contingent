@@ -7,12 +7,12 @@ package moscow.ptnl.contingent.nsi.endpoint;
 
 import java.io.Serializable;
 import java.util.concurrent.Future;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKind;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.nsi.domain.NsiActionsEnum;
 import moscow.ptnl.contingent.repository.CommonRepository;

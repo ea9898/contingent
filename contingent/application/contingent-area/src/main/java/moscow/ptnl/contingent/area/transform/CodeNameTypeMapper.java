@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.area.entity.nsi.CodeName;
+import moscow.ptnl.contingent.nsi.domain.area.CodeName;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.CodeNameType;
 

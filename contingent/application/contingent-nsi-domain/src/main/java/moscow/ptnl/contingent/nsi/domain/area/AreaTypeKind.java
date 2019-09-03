@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.entity.nsi;
+package moscow.ptnl.contingent.nsi.domain.area;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -8,57 +8,64 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
+import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 
+
 @Entity
-@Table(name = "Gender")
+@Table(name = "AREA_TYPES_KIND")
 @Cacheable
-@MapToNsi(table = NsiTablesEnum.GENDER)
-public class Gender implements Serializable {
+@MapToNsi(table = NsiTablesEnum.AREA_TYPE_KIND)
+public class AreaTypeKind extends CodeName implements Serializable, Keyable {
 
     private static final long serialVersionUID = 7174737671670446575L;
 
     @Id
     @Column(name = "CODE", unique = true, nullable = false)
     @MapToNsi
-    private String code;
+    private Long code;
 
-    @Column(name = "GLOBAL_ID")
-    @MapToNsi("GLOBAL_ID")
-    private Long globalId;
-
-    @Size(max = 50)
+    @Size(max = 255)
     @Column(name = "TITLE")
     @MapToNsi
     private String title;
+
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
     @MapToNsi
     private Boolean archived;
 
-    public String getCode() {
-        return code;
+    @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
+    private Long globalId;
+
+    public AreaTypeKind() {
     }
 
-    public void setCode(String code) {
+    public AreaTypeKind(Long code) {
         this.code = code;
     }
 
-    public Long getGlobalId() {
-        return globalId;
+    @Override
+    public Long getCode() {
+        return code;
     }
 
-    public void setGlobalId(Long globalId) {
-        this.globalId = globalId;
+    @Override
+    public void setCode(Long code) {
+        this.code = code;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public void setTitle(String title) {
         this.title = title;
     }
@@ -71,23 +78,31 @@ public class Gender implements Serializable {
         this.archived = archived;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Gender)) return false;
+    public Long getGlobalId() {
+        return globalId;
+    }
 
-        Gender gender = (Gender) o;
-
-        if (code != null ? !code.equals(gender.code) : gender.code != null) return false;
-        if (title != null ? !title.equals(gender.title) : gender.title != null) return false;
-        return archived != null ? archived.equals(gender.archived) : gender.archived == null;
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
     }
 
     @Override
-    public int hashCode() {
-        int result = code != null ? code.hashCode() : 0;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (archived != null ? archived.hashCode() : 0);
-        return result;
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof AreaTypeKind) {
+            return ((AreaTypeKind) obj).getCode().equals(this.code);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return Objects.hashCode(this.code);
+    }
+
+    @Override
+    public Serializable getKey() {
+        return getCode();
     }
 }

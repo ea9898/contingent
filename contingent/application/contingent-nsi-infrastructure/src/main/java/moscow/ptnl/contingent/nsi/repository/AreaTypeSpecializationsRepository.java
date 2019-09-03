@@ -1,13 +1,14 @@
 package moscow.ptnl.contingent.nsi.repository;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 
 @NoRepositoryBean
 public interface AreaTypeSpecializationsRepository {
+    
     List<AreaTypeSpecializations> findBySpecializationCode(Long specializationCode);
 
     List<AreaTypeSpecializations> findByAreaTypeCode(AreaType areaType);

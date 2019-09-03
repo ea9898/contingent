@@ -1,10 +1,10 @@
 package moscow.ptnl.contingent.nsi.transform;
 
-import moscow.ptnl.contingent.area.error.ContingentException;
-import moscow.ptnl.contingent.area.error.Validation;
-import moscow.ptnl.contingent.area.error.ValidationMessage;
-import moscow.ptnl.contingent.area.error.ValidationMessageType;
-import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.error.ContingentException;
+import moscow.ptnl.contingent.error.Validation;
+import moscow.ptnl.contingent.error.ValidationMessage;
+import moscow.ptnl.contingent.error.ValidationMessageType;
+import moscow.ptnl.contingent.error.ValidationParameter;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.Fault;
 import ru.mos.emias.system.v1.faults.BusinessFault;
 import ru.mos.emias.system.v1.faults.ErrorMessage;

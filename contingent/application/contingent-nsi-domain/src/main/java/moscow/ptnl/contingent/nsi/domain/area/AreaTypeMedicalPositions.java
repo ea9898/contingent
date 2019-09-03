@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.entity.nsi;
+package moscow.ptnl.contingent.nsi.domain.area;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -18,32 +18,37 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 
 
 @Entity
-@Table(name = "AREA_TYPE_SPECIALIZATIONS")
+@Table(name = "AREA_TYPE_MEDICAL_POSITIONS")
 @Cacheable
-@MapToNsi(table = NsiTablesEnum.AREA_TYPE_SPECIALIZATIONS)
-public class AreaTypeSpecializations implements Serializable, Keyable {
+@MapToNsi(table = NsiTablesEnum.AREA_TYPE_MEDICAL_POSITIONS)
+public class AreaTypeMedicalPositions implements Serializable, Keyable {
 
-    private static final long serialVersionUID = -786212543217911093L;
+    private static final long serialVersionUID = 4979698890748802824L;
 
     @Id
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
     @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
-    @JoinColumn(name = "AREA_TYPE_CODE", nullable = false)
+    @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapToNsi(value = "AREA_TYPE_CODE", entityKeyName = "code")
+    @MapToNsi("AREA_TYPE_CODE")
     private AreaType areaType;
 
-
-    @Column(name = "SPECIALIZATION_CODE")
-    @MapToNsi("SPECIALIZATION_CODE")
-    private Long specializationCode;
-
+    @JoinColumn(name = "POSITION_CODE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi("POSITION_CODE")
+    private PositionCode positionCode;
+    
     @Column(name = "ARCHIVED")
     @Convert(converter = BooleanStrictIntegerConverter.class)
     @MapToNsi
     private Boolean archived;
+
+    @JoinColumn(name = "POSITION_NOM_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi("POSITION_NOM_ID")
+    private PositionNom positionNom;
 
     public Long getGlobalId() {
         return globalId;
@@ -61,14 +66,6 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
         this.areaType = areaType;
     }
 
-    public Long getSpecializationCode() {
-        return specializationCode;
-    }
-
-    public void setSpecializationCode(Long specializationCode) {
-        this.specializationCode = specializationCode;
-    }
-
     public Boolean getArchived() {
         return archived;
     }
@@ -77,20 +74,35 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
         this.archived = archived;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AreaTypeSpecializations that = (AreaTypeSpecializations) o;
-        return Objects.equals(globalId, that.globalId) &&
-                Objects.equals(areaType, that.areaType) &&
-                Objects.equals(specializationCode, that.specializationCode) &&
-                Objects.equals(archived, that.archived);
+    public PositionCode getPositionCode() {
+        return positionCode;
+    }
+
+    public void setPositionCode(PositionCode positionCode) {
+        this.positionCode = positionCode;
+    }
+
+    public PositionNom getPositionNom() {
+        return positionNom;
+    }
+
+    public void setPositionNom(PositionNom positionNom) {
+        this.positionNom = positionNom;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(globalId, areaType, specializationCode, archived);
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof AreaTypeMedicalPositions) {
+            return ((AreaTypeMedicalPositions) obj).getGlobalId().equals(this.globalId);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {        
+        return Objects.hashCode(this.globalId);
     }
 
     @Override

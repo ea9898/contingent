@@ -1,9 +1,6 @@
-package moscow.ptnl.contingent.nsi.repository;
+package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
-import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes_;
-import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,6 +12,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
+import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes_;
+import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)

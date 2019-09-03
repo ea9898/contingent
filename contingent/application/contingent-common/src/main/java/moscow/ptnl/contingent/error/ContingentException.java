@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.error;
+package moscow.ptnl.contingent.error;
 
 public class ContingentException extends Exception {
 

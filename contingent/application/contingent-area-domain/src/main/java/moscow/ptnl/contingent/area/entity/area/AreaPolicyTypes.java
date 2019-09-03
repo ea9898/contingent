@@ -1,6 +1,5 @@
-package moscow.ptnl.contingent.area.entity.nsi;
+package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -15,6 +14,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
+import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 
 @Entity
 @Table(name = "AREA_POLICY_TYPES")

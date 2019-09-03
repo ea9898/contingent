@@ -2,8 +2,8 @@ package moscow.ptnl.contingent.area.transform;
 
 import java.util.Optional;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
-import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
-import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
+import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
+import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;

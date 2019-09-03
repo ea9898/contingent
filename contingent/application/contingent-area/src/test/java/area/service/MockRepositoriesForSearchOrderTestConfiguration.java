@@ -1,8 +1,8 @@
 package area.service;
 
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaPolicyTypesCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaPolicyTypesRepository;
+import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;

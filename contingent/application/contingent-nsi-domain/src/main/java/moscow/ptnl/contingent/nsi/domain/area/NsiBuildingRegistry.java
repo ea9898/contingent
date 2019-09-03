@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.entity.nsi;
+package moscow.ptnl.contingent.nsi.domain.area;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;

@@ -1,7 +1,5 @@
 package moscow.ptnl.contingent.nsi.repository;
 
-import moscow.ptnl.contingent.area.entity.nsi.NsiBuildingRegistry;
-import moscow.ptnl.contingent.area.entity.nsi.NsiBuildingRegistry_;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,6 +9,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
+import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry_;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
