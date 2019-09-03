@@ -4,23 +4,23 @@ import java.util.Arrays;
 
 public enum AddressLevelType {
 
-    ID(8),
-    STREET(7),
-    PLAN(65),
-    PLACE(6),
-    CITY(4),
-    AREA(3),
-    AREA_TE(25),
-    REGION_TE(2),
-    MOSCOW(1);
+    ID("8"),
+    STREET("7"),
+    PLAN("65"),
+    PLACE("6"),
+    CITY("4"),
+    AREA("3"),
+    AREA_TE("25"),
+    REGION_TE("2"),
+    MOSCOW("1");
 
-    private Integer level;
+    private String level;
 
-    AddressLevelType(Integer level) {
+    AddressLevelType(String level) {
         this.level = level;
     }
 
-    public Integer getLevel() {
+    public String getLevel() {
         return level;
     }
 
