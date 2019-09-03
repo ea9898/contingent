@@ -14,7 +14,7 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.domain.Keyable;
-import moscow.ptnl.contingent.domain.nsi.NsiActionsEnum;
+import moscow.ptnl.contingent.nsi.domain.NsiActionsEnum;
 import moscow.ptnl.contingent.repository.CommonRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsCRUDRepository;

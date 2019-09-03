@@ -1,24 +1,21 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 import moscow.ptnl.contingent.domain.Keyable;
-import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
-import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
+
 
 @Entity
 @Table(name = "AREA_TYPE_SPECIALIZATIONS")

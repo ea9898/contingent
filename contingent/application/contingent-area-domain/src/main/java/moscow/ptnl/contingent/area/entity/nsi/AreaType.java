@@ -1,7 +1,5 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Cacheable;
@@ -17,8 +15,11 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import moscow.ptnl.contingent.domain.Keyable;
-import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
-import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
+import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
+
 
 @Entity
 @Table(name = "AREA_TYPE")

@@ -1,10 +1,10 @@
-package moscow.ptnl.contingent.domain.nsi.annotation;
+package moscow.ptnl.contingent.nsi.domain.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 
 /**
  * Аннотация которой помечается поле сущности мапируемое из НСИ.

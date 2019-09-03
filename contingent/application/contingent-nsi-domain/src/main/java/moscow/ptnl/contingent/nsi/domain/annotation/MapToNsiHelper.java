@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.domain.nsi.annotation;
+package moscow.ptnl.contingent.nsi.domain.annotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.persistence.Entity;
-import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 
 /**
  *

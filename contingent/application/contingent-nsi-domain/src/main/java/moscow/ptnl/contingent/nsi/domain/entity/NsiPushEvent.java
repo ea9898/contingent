@@ -1,6 +1,6 @@
-package moscow.ptnl.contingent.domain.nsi.entity;
+package moscow.ptnl.contingent.nsi.domain.entity;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 
 @Entity
 @Table(name = "NSI_PUSH_LOG")

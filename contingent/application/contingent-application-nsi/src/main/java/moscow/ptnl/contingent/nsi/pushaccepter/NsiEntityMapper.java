@@ -9,14 +9,14 @@ import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
 import moscow.ptnl.contingent.area.entity.nsi.Gender;
 import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
 import moscow.ptnl.contingent.area.entity.nsi.Specialization;
-import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsiHelper;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsiHelper;
 
 public class NsiEntityMapper {
 

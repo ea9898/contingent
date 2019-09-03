@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.entity.converter;
+package moscow.ptnl.contingent.domain.converter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

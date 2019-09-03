@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.nsi.endpoint;
 
-import moscow.ptnl.contingent.domain.nsi.entity.NsiPushEvent;
+import moscow.ptnl.contingent.nsi.domain.entity.NsiPushEvent;
 import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.NSI_EVENT_CHANNEL_NAME;
 
 import moscow.ptnl.contingent.domain.Keyable;
-import moscow.ptnl.contingent.domain.nsi.NsiPushEventConstraint;
+import moscow.ptnl.contingent.nsi.domain.NsiPushEventConstraint;
 import moscow.ptnl.util.ExceptionUtil;
 
 /**

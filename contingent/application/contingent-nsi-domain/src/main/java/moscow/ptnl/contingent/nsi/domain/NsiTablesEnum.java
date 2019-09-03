@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.domain.nsi;
+package moscow.ptnl.contingent.nsi.domain;
 
 import java.util.Arrays;
 

@@ -10,11 +10,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
-
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.domain.Keyable;
-import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
-import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 
 @Entity
 @Table(name = "AREA_TYPE_RELATIONS")

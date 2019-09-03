@@ -1,7 +1,5 @@
 package moscow.ptnl.contingent.area.entity.nsi;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -12,8 +10,10 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import moscow.ptnl.contingent.domain.Keyable;
-import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
-import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsi;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
+
 
 @Entity
 @Table(name = "AREA_TYPES_KIND")
@@ -50,18 +50,22 @@ public class AreaTypeKind extends CodeName implements Serializable, Keyable {
         this.code = code;
     }
 
+    @Override
     public Long getCode() {
         return code;
     }
 
+    @Override
     public void setCode(Long code) {
         this.code = code;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public void setTitle(String title) {
         this.title = title;
     }
