@@ -20,6 +20,8 @@ import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
+import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent2.area.info.Address;
@@ -58,6 +60,9 @@ public class Algorithms {
 
     @Autowired
     private AreaAddressRepository areaAddressRepository;
+
+    @Autowired
+    private AddressesCRUDRepository addressesCRUDRepository;
 
     public Algorithms() {
         super();
@@ -108,18 +113,14 @@ public class Algorithms {
         }
 
         // 2.
-        List<Address4Algoritm> address4Algoritms = areaAddresses.stream().map(Address4Algoritm::new).collect(Collectors.toList());
+        List<Addresses> areaAddressesObj = areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList());
 
         // 3.
-        List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
+        List<Addresses> intersectingAddresses = findIntersectingAddressesAdd(addressRegistryTypes, areaAddressesObj);
 
-        // 4.
-        // TODO переделать
-        List<AddressWrapper> crossAddresses = new ArrayList<>(); //findIntersectingAddressesAdd(addressWrappers, nsiAddressList);
-
-        // 5.
-        if (!crossAddresses.isEmpty()) {
-            return areaAddressRepository.findAreaAddressByAddress(crossAddresses.get(0).getAddress()).get(0).getArea().getId();
+        // 4. //5.
+        if (!intersectingAddresses.isEmpty()) {
+            return areaAddresses.stream().filter(areaAddress -> areaAddress.getAddress().equals(intersectingAddresses.get(0))).findFirst().get().getArea().getId();
         } else {
             return null;
         }
@@ -132,42 +133,45 @@ public class Algorithms {
 
         List<Addresses> crossAddresses = new ArrayList<>();
 
-        // А_УУ_3 1. - 7.
-/*
-        for (NsiAddress nsiAddress : nsiAddresses) {
-            NsiAddressFormingElement addressFormingElement =
-                    addressFormingElementRepository.findAfeByGlobalId(nsiAddress.getGlobalId());
+        // 1.
+        addressesCRUDRepository.findAllById(addressRegistryTypes.stream()
+                .map(AddressRegistryBaseType::getGlobalIdNsi).collect(Collectors.toList()))
+                .forEach(crossAddresses::add);
 
-            if (addressFormingElement != null) {
+        if (!crossAddresses.isEmpty()) {
+            return crossAddresses;
+        }
 
-                if (nsiAddress.getLevelAddress().equals(AddressLevelType.ID.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchById.apply(addressFormingElement, afeAndBr);
+        // А_УУ_3 2. - 9.
+        for (AddressRegistryBaseType addressRegistry: addressRegistryTypes) {
+
+                if (addressRegistry.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.checkStreetCodeExist.apply(addressRegistry, addresses);
                 }
 
-                if (nsiAddress.getLevelAddress().equals(AddressLevelType.STREET.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByStreetId.apply(addressFormingElement, afeAndBr);
+                if (addressRegistry.getAoLevel().equals(AddressLevelType.STREET.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByStreetCode.apply(addressRegistry, addresses);
                 }
 
-                if (nsiAddress.getLevelAddress().equals(AddressLevelType.PLAN.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByPlanId.apply(addressFormingElement, afeAndBr);
+                if (addressRegistry.getAoLevel().equals(AddressLevelType.PLAN.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByPlanCode.apply(addressRegistry, addresses);
                 }
 
-                if (nsiAddress.getLevelAddress().equals(AddressLevelType.PLACE.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByPlaceId.apply(addressFormingElement, afeAndBr);
+                if (addressRegistry.getAoLevel().equals(AddressLevelType.PLACE.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByPlaceCode.apply(addressRegistry, addresses);
                 }
 
-                if (nsiAddress.getLevelAddress().equals(AddressLevelType.CITY.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByCityId.apply(addressFormingElement, afeAndBr);
+                if (addressRegistry.getAoLevel().equals(AddressLevelType.CITY.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByCityCode.apply(addressRegistry, addresses);
                 }
 
-                if (nsiAddress.getLevelAddress().equals(AddressLevelType.AREA.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByAreaId.apply(addressFormingElement, afeAndBr);
+                if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByAreaCode.apply(addressRegistry, addresses);
                 }
 
-                if (nsiAddress.getLevelAddress().equals(AddressLevelType.AREA_TE.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByAreaTeId.apply(addressFormingElement, afeAndBr);
+                if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA_TE.getLevel())) {
+                    crossAddresses = AlgorithmsHelper.searchByAreaOmkTeCode.apply(addressRegistry, addresses);
                 }
-            }
 
             if (crossAddresses == null || !crossAddresses.isEmpty()) {
                 break;
@@ -180,8 +184,6 @@ public class Algorithms {
         if (!crossAddresses.isEmpty()) {
             return crossAddresses;
         }
-*/
-
         return crossAddresses;
     }
 
