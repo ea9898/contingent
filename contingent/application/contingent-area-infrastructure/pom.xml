@@ -27,20 +27,19 @@
     <dependencies>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
-            <artifactId>area-domain</artifactId>
-            <version>1.0.0</version>
-        </dependency> 
-        <dependency>
-            <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>common</artifactId>
             <version>1.0.0</version>
-        </dependency>                   
+        </dependency>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>area-domain</artifactId>
+            <version>1.0.0</version>
+        </dependency>                         
         <dependency> 
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>nsi-infrastructure</artifactId>
             <version>1.0.0</version>
         </dependency>
-        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

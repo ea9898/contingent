@@ -2,7 +2,7 @@ package area.service.methods;
 
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.junit.jupiter.api.BeforeEach;
 import service.BaseTest;
 

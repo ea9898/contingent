@@ -4,8 +4,8 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import service.BaseTest;
 
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent2.attachment.changearea.event.AreaRestriction;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.junit.jupiter.api.BeforeEach;

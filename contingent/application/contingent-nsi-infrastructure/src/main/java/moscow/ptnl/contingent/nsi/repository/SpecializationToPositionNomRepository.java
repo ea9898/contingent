@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.nsi.repository;
 
-import moscow.ptnl.contingent.area.entity.nsi.Specialization;
+import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

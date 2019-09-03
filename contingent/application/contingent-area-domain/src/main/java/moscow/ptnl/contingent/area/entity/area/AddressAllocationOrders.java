@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;

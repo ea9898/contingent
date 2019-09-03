@@ -104,11 +104,6 @@
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
-            <artifactId>area-domain</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>nsi-domain</artifactId>
             <version>1.0.0</version>
         </dependency> 
@@ -117,16 +112,6 @@
             <artifactId>nsi-infrastructure</artifactId>
             <version>1.0.0</version>
         </dependency>
-        
-        <!--
-        <dependency>
-            <groupId>moscow.ptnl.contingent</groupId>
-            <artifactId>area-infrastructure</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        -->
-        
-        
 
         <!--        <dependency>
                     <groupId>org.reactivestreams</groupId>

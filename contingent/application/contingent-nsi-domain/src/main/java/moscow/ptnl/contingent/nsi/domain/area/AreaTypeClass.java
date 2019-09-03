@@ -1,0 +1,114 @@
+package moscow.ptnl.contingent.nsi.domain.area;
+
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Objects;
+import moscow.ptnl.contingent.domain.Keyable;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
+
+@Entity
+@Table(name = "AREA_TYPES_CLASS")
+@Cacheable
+@MapToNsi(table = NsiTablesEnum.AREA_TYPE_CLASS)
+public class AreaTypeClass extends CodeName implements Serializable, Keyable {
+
+    private static final long serialVersionUID = 4979698890748802824L;
+
+    @Id
+    @Column(name = "CODE", unique = true, nullable = false)
+    @MapToNsi
+    private Long code;
+
+    @Size(max = 255)
+    @Column(name = "TITLE")
+    @MapToNsi
+    private String title;
+
+    @Column(name = "ARCHIVED", nullable = false)
+    @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
+    private Boolean archived;
+
+    @Column(name = "GLOBAL_ID")
+    @MapToNsi("GLOBAL_ID")
+    private Long globalId;
+
+
+    public AreaTypeClass() {
+    }
+
+    public AreaTypeClass(Long code) {
+        this.code = code;
+    }
+
+    @Override
+    public Long getCode() {
+        return code;
+    }
+
+    @Override
+    public void setCode(Long code) {
+        this.code = code;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
+
+    public Long getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.code);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof AreaTypeClass) {
+            return ((AreaTypeClass) obj).getCode().equals(this.code);
+        }
+        return false;
+    }
+
+    @Override
+    public Serializable getKey() {
+        return getCode();
+    }
+
+    public enum FieldsEnum {
+        CODE,
+        TITLE,
+        ARCHIVED,
+        GLOBAL_ID
+    }
+}

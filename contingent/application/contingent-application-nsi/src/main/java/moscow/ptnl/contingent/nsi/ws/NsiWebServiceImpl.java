@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.nsi.ws;
 
-import moscow.ptnl.contingent.domain.nsi.entity.NsiPushEvent;
+import moscow.ptnl.contingent.nsi.domain.entity.NsiPushEvent;
 import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
 import org.apache.cxf.annotations.SchemaValidation;

@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.esuInputTasks;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClassEnum;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClassEnum;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;

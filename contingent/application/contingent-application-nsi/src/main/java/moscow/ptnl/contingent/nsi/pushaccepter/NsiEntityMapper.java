@@ -1,22 +1,22 @@
 package moscow.ptnl.contingent.nsi.pushaccepter;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeClass;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKind;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
-import moscow.ptnl.contingent.area.entity.nsi.Gender;
-import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
-import moscow.ptnl.contingent.area.entity.nsi.Specialization;
-import moscow.ptnl.contingent.domain.nsi.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
+import moscow.ptnl.contingent.nsi.domain.area.Gender;
+import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
+import moscow.ptnl.contingent.nsi.domain.area.Specialization;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.domain.nsi.annotation.MapToNsiHelper;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsiHelper;
 
 public class NsiEntityMapper {
 

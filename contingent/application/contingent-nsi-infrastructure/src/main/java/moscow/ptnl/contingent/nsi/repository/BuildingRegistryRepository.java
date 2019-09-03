@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.nsi.repository;
 
-import moscow.ptnl.contingent.area.entity.nsi.NsiBuildingRegistry;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
+import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
 
 @NoRepositoryBean
 public interface BuildingRegistryRepository {

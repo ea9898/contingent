@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.nsi.error;
 
-import moscow.ptnl.contingent.area.error.ErrorReason;
+import moscow.ptnl.contingent.error.ErrorReason;
 
 public enum NsiEhdErrorReason implements ErrorReason {
 
@@ -17,9 +17,11 @@ public enum NsiEhdErrorReason implements ErrorReason {
         this.description = description;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
+    @Override
     public String getCode() {
         return code;
     }

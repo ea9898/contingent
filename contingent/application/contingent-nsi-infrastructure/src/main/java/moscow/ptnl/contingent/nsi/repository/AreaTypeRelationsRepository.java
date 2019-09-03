@@ -1,10 +1,10 @@
 package moscow.ptnl.contingent.nsi.repository;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaTypeRelations;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Optional;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 
 @NoRepositoryBean
 public interface AreaTypeRelationsRepository {

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.nsi.repository;
 
-import moscow.ptnl.contingent.area.entity.nsi.Gender;
+import moscow.ptnl.contingent.nsi.domain.area.Gender;
 import moscow.ptnl.contingent.repository.CommonRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;

@@ -1,7 +1,5 @@
 package moscow.ptnl.contingent.nsi.repository;
 
-import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
-import moscow.ptnl.contingent.area.entity.nsi.PolicyType_;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
+import moscow.ptnl.contingent.nsi.domain.area.PolicyType_;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)

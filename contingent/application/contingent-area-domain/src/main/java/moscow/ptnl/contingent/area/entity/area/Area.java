@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;

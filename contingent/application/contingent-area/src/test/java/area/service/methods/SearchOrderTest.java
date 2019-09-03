@@ -10,7 +10,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.area.error.ContingentException;
+import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 
 import org.junit.jupiter.api.BeforeAll;

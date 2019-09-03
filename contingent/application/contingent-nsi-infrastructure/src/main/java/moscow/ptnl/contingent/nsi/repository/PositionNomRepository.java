@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.nsi.repository;
 
-import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Optional;
+import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 
 @NoRepositoryBean
 public interface PositionNomRepository {
