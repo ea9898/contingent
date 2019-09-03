@@ -74,7 +74,7 @@ public class Algorithms {
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public MoAddress searchServiceDistrictMOByAddress (Long moId, AreaType areaType, Long orderId,
-            List<AddressRegistryBaseType> addressRegistryTypes, Validation validation) throws ContingentException {
+            List<AddressRegistryBaseType> addressRegistryTypes, Validation validation) {
 
         // 1.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
@@ -88,7 +88,7 @@ public class Algorithms {
 
 
         // 3.
-        List<Addresses> intersectingAddresses = findIntersectingAddressesAdd(addressRegistryTypes, moAddressesObj);
+        List<Addresses> intersectingAddresses = findIntersectingAddressesAdd(addressRegistryTypes, moAddressesObj, validation);
 
         // 4. // 5.
         if (intersectingAddresses != null && !intersectingAddresses.isEmpty()) {
@@ -100,10 +100,8 @@ public class Algorithms {
     }
 
     // Поиск участков по адресу (А_УУ_2)
-    public Long searchAreaByAddress(
-            Long moId,
-            AreaType areaTypeCode,
-            List<AddressRegistryBaseType> addressRegistryTypes) throws ContingentException {
+    public Long searchAreaByAddress(Long moId, AreaType areaTypeCode, List<AddressRegistryBaseType> addressRegistryTypes,
+            Validation validation) {
 
         // 1.
         List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddresses(moId, areaTypeCode.getCode());
@@ -116,7 +114,7 @@ public class Algorithms {
         List<Addresses> areaAddressesObj = areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList());
 
         // 3.
-        List<Addresses> intersectingAddresses = findIntersectingAddressesAdd(addressRegistryTypes, areaAddressesObj);
+        List<Addresses> intersectingAddresses = findIntersectingAddressesAdd(addressRegistryTypes, areaAddressesObj, validation);
 
         // 4. //5.
         if (!intersectingAddresses.isEmpty()) {
@@ -129,7 +127,7 @@ public class Algorithms {
 
     // Поиск пересекающихся адресов (А_УУ_3)
     public List<Addresses> findIntersectingAddressesAdd(List<AddressRegistryBaseType> addressRegistryTypes,
-                                                        List<Addresses> addresses) throws ContingentException {
+                                                        List<Addresses> addresses, Validation validation) {
 
         List<Addresses> crossAddresses = new ArrayList<>();
 
@@ -178,7 +176,7 @@ public class Algorithms {
             }
         }
         if (crossAddresses == null) {
-            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
+            validation.error(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
         }
 
         if (!crossAddresses.isEmpty()) {

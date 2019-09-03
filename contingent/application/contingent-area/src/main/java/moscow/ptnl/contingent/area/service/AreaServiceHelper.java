@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
+import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
@@ -52,9 +53,18 @@ import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
+import javax.xml.bind.JAXB;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -377,8 +387,8 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkTooManyAddresses(List<NsiAddress> nsiAddresses, Long maxAddresses) throws ContingentException {
-        if (nsiAddresses.size() > maxAddresses) {
+    public void checkTooManyAddresses(List<AddressRegistryBaseType> addresses, Long maxAddresses) throws ContingentException {
+        if (addresses.size() > maxAddresses) {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAddresses));
         }
     }
@@ -726,7 +736,7 @@ public class AreaServiceHelper {
                 if (addressWrapper.getNsiAddress() != null) {
                     // НСИ адрес
                     validation.error(
-                            AreaErrorReason.ADDRESS_NOT_SERVICED_MO__NSI,
+                            AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI,
                             new ValidationParameter("levelAddress", addressWrapper.getNsiAddress().getLevelAddress()),
                             new ValidationParameter("globalId", addressWrapper.getNsiAddress().getGlobalId()),
                             new ValidationParameter("moId", area.getMoId()));
@@ -940,4 +950,5 @@ public class AreaServiceHelper {
             throw new ContingentException(AreaErrorReason.NO_MU_ID_PARAMETER);
         }
     }
+
 }

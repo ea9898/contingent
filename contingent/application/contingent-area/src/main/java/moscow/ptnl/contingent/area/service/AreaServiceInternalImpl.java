@@ -9,13 +9,11 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.nsi.NsiAddressFormingElement;
 import moscow.ptnl.contingent.area.entity.nsi.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeKindEnum;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.area.entity.nsi.AreaTypeSpecializations;
-import moscow.ptnl.contingent.area.entity.nsi.NsiBuildingRegistry;
 import moscow.ptnl.contingent.area.entity.nsi.PolicyType;
 import moscow.ptnl.contingent.area.entity.nsi.PositionCode;
 import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
@@ -24,12 +22,14 @@ import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ContingentException;
 import moscow.ptnl.contingent.area.error.Validation;
 import moscow.ptnl.contingent.area.error.ValidationParameter;
-import moscow.ptnl.contingent.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.area.model.area.AddressArea;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
+import moscow.ptnl.contingent.area.transform.AddressMapper;
+import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
@@ -69,7 +69,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
+import ru.mos.emias.contingent2.address.AreaOMKTE;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
+import ru.mos.emias.contingent2.core.Address;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
 import java.time.LocalDate;
@@ -194,6 +197,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private PositionCodeRepository positionCodeRepository;
+
+    @Autowired
+    private AddressMapper addressMapper;
+
+    @Autowired
+    private AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
 
     public AreaServiceInternalImpl() {
     }
@@ -910,7 +919,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_13) Добавление адресов на участок обслуживания
     @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
-    public List<Long> addAreaAddress(Long areaId, List<NsiAddress> nsiAddresses) throws ContingentException {
+    public List<Long> addAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry) throws ContingentException {
+
         Validation validation = new Validation();
 
         // 1. и 2.
@@ -918,76 +928,86 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
         // 3.
-        areaHelper.checkTooManyAddresses(nsiAddresses, settingService.getPar1());
+        areaHelper.checkTooManyAddresses(addressesRegistry, settingService.getPar1());
 
         // 4.
-        areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
+        algorithms.checkAddressFLK(addressesRegistry, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // Список все адресов с привязанными мета-данными
-        List<AddressWrapper> addressWrapperList = areaHelper.convertToAddressWrapper(nsiAddresses);
-
-        // 5. Обогащение обертки объектами территорией обслуживания МО
-        areaHelper.addMoAddressToAddressWrapper(area, addressWrapperList, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
+        // 5.
+        // 1.
+        List<AddressRegistryBaseType> splitesAddresses = addressesRegistry.stream()
+                .filter(ar -> ar.getAreaOMKTE().getCode().contains(";")).collect(Collectors.toList());
+        splitesAddresses.forEach(sa -> {
+            for (String saAreaOmkTe: sa.getAreaOMKTE().getCode().split(";")) {
+                // 2.
+                AddressRegistryBaseType addressRegistryBaseType = addressRegistryBaseTypeCloner.clone(sa);
+                addressRegistryBaseType.getAreaOMKTE().setCode(saAreaOmkTe);
+                // 3.
+                if (sa.getRegionOMKTE().getCode().contains(";")) {
+                    String regionOMKTE = sa.getRegionOMKTE().getCode();
+                    addressRegistryBaseType.getRegionOMKTE().setCode(saAreaOmkTe.substring(0, 2) + regionOMKTE.substring(2));
+                }
+                addressesRegistry.add(addressRegistryBaseType);
+            }
+            addressesRegistry.remove(sa);
+        });
 
         // 6.
-        areaHelper.checkAddressNotServiceByAreaType(area, addressWrapperList, validation);
+        List<MoAddress> findMoAddress = new ArrayList<>();
+        addressesRegistry.forEach(ar -> {
+            MoAddress moAddressInterspect = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
+                    addressesRegistry, validation);
+            if (moAddressInterspect == null || !moAddressInterspect.getMoId().equals(area.getMoId())) {
+                validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
+                        new ValidationParameter("moId", area.getMoId()));
+            } else if (moAddressInterspect.getMoId().equals(area.getMoId())) {
+                findMoAddress.add(moAddressInterspect);
+            }
+        });
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
         // 7.
-        addressWrapperList.forEach(addressWrapper -> {
-            if (addressWrapper.getNsiAddress() != null) {
-                NsiAddress nsiAddress = addressWrapper.getNsiAddress();
-                NsiAddressFormingElement addressFormingElement = null;
-                NsiBuildingRegistry buildingRegistry = null;
-
-                if (nsiAddress.getLevelAddress() != 8) {
-                    addressFormingElement = addressFormingElementRepository.getAddressFormingElements(nsiAddress.getGlobalId(), nsiAddress.getLevelAddress()).get(0);
+        addressesRegistry.forEach(ar -> {
+            Long areaIdInterspect = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
+            if (areaIdInterspect != null) {
+                if (!areaIdInterspect.equals(area.getId())) {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA, new ValidationParameter("areaType", ar.getArea().getCode()));
                 } else {
-                    buildingRegistry = buildingRegistryRepository.getBuildingsRegistry(nsiAddress.getGlobalId()).get(0);
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", ar.getAddressString()));
                 }
-
-                List<Addresses> foundAddresses = addressesRepository.findAddresses(nsiAddress.getLevelAddress(), buildingRegistry, addressFormingElement);
-
-                if (!foundAddresses.isEmpty()) {
-                    addressWrapper.setAddress(foundAddresses.get(0));
-                } else {
-                    Addresses address = new Addresses();
-                    //TODO fix
-//                    address.setLevel(nsiAddress.getLevelAddress());
-//                    address.setAddressFormingElement(addressFormingElement);
-//                    address.setBuildingRegistry(buildingRegistry);
-                    addressWrapper.setAddress(addressesCRUDRepository.save(address));
-                }
-
             }
         });
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         // 8.
-        List<Long> areaAddressIds = new ArrayList<>();
-        addressWrapperList.forEach(addressWrapper -> {
+        List<Addresses> addresses = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
+                .collect(Collectors.toList());
+        addressesCRUDRepository.saveAll(addresses);
+
+        // 9.
+        List<AreaAddress> areaAddresses = addresses.stream().map(addr -> {
             AreaAddress areaAddress = new AreaAddress();
             areaAddress.setArea(area);
-            areaAddress.setMoAddress(areaAddress.getMoAddress());
-            areaAddress.setAddress(addressWrapper.getAddress());
+            areaAddress.setMoAddress(findMoAddress.get(0));
+            areaAddress.setAddress(addr);
             areaAddress.setCreateDate(LocalDateTime.now());
             areaAddress.setUpdateDate(LocalDateTime.now());
-            areaAddressIds.add(areaAddressCRUDRepository.save(areaAddress).getId());
-        });
+            return areaAddress;
+        }).collect(Collectors.toList());
+        areaAddressCRUDRepository.saveAll(areaAddresses);
 
-        // 9. аннотация @LogESU
+        // 10. аннотация @LogESU
 
-        return areaAddressIds;
+        return areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
     }
 
     // (К_УУ_14) Удаление адресов из участка обслуживания
@@ -1262,7 +1282,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throws ContingentException {
         Validation validation = new Validation();
         // 1.
-        areaHelper.checkTooManyAddresses(nsiAddresses, settingService.getPar1());
+//        areaHelper.checkTooManyAddresses(nsiAddresses, settingService.getPar1());
         // 2.
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation);
         // 3.
@@ -1273,7 +1293,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     new ValidationParameter("orderId", orderId));
         }
         // 4.
-        areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
+//        areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
