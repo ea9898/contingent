@@ -113,21 +113,17 @@ public class Algorithms {
         }
 
         // 2.
-        List<Address4Algoritm> address4Algoritms = areaAddresses.stream().map(Address4Algoritm::new).collect(Collectors.toList());
+        List<Addresses> areaAddressesObj = areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList());
 
         // 3.
-//        List<AddressWrapper> addressWrappers = algorithmsHelper.createAfeBrList(address4Algoritms);
+        List<Addresses> intersectingAddresses = findIntersectingAddressesAdd(addressRegistryTypes, areaAddressesObj);
 
-        // 4.
-        // TODO переделать
-//        List<AddressWrapper> crossAddresses = new ArrayList<>(); //findIntersectingAddressesAdd(addressWrappers, nsiAddressList);
-
-        // 5.
-//        if (!crossAddresses.isEmpty()) {
-//            return areaAddressRepository.findAreaAddressByAddress(crossAddresses.get(0).getAddress()).get(0).getArea().getId();
-//        } else {
+        // 4. //5.
+        if (!intersectingAddresses.isEmpty()) {
+            return areaAddresses.stream().filter(areaAddress -> areaAddress.getAddress().equals(intersectingAddresses.get(0))).findFirst().get().getArea().getId();
+        } else {
             return null;
-//        }
+        }
     }
 
 
@@ -150,7 +146,7 @@ public class Algorithms {
         for (AddressRegistryBaseType addressRegistry: addressRegistryTypes) {
 
                 if (addressRegistry.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByStreetCode.apply(addressRegistry, addresses);
+                    crossAddresses = AlgorithmsHelper.checkStreetCodeExist.apply(addressRegistry, addresses);
                 }
 
                 if (addressRegistry.getAoLevel().equals(AddressLevelType.STREET.getLevel())) {
