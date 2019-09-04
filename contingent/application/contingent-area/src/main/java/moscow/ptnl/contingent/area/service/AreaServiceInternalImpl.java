@@ -1335,11 +1335,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
+        // 2.
         areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+
+        /* TODO https://wiki.emias.mos.ru/pages/viewpage.action?pageId=71674475 п.4. НЕРЕАЛИЗУЕМ */
+
         return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
     }
 
