@@ -4,9 +4,7 @@ import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
-import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.area.error.ErrorReasonImpl;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
@@ -14,6 +12,7 @@ import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
@@ -27,6 +26,7 @@ import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -279,9 +279,34 @@ public class Algorithms {
     }
 
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
-    public List<Addresses> findIntersectingAddressesSearch(List<Addresses> addresses,
+    public List<Addresses> findIntersectingAddressesSearch(List<Addresses> nsiAddresses,
                                                            List<AddressRegistryBaseType> addressesRegistryType) {
-        throw new RuntimeException("Требуется реализация.");
+
+        // 1.
+        Set<Addresses> resultAddresses = nsiAddresses.stream().filter(addr ->
+                addressesRegistryType.stream().anyMatch(
+                        addrReg -> addrReg.getGlobalIdNsi().equals(addr.getGlobalId())
+                )
+        ).collect(Collectors.toSet());
+
+        for (AddressRegistryBaseType addr : addressesRegistryType) {
+            switch (AddressLevelType.find(addr.getAoLevel())) {
+                case ID:
+                case STREET:
+                    resultAddresses.addAll(AlgorithmsHelper.searchByStreetCode.apply(addr, nsiAddresses));
+                case PLAN:
+                    resultAddresses.addAll(AlgorithmsHelper.searchByPlanCode.apply(addr, nsiAddresses));
+                case PLACE:
+                    resultAddresses.addAll(AlgorithmsHelper.searchByPlaceCode.apply(addr, nsiAddresses));
+                case CITY:
+                    resultAddresses.addAll(AlgorithmsHelper.searchByCityCode.apply(addr, nsiAddresses));
+                case AREA:
+                    resultAddresses.addAll(AlgorithmsHelper.searchByAreaCode.apply(addr, nsiAddresses));
+                case AREA_TE:
+                    resultAddresses.addAll(AlgorithmsHelper.searchByAreaOmkTeCode.apply(addr, nsiAddresses));
+            }
+        }
+        return new ArrayList<>(resultAddresses);
     }
 
 }
