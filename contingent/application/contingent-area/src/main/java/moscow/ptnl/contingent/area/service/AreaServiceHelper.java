@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
@@ -28,8 +27,6 @@ import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
-import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
-import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
@@ -58,14 +55,6 @@ import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
-import javax.xml.bind.JAXB;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -118,12 +107,6 @@ public class AreaServiceHelper {
 
     @Autowired
     private SettingService settingService;
-
-    @Autowired
-    NsiAddressMapper nsiAddressMapper;
-
-    @Autowired
-    NotNsiAddressMapper notNsiAddressMapper;
 
     @Autowired
     private AddressFormingElementRepository addressFormingElementRepository;

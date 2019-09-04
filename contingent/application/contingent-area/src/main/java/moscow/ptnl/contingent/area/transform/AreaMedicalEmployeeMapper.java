@@ -16,16 +16,7 @@ import ru.mos.emias.contingent2.core.PositionNomClinic;
 public class AreaMedicalEmployeeMapper implements Transform<MedicalEmployee, AreaMedicalEmployees> {
 
     @Autowired
-    private PositionNomMapper positionNomMapper;
-    
-    @Autowired
-    private PositionNomRepository positionNomRepository;
-
-    @Autowired
     private PositionCodeRepository positionCodeRepository;
-
-    @Autowired
-    private AreaServiceHelper areaServiceHelper;
 
     @Override
     public MedicalEmployee entityToDtoTransform(AreaMedicalEmployees entityObject) {

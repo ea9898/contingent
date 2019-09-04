@@ -16,8 +16,6 @@ import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
-import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
-import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AddressesMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
@@ -27,35 +25,6 @@ import moscow.ptnl.contingent.area.transform.model.esu.MainEmployeesMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.ReplacementEmployeesMapper;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.area.endpoint.ESUEventEndpoint;
-import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
-import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AddressesRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
-import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.repository.area.AreaToAreaTypeCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaToAreaTypeRepository;
-import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MoAddressRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.repository.area.MuAddlAreaTypesRepository;
-import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
-import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 import moscow.ptnl.contingent.service.esu.EsuService;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import org.mockito.Mockito;
@@ -161,12 +130,6 @@ public class MockConfiguration {
 
     @MockBean
     public HistoryService historyService;
-
-    @MockBean
-    public NsiAddressMapper nsiAddressMapper;
-    
-    @MockBean
-    public NotNsiAddressMapper notNsiAddressMapper;
 
     @MockBean
     public AddressMapper addressMapper;

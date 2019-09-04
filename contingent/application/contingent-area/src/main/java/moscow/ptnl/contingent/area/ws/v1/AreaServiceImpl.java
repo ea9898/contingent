@@ -7,13 +7,10 @@ import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
-import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.AreaTypeShortMapper;
 import moscow.ptnl.contingent.area.transform.GetMuAvailableAreaTypesResponseMapper;
 import moscow.ptnl.contingent.area.transform.MoAddressMapper;
-import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
-import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.PagingOptionsMapper;
 import moscow.ptnl.contingent.area.transform.SoapCustomMapper;
 import moscow.ptnl.contingent.area.transform.SoapExceptionMapper;
@@ -122,9 +119,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AreaAddressMapper areaAddressMapper;
-
-    @Autowired
-    private NsiAddressMapper nsiAddressMapper;
 
     @Autowired
     private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
