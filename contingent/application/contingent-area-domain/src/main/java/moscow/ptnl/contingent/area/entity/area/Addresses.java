@@ -606,13 +606,11 @@ public class Addresses implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj != null && obj instanceof Addresses) {
-            return ((Addresses) obj).getId().equals(this.id);
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Addresses addresses = (Addresses) o;
+        return globalId.equals(addresses.globalId);
     }
 
     @Override

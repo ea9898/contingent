@@ -14,6 +14,8 @@ import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
 import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
+import moscow.ptnl.contingent.area.transform.AddressMapper;
+import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.area.transform.NotNsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.NsiAddressMapper;
 import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
@@ -165,4 +167,10 @@ public class MockConfiguration {
     
     @MockBean
     public NotNsiAddressMapper notNsiAddressMapper;
+
+    @MockBean
+    public AddressMapper addressMapper;
+
+    @MockBean
+    public AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
 }

@@ -1,73 +1,88 @@
 package moscow.ptnl.contingent.area.transform;
 
+import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
 import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import org.springframework.stereotype.Component;
+import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 import ru.mos.emias.contingent2.core.Address;
 
 @Component
-public class AddressMapper implements Transform<Address, moscow.ptnl.contingent.area.entity.area.Addresses> {
+public class AddressMapper implements Transform<AddressRegistryBaseType, moscow.ptnl.contingent.area.entity.area.Addresses> {
 
     @Override
-    public Address entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.Addresses entityObject) {
-        //TODO fix
-//        NsiAddressFormingElement afe = AddressLevelType.ID.getLevel().equals(entityObject.getLevel()) ?
-//                entityObject.getBuildingRegistry().getAddressFormingElement() :
-//                entityObject.getAddressFormingElement();
-//        NsiBuildingRegistry building = AddressLevelType.ID.getLevel().equals(entityObject.getLevel()) ?
-//                entityObject.getBuildingRegistry() : null;
-        Address address = new Address();
-//        address.setLevelAddress(entityObject.getLevel());
-//
-//        if (afe != null) {
-//            address.setAfeId(afe.getId());
-//            address.setAfeGlobalId(afe.getGlobalId());
-//            address.setRegionTeId(afe.getRegionTeId());
-//            address.setRegionTeCode(afe.getRegionTeCode());
-//            address.setRegionTeName(afe.getRegionTeName());
-//            address.setRegionTeTypeName(afe.getRegionTeTypeName());
-//            address.setAreaTeId(afe.getAreaTeId());
-//            address.setAreaCodeOmkTe(afe.getAreaCodeOmkTe());
-//            address.setAreaTeName(afe.getAreaTeName());
-//            address.setAreaTeTypeName(afe.getAreaTeTypeName());
-//            address.setDistrictId(afe.getAreaId());
-//            address.setDistrictCode(afe.getAreaCode());
-//            address.setDistrictName(afe.getAreaName());
-//            address.setDistrictTypeName(afe.getAreaTypeName());
-//            address.setCityId(afe.getCityId());
-//            address.setCityCode(afe.getCityCode());
-//            address.setCityName(afe.getCityName());
-//            address.setCityTypeName(afe.getCityTypeName());
-//            address.setPlaceId(afe.getPlaceId());
-//            address.setPlaceCode(afe.getPlaceCode());
-//            address.setPlaceName(afe.getPlaceName());
-//            address.setPlaceTypeName(afe.getPlaceTypeName());
-//            address.setPlanId(afe.getPlanId());
-//            address.setPlanCode(afe.getPlanCode());
-//            address.setPlanName(afe.getPlanName());
-//            address.setPlanTypeName(afe.getPlanTypeName());
-//            address.setStreetId(afe.getStreetId());
-//            address.setStreetCode(afe.getStreetCode());
-//            address.setStreetName(afe.getStreetName());
-//            address.setStreetTypeName(afe.getStreetTypeName());
-//        }
-//        if (building != null) {
-//            address.setBrId(building.getId());
-//            address.setBrGlobalId(building.getGlobalId());
-//            address.setBrAfeId(building.getAddressFormingElement().getId());
-//            address.setHouseType(building.getL1Type());
-//            address.setHouse(building.getL1Value());
-//            address.setBuildingType(building.getL2Type());
-//            address.setBuilding(building.getL2Value());
-//            address.setConstructionType(building.getL3Type());
-//            address.setConstruction(building.getL3Value());
-//        }
-        return address;
+    public AddressRegistryBaseType entityToDtoTransform(Addresses entityObject) {
+        return null;
     }
 
     @Override
-    public moscow.ptnl.contingent.area.entity.area.Addresses dtoToEntityTransform(Address dtoObject) {
-        return null;
+    public Addresses dtoToEntityTransform(AddressRegistryBaseType dtoObject) {
+        Addresses addresses = new Addresses();
+        addresses.setGlobalId(dtoObject.getGlobalIdNsi());
+        addresses.setAoLevel(dtoObject.getAoLevel());
+        addresses.setAddress(dtoObject.getAddressString());
+
+        addresses.setRegionTeCode(dtoObject.getRegionOMKTE().getCode());
+        addresses.setRegionTeName(dtoObject.getRegionOMKTE().getName());
+        addresses.setRegionTeTypeName(dtoObject.getRegionOMKTE().getType().getFull());
+        addresses.setRegionTeTypeNameShort(dtoObject.getRegionOMKTE().getType().getShort());
+
+        addresses.setAreaCodeOmkTe(dtoObject.getAreaOMKTE().getCode());
+        addresses.setAreaTeName(dtoObject.getAreaOMKTE().getName());
+        addresses.setAreaTeTypeName(dtoObject.getAreaOMKTE().getType().getFull());
+        addresses.setAreaTeTypeNameShort(dtoObject.getAreaOMKTE().getType().getShort());
+
+        addresses.setAreaCode(dtoObject.getArea().getCode());
+        addresses.setAreaBtiCode(dtoObject.getArea().getCodeBTI());
+        addresses.setAreaName(dtoObject.getArea().getName());
+        addresses.setAreaTypeName(dtoObject.getArea().getType().getFull());
+        addresses.setAreaTypeNameShort(dtoObject.getArea().getType().getShort());
+
+        addresses.setCityCode(dtoObject.getCity().getCode());
+        addresses.setCityBtiCode(dtoObject.getCity().getCodeBTI());
+        addresses.setCityName(dtoObject.getCity().getName());
+        addresses.setCityTypeName(dtoObject.getCity().getType().getFull());
+        addresses.setCityTypeNameShort(dtoObject.getCity().getType().getShort());
+
+        addresses.setPlaceCode(dtoObject.getPlace().getCode());
+        addresses.setPlaceBtiCode(dtoObject.getPlace().getCodeBTI());
+        addresses.setPlaceName(dtoObject.getPlace().getName());
+        addresses.setPlaceTypeName(dtoObject.getPlace().getType().getFull());
+        addresses.setPlaceTypeNameShort(dtoObject.getPlace().getType().getShort());
+
+        addresses.setPlanCode(dtoObject.getPlan().getCode());
+        addresses.setPlanBtiCode(dtoObject.getPlan().getCodeBTI());
+        addresses.setPlanName(dtoObject.getPlan().getName());
+        addresses.setPlanTypeName(dtoObject.getPlan().getType().getFull());
+        addresses.setPlanTypeNameShort(dtoObject.getPlan().getType().getShort());
+
+        addresses.setStreetCode(dtoObject.getStreet().getCode());
+        addresses.setStreetBtiCode(dtoObject.getStreet().getCodeBTI());
+        addresses.setStreetName(dtoObject.getStreet().getName());
+        addresses.setStreetTypeName(dtoObject.getStreet().getType().getFull());
+        addresses.setStreetTypeNameShort(dtoObject.getStreet().getType().getShort());
+
+        if (dtoObject.getBuilding() != null) {
+            if (dtoObject.getBuilding().getHouse() != null) {
+                addresses.setL1Type(dtoObject.getBuilding().getHouse().getType().getFull());
+                addresses.setL1TypeShort(dtoObject.getBuilding().getHouse().getType().getShort());
+                addresses.setL1Value(dtoObject.getBuilding().getHouse().getName());
+            }
+
+            if (dtoObject.getBuilding().getBuild() != null) {
+                addresses.setL2Type(dtoObject.getBuilding().getBuild().getType().getFull());
+                addresses.setL2TypeShort(dtoObject.getBuilding().getBuild().getType().getShort());
+                addresses.setL2Value(dtoObject.getBuilding().getBuild().getName());
+            }
+
+            if (dtoObject.getBuilding().getConstruction() != null) {
+                addresses.setL3Type(dtoObject.getBuilding().getConstruction().getType().getFull());
+                addresses.setL3TypeShort(dtoObject.getBuilding().getConstruction().getType().getShort());
+                addresses.setL3Value(dtoObject.getBuilding().getConstruction().getName());
+            }
+        }
+
+        return addresses;
     }
 }

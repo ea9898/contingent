@@ -12,6 +12,9 @@ public class MoAddressMapper implements Transform<MoAddress, moscow.ptnl.conting
 
     @Override
     public MoAddress entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.MoAddress entityObject) {
+        throw new RuntimeException("переделать");
+/*
+
         MoAddress address = new MoAddress();
         address.setMoAddressId(entityObject.getId());
 
@@ -25,6 +28,7 @@ public class MoAddressMapper implements Transform<MoAddress, moscow.ptnl.conting
             address.setAddress(addressMapper.entityToDtoTransform(entityObject.getAddress()));
         }
         return address;
+*/
     }
 
     @Override

@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
+import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.AreaTypeShortMapper;
 import moscow.ptnl.contingent.area.transform.GetMuAvailableAreaTypesResponseMapper;
@@ -124,9 +125,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private NsiAddressMapper nsiAddressMapper;
-
-    @Autowired
-    private NotNsiAddressMapper notNsiAddressMapper;
 
     @Autowired
     private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
@@ -287,8 +285,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
         try {
             AddAreaAddressResponse response = new AddAreaAddressResponse();
-//            response.getAreaAddressIds().addAll(areaService.addAreaAddress(body.getAreaId(),
-//                    body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
+            response.getAreaAddressIds().addAll(areaService.addAreaAddress(body.getAreaId(),
+                    body.getAddresses()));
             return response;
         }
         catch (Exception ex) {

@@ -1,5 +1,6 @@
 package area.service;
 
+import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
@@ -130,4 +131,5 @@ public class MockRepositoriesConfiguration {
 
     @MockBean
     private AreaTypeRelationsRepository areaTypeRelationsRepository;
+
 }
