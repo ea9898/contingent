@@ -26,6 +26,12 @@ public enum AddressLevelType {
 
     public static AddressLevelType find(int level) {
         return Arrays.stream(AddressLevelType.values())
+                .filter(t -> t.level.equals(Integer.toString(level)))
+                .findFirst().orElse(null);
+    }
+
+    public static AddressLevelType find(String level) {
+        return Arrays.stream(AddressLevelType.values())
                 .filter(t -> t.level.equals(level))
                 .findFirst().orElse(null);
     }
