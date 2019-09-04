@@ -5,8 +5,6 @@ import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
-import moscow.ptnl.contingent.area.model.area.AddressDetailsElementType;
-import moscow.ptnl.contingent.area.model.area.AddressDetailsType;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
@@ -15,7 +13,6 @@ import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -89,7 +86,7 @@ public class AreaAddressChecker {
                         .map(a -> String.valueOf(a.moAddress.getAreaType().getCode())).collect(Collectors.toSet()));
 
                 if (key.nsiAddress != null) {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_1,
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
                             new ValidationParameter("levelAddress", key.nsiAddress.getLevelAddress()),
                             new ValidationParameter("globalId", key.nsiAddress.getGlobalId()),
                             new ValidationParameter("moId", moIdFound),

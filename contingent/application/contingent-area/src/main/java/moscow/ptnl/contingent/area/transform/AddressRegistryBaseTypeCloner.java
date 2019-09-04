@@ -13,9 +13,6 @@ import ru.mos.emias.contingent2.address.Region;
 import ru.mos.emias.contingent2.address.RegionOMKTE;
 import ru.mos.emias.contingent2.address.Street;
 
-import java.util.List;
-import java.util.Map;
-
 @Mapper(componentModel="spring")
 public interface AddressRegistryBaseTypeCloner {
 

@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.model.area;
 
+import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
 import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
 
@@ -10,20 +11,7 @@ public class AddressArea {
 
     private Long areaAddressId;
 
-    private NsiBuildingRegistry buildingRegistry;
-
-    private NsiAddressFormingElement addressFormingElement;
-
-    public AddressArea(Long areaAddressId, NsiAddressFormingElement addressFormingElement) {
-        this.areaAddressId = areaAddressId;
-        this.addressFormingElement = addressFormingElement;
-    }
-
-    public AddressArea(Long areaAddressId, NsiBuildingRegistry buildingRegistry, NsiAddressFormingElement addressFormingElement) {
-        this.areaAddressId = areaAddressId;
-        this.buildingRegistry = buildingRegistry;
-        this.addressFormingElement = addressFormingElement;
-    }
+    private Addresses addresses;
 
     public Long getAreaAddressId() {
         return areaAddressId;
@@ -33,19 +21,11 @@ public class AddressArea {
         this.areaAddressId = areaAddressId;
     }
 
-    public NsiBuildingRegistry getBuildingRegistry() {
-        return buildingRegistry;
+    public Addresses getAddresses() {
+        return addresses;
     }
 
-    public void setBuildingRegistry(NsiBuildingRegistry buildingRegistry) {
-        this.buildingRegistry = buildingRegistry;
-    }
-
-    public NsiAddressFormingElement getAddressFormingElement() {
-        return addressFormingElement;
-    }
-
-    public void setAddressFormingElement(NsiAddressFormingElement addressFormingElement) {
-        this.addressFormingElement = addressFormingElement;
+    public void setAddresses(Addresses addresses) {
+        this.addresses = addresses;
     }
 }

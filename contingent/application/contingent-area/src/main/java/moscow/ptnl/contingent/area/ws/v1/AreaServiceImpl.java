@@ -312,8 +312,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             AddMoAddressResponse response = new AddMoAddressResponse();
             response.getMoAddressIds().addAll(
                     areaService.addMoAddress(body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
-                            body.getNsiAddresses() == null ? Collections.EMPTY_LIST : body.getNsiAddresses().stream().map(nsiAddressMapper::dtoToEntityTransform).collect(Collectors.toList())));
-
+                            body.getAddresses()));
             return response;
         }
         catch (Exception ex) {

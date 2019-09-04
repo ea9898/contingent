@@ -9,13 +9,12 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
 import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
+import moscow.ptnl.contingent.area.model.area.AddressArea;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
-import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
@@ -24,14 +23,10 @@ import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
-import moscow.ptnl.contingent.area.model.area.AddressLevelType;
-import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
-import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
-import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
@@ -72,9 +67,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
-import ru.mos.emias.contingent2.address.AreaOMKTE;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
-import ru.mos.emias.contingent2.core.Address;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
 import java.time.LocalDate;
@@ -83,7 +76,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -202,9 +194,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private AddressMapper addressMapper;
-
-    @Autowired
-    private AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
 
     public AreaServiceInternalImpl() {
     }
@@ -940,23 +929,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 5.
-        // 1.
-        List<AddressRegistryBaseType> splitesAddresses = addressesRegistry.stream()
-                .filter(ar -> ar.getAreaOMKTE().getCode().contains(";")).collect(Collectors.toList());
-        splitesAddresses.forEach(sa -> {
-            for (String saAreaOmkTe: sa.getAreaOMKTE().getCode().split(";")) {
-                // 2.
-                AddressRegistryBaseType addressRegistryBaseType = addressRegistryBaseTypeCloner.clone(sa);
-                addressRegistryBaseType.getAreaOMKTE().setCode(saAreaOmkTe);
-                // 3.
-                if (sa.getRegionOMKTE().getCode().contains(";")) {
-                    String regionOMKTE = sa.getRegionOMKTE().getCode();
-                    addressRegistryBaseType.getRegionOMKTE().setCode(saAreaOmkTe.substring(0, 2) + regionOMKTE.substring(2));
-                }
-                addressesRegistry.add(addressRegistryBaseType);
-            }
-            addressesRegistry.remove(sa);
-        });
+        areaHelper.splitAddresses(addressesRegistry);
 
         // 6.
         List<MoAddress> findMoAddress = new ArrayList<>();
@@ -1048,10 +1021,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
         }
 
-        // 6.
-        //if (areaHelper.isAreaPrimary(area)) {
-        //    esuHelperService.sendAreaInfoEvent(area, "delAreaAddress");
-        //}
+        // 6. @LogEsu
 
         // 7.
         return;
@@ -1073,34 +1043,28 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId);
 
         if (areaAddresses.isEmpty()) {
-            return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(), paging, 0);
+            return new PageImpl<>(new ArrayList<>(), paging, 0);
         }
 
         // 3.
-        Map<Long, Addresses>  addresses = new TreeMap<>();
+        TreeMap<Long, Addresses> addresses = new TreeMap<Long, Addresses>();
         areaAddresses.forEach(aa -> {
-            Addresses address = aa.getAddress();
-            addresses.put(aa.getId(), address);
-        });
-
-        List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
-
-        addresses.forEach((addressId, address) -> {
-            //TODO fix
-//            if (address.getLevel() == 8) {
-//                NsiBuildingRegistry buildingRegistry = address.getBuildingRegistry();
-//                NsiAddressFormingElement addressFormingElement = buildingRegistry.getAddressFormingElement();
-//                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, buildingRegistry, addressFormingElement));
-//            } else {
-//                addressAreas.add(new moscow.ptnl.contingent.area.model.area.AddressArea(addressId, address.getAddressFormingElement()));
-//            }
+            addresses.put(aa.getArea().getId(), aa.getAddress());
         });
 
         // 4.
-        // Сортировка в TreeMap
+        // TODO: https://wiki.emias.mos.ru/pages/viewpage.action?pageId=71674265 п.4. НЕРЕАЛИЗУЕМО
+        // Сделано без объединения
+        List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
+        addresses.forEach((id, addr) -> {
+            moscow.ptnl.contingent.area.model.area.AddressArea addressArea = new AddressArea();
+            addressArea.setAreaAddressId(id);
+            addressArea.setAddresses(addr);
+            addressAreas.add(addressArea);
+        });
 
         // 5.
-        return new PageImpl<moscow.ptnl.contingent.area.model.area.AddressArea>(new ArrayList<>(addressAreas),
+        return new PageImpl<>(new ArrayList<>(addressAreas),
                 paging, addressAreas.size());
     }
 
@@ -1179,10 +1143,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             }
         }
 
-        // 9.
-        //if (areaHelper.isAreaPrimary(area)) {
-        //    esuHelperService.sendAreaInfoEvent(area, "restoreArea");
-        //}
+        // 9. @LogESU
 
         // 10.
         return;
@@ -1280,13 +1241,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_21) Распределение жилых домов к территории обслуживания МО
     @Override
-    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<NsiAddress> nsiAddresses)
+    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addressesRegistry)
             throws ContingentException {
         Validation validation = new Validation();
         // 1.
-//        areaHelper.checkTooManyAddresses(nsiAddresses, settingService.getPar1());
+        areaHelper.checkTooManyAddresses(addressesRegistry, settingService.getPar1());
+
         // 2.
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation);
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        AreaType areaType = areaTypes.get(0);
+
         // 3.
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(orderId).orElse(null);
 
@@ -1294,64 +1261,49 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
                     new ValidationParameter("orderId", orderId));
         }
+
         // 4.
-//        areaAddressChecker.checkNsiAddresses(nsiAddresses, validation);
+        algorithms.checkAddressFLK(addressesRegistry, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        // 5. Система для каждого переданного адреса выполняет поиск пересекающихся распределенных адресов
-        for (NsiAddress nsiAddress : nsiAddresses) {
-            // TODO CONTINGENT2-309
-//            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaTypes.get(0), orderId,
-//                    Collections.singletonList(nsiAddress), validation);
-//
-//            if (moAddress != null) {
-//                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS_1,
-//                        new ValidationParameter("levelAddress", nsiAddress.getLevelAddress()),
-//                        new ValidationParameter("globalId", nsiAddress.getGlobalId()),
-//                        new ValidationParameter("moId", moAddress.getMoId()),
-//                        new ValidationParameter("areaTypeCode", moAddress.getAreaType().getCode()));
-//            }
-        }
 
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        List<AddressWrapper> addresses = areaHelper.convertAddressToWrapper(nsiAddresses);
+        // 5.
+        areaHelper.splitAddresses(addressesRegistry);
 
-        addresses.forEach(a -> {
-            Addresses address = new Addresses();
-            //TODO fix
-//            if (a.nsiAddress != null) {
-//                address.setLevel(a.nsiAddress.getLevelAddress());
-//
-//                if (!Objects.equals(a.nsiAddress.getLevelAddress(), AddressLevelType.ID.getLevel())) {
-//                    address.setAddressFormingElement(a.addressFormingElement);
-//                }
-//                else {
-//                    address.setBuildingRegistry(a.buildingRegistry);
-//                }
-//            }
-//            // 6.
-//            a.address = addressesRepository.findAddresses(address.getLevel(), address.getBuildingRegistry(), address.getAddressFormingElement())
-//                    .stream().findFirst().orElseGet(() -> addressesCRUDRepository.save(address));
+        // 6.
+        addressesRegistry.forEach(addr -> {
+            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaType, orderId,
+                    Collections.singletonList(addr), validation);
+            if (moAddress != null) {
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS, new ValidationParameter("moId", moAddress.getId()));
+            }
         });
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         // 7.
-        AreaType areaType = areaTypes.get(0);
+        List<Addresses> addresses = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
+                .collect(Collectors.toList());
+        addressesCRUDRepository.saveAll(addresses);
+
+        // 8.
+        List<MoAddress> moAddresses = new ArrayList<>();
         addresses.forEach(a -> {
-            a.moAddress = new MoAddress();
-            a.moAddress.setAddress(a.address);
-            a.moAddress.setAreaType(areaType);
-            a.moAddress.setMoId(moId);
-            a.moAddress.setAddressAllocationOrder(order);
-            a.moAddress.setStartDate(LocalDate.now());
-            a.moAddress.setCreateDate(LocalDateTime.now());
-            moAddressCRUDRepository.save(a.moAddress);
+            MoAddress moAddress = new MoAddress();
+            moAddress.setAddress(a);
+            moAddress.setAreaType(areaType);
+            moAddress.setMoId(moId);
+            moAddress.setAddressAllocationOrder(order);
+            moAddress.setStartDate(LocalDate.now());
+            moAddress.setCreateDate(LocalDateTime.now());
+            moAddressCRUDRepository.save(moAddress);
+            moAddresses.add(moAddress);
         });
 
-        return addresses.stream().map(a -> a.moAddress.getId()).collect(Collectors.toList());
+        return moAddresses.stream().map(MoAddress::getId).collect(Collectors.toList());
     }
 
     // (К_УУ_22) Отмена распределения жилых домов к территории обслуживания МО

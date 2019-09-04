@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
+import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
@@ -150,6 +151,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private AreaTypeRelationsRepository areaTypeRelationsRepository;
+
+    @Autowired
+    private AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -951,4 +955,23 @@ public class AreaServiceHelper {
         }
     }
 
+    public void splitAddresses(List<AddressRegistryBaseType> addresses) {
+        // 1.
+        List<AddressRegistryBaseType> splitesAddresses = addresses.stream()
+                .filter(ar -> ar.getAreaOMKTE().getCode().contains(";")).collect(Collectors.toList());
+        splitesAddresses.forEach(sa -> {
+            for (String saAreaOmkTe: sa.getAreaOMKTE().getCode().split(";")) {
+                // 2.
+                AddressRegistryBaseType addressRegistryBaseType = addressRegistryBaseTypeCloner.clone(sa);
+                addressRegistryBaseType.getAreaOMKTE().setCode(saAreaOmkTe);
+                // 3.
+                if (sa.getRegionOMKTE().getCode().contains(";")) {
+                    String regionOMKTE = sa.getRegionOMKTE().getCode();
+                    addressRegistryBaseType.getRegionOMKTE().setCode(saAreaOmkTe.substring(0, 2) + regionOMKTE.substring(2));
+                }
+                addresses.add(addressRegistryBaseType);
+            }
+            addresses.remove(sa);
+        });
+    }
 }
