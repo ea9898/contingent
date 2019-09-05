@@ -7,15 +7,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import moscow.ptnl.contingent.PersistenceConstraint;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author mkachalov
  */
+@Component
 public class MapToNsiHelper {
     
-    private MapToNsiHelper() {}
+    private final static Logger LOG = LoggerFactory.getLogger(MapToNsiHelper.class);
+    
+    @PersistenceContext(unitName = PersistenceConstraint.PU_CONTINGENT_NAME)
+    private EntityManager entityManager;        
     
     public static Optional<NsiTablesEnum> getNsiTableFromClass(Class entity) {
         Annotation ann = entity.getAnnotation(MapToNsi.class);
@@ -52,12 +67,14 @@ public class MapToNsiHelper {
         return nsiFieldName;
     }
     
-    public static void setFieldValue(Field field, Object target, Object value, MapToNsi mapToNsi) {   
+    public void setFieldValue(Field field, Object target, Object value, MapToNsi mapToNsi) {   
         try {
             field.setAccessible(true);
-            field.set(target, cast(value, field.getType(), (mapToNsi != null) ? mapToNsi.entityKeyName() : ""));
+            field.set(target, cast(value, field.getType(), (mapToNsi != null) ? mapToNsi.findEntityByField() : ""));
         } catch (Exception e) {
-            throw new IllegalStateException("Ошибка заполнения поля [" + field.getName() +"] для [" + target.getClass() + "] " + e.getMessage());
+            String msg = "ошибка заполнения поля [" + field.getName() +"] для типа [" + target.getClass() + "] значением [" + value + "], " + e.getMessage();
+            LOG.error(msg);
+            throw new IllegalStateException(msg);
         }
     }
     
@@ -70,7 +87,7 @@ public class MapToNsiHelper {
         return methodName;
     }
     
-    private static <T> T cast(Object value, Class<T> fieldType, String fieldName) throws Exception {
+    private <T> T cast(Object value, Class<T> fieldType, String fieldName) throws Exception {
         if (value == null) {
             return null;
         }
@@ -97,11 +114,30 @@ public class MapToNsiHelper {
         }
     }
     
-    private static <T> T valueToEntity(Object keyValue, Class<T> entityType, String mapTo) throws InstantiationException, IllegalAccessException, NoSuchFieldException {
-        T entityObject = entityType.newInstance();
-        Field keyField = entityType.getDeclaredField(mapTo);
-        setFieldValue(keyField, entityObject, keyValue, null);
-        return entityObject;
+    private <T> T valueToEntity(Object fieldValue, Class<T> entityType, String mapTo) throws InstantiationException, IllegalAccessException, NoSuchFieldException {       
+        Field field = entityType.getDeclaredField(mapTo);
+        
+        //если сущность ищем по ключевому полю
+        if (field.getAnnotation(Id.class) != null) {
+            T entityObject = entityType.newInstance();
+            setFieldValue(field, entityObject, fieldValue, null);
+            return entityObject;
+        } else {
+            return findEntityByField(entityType, mapTo, fieldValue);
+        }
+    }
+    
+    private <T> T findEntityByField(Class<T> entityType, String fieldName, Object fieldValue) {
+        try {
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<T> cQuery = builder.createQuery(entityType);
+            Root<T> entity = cQuery.from(entityType);
+            Query query = entityManager.createQuery(cQuery.where(builder.equal(entity.get(fieldName), fieldValue)));
+            return (T) query.getSingleResult();
+        } catch (Exception e) {
+            LOG.error("ошибка мапинга типа: {} по полю: {} со значением: {}", entityType.getName(), fieldName, fieldValue);
+            throw e;
+        }
     }
     
     private static String valueToString(Object value) {

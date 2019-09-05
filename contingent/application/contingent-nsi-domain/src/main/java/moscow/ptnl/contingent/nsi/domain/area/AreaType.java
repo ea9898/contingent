@@ -42,12 +42,12 @@ public class AreaType extends CodeName implements Serializable, Keyable {
 
     @JoinColumn(name = "AREA_TYPE_KIND_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapToNsi(value = "AREA_TYPE_KIND_CODE", entityKeyName = "code")
+    @MapToNsi(value = "AREA_TYPE_KIND_CODE", findEntityByField = "globalId")
     private AreaTypeKind areaTypeKind;
 
     @JoinColumn(name = "AREA_TYPE_CLASS_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapToNsi(value = "AREA_TYPE_CLASS_CODE", entityKeyName = "code")
+    @MapToNsi(value = "AREA_TYPE_CLASS_CODE", findEntityByField = "globalId")
     private AreaTypeClass areaTypeClass;
 
     @Size(max = 1)
@@ -134,10 +134,12 @@ public class AreaType extends CodeName implements Serializable, Keyable {
         this.archived = archive;
     }
 
+    @Override
     public Long getCode() {
         return code;
     }
 
+    @Override
     public void setCode(Long code) {
         this.code = code;
     }
@@ -150,10 +152,12 @@ public class AreaType extends CodeName implements Serializable, Keyable {
         this.globalId = globalId;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public void setTitle(String title) {
         this.title = title;
     }
@@ -309,4 +313,4 @@ public class AreaType extends CodeName implements Serializable, Keyable {
     public Serializable getKey() {
         return getCode();
     }
-    }
+}

@@ -32,7 +32,7 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
 
     @JoinColumn(name = "AREA_TYPE_CODE", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapToNsi(value = "AREA_TYPE_CODE", entityKeyName = "code")
+    @MapToNsi(value = "AREA_TYPE_CODE", findEntityByField = "globalId")
     private AreaType areaType;
 
 

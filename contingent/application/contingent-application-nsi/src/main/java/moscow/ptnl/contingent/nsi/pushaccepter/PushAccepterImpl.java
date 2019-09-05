@@ -3,6 +3,15 @@ package moscow.ptnl.contingent.nsi.pushaccepter;
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.NSI_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.nsi.domain.NsiPushEventConstraint;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
+import moscow.ptnl.contingent.nsi.domain.area.Gender;
+import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
+import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsingS.Table;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +20,11 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaType;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeClass;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeKind;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeMedicalPosition;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeRelation;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeSpecialization;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapGender;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapPositionCode;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapSpecialization;
-
 @Component
 public class PushAccepterImpl extends PushAccepter {
+    
+    @Autowired
+    private NsiEntityMapper entityMapper;
 
     @Autowired
     @Qualifier(NSI_EVENT_CHANNEL_NAME)
@@ -43,31 +45,32 @@ public class PushAccepterImpl extends PushAccepter {
         Object pushEventEntity = null;
         switch (NsiTablesEnum.getByName(pack.catalog.name)) {
             case AREA_TYPE:
-                pushEventEntity = mapAreaType(pack);
+                pushEventEntity = entityMapper.mapTyped(pack, AreaType.class); 
                 break;
             case AREA_TYPE_CLASS:
-                pushEventEntity = mapAreaTypeClass(pack);
+                pushEventEntity = entityMapper.mapTyped(pack, AreaTypeClass.class);
                 break;
             case AREA_TYPE_KIND:
-                pushEventEntity = mapAreaTypeKind(pack);
+                pushEventEntity = entityMapper.mapTyped(pack, AreaTypeKind.class);
                 break;
             case AREA_TYPE_MEDICAL_POSITIONS:
-                pushEventEntity = mapAreaTypeMedicalPosition(pack);
+                pushEventEntity = entityMapper.mapTyped(pack, AreaTypeMedicalPositions.class);
                 break;
             case AREA_TYPE_RELATIONS:
-                pushEventEntity = mapAreaTypeRelation(pack);
+                pushEventEntity = entityMapper.mapTyped(pack, AreaTypeRelations.class);
                 break;
             case AREA_TYPE_SPECIALIZATIONS:
-                pushEventEntity = mapAreaTypeSpecialization(pack);
+                pushEventEntity = entityMapper.mapTyped(pack, AreaTypeSpecializations.class);
                 break;
             case SPECIALIZATIONS:
-                pushEventEntity = mapSpecialization(pack);
+                pushEventEntity = entityMapper.mapTyped(pack, Specialization.class);
                 break;
             case POSITION_CODE:
-                pushEventEntity = mapPositionCode(pack);
+                pushEventEntity = entityMapper.mapTyped(pack, PositionCode.class);
                 break;
             case GENDER:
-                pushEventEntity = mapGender(pack);
+                pushEventEntity = entityMapper.mapTyped(pack, Gender.class);
+                break;
         }
         nsiChannel.send(MessageBuilder
                 .withPayload(pushEventEntity)

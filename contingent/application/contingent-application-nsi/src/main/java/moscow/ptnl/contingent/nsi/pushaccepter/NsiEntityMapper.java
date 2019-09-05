@@ -1,14 +1,5 @@
 package moscow.ptnl.contingent.nsi.pushaccepter;
 
-import moscow.ptnl.contingent.nsi.domain.area.AreaType;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
-import moscow.ptnl.contingent.nsi.domain.area.Gender;
-import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
-import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
@@ -17,8 +8,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsiHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class NsiEntityMapper {
+    
+    private final static Logger LOG = LoggerFactory.getLogger(NsiEntityMapper.class);
+    
+    @Autowired
+    private MapToNsiHelper mapToNsiHelper;
 
     private static Object getValue(Object row, String parameterName, Integer tableCode) {
         String errorMessage = String.format("Нет такого поля %s в таблице %s", parameterName, tableCode);
@@ -31,116 +32,20 @@ public class NsiEntityMapper {
         }
         return null;
     }
-
-    public static List<AreaType> mapAreaTypes(List<EhdCatalogRow> rows) {
-        return rows.stream().map(NsiEntityMapper::mapAreaType).collect(Collectors.toList());
-    }
-
-    public static List<AreaTypeClass> mapAreaTypeClasses(List<EhdCatalogRow> rows) {
-        return rows.stream().map(NsiEntityMapper::mapAreaTypeClass).collect(Collectors.toList());
-    }
-
-    public static List<AreaTypeKind> mapAreaTypeKinds(List<EhdCatalogRow> rows) {
-        return rows.stream().map(NsiEntityMapper::mapAreaTypeKind).collect(Collectors.toList());
-    }
-
-    public static List<AreaTypeMedicalPositions> mapAreaTypeMedicalPositions(List<EhdCatalogRow> rows) {
-        return rows.stream().map(NsiEntityMapper::mapAreaTypeMedicalPosition).collect(Collectors.toList());
-    }
-
-    public static List<AreaTypeRelations> mapAreaTypeRelations(List<EhdCatalogRow> rows) {
-        return rows.stream().map(NsiEntityMapper::mapAreaTypeRelation).collect(Collectors.toList());
-    }
-
-    public static List<AreaTypeSpecializations> mapAreaTypeSpecializations(List<EhdCatalogRow> rows) {
-        return rows.stream().map(NsiEntityMapper::mapAreaTypeSpecialization).collect(Collectors.toList());
-    }
-
-    public static List<Specialization> mapSpecializations(List<EhdCatalogRow> rows) {
-        return rows.stream().map(NsiEntityMapper::mapSpecialization).collect(Collectors.toList());
-    }
-
-    public static List<PositionCode> mapPositionCodes(List<EhdCatalogRow> rows) {
-        return rows.stream().map(NsiEntityMapper::mapPositionCode).collect(Collectors.toList());
-    }
-
-    public static List<Gender> mapGenders(List<EhdCatalogRow> rows) {
-        return rows.stream().map(NsiEntityMapper::mapGender).collect(Collectors.toList());
-    }
-
-    public static AreaType mapAreaType(EhdCatalogRow row) {
-        return mapEhdCatalogRow(row, AreaType.class);
-    }
-
-    public static AreaType mapAreaType(Package row) {
-        return mapEhdCatalogRow(row, AreaType.class);
-    }
-
-    public static AreaTypeClass mapAreaTypeClass(EhdCatalogRow row) {
-        return mapEhdCatalogRow(row, AreaTypeClass.class);
-    }
-
-    public static AreaTypeClass mapAreaTypeClass(Package row) {
-        return mapEhdCatalogRow(row, AreaTypeClass.class);
-    }
-
-    public static AreaTypeKind mapAreaTypeKind(EhdCatalogRow row) {
-        return mapEhdCatalogRow(row, AreaTypeKind.class);
-    }
-
-    public static AreaTypeKind mapAreaTypeKind(Package row) {
-        return mapEhdCatalogRow(row, AreaTypeKind.class);
-    }
-
-    public static AreaTypeMedicalPositions mapAreaTypeMedicalPosition(EhdCatalogRow row) {
-        return mapEhdCatalogRow(row, AreaTypeMedicalPositions.class);
-    }
-
-    public static AreaTypeMedicalPositions mapAreaTypeMedicalPosition(Package row) {
-        return mapEhdCatalogRow(row, AreaTypeMedicalPositions.class);
-    }
-
-    public static AreaTypeRelations mapAreaTypeRelation(EhdCatalogRow row) {
-        return mapEhdCatalogRow(row, AreaTypeRelations.class);
-    }
-
-    public static AreaTypeRelations mapAreaTypeRelation(Package row) {
-        return mapEhdCatalogRow(row, AreaTypeRelations.class);
-    }
-
-    public static AreaTypeSpecializations mapAreaTypeSpecialization(EhdCatalogRow row) {
-        return mapEhdCatalogRow(row, AreaTypeSpecializations.class);
-    }
-
-    public static AreaTypeSpecializations mapAreaTypeSpecialization(Package row) {
-        return mapEhdCatalogRow(row, AreaTypeSpecializations.class);
-    }
-
-    public static Specialization mapSpecialization(EhdCatalogRow row) {
-        return mapEhdCatalogRow(row, Specialization.class);
-    }
-
-    public static Specialization mapSpecialization(Package row) {
-        return mapEhdCatalogRow(row, Specialization.class);
-    }
-
-    public static PositionCode mapPositionCode(EhdCatalogRow row) {
-        return mapEhdCatalogRow(row, PositionCode.class);
-    }
-
-    public static PositionCode mapPositionCode(Package row) {
-        return mapEhdCatalogRow(row, PositionCode.class);
-    }
-
-    public static Gender mapGender(EhdCatalogRow row) {
-        return mapEhdCatalogRow(row, Gender.class);
-    }
-
-    public static Gender mapGender(Package row) {
-        return mapEhdCatalogRow(row, Gender.class);
+    
+    public <T> List<T> mapTypedList(List<EhdCatalogRow> rows, Class<T> type) {
+        return rows.stream().map(r -> mapTyped(r, type)).collect(Collectors.toList());
     }
     
-    public static <T> T mapEhdCatalogRow(Object row, Class<T> clazz) {
+    public  <T> T mapTyped(EhdCatalogRow row, Class<T> type) {
+        return mapEhdCatalogRow(row, type);
+    }
+    
+    public  <T> T mapTyped(Package row, Class<T> type) {
+        return mapEhdCatalogRow(row, type);
+    }
+    
+    public <T> T mapEhdCatalogRow(Object row, Class<T> clazz) {
         try {
             T target = clazz.newInstance();
 
@@ -159,13 +64,15 @@ public class NsiEntityMapper {
 
                 Object value = getValue(row, parameterName, tableCode);
 
-                MapToNsiHelper.setFieldValue(field, target, value, annotation);
+                mapToNsiHelper.setFieldValue(field, target, value, annotation);
             });
 
             return target;
         } catch (RuntimeException e) {
+            LOG.error("ошибка маппинга строки", e);
             throw e;
         } catch (Exception e) {
+            LOG.error("ошибка маппинга строки", e);
             throw new IllegalStateException(e);
         }
     }
