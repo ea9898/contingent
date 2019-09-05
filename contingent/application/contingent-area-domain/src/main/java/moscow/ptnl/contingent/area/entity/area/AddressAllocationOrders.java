@@ -123,6 +123,16 @@ public class AddressAllocationOrders implements Serializable {
         this.ouz = ouz;
     }
 
+    public boolean equalsOrd(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AddressAllocationOrders that = (AddressAllocationOrders) o;
+        return Objects.equals(number, that.number) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(ouz, that.ouz) &&
+                Objects.equals(date, that.date);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

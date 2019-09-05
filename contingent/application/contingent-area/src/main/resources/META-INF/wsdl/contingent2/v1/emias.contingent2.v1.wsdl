@@ -221,6 +221,14 @@
         <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="searchAreaInput">
+        <wsdl:part name="body" element="ns1:searchAreaRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="searchAreaOutput">
+        <wsdl:part name="body" element="ns1:searchAreaResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
             <wsdl:documentation>
@@ -412,6 +420,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:getMuAvailableAreaTypesInput"/>
             <wsdl:output message="tns:getMuAvailableAreaTypesOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="searchArea">
+            <wsdl:documentation>
+                Предоставление списка участков (К_УУ_25)
+            </wsdl:documentation>
+            <wsdl:input message="tns:searchAreaInput"/>
+            <wsdl:output message="tns:searchAreaOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -743,6 +759,20 @@
 
         <wsdl:operation name="getMuAvailableAreaTypes">
             <soap:operation soapAction="getMuAvailableAreaTypes"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="searchArea">
+            <soap:operation soapAction="searchArea"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

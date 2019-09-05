@@ -63,6 +63,8 @@ import ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdResponse;
 import ru.mos.emias.contingent2.area.types.RestoreAreaRequest;
 import ru.mos.emias.contingent2.area.types.RestoreAreaResponse;
+import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
+import ru.mos.emias.contingent2.area.types.SearchAreaResponse;
 import ru.mos.emias.contingent2.area.types.SearchOrderRequest;
 import ru.mos.emias.contingent2.area.types.SearchOrderResponse;
 import ru.mos.emias.contingent2.area.types.SetMedicalEmployeeOnAreaRequest;
@@ -307,6 +309,21 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             response.getMoAddressIds().addAll(
                     areaService.addMoAddress(body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
                             body.getAddresses()));
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public SearchAreaResponse searchArea(SearchAreaRequest body) throws Fault {
+        try {
+            List<AreaInfo> areas = areaService.searchArea(body.getAreaTypeClassCode(), body.getMoId(), body.getMuIds(),
+                    body.getAreaTypeCodes(), body.getNumber(), body.getDescription(), body.isIsArchived(),
+                    body.getMedicalEmployees(), body.getAddresses());
+            SearchAreaResponse response = new SearchAreaResponse();
+            response.getAreas().addAll(areas.stream().map(area -> areaMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
             return response;
         }
         catch (Exception ex) {

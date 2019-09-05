@@ -554,4 +554,48 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="searchAreaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaTypeClassCode" type="xs:long"/>
+                <xs:element name="moId" type="xs:long"/>
+                <xs:element name="muId" type="xs:long" maxOccurs="unbounded"/>
+                <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded"/>
+                <xs:element name="number" type="xs:long"/>
+                <xs:element name="description" type="xs:string"/>
+                <xs:element name="isArchived" type="xs:boolean"/>
+                <xs:element name="medicalEmployee" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Сведения медработника. Для поиска по МР должен быть передан хотя бы один из параметров
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:choice>
+                            <xs:sequence>
+                                <xs:element name="medicalEmployeeJobInfoId" type="xs:long"/>
+                                <xs:element name="snils" type="xs:string" minOccurs="0"/>
+                            </xs:sequence>
+                            <xs:sequence>
+                                <xs:element name="medicalEmployeeJobInfoId" type="xs:long" minOccurs="0"/>
+                                <xs:element name="snils" type="xs:string" />
+                            </xs:sequence>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="address" type="address:SearchAreaAddress" maxOccurs="unbounded"/>
+                <xs:element ref="core:options" minOccurs="0"/>
+                <xs:element ref="core:pagingOptions"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchAreaResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="area" type="core:Area" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
