@@ -26,7 +26,7 @@ public enum NsiTablesEnum {
     }
 
     public static NsiTablesEnum getByName(String name) {
-        return Arrays.stream(NsiTablesEnum.values()).filter(e -> e.getCode().equals(Integer.valueOf(name))).findFirst().orElse(NsiTablesEnum.UNKNOWN);
+        return NsiTablesEnum.valueOf(name);
     }
 
     public static NsiTablesEnum getByCode(Integer code) {
