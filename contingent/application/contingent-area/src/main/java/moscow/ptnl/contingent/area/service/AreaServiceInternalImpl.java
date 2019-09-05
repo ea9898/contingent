@@ -68,6 +68,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
+import ru.mos.emias.contingent2.address.SearchAreaAddress;
+import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
@@ -311,6 +313,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         return new MuAreaTypesFull(AreaTypeStateType.AVAILABLE_TO_ADD.equals(areaTypeState) ? new ArrayList<>() : usedAreaTypes,
                 availableAreaTypes);
+    }
+
+    @Override
+    public List<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+                                     Long number, String description, Boolean isArchived,
+                                     List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
+                                     List<SearchAreaAddress> addresses) throws ContingentException {
+        return null;
     }
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа

@@ -99,7 +99,7 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     public SyncNsiResponse syncNsi(SyncNsiRequest body) throws Fault {
         Validation validation = new Validation();
 
-        NsiTablesEnum nsiTablesEnum = NsiTablesEnum.getByName(body.getCatalogCode());
+        NsiTablesEnum nsiTablesEnum = NsiTablesEnum.getByCode(Integer.valueOf(body.getCatalogCode()));
         if (NsiTablesEnum.UNKNOWN.equals(nsiTablesEnum)) {
             validation.error(NsiEhdErrorReason.CATALOG_ID_NOT_FOUND, new ValidationParameter("catalogCode", body.getCatalogCode()));
         }
