@@ -1,6 +1,7 @@
 package area.service.methods;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
+import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -96,5 +97,25 @@ public class UpdateOrderTest extends BaseTest {
         assertEquals("23", argument.getValue().getNumber());
         assertEquals(now.minusDays(1), argument.getValue().getDate());
         assertNotNull(argument.getValue().getCreateDate());
+    }
+
+    /**
+     * п.3.
+     */
+    @Test
+    public void updateOrder6Test() {
+        Throwable exception = assertThrows(ContingentException.class, () ->
+                areaServiceInternal.updateOrder(2L, null, null, null, null));
+        assertEquals(exception.getMessage(), AreaErrorReason.NOTHING_TO_CHANGE.getDescription());
+    }
+
+    /**
+     * п.4.
+     */
+    @Test
+    public void updateOrder7Test() {
+        Throwable exception = assertThrows(ContingentException.class, () ->
+                areaServiceInternal.updateOrder(2L, "2", LocalDate.now(), "", "name"));
+        assertEquals(exception.getMessage(), AreaErrorReason.NOTHING_TO_CHANGE.getDescription());
     }
 }

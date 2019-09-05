@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.model.area.AddressArea;
+import moscow.ptnl.contingent.area.util.ChangeParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
@@ -1175,13 +1176,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_19) Изменение распоряжения
     @Override
-    public void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException {
+    public void updateOrder(Long id, @ChangeParameter String number, @ChangeParameter LocalDate date,
+                            @ChangeParameter String ouz, @ChangeParameter String name) throws ContingentException {
         Validation validation = new Validation();
 
-        //1
+        // 1.
         AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
 
-        //2
+        // 2.
         if (order == null) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
                     new ValidationParameter("id", id));
@@ -1191,22 +1193,33 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
                     new ValidationParameter("id", id));
         }
+        AddressAllocationOrders oldOrder = historyService.clone(order);
 
-        //3
+        // 3. TODO переделать. Анотирует входные параметры @ChangeParameter. И один из параметров должен быть занят.
+        if (number == null && date == null && ouz == null && name == null) {
+            throw new ContingentException(AreaErrorReason.NOTHING_TO_CHANGE);
+        }
+
+        // 4.   TODO продожение п.4. делаем сравнение значений в order из БД и входных параметров.
+        //      TODO параметры анотированние как @ChangeParameter сравниваются как с подобными объекта order
+        if (Objects.deepEquals(order.getNumber(), number) &&
+                Objects.deepEquals(order.getDate(), date) &&
+                Objects.deepEquals(order.getOuz(), ouz) &&
+                Objects.deepEquals(order.getName(), name)) {
+            throw new ContingentException(AreaErrorReason.NOTHING_TO_CHANGE);
+        }
 
         //5
         if (date != null) {
             areaHelper.checkDateTillToday(date, validation);
         }
 
-        AddressAllocationOrders oldOrder = historyService.clone(order);
-
+        //6
         String numberNew = number == null ? order.getNumber() : number;
         LocalDate dateNew = date == null ? order.getDate() : date;
         String ouzNew = ouz == null ? order.getOuz() : ouz;
         String nameNew = name == null ? order.getName() : name;
 
-        //6
         if (addressAllocationOrderRepository.findAddressAllocationOrders(numberNew, dateNew, ouzNew, nameNew, false).stream()
                 .anyMatch(o -> !Objects.equals(o.getId(), id))) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_EXISTS);
