@@ -4,13 +4,25 @@ import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
+import moscow.ptnl.contingent.area.error.AreaErrorReason;
+import moscow.ptnl.contingent.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.area.model.area.AddressWrapper;
+import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
+import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
+import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
+import moscow.ptnl.contingent.area.util.Period;
+import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
+import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
+import moscow.ptnl.contingent.error.ContingentException;
+import moscow.ptnl.contingent.error.Validation;
+import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
@@ -19,20 +31,7 @@ import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyTypeEnum;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
-import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.error.ValidationParameter;
-import moscow.ptnl.contingent.area.model.area.AddressLevelType;
-import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
-import moscow.ptnl.contingent.area.model.area.NsiAddress;
-import moscow.ptnl.contingent.area.util.Period;
-import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
-import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
@@ -43,6 +42,8 @@ import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
@@ -52,6 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
+import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
@@ -59,9 +61,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -956,5 +960,38 @@ public class AreaServiceHelper {
             }
             addresses.remove(sa);
         });
+    }
+
+    public void checkSearchParameters(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+                                      Integer number, String description, Boolean isArchived,
+                                      List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
+                                      List<SearchAreaAddress> addresses) throws ContingentException {
+        if (areaTypeClassCode == null && moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && number == null
+                && description == null && isArchived == null && medicalEmployees.isEmpty() && addresses.isEmpty()) {
+            throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
+        }
+    }
+
+    public void checkSearchAreaAddresses(List<SearchAreaAddress> addresses) throws ContingentException {
+        if (addresses.stream().anyMatch(addr -> addr.getAoLevel().equals(AddressLevelType.MOSCOW.getLevel()))) {
+            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
+        }
+        ListIterator<SearchAreaAddress> iter = addresses.listIterator();
+        while (iter.hasNext()) {
+            SearchAreaAddress current = iter.next();
+            String[] areas = current.getAreaOMKTEcode().split(";");
+            String[] regions = current.getRegionOMKTEcode().split(";");
+            if (areas.length > 1) {
+                iter.remove();
+                for (String area : areas) {
+                    SearchAreaAddress copy = new SearchAreaAddress(current);
+                    copy.setAreaOMKTEcode(area);
+                    String firstTwoDigits = area.substring(0, 2);
+                    copy.setRegionOMKTEcode(Arrays.stream(regions).filter(
+                            reg -> reg.startsWith(firstTwoDigits)).findFirst().get());
+                    iter.add(current.copy());
+                }
+            }
+        }
     }
 }
