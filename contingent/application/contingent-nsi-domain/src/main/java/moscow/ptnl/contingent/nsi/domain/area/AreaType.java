@@ -50,7 +50,7 @@ public class AreaType extends CodeName implements Serializable, Keyable {
     @MapToNsi(value = "AREA_TYPE_CLASS_CODE", findEntityByField = "globalId")
     private AreaTypeClass areaTypeClass;
 
-    @Size(max = 1)
+    @Size(max = 50)
     @Column(name = "GENDER_CODE")
     @MapToNsi("GENDER_CODE")
     private String gender;
