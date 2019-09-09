@@ -41,15 +41,8 @@ import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.SyncNsiRequest;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.SyncNsiResponse;
 
 import java.util.List;
+import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeClasses;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeKinds;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeMedicalPositions;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeRelations;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapAreaTypeSpecializations;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapGenders;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapPositionCodes;
-import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapSpecializations;
 
 @Service(NsiAdminWebServiceImpl.SERVICE_NAME)
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -57,42 +50,45 @@ import static moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper.mapSpecial
 public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
     public static final String SERVICE_NAME = "NSI_ADMIN_V1";
+    
+    @Autowired
+    private NsiEntityMapper entityMapper;
 
     @Autowired
-    PushAccepter pushAccepter;
+    private PushAccepter pushAccepter;
 
     @Autowired
-    NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
+    private NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
 
     @Autowired
-    NsiServiceAsyncFasadPortType nsiService;
+    private NsiServiceAsyncFasadPortType nsiService;
 
     @Autowired
-    AreaTypesCRUDRepository areaTypesCRUDRepository;
+    private AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Autowired
-    AreaTypesClassCRUDRepository areaTypesClassCRUDRepository;
+    private AreaTypesClassCRUDRepository areaTypesClassCRUDRepository;
 
     @Autowired
-    AreaTypesKindCRUDRepository areaTypesKindCRUDRepository;
+    private AreaTypesKindCRUDRepository areaTypesKindCRUDRepository;
 
     @Autowired
-    AreaTypeMedicalPositionsCRUDRepository areaTypeMedicalPositionsCRUDRepository;
+    private AreaTypeMedicalPositionsCRUDRepository areaTypeMedicalPositionsCRUDRepository;
 
     @Autowired
-    AreaTypeRelationsCRUDRepository areaTypeRelationsCRUDRepository;
+    private AreaTypeRelationsCRUDRepository areaTypeRelationsCRUDRepository;
 
     @Autowired
-    AreaTypeSpecializationsCRUDRepository areaTypeSpecializationsCRUDRepository;
+    private AreaTypeSpecializationsCRUDRepository areaTypeSpecializationsCRUDRepository;
 
     @Autowired
-    SpecializationCRUDRepository specializationCRUDRepository;
+    private SpecializationCRUDRepository specializationCRUDRepository;
 
     @Autowired
-    PositionCodeCRUDRepository positionCodeCRUDRepository;
+    private PositionCodeCRUDRepository positionCodeCRUDRepository;
 
     @Autowired
-    GenderCRUDRepository genderCRUDRepository;
+    private GenderCRUDRepository genderCRUDRepository;
 
 
     @Override
@@ -131,41 +127,44 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
         }
 
         try {
+            
+            List<EhdCatalogRow> rows = response.getEhdCatalogItems().getRows();
+            
             switch (nsiTablesEnum) {
                 case AREA_TYPE:
-                    List<AreaType> areaTypes = NsiEntityMapper.mapAreaTypes(response.getEhdCatalogItems().getRows());
+                    List<AreaType> areaTypes = entityMapper.mapTypedList(rows, AreaType.class);
                     areaTypesCRUDRepository.saveAll(areaTypes);
                     break;
                 case AREA_TYPE_CLASS:
-                    List<AreaTypeClass> areaTypeClasses = mapAreaTypeClasses(response.getEhdCatalogItems().getRows());
+                    List<AreaTypeClass> areaTypeClasses = entityMapper.mapTypedList(rows, AreaTypeClass.class);
                     areaTypesClassCRUDRepository.saveAll(areaTypeClasses);
                     break;
                 case AREA_TYPE_KIND:
-                    List<AreaTypeKind> areaTypeKinds = mapAreaTypeKinds(response.getEhdCatalogItems().getRows());
+                    List<AreaTypeKind> areaTypeKinds = entityMapper.mapTypedList(rows, AreaTypeKind.class);
                     areaTypesKindCRUDRepository.saveAll(areaTypeKinds);
                     break;
                case AREA_TYPE_MEDICAL_POSITIONS:
-                    List<AreaTypeMedicalPositions> areaTypeMedicalPositions = mapAreaTypeMedicalPositions(response.getEhdCatalogItems().getRows());
+                    List<AreaTypeMedicalPositions> areaTypeMedicalPositions = entityMapper.mapTypedList(rows, AreaTypeMedicalPositions.class);
                     areaTypeMedicalPositionsCRUDRepository.saveAll(areaTypeMedicalPositions);
                     break;
                 case AREA_TYPE_RELATIONS:
-                    List<AreaTypeRelations> areaTypeRelations = mapAreaTypeRelations(response.getEhdCatalogItems().getRows());
+                    List<AreaTypeRelations> areaTypeRelations = entityMapper.mapTypedList(rows, AreaTypeRelations.class);
                     areaTypeRelationsCRUDRepository.saveAll(areaTypeRelations);
                     break;
                 case AREA_TYPE_SPECIALIZATIONS:
-                    List<AreaTypeSpecializations> areaTypeSpecializations = mapAreaTypeSpecializations(response.getEhdCatalogItems().getRows());
+                    List<AreaTypeSpecializations> areaTypeSpecializations = entityMapper.mapTypedList(rows, AreaTypeSpecializations.class);
                     areaTypeSpecializationsCRUDRepository.saveAll(areaTypeSpecializations);
                     break;
                 case SPECIALIZATIONS:
-                    List<Specialization> specializations = mapSpecializations(response.getEhdCatalogItems().getRows());
+                    List<Specialization> specializations = entityMapper.mapTypedList(rows, Specialization.class);
                     specializationCRUDRepository.saveAll(specializations);
                     break;
                 case POSITION_CODE:
-                    List<PositionCode> positionCodes = mapPositionCodes(response.getEhdCatalogItems().getRows());
+                    List<PositionCode> positionCodes = entityMapper.mapTypedList(rows, PositionCode.class);
                     positionCodeCRUDRepository.saveAll(positionCodes);
                     break;
                 case GENDER:
-                    List<Gender> genders = mapGenders(response.getEhdCatalogItems().getRows());
+                    List<Gender> genders = entityMapper.mapTypedList(rows, Gender.class);
                     genderCRUDRepository.saveAll(genders);
                     break;
             }

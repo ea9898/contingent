@@ -30,12 +30,12 @@ public class AreaTypeRelations implements Serializable, Keyable {
 
     @JoinColumn(name = "DEPENDENT_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapToNsi(value="DEPENDENT_AREA_TYPE_CODE", entityKeyName = "code")
+    @MapToNsi(value="DEPENDENT_AREA_TYPE_CODE", findEntityByField = "globalId")
     private AreaType dependentAreaType;
 
     @JoinColumn(name = "PRIMARY_AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapToNsi(value="PRIMARY_AREA_TYPE_CODE", entityKeyName = "code")
+    @MapToNsi(value="PRIMARY_AREA_TYPE_CODE", findEntityByField = "globalId")
     private AreaType primaryAreaType;
 
     @Column(name = "ARCHIVED")

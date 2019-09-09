@@ -1268,4 +1268,12 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-NSI-290-1" author="mkachalov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE" columnName="GENDER_CODE" />
+        </preConditions>
+        <comment>Изменение длины поля GENDER_CODE таблицы AREA_TYPE</comment>
+        <modifyDataType columnName="GENDER_CODE" newDataType="VARCHAR2(50)" tableName="AREA_TYPE"/>
+    </changeSet>
+
 </databaseChangeLog>
