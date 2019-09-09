@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.repository.area;
 
+import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees_;
 import moscow.ptnl.contingent.repository.BaseRepository;
@@ -9,8 +10,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
@@ -77,5 +82,24 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
             specification = specification.and(mainEmployeesSpec());
         }
         return areaMedicalEmployeeCRUDRepository.findAll(specification);
+    }
+
+    @Override
+    public List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<AreaMedicalEmployees> criteria = criteriaBuilder.createQuery(AreaMedicalEmployees.class);
+        Root<AreaMedicalEmployees> root = criteria.from(AreaMedicalEmployees.class);
+        criteria.select(root);
+        criteria.where(
+                criteriaBuilder.and(
+                        areaIds == null || areaIds.isEmpty() ? criteriaBuilder.conjunction() :
+                                root.get(AreaMedicalEmployees_.area).in(areaIds),
+                        jobIds == null || jobIds.isEmpty() ? criteriaBuilder.conjunction() :
+                                root.get(AreaMedicalEmployees_.medicalEmployeeJobId).in(jobIds),
+                        snils == null || snils.isEmpty() ? criteriaBuilder.conjunction() :
+                                root.get(AreaMedicalEmployees_.snils).in(snils))
+        );
+        return entityManager.createQuery(criteria).getResultList().
+                stream().map(AreaMedicalEmployees::getArea).collect(Collectors.toList());
     }
 }

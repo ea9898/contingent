@@ -75,4 +75,11 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
 
         return areaAddressCRUDRepository.findAll(specification.and(activeAreaAddressesSpec()));
     }
+
+    @Override
+    public List<AreaAddress> findActualAreaAddress() {
+        Specification<AreaAddress> specification = (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.greaterThanOrEqualTo(root.get(AreaAddress_.endDate), LocalDate.now());
+        return areaAddressCRUDRepository.findAll(specification);
+    }
 }

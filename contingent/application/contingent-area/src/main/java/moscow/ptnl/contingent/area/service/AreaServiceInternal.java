@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
@@ -10,7 +11,6 @@ import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
-import ru.mos.emias.contingent2.address.SearchAreaAddress;
 import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
@@ -80,7 +80,7 @@ public interface AreaServiceInternal {
 
     MuAreaTypesFull getMuAvailableAreaTypes(long moId, long muId, AreaTypeStateType areaTypeState) throws ContingentException;
 
-    List<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
-                        Long number, String description, Boolean isArchived, List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
-                        List<SearchAreaAddress> addresses) throws ContingentException;
+    Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+                        Integer number, String description, Boolean isArchived, List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
+                        List<SearchAreaAddress> addresses, Boolean isExactAddressMatch, PageRequest paging) throws ContingentException;
 }

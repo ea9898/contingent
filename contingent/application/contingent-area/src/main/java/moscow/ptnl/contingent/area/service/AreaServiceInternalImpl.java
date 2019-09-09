@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.model.area.AddressArea;
+import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.util.ChangeParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
@@ -68,7 +69,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
-import ru.mos.emias.contingent2.address.SearchAreaAddress;
 import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
@@ -316,10 +316,32 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     @Override
-    public List<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
-                                     Long number, String description, Boolean isArchived,
+    public Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+                                     Integer number, String description, Boolean isArchived,
                                      List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
-                                     List<SearchAreaAddress> addresses) throws ContingentException {
+                                     List<SearchAreaAddress> addresses, Boolean isExactAddressMatch,
+                                     PageRequest paging) throws ContingentException {
+        //1
+        areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
+                isArchived, medicalEmployees, addresses);
+        //2
+        areaHelper.checkSearchAreaAddresses(addresses);
+
+        //3.1
+        List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description, isArchived);
+
+        //3.2
+        if (!medicalEmployees.isEmpty()) {
+            areas = areaMedicalEmployeeRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
+                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getMedicalEmployeeJobInfoId).collect(Collectors.toList()),
+                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getSnils).collect(Collectors.toList()));
+        }
+
+        //3.3
+        List<AreaAddress> areaAddresses = areaAddressRepository.findActualAreaAddress();
+        if (isExactAddressMatch == null || isExactAddressMatch) {
+
+        }
         return null;
     }
 

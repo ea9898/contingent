@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.ws.v1;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
@@ -319,11 +320,17 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public SearchAreaResponse searchArea(SearchAreaRequest body) throws Fault {
         try {
-            List<AreaInfo> areas = areaService.searchArea(body.getAreaTypeClassCode(), body.getMoId(), body.getMuIds(),
-                    body.getAreaTypeCodes(), body.getNumber(), body.getDescription(), body.isIsArchived(),
-                    body.getMedicalEmployees(), body.getAddresses());
+            Page<AreaInfo> areas = areaService.searchArea(body.getAreaTypeClassCode(), body.getMoId(),
+                    body.getMuIds() == null ? Collections.EMPTY_LIST : body.getMuIds(),
+                    body.getAreaTypeCodes() == null ? Collections.EMPTY_LIST : body.getAreaTypeCodes(),
+                    body.getNumber(), body.getDescription(), body.isIsArchived(),
+                    body.getMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getMedicalEmployees(),
+                    body.getAddresses() == null ? Collections.EMPTY_LIST : body.getAddresses().stream().map(SearchAreaAddress::new).collect(Collectors.toList()),
+                    body.isIsExactAddressMatch(),
+                    body.getPagingOptions() == null ? null : pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             SearchAreaResponse response = new SearchAreaResponse();
             response.getAreas().addAll(areas.stream().map(area -> areaMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
+            soapCustomMapper.mapPagingResults(response, areas);
             return response;
         }
         catch (Exception ex) {
