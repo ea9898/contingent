@@ -515,6 +515,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         Area oldArea = historyService.clone(area);
+        
+        //3 Система проверяет, что передан хотя бы один параметр для изменения, иначе возвращает ошибку
+        areaHelper.checkAreaParametersForUpdate(number, policyTypesAddIds, policyTypesDelIds, 
+            ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, 
+            autoAssignForAttachment, attachByMedicalReason, description, validation);
+        
+        //4 Система проверяет, что переданные параметры изменены, иначе возвращает ошибку
+        List<PolicyType> policyTypesAdd = policyTypeRepository.findByIds(policyTypesAddIds);
+        List<PolicyType> policyTypesDel = policyTypeRepository.findByIds(policyTypesDelIds);
+        areaHelper.checkAreaParametersForUpdateChanged(area, number, 
+            policyTypesAdd, policyTypesDel, ageMin, ageMax, ageMinM, ageMaxM, 
+            ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, 
+            description, validation);
 
         // 3
         if (number != null) {
@@ -525,7 +538,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.checkPolicyTypesIsOMS(policyTypesAddIds, validation);
 
         // 5
-        List<PolicyType> policyTypesDel = policyTypeRepository.findByIds(policyTypesDelIds);
         areaHelper.checkPolicyTypesDel(area, policyTypesDel, validation);
 
         // 6
@@ -557,7 +569,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaCRUDRepository.save(area);
 
         // 10
-        List<PolicyType> policyTypesAdd = policyTypeRepository.findByIds(policyTypesAddIds);
         areaHelper.saveAndDeleteAreaPolicyTypes(area, policyTypesAdd, policyTypesDel);
 
         // Логирование изменений

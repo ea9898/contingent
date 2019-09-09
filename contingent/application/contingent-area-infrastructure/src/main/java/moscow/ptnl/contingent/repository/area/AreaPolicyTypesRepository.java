@@ -10,6 +10,8 @@ import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 public interface AreaPolicyTypesRepository {
 
     List<AreaPolicyTypes> findAll(Area area, PolicyType policyTypeCode);
+    
+    List<AreaPolicyTypes> findAll(Area area, List<PolicyType> policyTypes);
 
     void deleteAll(Area area, List<PolicyType> areaPolicyTypesAdd);
 }

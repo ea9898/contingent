@@ -30,6 +30,17 @@ public class AreaPolicyTypesRepositoryImpl extends BaseRepository implements Are
                         criteriaBuilder.equal(root.get(AreaPolicyTypes_.policyType), policyType));
         return areaPolicyTypesCRUDRepository.findAll(specification);
     }
+    
+    @Override
+    public List<AreaPolicyTypes> findAll(Area area, List<PolicyType> policyTypes) {
+        Specification<AreaPolicyTypes> specification = (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(root.get(AreaPolicyTypes_.area), area),
+                        root.get(AreaPolicyTypes_.policyType).in(policyTypes)
+                );
+        
+        return areaPolicyTypesCRUDRepository.findAll(specification);
+    }
 
     @Override
     public void deleteAll(Area area, List<PolicyType> areaPolicyTypesDel) {

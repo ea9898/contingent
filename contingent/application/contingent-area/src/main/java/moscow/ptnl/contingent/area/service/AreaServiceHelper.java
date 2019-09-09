@@ -71,6 +71,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import moscow.ptnl.util.CollectionsUtil;
 
 @Component
 public class AreaServiceHelper {
@@ -368,6 +369,92 @@ public class AreaServiceHelper {
                     new ValidationParameter("areaType", areaType.getTitle()),
                     new ValidationParameter("number", number));
         }
+    }
+    
+    //Система проверяет, что передан хотя бы один параметр для изменения, иначе возвращает ошибку - С_УУ_101
+    public void checkAreaParametersForUpdate(Integer number, 
+            List<Long> policyTypesAddIds, List<Long> policyTypesDelIds, 
+            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, 
+            Integer ageMinW, Integer ageMaxW, 
+            Boolean autoAssignForAttachment, Boolean attachByMedicalReason, 
+            String description,
+            Validation validation) {
+        if (number != null) 
+            return;
+        if (policyTypesAddIds != null && !policyTypesAddIds.isEmpty())
+            return;
+        if (policyTypesDelIds != null && !policyTypesDelIds.isEmpty())
+            return;
+        if (ageMin != null)
+            return;
+        if (ageMax != null)
+            return;
+        if (ageMinM != null)
+            return;
+        if (ageMaxM != null)
+            return;
+        if (ageMinW != null)
+            return;
+        if (ageMaxW != null)
+            return;
+        if (autoAssignForAttachment != null)
+            return;
+        if (attachByMedicalReason != null)
+            return;
+        if (description != null)
+            return;
+        
+        validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
+    }
+    
+    //Система проверяет, что переданные параметры изменены, иначе возвращает ошибку.
+    //Если значение входного параметра не соответствует значению, сохранённому в БД, значит данный параметр был изменен
+    public void checkAreaParametersForUpdateChanged(Area area, Integer number, 
+            List<PolicyType> policyTypesAdd, List<PolicyType> policyTypesDel, 
+            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, 
+            Integer ageMinW, Integer ageMaxW, 
+            Boolean autoAssignForAttachment, Boolean attachByMedicalReason, 
+            String description, Validation validation) {
+        
+        if (!Objects.equals(area.getNumber(), number))
+            return;
+        if (!Objects.equals(area.getAgeMin(), ageMin))
+            return;
+        if (!Objects.equals(area.getAgeMax(), ageMax))
+            return;
+        if (!Objects.equals(area.getAgeMMin(), ageMinM))
+            return;
+        if (!Objects.equals(area.getAgeMMax(), ageMaxM))
+            return;
+        if (!Objects.equals(area.getAgeWMin(), ageMinW))
+            return;
+        if (!Objects.equals(area.getAgeWMax(), ageMaxW))
+            return;
+        if (!Objects.equals(area.getAutoAssignForAttach(), autoAssignForAttachment))
+            return;
+        if (!Objects.equals(area.getAttachByMedicalReason(), attachByMedicalReason))
+            return;
+        if (!Objects.equals(area.getDescription(), description))
+            return;
+        
+        //если есть что удалять
+        if (!CollectionsUtil.isNullOrEmpty(policyTypesDel)) {
+            if (!areaPolicyTypesRepository.findAll(area, policyTypesDel).isEmpty()) 
+                return;
+        }
+        
+        //если есть что добавлять
+        if (!CollectionsUtil.isNullOrEmpty(policyTypesAdd)) {
+            if (!areaPolicyTypesRepository.findAll(area, policyTypesAdd)
+                    .stream()
+                    .map(apt -> apt.getPolicyType())
+                    .collect(Collectors.toList())
+                    .containsAll(policyTypesAdd)) {
+                return;
+            }            
+        }        
+        
+        validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
     }
 
     public void checkOrderExists(long orderId, Validation validation) {
