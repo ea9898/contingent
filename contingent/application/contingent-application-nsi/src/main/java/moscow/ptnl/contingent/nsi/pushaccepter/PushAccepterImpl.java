@@ -62,7 +62,7 @@ public class PushAccepterImpl extends PushAccepter {
             case AREA_TYPE_SPECIALIZATIONS:
                 pushEventEntity = entityMapper.mapTyped(pack, AreaTypeSpecializations.class);
                 break;
-            case SPECIALIZATIONS:
+            case SPECIALIZATION:
                 pushEventEntity = entityMapper.mapTyped(pack, Specialization.class);
                 break;
             case POSITION_CODE:

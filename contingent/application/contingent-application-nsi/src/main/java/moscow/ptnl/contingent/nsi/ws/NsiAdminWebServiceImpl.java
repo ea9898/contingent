@@ -155,7 +155,7 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                     List<AreaTypeSpecializations> areaTypeSpecializations = entityMapper.mapTypedList(rows, AreaTypeSpecializations.class);
                     areaTypeSpecializationsCRUDRepository.saveAll(areaTypeSpecializations);
                     break;
-                case SPECIALIZATIONS:
+                case SPECIALIZATION:
                     List<Specialization> specializations = entityMapper.mapTypedList(rows, Specialization.class);
                     specializationCRUDRepository.saveAll(specializations);
                     break;

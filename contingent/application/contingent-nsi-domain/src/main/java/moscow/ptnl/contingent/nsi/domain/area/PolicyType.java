@@ -10,25 +10,30 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 
 @Entity
 @Table(name = "POLICY_TYPE")
 @Cacheable
+@MapToNsi(table = NsiTablesEnum.POLICY_TYPE)
 public class PolicyType implements Serializable {
 
     private static final long serialVersionUID = -1047920444396677745L;
 
     @Id
     @Column(name = "CODE", unique = true, nullable = false)
+    @MapToNsi
     private Long code;
 
     @Size(max = 100)
     @Column(name = "TITLE")
+    @MapToNsi
     private String title;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
     private Boolean archived;
 
     @Column(name = "GLOBAL_ID")
