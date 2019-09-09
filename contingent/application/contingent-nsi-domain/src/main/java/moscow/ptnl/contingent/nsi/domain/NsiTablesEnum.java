@@ -14,7 +14,7 @@ public enum NsiTablesEnum {
     SPECIALIZATION(1115),
     POSITION_CODE(1128),
     GENDER(1122),
-    POLICY_TYPE(1148);
+    POLICY_TYPE(1140);
 
     private final Integer code;
 

@@ -10,6 +10,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
+import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
@@ -70,6 +71,9 @@ public class PushAccepterImpl extends PushAccepter {
                 break;
             case GENDER:
                 pushEventEntity = entityMapper.mapTyped(pack, Gender.class);
+                break;
+            case POLICY_TYPE:
+                pushEventEntity = entityMapper.mapTyped(pack, PolicyType.class);
                 break;
         }
         nsiChannel.send(MessageBuilder

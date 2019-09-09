@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
+import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.error.ContingentException;
@@ -16,6 +17,7 @@ import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.error.NsiEhdErrorReason;
 import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
+import moscow.ptnl.contingent.nsi.repository.PolicyTypeCRUDRepository;
 import moscow.ptnl.contingent.nsi.transform.SoapExceptionMapper;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsCRUDRepository;
@@ -32,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mos.emias.nsiproduct.core.v1.EhdCatalog;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsRequest;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsResponse;
 import ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.NsiServiceAsyncFasadPortType;
@@ -90,6 +93,9 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     @Autowired
     private GenderCRUDRepository genderCRUDRepository;
 
+    @Autowired
+    private PolicyTypeCRUDRepository policyTypeCRUDRepository;
+
 
     @Override
     public SyncNsiResponse syncNsi(SyncNsiRequest body) throws Fault {
@@ -147,25 +153,29 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                     List<AreaTypeMedicalPositions> areaTypeMedicalPositions = entityMapper.mapTypedList(rows, AreaTypeMedicalPositions.class);
                     areaTypeMedicalPositionsCRUDRepository.saveAll(areaTypeMedicalPositions);
                     break;
-                case AREA_TYPE_RELATIONS:
+               case AREA_TYPE_RELATIONS:
                     List<AreaTypeRelations> areaTypeRelations = entityMapper.mapTypedList(rows, AreaTypeRelations.class);
                     areaTypeRelationsCRUDRepository.saveAll(areaTypeRelations);
                     break;
-                case AREA_TYPE_SPECIALIZATIONS:
+               case AREA_TYPE_SPECIALIZATIONS:
                     List<AreaTypeSpecializations> areaTypeSpecializations = entityMapper.mapTypedList(rows, AreaTypeSpecializations.class);
                     areaTypeSpecializationsCRUDRepository.saveAll(areaTypeSpecializations);
                     break;
-                case SPECIALIZATION:
+               case SPECIALIZATION:
                     List<Specialization> specializations = entityMapper.mapTypedList(rows, Specialization.class);
                     specializationCRUDRepository.saveAll(specializations);
                     break;
-                case POSITION_CODE:
+               case POSITION_CODE:
                     List<PositionCode> positionCodes = entityMapper.mapTypedList(rows, PositionCode.class);
                     positionCodeCRUDRepository.saveAll(positionCodes);
                     break;
-                case GENDER:
+               case GENDER:
                     List<Gender> genders = entityMapper.mapTypedList(rows, Gender.class);
                     genderCRUDRepository.saveAll(genders);
+                    break;
+               case POLICY_TYPE:
+                    List<PolicyType> policyTypes = entityMapper.mapTypedList(rows, PolicyType.class);
+                    policyTypeCRUDRepository.saveAll(policyTypes);
                     break;
             }
         } catch (Exception e) {

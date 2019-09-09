@@ -28,7 +28,7 @@ public class PolicyType implements Serializable {
 
     @Size(max = 100)
     @Column(name = "TITLE")
-    @MapToNsi
+    @MapToNsi("TITLE")
     private String title;
 
     @Column(name = "ARCHIVED", nullable = false)
