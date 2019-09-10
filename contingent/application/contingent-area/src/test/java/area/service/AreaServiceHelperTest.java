@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import moscow.ptnl.contingent.area.error.AreaErrorReason;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
@@ -76,6 +77,7 @@ public class AreaServiceHelperTest {
     private AreaPolicyTypes areaPolicyType;
     private Long moId = 204L;
     private Long muId = 100L;
+    private Integer areaPrimary1Number = 123;
 
     @BeforeEach
     public void setup() {
@@ -101,7 +103,7 @@ public class AreaServiceHelperTest {
         areaTypeDependent1.setAreaTypeClass(areaTypeClass2);
         areaTypeDependent1.setAreaCountLimit(3);
         areaPrimary1 = new Area(3L, moId, null, areaTypePrimary1, false, LocalDateTime.now());
-        areaPrimary1.setNumber(123);
+        areaPrimary1.setNumber(areaPrimary1Number);
         areaDependent1 = new Area(5L, moId, null, areaTypeDependent1, false, LocalDateTime.now());
         areaDependent1.setNumber(124);
         areaDependent1.setAgeMin(1);
@@ -303,6 +305,106 @@ public class AreaServiceHelperTest {
         validation.reset();
         assertDoesNotThrow(() -> areaServiceHelper.checkAttachByMedicalReason(areaTypePrimary1, true, validation));
         assertDoesNotThrow(() -> areaServiceHelper.checkAttachByMedicalReason(areaTypeDependent1, null, validation));
+    }
+    
+    @Test
+    void checkAreaParametersForUpdate() {
+        Validation validation = new Validation();
+        Throwable exception = assertThrows(ContingentException.class, () -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, null, null, null, null, null, null, null, null, null, validation);
+            throwValidation(validation);
+        }); 
+        assertEquals(exception.getMessage(), AreaErrorReason.NOTHING_TO_CHANGE.getDescription());
+        validation.reset();
+        
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(1, null, null, null, null, null, null, null, null, null, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, Collections.singletonList(1L), null, null, null, null, null, null, null, null, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, Collections.singletonList(1L), null, null, null, null, null, null, null, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, 1, null, null, null, null, null, null, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, null, 1, null, null, null, null, null, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, null, null, 1, null, null, null, null, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, null, null, null, 1, null, null, null, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, null, null, null, null, 1, null, null, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, null, null, null, null, null, 1, null, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, null, null, null, null, null, null, true, null, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, null, null, null, null, null, null, null, true, null, validation);
+            throwValidation(validation);
+        });
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdate(null, null, null, null, null, null, null, null, null, null, null, "", validation);
+            throwValidation(validation);
+        });
+    }
+    
+    @Test
+    void checkAreaParametersForUpdateChanged() {
+        doReturn(Collections.singletonList(areaPolicyType)).when(areaPolicyTypesRepository).findAll(areaPrimary1, Arrays.asList(policyType1));
+        doReturn(Collections.singletonList(areaPolicyType)).when(areaPolicyTypesRepository).findAll(areaPrimary1, Arrays.asList(policyType1, policyType2));
+        Validation validation = new Validation();
+        Throwable exception = assertThrows(ContingentException.class, () -> {
+            areaServiceHelper.checkAreaParametersForUpdateChanged(
+                areaPrimary1, areaPrimary1.getNumber(), 
+                Arrays.asList(policyType1), Arrays.asList(policyType2), 
+                areaPrimary1.getAgeMin(), areaPrimary1.getAgeMax(), areaPrimary1.getAgeMMin(), areaPrimary1.getAgeMMax(), 
+                areaPrimary1.getAgeWMin(), areaPrimary1.getAgeWMax(), areaPrimary1.getAutoAssignForAttach(), areaPrimary1.getAttachByMedicalReason(), 
+                areaPrimary1.getDescription(), validation);
+            throwValidation(validation);
+        });
+        assertEquals(exception.getMessage(), AreaErrorReason.NOTHING_TO_CHANGE.getDescription());
+        validation.reset();
+        
+        //есть типы для удаления
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdateChanged(
+                areaPrimary1, areaPrimary1.getNumber(), 
+                Arrays.asList(policyType1), Arrays.asList(policyType1, policyType2), 
+                areaPrimary1.getAgeMin(), areaPrimary1.getAgeMax(), areaPrimary1.getAgeMMin(), areaPrimary1.getAgeMMax(), 
+                areaPrimary1.getAgeWMin(), areaPrimary1.getAgeWMax(), areaPrimary1.getAutoAssignForAttach(), areaPrimary1.getAttachByMedicalReason(), 
+                areaPrimary1.getDescription(), validation);
+            throwValidation(validation);
+        });
+        
+        //есть типы для добавления
+        assertDoesNotThrow(() -> {
+            areaServiceHelper.checkAreaParametersForUpdateChanged(
+                areaPrimary1, areaPrimary1.getNumber(), 
+                Arrays.asList(policyType1, policyType2), Arrays.asList(policyType1), 
+                areaPrimary1.getAgeMin(), areaPrimary1.getAgeMax(), areaPrimary1.getAgeMMin(), areaPrimary1.getAgeMMax(), 
+                areaPrimary1.getAgeWMin(), areaPrimary1.getAgeWMax(), areaPrimary1.getAutoAssignForAttach(), areaPrimary1.getAttachByMedicalReason(), 
+                areaPrimary1.getDescription(), validation);
+            throwValidation(validation);
+        });
     }
 
     private void throwValidation(Validation validation) throws ContingentException {

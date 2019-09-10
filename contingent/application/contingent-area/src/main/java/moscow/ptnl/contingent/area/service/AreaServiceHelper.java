@@ -381,9 +381,9 @@ public class AreaServiceHelper {
             Validation validation) {
         if (number != null) 
             return;
-        if (policyTypesAddIds != null && !policyTypesAddIds.isEmpty())
+        if (!CollectionsUtil.isNullOrEmpty(policyTypesAddIds))
             return;
-        if (policyTypesDelIds != null && !policyTypesDelIds.isEmpty())
+        if (!CollectionsUtil.isNullOrEmpty(policyTypesDelIds))
             return;
         if (ageMin != null)
             return;

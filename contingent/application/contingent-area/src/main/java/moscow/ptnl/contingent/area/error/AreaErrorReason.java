@@ -79,9 +79,11 @@ public enum AreaErrorReason implements ErrorReason {
         this.description = description;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
+    @Override
     public String getCode() {
         return code;
     }
