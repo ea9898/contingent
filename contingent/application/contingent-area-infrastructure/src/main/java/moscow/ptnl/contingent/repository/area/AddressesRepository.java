@@ -11,4 +11,5 @@ import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
 public interface AddressesRepository {
 
 	List<Addresses> findAddresses(long level, NsiBuildingRegistry buildingRegistry, NsiAddressFormingElement addressFormingElement);
+	List<Addresses> findAddresses(List<Long> areaAddressId, List<Long> nsiGlobalId);
 }

@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.model.area.AddressArea;
+import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
@@ -318,13 +319,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
                                      Integer number, String description, Boolean isArchived,
                                      List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
-                                     List<SearchAreaAddress> addresses, Boolean isExactAddressMatch,
+                                     List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch,
                                      PageRequest paging) throws ContingentException {
         //1
         areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
-                isArchived, medicalEmployees, addresses);
+                isArchived, medicalEmployees, searchAreaAddresses);
         //2
-        areaHelper.checkSearchAreaAddresses(addresses);
+        areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
 
         //3.1
         List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description, isArchived);
@@ -336,12 +337,29 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getSnils).collect(Collectors.toList()));
         }
 
-        //3.3
+        //3.3.1
         List<AreaAddress> areaAddresses = areaAddressRepository.findActualAreaAddress();
+        //3.3.2
+        List<Addresses> addresses;
         if (isExactAddressMatch == null || isExactAddressMatch) {
-
+            addresses = addressesRepository.findAddresses(areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList()),
+                    searchAreaAddresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
+        //3.3.3
+        } else {
+            //TODO nsiAddresse
+            addresses = algorithms.findIntersectingAddressesSearch(Collections.EMPTY_LIST,
+                    searchAreaAddresses.stream().map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
         }
-        return null;
+        //3.3.4
+        if (!addresses.isEmpty()) {
+            areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
+            List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
+            areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
+        }
+
+        List<AreaInfo> areaInfos = areas.stream().map(AreaInfo::new).collect(Collectors.toList());
+        return new PageImpl<>(new ArrayList<>(areaInfos),
+                paging, areaInfos.size());
     }
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
