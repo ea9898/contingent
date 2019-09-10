@@ -51,7 +51,7 @@
             <column name="CODE" type="VARCHAR2(100)">
                 <constraints nullable="false" />
             </column>
-            <column name="CONSTANT_TITLE" type="VARCHAR2(250)">
+            <column name="CONSTANT_TITLE" type="VARCHAR2(255)">
                 <constraints nullable="false" />
             </column>
         </createTable>
