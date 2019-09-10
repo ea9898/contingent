@@ -9,6 +9,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
+import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
@@ -18,6 +19,7 @@ import moscow.ptnl.contingent.nsi.error.NsiEhdErrorReason;
 import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
 import moscow.ptnl.contingent.nsi.repository.PolicyTypeCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionNomCRUDRepository;
 import moscow.ptnl.contingent.nsi.transform.SoapExceptionMapper;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsCRUDRepository;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalog;
+import ru.mos.emias.nsiproduct.core.v1.PagingOptions;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsRequest;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsResponse;
 import ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.NsiServiceAsyncFasadPortType;
@@ -43,6 +46,7 @@ import ru.mos.emias.pushaccepterproduct.adminservice.v1.Fault;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.SyncNsiRequest;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.SyncNsiResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 
@@ -96,6 +100,8 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     @Autowired
     private PolicyTypeCRUDRepository policyTypeCRUDRepository;
 
+    @Autowired
+    private PositionNomCRUDRepository positionNomCRUDRepository;
 
     @Override
     public SyncNsiResponse syncNsi(SyncNsiRequest body) throws Fault {
@@ -112,30 +118,37 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
         GetCatalogItemsRequest catalogDataRequest = new GetCatalogItemsRequest();
         catalogDataRequest.setIdCatalog(nsiTablesEnum.getCode());
-
         GetCatalogItemsResponse response = null;
-        try {
-            response = nsiService.getCatalogItems(catalogDataRequest);
-        } catch (Exception e) {
-            if (e.getMessage() == null) {
-                validation.error(NsiEhdErrorReason.CANNOT_UPDATE_DICT);
-            } else {
-                validation.error(NsiEhdErrorReason.UNEXPECTED_ERROR, new ValidationParameter("error", e.getMessage()));
-            }
-        } finally {
-            if (response == null && validation.isSuccess()) {
-                validation.error(NsiEhdErrorReason.CANNOT_UPDATE_DICT);
-            }
-        }
+        PagingOptions pagingOptions = new PagingOptions();
+        pagingOptions.setPageSize(100);
+        int pageNum = 1;
+        List<EhdCatalogRow> rows = new ArrayList<>();
 
-        if (!validation.isSuccess()) {
-            throw SoapExceptionMapper.map(new ContingentException(validation));
-        }
+        do {
+            pagingOptions.setPageNumber(pageNum);
+            catalogDataRequest.setPagingOptions(pagingOptions);
+            try {
+                response = nsiService.getCatalogItems(catalogDataRequest);
+            } catch (Exception e) {
+                if (e.getMessage() == null) {
+                    validation.error(NsiEhdErrorReason.CANNOT_UPDATE_DICT);
+                } else {
+                    validation.error(NsiEhdErrorReason.UNEXPECTED_ERROR, new ValidationParameter("error", e.getMessage()));
+                }
+            } finally {
+                if (response == null && validation.isSuccess()) {
+                    validation.error(NsiEhdErrorReason.CANNOT_UPDATE_DICT);
+                }
+            }
+
+            if (!validation.isSuccess()) {
+                throw SoapExceptionMapper.map(new ContingentException(validation));
+            }
+            pageNum++;
+            rows.addAll(response.getEhdCatalogItems().getRows());
+        } while (response.getPageNumber() <= response.getPageTotal());
 
         try {
-            
-            List<EhdCatalogRow> rows = response.getEhdCatalogItems().getRows();
-            
             switch (nsiTablesEnum) {
                 case AREA_TYPE:
                     List<AreaType> areaTypes = entityMapper.mapTypedList(rows, AreaType.class);
@@ -176,6 +189,10 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                case POLICY_TYPE:
                     List<PolicyType> policyTypes = entityMapper.mapTypedList(rows, PolicyType.class);
                     policyTypeCRUDRepository.saveAll(policyTypes);
+                    break;
+                case D_POSITION_NOM:
+                    List<PositionNom> positionNoms = entityMapper.mapTypedList(rows, PositionNom.class);
+                    positionNomCRUDRepository.saveAll(positionNoms);
                     break;
             }
         } catch (Exception e) {

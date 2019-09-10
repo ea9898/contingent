@@ -13,7 +13,7 @@
         </preConditions>
         <comment>Создание таблицы SPECIALIZATION</comment>
         <createTable tableName="SPECIALIZATION">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="TITLE" type="VARCHAR2(100)">
@@ -28,6 +28,7 @@
             <dropTable tableName="SPECIALIZATION"/>
         </rollback>
     </changeSet>
+
     <!-- !!!! SPECIALIZATION !!!! -->
 
     <!-- POSITION_CODE -->
@@ -121,18 +122,20 @@
         </rollback>
     </changeSet>
 
+<!--
     <changeSet id="CONTINGENT2-NSI-2-1" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="SPECIALIZATION" columnName="ID" />
+            <columnExists tableName="SPECIALIZATION" columnName="GLOBAL_ID" />
             <columnExists tableName="POSITION_NOM" columnName="SPECIALIZATION_ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_POSITION_NOM_SPECIALIZATION_01</comment>
         <addForeignKeyConstraint baseColumnNames="SPECIALIZATION_ID"
                                  baseTableName="POSITION_NOM"
                                  constraintName="FK_POSITION_NOM_SPECIALIZATION_01"
-                                 referencedColumnNames="ID"
+                                 referencedColumnNames="GLOBAL_ID"
                                  referencedTableName="SPECIALIZATION"/>
     </changeSet>
+-->
 
     <changeSet id="CONTINGENT2-NSI-2-2" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
@@ -278,7 +281,7 @@
             <column name="ATTACH_BY_REQUEST" type="NUMBER(1)" remarks="Прикрепление по заявлению"/>
             <column name="MPGU_AVAILABLE" type="NUMBER(1)" remarks="Возможно прикрепление через МПГУ"/>
             <column name="AREA_COUNT_LIMIT_CODE" type="NUMBER(4)" remarks="Ограничение количества участков"/>
-            <column name="GENDER_CODE" type="VARCHAR2(1)" remarks="Пол, 0 - любой, 1 - м, 2- ж" />
+            <column name="GENDER_CODE" type="VARCHAR2(50)" remarks="Пол" />
             <column name="RESIDENTS_BIND_RATE" type="NUMBER(8)" remarks="Норма прикрепления	" />
             <column name="AGE_MIN" type="SMALLINT" remarks="Возраст мин" />
             <column name="AGE_MAX" type="SMALLINT" remarks="Возраст макс" />
@@ -785,134 +788,6 @@
                       tableName="NSI_PUSH_LOG"/>
     </changeSet>
 
-<!--
-    <changeSet id="CONTINGENT2-NSI-13-1" author="ddryuchin"  labels="1.0.0.0">
-        <comment>Заполнение справочника</comment>
-        <loadData encoding="UTF-8" separator=";" tableName="POLICY_TYPE" file="changelog/area/versions/1.0.0.0/files/Тип полиса_POLICY_TYPE.csv">
-            <column header="CODE" name="CODE" type="NUMERIC"/>
-            <column header="TITLE" name="TITLE" type="string"/>
-            <column header="archived" name="archived" type="NUMERIC"/>
-        </loadData>
-    </changeSet>
--->
-
-<!--
-    <changeSet id="CONTINGENT2-NSI-13-2" author="ddryuchin"  labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <and>
-                <tableExists tableName="GENDER" />
-                <sqlCheck expectedResult ="0">SELECT COUNT(*) GENDER</sqlCheck>
-            </and>
-        </preConditions>
-        <comment>Заполнение справочника</comment>
-        <loadData encoding="UTF-8" separator=";" tableName="GENDER" file="changelog/area/versions/1.0.0.0/files/Пол_GENDER.csv">
-            <column header="system_object_id" name="id" type="NUMERIC"/>
-            <column header="code" name="CODE" type="string"/>
-            <column header="title" name="TITLE" type="string"/>
-            <column header="archived" name="archived" type="NUMERIC"/>
-        </loadData>
-    </changeSet>
--->
-
-<!--
-    <changeSet id="CONTINGENT2-NSI-13-3" author="ddryuchin"  labels="1.0.0.0" >
-        <comment>Заполнение справочника</comment>
-        <loadData encoding="UTF-8" separator=";" tableName="SPECIALIZATION" file="changelog/area/versions/1.0.0.0/files/Медицинская специализация_SPECIALIZATION.csv">
-            <column header="id" name="id" type="NUMERIC"/>
-            <column header="code" name="CODE" type="NUMERIC"/>
-            <column header="title" name="TITLE" type="string"/>
-            <column header="archived" name="archived" type="NUMERIC"/>
-        </loadData>
-    </changeSet>
--->
-
-<!--
-    <changeSet id="CONTINGENT2-NSI-13-4" author="ddryuchin"  labels="1.0.0.0">
-        <comment>Заполнение справочника</comment>
-        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPES_CLASS" file="changelog/area/versions/1.0.0.0/files/Классы типа участка_AREA_TYPES_CLASS.csv">
-            <column header="CODE" name="CODE" type="NUMERIC"/>
-            <column header="TITLE" name="TITLE" type="string"/>
-            <column header="archived" name="archived" type="NUMERIC"/>
-        </loadData>
-    </changeSet>
--->
-
-<!--
-    <changeSet id="CONTINGENT2-NSI-13-5" author="ddryuchin"  labels="1.0.0.0">
-        <comment>Заполнение справочника</comment>
-        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPES_KIND" file="changelog/area/versions/1.0.0.0/files/Вид типа участка_AREA_TYPES_KIND.csv">
-            <column header="CODE" name="CODE" type="NUMERIC"/>
-            <column header="TITLE" name="TITLE" type="string"/>
-            <column header="archived" name="archived" type="NUMERIC"/>
-        </loadData>
-    </changeSet>
--->
-
-<!--
-    <changeSet id="CONTINGENT2-191-NSI-1" author="mkachalov"  labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <and>
-                <tableExists tableName="AREA_TYPE" />
-                &lt;!&ndash; <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE</sqlCheck> &ndash;&gt;
-            </and>
-        </preConditions>
-        <comment>Заполнение справочника</comment>
-        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE.csv">
-            <column header="CODE" name="CODE" type="NUMERIC"/>
-            <column header="TITLE" name="TITLE" type="string"/>
-            <column header="AREA_TYPE_KIND_CODE" name="AREA_TYPE_KIND_CODE" type="NUMERIC"/>
-            <column header="AREA_TYPE_CLASS_CODE" name="AREA_TYPE_CLASS_CODE" type="NUMERIC"/>
-            <column header="GENDER_CODE" name="GENDER_CODE" type="STRING"/>
-            <column header="AGE_MIN" name="AGE_MIN" type="NUMERIC"/>
-            <column header="AGE_MAX" name="AGE_MAX" type="NUMERIC"/>
-            <column header="AGE_M_MIN" name="AGE_M_MIN" type="NUMERIC"/>
-            <column header="AGE_M_MAX" name="AGE_M_MAX" type="NUMERIC"/>
-            <column header="AGE_W_MIN" name="AGE_W_MIN" type="NUMERIC"/>
-            <column header="AGE_W_MAX" name="AGE_W_MAX" type="NUMERIC"/>
-            <column header="HEAD_FINANCE" name="HEAD_FINANCE" type="NUMERIC"/>
-            <column header="HAS_SERVICE_TERRITORY" name="HAS_SERVICE_TERRITORY" type="NUMERIC"/>
-            <column header="ATTACH_BY_REQUEST" name="ATTACH_BY_REQUEST" type="NUMERIC"/>
-            <column header="ATTACH_BY_MEDICAL_REASON" name="ATTACH_BY_MEDICAL_REASON" type="NUMERIC"/>
-            <column header="MPGU_AVAILABLE" name="MPGU_AVAILABLE" type="NUMERIC"/>
-            <column header="RESIDENTS_BIND_RATE" name="RESIDENTS_BIND_RATE" type="NUMERIC"/>
-            <column header="AREA_COUNT_LIMIT_CODE" name="AREA_COUNT_LIMIT_CODE" type="NUMERIC"/>
-            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
-        </loadData>
-        <rollback>
-            <sql>
-                DELETE FROM AREA_TYPE;
-            </sql>
-        </rollback>
-    </changeSet>
--->
-
-<!--
-    <changeSet id="CONTINGENT2-191-NSI-2" author="mkachalov"  labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <and>
-                <tableExists tableName="AREA_TYPE_SPECIALIZATIONS" />
-                <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_SPECIALIZATIONS</sqlCheck>
-            </and>
-        </preConditions>
-        <comment>Заполнение справочника</comment>
-        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE_SPECIALIZATIONS" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE_SPECIALIZATIONS.csv">
-            <column header="ID" name="ID" type="NUMERIC"/>
-            <column header="AREA_TYPE_CODE" name="AREA_TYPE_CODE" type="NUMERIC"/>
-            <column header="SPECIALIZATION_CODE" name="SPECIALIZATION_CODE" type="NUMERIC"/>
-            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>
-        </loadData>
-        <rollback>
-            <sql>
-                DELETE FROM AREA_TYPE_SPECIALIZATIONS;
-            </sql>
-        </rollback>
-    </changeSet>
--->
-
-
-    <!-- Тут начинается фигня которую лучше бы сразу при создании таблицы POSITION_NOM учесть -->
-
-    <!-- Констрэйнт удален в связи с отсутствием соответствующего ограничения (Катерина Рымова) -->
     <changeSet id="CONTINGENT2-191-NSI-3" author="mkachalov"  labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="POSITION_NOM" />
@@ -950,65 +825,6 @@
         </preConditions>
         <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="start_date" oldColumnName="start" tableName="position_nom" remarks="Дата начала действия"/>
     </changeSet>
-
-    <!-- Тут крнчается фигня которую лучше бы сразу при создании таблицы POSITION_NOM учесть -->
-
-
-<!-- Не накатывает на чистой базе, ругается на отсутствующие поля -->
-<!--    <changeSet id="CONTINGENT2-191-NSI-4" author="mkachalov"  labels="1.0.0.0">-->
-<!--        <preConditions onFail="MARK_RAN">-->
-<!--            <and>-->
-<!--                <tableExists tableName="POSITION_NOM" />-->
-<!--                <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM POSITION_NOM</sqlCheck>-->
-<!--            </and>-->
-<!--        </preConditions>-->
-<!--        <comment>Заполнение справочника POSITION_NOM</comment>-->
-<!--        <loadData encoding="UTF-8" separator=";" tableName="POSITION_NOM" file="changelog/area/versions/1.0.0.0/files/POSITION_NOM.csv">-->
-<!--            <column header="ID" name="ID" type="NUMERIC"/>-->
-<!--            <column header="CODE" name="CODE" type="STRING"/>-->
-<!--            <column header="TITLE" name="TITLE" type="STRING"/>-->
-<!--            <column header="START" name="start_date" type="DATE"/>-->
-<!--            <column header="END" name="end_date" type="DATE"/>-->
-<!--            <column header="SPECIALIZATION_ID" name="SPECIALIZATION_ID" type="NUMERIC"/>-->
-<!--            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>-->
-<!--        </loadData>-->
-<!--        <rollback>-->
-<!--            <sql>-->
-<!--                DELETE FROM POSITION_NOM;-->
-<!--            </sql>-->
-<!--        </rollback>-->
-<!--    </changeSet>-->
-
-
-<!-- Уже есть: CONTINGENT2-NSI-6-5-3 -->
-<!--    <changeSet id="CONTINGENT2-206-1-1" author="mkachalov" labels="1.0.0.0">-->
-<!--        <preConditions onFail="MARK_RAN">-->
-<!--            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>-->
-<!--        </preConditions>-->
-<!--        <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="fk_area_type_me_position_no_01"/>-->
-<!--    </changeSet>-->
-
-    <!--    CONTINGENT2-280 -->
-    <!--    <changeSet id="CONTINGENT2-191-NSI-5" author="mkachalov"  labels="1.0.0.0">-->
-    <!--	<preConditions onFail="MARK_RAN">-->
-    <!--             <and>-->
-    <!--                    <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS" />		-->
-    <!--                    <sqlCheck expectedResult ="0">SELECT COUNT(*) FROM AREA_TYPE_MEDICAL_POSITIONS</sqlCheck>-->
-    <!--             </and>-->
-    <!--	</preConditions>-->
-    <!--        <comment>Заполнение справочника</comment>	-->
-    <!--        <loadData encoding="UTF-8" separator=";" tableName="AREA_TYPE_MEDICAL_POSITIONS" file="changelog/area/versions/1.0.0.0/files/AREA_TYPE_MEDICAL_POSITIONS.csv">-->
-    <!--            <column header="ID" name="ID" type="NUMERIC"/>-->
-    <!--            <column header="AREA_TYPE_CODE" name="AREA_TYPE_CODE" type="NUMERIC"/>-->
-    <!--            <column header="POSITION_CODE" name="POSITION_CODE" type="STRING"/>-->
-    <!--            <column header="ARCHIVED" name="ARCHIVED" type="NUMERIC"/>-->
-    <!--        </loadData>-->
-    <!--        <rollback>-->
-    <!--            <sql>-->
-    <!--               DELETE FROM AREA_TYPE_MEDICAL_POSITIONS;-->
-    <!--            </sql>-->
-    <!--        </rollback>-->
-    <!--    </changeSet>-->
 
     <changeSet id="CONTINGENT2-NSI-12-4" author="shnaider_ab">
         <preConditions onFail="MARK_RAN">
@@ -1249,31 +1065,6 @@
         <rollback>
             <dropColumn tableName="GENDER" columnName="GLOBAL_ID" />
         </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-306-9" author="shnaider_ab" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="SPECIALIZATION" columnName="ID" />
-            <not>
-                <columnExists tableName="SPECIALIZATION" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <renameColumn
-                tableName="SPECIALIZATION"
-                newColumnName="GLOBAL_ID"
-                oldColumnName="ID"
-        />
-        <rollback>
-            <dropColumn tableName="SPECIALIZATION" columnName="ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-290-1" author="mkachalov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE" columnName="GENDER_CODE" />
-        </preConditions>
-        <comment>Изменение длины поля GENDER_CODE таблицы AREA_TYPE</comment>
-        <modifyDataType columnName="GENDER_CODE" newDataType="VARCHAR2(50)" tableName="AREA_TYPE"/>
     </changeSet>
 
 </databaseChangeLog>

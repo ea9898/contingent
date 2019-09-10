@@ -3,6 +3,10 @@ package moscow.ptnl.contingent.nsi.domain.annotation;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -109,6 +113,8 @@ public class MapToNsiHelper {
                 return fieldType.cast(valueToInteger(value));
             case "Boolean":
                 return fieldType.cast(valueToBoolean(value));
+            case "LocalDate":
+                return fieldType.cast(valueToLocalDate(value));
             default:
                 throw new IllegalArgumentException("не поддерживаемый тип поля для сущности: [" + fieldType.getSimpleName() +"]");                
         }
@@ -182,7 +188,20 @@ public class MapToNsiHelper {
         }
         throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
     }
-    
+
+    private static LocalDate valueToLocalDate(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof String) {
+            String result = (String) value;
+            LocalDate localDate = LocalDateTime.parse(result, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")).toLocalDate();
+            return localDate;
+        }
+        throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
+    }
+
     private static boolean isEntity(Class<?> type) {
         Entity e = type.getAnnotation(Entity.class);
         return e != null;

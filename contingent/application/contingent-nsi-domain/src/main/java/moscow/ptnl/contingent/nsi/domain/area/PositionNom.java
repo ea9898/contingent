@@ -1,5 +1,8 @@
 package moscow.ptnl.contingent.nsi.domain.area;
 
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,29 +19,37 @@ import java.util.Objects;
 @Entity
 @Table(name = "POSITION_NOM")
 @Cacheable
+@MapToNsi(table = NsiTablesEnum.D_POSITION_NOM)
 public class PositionNom implements Serializable {
 
     private static final long serialVersionUID = 3663299049984020497L;
 
     @Id
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
+    @MapToNsi("global_id")
     private Long globalId;
 
     @Size(max = 1000)
     @Column(name = "TITLE", nullable = false)
+    @MapToNsi
     private String title;
 
-    @Column(name = "POSITION_CODE_ID", nullable = false)
+    @JoinColumn(name = "POSITION_CODE_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi(value = "POSITION_CODE_ID", findEntityByField = "globalId")
     private PositionCode positionCode;
 
     @Column(name = "START_DATE") //ограничение nullable = false снято из-за того что его нет в справочнике
+    @MapToNsi("START")
     private LocalDate startDate;
 
     @Column(name = "END_DATE")
+    @MapToNsi("END")
     private LocalDate endDate;
 
-    @JoinColumn(name = "SPECIALIZATION_ID", nullable = false)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "SPECIALIZATION_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi(value = "SPECIALIZATION_ID", findEntityByField = "globalId")
     private Specialization specialization;
 
     public PositionNom() {

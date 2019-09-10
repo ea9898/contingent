@@ -12,6 +12,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
+import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsingS.Table;
@@ -74,6 +75,9 @@ public class PushAccepterImpl extends PushAccepter {
                 break;
             case POLICY_TYPE:
                 pushEventEntity = entityMapper.mapTyped(pack, PolicyType.class);
+                break;
+            case D_POSITION_NOM:
+                pushEventEntity = entityMapper.mapTyped(pack, PositionNom.class);
                 break;
         }
         nsiChannel.send(MessageBuilder
