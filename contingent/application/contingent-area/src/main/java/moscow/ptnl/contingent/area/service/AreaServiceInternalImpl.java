@@ -12,7 +12,6 @@ import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.model.area.AddressArea;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
-import moscow.ptnl.contingent.area.util.ChangeParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
@@ -1219,8 +1218,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_19) Изменение распоряжения
     @Override
-    public void updateOrder(Long id, @ChangeParameter String number, @ChangeParameter LocalDate date,
-                            @ChangeParameter String ouz, @ChangeParameter String name) throws ContingentException {
+    public void updateOrder(Long id, String number, LocalDate date,
+                            String ouz, String name) throws ContingentException {
         Validation validation = new Validation();
 
         // 1.
@@ -1238,13 +1237,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         AddressAllocationOrders oldOrder = historyService.clone(order);
 
-        // 3. TODO переделать. Анотирует входные параметры @ChangeParameter. И один из параметров должен быть занят.
+        // 3.
         if (number == null && date == null && ouz == null && name == null) {
             throw new ContingentException(AreaErrorReason.NOTHING_TO_CHANGE);
         }
 
-        // 4.   TODO продожение п.4. делаем сравнение значений в order из БД и входных параметров.
-        //      TODO параметры анотированние как @ChangeParameter сравниваются как с подобными объекта order
+        // 4.
         if (Objects.deepEquals(order.getNumber(), number) &&
                 Objects.deepEquals(order.getDate(), date) &&
                 Objects.deepEquals(order.getOuz(), ouz) &&
