@@ -143,6 +143,8 @@ public class UpdatePrimaryAreaTest {
             //Здесь проверяем только факт и порядок вызова функций areaServiceHelper
             //Сами функции проверяются в AreaServiceHelperTest.java
             order.verify(areaServiceHelper).checkAndGetArea(eq(1L), ArgumentMatchers.any(Validation.class));
+            order.verify(areaServiceHelper).checkAreaParametersForUpdate(eq(number), eq(Arrays.asList()), eq(Arrays.asList(1L)), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), eq(true), eq(false), eq("description"), any(Validation.class));
+            order.verify(areaServiceHelper).checkAreaParametersForUpdateChanged(eq(areaPrimary1), eq(number), eq(Collections.EMPTY_LIST), eq(Collections.singletonList(policyType1)), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), eq(true), eq(false), eq("description"), any(Validation.class));
             order.verify(areaServiceHelper).checkAreaExistsInMU(isNull(), eq(moId), eq(areaTypePrimary1), eq(number), eq(areaPrimary1.getId()), any(Validation.class));
             order.verify(areaServiceHelper).checkPolicyTypesIsOMS(eq(Collections.emptyList()), any(Validation.class));
             order.verify(areaServiceHelper).checkPolicyTypesDel(eq(areaPrimary1), eq(Collections.singletonList(policyType1)), any(Validation.class));
@@ -161,4 +163,5 @@ public class UpdatePrimaryAreaTest {
             fail(e);
         }
     }
+    
 }
