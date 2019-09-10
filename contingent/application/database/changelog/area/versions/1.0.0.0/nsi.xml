@@ -1067,4 +1067,21 @@
         </rollback>
     </changeSet>
 
+    <!-- View definitions -->
+    <changeSet id="CONTINGENT2-313-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <viewExists viewName="AREA_TYPE_VIEW"/>
+            </not>
+        </preConditions>
+        <comment>Создание view AREA_TYPE_VIEW</comment>
+        <createView replaceIfExists="true"
+                    viewName="AREA_TYPE_VIEW">SELECT code, title, area_type_kind_code, area_type_class_code, head_finance,
+                        attach_by_medical_reason, has_service_territory, attach_by_request, mpgu_available, gender_code,
+                        age_min, age_max, age_m_min, age_m_max, age_w_min, age_w_max, archived FROM area_type</createView>
+        <rollback>
+            <dropView viewName="AREA_TYPE_VIEW" />
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

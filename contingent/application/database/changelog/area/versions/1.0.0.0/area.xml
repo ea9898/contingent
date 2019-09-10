@@ -1155,4 +1155,36 @@
         </rollback>
     </changeSet>
 
+    <!-- View definitions -->
+    <changeSet id="CONTINGENT2-314-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <viewExists viewName="AREAS_VIEW"/>
+            </not>
+        </preConditions>
+        <comment>Создание view AREAS_VIEW</comment>
+        <createView replaceIfExists="true"
+                    viewName="AREAS_VIEW">SELECT id, mo_id, mu_id, area_type_code, number, is_auto_assign_for_attach,
+                        description, attach_by_medical_reason, age_min, age_max, age_m_min, age_m_max,
+                        age_w_min, age_w_max, create_date, update_date, archived FROM areas</createView>
+        <rollback>
+            <dropView viewName="AREAS_VIEW" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-315-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <viewExists viewName="AREA_MEDICAL_EMPLOYEES_VIEW"/>
+            </not>
+        </preConditions>
+        <comment>Создание view AREA_MEDICAL_EMPLOYEES_VIEW</comment>
+        <createView replaceIfExists="true"
+                    viewName="AREA_MEDICAL_EMPLOYEES_VIEW">SELECT id, medical_employee_job_id, area_id, is_replacement, start_date,
+                        end_date, position_code, subdivision_id, create_date, update_date FROM area_medical_employees</createView>
+        <rollback>
+            <dropView viewName="AREA_MEDICAL_EMPLOYEES_VIEW" />
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
