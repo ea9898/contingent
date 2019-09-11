@@ -32,7 +32,7 @@ public class AreaTypeMedicalPositions implements Serializable, Keyable {
 
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapToNsi("AREA_TYPE_CODE")
+    @MapToNsi(value = "AREA_TYPE_CODE", findEntityByField = "globalId")
     private AreaType areaType;
 
     @JoinColumn(name = "POSITION_CODE")
