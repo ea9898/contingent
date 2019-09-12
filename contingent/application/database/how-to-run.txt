@@ -15,3 +15,6 @@ rollback 0.0.0
 
 ### Для разработки
 mvn liquibase:update -Ppostgresql -Ddb.target.master=changelog/area/versions/master.xml -Ddb.target.url=jdbc:postgresql://upk-db-t1.ptnl.moscow:5432/contin2 -Ddb.target.username=contingent -Ddb.target.password=CONTINGENT -Dliquibase.databaseChangeLogTableName=AREA_CHANGELOG -Dliquibase.databaseChangeLogLockTableName=AREA_CHANGELOGLOCK
+
+### Ланит
+mvn liquibase:update -Ppostgresql -Ddb.target.master=changelog/area/versions/master.xml -Ddb.target.url=jdbc:postgresql://172.29.34.77:5432/contingent2 -Ddb.target.username=contingent2 -Ddb.target.password=contingent2 -Dliquibase.databaseChangeLogTableName=AREA_CHANGELOG -Dliquibase.databaseChangeLogLockTableName=AREA_CHANGELOGLOCK
