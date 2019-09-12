@@ -243,24 +243,6 @@ public class AreaServiceHelper {
         }
     }
 
-    // К_УУ_8 2.
-    // Система проверяет наличие каждого переданного первичного типа участка
-    public void checkPrimaryAreasTypesInMUProfile(long moId, Long muId, AreaType areaType, Validation validation) {
-        List<MuAvailableAreaTypes> muAvailableAreaTypes = new ArrayList<>();
-        List<MoAvailableAreaTypes> moAvailableAreaTypes = new ArrayList<>();
-
-        if (muId != null) {
-            muAvailableAreaTypes = muAvailableAreaTypesRepository.findByAreaTypes(areaType, muId);
-        } else {
-            moAvailableAreaTypes = moAvailableAreaTypesRepository.findByAreaTypes(areaType, moId);
-        }
-
-        if (moAvailableAreaTypes.size() + muAvailableAreaTypes.size() == 0) {
-            validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU,
-                    new ValidationParameter("areaType", areaType.getTitle()));
-        }
-    }
-
     public void checkAreaDependsOnPrimaryAreaType(Area area, AreaType areaType, Validation validation) {
         if (area.getPrimaryAreaTypes().stream()
                 .map(AreaToAreaType::getAreaType)
@@ -272,7 +254,7 @@ public class AreaServiceHelper {
     }
 
     public void checkAreaTypeRelations(AreaType dependentAreaType, AreaType primaryAreaType, Validation validation) {
-       Optional<AreaTypeRelations>areaTypeRelations = areaTypeRelationsRepository.getByDependentAndPrimaryAreaTypes(dependentAreaType, primaryAreaType);
+        Optional<AreaTypeRelations>areaTypeRelations = areaTypeRelationsRepository.getByDependentAndPrimaryAreaTypes(dependentAreaType, primaryAreaType);
         if (!areaTypeRelations.isPresent()) {
             validation.error(AreaErrorReason.AREA_TYPE_RELATIONS_NOT_EXISTS,
                     new ValidationParameter("dependentAreaTypeTitle", dependentAreaType.getTitle()),
@@ -926,16 +908,9 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkPolicyTypesDepArea(List<Long> policyTypeCodes, Validation validation) {
-        if (policyTypeCodes != null && !policyTypeCodes.isEmpty() &&
-                !policyTypeCodes.stream().allMatch(ptc -> ptc.equals(PolicyTypeEnum.OMS.getCode()))) {
-            validation.error(AreaErrorReason.POLICY_TYPE_IS_INCORRECT);
-        }
-    }
-
     /* К_УУ_5 1.
-   Система проверяет, что в списке доступных для МУ существуют типы участка с переданными кодами
- */
+       Система проверяет, что в списке доступных для МУ существуют типы участка с переданными кодами
+     */
     public List<MuAvailableAreaTypes> checkAndGetAreaTypesNotExistInMU(long muId, List<Long> areaTypeCodes, Validation validation) {
         List<MuAvailableAreaTypes> muAvailableAreaTypes = muAvailableAreaTypesRepository.findAreaTypes(muId);
         List<Long> availableAreaTypes = muAvailableAreaTypes.stream()
@@ -953,13 +928,12 @@ public class AreaServiceHelper {
                 .collect(Collectors.toList());
     }
 
-    public void checkAreaTypeAvailable(long moId, Long muId, AreaType areaType, Validation validation) throws ContingentException {
+    public void checkAreaTypeAvailable(long moId, Long muId, AreaType areaType, Validation validation) {
         List<?> availableAreaTypes = muId != null ? muAvailableAreaTypesRepository.findByAreaTypes(areaType, muId) :
                 moAvailableAreaTypesRepository.findByAreaTypes(areaType, moId);
 
         if (availableAreaTypes.isEmpty()) {
-            throw new ContingentException(validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU,
-                    new ValidationParameter("areaTypeTitle", areaType.getTitle())));
+            validation.error(AreaErrorReason.AREA_TYPE_NOT_AVAILABLE_FOR_MU, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
         }
     }
 

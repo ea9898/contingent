@@ -458,7 +458,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             //4
             areaHelper.checkAreaTypeIsPrimary(primaryAreaType, validation);
             //5
-            areaHelper.checkPrimaryAreasTypesInMUProfile(moId, muId, primaryAreaType, validation);
+            areaHelper.checkAreaTypeAvailable(moId, muId, primaryAreaType, validation);
             //6
             areaHelper.checkAreaTypeRelations(areaType, primaryAreaType, validation);
         });
@@ -473,11 +473,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        //8 TODO очень странно..
-        areaHelper.checkPolicyTypesDepArea(policyTypeCodesIds, validation);
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
+        //8
+        areaHelper.checkPolicyTypesIsOMS(policyTypeCodesIds, validation);
 
         //9
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
@@ -634,7 +631,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             // 7.2
             areaHelper.checkAreaTypeIsPrimary(primaryAreaType, validation);
             // 7.3
-            areaHelper.checkPrimaryAreasTypesInMUProfile(area.getMoId(), muId, primaryAreaType, validation);
+            areaHelper.checkAreaTypeAvailable(area.getMoId(), muId, primaryAreaType, validation);
             // 7.4
             areaHelper.checkAreaTypeRelations(area.getAreaType(), primaryAreaType, validation);
             }
@@ -661,10 +658,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 9.
-        areaHelper.checkPolicyTypesDepArea(policyTypesAddIds, validation);
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
+        areaHelper.checkPolicyTypesIsOMS(policyTypesAddIds, validation);
         List<PolicyType> policyTypesAdd = policyTypeRepository.findByIds(policyTypesAddIds);
 
         // 10.

@@ -6,14 +6,18 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
+import moscow.ptnl.contingent.area.error.AreaErrorReason;
+import moscow.ptnl.contingent.error.ValidationMessage;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 
+import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
@@ -64,6 +68,9 @@ public class AreaServiceHelperTest {
     @Autowired
     public AreaPolicyTypesRepository areaPolicyTypesRepository;
 
+    @Autowired
+    private AreaTypeRelationsRepository areaTypeRelationsRepository;
+
     //Тестовые данные
     private AreaType areaTypePrimary1;
     private AreaType areaTypeDependent1;
@@ -75,6 +82,7 @@ public class AreaServiceHelperTest {
     private PolicyType policyType1;
     private PolicyType policyType2;
     private AreaPolicyTypes areaPolicyType;
+    private AreaTypeRelations areaTypeRelations;
     private Long moId = 204L;
     private Long muId = 100L;
     private Integer areaPrimary1Number = 123;
@@ -90,7 +98,7 @@ public class AreaServiceHelperTest {
         areaTypeClass1.setTitle("Primary test");
         areaTypeClass1.setArchived(false);
         AreaTypeClass areaTypeClass2 = new AreaTypeClass();
-        areaTypeClass2.setCode(10L);
+        areaTypeClass2.setCode(2L);
         areaTypeClass2.setTitle("Dependent test");
         areaTypeClass2.setArchived(false);
         areaTypePrimary1 = new AreaType(3L, "Терапевтический", false);
@@ -136,6 +144,10 @@ public class AreaServiceHelperTest {
         areaPolicyType.setId(1L);
         areaPolicyType.setArea(areaPrimary1);
         areaPolicyType.setPolicyType(policyType1);
+        areaTypeRelations = new AreaTypeRelations();
+        areaTypeRelations.setDependentAreaType(areaTypeDependent1);
+        areaTypeRelations.setPrimaryAreaType(areaTypePrimary1);
+        areaTypeRelations.setArchived(false);
     }
 
     @Test
@@ -170,6 +182,28 @@ public class AreaServiceHelperTest {
     }
 
     @Test
+    void checkAreaTypeIsDependent() {
+        Validation validation = new Validation();
+        areaServiceHelper.checkAreaTypeIsDependent(areaTypeDependent1, validation);
+        assertTrue(validation.isSuccess());
+        validation = new Validation();
+        areaServiceHelper.checkAreaTypeIsDependent(areaTypePrimary1, validation);
+        assertFalse(validation.isSuccess());
+    }
+
+    @Test
+    void checkAreaTypeRelations() {
+        doReturn(Optional.of(areaTypeRelations)).when(areaTypeRelationsRepository).getByDependentAndPrimaryAreaTypes(areaTypeDependent1, areaTypePrimary1);
+        Validation validation = new Validation();
+        areaServiceHelper.checkAreaTypeRelations(areaTypeDependent1, areaTypePrimary1, validation);
+        assertTrue(validation.isSuccess());
+        doReturn(Optional.empty()).when(areaTypeRelationsRepository).getByDependentAndPrimaryAreaTypes(areaTypeDependent1, areaTypePrimary1);
+        validation = new Validation();
+        areaServiceHelper.checkAreaTypeRelations(areaTypeDependent1, areaTypePrimary1, validation);
+        assertFalse(validation.isSuccess());
+    }
+
+    @Test
     void checkAndGetArea() {
         doReturn(Optional.of(areaPrimary1)).when(areaCRUDRepository).findById(areaPrimary1.getId());
         Validation validation = new Validation();
@@ -196,13 +230,15 @@ public class AreaServiceHelperTest {
         doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findByAreaTypes(areaTypeDependent1, muId);
         doReturn(Collections.singletonList(moAvailableAreaTypes)).when(moAvailableAreaTypesRepository).findByAreaTypes(areaTypePrimary1, moId);
         Validation validation = new Validation();
-        Throwable exception = assertThrows(ContingentException.class, () -> areaServiceHelper.checkAreaTypeAvailable(111, null, areaTypePrimary1, validation));
-        assertEquals(exception.getMessage(), "Невозможно создать/изменить участок, так как тип участка " + areaTypePrimary1.getTitle() + " отсутствует в списке разрешённых");
+        areaServiceHelper.checkAreaTypeAvailable(111, null, areaTypePrimary1, validation);
+        assertEquals(validation.getMessages().size(), 1);
+        assertEquals(validation.getMessages().get(0).getMessage(), "Невозможно создать/изменить участок, так как тип участка " + areaTypePrimary1.getTitle() + " отсутствует в списке разрешённых");
         validation.reset();
         assertDoesNotThrow(() -> areaServiceHelper.checkAreaTypeAvailable(moId, null, areaTypePrimary1, validation));
         validation.reset();
-        exception = assertThrows(ContingentException.class, () -> areaServiceHelper.checkAreaTypeAvailable(111, 111L, areaTypeDependent1, validation));
-        assertEquals(exception.getMessage(), "Невозможно создать/изменить участок, так как тип участка " + areaTypeDependent1.getTitle() + " отсутствует в списке разрешённых");
+        areaServiceHelper.checkAreaTypeAvailable(111, 111L, areaTypeDependent1, validation);
+        assertEquals(validation.getMessages().size(), 1);
+        assertEquals(validation.getMessages().get(0).getMessage(), "Невозможно создать/изменить участок, так как тип участка " + areaTypeDependent1.getTitle() + " отсутствует в списке разрешённых");
         validation.reset();
         assertDoesNotThrow(() -> areaServiceHelper.checkAreaTypeAvailable(moId, muId, areaTypeDependent1, validation));
     }
