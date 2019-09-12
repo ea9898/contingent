@@ -52,7 +52,7 @@ public class AreaType extends CodeName implements Serializable, Keyable {
 
     @Size(max = 50)
     @Column(name = "GENDER_CODE")
-    @MapToNsi("GENDER_CODE")
+    @MapToNsi(value = "GENDER_CODE", findEntityByField = "code", crossObject = Gender.class, crossField = "globalId")
     private String gender;
 
     @Column(name = "AGE_MIN")

@@ -37,18 +37,13 @@ public class AreaTypeMedicalPositions implements Serializable, Keyable {
 
     @JoinColumn(name = "POSITION_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapToNsi(value = "POSITION_CODE", findEntityByField = "globalId")
+    @MapToNsi(value = "POSITION_CODE", findEntityByField = "positionCode", crossObject = PositionNom.class, crossField = "globalId")
     private PositionCode positionCode;
     
     @Column(name = "ARCHIVED")
     @Convert(converter = BooleanStrictIntegerConverter.class)
     @MapToNsi
     private Boolean archived;
-
-    @JoinColumn(name = "POSITION_NOM_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @MapToNsi("POSITION_NOM_ID")
-    private PositionNom positionNom;
 
     public Long getGlobalId() {
         return globalId;
@@ -80,14 +75,6 @@ public class AreaTypeMedicalPositions implements Serializable, Keyable {
 
     public void setPositionCode(PositionCode positionCode) {
         this.positionCode = positionCode;
-    }
-
-    public PositionNom getPositionNom() {
-        return positionNom;
-    }
-
-    public void setPositionNom(PositionNom positionNom) {
-        this.positionNom = positionNom;
     }
 
     @Override

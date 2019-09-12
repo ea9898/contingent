@@ -19,7 +19,6 @@ public class PositionCode implements Serializable {
 
     private static final long serialVersionUID = 3663299049984440497L;
 
-    @Id
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
     @MapToNsi("GLOBAL_ID")
     private Long globalId;
@@ -33,6 +32,7 @@ public class PositionCode implements Serializable {
     @MapToNsi("SERIAL_NUM")
     private Long serialNum;
 
+    @Id
     @Size(max = 100)
     @Column(name = "CODE", nullable = false)
     @MapToNsi

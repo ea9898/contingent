@@ -45,6 +45,17 @@ public @interface MapToNsi {
      * @return 
      */
     String findEntityByField() default "";
-    
-    
+
+    /**
+     * Промежуточный объект из которого надо брать данные
+     * Напрмер AreaTypeMedicalPositions.positionCode, должен браться из PositionNom.positionCode
+     */
+    Class crossObject() default Object.class;
+
+    /**
+     * Поле промежуточного объекта по которому ищем объект
+     * Напрмер в AreaTypeMedicalPositions PositionNom.positionCode ищется по globalId.
+     */
+    String crossField() default "";
+
 }

@@ -39,9 +39,7 @@
             </not>
         </preConditions>
         <createTable tableName="POSITION_CODE">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
+            <column name="GLOBAL_ID" type="BIGINT" />
             <column name="NOM_TYPE" type="VARCHAR2(10)">
                 <constraints nullable="false" />
             </column>
@@ -49,7 +47,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="CODE" type="VARCHAR2(100)">
-                <constraints nullable="false" />
+                <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="CONSTANT_TITLE" type="VARCHAR2(255)">
                 <constraints nullable="false" />
@@ -99,11 +97,8 @@
         <comment>Создание таблицы POSITION_NOM</comment>
         <createTable tableName="POSITION_NOM"
                      remarks="Номенклатура должностей медицинских организаций, оказывающих первичную медико-санитарную помощь">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="CODE" type="VARCHAR2(100)">
-                <constraints nullable="false" />
             </column>
             <column name="TITLE" type="VARCHAR2(1000)">
                 <constraints nullable="false" />
@@ -113,29 +108,12 @@
             </column>
             <column name="END" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
             <column name="SPECIALIZATION_ID" type="BIGINT" />
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
+            <column name="POSITION_CODE_ID" type="VARCHAR(100)" />
         </createTable>
         <rollback>
             <dropTable tableName="POSITION_NOM"/>
         </rollback>
     </changeSet>
-
-<!--
-    <changeSet id="CONTINGENT2-NSI-2-1" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="SPECIALIZATION" columnName="GLOBAL_ID" />
-            <columnExists tableName="POSITION_NOM" columnName="SPECIALIZATION_ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_POSITION_NOM_SPECIALIZATION_01</comment>
-        <addForeignKeyConstraint baseColumnNames="SPECIALIZATION_ID"
-                                 baseTableName="POSITION_NOM"
-                                 constraintName="FK_POSITION_NOM_SPECIALIZATION_01"
-                                 referencedColumnNames="GLOBAL_ID"
-                                 referencedTableName="SPECIALIZATION"/>
-    </changeSet>
--->
 
     <changeSet id="CONTINGENT2-NSI-2-2" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
@@ -151,64 +129,6 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-2-3" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="POSITION_NOM" columnName="CODE" />
-        </preConditions>
-        <dropColumn columnName="CODE" tableName="POSITION_NOM" />
-        <rollback>
-            <addColumn tableName="POSITION_NOM">
-                <column name="CODE" type="VARCHAR2(100)">
-                    <constraints nullable="false" />
-                </column>
-            </addColumn>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-2-3-1" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="POSITION_NOM" columnName="ARCHIVED" />
-        </preConditions>
-        <dropColumn columnName="ARCHIVED" tableName="POSITION_NOM" />
-        <rollback>
-            <addColumn tableName="POSITION_NOM">
-                <column name="ARCHIVED" type="NUMBER(1)">
-                    <constraints nullable="false" />
-                </column>
-            </addColumn>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-2-3-2" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="POSITION_NOM" columnName="POSITION_CODE_ID" />
-            </not>
-        </preConditions>
-        <addColumn tableName="POSITION_NOM">
-            <column name="POSITION_CODE_ID" type="BIGINT" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn columnName="POSITION_CODE_ID" tableName="POSITION_NOM" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-2-3-3" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="POSITION_NOM" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <renameColumn
-                newColumnName="GLOBAL_ID"
-                oldColumnName="ID"
-                tableName="POSITION_NOM" />
-        <rollback>
-            <dropColumn columnName="POSITION_CODE_ID" tableName="POSITION_NOM" />
-        </rollback>
-    </changeSet>
     <!-- !!!! POSITION_NOM !!!! -->
 
     <!-- AREA_TYPES_CLASS -->
@@ -226,6 +146,9 @@
             <column name="TITLE" type="VARCHAR2(255)" />
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
+            </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
             </column>
         </createTable>
         <rollback>
@@ -250,6 +173,9 @@
             <column name="TITLE" type="VARCHAR2(255)" />
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
+            </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
             </column>
         </createTable>
         <rollback>
@@ -291,6 +217,9 @@
             <column name="AGE_W_MAX" type="SMALLINT" remarks="Возраст Ж макс" />
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
+            </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
             </column>
         </createTable>
         <rollback>
@@ -364,11 +293,11 @@
         <comment>Создание таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
         <createTable tableName="AREA_TYPE_MEDICAL_POSITIONS"
                      remarks="Должности МР на типе участка">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка. Код" />
-            <column name="POSITION_CODE" type="BIGINT" />
+            <column name="POSITION_CODE" type="VARCHAR2(100)" />
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
@@ -376,20 +305,6 @@
         <rollback>
             <dropTable tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
         </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-6-1" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AREA_TYPE_ME_POSITIO01"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки POSITION_NOM_ID таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
-        <createIndex indexName="IXFK_AREA_TYPE_ME_POSITIO01"
-                     tableName="AREA_TYPE_MEDICAL_POSITIONS"
-                     unique="false">
-            <column name="POSITION_CODE" type="number"/>
-        </createIndex>
     </changeSet>
 
     <changeSet id="CONTINGENT2-NSI-6-2" author="sorlov" labels="1.0.0.0">
@@ -419,64 +334,6 @@
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-5-0" author="ddryuchin" labels="1.0.0.0">
-        <delete tableName="AREA_TYPE_MEDICAL_POSITIONS" />
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-6-5" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_NOM_ID" />
-            </not>
-        </preConditions>
-        <addColumn tableName="AREA_TYPE_MEDICAL_POSITIONS">
-            <column name="POSITION_NOM_ID" type="BIGINT" />
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_NOM_ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-6-5-1" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_ATMP_PNGI_01"/>
-            </not>
-        </preConditions>
-        <createIndex indexName="IXFK_ATMP_PNGI_01"
-                     tableName="AREA_TYPE_MEDICAL_POSITIONS"
-                     unique="false">
-            <column name="POSITION_NOM_ID" type="BIGINT"/>
-        </createIndex>
-        <rollback>
-            <dropIndex indexName="IXFK_ATMP_PNGI_01"
-                       tableName="AREA_TYPE_MEDICAL_POSITIONS" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-6-5-2" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_NOM_ID" />
-            <columnExists tableName="POSITION_NOM" columnName="GLOBAL_ID" />
-        </preConditions>
-        <addForeignKeyConstraint baseColumnNames="POSITION_NOM_ID"
-                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
-                                 constraintName="FK_ATMP_PNGI"
-                                 referencedColumnNames="GLOBAL_ID"
-                                 referencedTableName="POSITION_NOM"/>
-        <rollback>
-            <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="FK_ATMP_PNGI"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-206-1-2" author="mkachalov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
-        </preConditions>
-        <comment>Изменение типа данных в таблице AREA_TYPE_MEDICAL_POSITIONS</comment>
-        <modifyDataType tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-NSI-6-5-4" author="ddryuchin" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" />
@@ -485,7 +342,7 @@
                 <foreignKeyConstraintExists foreignKeyName="FK_ATMP_PCC"/>
             </not>
         </preConditions>
-        <addForeignKeyConstraint baseColumnNames="POSITION_CODE "
+        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
                                  baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
                                  constraintName="FK_ATMP_PCC"
                                  referencedColumnNames="CODE"
@@ -507,7 +364,7 @@
         <comment>Создание таблицы AREA_TYPE_RELATIONS</comment>
         <createTable tableName="AREA_TYPE_RELATIONS"
                      remarks="Связь зависимых и первичных">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="DEPENDENT_AREA_TYPE_CODE" type="BIGINT" remarks="Код зависимого типа участка">
@@ -601,6 +458,9 @@
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
         </createTable>
         <rollback>
             <dropTable tableName="POLICY_TYPE"/>
@@ -647,7 +507,7 @@
         </preConditions>
         <comment>Создание таблицы AREA_TYPE_SPECIALIZATIONS</comment>
         <createTable tableName="AREA_TYPE_SPECIALIZATIONS">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка">
@@ -725,6 +585,9 @@
             </column>
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
+            </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
             </column>
         </createTable>
         <rollback>
@@ -930,142 +793,6 @@
         </createIndex>
     </changeSet>
     <!-- !!!! ADDRESS_FORMING_ELEMENT !!!! -->
-
-    <changeSet id="CONTINGENT2-306-1" author="shnaider_ab" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPE" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание колонки GLOBAL_ID</comment>
-        <addColumn tableName="AREA_TYPE">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPE" columnName="GLOBAL_ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-306-2" author="shnaider_ab" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPES_CLASS" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание колонки GLOBAL_ID</comment>
-        <addColumn tableName="AREA_TYPES_CLASS">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPES_CLASS" columnName="GLOBAL_ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-306-3" author="shnaider_ab" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="AREA_TYPES_KIND" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание колонки GLOBAL_ID</comment>
-        <addColumn tableName="AREA_TYPES_KIND">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="AREA_TYPES_KIND" columnName="GLOBAL_ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-306-4" author="shnaider_ab" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="POLICY_TYPE" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание колонки GLOBAL_ID</comment>
-        <addColumn tableName="POLICY_TYPE">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="POLICY_TYPE" columnName="GLOBAL_ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-306-5" author="shnaider_ab" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="ID" />
-            <not>
-                <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <renameColumn
-                tableName="AREA_TYPE_MEDICAL_POSITIONS"
-                newColumnName="GLOBAL_ID"
-                oldColumnName="ID"
-        />
-        <rollback>
-            <dropColumn tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-306-6" author="shnaider_ab" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE_RELATIONS" columnName="ID" />
-            <not>
-                <columnExists tableName="AREA_TYPE_RELATIONS" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <renameColumn
-                tableName="AREA_TYPE_RELATIONS"
-                newColumnName="GLOBAL_ID"
-                oldColumnName="ID"
-        />
-        <rollback>
-            <dropColumn tableName="AREA_TYPE_RELATIONS" columnName="ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-306-7" author="shnaider_ab" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE_SPECIALIZATIONS" columnName="ID" />
-            <not>
-                <columnExists tableName="AREA_TYPE_SPECIALIZATIONS" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <renameColumn
-                tableName="AREA_TYPE_SPECIALIZATIONS"
-                newColumnName="GLOBAL_ID"
-                oldColumnName="ID"
-        />
-        <rollback>
-            <dropColumn tableName="AREA_TYPE_SPECIALIZATIONS" columnName="ID" />
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-306-8" author="shnaider_ab" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="GENDER" columnName="GLOBAL_ID" />
-            </not>
-        </preConditions>
-        <comment>Создание колонки GLOBAL_ID</comment>
-        <addColumn tableName="GENDER">
-            <column name="GLOBAL_ID" type="BIGINT">
-                <constraints nullable="false" unique="true" />
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="GENDER" columnName="GLOBAL_ID" />
-        </rollback>
-    </changeSet>
 
     <!-- View definitions -->
     <changeSet id="CONTINGENT2-313-1" author="sorlov" labels="1.0.0.0">

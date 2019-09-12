@@ -200,11 +200,11 @@
     <changeSet id="CONTINGENT2-AREA-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="AREA_MEDICAL_EMPLOYEE"/>
+                <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы AREA_MEDICAL_EMPLOYEE</comment>
-        <createTable tableName="AREA_MEDICAL_EMPLOYEE"
+        <comment>Создание таблицы AREA_MEDICAL_EMPLOYEES</comment>
+        <createTable tableName="AREA_MEDICAL_EMPLOYEES"
                      remarks="МР на участке">
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
@@ -212,11 +212,10 @@
             <column name="MEDICAL_EMPLOYEE_JOB_ID" type="BIGINT" remarks="ИД Исполнения должности" />
             <column name="AREA_ID" type="BIGINT" />
             <column name="IS_REPLACEMENT" type="NUMBER(1)" remarks="Роль МУ на участке (тип обслуживнаия)" />
-            <column name="OUZ" type="VARCHAR2(50)" />
             <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала работы на участке" />
             <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
             <column name="SNILS" type="VARCHAR2(20)" />
-            <column name="POSITION_CODE" type="BIGINT" />
+            <column name="POSITION_CODE" type="VARCHAR2(100)" />
             <column name="SUBDIVISION_ID" type="BIGINT" />
             <column name="CREATE_DATE" type="TIMESTAMP(6)">
                 <constraints nullable="false" />
@@ -224,7 +223,7 @@
             <column name="UPDATE_DATE" type="TIMESTAMP(6)" />
         </createTable>
         <rollback>
-            <dropTable tableName="AREA_MEDICAL_EMPLOYEE"/>
+            <dropTable tableName="AREA_MEDICAL_EMPLOYEES"/>
         </rollback>
     </changeSet>
 
@@ -236,34 +235,20 @@
         </preConditions>
         <comment>Создание индекса колонки AREA_ID таблицы AREA_MEDICAL_EMPLOYEE</comment>
         <createIndex indexName="IXFK_AREA_MEDICAL_EMPLOYEE_AREA"
-                     tableName="AREA_MEDICAL_EMPLOYEE"
+                     tableName="AREA_MEDICAL_EMPLOYEES"
                      unique="false">
             <column name="AREA_ID" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-AREA-2-2" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AME_POSITION_NOM_CLINIC"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки POSITION_CODE таблицы AREA_MEDICAL_EMPLOYEE</comment>
-        <createIndex indexName="IXFK_AME_POSITION_NOM_CLINIC"
-                     tableName="AREA_MEDICAL_EMPLOYEE"
-                     unique="false">
-            <column name="POSITION_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-AREA-2-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="AREA_ID" />
+            <columnExists tableName="AREA_MEDICAL_EMPLOYEES" columnName="AREA_ID" />
             <columnExists tableName="AREAS" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AME_AREA</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_ID"
-                                 baseTableName="AREA_MEDICAL_EMPLOYEE"
+                                 baseTableName="AREA_MEDICAL_EMPLOYEES"
                                  constraintName="FK_AME_AREA"
                                  referencedColumnNames="ID"
                                  referencedTableName="AREAS"/>
@@ -282,26 +267,6 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-AREA-2-6" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
-            </not>
-        </preConditions>
-        <comment>Переименование таблицы AREA_MEDICAL_EMPLOYEE</comment>
-        <renameTable newTableName="AREA_MEDICAL_EMPLOYEES"
-                     oldTableName="AREA_MEDICAL_EMPLOYEE"/>
-        <rollback>
-            <renameTable newTableName="AREA_MEDICAL_EMPLOYEE"
-                         oldTableName="AREA_MEDICAL_EMPLOYEES"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-AREA-2-7" author="ddryuchin" labels="1.0.0.0">
-        <dropColumn columnName="OUZ"
-                    tableName="AREA_MEDICAL_EMPLOYEES"/>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-AREA-2-8" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -315,22 +280,6 @@
             <column name="MEDICAL_EMPLOYEE_JOB_ID" type="number"/>
         </createIndex>
     </changeSet>
-
-    <changeSet id="CONTINGENT2-206-2-1" author="mkachalov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <foreignKeyConstraintExists foreignKeyName="fk_ame_position_nom"/>
-        </preConditions>
-        <dropForeignKeyConstraint baseTableName="AREA_MEDICAL_EMPLOYEES" constraintName="fk_ame_position_nom"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-206-2-2" author="mkachalov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
-        </preConditions>
-        <comment>Изменение типа данных в таблице AREA_MEDICAL_EMPLOYEES</comment>
-        <modifyDataType tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE" newDataType="VARCHAR2(100)"/>
-    </changeSet>
-
 
     <!-- !!!! AREA_MEDICAL_EMPLOYEE !!!! -->
 

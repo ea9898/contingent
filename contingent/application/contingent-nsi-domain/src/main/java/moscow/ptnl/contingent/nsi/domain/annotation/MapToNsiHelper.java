@@ -23,6 +23,7 @@ import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 /**
  *
@@ -73,29 +74,31 @@ public class MapToNsiHelper {
     
     public void setFieldValue(Field field, Object target, Object value, MapToNsi mapToNsi) {   
         try {
+            if (value == null) {
+                return;
+            }
+
             field.setAccessible(true);
-            field.set(target, cast(value, field.getType(), (mapToNsi != null) ? mapToNsi.findEntityByField() : ""));
+            if (mapToNsi == null || mapToNsi.crossObject().equals(Object.class) || mapToNsi.crossField().isEmpty()) {
+                field.set(target, cast(value, field.getType(), (mapToNsi != null) ? mapToNsi.findEntityByField() : ""));
+            } else {
+                field.set(target, crossCast(value, field.getType(), mapToNsi.findEntityByField(), mapToNsi.crossObject(), mapToNsi.crossField()));
+            }
         } catch (Exception e) {
             String msg = "ошибка заполнения поля [" + field.getName() +"] для типа [" + target.getClass() + "] значением [" + value + "], " + e.getMessage();
             LOG.error(msg);
             throw new IllegalStateException(msg);
         }
     }
-    
-    private String getSetterMethodName(Field field) {
-        String fieldName = field.getName();
-        String methodName = "set" + fieldName.substring(0, 1).toUpperCase();
-        if (fieldName.length() > 1) {
-            methodName += fieldName.substring(1);
-        }
-        return methodName;
+
+    // Михаилу на проверку решения:)
+    private <T> T crossCast(Object value, Class<T> fieldType, String fieldName, Class crossType, String crossFieldName) throws Exception {
+        Field crossField = ReflectionUtils.findField(crossType, fieldName);
+        crossField.setAccessible(true);
+        return (T) crossField.get(findEntityByField(crossType, crossFieldName, value));
     }
-    
+
     private <T> T cast(Object value, Class<T> fieldType, String fieldName) throws Exception {
-        if (value == null) {
-            return null;
-        }
-        
         //если поле это связь с другой сущностью
         if (isEntity(fieldType) && fieldName != null && !fieldName.isEmpty()) {
             //получаем имя поля в связанной сущности на которое будет мапится поле
