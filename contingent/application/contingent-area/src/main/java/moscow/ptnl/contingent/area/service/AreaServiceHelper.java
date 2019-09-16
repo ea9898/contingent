@@ -298,17 +298,17 @@ public class AreaServiceHelper {
             return;
         }
         // Система проверяет, что переданные параметры изменены, иначе возвращает ошибку
-        if (muId == null ? area.getMuId() == null : muId.equals(area.getMuId())
-                && number == null ? area.getNumber() == null : number.equals(area.getNumber())
-                && description == null ? area.getDescription() == null : description.equals(area.getDescription())
+        if ((muId == null ? area.getMuId() == null : muId.equals(area.getMuId()))
+                && (number == null ? area.getNumber() == null : number.equals(area.getNumber()))
+                && (description == null ? area.getDescription() == null : description.equals(area.getDescription()))
                 && primaryAreaTypeCodesAddIds.isEmpty() && primaryAreaTypeCodesDelIds.isEmpty()
                 && policyTypesAddIds.isEmpty() && policyTypesDelIds.isEmpty()
-                && ageMin == null ? area.getAgeMin() == null : ageMin.equals(area.getAgeMin())
-                && ageMax == null ? area.getAgeMax() == null : ageMax.equals(area.getAgeMax())
-                && ageMinM == null ? area.getAgeMMin() == null : ageMinM.equals(area.getAgeMMin())
-                && ageMaxM == null ? area.getAgeMMax() == null : ageMaxM.equals(area.getAgeMMax())
-                && ageMinW == null ? area.getAgeWMin() == null : ageMinW.equals(area.getAgeWMin())
-                && ageMaxW == null ? area.getAgeWMax() == null : ageMaxW.equals(area.getAgeWMax())) {
+                && (ageMin == null ? area.getAgeMin() == null : ageMin.equals(area.getAgeMin()))
+                && (ageMax == null ? area.getAgeMax() == null : ageMax.equals(area.getAgeMax()))
+                && (ageMinM == null ? area.getAgeMMin() == null : ageMinM.equals(area.getAgeMMin()))
+                && (ageMaxM == null ? area.getAgeMMax() == null : ageMaxM.equals(area.getAgeMMax()))
+                && (ageMinW == null ? area.getAgeWMin() == null : ageMinW.equals(area.getAgeWMin()))
+                && (ageMaxW == null ? area.getAgeWMax() == null : ageMaxW.equals(area.getAgeWMax()))) {
 
             validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
         }

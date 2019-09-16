@@ -11,5 +11,5 @@
         </areaRestriction>
         <policyType>1</policyType>
     </dependendArea>
-    <primaryAreaAdd>2</primaryAreaAdd>
+    <primaryAreaDel>2</primaryAreaDel>
 </ns2:attachOnAreaChange>
