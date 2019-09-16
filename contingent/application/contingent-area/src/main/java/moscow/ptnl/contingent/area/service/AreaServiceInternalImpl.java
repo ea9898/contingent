@@ -346,8 +346,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     searchAreaAddresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
         //3.3.3
         } else {
-            //TODO nsiAddresse
-            addresses = algorithms.findIntersectingAddressesSearch(Collections.EMPTY_LIST,
+            addresses = algorithms.findIntersectingAddressesSearch(areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList()),
                     searchAreaAddresses.stream().map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
         }
         //3.3.4
