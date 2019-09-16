@@ -17,6 +17,7 @@ import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
+import moscow.ptnl.contingent.area.transform.SearchAreaAddressCloner;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
@@ -142,6 +143,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
+
+    @Autowired
+    private SearchAreaAddressCloner searchAreaAddressCloner;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
