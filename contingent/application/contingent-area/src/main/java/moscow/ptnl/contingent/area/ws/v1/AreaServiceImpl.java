@@ -326,7 +326,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.getNumber(), body.getDescription(), body.isIsArchived(),
                     body.getMedicalEmployees() == null ? Collections.EMPTY_LIST :
                             body.getMedicalEmployees().stream()
-                                    .filter(empl -> empl.getMedicalEmployeeJobInfoId() != null || empl.getSnils()!= null)
+                                    .filter(empl -> empl.getMedicalEmployeeJobId() != null || empl.getSnils()!= null)
                                     .collect(Collectors.toList()),
                     body.getAddresses() == null ? Collections.EMPTY_LIST : body.getAddresses().stream().map(SearchAreaAddress::new).collect(Collectors.toList()),
                     body.isIsExactAddressMatch(),

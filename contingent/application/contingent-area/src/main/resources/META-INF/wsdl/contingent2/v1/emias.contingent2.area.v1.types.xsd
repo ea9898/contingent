@@ -574,7 +574,7 @@
                     </xs:annotation>
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="medicalEmployeeJobInfoId" type="xs:long" minOccurs="0"/>
+                            <xs:element name="medicalEmployeeJobId" type="xs:long" minOccurs="0"/>
                             <xs:element name="snils" type="xs:string" minOccurs="0"/>
                         </xs:sequence>
                     </xs:complexType>

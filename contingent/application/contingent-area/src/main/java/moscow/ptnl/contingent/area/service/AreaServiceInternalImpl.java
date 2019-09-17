@@ -334,7 +334,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         //3.2
         if (!medicalEmployees.isEmpty()) {
             areas = areaMedicalEmployeeRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
-                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getMedicalEmployeeJobInfoId).collect(Collectors.toList()),
+                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getMedicalEmployeeJobId).collect(Collectors.toList()),
                     medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getSnils).collect(Collectors.toList()));
         }
 
