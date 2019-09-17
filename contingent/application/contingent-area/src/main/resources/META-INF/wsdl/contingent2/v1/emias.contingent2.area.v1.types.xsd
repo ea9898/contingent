@@ -598,7 +598,7 @@
             <xs:complexContent>
                 <xs:extension base="core:PagingResults">
                     <xs:sequence>
-                        <xs:element name="area" type="core:Area" maxOccurs="unbounded"/>
+                        <xs:element name="area" type="core:Area" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:extension>
             </xs:complexContent>

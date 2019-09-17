@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
-import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.Area;
@@ -9,7 +8,6 @@ import ru.mos.emias.contingent2.core.AreaTypeClass;
 import ru.mos.emias.contingent2.core.AreaTypeKind;
 import ru.mos.emias.contingent2.core.AreaTypeShort;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -44,7 +42,8 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
         area.setAttachByMedicalReason(areaObj.getAttachByMedicalReason());
         area.setArchive(Boolean.TRUE.equals(areaObj.getArchived()));
 
-        if (!entityObject.getMainAreaMedicalEmployees().isEmpty()) {
+        if (entityObject.getMainAreaMedicalEmployees() != null
+                && !entityObject.getMainAreaMedicalEmployees().isEmpty()) {
             Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
             medicalEmployees.getMedicalEmployees().addAll(entityObject.getMainAreaMedicalEmployees().stream()
                     .map(areaMedicalEmployeeMapper::entityToDtoTransform)
@@ -52,7 +51,8 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
             area.setMedicalEmployees(medicalEmployees);
         }
 
-        if (!entityObject.getReplacementAreaMedicalEmployees().isEmpty()) {
+        if (entityObject.getReplacementAreaMedicalEmployees() != null
+                && !entityObject.getReplacementAreaMedicalEmployees().isEmpty()) {
             Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
             medicalEmployees.getMedicalEmployees().addAll(entityObject.getReplacementAreaMedicalEmployees().stream()
                     .map(areaMedicalEmployeeMapper::entityToDtoTransform)
@@ -60,7 +60,8 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
             area.setMedicalEmployees(medicalEmployees);
         }
 
-        if (!entityObject.getArea().getPrimaryAreaTypes().isEmpty()) {
+        if (entityObject.getArea() != null && entityObject.getArea().getPrimaryAreaTypes() != null
+                && !entityObject.getArea().getPrimaryAreaTypes().isEmpty()) {
             Area.PrimaryAreaTypeCodes areaTypeCodes = new Area.PrimaryAreaTypeCodes();
 
             areaTypeCodes.getAreaTypes().addAll(entityObject.getArea().getPrimaryAreaTypes()

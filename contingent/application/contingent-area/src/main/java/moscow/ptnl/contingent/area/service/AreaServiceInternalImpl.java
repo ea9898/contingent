@@ -5,14 +5,25 @@ import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
+import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.model.area.AddressArea;
+import moscow.ptnl.contingent.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
+import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
+import moscow.ptnl.contingent.area.util.Period;
+import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
+import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
+import moscow.ptnl.contingent.error.ContingentException;
+import moscow.ptnl.contingent.error.Validation;
+import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
@@ -21,14 +32,14 @@ import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
-import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.error.ValidationParameter;
-import moscow.ptnl.contingent.area.model.area.AreaInfo;
-import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
-import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
-import moscow.ptnl.contingent.area.transform.AddressMapper;
+import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
+import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
@@ -38,6 +49,8 @@ import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
+import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.AreaToAreaTypeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaToAreaTypeRepository;
@@ -47,17 +60,6 @@ import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
-import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
-import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import moscow.ptnl.util.Strings;
 import moscow.ptnl.ws.security.UserContextHolder;
@@ -83,10 +85,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
-
-import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 
 import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsFirst;
@@ -340,23 +338,28 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getSnils).collect(Collectors.toList()));
         }
 
-        //3.3.1
-        List<AreaAddress> areaAddresses = areaAddressRepository.findActualAreaAddress();
-        //3.3.2
-        List<Addresses> addresses;
-        if (isExactAddressMatch == null || isExactAddressMatch) {
-            addresses = addressesRepository.findAddresses(areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList()),
-                    searchAreaAddresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
-        //3.3.3
-        } else {
-            addresses = algorithms.findIntersectingAddressesSearch(areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList()),
-                    searchAreaAddresses.stream().map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
-        }
-        //3.3.4
-        if (!addresses.isEmpty()) {
-            areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
-            List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
-            areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
+        //3.3
+        if (!searchAreaAddresses.isEmpty()) {
+            //3.3.1
+            List<AreaAddress> areaAddresses = areaAddressRepository.findActualAreaAddress();
+            List<Addresses> addresses;
+            if (!areaAddresses.isEmpty()) {
+                //3.3.2
+                if (isExactAddressMatch == null || isExactAddressMatch) {
+                    addresses = addressesRepository.findAddresses(areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList()),
+                            searchAreaAddresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
+                //3.3.3
+                } else {
+                    addresses = algorithms.findIntersectingAddressesSearch(areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList()),
+                            searchAreaAddresses.stream().map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
+                }
+                //3.3.4
+                if (!addresses.isEmpty()) {
+                    areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
+                    List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
+                    areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
+                }
+            }
         }
 
         List<AreaInfo> areaInfos = areas.stream().map(AreaInfo::new).collect(Collectors.toList());

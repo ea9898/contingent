@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType_;
 import moscow.ptnl.contingent.area.entity.area.Area_;
@@ -108,7 +107,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                         number == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.number), number),
                         description == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.like(root.get(Area_.description), description),
+                                criteriaBuilder.like(root.get(Area_.description), "%"+description+"%"),
                         archived == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.archived), archived))
         );
