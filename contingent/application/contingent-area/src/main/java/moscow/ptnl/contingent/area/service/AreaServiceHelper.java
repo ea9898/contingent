@@ -17,6 +17,7 @@ import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
+import moscow.ptnl.contingent.area.transform.SearchAreaAddressCloner;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
@@ -142,6 +143,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
+
+    @Autowired
+    private SearchAreaAddressCloner searchAreaAddressCloner;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -294,17 +298,17 @@ public class AreaServiceHelper {
             return;
         }
         // Система проверяет, что переданные параметры изменены, иначе возвращает ошибку
-        if (muId == null ? area.getMuId() == null : muId.equals(area.getMuId())
-                && number == null ? area.getNumber() == null : number.equals(area.getNumber())
-                && description == null ? area.getDescription() == null : description.equals(area.getDescription())
+        if ((muId == null ? area.getMuId() == null : muId.equals(area.getMuId()))
+                && (number == null ? area.getNumber() == null : number.equals(area.getNumber()))
+                && (description == null ? area.getDescription() == null : description.equals(area.getDescription()))
                 && primaryAreaTypeCodesAddIds.isEmpty() && primaryAreaTypeCodesDelIds.isEmpty()
                 && policyTypesAddIds.isEmpty() && policyTypesDelIds.isEmpty()
-                && ageMin == null ? area.getAgeMin() == null : ageMin.equals(area.getAgeMin())
-                && ageMax == null ? area.getAgeMax() == null : ageMax.equals(area.getAgeMax())
-                && ageMinM == null ? area.getAgeMMin() == null : ageMinM.equals(area.getAgeMMin())
-                && ageMaxM == null ? area.getAgeMMax() == null : ageMaxM.equals(area.getAgeMMax())
-                && ageMinW == null ? area.getAgeWMin() == null : ageMinW.equals(area.getAgeWMin())
-                && ageMaxW == null ? area.getAgeWMax() == null : ageMaxW.equals(area.getAgeWMax())) {
+                && (ageMin == null ? area.getAgeMin() == null : ageMin.equals(area.getAgeMin()))
+                && (ageMax == null ? area.getAgeMax() == null : ageMax.equals(area.getAgeMax()))
+                && (ageMinM == null ? area.getAgeMMin() == null : ageMinM.equals(area.getAgeMMin()))
+                && (ageMaxM == null ? area.getAgeMMax() == null : ageMaxM.equals(area.getAgeMMax()))
+                && (ageMinW == null ? area.getAgeWMin() == null : ageMinW.equals(area.getAgeWMin()))
+                && (ageMaxW == null ? area.getAgeWMax() == null : ageMaxW.equals(area.getAgeWMax()))) {
 
             validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
         }

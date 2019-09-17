@@ -138,7 +138,7 @@ public class CreateDependentAreaTest {
         policyType.setArchived(false);
         policyType.setCode(policyTypeCode);
         policyType.setTitle("Policy type 1");
-        areaPrimary1 = new Area(1L, moId, null, areaTypePrimary1, false, LocalDateTime.now());
+        areaPrimary1 = new Area(2L, moId, null, areaTypePrimary1, false, LocalDateTime.now());
         areaPrimary1.setNumber(123);
     }
 
