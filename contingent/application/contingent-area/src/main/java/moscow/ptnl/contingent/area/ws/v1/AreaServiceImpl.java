@@ -330,7 +330,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                                     .collect(Collectors.toList()),
                     body.getAddresses() == null ? Collections.EMPTY_LIST : body.getAddresses().stream().map(SearchAreaAddress::new).collect(Collectors.toList()),
                     body.isIsExactAddressMatch(),
-                    body.getPagingOptions() == null ? null : pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
+                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             SearchAreaResponse response = new SearchAreaResponse();
             response.getAreas().addAll(areas.stream().map(area -> areaMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
             soapCustomMapper.mapPagingResults(response, areas);
@@ -346,7 +346,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             GetMoAddressResponse response = new GetMoAddressResponse();
             Page<MoAddress> addresses = areaService.getMoAddress(body.getMoId(), body.getAreaTypes(),
-                    body.getPagingOptions() == null ? null : pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
+                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             response.setMoId(body.getMoId());
             response.getAreaTypes().addAll(addresses.getContent().stream()
                     .map(MoAddress::getAreaType)
@@ -385,8 +385,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             GetAreaAddressResponse response = new GetAreaAddressResponse();
             
-            Page<moscow.ptnl.contingent.area.model.area.AddressArea> areaAddresses = areaService.getAreaAddress(body.getAreaId(), body.getPagingOptions() != null ?
-                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()) : null);
+            Page<moscow.ptnl.contingent.area.model.area.AddressArea> areaAddresses = areaService.getAreaAddress(body.getAreaId(),
+                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             response.getAreaAddresses().addAll(
                 areaAddresses.getContent().stream()
                 .map(areaAddressMapper::entityToDtoTransform)

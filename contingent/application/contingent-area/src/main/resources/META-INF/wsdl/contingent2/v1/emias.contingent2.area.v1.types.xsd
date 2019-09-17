@@ -186,7 +186,7 @@
                 <xs:element name="date" type="xs:date" minOccurs="0" />
                 <xs:element name="name" type="xs:string" minOccurs="0" />
                 <xs:element ref="core:options" minOccurs="0" />
-                <xs:element ref="core:pagingOptions" />
+                <xs:element ref="core:pagingOptions" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
