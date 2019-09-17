@@ -45,4 +45,16 @@ public class SettingServiceImpl implements SettingService {
         Long param = (Long) getPar("synchronize_k2_and_k1");
         return param == null ? null : param.equals(1L);
     }
+
+    @Override
+    public Integer getPar5() {
+        Long param = (Long) getPar("paging_default_page_number");
+        return param == null ? 0 : param.intValue();
+    }
+
+    @Override
+    public Integer getPar6() {
+        Long param = (Long) getPar("paging_default_page_size");
+        return param == null ? 20 : param.intValue();
+    }
 }
