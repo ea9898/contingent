@@ -324,7 +324,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.getMuIds() == null ? Collections.EMPTY_LIST : body.getMuIds(),
                     body.getAreaTypeCodes() == null ? Collections.EMPTY_LIST : body.getAreaTypeCodes(),
                     body.getNumber(), body.getDescription(), body.isIsArchived(),
-                    body.getMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getMedicalEmployees(),
+                    body.getMedicalEmployees() == null ? Collections.EMPTY_LIST :
+                            body.getMedicalEmployees().stream()
+                                    .filter(empl -> empl.getMedicalEmployeeJobInfoId() != null || empl.getSnils()!= null)
+                                    .collect(Collectors.toList()),
                     body.getAddresses() == null ? Collections.EMPTY_LIST : body.getAddresses().stream().map(SearchAreaAddress::new).collect(Collectors.toList()),
                     body.isIsExactAddressMatch(),
                     body.getPagingOptions() == null ? null : pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));

@@ -573,16 +573,10 @@
                         </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
-                        <xs:choice>
-                            <xs:sequence>
-                                <xs:element name="medicalEmployeeJobInfoId" type="xs:long"/>
-                                <xs:element name="snils" type="xs:string" minOccurs="0"/>
-                            </xs:sequence>
-                            <xs:sequence>
-                                <xs:element name="medicalEmployeeJobInfoId" type="xs:long" minOccurs="0"/>
-                                <xs:element name="snils" type="xs:string"/>
-                            </xs:sequence>
-                        </xs:choice>
+                        <xs:sequence>
+                            <xs:element name="medicalEmployeeJobInfoId" type="xs:long" minOccurs="0"/>
+                            <xs:element name="snils" type="xs:string" minOccurs="0"/>
+                        </xs:sequence>
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="address" type="address:SearchAreaAddress" minOccurs="0" maxOccurs="unbounded"/>
