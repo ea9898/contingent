@@ -88,6 +88,9 @@ import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 
+import static java.util.Comparator.naturalOrder;
+import static java.util.Comparator.nullsFirst;
+
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
 
@@ -528,18 +531,18 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         Area oldArea = historyService.clone(area);
-        
+
         //3 Система проверяет, что передан хотя бы один параметр для изменения, иначе возвращает ошибку
-        areaHelper.checkAreaParametersForUpdate(number, policyTypesAddIds, policyTypesDelIds, 
-            ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, 
+        areaHelper.checkAreaParametersForUpdate(number, policyTypesAddIds, policyTypesDelIds,
+            ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW,
             autoAssignForAttachment, attachByMedicalReason, description, validation);
-        
+
         //4 Система проверяет, что переданные параметры изменены, иначе возвращает ошибку
         List<PolicyType> policyTypesAdd = policyTypeRepository.findByIds(policyTypesAddIds);
         List<PolicyType> policyTypesDel = policyTypeRepository.findByIds(policyTypesDelIds);
-        areaHelper.checkAreaParametersForUpdateChanged(area, number, 
-            policyTypesAdd, policyTypesDel, ageMin, ageMax, ageMinM, ageMaxM, 
-            ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, 
+        areaHelper.checkAreaParametersForUpdateChanged(area, number,
+            policyTypesAdd, policyTypesDel, ageMin, ageMax, ageMinM, ageMaxM,
+            ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason,
             description, validation);
 
         // 3
@@ -771,8 +774,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaMedicalEmployees> changeEmployeesDb = new ArrayList<>();
         areaMedicalEmployeeCRUDRepository.findAllById(changeIds).forEach(changeEmployeesDb::add);
 
-        if (!AreaTypeKindEnum.MILDLY_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode()) 
-                && !AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode())) 
+        if (!AreaTypeKindEnum.MILDLY_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode())
+                && !AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode()))
         {
 
             addEmployeesInput.stream().filter(empl -> !empl.isIsReplacement())
@@ -871,7 +874,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                         new ValidationParameter("AreaSpecialization", area.getAreaType().getCode()));
 
             }
-            
+
             // 5.6.            
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
 
@@ -917,7 +920,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 areaHelper.applyChanges(replacementEmployees, changeEmployeesInput);
                 areaHelper.addNew(replacementEmployees, addEmployeesInput.stream()
                         .filter(AddMedicalEmployee::isIsReplacement).collect(Collectors.toList()), area);
-                replacementEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate));
+                replacementEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate, nullsFirst(naturalOrder())));
                 areaHelper.checkReplacementWithoutMain(periodsWithoutMainEmpl, replacementEmployees, validation);
             }
         }
@@ -1187,11 +1190,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 8.
         if (areaHelper.isAreaDependent(area)) {
             List<Area> areas = areaRepository.findPrimaryAreasByAreaEqAreaType(area);
-                                    
+
             if (!areas.isEmpty()) {
                 esuHelperService.sendAttachOnAreaChangeEvent(
                         areas.stream().map(Area::getId).collect(Collectors.toList()),
-                        null, 
+                        null,
                         area
                 );
             }

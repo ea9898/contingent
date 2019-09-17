@@ -565,14 +565,21 @@ public class AreaServiceHelper {
     }
 
     public List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployees> mainEmployees) {
+        mainEmployees = mainEmployees.stream().filter(empl -> empl.getStartDate() != null
+                && !(empl.getStartDate().isBefore(LocalDate.now().plusDays(1))
+                && empl.getEndDate() != null
+                && empl.getEndDate().isBefore(LocalDate.now().plusDays(1))))
+                .collect(Collectors.toList());
         mainEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate));
         List<Period> periodsWithoutMainEmpl = new ArrayList<>();
         if (mainEmployees.isEmpty()) {
-            periodsWithoutMainEmpl.add(Period.ALL_TIME);
+            periodsWithoutMainEmpl.add(new Period(LocalDate.now(), Period.MAX_DATE));
             return periodsWithoutMainEmpl;
         }
         AreaMedicalEmployees first = mainEmployees.get(0);
-        periodsWithoutMainEmpl.add(new Period(Period.MIN_DATE, first.getStartDate().minusDays(1)));
+        if (first.getStartDate().isAfter(LocalDate.now())) {
+            periodsWithoutMainEmpl.add(new Period(LocalDate.now(), first.getStartDate().minusDays(1)));
+        }
         for (int i = 0; i < mainEmployees.size() - 1; i++) {
             AreaMedicalEmployees current = mainEmployees.get(i);
             AreaMedicalEmployees next = mainEmployees.get(i + 1);
@@ -585,7 +592,11 @@ public class AreaServiceHelper {
         }
         AreaMedicalEmployees last = mainEmployees.get(mainEmployees.size() - 1);
         if (last.getEndDate() != null) {
-            periodsWithoutMainEmpl.add(new Period(last.getEndDate().plusDays(1), Period.MAX_DATE));
+            if (last.getEndDate().isAfter(LocalDate.now())) {
+                periodsWithoutMainEmpl.add(new Period(last.getEndDate().plusDays(1), Period.MAX_DATE));
+            } else {
+                periodsWithoutMainEmpl.add(new Period(LocalDate.now(), Period.MAX_DATE));
+            }
         }
         return periodsWithoutMainEmpl;
     }
