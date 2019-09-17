@@ -7,6 +7,7 @@
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
     <xs:import namespace="http://emias.mos.ru/contingent2/core/v1/" schemaLocation="emias.contingent2.core.v1.xsd"/>
+    <xs:import schemaLocation="emias.contingent2.address.v1.xsd" namespace="http://emias.mos.ru/contingent2/address/v1/" />
 
     <!--lists of entities-->
     <xs:complexType name="AddressAllocationOrderListResultPage">
@@ -587,7 +588,7 @@
                 <xs:element name="address" type="address:SearchAreaAddress" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="isExactAddressMatch" type="xs:boolean" minOccurs="0"/>
                 <xs:element ref="core:options" minOccurs="0"/>
-                <xs:element ref="core:pagingOptions"/>
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

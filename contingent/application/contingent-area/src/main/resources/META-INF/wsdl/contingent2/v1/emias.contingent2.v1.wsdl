@@ -13,11 +13,9 @@
                   targetNamespace="http://emias.mos.ru/contingent2/area/v1/">
     <wsdl:types>
         <xs:schema>
-            <xs:import namespace="http://emias.mos.ru/system/v1/userContext/"
-                       schemaLocation="../../emias/emias.system.v1.userContext.xsd"/>
+            <xs:import namespace="http://emias.mos.ru/system/v1/userContext/" schemaLocation="../../emias/emias.system.v1.userContext.xsd"/>
             <xs:import namespace="http://emias.mos.ru/system/v1/faults/" schemaLocation="../../emias/emias.system.v1.faults.xsd"/>
-            <xs:import namespace="http://emias.mos.ru/contingent2/area/v1/types/"
-                       schemaLocation="emias.contingent2.area.v1.types.xsd"/>
+            <xs:import namespace="http://emias.mos.ru/contingent2/area/v1/types/" schemaLocation="emias.contingent2.area.v1.types.xsd"/>
         </xs:schema>
     </wsdl:types>
     <wsdl:message name="fault">
