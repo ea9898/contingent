@@ -8,11 +8,11 @@ import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.util.EsuTopicsEnum;
 import moscow.ptnl.contingent2.attachment.changeprimarea.event.AttachPrimaryPatientEvent;
 import moscow.ptnl.contingent2.attachment.deparea.event.AttachToDependentAreaEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +26,13 @@ import java.util.List;
 @Qualifier("attachmentPrimaryTopicTask")
 public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatientEvent> {
 
+
+    @Value("${esu.consumer.topic.primary.area.attachment}")
+    private String attachmentPrimaryMsgTopicName;
+
+    @Value("${topic.attach.to.dependent.area}")
+    private String attachToDependentMsgTopicName;
+
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
 
@@ -38,7 +45,13 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
     private static final String XSD_PATH = "META-INF/xsd/esu/attachmentprimary.v1.xsd";
 
     public AttachmentPrimaryTopicTask() {
-        super(EsuTopicsEnum.ATTACHMENT_PRIMARY, XSD_PATH, AttachPrimaryPatientEvent.class);
+        super(XSD_PATH, AttachPrimaryPatientEvent.class);
+    }
+
+
+    @Override
+    public String getTopicName() {
+        return attachmentPrimaryMsgTopicName;
     }
 
     @Override
@@ -75,7 +88,7 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
 
             // 4
             esuChannel.send(EsuEventBuilder
-                    .withTopic(EsuTopicsEnum.ATTACH_TO_DEPENDENT_AREA.getName())
+                    .withTopic(attachToDependentMsgTopicName)
                     .setEventObject(eventDto)
                     .buildMessage());
         }
