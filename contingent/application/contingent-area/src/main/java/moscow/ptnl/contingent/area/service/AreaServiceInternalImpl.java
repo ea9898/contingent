@@ -1341,9 +1341,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 5.
-        areaHelper.splitAddresses(addressesRegistry);
-
-        // 6.
         addressesRegistry.forEach(addr -> {
             MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaType, orderId,
                     Collections.singletonList(addr), validation);
@@ -1355,12 +1352,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 7.
+        // 6.
         List<Addresses> addresses = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
                 .collect(Collectors.toList());
         addressesCRUDRepository.saveAll(addresses);
 
-        // 8.
+        // 7.
         List<MoAddress> moAddresses = new ArrayList<>();
         addresses.forEach(a -> {
             MoAddress moAddress = new MoAddress();
