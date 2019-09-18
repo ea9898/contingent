@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -289,21 +290,41 @@ public class Algorithms {
                 )
         ).collect(Collectors.toSet());
 
-        for (AddressRegistryBaseType addr : addressesRegistryType) {
-            switch (AddressLevelType.find(addr.getAoLevel())) {
+        for (AddressRegistryBaseType address : addressesRegistryType) {
+            switch (AddressLevelType.find(address.getAoLevel())) {
                 case ID:
                 case STREET:
-                    resultAddresses.addAll(AlgorithmsHelper.searchByStreetCode.apply(addr, nsiAddresses));
+                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
+                            .equals(AddressLevelType.STREET.getLevel()) && addr.getStreetCode().equals(address.getStreet().getCode()))
+                            .collect(Collectors.toList()));
                 case PLAN:
-                    resultAddresses.addAll(AlgorithmsHelper.searchByPlanCode.apply(addr, nsiAddresses));
+                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
+                            .equals(AddressLevelType.PLAN.getLevel()) && addr.getPlanCode().equals(address.getPlan().getCode()))
+                            .collect(Collectors.toList()));
                 case PLACE:
-                    resultAddresses.addAll(AlgorithmsHelper.searchByPlaceCode.apply(addr, nsiAddresses));
+                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
+                            .equals(AddressLevelType.PLACE.getLevel()) && addr.getPlaceCode().equals(address.getPlace().getCode()))
+                            .collect(Collectors.toList()));
                 case CITY:
-                    resultAddresses.addAll(AlgorithmsHelper.searchByCityCode.apply(addr, nsiAddresses));
+                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
+                            .equals(AddressLevelType.CITY.getLevel()) && addr.getCityCode().equals(address.getCity().getCode()))
+                            .collect(Collectors.toList()));
                 case AREA:
-                    resultAddresses.addAll(AlgorithmsHelper.searchByAreaCode.apply(addr, nsiAddresses));
+                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
+                            .equals(AddressLevelType.AREA.getLevel()) && addr.getAreaCode().equals(address.getArea().getCode()))
+                            .collect(Collectors.toList()));
                 case AREA_TE:
-                    resultAddresses.addAll(AlgorithmsHelper.searchByAreaOmkTeCode.apply(addr, nsiAddresses));
+                    String[] areaOmkTeCodes = address.getAreaOMKTE().getCode().split(";");
+                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
+                            .equals(AddressLevelType.AREA_TE.getLevel())
+                            && Arrays.stream(areaOmkTeCodes).anyMatch(areaOmkTeCode -> addr.getAreaCodeOmkTe().contains(areaOmkTeCode)))
+                            .collect(Collectors.toList()));
+                case REGION_TE:
+                    String[] regionTeCodes = address.getRegionOMKTE().getCode().split(";");
+                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
+                            .equals(AddressLevelType.REGION_TE.getLevel())
+                            && Arrays.stream(regionTeCodes).anyMatch(regionTeCode -> addr.getRegionTeCode().contains(regionTeCode)))
+                            .collect(Collectors.toList()));
             }
         }
         return new ArrayList<>(resultAddresses);
