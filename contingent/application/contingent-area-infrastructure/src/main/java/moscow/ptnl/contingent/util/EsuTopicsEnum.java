@@ -7,7 +7,7 @@ package moscow.ptnl.contingent.util;
 public enum  EsuTopicsEnum {
 
     ATTACHMENT_PRIMARY("AttachmentPrimary"),
-    JOB_EXECUTION_INFO_MSG("JobExecutionInfoMsg"),
+    JOB_EXECUTION_INFO_MSG("JEMsg"),
     ATTACH_TO_DEPENDENT_AREA("AttachToDependentArea");
 
     private final String name;
