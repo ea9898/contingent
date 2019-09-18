@@ -5,7 +5,6 @@ import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.esu.EsuInputRepository;
 import moscow.ptnl.contingent.service.TransactionRunner;
 import moscow.ptnl.contingent.util.CommonUtils;
-import moscow.ptnl.contingent.util.EsuTopicsEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -14,6 +13,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Базовый класс обработчика входящих сообщений ЕСУ
  */
+@PropertySource("classpath:application-esu.properties")
 abstract class BaseTopicTask<T> implements Tasklet {
 
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
@@ -52,14 +53,11 @@ abstract class BaseTopicTask<T> implements Tasklet {
 
     private final Class<T> typeClass;
 
-    private final EsuTopicsEnum topic;
-
     private final String xsdPath;
 
     private final String host;
 
-    BaseTopicTask(EsuTopicsEnum topic, String xsdPath, Class<T> typeClass) {
-        this.topic = topic;
+    BaseTopicTask(String xsdPath, Class<T> typeClass) {
         this.xsdPath = xsdPath;
         this.typeClass = typeClass;
         this.host = CommonUtils.getHostName();
@@ -70,8 +68,8 @@ abstract class BaseTopicTask<T> implements Tasklet {
     final public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         LOG.info(typeClass.getSimpleName() + " task start");
 
-        String personalTopic = topic.getName() + "." + consumerGroupId;
-        List<EsuInput> messages = esuInputRepository.findByTopic(topic.getName(), personalTopic);
+        String personalTopic = getTopicName() + "." + consumerGroupId;
+        List<EsuInput> messages = esuInputRepository.findByTopic(getTopicName(), personalTopic);
 
         for (EsuInput message : messages) {
             String eventId = null;
@@ -111,6 +109,8 @@ abstract class BaseTopicTask<T> implements Tasklet {
     protected abstract String getEventId(T event);
 
     public abstract void processMessage(T event);
+
+    public abstract String getTopicName();
 
     @SuppressWarnings("unchecked")
     private T convertEvent(String message) {

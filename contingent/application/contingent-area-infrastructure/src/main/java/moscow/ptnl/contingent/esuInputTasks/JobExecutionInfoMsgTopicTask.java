@@ -16,15 +16,16 @@ import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
-import moscow.ptnl.contingent.util.EsuTopicsEnum;
 import moscow.ptnl.contingent2.rmr.event.JeChangeDateEnd;
 import moscow.ptnl.contingent2.rmr.event.JeCreate;
 import moscow.ptnl.contingent2.rmr.event.JobExecutionInfoMsg;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.ejb.AfterBegin;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -45,6 +46,9 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
 
     //Todo перенести в настройки или еще куда?
     private static final Set<Long> SPECIALIZATION_CODES_ONCOLOGY = new HashSet<>(Arrays.asList(19L, 41L));
+
+    @Value("${esu.consumer.topic.job.execution.info.msg}")
+    private String jobExecutionInfoMsgTopicName;
 
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
@@ -72,7 +76,12 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
 
 
     public JobExecutionInfoMsgTopicTask() {
-        super(EsuTopicsEnum.JOB_EXECUTION_INFO_MSG, XSD_PATH, JobExecutionInfoMsg.class);
+        super(XSD_PATH, JobExecutionInfoMsg.class);
+    }
+
+    @Override
+    public String getTopicName() {
+        return jobExecutionInfoMsgTopicName;
     }
 
     @Override
