@@ -172,7 +172,7 @@ public class Algorithms {
         if (crossAddresses == null) {
             validation.error(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
         }
-
+        //TODO непонятное условие. не имеет смысла и может вызвать NPE
         if (!crossAddresses.isEmpty()) {
             return crossAddresses;
         }

@@ -1,28 +1,19 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.area.entity.area.Addresses;
-import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
-import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
-import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.area.model.area.Address4Algoritm;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
-import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.nsi.repository.BuildingRegistryCRUDRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Component
 public class AlgorithmsHelper {
+
+    private static final String ADDRESS_CODE_VALUES_SPLITTER = ";";
 
     // А_УУ_3 2.1.
     public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByStreetCode =
@@ -92,14 +83,18 @@ public class AlgorithmsHelper {
     // А_УУ_3 2.6.
     public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByAreaOmkTeCode =
             (addressRegistry, addresses) -> {
-                List<Addresses> outAddresses = addresses.stream().filter(addr -> addr.getAoLevel()
-                        .equals(AddressLevelType.AREA_TE.getLevel()) && addr.getAreaCode().equals(addressRegistry.getAreaOMKTE().getCode()))
+                String[] codes = addressRegistry.getAreaOMKTE().getCode().split(ADDRESS_CODE_VALUES_SPLITTER);
+                List<Addresses> outAddresses = addresses.stream().filter(
+                        addr -> addr.getAoLevel().equals(AddressLevelType.AREA_TE.getLevel()) &&
+                                Arrays.stream(codes).allMatch(c -> addr.getAreaCode().contains(c)))
                         .collect(Collectors.toList());
                 if (!outAddresses.isEmpty()) {
                     return outAddresses;
                 } else {
-                    return addresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.REGION_TE.getLevel()) && addr.getAreaCode().equals(addressRegistry.getRegionOMKTE().getCode()))
+                    String[] codes2 = addressRegistry.getRegionOMKTE().getCode().split(ADDRESS_CODE_VALUES_SPLITTER);
+                    return addresses.stream().filter(addr ->
+                            addr.getAoLevel().equals(AddressLevelType.REGION_TE.getLevel()) &&
+                                    Arrays.stream(codes2).allMatch(c -> addr.getRegionTeCode().contains(c)))
                             .collect(Collectors.toList());
                 }
             };

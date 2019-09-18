@@ -988,9 +988,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 5.
-        areaHelper.splitAddresses(addressesRegistry);
-
         // 6.
         List<MoAddress> findMoAddress = new ArrayList<>();
         addressesRegistry.forEach(ar -> {
