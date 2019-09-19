@@ -635,18 +635,6 @@ public class AreaServiceHelper {
                 empl.getSubdivisionId())));
     }
 
-    public PositionNom getPositionNomByPositionCode(String positionCodeCode) {
-        Optional<PositionCode> result = positionCodeRepository.getByCode(positionCodeCode);
-        if (result.isPresent()) {
-            PositionCode positionCode = result.get();
-            Optional<PositionNom> positionNomOptional = positionNomRepository.getByPositionCodeId(positionCode.getGlobalId());
-            if(positionNomOptional.isPresent()) {
-                return positionNomOptional.get();
-            }
-        }
-        return null;
-    }
-
     /**
      * Система закрывает территории обслуживания участка
      * @param addresses
