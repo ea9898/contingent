@@ -25,7 +25,6 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
 
     private static final long serialVersionUID = -786212543217911093L;
 
-    @Id
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
     @MapToNsi("GLOBAL_ID")
     private Long globalId;
@@ -35,9 +34,9 @@ public class AreaTypeSpecializations implements Serializable, Keyable {
     @MapToNsi(value = "AREA_TYPE_CODE", findEntityByField = "globalId")
     private AreaType areaType;
 
-
+    @Id
     @Column(name = "SPECIALIZATION_CODE")
-    @MapToNsi("SPECIALIZATION_CODE")
+    @MapToNsi(value = "SPECIALIZATION_CODE", findEntityByField = "code", crossObject = Specialization.class, crossField = "globalId")
     private Long specializationCode;
 
     @Column(name = "ARCHIVED")

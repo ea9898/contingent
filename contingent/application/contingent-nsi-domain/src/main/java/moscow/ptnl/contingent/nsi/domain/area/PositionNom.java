@@ -48,7 +48,7 @@ public class PositionNom implements Serializable {
     private LocalDate endDate;
 
     @JoinColumn(name = "SPECIALIZATION_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapToNsi(value = "SPECIALIZATION_ID", findEntityByField = "globalId")
     private Specialization specialization;
 

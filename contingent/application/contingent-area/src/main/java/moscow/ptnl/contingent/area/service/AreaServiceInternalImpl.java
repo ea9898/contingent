@@ -808,15 +808,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
             // 5.3.2.
             PositionCode positionCode = positionCodeOptional.get();
-            Optional<PositionNom> positionNom = positionNomRepository.getByPositionCode(positionCode.getCode());
+            Optional<PositionNom> positionNomOptional = positionNomRepository.getByPositionCode(positionCode.getCode());
 
-            if (!positionNom.isPresent()) {
+            if (!positionNomOptional.isPresent()) {
                 // TODO ???
                 continue;
             }
 
             //5.4.
-            Specialization specialization = positionNom.get().getSpecialization();
+            PositionNom positionNom = positionNomOptional.get();
+            Specialization specialization = positionNom.getSpecialization();
 
             // 5.5.
             if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
@@ -832,7 +833,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
             if (positions != null && positions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(empl.getPositionCode()))) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
-                        new ValidationParameter("positionTitle", positionNom.get().getTitle()),
+                        new ValidationParameter("positionTitle", positionNom.getTitle()),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
                         new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
             }
