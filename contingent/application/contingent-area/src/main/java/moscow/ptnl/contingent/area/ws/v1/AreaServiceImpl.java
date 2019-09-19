@@ -332,8 +332,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.isIsExactAddressMatch(),
                     pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             SearchAreaResponse response = new SearchAreaResponse();
-            response.getAreas().addAll(areas.stream().map(area -> areaMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
             soapCustomMapper.mapPagingResults(response, areas);
+            response.getAreas().addAll(areas.stream().map(area -> areaMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
             return response;
         }
         catch (Exception ex) {
