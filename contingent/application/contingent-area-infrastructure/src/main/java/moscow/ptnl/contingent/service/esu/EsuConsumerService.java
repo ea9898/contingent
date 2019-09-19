@@ -31,6 +31,8 @@ public class EsuConsumerService {
 
     private EsuTopicConsumer consumerJobExecutionInfoMsg;
 
+    private EsuTopicConsumer consumerSimiEventInformer;
+
     @Autowired
     private EsuConsumerDatabaseProcessor esuConsumerDatabaseProcessor;
 
@@ -39,6 +41,9 @@ public class EsuConsumerService {
 
     @Value("${esu.consumer.topic.job.execution.info.msg}")
     private String jobExecutionInfoMsgTopicName;
+
+    @Value("${esu.consumer.topic.simi}")
+    private String simiEventInformerTopicName;
 
     @Value("${esu.service.address}")
     private String bootstrapServers;
@@ -64,12 +69,15 @@ public class EsuConsumerService {
         consumerJobExecutionInfoMsg = subscribeTopic(jobExecutionInfoMsgTopicName, esuConsumerDatabaseProcessor);
         //К_УУ_ЕСУ_3
         consumerPrimaryAreaAttachment = subscribeTopic(primaryAreaAttachmentTopicName, esuConsumerDatabaseProcessor);
+        //К_УУ_ЕСУ_5
+        consumerSimiEventInformer = subscribeTopic(simiEventInformerTopicName, esuConsumerDatabaseProcessor);
     }
 
     @PreDestroy
     public void closeTopics() {
         consumerJobExecutionInfoMsg.shutdown();
         consumerPrimaryAreaAttachment.shutdown();
+        consumerSimiEventInformer.shutdown();
     }
 
     private EsuTopicConsumer subscribeTopic(String topicName, EsuConsumerMessageProcessor processor) {
