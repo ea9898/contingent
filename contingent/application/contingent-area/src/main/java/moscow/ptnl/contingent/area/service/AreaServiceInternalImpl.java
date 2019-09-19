@@ -316,57 +316,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 availableAreaTypes);
     }
 
-    @Override
-    public Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
-                                     Integer number, String description, Boolean isArchived,
-                                     List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
-                                     List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch,
-                                     PageRequest paging) throws ContingentException {
-        //1
-        areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
-                isArchived, medicalEmployees, searchAreaAddresses);
-        //2
-        areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
-
-        //3.1
-        List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description, isArchived);
-
-        //3.2
-        if (!medicalEmployees.isEmpty()) {
-            areas = areaMedicalEmployeeRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
-                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getMedicalEmployeeJobId).collect(Collectors.toList()),
-                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getSnils).collect(Collectors.toList()));
-        }
-
-        //3.3
-        if (!searchAreaAddresses.isEmpty()) {
-            //3.3.1
-            List<AreaAddress> areaAddresses = areaAddressRepository.findActualAreaAddress();
-            List<Addresses> addresses;
-            if (!areaAddresses.isEmpty()) {
-                //3.3.2
-                if (isExactAddressMatch == null || isExactAddressMatch) {
-                    addresses = addressesRepository.findAddresses(areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList()),
-                            searchAreaAddresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
-                //3.3.3
-                } else {
-                    addresses = algorithms.findIntersectingAddressesSearch(areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList()),
-                            searchAreaAddresses.stream().map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
-                }
-                //3.3.4
-                if (!addresses.isEmpty()) {
-                    areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
-                    List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
-                    areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
-                }
-            }
-        }
-
-        List<AreaInfo> areaInfos = areas.stream().map(AreaInfo::new).collect(Collectors.toList());
-        return new PageImpl<>(new ArrayList<>(areaInfos),
-                paging, areaInfos.size());
-    }
-
     // (К_УУ_7)	Создание участка обслуживания первичного типа
     @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
@@ -1417,5 +1366,62 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public Long getNewAreaId() throws ContingentException {
         return areaRepository.getNextAreaId();
     }
+
+    // (К_УУ_25) Предоставление списка участков
+    @Override
+    public Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+                                     Integer number, String description, Boolean isArchived,
+                                     List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
+                                     List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch,
+                                     PageRequest paging) throws ContingentException {
+        //1
+        areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
+                isArchived, medicalEmployees, searchAreaAddresses);
+        //2
+        areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
+
+        //3.1
+        List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description, isArchived);
+
+        //3.2
+        if (!medicalEmployees.isEmpty()) {
+            areas = areaMedicalEmployeeRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
+                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getMedicalEmployeeJobId).collect(Collectors.toList()),
+                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getSnils).collect(Collectors.toList()));
+        }
+
+        //3.3
+        if (!searchAreaAddresses.isEmpty()) {
+            //3.3.1
+            List<AreaAddress> areaAddresses = areaAddressRepository.findActualAreaAddress();
+            List<Addresses> addresses;
+            if (!areaAddresses.isEmpty()) {
+                //3.3.2
+                if (isExactAddressMatch == null || isExactAddressMatch) {
+                    addresses = addressesRepository.findAddresses(areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList()),
+                            searchAreaAddresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
+                    //3.3.3
+                } else {
+                    addresses = algorithms.findIntersectingAddressesSearch(areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList()),
+                            searchAreaAddresses.stream().map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
+                }
+                //3.3.4
+                if (!addresses.isEmpty()) {
+                    areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
+                    List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
+                    areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
+                }
+            }
+        }
+
+        int totalSize = areas.size();
+        List<AreaInfo> areaInfos = areas.stream().sorted(Comparator.comparingLong(Area::getId))
+                .skip(paging.getPageNumber() * paging.getPageSize()).limit(paging.getPageSize())
+                .map(AreaInfo::new).collect(Collectors.toList());
+        return new PageImpl<>(new ArrayList<>(areaInfos),
+                paging, totalSize);
+    }
+
+
 
 }
