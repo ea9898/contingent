@@ -38,6 +38,11 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
                 root.get(AreaAddress_.moAddress.getName()).get(MoAddress_.id.getName()).in(moAddressIds);
     }
 
+    private Specification<AreaAddress> findAreaAddressesByIdsSpec(List<Long> areaAddressIds) {
+        return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
+                root.get(AreaAddress_.id.getName()).in(areaAddressIds);
+    }
+
     @Override
     public List<AreaAddress> getActiveAreaAddresses(long moId, long areaTypeCode) {
         Specification<AreaAddress> specification = (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
@@ -56,8 +61,8 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     }
 
     @Override
-    public List<AreaAddress> findAreaAddressesActual(List<Long> moAddressIds) {
-        return areaAddressCRUDRepository.findAll(findMoAddressesByIdsSpec(moAddressIds).and(activeAreaAddressesSpec()));
+    public List<AreaAddress> findAreaAddressesActual(List<Long> areaAddressIds) {
+        return areaAddressCRUDRepository.findAll(findAreaAddressesByIdsSpec(areaAddressIds).and(activeAreaAddressesSpec()));
     }
 
     @Override

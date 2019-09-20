@@ -1018,7 +1018,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 5.
         LocalDate localDate = LocalDate.now();
         for (AreaAddress areaAddress: areaAddresses) {
-            if (!areaAddress.getStartDate().equals(localDate)) {
+            if (areaAddress.getStartDate() == null || !areaAddress.getStartDate().equals(localDate)) {
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
                 areaAddressCRUDRepository.save(areaAddress);

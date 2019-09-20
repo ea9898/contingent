@@ -986,11 +986,6 @@ public class AreaServiceHelper {
         }
     }
 
-    public void deleteMoAddresses(List<MoAddress> addresses) {
-        // 5.
-        delMoAddresses(addresses);
-    }
-
     @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Set<Area> deleteAreaAddresses(List<AreaAddress> addresses) {
 
