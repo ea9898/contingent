@@ -66,6 +66,7 @@ public interface AddressMapper {
             @Mapping(target = "l3Type", source = "building.construction.type.full"),
             @Mapping(target = "l3TypeShort", source = "building.construction.type.short"),
             @Mapping(target = "l3Value", source = "building.construction.name"),
+            @Mapping(target = "updateDate", expression = "java( java.time.LocalDateTime.now() )")
     })
     Addresses dtoToEntityTransform(AddressRegistryBaseType addressRegistry);
 
