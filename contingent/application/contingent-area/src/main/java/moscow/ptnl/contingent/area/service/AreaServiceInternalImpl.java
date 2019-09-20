@@ -1018,7 +1018,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 5.
         LocalDate localDate = LocalDate.now();
         for (AreaAddress areaAddress: areaAddresses) {
-            if (!areaAddress.getStartDate().equals(localDate)) {
+            if (areaAddress.getStartDate() == null || !areaAddress.getStartDate().equals(localDate)) {
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
                 areaAddressCRUDRepository.save(areaAddress);
@@ -1326,16 +1326,33 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException {
         Validation validation = new Validation();
 
+        // 1.
         if (moAddressIds.size() > settingService.getPar2()) {
             validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("moAddressId", settingService.getPar2()));
         }
+
+        // 2.
         List<MoAddress> addresses = areaHelper.getAndCheckMoAddressesExist(moAddressIds, validation);
+
+        // 3.
         areaHelper.checkOrderExists(orderId, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        areaHelper.deleteMoAddresses(addresses);
+
+        // 4.
+        List<Long> moAddressesIds = addresses.stream()
+                .map(MoAddress::getId)
+                .collect(Collectors.toList());
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(moAddressesIds);
+
+        if (!areaAddresses.isEmpty()) {
+            areaHelper.deleteAreaAddresses(areaAddresses);
+        }
+
+        // 5.
+        areaHelper.delMoAddresses(addresses);
     }
 
     // (К_УУ_23) Получение списка территорий обслуживания МО

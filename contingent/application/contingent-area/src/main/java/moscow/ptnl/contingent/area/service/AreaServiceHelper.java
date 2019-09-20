@@ -641,7 +641,7 @@ public class AreaServiceHelper {
      */
     public void delAreaAddresses(List<AreaAddress> addresses) {
         addresses.forEach(a -> {
-            if (a.getStartDate().equals(LocalDate.now())) {
+            if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
                 areaAddressCRUDRepository.delete(a);
             }
             else {
@@ -656,7 +656,7 @@ public class AreaServiceHelper {
      */
     public void delMoAddresses(List<MoAddress> addresses) {
         addresses.forEach(a -> {
-            if (a.getStartDate().equals(LocalDate.now())) {
+            if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
                 moAddressCRUDRepository.delete(a);
             }
             else {
@@ -987,43 +987,23 @@ public class AreaServiceHelper {
     }
 
     @LogESU(type = AreaInfoEvent.class, useResult = true)
-    public Set<Area> deleteMoAddresses(List<MoAddress> addresses) {
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(addresses.stream()
-                .map(MoAddress::getId)
-                .collect(Collectors.toList()));
-        Set<Area> areas = areaAddresses.stream().map(AreaAddress::getArea).collect(Collectors.toSet());
-        delAreaAddresses(areaAddresses);
-        delMoAddresses(addresses);
+    public Set<Area> deleteAreaAddresses(List<AreaAddress> addresses) {
+
+        Set<Area> areas = addresses.stream().map(AreaAddress::getArea).collect(Collectors.toSet());
+
+        delAreaAddresses(addresses);
 
         //Возвращаем участки, адреса которых были удалены, для передачи в ЕСУ
         return areas;
     }
+
+
 
     public void checkEmptyMuId(Long muId, AreaType areaType) throws ContingentException {
         if (muId == null && (AreaTypeKindEnum.MILDLY_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode()) ||
                 AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode()))) {
             throw new ContingentException(AreaErrorReason.NO_MU_ID_PARAMETER);
         }
-    }
-
-    public void splitAddresses(List<AddressRegistryBaseType> addresses) {
-        // 1.
-        List<AddressRegistryBaseType> splitesAddresses = addresses.stream()
-                .filter(ar -> ar.getAreaOMKTE().getCode().contains(";")).collect(Collectors.toList());
-        splitesAddresses.forEach(sa -> {
-            for (String saAreaOmkTe: sa.getAreaOMKTE().getCode().split(";")) {
-                // 2.
-                AddressRegistryBaseType addressRegistryBaseType = addressRegistryBaseTypeCloner.clone(sa);
-                addressRegistryBaseType.getAreaOMKTE().setCode(saAreaOmkTe);
-                // 3.
-                if (sa.getRegionOMKTE().getCode().contains(";")) {
-                    String regionOMKTE = sa.getRegionOMKTE().getCode();
-                    addressRegistryBaseType.getRegionOMKTE().setCode(saAreaOmkTe.substring(0, 2) + regionOMKTE.substring(2));
-                }
-                addresses.add(addressRegistryBaseType);
-            }
-            addresses.remove(sa);
-        });
     }
 
     public void checkSearchParameters(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
