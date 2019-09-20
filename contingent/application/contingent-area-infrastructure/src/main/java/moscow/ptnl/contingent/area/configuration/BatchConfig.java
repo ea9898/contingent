@@ -41,6 +41,10 @@ public class BatchConfig extends DefaultBatchConfigurer {
     @Qualifier("jobExecutionInfoMsgTopicTask")
     private Tasklet jobExecutionInfoMsgTopicTask;
 
+    @Autowired
+    @Qualifier("dnEventInformerTask")
+    private Tasklet dnEventInformerTask;
+
     private Job buildJobAttachmentPrimaryTopicTask() {
         return jobs.get("jobAttachmentPrimaryTopicTask")
                 .incrementer(new RunIdIncrementer())
@@ -59,6 +63,15 @@ public class BatchConfig extends DefaultBatchConfigurer {
                 .build();
     }
 
+    private Job buildJobDnEventInformer() {
+        return jobs.get("jobDnEventInformer")
+                .incrementer(new RunIdIncrementer())
+                .start(steps.get("stepJobDnEventInformer")
+                        .tasklet(dnEventInformerTask)
+                        .build())
+                .build();
+    }
+
     @Scheduled(fixedRate = 60000)
     public void schedule1() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters params = new JobParametersBuilder()
@@ -73,6 +86,14 @@ public class BatchConfig extends DefaultBatchConfigurer {
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
         jobLauncher.run(buildJobJobExecutionInfoMsg(), params);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void schedule3() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        JobParameters params = new JobParametersBuilder()
+                .addString("JobID", String.valueOf(System.currentTimeMillis()))
+                .toJobParameters();
+        jobLauncher.run(buildJobDnEventInformer(), params);
     }
 
     @Override
