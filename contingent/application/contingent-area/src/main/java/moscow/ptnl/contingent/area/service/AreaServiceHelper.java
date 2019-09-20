@@ -641,7 +641,7 @@ public class AreaServiceHelper {
      */
     public void delAreaAddresses(List<AreaAddress> addresses) {
         addresses.forEach(a -> {
-            if (a.getStartDate().equals(LocalDate.now())) {
+            if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
                 areaAddressCRUDRepository.delete(a);
             }
             else {
@@ -656,7 +656,7 @@ public class AreaServiceHelper {
      */
     public void delMoAddresses(List<MoAddress> addresses) {
         addresses.forEach(a -> {
-            if (a.getStartDate().equals(LocalDate.now())) {
+            if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
                 moAddressCRUDRepository.delete(a);
             }
             else {
