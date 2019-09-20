@@ -271,15 +271,15 @@
 						<xs:documentation>Код КЛАДР</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="nonActualAddress" type="xs:string" use="required">
+				<xs:attribute name="nonActualAddress" type="xs:string">
 					<xs:annotation>
-						<xs:documentation>Признак неактуального адреса (по сведениям из ЕМИАС.НСИ)</xs:documentation>
+						<xs:documentation>Неактуальный адрес (сведения из ЕМИАС.НСИ)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:restriction>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="AddressCustomType" abstract="true">
+	<xs:complexType name="AddressCustomType">
 		<xs:annotation>
 			<xs:documentation>Сведения об Адресе, отсутствующем в Адресном реестре ЕМИАС</xs:documentation>
 		</xs:annotation>
@@ -602,5 +602,4 @@
 			</xs:restriction>
 		</xs:complexContent>
 	</xs:complexType>
-
 </xs:schema>
