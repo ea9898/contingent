@@ -16,6 +16,7 @@ import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
+import moscow.ptnl.contingent2.rmr.event.JeChange;
 import moscow.ptnl.contingent2.rmr.event.JeChangeDateEnd;
 import moscow.ptnl.contingent2.rmr.event.JeCreate;
 import moscow.ptnl.contingent2.rmr.event.JobExecutionInfoMsg;
@@ -97,6 +98,13 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         if (event.getJeChangeDateEnd() != null) {
             changeMedicalEmployeeEndDate(event.getJeChangeDateEnd());
         }
+        if (event.getJeChange() != null) {
+            changeMedicalEmployee(event.getJeChange());
+        }
+    }
+
+    private void changeMedicalEmployee(JeChange jeChange) {
+        throw new RuntimeException("Отсутствуют данные для обработки");
     }
 
     private void changeMedicalEmployeeEndDate(JeChangeDateEnd jeChangeDateEnd) {
