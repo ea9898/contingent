@@ -2,24 +2,20 @@ package moscow.ptnl.contingent.area.transform.model.esu;
 
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.area.transform.Transform;
-import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
+import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.attachment.changearea.event.AreaRestriction;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AttachOnAreaChangeMapper implements Transform<AttachOnAreaChange, moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent> {
-
-    @Autowired
-    private XMLGregorianCalendarMapper gregorianCalendarMapper;
 
     @Override
     public AttachOnAreaChange entityToDtoTransform(moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent entity) {
         AttachOnAreaChange event = new AttachOnAreaChange();
         moscow.ptnl.contingent.area.entity.area.Area area = entity.getArea();
 
-        event.setOperationDate(gregorianCalendarMapper.entityToDtoTransform(entity.getOperationDate()));
+        event.setOperationDate(XMLGregorianCalendarMapper.entityToDtoTransform(entity.getOperationDate()));
         AttachOnAreaChange.DependendArea dependendArea = new AttachOnAreaChange.DependendArea();
         dependendArea.setAreaId(area.getId());
         AreaRestriction restriction = new AreaRestriction();

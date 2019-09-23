@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
 import moscow.ptnl.contingent.area.transform.Transform;
-import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
+import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.util.CollectionsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +9,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent> {
-
-    @Autowired
-    private XMLGregorianCalendarMapper gregorianCalendarMapper;
 
     @Autowired
     private AreaRestrictionMapper areaRestrictionMapper;
@@ -30,7 +27,7 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         AreaInfoEvent event = new AreaInfoEvent();
         moscow.ptnl.contingent.area.entity.area.Area area = entity.getArea();
         //1
-        event.setOperationDate(gregorianCalendarMapper.entityToDtoTransform(entity.getOperationDate()));
+        event.setOperationDate(XMLGregorianCalendarMapper.entityToDtoTransform(entity.getOperationDate()));
         event.setOperationType(entity.getOperationType());
         event.setAreaId(area.getId());
         event.setMuId(area.getMuId() == null ? area.getMoId() : area.getMuId());

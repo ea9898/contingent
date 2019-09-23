@@ -17,6 +17,8 @@ public interface AreaRepository {
     List<Area> findAreas(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes, Integer number,
                          String description, Boolean archived);
 
+    List<Area> findAreas(Long areaTypeKindCode, Boolean archived, Long medicalEmployeeJobInfo);
+
     List<Area> findAreasWithMuIdNullAndNotAreaTypeKindCode(Long moId, Long areaTypeCode, Long areaTypeKindCode, Integer number, Boolean actual);
 
     List<Area> findDependentAreasByMuMoIdAndType(Long muId, Long moId, Long areaTypeCode, Long areaTypeKindCode);
@@ -24,6 +26,7 @@ public interface AreaRepository {
     List<Area> findDependentAreasByAreaEqAreaType(Area area);
 
     List<Area> findPrimaryAreasByAreaEqAreaType(Area area);
+
 
     Long getNextAreaId();
     

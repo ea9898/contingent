@@ -1,6 +1,5 @@
-package moscow.ptnl.contingent.area.transform.model;
+package moscow.ptnl.contingent.util;
 
-import moscow.ptnl.contingent.area.transform.Transform;
 import org.springframework.stereotype.Component;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -11,10 +10,9 @@ import java.time.ZoneId;
 import java.util.GregorianCalendar;
 
 @Component
-public class XMLGregorianCalendarMapper implements Transform<XMLGregorianCalendar, LocalDateTime> {
+public class XMLGregorianCalendarMapper {
 
-    @Override
-    public XMLGregorianCalendar entityToDtoTransform(LocalDateTime entityObject) {
+    public static XMLGregorianCalendar entityToDtoTransform(LocalDateTime entityObject) {
         GregorianCalendar gcal = GregorianCalendar.from(entityObject.atZone(ZoneId.systemDefault()));
 
         try {
@@ -25,8 +23,11 @@ public class XMLGregorianCalendarMapper implements Transform<XMLGregorianCalenda
         }
     }
 
-    @Override
-    public LocalDateTime dtoToEntityTransform(XMLGregorianCalendar dtoObject) {
+    public static LocalDateTime dtoToEntityTransform(XMLGregorianCalendar dtoObject) {
         return null;
+    }
+
+    public static XMLGregorianCalendar getNow() {
+        return entityToDtoTransform(LocalDateTime.now());
     }
 }

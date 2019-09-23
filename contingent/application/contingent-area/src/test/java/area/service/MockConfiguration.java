@@ -17,7 +17,7 @@ import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddressCloner;
-import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
+import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AddressesMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaRestrictionMapper;
