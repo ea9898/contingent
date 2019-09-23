@@ -1,6 +1,8 @@
 package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees_;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType_;
 import moscow.ptnl.contingent.area.entity.area.Area_;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -110,6 +113,25 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                                 criteriaBuilder.like(root.get(Area_.description), "%"+description+"%"),
                         archived == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.archived), archived))
+        );
+        return entityManager.createQuery(criteria).getResultList();
+    }
+
+    @Override
+    public List<Area> findAreas(Long areaTypeKindCode, Boolean archived, Long medicalEmployeeJobInfo) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Area> criteria = criteriaBuilder.createQuery(Area.class);
+        //CriteriaQuery<Tuple> criteria = criteriaBuilder.createTupleQuery();
+        Root<AreaMedicalEmployees> root = criteria.from(AreaMedicalEmployees.class);
+        Join<AreaMedicalEmployees, Area> areaJoin  = root.join(AreaMedicalEmployees_.area, JoinType.LEFT);
+        Join<Area, AreaType> areaTypeJoin = areaJoin.join(Area_.areaType, JoinType.LEFT);
+        //criteria.select(criteriaBuilder.tuple(areaJoin.get(Area_.id), areaJoin.get(Area_.moId)));
+        criteria.select(areaJoin);
+        criteria.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(areaTypeJoin.get(AreaType_.areaTypeClass), areaTypeKindCode),
+                        criteriaBuilder.equal(areaJoin.get(Area_.archived), archived),
+                        criteriaBuilder.equal(root.get(AreaMedicalEmployees_.medicalEmployeeJobId), medicalEmployeeJobInfo))
         );
         return entityManager.createQuery(criteria).getResultList();
     }

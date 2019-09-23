@@ -3,9 +3,8 @@ package service;
 import moscow.ptnl.contingent.area.service.Algorithms;
 import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
-import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
-import moscow.ptnl.contingent.area.transform.model.XMLGregorianCalendarMapper;
+import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
@@ -23,7 +22,6 @@ import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryCRUDRepository;
-import moscow.ptnl.contingent.service.history.HistoryService;
 import moscow.ptnl.contingent.service.history.HistoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +30,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.MessageChannel;
 
