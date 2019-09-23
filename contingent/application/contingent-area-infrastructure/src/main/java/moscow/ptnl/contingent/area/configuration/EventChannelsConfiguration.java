@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
-import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageChannel;
@@ -38,9 +37,8 @@ public class EventChannelsConfiguration {
     
     public static final String HISTORY_EVENT_CHANNEL_NAME = "HistoryEventChannel";
     public static final String ESU_EVENT_CHANNEL_NAME = "ESUEventChannel";
-     
-        
-    
+    public static final String SOAP_LOG_EVENT_CHANNEL_NAME = "LogSoapEventChannel";
+
     /**
      * Канал для отправки сообщений в историю.   
      * 
@@ -51,7 +49,18 @@ public class EventChannelsConfiguration {
         //return new DirectChannel();
         return new QueueChannel(QUEUE_LENGTH);
     }
-    
+
+    /**
+     * Канал для логирования SOAP сообщений.
+     *
+     * @return
+     */
+    @Bean(name = SOAP_LOG_EVENT_CHANNEL_NAME)
+    public MessageChannel createLogSoapEventChannel() {
+        //return new DirectChannel();
+        return new QueueChannel(QUEUE_LENGTH);
+    }
+
     /**
      * Канал для отправки сообщений в ЕСУ.   
      * 

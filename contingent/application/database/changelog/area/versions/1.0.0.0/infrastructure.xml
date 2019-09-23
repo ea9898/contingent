@@ -122,4 +122,40 @@
         </rollback>
      </changeSet>
 
+    <changeSet id="CONTINGENT2-365-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="JL_HISTORY_REQUESTS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы JL_HISTORY_REQUESTS</comment>
+        <createTable tableName="JL_HISTORY_REQUESTS" remarks="Логирование SOAP запросов">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="METHOD_NAME" type="VARCHAR(255)" />
+            <column name="REQUEST" type="CLOB">
+                <constraints nullable="false" />
+            </column>
+            <column name="RESPONSE" type="CLOB" />
+            <column name="CALL_TIME" type="TIMESTAMP(6)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="JL_HISTORY_REQUESTS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-365--2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="JL_HIST_REQ_SEQ_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы JL_HISTORY_REQUESTS</comment>
+        <createSequence sequenceName="JL_HIST_REQ_SEQ_ID"/>
+        <rollback>
+            <dropSequence sequenceName="JL_HIST_REQ_SEQ_ID"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
