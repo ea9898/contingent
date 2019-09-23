@@ -1,6 +1,9 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.domain.history.ServiceName;
+import moscow.ptnl.contingent.domain.history.meta.Journalable;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 
@@ -22,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
-@Entity
+@Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREA_MEDICAL_EMPLOYEES")
 @SequenceGenerator(name = "seq_area_medical_employee", sequenceName = "seq_area_medical_employee", allocationSize=1)
 public class AreaMedicalEmployees implements Serializable {
@@ -34,36 +37,46 @@ public class AreaMedicalEmployees implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    @LogIt
     @Column(name = "MEDICAL_EMPLOYEE_JOB_ID")
     private Long medicalEmployeeJobId;
 
+    @LogIt
     @JoinColumn(name = "AREA_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
 
+    @LogIt
     @Column(name = "IS_REPLACEMENT")
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean replacement;
 
+    @LogIt
     @Column(name = "START_DATE")
     private LocalDate startDate;
 
+    @LogIt
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
+    @LogIt
     @Column(name = "SNILS")
     @Size(max = 20)
     private String snils;
-    
+
+    @LogIt
     @Column(name = "POSITION_CODE")
     private String positionCode;
-    
+
+    @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
+    @LogIt
     @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 
+    @LogIt
     @Column(name = "SUBDIVISION_ID")
     private Long subdivisionId;
 
@@ -172,6 +185,10 @@ public class AreaMedicalEmployees implements Serializable {
 
     public void setPositionCode(String positionCode) {
         this.positionCode = positionCode;
+    }
+
+    public Long getSubdivisionId() {
+        return subdivisionId;
     }
 
     @Override

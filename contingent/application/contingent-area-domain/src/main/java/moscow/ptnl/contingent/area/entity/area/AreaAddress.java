@@ -16,8 +16,11 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.domain.history.ServiceName;
+import moscow.ptnl.contingent.domain.history.meta.Journalable;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
 
-@Entity
+@Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREA_ADDRESSES")
 @SequenceGenerator(name = "seq_area_address", sequenceName = "seq_area_address", allocationSize=1)
 public class AreaAddress implements Serializable {
@@ -29,27 +32,34 @@ public class AreaAddress implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    @LogIt
     @JoinColumn(name = "MO_ADDRESS_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private MoAddress moAddress;
 
+    @LogIt
     @JoinColumn(name = "AREA_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
 
+    @LogIt
     @Column(name = "START_DATE")
     private LocalDate startDate;
 
+    @LogIt
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
+    @LogIt
     @JoinColumn(name = "ADDRESS_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Addresses address;
 
+    @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
+    @LogIt
     @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 

@@ -16,6 +16,7 @@ import moscow.ptnl.contingent.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
+import moscow.ptnl.contingent.area.transform.AreaMedicalEmployeesClone;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddressCloner;
 import moscow.ptnl.contingent.area.util.Period;
@@ -65,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -146,6 +148,9 @@ public class AreaServiceHelper {
 
     @Autowired
     private SearchAreaAddressCloner searchAreaAddressCloner;
+
+    @Autowired
+    private AreaMedicalEmployeesClone areaMedicalEmployeesClone;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -601,10 +606,14 @@ public class AreaServiceHelper {
         return periodsWithoutMainEmpl;
     }
 
-    public void applyChanges(List<AreaMedicalEmployees> employees, List<ChangeMedicalEmployee> changeEmployees) {
+    public Map<AreaMedicalEmployees, AreaMedicalEmployees> applyChanges(List<AreaMedicalEmployees> employees, List<ChangeMedicalEmployee> changeEmployees) {
+        Map<AreaMedicalEmployees, AreaMedicalEmployees> historyMap = new HashMap<>();
+
         for (AreaMedicalEmployees empl : employees) {
+            AreaMedicalEmployees medicalEmployeeOld = areaMedicalEmployeesClone.clone(empl);
+
             Optional<ChangeMedicalEmployee> optionalChangeEmpl = changeEmployees.stream().filter(
-                    ch -> empl.getId().equals(ch.getAssignmentId())).findFirst();
+                ch -> empl.getId().equals(ch.getAssignmentId())).findFirst();
             if (!optionalChangeEmpl.isPresent()) {
                 continue;
             }
@@ -618,21 +627,31 @@ public class AreaServiceHelper {
             }
 
             empl.setUpdateDate(LocalDateTime.now());
+
+            historyMap.put(medicalEmployeeOld, empl);
         }
+
+        return historyMap;
     }
 
-    public void addNew(List<AreaMedicalEmployees> employees, List<AddMedicalEmployee> addEmployees, Area area) {
-        addEmployees.forEach(empl -> employees.add(new AreaMedicalEmployees(
-                empl.getMedicalEmployeeJobId(),
-                area,
-                empl.isIsReplacement(),
-                empl.getStartDate(),
-                empl.getEndDate(),
-                empl.getSnils(),
-                positionCodeRepository.getByCode(empl.getPositionCode()),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                empl.getSubdivisionId())));
+    public List<AreaMedicalEmployees> addNew(List<AreaMedicalEmployees> employees, List<AddMedicalEmployee> addEmployees, Area area) {
+        List<AreaMedicalEmployees> newAME = new ArrayList<>();
+        addEmployees.forEach(empl -> {
+            AreaMedicalEmployees medicalEmployees = new AreaMedicalEmployees(
+                    empl.getMedicalEmployeeJobId(),
+                    area,
+                    empl.isIsReplacement(),
+                    empl.getStartDate(),
+                    empl.getEndDate(),
+                    empl.getSnils(),
+                    positionCodeRepository.getByCode(empl.getPositionCode()),
+                    LocalDateTime.now(),
+                    LocalDateTime.now(),
+                    empl.getSubdivisionId());
+            employees.add(medicalEmployees);
+            newAME.add(areaMedicalEmployeesClone.clone(medicalEmployees));
+            });
+        return newAME;
     }
 
     /**

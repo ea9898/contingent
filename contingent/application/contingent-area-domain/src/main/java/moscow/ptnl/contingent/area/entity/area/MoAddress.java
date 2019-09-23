@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
+@Proxy(lazy=false)
 @Table(name = "MO_ADDRESSES")
 @SequenceGenerator(name = "SEQ_MO_ADDRESSES", sequenceName = "SEQ_MO_ADDRESSES", allocationSize=1)
 public class MoAddress implements Serializable {

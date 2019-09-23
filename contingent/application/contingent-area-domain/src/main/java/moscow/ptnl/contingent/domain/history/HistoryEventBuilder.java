@@ -7,6 +7,8 @@ import moscow.ptnl.contingent.security.Principal;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
+import javax.persistence.Table;
+
 /**
  * Вспомогательный класс для удобного формирования события, публикуемого в
  * дальнейшем в историю изменений.
@@ -20,7 +22,7 @@ public class HistoryEventBuilder {
     
     private HistoryEventBuilder(Class<?> objectType, String objectId) {
         this.event = new HistoryEvent();
-        this.event.setObjectType(objectType.getSimpleName());
+        this.event.setObjectType(objectType.getAnnotation(Table.class) != null ? objectType.getAnnotation(Table.class).name() :  objectType.getSimpleName());
         this.event.setObjectId(objectId);
         this.event.setChangeDate(LocalDateTime.now());        
         this.values = new HashSet<>();        

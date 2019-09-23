@@ -16,6 +16,8 @@ import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
+import moscow.ptnl.contingent.area.transform.AreaAddressClone;
+import moscow.ptnl.contingent.area.transform.AreaMedicalEmployeesClone;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddressCloner;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AddressesMapper;
@@ -29,6 +31,7 @@ import moscow.ptnl.contingent.area.endpoint.ESUEventEndpoint;
 import moscow.ptnl.contingent.service.esu.EsuService;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
@@ -140,4 +143,11 @@ public class MockConfiguration {
 
     @MockBean
     public SearchAreaAddressCloner searchAreaAddressCloner;
+
+    @MockBean
+    AreaAddressClone areaAddressClone;
+
+    @MockBean
+    private AreaMedicalEmployeesClone areaMedicalEmployeesClone;
+
 }

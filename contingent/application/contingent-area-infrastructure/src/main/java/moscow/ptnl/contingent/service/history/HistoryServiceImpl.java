@@ -1,8 +1,13 @@
 package moscow.ptnl.contingent.service.history;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.domain.history.EntityConverterHelper;
@@ -43,6 +48,10 @@ public class HistoryServiceImpl implements HistoryService {
         if (oldObject == null || newObject == null) {
             throw new IllegalArgumentException("журналируемый объект не может быть null");
         }
+
+        List<StackTraceElement> stElements = Arrays.asList(Thread.currentThread().getStackTrace());
+
+        String methodName = stElements.get(2).getMethodName();
         
         //получаем аннотацию Journalable которой должна быть аннотирована журналируемая сущность
         Journalable classAnnotation = oldObject.getClass().getAnnotation(Journalable.class);        
@@ -55,14 +64,16 @@ public class HistoryServiceImpl implements HistoryService {
         if (serviceName == null) {
             throw new IllegalArgumentException("неизвестный тип сервиса");
         }
-        
+
+        Class objectType = oldObject.getClass();
+
         HistoryEventBuilder eventBuilder = HistoryEventBuilder
                 .withEntity(oldObject.getClass(), EntityConverterHelper.getEntityId(oldObject))
                 .setPrincipal(principal)
+                .setMethodName(methodName)
                 .setServiceName(serviceName);
         
         //обходим поля объекта и ищем проаннотированные
-        Class objectType = oldObject.getClass();
         for (Field f : objectType.getDeclaredFields()) {
             try {
                 f.setAccessible(true);

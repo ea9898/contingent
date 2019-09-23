@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
+import org.hibernate.annotations.Proxy;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +16,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "ADDRESSES")
+@Proxy(lazy=false)
 @SequenceGenerator(name = "SEQ_ADDRESSES", sequenceName = "SEQ_ADDRESSES", allocationSize=1)
 public class Addresses implements Serializable {
 

@@ -17,6 +17,7 @@ import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeMapper;
+import moscow.ptnl.contingent.area.transform.AreaAddressClone;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
@@ -81,6 +82,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -198,6 +200,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private AddressMapper addressMapper;
+
+    @Autowired
+    AreaAddressClone areaAddressClone;
 
     public AreaServiceInternalImpl() {
     }
@@ -844,7 +849,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         //6.1
         List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
-        areaHelper.applyChanges(allEmployees, changeEmployeesInput);
+        Map<AreaMedicalEmployees, AreaMedicalEmployees> changesAme =  areaHelper.applyChanges(allEmployees, changeEmployeesInput);
         areaHelper.addNew(allEmployees, addEmployeesInput, area);
         areaHelper.checkDatesNotInterceptWithSamePosition(allEmployees, validation);
 
@@ -887,6 +892,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 result.add(saved.getId());
             }
         });
+
+        for (Map.Entry<AreaMedicalEmployees, AreaMedicalEmployees> entry: changesAme.entrySet()) {
+            historyService.write(UserContextHolder.getPrincipal(), entry.getKey(), entry.getValue());
+        }
 
         // 8
         //if (areaHelper.isAreaPrimary(area)) {
@@ -989,6 +998,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 10. аннотация @LogESU
 
+        //
+        for (AreaAddress areaAddress: areaAddresses) {
+            historyService.write(UserContextHolder.getPrincipal(), null, areaAddress);
+        }
+
         return areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
     }
 
@@ -1019,10 +1033,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         LocalDate localDate = LocalDate.now();
         for (AreaAddress areaAddress: areaAddresses) {
             if (areaAddress.getStartDate() == null || !areaAddress.getStartDate().equals(localDate)) {
+                AreaAddress areaAddressOld = areaAddressClone.clone(areaAddress);
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
                 areaAddressCRUDRepository.save(areaAddress);
+                historyService.write(UserContextHolder.getPrincipal(), areaAddressOld, areaAddress);
             } else {
+                historyService.write(UserContextHolder.getPrincipal(), areaAddress, null);
+
                 // 5.2.
                 areaAddressCRUDRepository.delete(areaAddress);
             }
