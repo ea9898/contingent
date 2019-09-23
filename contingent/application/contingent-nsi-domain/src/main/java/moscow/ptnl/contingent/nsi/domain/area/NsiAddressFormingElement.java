@@ -31,6 +31,20 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "KOD_GIVZ")
     private String codeGivz;
 
+    @Column(name = "REGION_ID")
+    private Long regionId;
+
+    @Size(max = 11)
+    @Column(name = "REGION_CODE")
+    private String regionCode;
+
+    @Size(max = 4000)
+    @Column(name = "REGION_NAME")
+    private String regionName;
+
+    @Column(name = "REGION_TE_ID")
+    private Long regionTeId;
+
     @Size(max = 4)
     @Column(name = "REGION_TE_CODE")
     private String regionTeCode;

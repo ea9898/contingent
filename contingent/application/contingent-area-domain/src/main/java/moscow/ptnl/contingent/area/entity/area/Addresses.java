@@ -31,6 +31,20 @@ public class Addresses implements Serializable {
     @Size(max = 2)
     private String aoLevel;
 
+    @Column(name = "REGION_ID")
+    private Long regionId;
+
+    @Size(max = 11)
+    @Column(name = "REGION_CODE")
+    private String regionCode;
+
+    @Size(max = 4000)
+    @Column(name = "REGION_NAME")
+    private String regionName;
+
+    @Column(name = "REGION_TE_ID")
+    private Long regionTeId;
+
     @Size(max = 4)
     @Column(name = "REGION_TE_CODE")
     private String regionTeCode;
@@ -603,6 +617,38 @@ public class Addresses implements Serializable {
 
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Long getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(Long regionId) {
+        this.regionId = regionId;
+    }
+
+    public String getRegionCode() {
+        return regionCode;
+    }
+
+    public void setRegionCode(String regionCode) {
+        this.regionCode = regionCode;
+    }
+
+    public String getRegionName() {
+        return regionName;
+    }
+
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
+    }
+
+    public Long getRegionTeId() {
+        return regionTeId;
+    }
+
+    public void setRegionTeId(Long regionTeId) {
+        this.regionTeId = regionTeId;
     }
 
     @Override

@@ -7,6 +7,7 @@ import javax.xml.ws.Endpoint;
 
 import moscow.ptnl.contingent.area.ws.v1.AreaCompositeServiceImpl;
 import moscow.ptnl.metrics.MetricsInterceptorService;
+import moscow.ptnl.soap.log.SoapLogInterceptorService;
 import moscow.ptnl.ws.security.UserContextInterceptor;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.MessageChannel;
 
 /**
  * Конфигурационный файл для создания Aoache CXF SOAP-сервисов.
@@ -31,11 +33,17 @@ import org.springframework.context.annotation.Configuration;
 public class WebServiceConfiguration {
     
     @Autowired
-    private MetricsInterceptorService interceptorService;
+    private MetricsInterceptorService metricsInterceptorService;
+
+    @Autowired
+    private SoapLogInterceptorService soapLogInterceptorService;
 
     @Autowired
     private SoapVersionInterceptor soapVersionInterceptor;
-    
+
+    @Autowired
+    @Qualifier(EventChannelsConfiguration.SOAP_LOG_EVENT_CHANNEL_NAME)
+    private MessageChannel soapLogChannel;
 
     @Bean(name = Bus.DEFAULT_BUS_ID)
     SpringBus springBus(LoggingFeature loggingFeature) {
@@ -72,7 +80,8 @@ public class WebServiceConfiguration {
         endpoint.publish();
         endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
-        interceptorService.setupInterceptors(endpoint);
+        metricsInterceptorService.setupInterceptors(endpoint);
+        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel);
         return endpoint;
     }
 
@@ -93,7 +102,8 @@ public class WebServiceConfiguration {
 
     	endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
-        interceptorService.setupInterceptors(endpoint);
+        metricsInterceptorService.setupInterceptors(endpoint);
+        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel);
     }
     
 }
