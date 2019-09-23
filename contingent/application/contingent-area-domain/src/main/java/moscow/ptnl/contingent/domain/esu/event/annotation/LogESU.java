@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 
 /**
  * Аннотация которой помечаются логируемые методы сервиса.
@@ -24,5 +25,7 @@ public @interface LogESU {
     String[] parameters() default {};
     
     boolean useResult() default false;
+
+    String methodName() default "";
     
 }

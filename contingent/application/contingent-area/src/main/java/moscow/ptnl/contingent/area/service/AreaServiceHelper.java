@@ -986,8 +986,14 @@ public class AreaServiceHelper {
         }
     }
 
-    @LogESU(type = AreaInfoEvent.class, useResult = true)
-    public Set<Area> deleteAreaAddresses(List<AreaAddress> addresses) {
+
+    /**
+     * Такое название из
+     * @param addresses
+     * @return
+     */
+    @LogESU(type = AreaInfoEvent.class, useResult = true, methodName = "delMoAddress")
+    public Set<Area> deleteAreaAddress(List<AreaAddress> addresses) {
 
         Set<Area> areas = addresses.stream().map(AreaAddress::getArea).collect(Collectors.toSet());
 
