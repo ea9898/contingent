@@ -1348,7 +1348,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(moAddressesIds);
 
         if (!areaAddresses.isEmpty()) {
-            areaHelper.deleteAreaAddresses(areaAddresses);
+            areaHelper.deleteAreaAddress(areaAddresses);
         }
 
         // 5.

@@ -62,13 +62,13 @@ public class LogESUInterceptor {
         Object[] args = joinPoint.getArgs();
             
         method.setAccessible(true);
-        String methodName = method.getName();
+        String methodName = annotation.methodName().isEmpty() ? method.getName() : annotation.methodName();
         
         final Object result = joinPoint.proceed();
         
         if (annotation.type().isAssignableFrom(AreaInfoEvent.class)) {
             if (Boolean.TRUE.equals(settingService.getPar4())) {
-                List<Long> areaIds = getAreaId(annotation, method, args, result);
+                List<Long> areaIds = getAreaId(annotation, method, methodName, args, result);
 
                 if (areaIds.isEmpty()) {
                     throw new IllegalArgumentException("идентификатор сущности null");
@@ -96,33 +96,33 @@ public class LogESUInterceptor {
         return result;
     }
     
-    private List<Long> getAreaId(LogESU annotation, Method method, Object[] args, Object result) {
+    private List<Long> getAreaId(LogESU annotation, Method method, String methodName, Object[] args, Object result) {
         Object value;
 
         if (annotation.useResult()) {
             if (result == null) {
-                throw new IllegalArgumentException("в методе " + method.getName() + " результат не может быть null");
+                throw new IllegalArgumentException("в методе " + methodName + " результат не может быть null");
             }
             value = result;
         } else {
             if (annotation.parameters().length == 0) {
-                throw new IllegalArgumentException("в методе " + method.getName() + " в списке параметров должно быть название параметра содержащего идентификатор сущности");
+                throw new IllegalArgumentException("в методе " + methodName + " в списке параметров должно быть название параметра содержащего идентификатор сущности");
             }
             String parameterName = annotation.parameters()[0];
             Optional<Object> parameterValue = getParameterByName(method, args, parameterName);
             if (!parameterValue.isPresent()) {
-                throw new IllegalArgumentException("в методе " + method.getName() + " не найден параметр " + parameterName);
+                throw new IllegalArgumentException("в методе " +methodName + " не найден параметр " + parameterName);
             }
             value = parameterValue.get();
 
             if (value == null) {
-                throw new IllegalArgumentException("в методе " + method.getName() + " параметр " + parameterName + " не может быть null");
+                throw new IllegalArgumentException("в методе " + methodName + " параметр " + parameterName + " не может быть null");
             }
         }
         List<Long> areaIds = mapObjectToAreaIds(value);
 
         if (areaIds.isEmpty()) {
-            throw new IllegalArgumentException("в методе " + method.getName() + " невозможно получить идентификатор сущности из результата выполнения метода");
+            throw new IllegalArgumentException("в методе " + methodName + " невозможно получить идентификатор сущности из результата выполнения метода");
         }
         return areaIds;
     }
