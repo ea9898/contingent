@@ -4,9 +4,7 @@ import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
-import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.repository.esu.EsuInputRepository;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.rmr.event.DnAttach;
 import moscow.ptnl.contingent2.rmr.event.DnEventInformer;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,9 +30,6 @@ public class DNEventInformerTask extends BaseTopicTask<DnEventInformer> {
 
     @Value("${esu.producer.topic.dn.attach}")
     private String dnAttachTopicSend;
-
-    @Autowired
-    private AreaCRUDRepository areaCRUDRepository;
 
     @Autowired
     private AreaRepository areaRepository;
@@ -73,7 +67,6 @@ public class DNEventInformerTask extends BaseTopicTask<DnEventInformer> {
                 throw new RuntimeException("Найдено несколько участков");
             }
             DnAttach dnAttach = new DnAttach();
-            dnAttach.setId(UUID.randomUUID().toString());
             dnAttach.setOperationDate(XMLGregorianCalendarMapper.getNow());
             dnAttach.setPatientEmiasId(Long.valueOf(param.getPatientEmiasId()));
             dnAttach.setSimiDocumentId(param.getDocumentId());
@@ -96,6 +89,5 @@ public class DNEventInformerTask extends BaseTopicTask<DnEventInformer> {
         } else {
             throw new RuntimeException("Отсутствуют данные для обработки");
         }
-
     }
 }
