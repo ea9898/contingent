@@ -31,6 +31,6 @@ public interface HistoryService {
      * @param newObject
      * @throws RuntimeException 
      */
-    <T> void write(Principal principal, T oldObject, T newObject) throws RuntimeException;
+    <T> void write(Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException;
         
 }

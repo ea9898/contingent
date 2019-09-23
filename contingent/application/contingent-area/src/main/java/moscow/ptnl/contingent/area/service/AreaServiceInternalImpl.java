@@ -545,7 +545,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.saveAndDeleteAreaPolicyTypes(area, policyTypesAdd, policyTypesDel);
 
         // Логирование изменений
-        historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
+        historyService.write(UserContextHolder.getPrincipal(), oldArea, area, Area.class);
     }
 
     // (К_УУ_10) Изменение участка обслуживания зависимого типа
@@ -705,7 +705,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // Логирование изменений
-        historyService.write(UserContextHolder.getPrincipal(), oldArea, area);
+        historyService.write(UserContextHolder.getPrincipal(), oldArea, area, Area.class);
 
         // 17.
         return;
@@ -889,12 +889,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.addNew(changeEmployeesDb, addEmployeesInput, area);
         areaMedicalEmployeeCRUDRepository.saveAll(changeEmployeesDb).forEach(saved -> {
             if (!areaEmployeesDb.contains(saved)) {
+                // Логирование новых объектов
+                historyService.write(UserContextHolder.getPrincipal(), null, saved, AreaMedicalEmployees.class);
                 result.add(saved.getId());
             }
         });
 
+        // Логирование изменений
         for (Map.Entry<AreaMedicalEmployees, AreaMedicalEmployees> entry: changesAme.entrySet()) {
-            historyService.write(UserContextHolder.getPrincipal(), entry.getKey(), entry.getValue());
+            historyService.write(UserContextHolder.getPrincipal(), entry.getKey(), entry.getValue(), AreaMedicalEmployees.class);
         }
 
         // 8
@@ -1000,7 +1003,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         //
         for (AreaAddress areaAddress: areaAddresses) {
-            historyService.write(UserContextHolder.getPrincipal(), null, areaAddress);
+            historyService.write(UserContextHolder.getPrincipal(), null, areaAddress, AreaAddress.class);
         }
 
         return areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
@@ -1037,9 +1040,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
                 areaAddressCRUDRepository.save(areaAddress);
-                historyService.write(UserContextHolder.getPrincipal(), areaAddressOld, areaAddress);
+                historyService.write(UserContextHolder.getPrincipal(), areaAddressOld, areaAddress, AreaAddress.class);
             } else {
-                historyService.write(UserContextHolder.getPrincipal(), areaAddress, null);
+                historyService.write(UserContextHolder.getPrincipal(), areaAddress, null, AreaAddress.class);
 
                 // 5.2.
                 areaAddressCRUDRepository.delete(areaAddress);
@@ -1260,7 +1263,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         addressAllocationOrderCRUDRepository.save(order);
 
-        historyService.write(UserContextHolder.getPrincipal(), oldOrder, order);
+        historyService.write(UserContextHolder.getPrincipal(), oldOrder, order, AddressAllocationOrders.class);
     }
 
     // (К_УУ_20) Поиск распоряжений

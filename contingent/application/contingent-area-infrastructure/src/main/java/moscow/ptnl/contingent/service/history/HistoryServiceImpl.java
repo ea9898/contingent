@@ -41,17 +41,31 @@ public class HistoryServiceImpl implements HistoryService {
     private final FieldConverter defaultConverter = new DefaultConverter();
 
     @Override
-    public <T> void write(Principal principal, T oldObject, T newObject) throws RuntimeException {
+    public <T> void write(Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException {
         if (principal == null) {
             throw new IllegalArgumentException("нет данных о пользователе вызвавшем метод");
         }
-        if (oldObject == null || newObject == null) {
-            throw new IllegalArgumentException("журналируемый объект не может быть null");
+        if (oldObject == null && newObject == null) {
+            throw new IllegalAccessError("Нечего не с сравнивать!");
+        }
+        String entityId = "";
+        try {
+            if (oldObject == null) {
+                oldObject = cls.newInstance();
+                entityId = EntityConverterHelper.getEntityId(newObject);
+            } else if (newObject == null) {
+                newObject = cls.newInstance();
+                entityId = EntityConverterHelper.getEntityId(oldObject);
+            } else {
+                entityId = EntityConverterHelper.getEntityId(oldObject);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Такого быть не может.");
         }
 
         List<StackTraceElement> stElements = Arrays.asList(Thread.currentThread().getStackTrace());
 
-        String methodName = stElements.get(2).getMethodName();
+        String methodName = stElements.stream().filter(ste -> ste.getFileName() != null && ste.getFileName().startsWith("AreaServiceImpl")).findFirst().get().getMethodName();
         
         //получаем аннотацию Journalable которой должна быть аннотирована журналируемая сущность
         Journalable classAnnotation = oldObject.getClass().getAnnotation(Journalable.class);        
@@ -65,16 +79,14 @@ public class HistoryServiceImpl implements HistoryService {
             throw new IllegalArgumentException("неизвестный тип сервиса");
         }
 
-        Class objectType = oldObject.getClass();
-
         HistoryEventBuilder eventBuilder = HistoryEventBuilder
-                .withEntity(oldObject.getClass(), EntityConverterHelper.getEntityId(oldObject))
+                .withEntity(cls, entityId)
                 .setPrincipal(principal)
                 .setMethodName(methodName)
                 .setServiceName(serviceName);
         
         //обходим поля объекта и ищем проаннотированные
-        for (Field f : objectType.getDeclaredFields()) {
+        for (Field f : cls.getDeclaredFields()) {
             try {
                 f.setAccessible(true);
                 LogIt logAnnotation = f.getAnnotation(LogIt.class);
@@ -96,7 +108,7 @@ public class HistoryServiceImpl implements HistoryService {
                     eventBuilder.addValue(f.getName(), converter.toString(oldValue), converter.toString(newValue));
                 }
             } catch (Exception e) {
-                LOG.error("ошибка логирования поля: " + f.getName() + " в классе: " + objectType.getName(), e);
+                LOG.error("ошибка логирования поля: " + f.getName() + " в классе: " + cls.getName(), e);
                 throw new RuntimeException(e);
             }
         }
