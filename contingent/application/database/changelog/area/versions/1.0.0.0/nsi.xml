@@ -792,6 +792,29 @@
             <column name="GLOBAL_ID" type="BIGINT"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-379-2" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+            <not>
+                <columnExists tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_ID"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="NSI_ADDRESS_FORMING_ELEMENT">
+            <column name="REGION_ID" type="BIGINT" remarks="Регион" />
+            <column name="REGION_CODE" type="VARCHAR2(11)" remarks="Код региона" />
+            <column name="REGION_NAME" type="VARCHAR2(4000)" remarks="Название региона" />
+            <column name="REGION_TE_ID" type="BIGINT" remarks="Регион" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_ID"/>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_CODE"/>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_NAME"/>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_TE_ID"/>
+        </rollback>
+    </changeSet>
+
+
     <!-- !!!! ADDRESS_FORMING_ELEMENT !!!! -->
 
     <!-- View definitions -->

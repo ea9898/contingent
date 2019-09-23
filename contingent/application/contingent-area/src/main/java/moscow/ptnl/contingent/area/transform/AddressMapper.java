@@ -15,6 +15,12 @@ public interface AddressMapper {
     @Mappings({
             @Mapping(target="globalId", source="globalIdNsi"),
             @Mapping(target="address", source="addressString"),
+
+            @Mapping(target = "regionId", source = "region.id"),
+            @Mapping(target = "regionCode", source = "region.code"),
+            @Mapping(target = "regionName", source = "region.name"),
+
+            @Mapping(target = "regionTeId", source = "regionOMKTE.id"),
             @Mapping(target = "regionTeCode", source = "regionOMKTE.code"),
             @Mapping(target = "regionTeName", source = "regionOMKTE.name"),
             @Mapping(target = "regionTeTypeName", source = "regionOMKTE.type.full"),
@@ -73,6 +79,12 @@ public interface AddressMapper {
     @Mappings({
             @Mapping(source="globalId", target="globalIdNsi"),
             @Mapping(source="address", target="addressString"),
+
+            @Mapping(source = "regionId", target = "region.id"),
+            @Mapping(source = "regionCode", target = "region.code"),
+            @Mapping(source = "regionName", target = "region.name"),
+
+            @Mapping(source = "regionTeId", target = "regionOMKTE.id"),
             @Mapping(source = "regionTeCode", target = "regionOMKTE.code"),
             @Mapping(source = "regionTeName", target = "regionOMKTE.name"),
             @Mapping(source = "regionTeTypeName", target = "regionOMKTE.type.full"),
