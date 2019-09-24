@@ -1,16 +1,18 @@
 package moscow.ptnl.contingent.area.transform;
 
 import moscow.ptnl.contingent.area.entity.area.Addresses;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
-@Mapper(componentModel="spring")
-public interface AddressMapper {
+import javax.swing.text.html.parser.Entity;
 
-    AddressMapper MAPPER = Mappers.getMapper(AddressMapper.class);
+@Mapper(componentModel="spring")
+public abstract class AddressMapper {
 
     @Mappings({
             @Mapping(target="globalId", source="globalIdNsi"),
@@ -19,6 +21,7 @@ public interface AddressMapper {
             @Mapping(target = "regionId", source = "region.id"),
             @Mapping(target = "regionCode", source = "region.code"),
             @Mapping(target = "regionName", source = "region.name"),
+            @Mapping(target = "regionTypename", source = "region.type.full"),
 
             @Mapping(target = "regionTeId", source = "regionOMKTE.id"),
             @Mapping(target = "regionTeCode", source = "regionOMKTE.code"),
@@ -74,7 +77,7 @@ public interface AddressMapper {
             @Mapping(target = "l3Value", source = "building.construction.name"),
             @Mapping(target = "updateDate", expression = "java( java.time.LocalDateTime.now() )")
     })
-    Addresses dtoToEntityTransform(AddressRegistryBaseType addressRegistry);
+    public abstract Addresses dtoToEntityTransform(AddressRegistryBaseType addressRegistry);
 
     @Mappings({
             @Mapping(source="globalId", target="globalIdNsi"),
@@ -83,6 +86,7 @@ public interface AddressMapper {
             @Mapping(source = "regionId", target = "region.id"),
             @Mapping(source = "regionCode", target = "region.code"),
             @Mapping(source = "regionName", target = "region.name"),
+            @Mapping(source = "regionTypename", target = "region.type.full"),
 
             @Mapping(source = "regionTeId", target = "regionOMKTE.id"),
             @Mapping(source = "regionTeCode", target = "regionOMKTE.code"),
@@ -133,9 +137,23 @@ public interface AddressMapper {
             @Mapping(source = "l2TypeShort", target = "building.build.type.short"),
             @Mapping(source = "l2Value", target = "building.build.name"),
 
+            @Mapping(source = "l3Value", target = "building.construction.name"),
             @Mapping(source = "l3Type", target = "building.construction.type.full"),
             @Mapping(source = "l3TypeShort", target = "building.construction.type.short"),
-            @Mapping(source = "l3Value", target = "building.construction.name"),
     })
-    AddressRegistryBaseType entityToDtoTransform(Addresses address);
+    public abstract AddressRegistryBaseType entityToDtoTransform(Addresses address);
+
+    @AfterMapping
+    public AddressRegistryBaseType doAfterMapping(@MappingTarget AddressRegistryBaseType addressRegistryBaseType) {
+        if (addressRegistryBaseType.getBuilding().getConstruction().getName() == null) {
+            addressRegistryBaseType.getBuilding().setConstruction(null);
+        }
+        if (addressRegistryBaseType.getBuilding().getHouse().getName() == null) {
+            addressRegistryBaseType.getBuilding().setHouse(null);
+        }
+        if (addressRegistryBaseType.getBuilding().getBuild().getName() == null) {
+            addressRegistryBaseType.getBuilding().setBuild(null);
+        }
+        return addressRegistryBaseType;
+    }
 }

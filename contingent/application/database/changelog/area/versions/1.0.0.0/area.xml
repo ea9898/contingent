@@ -1125,6 +1125,21 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-379-3" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESSES"/>
+            <not>
+                <columnExists tableName="ADDRESSES" columnName="REGION_TYPENAME"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ADDRESSES">
+            <column name="REGION_TYPENAME" type="VARCHAR2(128)" remarks="Название типа региона." />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TYPENAME"/>
+        </rollback>
+    </changeSet>
+
     <!-- View definitions -->
     <changeSet id="CONTINGENT2-314-1" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">

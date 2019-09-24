@@ -45,6 +45,10 @@ public class Addresses implements Serializable {
     @Column(name = "REGION_NAME")
     private String regionName;
 
+    @Size(max = 128)
+    @Column(name = "REGION_TYPENAME")
+    private String regionTypename;
+
     @Column(name = "REGION_TE_ID")
     private Long regionTeId;
 
@@ -653,6 +657,11 @@ public class Addresses implements Serializable {
     public void setRegionTeId(Long regionTeId) {
         this.regionTeId = regionTeId;
     }
+
+    public String getRegionTypename() { return regionTypename; }
+
+    public void setRegionTypename(String regionTypename) { this.regionTypename = regionTypename; }
+
 
     @Override
     public boolean equals(Object o) {
