@@ -8,6 +8,7 @@ package moscow.ptnl.contingent.area.endpoint;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.history.HistoryEvent;
 import moscow.ptnl.contingent.repository.history.HistoryEventRepository;
+import moscow.ptnl.ws.security.UserContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class HistoryEventEndpoint {
         LOG.debug("recive history event: {}", msg.getPayload().getObjectType());
         try {
             HistoryEvent event = msg.getPayload();
+            event.setRequestId(UserContextHolder.getRequestUUID());
             historyEventRepository.save(event);
         } catch (Exception e) {
             LOG.error("ошибка записи события", e);

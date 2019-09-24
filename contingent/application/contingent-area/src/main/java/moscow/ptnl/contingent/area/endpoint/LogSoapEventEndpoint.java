@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.endpoint;
 import moscow.ptnl.contingent.domain.history.HistoryRequest;
 import moscow.ptnl.contingent.repository.history.HistoryRequestsRepository;
 import moscow.ptnl.soap.log.SoapContextData;
+import moscow.ptnl.ws.security.UserContextHolder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class LogSoapEventEndpoint {
         LOG.debug("Received SOAP event: {}", msg.getPayload().getMethod());
 
         try {
-            HistoryRequest event = HistoryRequest.build(msg.getPayload());
+            HistoryRequest event = HistoryRequest.build(msg.getPayload(), UserContextHolder.getRequestUUID());
             historyRequestsRepository.save(event);
         } catch (Exception e) {
             LOG.error("Can't write SOAP log event", e);

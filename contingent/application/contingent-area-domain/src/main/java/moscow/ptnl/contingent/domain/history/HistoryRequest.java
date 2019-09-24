@@ -4,10 +4,7 @@ import moscow.ptnl.soap.log.SoapContextData;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,20 +17,12 @@ import java.util.Objects;
  * @author sorlov
  */
 @Entity
-@SequenceGenerator(
-        name = HistoryRequest.SEQUENCE_GENERATOR_NAME,
-        sequenceName = HistoryRequest.SEQUENCE_GENERATOR_NAME,
-        allocationSize = 1
-)
 @Table(name = "JL_HISTORY_REQUESTS")
 public class HistoryRequest implements Serializable {
 
-    static final String SEQUENCE_GENERATOR_NAME = "JL_HIST_REQ_SEQ_ID";
-
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = HistoryRequest.SEQUENCE_GENERATOR_NAME)
-    private Long id;
+    private String id;
 
     @Column(name = "METHOD_NAME")
     @Size(max = 255)
@@ -49,11 +38,11 @@ public class HistoryRequest implements Serializable {
     @Column(name = "CALL_TIME")
     private LocalDateTime callTime;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -105,8 +94,9 @@ public class HistoryRequest implements Serializable {
         return Objects.hashCode(this.id);
     }
 
-    public static HistoryRequest build(SoapContextData data) {
+    public static HistoryRequest build(SoapContextData data, String requestUUID) {
         HistoryRequest request = new HistoryRequest();
+        request.setId(requestUUID);
         request.setMethodName(data.getMethod());
         request.setRequest(data.getRequest());
         request.setResponse(data.getResponse());

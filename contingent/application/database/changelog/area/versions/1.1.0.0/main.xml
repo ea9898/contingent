@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1.1.0.0" author="shnaider" labels ="1.1.0.0">
+        <tagDatabase tag="1.1.0.0"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-1" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history_requests" columnName="id"/>
+        </preConditions>
+        <comment>Изменение колонки ID таблицы jl_history_requests</comment>
+        <modifyDataType tableName="jl_history_requests" columnName="id" newDataType="VARCHAR(36)"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-2" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="jl_history" columnName="jl_history_requests_id"/>
+            </not>
+        </preConditions>
+        <comment>добавление колонки jl_history_requests_id в таблицу jl_history</comment>
+        <addColumn tableName="jl_history">
+            <column name="jl_history_requests_id" type="VARCHAR(36)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="jl_history" columnName="jl_history_requests_id"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

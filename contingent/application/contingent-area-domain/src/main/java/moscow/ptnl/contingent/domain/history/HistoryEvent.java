@@ -75,6 +75,9 @@ public class HistoryEvent implements Serializable {
 
     @Column(name = "USER_ROLE_ID")
     private Long userRoleId;
+
+    @Column(name = "jl_history_requests_id")
+    private String requestId;
     
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private Set<HistoryEventValue> values;
@@ -193,6 +196,14 @@ public class HistoryEvent implements Serializable {
         this.userRoleId = userRoleId;
     }
 
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
     public Set<HistoryEventValue> getValues() {
         if (values == null) {
             values = new HashSet<>();
@@ -212,7 +223,7 @@ public class HistoryEvent implements Serializable {
             return true;
         if (!(object instanceof HistoryEvent))
             return false;
-        return ((HistoryEvent) object).getId() == this.id;
+        return ((HistoryEvent) object).getId().equals(this.id);
     }
 
     @Override

@@ -7,6 +7,20 @@ public class UserContextHolder {
 
     private static ThreadLocal<UserContext> userContexts = new ThreadLocal<>();
 
+    private static String requestUUIDs;
+
+    public static String getRequestUUID() {
+        return requestUUIDs;
+    }
+
+    public static void setRequestUUID(String requestUUID) {
+        if (requestUUID != null) {
+            requestUUIDs = requestUUID;
+        } else {
+            requestUUIDs = null;
+        }
+    }
+
     public static UserContext getContext() {
         return userContexts.get();
     }
