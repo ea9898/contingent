@@ -145,6 +145,30 @@ public abstract class AddressMapper {
 
     @AfterMapping
     public AddressRegistryBaseType doAfterMapping(@MappingTarget AddressRegistryBaseType addressRegistryBaseType) {
+        if (addressRegistryBaseType.getRegion().getCode() == null && addressRegistryBaseType.getRegion().getName() == null) {
+            addressRegistryBaseType.setRegion(null);
+        }
+        if (addressRegistryBaseType.getRegionOMKTE().getCode() == null && addressRegistryBaseType.getRegionOMKTE().getName() == null) {
+            addressRegistryBaseType.setRegionOMKTE(null);
+        }
+        if (addressRegistryBaseType.getAreaOMKTE().getCode() == null && addressRegistryBaseType.getAreaOMKTE().getName() == null) {
+            addressRegistryBaseType.setAreaOMKTE(null);
+        }
+        if (addressRegistryBaseType.getArea().getCode() == null && addressRegistryBaseType.getArea().getName() == null) {
+            addressRegistryBaseType.setArea(null);
+        }
+        if (addressRegistryBaseType.getCity().getCode() == null && addressRegistryBaseType.getCity().getName() == null) {
+            addressRegistryBaseType.setCity(null);
+        }
+        if (addressRegistryBaseType.getPlan().getCode() == null && addressRegistryBaseType.getPlan().getName() == null) {
+            addressRegistryBaseType.setPlan(null);
+        }
+        if (addressRegistryBaseType.getPlace().getCode() == null && addressRegistryBaseType.getPlace().getName() == null) {
+            addressRegistryBaseType.setPlace(null);
+        }
+        if (addressRegistryBaseType.getStreet().getCode() == null && addressRegistryBaseType.getStreet().getName() == null) {
+            addressRegistryBaseType.setStreet(null);
+        }
         if (addressRegistryBaseType.getBuilding().getConstruction().getName() == null) {
             addressRegistryBaseType.getBuilding().setConstruction(null);
         }
