@@ -44,9 +44,6 @@ public class HistoryEvent implements Serializable {
 
     @Column(name = "CHANGE_DATE") @NotNull
     private LocalDateTime changeDate;
-    
-    @Column(name = "ACCOUNT_ID")
-    private Long accountId;
 
     @Column(name = "USER_LOGIN")
     private String userLogin;
@@ -54,24 +51,12 @@ public class HistoryEvent implements Serializable {
     @Column(name = "JOB_INFO_ID")
     private Long jobInfoId;
     
-    @Column(name = "LPU_ID")
-    private Long lpuId;
-    
-    @Column(name = "SOURCE_TYPE")
-    private String sourceType;
-    
     @Column(name = "SERVICE_NAME")
     @Convert(converter = ServiceName.Converter.class)
     private ServiceName serviceName;
     
     @Column(name = "METHOD_NAME")
     private String methodName;
-    
-    @Column(name = "EVENT_ID") //Идентификатор события
-    private Long eventId;
-	
-    @Column(name = "NOTIFICATION_ID")
-    private Long notificationId;
 
     @Column(name = "USER_ROLE_ID")
     private Long userRoleId;
@@ -116,14 +101,6 @@ public class HistoryEvent implements Serializable {
         this.changeDate = changeDate;
     }
 
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
     public String getUserLogin() {
         return userLogin;
     }
@@ -140,22 +117,6 @@ public class HistoryEvent implements Serializable {
         this.jobInfoId = jobInfoId;
     }
 
-    public Long getLpuId() {
-        return lpuId;
-    }
-
-    public void setLpuId(Long lpuId) {
-        this.lpuId = lpuId;
-    }
-
-    public String getSourceType() {
-        return sourceType;
-    }
-
-    public void setSourceType(String sourceType) {
-        this.sourceType = sourceType;
-    }
-
     public ServiceName getServiceName() {
         return serviceName;
     }
@@ -170,22 +131,6 @@ public class HistoryEvent implements Serializable {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
-    }
-
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
-
-    public Long getNotificationId() {
-        return notificationId;
-    }
-
-    public void setNotificationId(Long notificationId) {
-        this.notificationId = notificationId;
     }
 
     public Long getUserRoleId() {

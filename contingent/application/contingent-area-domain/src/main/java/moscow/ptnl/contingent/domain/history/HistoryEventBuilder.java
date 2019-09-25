@@ -22,10 +22,14 @@ public class HistoryEventBuilder {
     
     private HistoryEventBuilder(Class<?> objectType, String objectId) {
         this.event = new HistoryEvent();
-        this.event.setObjectType(objectType.getAnnotation(Table.class) != null ? objectType.getAnnotation(Table.class).name() :  objectType.getSimpleName());
+        this.event.setObjectType(getTableName(objectType));
         this.event.setObjectId(objectId);
         this.event.setChangeDate(LocalDateTime.now());        
         this.values = new HashSet<>();        
+    }
+
+    private String getTableName(Class<?> objectType) {
+        return objectType.getAnnotation(Table.class) != null ? objectType.getAnnotation(Table.class).name() : objectType.getSimpleName();
     }
     
     /**
@@ -39,12 +43,7 @@ public class HistoryEventBuilder {
         HistoryEventBuilder builder = new HistoryEventBuilder(entityType, entityId);
         return builder;
     }
-    
-    public HistoryEventBuilder setAccountId(Long accountId) {
-        event.setAccountId(accountId);
-        return this;
-    }
-    
+
     public HistoryEventBuilder setUserLogin(String userLogin) {
         event.setUserLogin(userLogin);
         return this;
@@ -52,16 +51,6 @@ public class HistoryEventBuilder {
     
     public HistoryEventBuilder setJobInfoId(Long jobInfoId) {
         event.setJobInfoId(jobInfoId);
-        return this;
-    }
-
-    public HistoryEventBuilder setLpuId(Long lpuId) {
-        event.setLpuId(lpuId);
-        return this;
-    }
-
-    public HistoryEventBuilder setSourceType(String sourceType) {
-        event.setSourceType(sourceType);
         return this;
     }
 
@@ -75,30 +64,18 @@ public class HistoryEventBuilder {
         return this;
     }
 
-    public HistoryEventBuilder setEventId(Long eventId) {
-        event.setEventId(eventId);
-        return this;
-    }
-
-    public HistoryEventBuilder setNotificationId(Long notificationId) {
-        event.setNotificationId(notificationId);
-        return this;
-    }
-
     public HistoryEventBuilder setUserRoleId(Long userRoleId) {
         event.setUserRoleId(userRoleId);
         return this;
     }
 
-    public HistoryEventBuilder addValue(String columnName, String oldValue, String newValue) {
-        this.values.add(new HistoryEventValue(event, columnName, oldValue, newValue));
+    public HistoryEventBuilder addValue(String columnName, String oldValue, String newValue, Class<?> objectType) {
+        this.values.add(new HistoryEventValue(event, columnName, oldValue, newValue, getTableName(objectType)));
         return this;
     }
     
     public HistoryEventBuilder setPrincipal(Principal principal) {
-        event.setAccountId(principal.getAccountId());
         event.setJobInfoId(principal.getJobInfoId());
-        event.setLpuId(principal.getLpuId());
         event.setUserLogin(principal.getUsername());
         event.setUserRoleId(principal.getUserRoleId());
         return this;

@@ -31,4 +31,91 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-383-3" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="account_id"/>
+        </preConditions>
+        <comment>удаление колонки account_id в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="account_id"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-4" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="lpu_id"/>
+        </preConditions>
+        <comment>удаление колонки lpu_id в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="lpu_id"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-5" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="source_type"/>
+        </preConditions>
+        <comment>удаление колонки source_type в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="source_type"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-6" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="event_id"/>
+        </preConditions>
+        <comment>удаление колонки event_id в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="event_id"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-7" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="notification_id"/>
+        </preConditions>
+        <comment>удаление колонки notification_id в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="notification_id"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-8" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="jl_history_columns" columnName="TABLE_NAME"/>
+            </not>
+        </preConditions>
+        <comment>добавление колонки TABLE_NAME в таблицу jl_history_columns</comment>
+        <addColumn tableName="jl_history_columns">
+            <column name="TABLE_NAME" type="VARCHAR(255)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="jl_history_columns" columnName="TABLE_NAME"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-9" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="jl_history_columns_seq_id" />
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса jl_history_columns_seq_id для таблицы jl_history_columns</comment>
+        <createSequence sequenceName="jl_history_columns_seq_id"/>
+        <rollback>
+            <dropSequence sequenceName="jl_history_columns_seq_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-10" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="jl_history_columns"/>
+            <not>
+                <columnExists tableName="jl_history_columns" columnName="id"/>
+            </not>
+        </preConditions>
+        <comment>Добавление первичного ключа id в таблицу jl_history_columns</comment>
+        <delete tableName="jl_history_columns"/>
+        <addColumn tableName="jl_history_columns">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="jl_history_columns" columnName="id"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

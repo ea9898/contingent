@@ -1,13 +1,10 @@
 package moscow.ptnl.contingent.service.history;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.domain.history.EntityConverterHelper;
@@ -105,7 +102,7 @@ public class HistoryServiceImpl implements HistoryService {
                 Object newValue = f.get(newObject);
                 //ищем измененные значения
                 if (!converter.equals(oldValue, newValue)) {                
-                    eventBuilder.addValue(f.getName(), converter.toString(oldValue), converter.toString(newValue));
+                    eventBuilder.addValue(f.getName(), converter.toString(oldValue), converter.toString(newValue), cls);
                 }
             } catch (Exception e) {
                 LOG.error("ошибка логирования поля: " + f.getName() + " в классе: " + cls.getName(), e);
