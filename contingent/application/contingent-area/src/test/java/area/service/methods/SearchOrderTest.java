@@ -37,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 @ContextConfiguration(classes= {PersistenceConfiguration.class, MockConfiguration.class, MockRepositoriesForSearchOrderTestConfiguration.class})
 @Transactional
-@Disabled //TODO разобраться почему падает тест
 public class SearchOrderTest {
 
     @Autowired
