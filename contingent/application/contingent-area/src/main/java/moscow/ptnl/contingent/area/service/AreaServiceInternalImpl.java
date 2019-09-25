@@ -559,6 +559,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         //1, 2.
         Area area = areaHelper.checkAndGetArea(areaId, validation);
 
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
         //3, 4.
         areaHelper.checkParametersChanged(area, muId, number, description, primaryAreaTypeCodesAddIds,
                 primaryAreaTypeCodesDelIds, policyTypesAddIds, policyTypesDelIds, ageMin, ageMax, ageMinM,
