@@ -5,15 +5,14 @@
     <artifactId>requests</artifactId>
     <groupId>moscow.ptnl.contingent</groupId>
     <packaging>war</packaging>
-    <version>1.0.0</version>
     <name>contingent-requests</name>
     <url>http://maven.apache.org</url>
 
     <parent>
        <groupId>moscow.ptnl.contingent</groupId>
        <artifactId>contingent</artifactId>
-       <version>1.0.0</version>
        <relativePath>../pom.xml</relativePath>
+        <version>1.1.0</version>
     </parent>
 
     <build>

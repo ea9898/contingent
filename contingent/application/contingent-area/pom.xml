@@ -5,15 +5,14 @@
     <artifactId>area</artifactId>
     <groupId>moscow.ptnl.contingent</groupId>
     <packaging>war</packaging>
-    <version>1.0.0</version>
     <name>contingent-area</name>
     <url>http://maven.apache.org</url>
 
     <parent>
        <groupId>moscow.ptnl.contingent</groupId>
        <artifactId>contingent</artifactId>
-       <version>1.0.0</version>
        <relativePath>../pom.xml</relativePath>
+        <version>1.1.0</version>
     </parent>
 
     <properties>
@@ -155,24 +154,24 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>                                
+                <version>3.8.0</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding> 
-                    <parameters>true</parameters> <!-- необходимо для передачи имен аргументов в Java Reflection -->                                                  
-                    <annotationProcessorPaths>  
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <parameters>true</parameters> <!-- необходимо для передачи имен аргументов в Java Reflection -->
+                    <annotationProcessorPaths>
                         <path>
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-jpamodelgen</artifactId>
                             <version>${hibernate.jpamodelgen.version}</version>
-                        </path>                                                                                          
+                        </path>
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
                             <version>${mapstruct.version}</version>
                         </path>
-                    </annotationProcessorPaths>                    
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -306,27 +305,27 @@
                 </plugins>
             </pluginManagement>
     </build>
-    
+
     <dependencies>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>common</artifactId>
-            <version>1.0.0</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>area-domain</artifactId>
-            <version>1.0.0</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>nsi-domain</artifactId>
-            <version>1.0.0</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>area-infrastructure</artifactId>
-            <version>1.0.0</version>
+            <version>${version}</version>
         </dependency>
 
 <!--        <dependency>

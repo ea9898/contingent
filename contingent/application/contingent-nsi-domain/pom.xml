@@ -5,7 +5,6 @@
 
     <groupId>moscow.ptnl.contingent</groupId>
     <artifactId>nsi-domain</artifactId>
-    <version>1.0.0</version>
 
     <packaging>jar</packaging>
 
@@ -15,15 +14,15 @@
     <parent>
        <groupId>moscow.ptnl.contingent</groupId>
        <artifactId>contingent</artifactId>
-       <version>1.0.0</version>
+        <version>1.1.0</version>
        <relativePath>../pom.xml</relativePath>
     </parent>
-    
+
     <dependencies>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>common</artifactId>
-            <version>1.0.0</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -8,16 +8,15 @@
 
     <groupId>moscow.ptnl.contingent</groupId>
     <artifactId>area-infrastructure</artifactId>
-    <version>1.0.0</version>
 
     <parent>
         <artifactId>contingent</artifactId>
         <groupId>moscow.ptnl.contingent</groupId>
-        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
+        <version>1.1.0</version>
     </parent>
 
-    <packaging>jar</packaging>    
+    <packaging>jar</packaging>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -28,17 +27,17 @@
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>common</artifactId>
-            <version>1.0.0</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>area-domain</artifactId>
-            <version>1.0.0</version>
-        </dependency>                         
-        <dependency> 
+            <version>${version}</version>
+        </dependency>
+        <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>nsi-infrastructure</artifactId>
-            <version>1.0.0</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
