@@ -94,9 +94,9 @@ public class HistoryRequest implements Serializable {
         return Objects.hashCode(this.id);
     }
 
-    public static HistoryRequest build(SoapContextData data, String requestUUID) {
+    public static HistoryRequest build(SoapContextData data) {
         HistoryRequest request = new HistoryRequest();
-        request.setId(requestUUID);
+        request.setId(data.getUuid());
         request.setMethodName(data.getMethod());
         request.setRequest(data.getRequest());
         request.setResponse(data.getResponse());

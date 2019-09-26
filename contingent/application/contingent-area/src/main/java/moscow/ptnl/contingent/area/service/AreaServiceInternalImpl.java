@@ -61,7 +61,6 @@ import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.service.history.HistoryService;
 import moscow.ptnl.util.Strings;
 import moscow.ptnl.ws.security.UserContextHolder;
 import org.slf4j.Logger;
@@ -178,9 +177,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private Algorithms algorithms;
 
     @Autowired
-    private HistoryService historyService;
-
-    @Autowired
     private PositionNomRepository positionNomRepository;
 
     @Autowired
@@ -202,7 +198,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AddressMapper addressMapper;
 
     @Autowired
-    AreaAddressClone areaAddressClone;
+    private AreaAddressClone areaAddressClone;
+
+    @Autowired
+    private HistoryServiceHelper historyHelper;
 
     public AreaServiceInternalImpl() {
     }
@@ -387,6 +386,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaPolicyTypesCRUDRepository.saveAll(areaPolicyTypes);
 
         // 15
+        historyHelper.sendHistory(null, area, Area.class);
+
         return area.getId();
     }
 
@@ -487,7 +488,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        Area oldArea = historyService.clone(area);
+        Area oldArea = historyHelper.clone(area);
 
         //3 Система проверяет, что передан хотя бы один параметр для изменения, иначе возвращает ошибку
         areaHelper.checkAreaParametersForUpdate(number, policyTypesAddIds, policyTypesDelIds,
@@ -545,7 +546,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaHelper.saveAndDeleteAreaPolicyTypes(area, policyTypesAdd, policyTypesDel);
 
         // Логирование изменений
-        historyService.write(UserContextHolder.getPrincipal(), oldArea, area, Area.class);
+        historyHelper.sendHistory(oldArea, area, Area.class);
     }
 
     // (К_УУ_10) Изменение участка обслуживания зависимого типа
@@ -572,7 +573,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        Area oldArea = historyService.clone(area);
+        Area oldArea = historyHelper.clone(area);
 
         // 5.
         if (muId != null && (area.getAreaType().getAreaTypeKind() == null ||
@@ -709,10 +710,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // Логирование изменений
-        historyService.write(UserContextHolder.getPrincipal(), oldArea, area, Area.class);
+        historyHelper.sendHistory(oldArea, area, Area.class);
 
         // 17.
-        return;
     }
 
     // (К_УУ_11) Изменение медицинских работников на участке обслуживания
@@ -894,14 +894,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaMedicalEmployeeCRUDRepository.saveAll(changeEmployeesDb).forEach(saved -> {
             if (!areaEmployeesDb.contains(saved)) {
                 // Логирование новых объектов
-                historyService.write(UserContextHolder.getPrincipal(), null, saved, AreaMedicalEmployees.class);
+                historyHelper.sendHistory(null, saved, AreaMedicalEmployees.class);
                 result.add(saved.getId());
             }
         });
 
         // Логирование изменений
         for (Map.Entry<AreaMedicalEmployees, AreaMedicalEmployees> entry: changesAme.entrySet()) {
-            historyService.write(UserContextHolder.getPrincipal(), entry.getKey(), entry.getValue(), AreaMedicalEmployees.class);
+            historyHelper.sendHistory(entry.getKey(), entry.getValue(), AreaMedicalEmployees.class);
         }
 
         // 8
@@ -1007,7 +1007,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         //
         for (AreaAddress areaAddress: areaAddresses) {
-            historyService.write(UserContextHolder.getPrincipal(), null, areaAddress, AreaAddress.class);
+            historyHelper.sendHistory(null, areaAddress, AreaAddress.class);
         }
 
         return areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
@@ -1044,9 +1044,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
                 areaAddressCRUDRepository.save(areaAddress);
-                historyService.write(UserContextHolder.getPrincipal(), areaAddressOld, areaAddress, AreaAddress.class);
+                historyHelper.sendHistory(areaAddressOld, areaAddress, AreaAddress.class);
             } else {
-                historyService.write(UserContextHolder.getPrincipal(), areaAddress, null, AreaAddress.class);
+                historyHelper.sendHistory(areaAddress, null, AreaAddress.class);
 
                 // 5.2.
                 areaAddressCRUDRepository.delete(areaAddress);
@@ -1056,7 +1056,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 6. @LogEsu
 
         // 7.
-        return;
     }
 
     // (К_УУ_15) Получение списка адресов участка обслуживания
@@ -1224,7 +1223,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
                     new ValidationParameter("id", id));
         }
-        AddressAllocationOrders oldOrder = historyService.clone(order);
+        AddressAllocationOrders oldOrder = historyHelper.clone(order);
 
         // 3.
         if (number == null && date == null && ouz == null && name == null) {
@@ -1267,7 +1266,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         addressAllocationOrderCRUDRepository.save(order);
 
-        historyService.write(UserContextHolder.getPrincipal(), oldOrder, order, AddressAllocationOrders.class);
+        historyHelper.sendHistory(oldOrder, order, AddressAllocationOrders.class);
     }
 
     // (К_УУ_20) Поиск распоряжений

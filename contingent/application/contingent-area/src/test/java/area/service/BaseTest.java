@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.area.service.Algorithms;
 import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
+import moscow.ptnl.contingent.area.service.HistoryServiceHelper;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
@@ -31,6 +32,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.messaging.MessageChannel;
 
 @ExtendWith(MockitoExtension.class)
@@ -108,6 +110,10 @@ public class BaseTest {
     @Spy
     @InjectMocks
     public AreaServiceHelper areaHelper;
+
+    @Spy
+    @InjectMocks
+    private HistoryServiceHelper historyServiceHelper;
 
     @InjectMocks
     public AreaServiceInternalImpl areaServiceInternal;

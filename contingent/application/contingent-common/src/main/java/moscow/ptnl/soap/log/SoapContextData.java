@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class SoapContextData {
 
+    private String uuid;
     private String method;
     private String request;
     private String response;
@@ -16,6 +17,14 @@ public class SoapContextData {
         this.method = method;
         this.request = request;
         this.response = response;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getMethod() {

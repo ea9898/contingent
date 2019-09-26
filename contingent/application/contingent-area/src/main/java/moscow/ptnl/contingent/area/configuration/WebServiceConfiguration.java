@@ -8,6 +8,7 @@ import javax.xml.ws.Endpoint;
 import moscow.ptnl.contingent.area.ws.v1.AreaCompositeServiceImpl;
 import moscow.ptnl.metrics.MetricsInterceptorService;
 import moscow.ptnl.soap.log.SoapLogInterceptorService;
+import moscow.ptnl.ws.security.UserContextHolder;
 import moscow.ptnl.ws.security.UserContextInterceptor;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
@@ -81,7 +82,7 @@ public class WebServiceConfiguration {
         endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
         metricsInterceptorService.setupInterceptors(endpoint);
-        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel);
+        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestUUID);
         return endpoint;
     }
 
@@ -103,7 +104,7 @@ public class WebServiceConfiguration {
     	endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
         metricsInterceptorService.setupInterceptors(endpoint);
-        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel);
+        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestUUID);
     }
     
 }

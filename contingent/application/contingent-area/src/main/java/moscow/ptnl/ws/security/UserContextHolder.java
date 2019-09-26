@@ -3,22 +3,19 @@ package moscow.ptnl.ws.security;
 import moscow.ptnl.contingent.security.Principal;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
+import java.util.UUID;
+
 public class UserContextHolder {
 
     private static ThreadLocal<UserContext> userContexts = new ThreadLocal<>();
 
-    private static String requestUUIDs;
+    private static ThreadLocal<String> requestUUIDs = new ThreadLocal<>();
 
     public static String getRequestUUID() {
-        return requestUUIDs;
-    }
-
-    public static void setRequestUUID(String requestUUID) {
-        if (requestUUID != null) {
-            requestUUIDs = requestUUID;
-        } else {
-            requestUUIDs = null;
+        if (requestUUIDs.get() == null) {
+            requestUUIDs.set(UUID.randomUUID().toString());
         }
+        return requestUUIDs.get();
     }
 
     public static UserContext getContext() {

@@ -69,6 +69,11 @@ public class HistoryEventBuilder {
         return this;
     }
 
+    public HistoryEventBuilder setRequestUUID(String uuid) {
+        event.setRequestId(uuid);
+        return this;
+    }
+
     public HistoryEventBuilder addValue(String columnName, String oldValue, String newValue, Class<?> objectType) {
         this.values.add(new HistoryEventValue(event, columnName, oldValue, newValue, getTableName(objectType)));
         return this;

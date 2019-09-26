@@ -45,6 +45,5 @@ public class UserContextInterceptor extends AbstractSoapInterceptor {
         if (userContext.getUserName() == null) { userContext.setUserName("Не задано");}
 
         UserContextHolder.setContext(userContext);
-        UserContextHolder.setRequestUUID(UUID.randomUUID().toString());
     }
 }
