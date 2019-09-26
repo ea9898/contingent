@@ -38,12 +38,12 @@ public class HistoryServiceImpl implements HistoryService {
     private final FieldConverter defaultConverter = new DefaultConverter();
 
     @Override
-    public <T> void write(Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException {
+    public <T> void write(String uuid, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException {
         if (principal == null) {
             throw new IllegalArgumentException("нет данных о пользователе вызвавшем метод");
         }
         if (oldObject == null && newObject == null) {
-            throw new IllegalAccessError("Нечего не с сравнивать!");
+            throw new IllegalAccessError("Нечего сравнивать!");
         }
         String entityId = "";
         try {
@@ -80,6 +80,7 @@ public class HistoryServiceImpl implements HistoryService {
                 .withEntity(cls, entityId)
                 .setPrincipal(principal)
                 .setMethodName(methodName)
+                .setRequestUUID(uuid)
                 .setServiceName(serviceName);
         
         //обходим поля объекта и ищем проаннотированные

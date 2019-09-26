@@ -12,6 +12,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
+import moscow.ptnl.contingent.area.service.HistoryServiceHelper;
 import moscow.ptnl.contingent.area.service.SettingService;
 import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
@@ -150,4 +151,6 @@ public class MockConfiguration {
     @MockBean
     private AreaMedicalEmployeesClone areaMedicalEmployeesClone;
 
+    @MockBean
+    private HistoryServiceHelper historyServiceHelper;
 }

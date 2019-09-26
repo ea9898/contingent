@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
+import java.util.concurrent.Callable;
 
 @Component
 public class SoapLogInterceptor extends AbstractPhaseInterceptor<Message> {
@@ -23,6 +24,7 @@ public class SoapLogInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final Logger LOG = LoggerFactory.getLogger(SoapLogInterceptor.class);
 
     private MessageChannel eventChannel;
+    private Callable<String> uuidProvider;
 
     SoapLogInterceptor() {
         super(Phase.SEND);
@@ -42,6 +44,7 @@ public class SoapLogInterceptor extends AbstractPhaseInterceptor<Message> {
                             .append("/")
                             .append(opInfo == null ? "[Null]" : opInfo.getName().getLocalPart());
                     message.getContent(XMLStreamWriter.class).flush();
+                    data.setUuid(uuidProvider == null ? null : uuidProvider.call());
                     data.setRequest(new String(contentIn.getBytes()));
                     data.setResponse(new String(contentOut.getBytes()));
                     data.setMethod(name.toString());
@@ -70,5 +73,13 @@ public class SoapLogInterceptor extends AbstractPhaseInterceptor<Message> {
 
     public void setEventChannel(MessageChannel eventChannel) {
         this.eventChannel = eventChannel;
+    }
+
+    public Callable<String> getUuidProvider() {
+        return uuidProvider;
+    }
+
+    public void setUuidProvider(Callable<String> uuidProvider) {
+        this.uuidProvider = uuidProvider;
     }
 }
