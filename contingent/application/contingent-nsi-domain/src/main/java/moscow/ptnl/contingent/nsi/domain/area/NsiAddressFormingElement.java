@@ -43,7 +43,7 @@ public class NsiAddressFormingElement implements Serializable {
     private String regionName;
 
     @Column(name = "REGION_TE_ID")
-    private Long regionTeId;
+    private String regionTeId;
 
     @Size(max = 4)
     @Column(name = "REGION_TE_CODE")

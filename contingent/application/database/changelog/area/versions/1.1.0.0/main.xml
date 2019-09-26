@@ -118,4 +118,20 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-386-1" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="addresses" columnName="region_te_id"/>
+        </preConditions>
+        <comment>Изменение колонки region_te_id таблицы addresses</comment>
+        <modifyDataType tableName="addresses" columnName="region_te_id" newDataType="VARCHAR(255)"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-386-2" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="nsi_address_forming_element" columnName="region_te_id"/>
+        </preConditions>
+        <comment>Изменение колонки region_te_id таблицы addresses</comment>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="region_te_id" newDataType="VARCHAR(255)"/>
+    </changeSet>
+
 </databaseChangeLog>

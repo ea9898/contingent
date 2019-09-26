@@ -50,7 +50,7 @@ public class Addresses implements Serializable {
     private String regionTypename;
 
     @Column(name = "REGION_TE_ID")
-    private Long regionTeId;
+    private String regionTeId;
 
     @Size(max = 4)
     @Column(name = "REGION_TE_CODE")
@@ -650,11 +650,11 @@ public class Addresses implements Serializable {
         this.regionName = regionName;
     }
 
-    public Long getRegionTeId() {
+    public String getRegionTeId() {
         return regionTeId;
     }
 
-    public void setRegionTeId(Long regionTeId) {
+    public void setRegionTeId(String regionTeId) {
         this.regionTeId = regionTeId;
     }
 
