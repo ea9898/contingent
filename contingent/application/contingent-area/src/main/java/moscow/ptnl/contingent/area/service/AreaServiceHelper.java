@@ -240,7 +240,7 @@ public class AreaServiceHelper {
     }
 
     private boolean checkAgeSetupFilling(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType) {
-        return (ageMin == null && ageMinAreaType != null) || (ageMax == null && ageMaxAreaType != null);
+        return (ageMin != null && ageMinAreaType == null) || (ageMax != null && ageMaxAreaType == null);
     }
 
     public void checkAgeSetupRange(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType,

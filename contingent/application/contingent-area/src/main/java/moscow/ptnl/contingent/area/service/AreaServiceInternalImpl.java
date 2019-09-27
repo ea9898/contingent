@@ -414,7 +414,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         primaryAreaTypeCodesIds.forEach(code -> {
             // TODO позже добавить проверку что primaryAreaTypeCode есть в таблице areaTypes
-            AreaType primaryAreaType = areaTypesCRUDRepository.findById(code).get();
+            Optional<AreaType> primaryAreaTypeOptional = areaTypesCRUDRepository.findById(code);
+            if (!primaryAreaTypeOptional.isPresent()) {
+                validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaType", code));
+                return;
+            }
+            AreaType primaryAreaType = primaryAreaTypeOptional.get();
+
             //4
             areaHelper.checkAreaTypeIsPrimary(primaryAreaType, validation);
             //5
