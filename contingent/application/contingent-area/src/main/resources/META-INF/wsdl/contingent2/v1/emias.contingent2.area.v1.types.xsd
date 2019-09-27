@@ -3,11 +3,13 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:core="http://emias.mos.ru/contingent2/core/v1/"
            xmlns:address="http://emias.mos.ru/contingent2/address/v1/"
+           xmlns:restr="http://emias.mos.ru/restriction/types/core/"
            targetNamespace="http://emias.mos.ru/contingent2/area/v1/types/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
     <xs:import namespace="http://emias.mos.ru/contingent2/core/v1/" schemaLocation="emias.contingent2.core.v1.xsd"/>
     <xs:import schemaLocation="emias.contingent2.address.v1.xsd" namespace="http://emias.mos.ru/contingent2/address/v1/" />
+    <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="emias.restriction.types.core.xsd"/>
 
     <!--lists of entities-->
     <xs:complexType name="AddressAllocationOrderListResultPage">
@@ -32,7 +34,7 @@
             <xs:sequence>
                 <xs:element name="moId" type="xs:long" />
                 <xs:element name="muId" type="xs:long" minOccurs="0" />
-                <xs:element name="number" type="xs:int" minOccurs="0" />
+                <xs:element name="number" type="restr:int5digits" minOccurs="0" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
                 <xs:element name="areaTypeCode" type="xs:long" />
                 <xs:element name="primaryAreaTypes" type="core:PrimaryAreaTypeCodes" maxOccurs="unbounded" />
@@ -59,7 +61,7 @@
             <xs:sequence>
                 <xs:element name="moId" type="xs:long" />
                 <xs:element name="muId" type="xs:long" minOccurs="0" />
-                <xs:element name="number" type="xs:int" />
+                <xs:element name="number" type="restr:int5digits" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
                 <xs:element name="areaTypeCode" type="xs:long" />
                 <xs:element name="policyTypes" type="core:PolicyTypeCodes" minOccurs="0" />
@@ -86,7 +88,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
-                <xs:element name="number" type="xs:int" minOccurs="0" />
+                <xs:element name="number" type="restr:int5digits" minOccurs="0" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
                 <xs:element name="PolicyTypesAdd" type="core:PolicyTypesAdd" minOccurs="0" />
                 <xs:element name="PolicyTypesDel" type="core:PolicyTypesDel" minOccurs="0" />
@@ -114,7 +116,7 @@
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
                 <xs:element name="muId" type="xs:long" minOccurs="0" />
-                <xs:element name="number" type="xs:int" minOccurs="0" />
+                <xs:element name="number" type="restr:int5digits" minOccurs="0" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
                 <xs:element name="primaryAreaTypesAdd" type="core:PrimaryAreaTypeCodes" minOccurs="0" />
                 <xs:element name="primaryAreaTypesDel" type="core:PrimaryAreaTypeCodes" minOccurs="0" />
@@ -562,7 +564,7 @@
                 <xs:element name="moId" type="xs:long" minOccurs="0"/>
                 <xs:element name="muId" type="xs:long" maxOccurs="unbounded" minOccurs="0"/>
                 <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" minOccurs="0"/>
-                <xs:element name="number" type="xs:int" minOccurs="0"/>
+                <xs:element name="number" type="restr:int5digits" minOccurs="0"/>
                 <xs:element name="description" type="xs:string" minOccurs="0"/>
                 <xs:element name="isArchived" type="xs:boolean" minOccurs="0"/>
                 <xs:element name="medicalEmployee" maxOccurs="unbounded" minOccurs="0">
@@ -575,7 +577,7 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="medicalEmployeeJobId" type="xs:long" minOccurs="0"/>
-                            <xs:element name="snils" type="xs:string" minOccurs="0"/>
+                            <xs:element name="snils" type="restr:stringLimit20" minOccurs="0"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>

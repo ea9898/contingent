@@ -2,18 +2,19 @@
 <xs:schema xmlns="http://emias.mos.ru/contingent2/address/v1/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://emias.mos.ru/contingent2/address/v1/"
-           xmlns:tns="http://emias.mos.ru/contingent2/address/v1/"
+           xmlns:restr="http://emias.mos.ru/restriction/types/core/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
         <xs:include schemaLocation="../../emias/emias.core.address.v1.xsd"/>
+        <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="emias.restriction.types.core.xsd"/>
 
         <xs:complexType name="SearchAreaAddress" abstract="true">
                 <xs:annotation>
                         <xs:documentation>Сведения адреса для метода searchArea</xs:documentation>
                 </xs:annotation>
                 <xs:sequence>
-                        <xs:element name="aoLevel" type="xs:string">
+                        <xs:element name="aoLevel" type="restr:stringLimit2">
                                 <xs:annotation>
                                         <xs:documentation>Уровень адресного объекта (по уровням Адресного реестра НСИ). Обязательно для заполнения</xs:documentation>
                                 </xs:annotation>
@@ -23,7 +24,7 @@
                                         <xs:documentation>Уникальный идентификатор адреса в ЕМИАС.НСИ</xs:documentation>
                                 </xs:annotation>
                         </xs:element>
-                        <xs:element name="regionOMKTEcode" type="xs:string">
+                        <xs:element name="regionOMKTEcode" type="restr:stringLimit4">
                                 <xs:annotation>
                                         <xs:documentation>Код округа Москвы</xs:documentation>
                                 </xs:annotation>
@@ -33,27 +34,27 @@
                                         <xs:documentation>Код района Москвы</xs:documentation>
                                 </xs:annotation>
                         </xs:element>
-                        <xs:element name="areaCode" type="xs:string" minOccurs="0">
+                        <xs:element name="areaCode" type="restr:stringLimit3" minOccurs="0">
                                 <xs:annotation>
                                         <xs:documentation>Код района</xs:documentation>
                                 </xs:annotation>
                         </xs:element>
-                        <xs:element name="cityCode" type="xs:string" minOccurs="0">
+                        <xs:element name="cityCode" type="restr:stringLimit3" minOccurs="0">
                                 <xs:annotation>
                                         <xs:documentation>Код города</xs:documentation>
                                 </xs:annotation>
                         </xs:element>
-                        <xs:element name="placeCode" type="xs:string" minOccurs="0">
+                        <xs:element name="placeCode" type="restr:stringLimit3" minOccurs="0">
                                 <xs:annotation>
                                         <xs:documentation>Код населенного пункта</xs:documentation>
                                 </xs:annotation>
                         </xs:element>
-                        <xs:element name="planCode" type="xs:string" minOccurs="0">
+                        <xs:element name="planCode" type="restr:stringLimit4" minOccurs="0">
                                 <xs:annotation>
                                         <xs:documentation>Код элемента планировочной структуры</xs:documentation>
                                 </xs:annotation>
                         </xs:element>
-                        <xs:element name="streetCode" type="xs:string" minOccurs="0">
+                        <xs:element name="streetCode" type="restr:stringLimit4" minOccurs="0">
                                 <xs:annotation>
                                         <xs:documentation>Код улицы</xs:documentation>
                                 </xs:annotation>

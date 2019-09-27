@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://emias.mos.ru/restriction/types/core/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://emias.mos.ru/restriction/types/core/"
+           elementFormDefault="qualified">
+
+    <xs:simpleType name="int5digits">
+        <xs:restriction base="xs:int">
+            <xs:totalDigits value="5"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="int20digits">
+        <xs:restriction base="xs:int">
+            <xs:totalDigits value="20"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="stringLimit2">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="stringLimit3">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="stringLimit4">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="4"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="stringLimit20">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="20"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

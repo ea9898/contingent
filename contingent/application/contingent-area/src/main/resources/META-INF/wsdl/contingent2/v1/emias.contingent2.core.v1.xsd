@@ -4,11 +4,13 @@
            targetNamespace="http://emias.mos.ru/contingent2/core/v1/"
            xmlns:tns="http://emias.mos.ru/contingent2/core/v1/"
            xmlns:address="http://emias.mos.ru/contingent2/address/v1/"
+           xmlns:restr="http://emias.mos.ru/restriction/types/core/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
     <xs:include schemaLocation="../../emias/emias.core.v1.xsd"/>
 
     <xs:import schemaLocation="emias.contingent2.address.v1.xsd" namespace="http://emias.mos.ru/contingent2/address/v1/" />
+    <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="emias.restriction.types.core.xsd"/>
 
     <xs:complexType name="CodeNameType">
         <xs:sequence>
@@ -102,7 +104,7 @@
         <xs:sequence>
             <xs:element name="id" type="xs:long" />
             <xs:element name="medicalEmployeeJobId" type="xs:long" />
-            <xs:element name="snils" type="xs:string" />
+            <xs:element name="snils" type="restr:stringLimit20" />
             <xs:element name="position" type="tns:PositionNomClinic" minOccurs="0" />
             <xs:element name="isReplacement" type="xs:boolean" />
             <xs:element name="startDate" type="xs:date" minOccurs="0" />
@@ -114,7 +116,7 @@
             <xs:element name="id" type="xs:long" />
             <xs:element name="moId" type="xs:long" />
             <xs:element name="muId" type="xs:long" minOccurs="0" />
-            <xs:element name="number" type="xs:int" minOccurs="0" />
+            <xs:element name="number" type="restr:int5digits" minOccurs="0" />
             <xs:element name="description" type="xs:string" minOccurs="0" />
             <xs:element name="areaType" type="tns:AreaTypeShort" />
             <xs:element name="areaTypeClass" type="tns:AreaTypeClass" />
@@ -160,7 +162,7 @@
         </xs:annotation>
         <xs:sequence>
             <xs:element name="medicalEmployeeJobId" type="xs:long"/>
-            <xs:element name="snils" type="xs:string"/>
+            <xs:element name="snils" type="restr:stringLimit20"/>
             <xs:element name="positionCode" type="xs:string"/>
             <xs:element name="subdivisionId" type="xs:long"/>
             <xs:element name="isReplacement" type="xs:boolean"/>
