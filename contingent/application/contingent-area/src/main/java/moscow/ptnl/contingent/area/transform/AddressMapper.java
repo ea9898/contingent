@@ -178,6 +178,13 @@ public abstract class AddressMapper {
         if (addressRegistryBaseType.getBuilding().getBuild().getName() == null) {
             addressRegistryBaseType.getBuilding().setBuild(null);
         }
+        if (addressRegistryBaseType.getRegion().getType().getFull() == null) {
+            addressRegistryBaseType.getRegion().setType(null);
+        }
+        if (addressRegistryBaseType.getRegionOMKTE().getType().getFull() == null) {
+            addressRegistryBaseType.getRegionOMKTE().setType(null);
+        }
+
         return addressRegistryBaseType;
     }
 }
