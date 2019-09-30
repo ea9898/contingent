@@ -6,10 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
-
-import javax.swing.text.html.parser.Entity;
 
 @Mapper(componentModel="spring")
 public abstract class AddressMapper {
@@ -178,13 +175,55 @@ public abstract class AddressMapper {
         if (addressRegistryBaseType.getBuilding().getBuild().getName() == null) {
             addressRegistryBaseType.getBuilding().setBuild(null);
         }
-        if (addressRegistryBaseType.getRegion().getType().getFull() == null) {
+        if (addressRegistryBaseType.getRegion() != null && addressRegistryBaseType.getRegion().getType() != null
+                && addressRegistryBaseType.getRegion().getType().getFull() == null) {
             addressRegistryBaseType.getRegion().setType(null);
         }
-        if (addressRegistryBaseType.getRegionOMKTE().getType().getFull() == null) {
+        if (addressRegistryBaseType.getRegionOMKTE() != null && addressRegistryBaseType.getRegionOMKTE().getType() != null
+                && addressRegistryBaseType.getRegionOMKTE().getType().getFull() == null) {
             addressRegistryBaseType.getRegionOMKTE().setType(null);
         }
-
+        if (addressRegistryBaseType.getArea() != null && addressRegistryBaseType.getArea().getType() != null
+                && addressRegistryBaseType.getArea().getType().getFull() == null) {
+            addressRegistryBaseType.getArea().setType(null);
+        }
+        if (addressRegistryBaseType.getAreaOMKTE() != null && addressRegistryBaseType.getAreaOMKTE().getType() != null
+                && addressRegistryBaseType.getAreaOMKTE().getType().getFull() == null) {
+            addressRegistryBaseType.getAreaOMKTE().setType(null);
+        }
+        if (addressRegistryBaseType.getCity() != null && addressRegistryBaseType.getCity().getType() != null
+                && addressRegistryBaseType.getCity().getType().getFull() == null) {
+            addressRegistryBaseType.getCity().setType(null);
+        }
+        if (addressRegistryBaseType.getPlace() != null && addressRegistryBaseType.getPlace().getType() != null
+                && addressRegistryBaseType.getPlace().getType().getFull() == null) {
+            addressRegistryBaseType.getPlace().setType(null);
+        }
+        if (addressRegistryBaseType.getPlan() != null && addressRegistryBaseType.getPlan().getType() != null
+                && addressRegistryBaseType.getPlan().getType().getFull() == null) {
+            addressRegistryBaseType.getPlan().setType(null);
+        }
+        if (addressRegistryBaseType.getStreet() != null && addressRegistryBaseType.getStreet().getType() != null
+                && addressRegistryBaseType.getStreet().getType().getFull() == null) {
+            addressRegistryBaseType.getStreet().setType(null);
+        }
+        if (addressRegistryBaseType.getBuilding() != null) {
+            if (addressRegistryBaseType.getBuilding().getConstruction() != null
+                    && addressRegistryBaseType.getBuilding().getConstruction().getType() != null
+                    && addressRegistryBaseType.getBuilding().getConstruction().getType().getFull() == null) {
+                addressRegistryBaseType.getBuilding().getConstruction().setType(null);
+            }
+            if (addressRegistryBaseType.getBuilding().getBuild() != null
+                    && addressRegistryBaseType.getBuilding().getBuild().getType() != null
+                    && addressRegistryBaseType.getBuilding().getBuild().getType().getFull() == null) {
+                addressRegistryBaseType.getBuilding().getBuild().setType(null);
+            }
+            if (addressRegistryBaseType.getBuilding().getHouse() != null
+                    && addressRegistryBaseType.getBuilding().getHouse().getType() != null
+                    && addressRegistryBaseType.getBuilding().getHouse().getType().getFull() == null) {
+                addressRegistryBaseType.getBuilding().getHouse().setType(null);
+            }
+        }
         return addressRegistryBaseType;
     }
 }
