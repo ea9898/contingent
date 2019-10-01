@@ -3,7 +3,6 @@ package moscow.ptnl.contingent.area.endpoint;
 import moscow.ptnl.contingent.domain.history.HistoryRequest;
 import moscow.ptnl.contingent.repository.history.HistoryRequestsRepository;
 import moscow.ptnl.soap.log.SoapContextData;
-import moscow.ptnl.ws.security.UserContextHolder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
