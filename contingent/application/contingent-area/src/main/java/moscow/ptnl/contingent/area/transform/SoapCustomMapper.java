@@ -12,7 +12,7 @@ public class SoapCustomMapper {
     public void mapPagingResults(PagingResults results, Page<?> page) {
         results.setPageNumber(page.getNumber());
         results.setPageSize(page.getSize());
-        results.setPageTotal(page.getTotalPages() > 0 ? page.getTotalPages() - 1 : 0);
+        results.setPageTotal(page.getTotalPages());
         results.setMorePagesAvailable(page.getNumber() < page.getTotalPages() - 1);
     }
 }
