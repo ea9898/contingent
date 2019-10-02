@@ -1,11 +1,13 @@
 package moscow.ptnl.contingent.area.configuration;
 
+import static moscow.ptnl.contingent.configuration.EventChannelsConfiguration.QUEUE_LENGTH;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageChannel;
 
@@ -46,7 +48,7 @@ public class EventChannelsConfiguration {
     @Bean(name = HISTORY_EVENT_CHANNEL_NAME)
     public MessageChannel createHistoryEventChannel() {        
         //return new DirectChannel();
-        return new DirectChannel();
+        return new QueueChannel(QUEUE_LENGTH);
     }
 
     /**
@@ -57,7 +59,7 @@ public class EventChannelsConfiguration {
     @Bean(name = SOAP_LOG_EVENT_CHANNEL_NAME)
     public MessageChannel createLogSoapEventChannel() {
         //return new DirectChannel();
-        return new DirectChannel();
+        return new QueueChannel(QUEUE_LENGTH);
     }
 
     /**
@@ -68,7 +70,7 @@ public class EventChannelsConfiguration {
     @Bean(name = ESU_EVENT_CHANNEL_NAME)
     public MessageChannel createESUEventChannel() {        
         //return new DirectChannel();
-        return new DirectChannel();
+        return new QueueChannel(QUEUE_LENGTH);
     }
     
     

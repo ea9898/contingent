@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.service;
 
 import java.util.List;
-import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
+import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.domain.esu.event.ESUEventHelper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
@@ -23,7 +23,7 @@ public class EsuHelperService {
     @Autowired
     private Algorithms algorithms;
 
-    @Autowired @Qualifier(EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME)
+    @Autowired @Qualifier(ESU_EVENT_CHANNEL_NAME)
     private MessageChannel esuChannel;
 
     /**

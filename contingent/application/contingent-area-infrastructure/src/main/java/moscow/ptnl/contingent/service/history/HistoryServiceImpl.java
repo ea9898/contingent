@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.persistence.Transient;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
+import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.history.EntityConverterHelper;
 import moscow.ptnl.contingent.domain.history.HistoryEventBuilder;
 import moscow.ptnl.contingent.domain.history.ServiceName;
@@ -31,7 +32,7 @@ public class HistoryServiceImpl implements HistoryService {
     
     private static final Logger LOG = LoggerFactory.getLogger(HistoryServiceImpl.class);
     
-    @Autowired @Qualifier(EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME)
+    @Autowired @Qualifier(HISTORY_EVENT_CHANNEL_NAME)
     private MessageChannel historyChannel;
     
     //инстанс дефолтного конвертера полей, для ускорения обработки

@@ -4,7 +4,6 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClassEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
-import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
@@ -17,6 +16,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
 
 /**
  * К_УУ_ЕСУ_4
@@ -39,7 +39,7 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
     @Autowired
     private AreaRepository areaRepository;
 
-    @Autowired @Qualifier(EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME)
+    @Autowired @Qualifier(ESU_EVENT_CHANNEL_NAME)
     private MessageChannel esuChannel;
 
     private static final String XSD_PATH = "META-INF/xsd/esu/attachmentprimary.v1.xsd";
