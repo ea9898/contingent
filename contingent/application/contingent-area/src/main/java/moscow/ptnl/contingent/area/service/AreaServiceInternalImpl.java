@@ -413,7 +413,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         primaryAreaTypeCodesIds = primaryAreaTypeCodesIds.stream().distinct().collect(Collectors.toList());
 
         primaryAreaTypeCodesIds.forEach(code -> {
-            // TODO позже добавить проверку что primaryAreaTypeCode есть в таблице areaTypes
             Optional<AreaType> primaryAreaTypeOptional = areaTypesCRUDRepository.findById(code);
             if (!primaryAreaTypeOptional.isPresent()) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaType", code));
@@ -594,8 +593,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         primaryAreaTypeCodesDelIds = primaryAreaTypeCodesDelIds.stream().distinct().collect(Collectors.toList());
 
         primaryAreaTypeCodesAddIds.forEach(pat -> {
-            // TODO позже добавить проверку что primaryAreaTypeCode есть в таблице areaTypes
-            AreaType primaryAreaType = areaTypesCRUDRepository.findById(pat).get();
+            Optional<AreaType> primaryAreaTypeOptional = areaTypesCRUDRepository.findById(pat);
+
+            if (!primaryAreaTypeOptional.isPresent()) {
+                validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaType", pat));
+                return;
+            }
+
+            AreaType primaryAreaType = primaryAreaTypeOptional.get();
             // 7.1
             areaHelper.checkAreaDependsOnPrimaryAreaType(area, primaryAreaType, validation);
             // 7.2
