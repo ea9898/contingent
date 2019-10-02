@@ -15,6 +15,7 @@ import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
@@ -56,7 +57,7 @@ public class Algorithms {
     private AreaAddressRepository areaAddressRepository;
 
     @Autowired
-    private AddressesCRUDRepository addressesCRUDRepository;
+    private AddressesRepository addressesRepository;
 
     public Algorithms() {
         super();
@@ -126,7 +127,7 @@ public class Algorithms {
         List<Addresses> crossAddresses = new ArrayList<>();
 
         // 1.
-        addressesCRUDRepository.findAllById(addressRegistryTypes.stream()
+        addressesRepository.findAddresses(addressRegistryTypes.stream()
                 .map(AddressRegistryBaseType::getGlobalIdNsi).collect(Collectors.toList()))
                 .forEach(crossAddresses::add);
 
