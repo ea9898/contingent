@@ -7,33 +7,33 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
+import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
+import moscow.ptnl.contingent.nsi.domain.area.Specialization;
+import moscow.ptnl.contingent.nsi.domain.area.SpecializationEnum;
+import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
+import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
-import moscow.ptnl.contingent2.rmr.event.JeChange;
 import moscow.ptnl.contingent2.rmr.event.JeChangeDateEnd;
 import moscow.ptnl.contingent2.rmr.event.JeCreate;
 import moscow.ptnl.contingent2.rmr.event.JobExecutionInfoMsg;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.ejb.AfterBegin;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -44,9 +44,6 @@ import java.util.stream.Collectors;
 public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfoMsg> {
 
     private static final String XSD_PATH = "META-INF/xsd/esu/jobExecutionInfoMsg.xsd";
-
-    //Todo перенести в настройки или еще куда?
-    private static final Set<Long> SPECIALIZATION_CODES_ONCOLOGY = new HashSet<>(Arrays.asList(19L, 41L));
 
     @Value("${esu.consumer.topic.job.execution.info.msg}")
     private String jobExecutionInfoMsgTopicName;
@@ -59,6 +56,12 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
 
     @Autowired
     private PositionNomRepository positionNomRepository;
+
+    @Autowired
+    private PositionCodeRepository positionCodeRepository;
+
+    @Autowired
+    private SpecializationCRUDRepository specializationCRUDRepository;
 
     @Autowired
     private AreaTypeSpecializationsRepository areaTypeSpecializationsRepository;
@@ -92,19 +95,18 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
 
     @Override
     public void processMessage(JobExecutionInfoMsg event) {
+        //2
         if (event.getJeCreate() != null) {
             createAreaWithMedicalEmployee(event.getJeCreate());
         }
+        //3
         if (event.getJeChangeDateEnd() != null) {
             changeMedicalEmployeeEndDate(event.getJeChangeDateEnd());
         }
-        if (event.getJeChange() != null) {
-            changeMedicalEmployee(event.getJeChange());
+        //4
+        if (event.getJeChange() != null || event.getJeRemove() != null) {
+            throw new RuntimeException("Отсутствуют данные для обработки");
         }
-    }
-
-    private void changeMedicalEmployee(JeChange jeChange) {
-        throw new RuntimeException("Отсутствуют данные для обработки");
     }
 
     private void changeMedicalEmployeeEndDate(JeChangeDateEnd jeChangeDateEnd) {
@@ -127,51 +129,103 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     }
 
     private void createAreaWithMedicalEmployee(JeCreate jeCreate) {
-        if (jeCreate.getPositionNom() == null || jeCreate.getDepartment() == null || jeCreate.getDepartment().getOrganization() == null) {
-            //Todo уточнить текст ошибки
-            throw new RuntimeException("Некорректные данные JeCreate");
+
+        //2.1
+        StringBuilder errorParameters = new StringBuilder();
+        if (jeCreate.getDepartment() == null) {
+            errorParameters.append("jeCreate.department, ");
+        } else if (jeCreate.getDepartment().getOrganization() == null) {
+            errorParameters.append("jeCreate.department.organization, ");
         }
-        Long moId = jeCreate.getDepartment().getOrganization().getId();
-        //2.1.1
-        PositionNom positionNom = positionNomRepository.getByPositionCode(jeCreate.getPositionNom().getCode()).get();
-        //2.1.2
-        Optional<AreaTypeSpecializations> areaTypeSpecialization = areaTypeSpecializationsRepository.findBySpecializationCode(
-                positionNom.getSpecialization().getCode()).stream()
-                .filter(a -> Objects.equals(a.getAreaType().getAreaTypeKind().getCode(), AreaTypeKindEnum.PERSONAL.getCode()))
-                .findFirst();
-        //2.2
-        if (!areaTypeSpecialization.isPresent() || areaTypeSpecialization.get().getAreaType() == null) {
-            throw new RuntimeException("Специализация ИДМР не соответствует именному виду участка");
+        if (jeCreate.getEmployee() == null) {
+            errorParameters.append("jeCreate.employee, ");
+        } else if (jeCreate.getEmployee().getSnils() == null) {
+            errorParameters.append("jeCreate.employee.snils, ");
         }
-        Long specializationCode = positionNom.getSpecialization().getCode();
+        if (jeCreate.getPositionNom() == null) {
+            errorParameters.append("jeCreate.positionNom;");
+        } else if (jeCreate.getPositionNom().getCode() == null) {
+            errorParameters.append("jeCreate.positionNom.code;");
+        }
+        if (errorParameters.length() != 0) {
+            throw new RuntimeException("Отсутствуют параметры: " + errorParameters.toString());
+        }
+
+        //2.2.1
+        Optional<PositionCode> positionCode = positionCodeRepository.getByCode(jeCreate.getPositionNom().getCode());
+        if (!positionCode.isPresent()) {
+            throw new RuntimeException("Не найден ИД кода должности");
+        }
+
+        Optional<PositionNom> positionNom = positionNomRepository.getByPositionCodeId(positionCode.get().getGlobalId());
+        if (!positionNom.isPresent() || positionNom.get().getSpecialization() == null) {
+            throw new RuntimeException("Не найден ИД специализации");
+        }
+
+        //2.2.2
+        Optional<Specialization> specialization = specializationCRUDRepository.findById(positionNom.get().getSpecialization().getGlobalId());
+        if (!specialization.isPresent() || specialization.get().getCode() == null) {
+            throw new RuntimeException("Не найден код специализации");
+        }
 
         //2.3
-        if (!SPECIALIZATION_CODES_ONCOLOGY.contains(specializationCode)) {
-            //2.3.1
-            List<MoAvailableAreaTypes> areaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId);
+        Optional<AreaTypeSpecializations> areaTypeSpecialization = areaTypeSpecializationsRepository.findBySpecializationCode(
+                specialization.get().getCode()).stream()
+                .filter(a -> Objects.equals(a.getAreaType().getAreaTypeKind().getCode(), AreaTypeKindEnum.PERSONAL.getCode()))
+                .findFirst();
+        if (!areaTypeSpecialization.isPresent()) {
+            throw new RuntimeException("Специализация ИДМР не соответствует именному виду участка");
+        }
 
-            if (areaTypes.isEmpty()) {
+        //2.4
+        if (SpecializationEnum.CHILD_ONCOLOGY.getCode() != specialization.get().getCode()
+                && SpecializationEnum.ONCOLOGY.getCode() != specialization.get().getCode()) {
+
+            //2.4.1
+            Long moId = jeCreate.getDepartment().getOrganization().getId();
+            List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId);
+
+            if (moAvailableAreaTypes.isEmpty()) {
                 throw new RuntimeException("Не найден ни один разрешенный тип участка первичного класса");
             }
-            //2.3.2
-            List<AreaTypeSpecializations> primarySpecializations = areaTypeSpecializationsRepository.findByAreaTypeCode(
-                    areaTypes.stream()
-                            .map(MoAvailableAreaTypes::getAreaType)
-                            .collect(Collectors.toList())
-            );
-            //2.3.3
-            if (primarySpecializations.stream().anyMatch(s -> Objects.equals(s.getSpecializationCode(), specializationCode))) {
-                throw new RuntimeException("Специализация ИДМР совпадает со специализацией разрешенного первичного типа участка МО");
+
+            //2.4.2
+            List<AreaTypeSpecializations> primarySpecializationsTotal = new ArrayList<>();
+            StringBuilder errorAreaTypeCodes = new StringBuilder();
+            for (MoAvailableAreaTypes moAvailableAreaType : moAvailableAreaTypes) {
+                List<AreaTypeSpecializations> primarySpecializations = areaTypeSpecializationsRepository.findByAreaTypeCode(
+                        moAvailableAreaType.getAreaType());
+                if (primarySpecializations.isEmpty()) {
+                    if (errorAreaTypeCodes.length() == 0) {
+                        errorAreaTypeCodes.append(moAvailableAreaType.getAreaType().getCode());
+                    } else {
+                        errorAreaTypeCodes.append(", ").append(moAvailableAreaType.getAreaType().getCode());
+                    }
+                } else {
+                    primarySpecializationsTotal.addAll(primarySpecializations);
+                }
             }
-            //2.4
-            AreaType areaType = areaTypeSpecialization.get().getAreaType();
+            if (errorAreaTypeCodes.length() != 0) {
+                throw new RuntimeException(String.format("Для типов участков %s специализация не указана",
+                        errorAreaTypeCodes.toString()));
+            }
+
+            //2.4.3
+            if (primarySpecializationsTotal.stream().anyMatch(s -> Objects.equals(s.getSpecializationCode(), specialization.get().getCode()))) {
+                throw new RuntimeException("Специализация ИДМР совпадает со специализацией разрешенного для МО типа участка первичного класса");
+            }
+
             //2.5
+            AreaType areaType = areaTypeSpecialization.get().getAreaType();
+
+            //2.6
             List<AreaTypeMedicalPositions> areaTypeMedicalPositions =
                     areaTypeMedicalPositionsRepository.getPositionsByAreaType(areaType.getCode());
             if (areaTypeMedicalPositions != null && areaTypeMedicalPositions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(jeCreate.getPositionNom().getCode()))) {
                 throw new RuntimeException(String.format("Должность ИДМР не разрешена для типа участка %s", areaType.getTitle()));
             }
-            //2.6
+
+            //2.7
             List<Area> areas = areaRepository.findAreas(moId, null, areaType.getCode(), null, true);
             if (areas.stream()
                     .flatMap(a -> a.getActualMainMedicalEmployees().stream())
@@ -179,7 +233,8 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
                 throw new RuntimeException("Для данного ИДМР участок уже существует");
             }
             Area area;
-            //2.7
+
+            //2.8
             Optional<AreaMedicalEmployees> areaMedicalEmployee = areas.stream()
                     .filter(a -> a.getMuId() == null)
                     .flatMap(a -> a.getActualMainMedicalEmployees().stream())
@@ -192,7 +247,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
                 area = areaMedicalEmployee.get().getArea();
             }
             else {
-                //2.8
+                //2.9
                 try {
                     area = createArea(moId, areaType);
                 } catch (Throwable e) {
@@ -200,8 +255,8 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
                 }
             }
             try {
-                //2.9
-                createAreaMedicalEmployee(area, positionNom, jeCreate);
+                //2.10
+                createAreaMedicalEmployee(area, positionNom.get(), jeCreate);
             }
             catch (Throwable e) {
                 throw new RuntimeException("Ошибка добавления МР на участок: " + e.getMessage(), e);
