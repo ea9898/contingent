@@ -1,6 +1,5 @@
 package moscow.ptnl.contingent.esuInputTasks;
 
-import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
+import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
 
 /**
  * К_УУ_ЕСУ_6
@@ -34,7 +34,7 @@ public class DNEventInformerTask extends BaseTopicTask<DnEventInformer> {
     @Autowired
     private AreaRepository areaRepository;
 
-    @Autowired @Qualifier(EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME)
+    @Autowired @Qualifier(ESU_EVENT_CHANNEL_NAME)
     private MessageChannel esuChannel;
 
     private static final String XSD_PATH = "META-INF/xsd/esu/dn.attach.xsd";
