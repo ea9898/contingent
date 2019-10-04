@@ -35,21 +35,21 @@ public class ESUEventHelper {
             if (event.getOperationDate() == null) {
                 event.setOperationDate(XMLUtil.getCurrentDate());
             }
-            return XMLUtil.convertEventObjectToMessage(event, event.getClass());
+            return XMLUtil.convertObjectToMessage(event, event.getClass());
         } else if (publishObject instanceof AttachOnAreaChange) {
             AttachOnAreaChange event = (AttachOnAreaChange) publishObject;
             event.setId(eventId);
             if (event.getOperationDate() == null) {
                 event.setOperationDate(XMLUtil.getCurrentDate());
             }
-            return XMLUtil.convertEventObjectToMessage(event, event.getClass());
+            return XMLUtil.convertObjectToMessage(event, event.getClass());
         } else if (publishObject instanceof AttachToDependentAreaEvent) {
             AttachToDependentAreaEvent event = (AttachToDependentAreaEvent) publishObject;
             event.setId(eventId);
             if (event.getOperationDate() == null) {
                 event.setOperationDate(XMLUtil.getCurrentDate());
             }
-            return XMLUtil.convertEventObjectToMessage(event, event.getClass());
+            return XMLUtil.convertObjectToMessage(event, event.getClass());
         }
         throw new IllegalArgumentException("неподдерживаемый тип события: " + publishObject.getClass().getName());
     }

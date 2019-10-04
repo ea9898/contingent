@@ -16,23 +16,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.xml.sax.SAXException;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import java.io.StringReader;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import moscow.ptnl.util.XMLUtil;
 
 /**
  * Базовый класс обработчика входящих сообщений ЕСУ
@@ -115,16 +106,8 @@ abstract class BaseTopicTask<T> implements Tasklet {
     @SuppressWarnings("unchecked")
     private T convertEvent(String message) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(typeClass);
-            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = sf.newSchema(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource(xsdPath)));
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            jaxbUnmarshaller.setSchema(schema);
-            StringReader reader = new StringReader(message);
-
-            return (T) jaxbUnmarshaller.unmarshal(reader);
-        }
-        catch (JAXBException | SAXException ex) {
+            return XMLUtil.convertMessageToObject(message, typeClass, xsdPath);
+        } catch (Exception ex) {
             throw new RuntimeException("Некорректное входящее сообщение", ex);
         }
     }

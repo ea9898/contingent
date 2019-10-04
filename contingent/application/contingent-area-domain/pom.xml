@@ -96,7 +96,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.5.0</version>
                 <executions>
                     <!--
                     <execution>
@@ -217,7 +217,7 @@
                                 <source>src/main/resources/META-INF/xsd/esu/dn.attach.xsd</source>
                                 <source>src/main/resources/META-INF/xsd/esu/dn.event.informer.xsd</source>
                             </sources>
-                            <packageName>moscow.ptnl.contingent2.rmr.event</packageName>
+                            <packageName>moscow.ptnl.contingent2.rmr.event.dn</packageName>
                         </configuration>
                     </execution>
                 </executions>

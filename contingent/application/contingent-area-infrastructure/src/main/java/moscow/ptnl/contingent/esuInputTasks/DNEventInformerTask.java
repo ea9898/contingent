@@ -5,17 +5,16 @@ import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
-import moscow.ptnl.contingent2.rmr.event.DnAttach;
-import moscow.ptnl.contingent2.rmr.event.DnEventInformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.UUID;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
+import moscow.ptnl.contingent2.rmr.event.dn.DnAttach;
+import moscow.ptnl.contingent2.rmr.event.dn.DnEventInformer;
 
 /**
  * К_УУ_ЕСУ_6
