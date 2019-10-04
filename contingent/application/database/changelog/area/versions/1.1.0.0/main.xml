@@ -136,4 +136,13 @@
         <modifyDataType tableName="nsi_address_forming_element" columnName="region_te_id" newDataType="VARCHAR(255)"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-402-1" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="position_nom" columnName="position_code_id"/>
+        </preConditions>
+        <comment>Изменение колонки position_code_id таблицы position_nom</comment>
+        <delete tableName="position_nom"/>
+        <modifyDataType tableName="position_nom" columnName="position_code_id" newDataType="bigint"/>
+    </changeSet>
+
 </databaseChangeLog>
