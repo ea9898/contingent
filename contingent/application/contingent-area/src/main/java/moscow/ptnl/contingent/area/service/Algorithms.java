@@ -113,10 +113,11 @@ public class Algorithms {
 
         // 4. //5.
         if (!intersectingAddresses.isEmpty()) {
-            return areaAddresses.stream().filter(areaAddress -> areaAddress.getAddress().equals(intersectingAddresses.get(0))).findFirst().get().getArea().getId();
-        } else {
-            return null;
+            AreaAddress address = areaAddresses.stream().filter(areaAddress -> areaAddress.getAddress().equals(intersectingAddresses.get(0)))
+                    .findFirst().orElse(null);
+            return address == null || address.getArea() == null ? null : address.getArea().getId();
         }
+        return null;
     }
 
 
