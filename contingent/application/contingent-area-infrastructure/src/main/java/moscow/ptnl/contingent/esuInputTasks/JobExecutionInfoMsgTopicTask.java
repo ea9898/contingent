@@ -157,7 +157,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
             throw new RuntimeException("Не найден ИД кода должности");
         }
 
-        Optional<PositionNom> positionNom = positionNomRepository.getByPositionCodeId(positionCode.get().getGlobalId());
+        Optional<PositionNom> positionNom = positionNomRepository.getByPositionCode(String.valueOf(positionCode.get().getGlobalId()));
         if (!positionNom.isPresent() || positionNom.get().getSpecialization() == null) {
             throw new RuntimeException("Не найден ИД специализации");
         }
