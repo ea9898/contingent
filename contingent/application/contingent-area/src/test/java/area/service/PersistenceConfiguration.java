@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
@@ -27,11 +28,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = {"moscow.ptnl.contingent.repository"},
+        basePackages = {"moscow.ptnl.contingent.repository", "moscow.ptnl.contingent.nsi.repository"},
         entityManagerFactoryRef = "contingentManagerFactory", 
         transactionManagerRef = "contingentTransactionManager"
 )
-@ComponentScan("moscow.ptnl.contingent.repository")
+@ComponentScans({@ComponentScan("moscow.ptnl.contingent.repository"), @ComponentScan("moscow.ptnl.contingent.nsi.repository")})
 @PropertySource("classpath:persistence.properties")
 public class PersistenceConfiguration {
     

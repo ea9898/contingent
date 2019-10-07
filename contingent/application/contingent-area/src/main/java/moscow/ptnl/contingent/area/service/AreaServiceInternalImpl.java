@@ -1446,6 +1446,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         //3.3
         if (!searchAreaAddresses.isEmpty()) {
             //3.3.1
+            //TODO очень плохо для производительности выбирать все адреса
             List<AreaAddress> areaAddresses = areaAddressRepository.findActualAreaAddress();
             List<Addresses> addresses;
             if (!areaAddresses.isEmpty()) {
