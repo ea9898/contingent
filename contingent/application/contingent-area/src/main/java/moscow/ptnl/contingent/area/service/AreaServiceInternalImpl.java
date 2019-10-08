@@ -1091,6 +1091,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 3.
         TreeMap<Long, Addresses> addresses = new TreeMap<Long, Addresses>();
         areaAddresses.forEach(aa -> {
+            //TODO ошибка, т.к. будет выведен только один адрес участка
             addresses.put(aa.getArea().getId(), aa.getAddress());
         });
 

@@ -17,41 +17,41 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
         AreaInfoEvent.Addresses addresses = new AreaInfoEvent.Addresses();
         entity.stream()
                 .map(AreaAddress::getAddress)
-                .filter(e -> AddressLevelType.REGION_TE.getLevel().equals(Integer.valueOf(e.getAoLevel()))
-                        || AddressLevelType.ID.getLevel().equals(Integer.valueOf(e.getAoLevel()))
-                        || AddressLevelType.AREA_TE.getLevel().equals(Integer.valueOf(e.getAoLevel()))
-                        || AddressLevelType.AREA.getLevel().equals(Integer.valueOf(e.getAoLevel()))
+                .filter(e -> AddressLevelType.REGION_TE.getLevel().equals(e.getAoLevel())
+                        || AddressLevelType.ID.getLevel().equals(e.getAoLevel())
+                        || AddressLevelType.AREA_TE.getLevel().equals(e.getAoLevel())
+                        || AddressLevelType.AREA.getLevel().equals(e.getAoLevel())
                             && e.getAreaBtiCode() != null
-                        || AddressLevelType.CITY.getLevel().equals(Integer.valueOf(e.getAoLevel()))
+                        || AddressLevelType.CITY.getLevel().equals(e.getAoLevel())
                             && e.getCityBtiCode() != null
-                        || AddressLevelType.PLACE.getLevel().equals(Integer.valueOf(e.getAoLevel()))
+                        || AddressLevelType.PLACE.getLevel().equals(e.getAoLevel())
                             && e.getPlaceBtiCode() != null
-                        || AddressLevelType.STREET.getLevel().equals(Integer.valueOf(e.getAoLevel()))
+                        || AddressLevelType.STREET.getLevel().equals(e.getAoLevel())
                             && (e.getStreetBtiCode() != null || e.getStreetOmkUm() != null)
-                        || AddressLevelType.PLAN.getLevel().equals(Integer.valueOf(e.getAoLevel()))
+                        || AddressLevelType.PLAN.getLevel().equals(e.getAoLevel())
                             && e.getPlanBtiCode() != null
                 )
                 .forEach(e -> {
                     Address address = new Address();
                     address.setAolevel(e.getAoLevel());
                     address.setOmkTeDistrictCode(e.getRegionTeCode());
-                    if (!AddressLevelType.REGION_TE.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
+                    if (!AddressLevelType.REGION_TE.getLevel().equals(e.getAoLevel())) {
                         address.setOmkTeRegionCode(e.getAreaCodeOmkTe());
                     }
-                    if (AddressLevelType.AREA.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
+                    if (AddressLevelType.AREA.getLevel().equals(e.getAoLevel())) {
                         address.setStreetBTICode(e.getAreaBtiCode());
                     }
-                    if (AddressLevelType.CITY.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
+                    if (AddressLevelType.CITY.getLevel().equals(e.getAoLevel())) {
                         address.setStreetBTICode(e.getCityBtiCode());
                     }
-                    if (AddressLevelType.PLACE.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
+                    if (AddressLevelType.PLACE.getLevel().equals(e.getAoLevel())) {
                         address.setStreetBTICode(e.getPlaceBtiCode());
                     }
-                    if (AddressLevelType.STREET.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
+                    if (AddressLevelType.STREET.getLevel().equals(e.getAoLevel())) {
                         address.setOmkUmCode(e.getStreetOmkUm());
                         address.setStreetBTICode(e.getStreetBtiCode());
                     }
-                    if (AddressLevelType.ID.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
+                    if (AddressLevelType.ID.getLevel().equals(e.getAoLevel())) {
                         address.setOmkUmCode(e.getStreetOmkUm());
                         address.setHouse(e.getL1Value());
                         address.setBuilding(e.getL2Value());
@@ -68,7 +68,7 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
                             address.setStreetBTICode(e.getAreaBtiCode());
                         }
                     }
-                    if (AddressLevelType.PLAN.getLevel().equals(Integer.valueOf(e.getAoLevel()))) {
+                    if (AddressLevelType.PLAN.getLevel().equals(e.getAoLevel())) {
                         address.setStreetBTICode(e.getPlanBtiCode());
                     }
                     addresses.getAddress().add(address);
