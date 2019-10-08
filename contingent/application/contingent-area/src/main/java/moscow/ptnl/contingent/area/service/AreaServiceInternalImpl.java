@@ -821,14 +821,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             //5.3.
 
             // 5.3.1.
-            Optional<PositionCode> positionCodeOptional = positionCodeRepository.getByCode(empl.getPositionCode());
-            if (!positionCodeOptional.isPresent()) {
-                continue;
-            }
-
             // 5.3.2.
-            PositionCode positionCode = positionCodeOptional.get();
-            Optional<PositionNom> positionNomOptional = positionNomRepository.getByPositionCode(positionCode.getCode());
+            Optional<PositionNom> positionNomOptional = positionNomRepository.getByPositionCode(empl.getPositionCode());
 
             if (!positionNomOptional.isPresent()) {
                 // TODO ???

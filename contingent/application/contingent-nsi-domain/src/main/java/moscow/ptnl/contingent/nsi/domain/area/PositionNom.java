@@ -34,7 +34,7 @@ public class PositionNom implements Serializable {
     @MapToNsi
     private String title;
 
-    @JoinColumn(name = "POSITION_CODE_ID", nullable = false)
+    @JoinColumn(name = "POSITION_CODE_ID", nullable = false, referencedColumnName = "GLOBAL_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     @MapToNsi(value = "POSITION_CODE_ID", findEntityByField = "globalId")
     private PositionCode positionCode;
