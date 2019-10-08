@@ -10,6 +10,6 @@ import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
 @NoRepositoryBean
 public interface AddressesRepository {
 
-	List<Addresses> findAddresses(List<Long> areaAddressId, List<Long> nsiGlobalId);
+	List<Addresses> findAddresses(List<Long> addressIds, List<Long> nsiGlobalId);
 	List<Addresses> findAddresses(List<Long> nsiGlobalIds);
 }

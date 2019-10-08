@@ -71,6 +71,10 @@ public class SearchAreaAddress {
         return globalIdNsi;
     }
 
+    public void setGlobalIdNsi(long globalIdNsi) {
+        this.globalIdNsi = globalIdNsi;
+    }
+
     public String getRegionOMKTEcode() {
         return regionOMKTEcode;
     }

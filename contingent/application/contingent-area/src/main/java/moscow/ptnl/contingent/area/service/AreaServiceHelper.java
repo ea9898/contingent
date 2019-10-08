@@ -1042,7 +1042,7 @@ public class AreaServiceHelper {
     }
 
     public void checkSearchAreaAddresses(List<SearchAreaAddress> addresses) throws ContingentException {
-        if (addresses.stream().anyMatch(addr -> addr.getAoLevel().equals(AddressLevelType.MOSCOW.getLevel()))) {
+        if (addresses.stream().anyMatch(addr -> AddressLevelType.MOSCOW.getLevel().equals(addr.getAoLevel()))) {
             throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
         }
         ListIterator<SearchAreaAddress> iter = addresses.listIterator();

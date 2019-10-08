@@ -1439,8 +1439,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         //3.2
         if (!medicalEmployees.isEmpty()) {
             areas = areaMedicalEmployeeRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
-                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getMedicalEmployeeJobId).collect(Collectors.toList()),
-                    medicalEmployees.stream().map(SearchAreaRequest.MedicalEmployee::getSnils).collect(Collectors.toList()));
+                    medicalEmployees.stream()
+                            .map(SearchAreaRequest.MedicalEmployee::getMedicalEmployeeJobId)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList()),
+                    medicalEmployees.stream()
+                            .map(SearchAreaRequest.MedicalEmployee::getSnils)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList()));
         }
 
         //3.3
@@ -1452,7 +1458,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (!areaAddresses.isEmpty()) {
                 //3.3.2
                 if (isExactAddressMatch == null || isExactAddressMatch) {
-                    addresses = addressesRepository.findAddresses(areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList()),
+                    addresses = addressesRepository.findAddresses(areaAddresses.stream()
+                                    .map(AreaAddress::getAddress)
+                                    .filter(Objects::nonNull)
+                                    .map(Addresses::getId)
+                                    .collect(Collectors.toList()),
                             searchAreaAddresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
                     //3.3.3
                 } else {

@@ -1,13 +1,3 @@
-INSERT INTO AREA_TYPES_CLASS
-            (CODE,
-             TITLE,
-             ARCHIVED,
-             GLOBAL_ID)
-VALUES
-(1, 'Primary test', 0, 11),
-(2, 'Dependent test', 0, 22)
-;
-
 INSERT INTO AREA_TYPES_KIND
             (CODE,
              TITLE,
@@ -61,5 +51,45 @@ INSERT INTO AREAS
              CREATE_DATE,
              UPDATE_DATE)
 VALUES
-(2, 204, 100, 10, 123, 0, 0, 'Description area 2', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate())
+(2, 204, 100, 10, 123, 0, 0, 'Description area 2', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate()),
+(4, 204, 100, 10, 234, 0, 0, 'Description area 4', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate())
+;
+
+INSERT INTO AREA_MEDICAL_EMPLOYEES
+            (ID,
+             MEDICAL_EMPLOYEE_JOB_ID,
+             AREA_ID,
+             IS_REPLACEMENT,
+             START_DATE,
+             SNILS,
+             POSITION_CODE,
+             CREATE_DATE,
+             UPDATE_DATE,
+             SUBDIVISION_ID)
+VALUES
+(1, 123, 2, 0, sysdate(), 'snilscode1', '234', sysdate(), sysdate(), 1),
+(2, 234, 4, 1, sysdate(), 'snilscode2', '345', sysdate(), sysdate(), 1)
+;
+
+INSERT INTO ADDRESSES
+            (ID,
+             GLOBAL_ID,
+             ADDRESS,
+             CREATE_DATE,
+             UPDATE_DATE)
+VALUES
+(1, 111, 'Addr 1', sysdate(), sysdate()),
+(2, 222, 'Addr 2', sysdate(), sysdate())
+;
+
+INSERT INTO AREA_ADDRESSES
+            (ID,
+             AREA_ID,
+             START_DATE,
+             ADDRESS_ID,
+             CREATE_DATE,
+             UPDATE_DATE)
+VALUES
+(3, 2, sysdate(), 1, sysdate(), sysdate()),
+(4, 4, sysdate(), 2, sysdate(), sysdate())
 ;

@@ -25,10 +25,10 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
     AddressesCRUDRepository addressesCRUDRepository;
 
     @Override
-    public List<Addresses> findAddresses(List<Long> areaAddressIds, List<Long> nsiGlobalIds) {
+    public List<Addresses> findAddresses(List<Long> addressIds, List<Long> nsiGlobalIds) {
         Specification<Addresses> specification = (Specification<Addresses>) (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.and(
-                        root.get(Addresses_.id).in(areaAddressIds),
+                        root.get(Addresses_.id).in(addressIds),
                         root.get(Addresses_.globalId).in(nsiGlobalIds));
 
         return addressesCRUDRepository.findAll(specification);
