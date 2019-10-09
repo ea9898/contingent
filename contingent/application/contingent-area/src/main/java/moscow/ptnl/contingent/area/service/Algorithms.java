@@ -6,15 +6,14 @@ import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.error.ErrorReasonImpl;
-import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
+import moscow.ptnl.contingent.error.Validation;
+import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
@@ -316,17 +315,22 @@ public class Algorithms {
                             .equals(AddressLevelType.AREA.getLevel()) && addr.getAreaCode().equals(address.getArea().getCode()))
                             .collect(Collectors.toList()));
                 case AREA_TE:
-                    String[] areaOmkTeCodes = address.getAreaOMKTE().getCode().split(";");
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.AREA_TE.getLevel())
-                            && Arrays.stream(areaOmkTeCodes).anyMatch(areaOmkTeCode -> addr.getAreaCodeOmkTe().contains(areaOmkTeCode)))
-                            .collect(Collectors.toList()));
+                    if (address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode() != null) {
+                        String[] areaOmkTeCodes = address.getAreaOMKTE().getCode().split(";");
+                        resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
+                                .equals(AddressLevelType.AREA_TE.getLevel())
+                                && Arrays.stream(areaOmkTeCodes).anyMatch(areaOmkTeCode -> addr.getAreaCodeOmkTe().contains(areaOmkTeCode)))
+                                .collect(Collectors.toList()));
+                    }
                 case REGION_TE:
-                    String[] regionTeCodes = address.getRegionOMKTE().getCode().split(";");
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.REGION_TE.getLevel())
-                            && Arrays.stream(regionTeCodes).anyMatch(regionTeCode -> addr.getRegionTeCode().contains(regionTeCode)))
-                            .collect(Collectors.toList()));
+                    if (address.getRegionOMKTE() != null && address.getRegionOMKTE().getCode() != null) {
+                        String[] regionTeCodes = address.getRegionOMKTE().getCode().split(";");
+                        resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
+                                .equals(AddressLevelType.REGION_TE.getLevel())
+                                && Arrays.stream(regionTeCodes).anyMatch(regionTeCode -> addr.getRegionTeCode().contains(regionTeCode)))
+                                .collect(Collectors.toList()));
+                    }
+
             }
         }
         return new ArrayList<>(resultAddresses);
