@@ -1048,17 +1048,27 @@ public class AreaServiceHelper {
         ListIterator<SearchAreaAddress> iter = addresses.listIterator();
         while (iter.hasNext()) {
             SearchAreaAddress current = iter.next();
-            String[] areas = current.getAreaOMKTEcode().split(";");
             String[] regions = current.getRegionOMKTEcode().split(";");
-            if (areas.length > 1) {
+            if (current.getAreaOMKTEcode() != null) {
+                String[] areas = current.getAreaOMKTEcode().split(";");
+                if (areas.length > 1 || regions.length > 1) {
+                    iter.remove();
+                    for (String area : areas) {
+                        SearchAreaAddress copy = new SearchAreaAddress(current);
+                        copy.setAreaOMKTEcode(area);
+                        String firstTwoDigits = area.substring(0, 2);
+                        Optional<String> region = Arrays.stream(regions).filter(
+                                reg -> reg.startsWith(firstTwoDigits)).findFirst();
+                        region.ifPresent(copy::setRegionOMKTEcode);
+                        iter.add(copy);
+                    }
+                }
+            } else if (regions.length > 1){
                 iter.remove();
-                for (String area : areas) {
+                for (String region : regions) {
                     SearchAreaAddress copy = new SearchAreaAddress(current);
-                    copy.setAreaOMKTEcode(area);
-                    String firstTwoDigits = area.substring(0, 2);
-                    copy.setRegionOMKTEcode(Arrays.stream(regions).filter(
-                            reg -> reg.startsWith(firstTwoDigits)).findFirst().get());
-                    iter.add(current.copy());
+                    copy.setRegionOMKTEcode(region);
+                    iter.add(copy);
                 }
             }
         }
