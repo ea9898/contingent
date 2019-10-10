@@ -1320,7 +1320,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaType, orderId,
                     Collections.singletonList(addr), validation);
             if (moAddress != null) {
-                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS, new ValidationParameter("moId", moAddress.getId()));
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
+                        new ValidationParameter("address", addr.getAddressString()),
+                        new ValidationParameter("moId", moAddress.getId()));
             }
         });
         if (!validation.isSuccess()) {
