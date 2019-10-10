@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.esuInputTasks;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import moscow.ptnl.contingent.domain.esu.EsuInput;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.esu.EsuInputRepository;
@@ -48,10 +50,14 @@ abstract class BaseTopicTask<T> implements Tasklet {
 
     private final String host;
 
+    private final ObjectMapper jsonMapper;
+
     BaseTopicTask(String xsdPath, Class<T> typeClass) {
         this.xsdPath = xsdPath;
         this.typeClass = typeClass;
         this.host = CommonUtils.getHostName();
+        this.jsonMapper = new ObjectMapper();
+        this.jsonMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
     }
 
     @Override
@@ -66,7 +72,7 @@ abstract class BaseTopicTask<T> implements Tasklet {
             String eventId = null;
 
             try {
-                T event = convertEvent(message.getMessage());
+                T event = isMessageTypeJson() ? convertEventJson(message.getMessage()) : convertEventXml(message.getMessage());
                 eventId = getEventId(event);
 
                 if (!esuInputRepository.findByEventId(eventId).isEmpty()) {
@@ -99,16 +105,27 @@ abstract class BaseTopicTask<T> implements Tasklet {
 
     protected abstract String getEventId(T event);
 
+    protected boolean isMessageTypeJson() {
+        return false;
+    }
+
     public abstract void processMessage(T event);
 
     public abstract String getTopicName();
 
-    @SuppressWarnings("unchecked")
-    private T convertEvent(String message) {
+    private T convertEventXml(String message) {
         try {
             return XMLUtil.convertMessageToObject(message, typeClass, xsdPath);
         } catch (Exception ex) {
-            throw new RuntimeException("Некорректное входящее сообщение", ex);
+            throw new RuntimeException("Некорректное входящее XML сообщение", ex);
+        }
+    }
+
+    private T convertEventJson(String message) {
+        try {
+            return jsonMapper.readValue(message, typeClass);
+        } catch (Exception ex) {
+            throw new RuntimeException("Некорректное входящее JSON сообщение", ex);
         }
     }
 
