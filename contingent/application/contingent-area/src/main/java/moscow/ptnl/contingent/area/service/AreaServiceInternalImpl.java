@@ -1448,13 +1448,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             List<AreaAddress> areaAddresses;
             //3.3.2
             if (isExactAddressMatch == null || isExactAddressMatch) {
-                addresses = addressesRepository.findActualAddresses(searchAreaAddresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
+                addresses = addressesRepository.findActualAddresses(searchAreaAddresses.stream()
+                        .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
             //3.3.3
             } else {
-                //TODO очень плохо для производительности выбирать все адреса
-                areaAddresses = areaAddressRepository.findActualAreaAddress();
-                addresses = algorithms.findIntersectingAddressesSearch(areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList()),
-                        searchAreaAddresses.stream().map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
+                addresses = algorithms.findIntersectingAddressesSearch(searchAreaAddresses.stream()
+                        .map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
             }
             //3.3.4
             if (!addresses.isEmpty()) {

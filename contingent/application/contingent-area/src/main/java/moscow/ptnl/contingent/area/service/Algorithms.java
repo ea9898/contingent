@@ -281,54 +281,43 @@ public class Algorithms {
     }
 
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
-    public List<Addresses> findIntersectingAddressesSearch(List<Addresses> nsiAddresses,
-                                                           List<AddressRegistryBaseType> addressesRegistryType) {
+    // алгоритм изменён, вместо входного списка адресов НСИ, делаем запросы в нси с нужными фильтрами
+    public List<Addresses> findIntersectingAddressesSearch(List<AddressRegistryBaseType> addressesRegistryType) {
 
-        // 1.
-        Set<Addresses> resultAddresses = nsiAddresses.stream().filter(addr ->
-                addressesRegistryType.stream().anyMatch(
-                        addrReg -> addrReg.getGlobalIdNsi().equals(addr.getGlobalId())
-                )
-        ).collect(Collectors.toSet());
+        List<Long> inputIds = addressesRegistryType.stream()
+                .map(AddressRegistryBaseType::getGlobalIdNsi).collect(Collectors.toList());
+
+        Set<Addresses> resultAddresses = new HashSet<>(addressesRepository.findActualAddresses(inputIds));
 
         for (AddressRegistryBaseType address : addressesRegistryType) {
             switch (AddressLevelType.find(address.getAoLevel())) {
                 case ID:
                 case STREET:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.STREET.getLevel()) && addr.getStreetCode().equals(address.getStreet().getCode()))
-                            .collect(Collectors.toList()));
+                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, address.getStreet().getCode(),
+                            null, null, null, null, null, null));
                 case PLAN:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.PLAN.getLevel()) && addr.getPlanCode().equals(address.getPlan().getCode()))
-                            .collect(Collectors.toList()));
+                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
+                            address.getPlan().getCode(), null, null, null, null, null));
                 case PLACE:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.PLACE.getLevel()) && addr.getPlaceCode().equals(address.getPlace().getCode()))
-                            .collect(Collectors.toList()));
+                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
+                            null, address.getPlace().getCode(), null, null, null, null));
                 case CITY:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.CITY.getLevel()) && addr.getCityCode().equals(address.getCity().getCode()))
-                            .collect(Collectors.toList()));
+                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
+                           null, null, address.getCity().getCode(), null, null, null));
                 case AREA:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.AREA.getLevel()) && addr.getAreaCode().equals(address.getArea().getCode()))
-                            .collect(Collectors.toList()));
+                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
+                            null, null, null, address.getArea().getCode(), null, null));
                 case AREA_TE:
                     if (address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode() != null) {
-                        String[] areaOmkTeCodes = address.getAreaOMKTE().getCode().split(";");
-                        resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                                .equals(AddressLevelType.AREA_TE.getLevel())
-                                && Arrays.stream(areaOmkTeCodes).anyMatch(areaOmkTeCode -> addr.getAreaCodeOmkTe().contains(areaOmkTeCode)))
-                                .collect(Collectors.toList()));
+                        List<String> areaOmkTeCodes =  Arrays.asList(address.getAreaOMKTE().getCode().split(";"));
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
+                                null, null, null, null, areaOmkTeCodes, null));
                     }
                 case REGION_TE:
                     if (address.getRegionOMKTE() != null && address.getRegionOMKTE().getCode() != null) {
-                        String[] regionTeCodes = address.getRegionOMKTE().getCode().split(";");
-                        resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                                .equals(AddressLevelType.REGION_TE.getLevel())
-                                && Arrays.stream(regionTeCodes).anyMatch(regionTeCode -> addr.getRegionTeCode().contains(regionTeCode)))
-                                .collect(Collectors.toList()));
+                        List<String> regionTeCodes = Arrays.asList(address.getRegionOMKTE().getCode().split(";"));
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
+                                null, null, null, null, null, regionTeCodes));
                     }
 
             }
