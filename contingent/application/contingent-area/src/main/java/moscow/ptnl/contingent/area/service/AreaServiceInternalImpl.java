@@ -1428,10 +1428,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         //2
         areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
 
-        //3.1
+        //3
+        areaHelper.checkSearchAreaInaccurateAddress(isExactAddressMatch, searchAreaAddresses);
+
+        //4.1
         List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description, isArchived);
 
-        //3.2
+        //4.2
         if (!medicalEmployees.isEmpty()) {
             areas = areaMedicalEmployeeRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
                     medicalEmployees.stream()
@@ -1444,20 +1447,20 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                             .collect(Collectors.toList()));
         }
 
-        //3.3
+        //4.3
         if (!searchAreaAddresses.isEmpty()) {
             List<Addresses> addresses;
             List<AreaAddress> areaAddresses;
-            //3.3.2
+            //4.3.2
             if (isExactAddressMatch == null || isExactAddressMatch) {
                 addresses = addressesRepository.findActualAddresses(searchAreaAddresses.stream()
                         .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
-            //3.3.3
+            //4.3.3
             } else {
                 addresses = algorithms.findIntersectingAddressesSearch(searchAreaAddresses.stream()
                         .map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
             }
-            //3.3.4
+            //4.3.4
             if (!addresses.isEmpty()) {
                 areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
                 List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());

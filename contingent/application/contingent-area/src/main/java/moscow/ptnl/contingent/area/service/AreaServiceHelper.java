@@ -1041,6 +1041,12 @@ public class AreaServiceHelper {
         }
     }
 
+    public void checkSearchAreaInaccurateAddress(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
+        if (Boolean.FALSE.equals(exactAddressMatch) && addresses.size() > 1) {
+            throw new ContingentException(AreaErrorReason.SEARCH_AREA_INACCURATE_ADDRESS_ERROR);
+        }
+    }
+
     public void checkSearchAreaAddresses(List<SearchAreaAddress> addresses) throws ContingentException {
         if (addresses.stream().anyMatch(addr -> AddressLevelType.MOSCOW.getLevel().equals(addr.getAoLevel()))) {
             throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
