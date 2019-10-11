@@ -1469,6 +1469,21 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaInfo> areaInfos = areas.stream().sorted(Comparator.comparingLong(Area::getId))
                 .skip(paging.getPageNumber() * paging.getPageSize()).limit(paging.getPageSize())
                 .map(AreaInfo::new).collect(Collectors.toList());
+
+        areaInfos.forEach(ai -> {
+            // Добавление работников
+            // TODO в случаях тормозов, по всем выбранным участкам выбрать работников в мапу Map<areaId, Employee>, и распределить по участкам
+            List<AreaMedicalEmployees> mainMedicalEmployees = areaMedicalEmployeeRepository.
+                    getEmployeesMainActualByAreaId(ai.getArea().getId());
+
+            // 3.
+            List<AreaMedicalEmployees> replacementMedicalEmployees = areaMedicalEmployeeRepository.
+                    getEmployeesReplacementActualByAreaId(ai.getArea().getId());
+
+            ai.setMainAreaMedicalEmployees(mainMedicalEmployees);
+            ai.setReplacementAreaMedicalEmployees(replacementMedicalEmployees);
+        });
+
         return new PageImpl<>(new ArrayList<>(areaInfos),
                 paging, totalSize);
     }
