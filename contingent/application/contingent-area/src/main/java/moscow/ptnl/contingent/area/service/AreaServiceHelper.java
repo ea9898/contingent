@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.service.setting.SettingService;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;

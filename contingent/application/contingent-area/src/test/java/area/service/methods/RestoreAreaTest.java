@@ -16,7 +16,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
-import moscow.ptnl.contingent.area.service.SettingService;
+import moscow.ptnl.contingent.service.setting.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.service.esu.EsuService;

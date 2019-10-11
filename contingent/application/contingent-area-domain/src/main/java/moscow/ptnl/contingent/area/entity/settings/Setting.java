@@ -6,9 +6,11 @@ import java.util.Objects;
 import javax.persistence.Cacheable;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import moscow.ptnl.contingent.area.entity.settings.converter.SettingValueTypeConverter;
 
 @Entity
 @Table(name = "AD_CONFIG")
@@ -28,7 +30,8 @@ public class Setting implements Serializable {
     private String description;
 
     @Column(name = "TYPE")
-    private Long type;
+    @Convert(converter = SettingValueTypeConverter.class)
+    private SettingValueType type;
 
     @Column(name = "VAL")
     private String val;
@@ -60,11 +63,11 @@ public class Setting implements Serializable {
         this.description = description;
     }
 
-    public Long getType() {
+    public SettingValueType getType() {
         return type;
     }
 
-    public void setType(Long type) {
+    public void setType(SettingValueType type) {
         this.type = type;
     }
 

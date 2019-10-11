@@ -145,4 +145,224 @@
         <modifyDataType tableName="position_nom" columnName="position_code_id" newDataType="bigint"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-416-1" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'topics.consumers.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Глобальная настройка для отключения слушателей всех топиков ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="topics.consumers.run.mode"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Отключение слушателей всех топиков ЕСУ (0-отключены, 1-включены)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='topics.consumers.run.mode'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-2" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'JEMsg.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка для отключения слушателя топика JEMsg ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="JEMsg.run.mode"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Отключение слушателя топика JEMsg (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='JEMsg.run.mode'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-3" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'AttachmentPrimary.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка для отключения слушателя топика AttachmentPrimary ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="AttachmentPrimary.run.mode"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Отключение слушателя топика AttachmentPrimary (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='AttachmentPrimary.run.mode'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-4" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'DNEventInformer.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка для отключения слушателя топика DNEventInformer ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="DNEventInformer.run.mode"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Отключение слушателя топика DNEventInformer (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='DNEventInformer.run.mode'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-5" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'JEMsg.run.begin-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка начала времени работы слушателя топика JEMsg ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="JEMsg.run.begin-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="00:00:00"/>
+            <column name="description" value="Время начала работы слушателя топика JEMsg (00:00:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='JEMsg.run.begin-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-6" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'AttachmentPrimary.run.begin-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка начала времени работы слушателя топика AttachmentPrimary ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="AttachmentPrimary.run.begin-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="00:00:00"/>
+            <column name="description" value="Время начала работы слушателя топика AttachmentPrimary (00:00:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='AttachmentPrimary.run.begin-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-7" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'DNEventInformer.run.begin-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка начала времени работы слушателя топика DNEventInformer ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="DNEventInformer.run.begin-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="00:00:00"/>
+            <column name="description" value="Время начала работы слушателя топика DNEventInformer (00:00:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='DNEventInformer.run.begin-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-8" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'JEMsg.run.end-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка окончания времени работы слушателя топика JEMsg ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="JEMsg.run.end-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="23:59:00"/>
+            <column name="description" value="Время окончания работы слушателя топика JEMsg (23:59:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='JEMsg.run.end-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-9" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'AttachmentPrimary.run.end-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка окончания времени работы слушателя топика AttachmentPrimary ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="AttachmentPrimary.run.end-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="23:59:00"/>
+            <column name="description" value="Время окончания работы слушателя топика AttachmentPrimary (23:59:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='AttachmentPrimary.run.end-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-10" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'DNEventInformer.run.end-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка окончания времени работы слушателя топика DNEventInformer ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="DNEventInformer.run.end-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="23:59:00"/>
+            <column name="description" value="Время окончания работы слушателя топика DNEventInformer (23:59:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='DNEventInformer.run.end-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
