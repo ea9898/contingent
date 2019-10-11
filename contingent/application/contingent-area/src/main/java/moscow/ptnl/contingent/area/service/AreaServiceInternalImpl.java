@@ -31,7 +31,6 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
-import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
@@ -63,7 +62,6 @@ import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.util.Strings;
-import moscow.ptnl.ws.security.UserContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1323,7 +1321,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaType, orderId,
                     Collections.singletonList(addr), validation);
             if (moAddress != null) {
-                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS, new ValidationParameter("moId", moAddress.getId()));
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
+                        new ValidationParameter("address", addr.getAddressString()),
+                        new ValidationParameter("moId", moAddress.getId()));
             }
         });
         if (!validation.isSuccess()) {
@@ -1429,10 +1429,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         //2
         areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
 
-        //3.1
+        //3
+        areaHelper.checkSearchAreaInaccurateAddress(isExactAddressMatch, searchAreaAddresses);
+
+        //4.1
         List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description, isArchived);
 
-        //3.2
+        //4.2
         if (!medicalEmployees.isEmpty()) {
             areas = areaMedicalEmployeeRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
                     medicalEmployees.stream()
@@ -1445,32 +1448,24 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                             .collect(Collectors.toList()));
         }
 
-        //3.3
+        //4.3
         if (!searchAreaAddresses.isEmpty()) {
-            //3.3.1
-            //TODO очень плохо для производительности выбирать все адреса
-            List<AreaAddress> areaAddresses = areaAddressRepository.findActualAreaAddress();
             List<Addresses> addresses;
-            if (!areaAddresses.isEmpty()) {
-                //3.3.2
-                if (isExactAddressMatch == null || isExactAddressMatch) {
-                    addresses = addressesRepository.findAddresses(areaAddresses.stream()
-                                    .map(AreaAddress::getAddress)
-                                    .filter(Objects::nonNull)
-                                    .map(Addresses::getId)
-                                    .collect(Collectors.toList()),
-                            searchAreaAddresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
-                    //3.3.3
-                } else {
-                    addresses = algorithms.findIntersectingAddressesSearch(areaAddresses.stream().map(AreaAddress::getAddress).collect(Collectors.toList()),
-                            searchAreaAddresses.stream().map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
-                }
-                //3.3.4
-                if (!addresses.isEmpty()) {
-                    areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
-                    List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
-                    areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
-                }
+            List<AreaAddress> areaAddresses;
+            //4.3.2
+            if (isExactAddressMatch == null || isExactAddressMatch) {
+                addresses = addressesRepository.findActualAddresses(searchAreaAddresses.stream()
+                        .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
+            //4.3.3
+            } else {
+                addresses = algorithms.findIntersectingAddressesSearch(searchAreaAddresses.stream()
+                        .map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
+            }
+            //4.3.4
+            if (!addresses.isEmpty()) {
+                areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
+                List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
+                areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
             }
         }
 
@@ -1478,6 +1473,21 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         List<AreaInfo> areaInfos = areas.stream().sorted(Comparator.comparingLong(Area::getId))
                 .skip(paging.getPageNumber() * paging.getPageSize()).limit(paging.getPageSize())
                 .map(AreaInfo::new).collect(Collectors.toList());
+
+        areaInfos.forEach(ai -> {
+            // Добавление работников
+            // TODO в случаях тормозов, по всем выбранным участкам выбрать работников в мапу Map<areaId, Employee>, и распределить по участкам
+            List<AreaMedicalEmployees> mainMedicalEmployees = areaMedicalEmployeeRepository.
+                    getEmployeesMainActualByAreaId(ai.getArea().getId());
+
+            // 3.
+            List<AreaMedicalEmployees> replacementMedicalEmployees = areaMedicalEmployeeRepository.
+                    getEmployeesReplacementActualByAreaId(ai.getArea().getId());
+
+            ai.setMainAreaMedicalEmployees(mainMedicalEmployees);
+            ai.setReplacementAreaMedicalEmployees(replacementMedicalEmployees);
+        });
+
         return new PageImpl<>(new ArrayList<>(areaInfos),
                 paging, totalSize);
     }
