@@ -18,6 +18,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static moscow.ptnl.contingent.area.model.area.AddressLevelType.AREA;
+import static moscow.ptnl.contingent.area.model.area.AddressLevelType.AREA_TE;
+import static moscow.ptnl.contingent.area.model.area.AddressLevelType.CITY;
+import static moscow.ptnl.contingent.area.model.area.AddressLevelType.PLACE;
+import static moscow.ptnl.contingent.area.model.area.AddressLevelType.PLAN;
+import static moscow.ptnl.contingent.area.model.area.AddressLevelType.REGION_TE;
+import static moscow.ptnl.contingent.area.model.area.AddressLevelType.STREET;
+
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
 public class AddressesRepositoryImpl extends BaseRepository implements AddressesRepository {
@@ -53,7 +61,7 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
     }
 
     @Override
-    public Set<Addresses> findActualAddresses(List<Long> nsiGlobalIds, String streetCode, String planCode,
+    public Set<Addresses> findActualAddresses(String streetCode, String planCode,
                                               String placeCode, String cityCode, String areaCode,
                                               List<String> areaOmkTeCodes, List<String> regionTeCodes) {
         Specification<AreaAddress> specification = (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) -> {
@@ -63,21 +71,34 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
                             criteriaBuilder.greaterThanOrEqualTo(root.get(AreaAddress_.endDate), LocalDate.now()),
                             criteriaBuilder.isNull(root.get(AreaAddress_.endDate))
                     ),
-                    addressesJoin.get(Addresses_.globalId).in(nsiGlobalIds),
                     streetCode == null ? criteriaBuilder.conjunction() :
-                            criteriaBuilder.equal(addressesJoin.get(Addresses_.streetCode), streetCode),
+                            criteriaBuilder.and(
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.streetCode), streetCode),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), STREET.getLevel())),
                     planCode == null ? criteriaBuilder.conjunction() :
-                            criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode), planCode),
+                            criteriaBuilder.and(
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode), planCode),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), PLAN.getLevel())),
                     placeCode == null ? criteriaBuilder.conjunction() :
-                            criteriaBuilder.equal(addressesJoin.get(Addresses_.placeCode), placeCode),
+                            criteriaBuilder.and(
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.placeCode), placeCode),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), PLACE.getLevel())),
                     cityCode == null ? criteriaBuilder.conjunction() :
-                            criteriaBuilder.equal(addressesJoin.get(Addresses_.cityCode), cityCode),
+                            criteriaBuilder.and(
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.cityCode), cityCode),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), CITY.getLevel())),
                     areaCode == null ? criteriaBuilder.conjunction() :
-                            criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCode), areaCode),
+                            criteriaBuilder.and(
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCode), areaCode),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), AREA.getLevel())),
                     areaOmkTeCodes == null || areaOmkTeCodes.size() == 0 ? criteriaBuilder.conjunction() :
-                            addressesJoin.get(Addresses_.areaCodeOmkTe).in(areaOmkTeCodes),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.areaCodeOmkTe).in(areaOmkTeCodes),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), AREA_TE.getLevel())),
                     regionTeCodes == null || regionTeCodes.size() == 0 ? criteriaBuilder.conjunction() :
-                            addressesJoin.get(Addresses_.regionTeCode).in(regionTeCodes));
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.regionTeCode).in(regionTeCodes),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), REGION_TE.getLevel())));
         };
 
         return areaAddressCRUDRepository.findAll(specification)

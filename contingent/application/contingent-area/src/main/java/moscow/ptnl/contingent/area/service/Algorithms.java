@@ -67,8 +67,8 @@ public class Algorithms {
     }
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
-    public MoAddress searchServiceDistrictMOByAddress (Long moId, AreaType areaType, Long orderId,
-            List<AddressRegistryBaseType> addressRegistryTypes, Validation validation) {
+    public MoAddress searchServiceDistrictMOByAddress(Long moId, AreaType areaType, Long orderId,
+                                                      List<AddressRegistryBaseType> addressRegistryTypes, Validation validation) {
 
         // 1.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
@@ -95,7 +95,7 @@ public class Algorithms {
 
     // Поиск участков по адресу (А_УУ_2)
     public Long searchAreaByAddress(Long moId, AreaType areaTypeCode, List<AddressRegistryBaseType> addressRegistryTypes,
-            Validation validation) {
+                                    Validation validation) {
 
         // 1.
         List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddresses(moId, areaTypeCode.getCode());
@@ -136,35 +136,35 @@ public class Algorithms {
         }
 
         // А_УУ_3 2. - 9.
-        for (AddressRegistryBaseType addressRegistry: addressRegistryTypes) {
+        for (AddressRegistryBaseType addressRegistry : addressRegistryTypes) {
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.checkStreetCodeExist.apply(addressRegistry, addresses);
-                }
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
+                crossAddresses = AlgorithmsHelper.checkStreetCodeExist.apply(addressRegistry, addresses);
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.STREET.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByStreetCode.apply(addressRegistry, addresses);
-                }
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.STREET.getLevel())) {
+                crossAddresses = AlgorithmsHelper.searchByStreetCode.apply(addressRegistry, addresses);
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.PLAN.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByPlanCode.apply(addressRegistry, addresses);
-                }
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.PLAN.getLevel())) {
+                crossAddresses = AlgorithmsHelper.searchByPlanCode.apply(addressRegistry, addresses);
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.PLACE.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByPlaceCode.apply(addressRegistry, addresses);
-                }
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.PLACE.getLevel())) {
+                crossAddresses = AlgorithmsHelper.searchByPlaceCode.apply(addressRegistry, addresses);
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.CITY.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByCityCode.apply(addressRegistry, addresses);
-                }
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.CITY.getLevel())) {
+                crossAddresses = AlgorithmsHelper.searchByCityCode.apply(addressRegistry, addresses);
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByAreaCode.apply(addressRegistry, addresses);
-                }
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA.getLevel())) {
+                crossAddresses = AlgorithmsHelper.searchByAreaCode.apply(addressRegistry, addresses);
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA_TE.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByAreaOmkTeCode.apply(addressRegistry, addresses);
-                }
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA_TE.getLevel())) {
+                crossAddresses = AlgorithmsHelper.searchByAreaOmkTeCode.apply(addressRegistry, addresses);
+            }
 
             if (crossAddresses == null || !crossAddresses.isEmpty()) {
                 break;
@@ -196,12 +196,12 @@ public class Algorithms {
             return attachOnAreaChangeMapper.entityToDtoTransform(new AttachOnAreaChangeEvent(
                     AttachOnAreaChangeEvent.OperationType.CREATE, dependentArea, new HashSet<>(primaryAreasIdCreateAttachments)));
         }
-        
+
         throw new IllegalArgumentException("недопустимые аргументы для создания топика");
     }
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
-    public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {        
+    public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {
         return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
     }
 
@@ -220,46 +220,46 @@ public class Algorithms {
                 //4
                 if (!Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.REGION_TE.getLevel())
                         && (address.getAreaOMKTE() == null || address.getAreaOMKTE().getCode() == null
-                            || address.getAreaOMKTE().getCode().length() == 0)) {
+                        || address.getAreaOMKTE().getCode().length() == 0)) {
                     codesNotSetError += " код района Москвы;";
                     //5
                 } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.AREA.getLevel())
                         && (address.getArea() == null || address.getArea().getCode() == null
-                            || address.getArea().getCode().length() == 0)) {
+                        || address.getArea().getCode().length() == 0)) {
                     codesNotSetError += " код района;";
                     //6
                 } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.CITY.getLevel())
                         && (address.getCity() == null || address.getCity().getCode() == null
-                            || address.getCity().getCode().length() == 0)) {
+                        || address.getCity().getCode().length() == 0)) {
                     codesNotSetError += " код города;";
                     //7
                 } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.PLACE.getLevel())
                         && (address.getPlace() == null || address.getPlace().getCode() == null
-                            || address.getPlace().getCode().length() == 0)) {
+                        || address.getPlace().getCode().length() == 0)) {
                     codesNotSetError += " код населенного пункта;";
                     //8
                 } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.PLAN.getLevel())
                         && (address.getPlan() == null || address.getPlan().getCode() == null
-                            || address.getPlan().getCode().length() == 0)) {
+                        || address.getPlan().getCode().length() == 0)) {
                     codesNotSetError += " код планировочной структуры;";
                     //9
                 } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.STREET.getLevel())
                         && (address.getStreet() == null || address.getStreet().getCode() == null
-                            || address.getStreet().getCode().length() == 0)) {
+                        || address.getStreet().getCode().length() == 0)) {
                     codesNotSetError += " код код улицы;";
                     //10
                 } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.ID.getLevel())) {
                     if (address.getBuilding() == null || (
                             address.getBuilding().getHouse() == null || address.getBuilding().getHouse().getName() == null
-                                || address.getBuilding().getHouse().getName().length() == 0)
+                                    || address.getBuilding().getHouse().getName().length() == 0)
                             && (address.getBuilding().getBuild() == null || address.getBuilding().getBuild().getName() == null
-                                || address.getBuilding().getBuild().getName().length() == 0)
+                            || address.getBuilding().getBuild().getName().length() == 0)
                             && (address.getBuilding().getConstruction() == null || address.getBuilding().getConstruction().getName() == null
-                                || address.getBuilding().getConstruction().getName().length() == 0)) {
+                            || address.getBuilding().getConstruction().getName().length() == 0)) {
                         codesNotSetError += " код дома или корпуса или строения;";
                     }
                     if (address.getRegionOMKTE() != null && address.getRegionOMKTE().getCode().split(";").length > 1
-                    || address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode().split(";").length  > 1) {
+                            || address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode().split(";").length > 1) {
                         validation.error(AreaErrorReason.NOT_SINGLE_AREA_OR_REGION);
                     }
                 }
@@ -293,30 +293,40 @@ public class Algorithms {
             switch (AddressLevelType.find(address.getAoLevel())) {
                 case ID:
                 case STREET:
-                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, address.getStreet().getCode(),
-                            null, null, null, null, null, null));
+                    if (address.getStreet() != null && address.getStreet().getCode() != null) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(address.getStreet().getCode(),
+                                null, null, null, null, null, null));
+                    }
                 case PLAN:
-                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
-                            address.getPlan().getCode(), null, null, null, null, null));
+                    if (address.getPlan() != null && address.getPlan().getCode() != null) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
+                                address.getPlan().getCode(), null, null, null, null, null));
+                    }
                 case PLACE:
-                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
-                            null, address.getPlace().getCode(), null, null, null, null));
+                    if (address.getPlace() != null && address.getPlace().getCode() != null) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
+                                null, address.getPlace().getCode(), null, null, null, null));
+                    }
                 case CITY:
-                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
-                           null, null, address.getCity().getCode(), null, null, null));
+                    if (address.getCity() != null && address.getCity().getCode() != null) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
+                                null, null, address.getCity().getCode(), null, null, null));
+                    }
                 case AREA:
-                    resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
-                            null, null, null, address.getArea().getCode(), null, null));
+                    if (address.getArea() != null && address.getArea().getCode() != null) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
+                                null, null, null, address.getArea().getCode(), null, null));
+                    }
                 case AREA_TE:
                     if (address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode() != null) {
-                        List<String> areaOmkTeCodes =  Arrays.asList(address.getAreaOMKTE().getCode().split(";"));
-                        resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
+                        List<String> areaOmkTeCodes = Arrays.asList(address.getAreaOMKTE().getCode().split(";"));
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
                                 null, null, null, null, areaOmkTeCodes, null));
                     }
                 case REGION_TE:
                     if (address.getRegionOMKTE() != null && address.getRegionOMKTE().getCode() != null) {
                         List<String> regionTeCodes = Arrays.asList(address.getRegionOMKTE().getCode().split(";"));
-                        resultAddresses.addAll(addressesRepository.findActualAddresses(inputIds, null,
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
                                 null, null, null, null, null, regionTeCodes));
                     }
 
