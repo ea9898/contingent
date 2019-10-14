@@ -1466,6 +1466,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
                 List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
                 areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
+            } else {
+                areas = Collections.emptyList();
             }
         }
 
