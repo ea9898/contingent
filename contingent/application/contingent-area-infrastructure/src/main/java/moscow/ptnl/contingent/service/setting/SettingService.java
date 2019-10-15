@@ -10,6 +10,7 @@ public interface SettingService {
     String Par6 = "paging_default_page_size";
     /** Глобальная настройка для отключения слушателей всех топиков ЕСУ */
     String TOPICS_CONSUMERS_RUN_MODE = "topics.consumers.run.mode";
+    String SERVICES_SECURITY_SETTINGS = "services.security.settings";
     
     <T> T getSettingProperty(String propertyName);
 

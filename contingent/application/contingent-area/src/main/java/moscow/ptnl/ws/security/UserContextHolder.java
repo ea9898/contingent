@@ -1,6 +1,6 @@
 package moscow.ptnl.ws.security;
 
-import moscow.ptnl.contingent.security.Principal;
+import moscow.ptnl.contingent.domain.security.Principal;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
 import java.util.UUID;
@@ -38,6 +38,7 @@ public class UserContextHolder {
         Principal principal = new Principal(userContext.getUserName());
         principal.setIpAddress(userContext.getHostIp());
         principal.setUserRoleId((userContext.getUserRoleId() != 0) ? userContext.getUserRoleId() : null);
+        principal.getAccessRights().addAll(userContext.getUserRights().getUserRightIds());
         principal.setJobInfoId(userContext.getJobExecutionId()); //FIXME - это правильно?
         //TODO не понятно как заполнять
         //principal.setAccountId(Long.MIN_VALUE);

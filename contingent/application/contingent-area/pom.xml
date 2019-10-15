@@ -327,6 +327,12 @@
             <artifactId>area-infrastructure</artifactId>
             <version>${version}</version>
         </dependency>
+        <!-- нужно тащить из местного артифактори -->
+        <!--<dependency>
+            <groupId>ru.mos.emias.errors</groupId>
+            <artifactId>emias-errors</artifactId>
+            <version>1.0.6</version>
+        </dependency>-->
 
 <!--        <dependency>
             <groupId>org.reactivestreams</groupId>

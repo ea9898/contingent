@@ -15,7 +15,7 @@ import moscow.ptnl.contingent.domain.history.converter.DefaultConverter;
 import moscow.ptnl.contingent.domain.history.meta.FieldConverter;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
-import moscow.ptnl.contingent.security.Principal;
+import moscow.ptnl.contingent.domain.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
