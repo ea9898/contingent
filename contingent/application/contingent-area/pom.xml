@@ -436,7 +436,7 @@
             <artifactId>slf4j-api</artifactId>
             <version>${api.slf4j}</version>
             <!-- Используем логер встроенный в wildfly -->
-            <scope>provided</scope>
+            <scope>${slf4j.scope}</scope>
         </dependency>
 
         <dependency>

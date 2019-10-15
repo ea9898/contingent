@@ -33,6 +33,8 @@
         <spring-kafka.version>2.2.1.RELEASE</spring-kafka.version>
 
         <artefact.scope>compile</artefact.scope>
+        <!-- Используем логер встроенный в wildfly -->
+        <slf4j.scope>provided</slf4j.scope>
         <build.number>dev</build.number>
         <api.jaxws.version>2.2.11</api.jaxws.version>
         <api.javaee>7.0</api.javaee>
