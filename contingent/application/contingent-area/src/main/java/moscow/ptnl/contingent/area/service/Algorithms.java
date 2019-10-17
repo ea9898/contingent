@@ -223,7 +223,7 @@ public class Algorithms {
                         || address.getAreaOMKTE().getCode().length() == 0)) {
                     codesNotSetError += " код района Москвы;";
                     //5
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.AREA.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.AREA.getLevel())
                         && (address.getArea() == null || address.getArea().getCode() == null
                         || address.getArea().getCode().length() == 0)) {
                     codesNotSetError += " код района;";
