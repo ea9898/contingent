@@ -246,7 +246,7 @@ public class Algorithms {
                 } else if (address.getAoLevel().equals(AddressLevelType.STREET.getLevel())
                         && (address.getStreet() == null || address.getStreet().getCode() == null
                         || address.getStreet().getCode().length() == 0)) {
-                    codesNotSetError += " код код улицы;";
+                    codesNotSetError += " код улицы;";
                     //10
                 } else if (address.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
                     if (address.getBuilding() == null || (
