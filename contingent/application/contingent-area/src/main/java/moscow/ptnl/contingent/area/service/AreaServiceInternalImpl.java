@@ -1323,7 +1323,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (moAddress != null) {
                 validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
                         new ValidationParameter("address", addr.getAddressString()),
-                        new ValidationParameter("moId", moAddress.getId()));
+                        new ValidationParameter("moId", moAddress.getMoId()));
             }
         });
         if (!validation.isSuccess()) {
