@@ -39,8 +39,11 @@ public class LogSoapEventEndpoint {
         LOG.debug("Received SOAP event: {}", msg.getPayload().getMethod());
 
         try {
-            HistoryRequest event = HistoryRequest.build(msg.getPayload());
-            historyRequestsRepository.save(event);
+            String[] nameParts = msg.getPayload().getMethod().split("/");
+            if (nameParts.length > 1 && !nameParts[1].startsWith("get") && !nameParts[1].startsWith("search")) {
+                HistoryRequest event = HistoryRequest.build(msg.getPayload());
+                historyRequestsRepository.save(event);
+            }
         } catch (Exception e) {
             LOG.error("Can't write SOAP log event", e);
         }
