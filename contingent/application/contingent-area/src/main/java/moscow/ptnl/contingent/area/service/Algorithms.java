@@ -214,41 +214,41 @@ public class Algorithms {
                 validation.error(AreaErrorReason.AO_LEVEL_NOT_SET);
             } else {
                 //2
-                if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.MOSCOW.getLevel())) {
+                if (address.getAoLevel().equals(AddressLevelType.MOSCOW.getLevel())) {
                     validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
                 }
                 //4
-                if (!Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.REGION_TE.getLevel())
+                if (!address.getAoLevel().equals(AddressLevelType.REGION_TE.getLevel())
                         && (address.getAreaOMKTE() == null || address.getAreaOMKTE().getCode() == null
                         || address.getAreaOMKTE().getCode().length() == 0)) {
                     codesNotSetError += " код района Москвы;";
                     //5
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.AREA.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.AREA.getLevel())
                         && (address.getArea() == null || address.getArea().getCode() == null
                         || address.getArea().getCode().length() == 0)) {
                     codesNotSetError += " код района;";
                     //6
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.CITY.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.CITY.getLevel())
                         && (address.getCity() == null || address.getCity().getCode() == null
                         || address.getCity().getCode().length() == 0)) {
                     codesNotSetError += " код города;";
                     //7
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.PLACE.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.PLACE.getLevel())
                         && (address.getPlace() == null || address.getPlace().getCode() == null
                         || address.getPlace().getCode().length() == 0)) {
                     codesNotSetError += " код населенного пункта;";
                     //8
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.PLAN.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.PLAN.getLevel())
                         && (address.getPlan() == null || address.getPlan().getCode() == null
                         || address.getPlan().getCode().length() == 0)) {
                     codesNotSetError += " код планировочной структуры;";
                     //9
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.STREET.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.STREET.getLevel())
                         && (address.getStreet() == null || address.getStreet().getCode() == null
                         || address.getStreet().getCode().length() == 0)) {
-                    codesNotSetError += " код код улицы;";
+                    codesNotSetError += " код улицы;";
                     //10
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.ID.getLevel())) {
+                } else if (address.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
                     if (address.getBuilding() == null || (
                             address.getBuilding().getHouse() == null || address.getBuilding().getHouse().getName() == null
                                     || address.getBuilding().getHouse().getName().length() == 0)

@@ -977,10 +977,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 7.
         addressesRegistry.forEach(ar -> {
-            Long areaIdInterspect = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
-            if (areaIdInterspect != null) {
-                if (!areaIdInterspect.equals(area.getId())) {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA, new ValidationParameter("areaType", ar.getArea().getCode()));
+            Long areaIdIntersect = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
+            if (areaIdIntersect != null) {
+                if (!areaIdIntersect.equals(area.getId())) {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA, new ValidationParameter("areaType", area.getAreaType().getCode()));
                 } else {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", ar.getAddressString()));
                 }
