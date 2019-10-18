@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.endpoint;
 
 import moscow.ptnl.contingent.domain.history.HistoryRequest;
 import moscow.ptnl.contingent.repository.history.HistoryRequestsRepository;
+import moscow.ptnl.contingent.util.AreaServiceLogMethodsEnum;
 import moscow.ptnl.soap.log.SoapContextData;
 
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class LogSoapEventEndpoint {
 
         try {
             String[] nameParts = msg.getPayload().getMethod().split("/");
-            if (nameParts.length > 1 && !nameParts[1].startsWith("get") && !nameParts[1].startsWith("search")) {
+            if (nameParts.length > 1 && AreaServiceLogMethodsEnum.contains(nameParts[1])) {
                 HistoryRequest event = HistoryRequest.build(msg.getPayload());
                 historyRequestsRepository.save(event);
             }
