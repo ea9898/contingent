@@ -31,7 +31,7 @@ public class SysopMsg implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Sysop sysop;
 
-    @Column(name = "TYPE")
+    @Column(name = "TYPE", nullable = false)
     @Size(max = 40)
     private String type;
 
