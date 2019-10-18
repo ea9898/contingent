@@ -19,9 +19,7 @@
             <column name="IS_COMPLETED" type="NUMBER(1)" defaultValueNumeric="0">
                 <constraints nullable="false" />
             </column>
-            <column name="HAS_SUCCEEDED" type="NUMBER(1)" defaultValueNumeric="0">
-                <constraints nullable="false" />
-            </column>
+            <column name="HAS_SUCCEEDED" type="NUMBER(1)" defaultValueNumeric="0" />
         </createTable>
         <rollback>
             <dropTable tableName="SYSOP"/>
@@ -83,7 +81,9 @@
             <column name="SYSOP_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
-            <column name="TYPE" type="VARCHAR2(40)"/>
+            <column name="TYPE" type="VARCHAR2(40)">
+                <constraints nullable="false" />
+            </column>
             <column name="CODE" type="VARCHAR2(40)"/>
             <column name="MESSAGE" type="VARCHAR2(1000)"/>
         </createTable>
@@ -153,7 +153,9 @@
             <column name="SYSOP_MSG_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
-            <column name="KEY" type="VARCHAR2(100)"/>
+            <column name="KEY" type="VARCHAR2(100)">
+                <constraints nullable="false" />
+            </column>
             <column name="VALUE" type="VARCHAR2(1000)"/>
         </createTable>
         <rollback>
