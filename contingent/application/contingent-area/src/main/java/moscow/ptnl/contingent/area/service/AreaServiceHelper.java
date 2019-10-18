@@ -636,7 +636,7 @@ public class AreaServiceHelper {
         List<AreaMedicalEmployees> newAME = new ArrayList<>();
         addEmployees.forEach(empl -> {
             AreaMedicalEmployees medicalEmployees = new AreaMedicalEmployees(
-                    empl.getMedicalEmployeeJobId(),
+                    empl.getMedicalEmployeeJobInfoId(),
                     area,
                     empl.isIsReplacement(),
                     empl.getStartDate(),

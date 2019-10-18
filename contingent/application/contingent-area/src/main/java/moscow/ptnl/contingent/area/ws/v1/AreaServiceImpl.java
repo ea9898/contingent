@@ -62,6 +62,8 @@ import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdResponse;
+import ru.mos.emias.contingent2.area.types.InitiateCreatePrimaryAreaRequest;
+import ru.mos.emias.contingent2.area.types.InitiateCreatePrimaryAreaResponse;
 import ru.mos.emias.contingent2.area.types.RestoreAreaRequest;
 import ru.mos.emias.contingent2.area.types.RestoreAreaResponse;
 import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
@@ -393,6 +395,36 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                 .map(areaAddressMapper::entityToDtoTransform)
                         .collect(Collectors.toList()));
             
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public InitiateCreatePrimaryAreaResponse initiateCreatePrimaryArea(InitiateCreatePrimaryAreaRequest body) throws Fault {
+        try {
+            InitiateCreatePrimaryAreaResponse response = new InitiateCreatePrimaryAreaResponse();
+            Long id = areaService.initiateCreatePrimaryArea(
+                    body.getMoId(),
+                    body.getMuId(),
+                    body.getNumber(),
+                    body.getDescription(),
+                    body.getAreaTypeCode(),
+                    body.getPolicyTypes() == null ? new ArrayList<>() : body.getPolicyTypes().getPolicyTypeCodes(),
+                    body.getAgeMin(),
+                    body.getAgeMax(),
+                    body.getAgeMinM(),
+                    body.getAgeMaxM(),
+                    body.getAgeMinW(),
+                    body.getAgeMaxW(),
+                    body.isAutoAssignForAttachment(),
+                    body.isAttachByMedicalReason(),
+                    body.getAddMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getAddMedicalEmployees().getAddMedicalEmployees(),
+                    body.getAddresses() == null ? Collections.EMPTY_LIST : body.getAddresses());
+
+            response.setId(id);
             return response;
         }
         catch (Exception ex) {

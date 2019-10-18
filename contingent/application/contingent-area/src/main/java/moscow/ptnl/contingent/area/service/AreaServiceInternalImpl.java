@@ -836,7 +836,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
                 validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
                         new ValidationParameter("InputSpecialization", specialization.getTitle()),
-                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
+                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                         new ValidationParameter("AreaSpecialization", area.getAreaType().getCode()));
 
             }
@@ -847,7 +847,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (positions != null && positions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(empl.getPositionCode()))) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionNom.getTitle()),
-                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
+                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                         new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
             }
         }
@@ -1494,6 +1494,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 paging, totalSize);
     }
 
-
-
+    @Override
+    public Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode,
+                                          List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
+                                          Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                          boolean autoAssignForAttachment, Boolean attachByMedicalReason,
+                                          List<AddMedicalEmployee> addMedicalEmployees,
+                                          List<AddressRegistryBaseType> addresses) throws ContingentException {
+        return null;
+    }
 }
