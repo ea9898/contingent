@@ -10,13 +10,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "SYSOP")
@@ -40,6 +39,9 @@ public class Sysop implements Serializable {
     @Column(name = "HAS_SUCCEEDED")
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean successful;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sysop")
+    private Set<SysopMsg> messages;
 
     public Long getId() {
         return id;
@@ -65,12 +67,20 @@ public class Sysop implements Serializable {
         this.completed = completed;
     }
 
-    public Boolean isSuccessful() {
+    public Boolean getSuccessful() {
         return successful;
     }
 
     public void setSuccessful(Boolean successful) {
         this.successful = successful;
+    }
+
+    public Set<SysopMsg> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<SysopMsg> messages) {
+        this.messages = messages;
     }
 
     @Override

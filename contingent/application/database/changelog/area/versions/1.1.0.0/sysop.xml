@@ -81,11 +81,16 @@
             <column name="SYSOP_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
+            <column name="SYSOP_MSG_ID" type="BIGINT" />
             <column name="TYPE" type="VARCHAR2(40)">
                 <constraints nullable="false" />
             </column>
-            <column name="CODE" type="VARCHAR2(40)"/>
-            <column name="MESSAGE" type="VARCHAR2(1000)"/>
+            <column name="CODE" type="VARCHAR2(40)">
+                <constraints nullable="false" />
+            </column>
+            <column name="MESSAGE" type="VARCHAR2(1000)">
+                <constraints nullable="false" />
+            </column>
         </createTable>
         <rollback>
             <dropTable tableName="SYSOP_MSG"/>
@@ -141,6 +146,25 @@
 
     <changeSet id="CONTINGENT2-408-9" author="sorlov" labels="1.1.0.0">
         <preConditions onFail="MARK_RAN">
+            <tableExists tableName="SYSOP_MSG"/>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_SYSOP_MSG_TO_SYSOP_MSG"/>
+            </not>
+        </preConditions>
+        <comment>Создание внешнего ключа 2 для таблицы SYSOP_MSG</comment>
+        <addForeignKeyConstraint baseColumnNames="SYSOP_MSG_ID"
+                                 baseTableName="SYSOP_MSG"
+                                 constraintName="FK_SYSOP_MSG_TO_SYSOP_MSG"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="SYSOP_MSG"
+                                 onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="SYSOP_MSG" constraintName="FK_SYSOP_MSG_TO_SYSOP_MSG"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-10" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="SYSOP_MSG_PARAM"/>
             </not>
@@ -163,7 +187,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-408-10" author="sorlov" labels="1.1.0.0">
+    <changeSet id="CONTINGENT2-408-11" author="sorlov" labels="1.1.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="SYSOP_MSG_PARAM_SEQ" />
@@ -176,7 +200,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-408-11" author="sorlov" labels="1.1.0.0">
+    <changeSet id="CONTINGENT2-408-12" author="sorlov" labels="1.1.0.0">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="SYSOP_MSG"/>
             <tableExists tableName="SYSOP_MSG_PARAM"/>
