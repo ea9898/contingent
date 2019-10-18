@@ -1349,6 +1349,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             moAddresses.add(moAddress);
         });
 
+        // Логирование добавление адресов
+        for (MoAddress moAddress: moAddresses) {
+            historyHelper.sendHistory(null, moAddress, MoAddress.class);
+        }
+
         return moAddresses.stream().map(MoAddress::getId).collect(Collectors.toList());
     }
 
@@ -1363,7 +1368,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 2.
-        List<MoAddress> addresses = areaHelper.getAndCheckMoAddressesExist(moAddressIds, validation);
+        List<MoAddress> moAddresses = areaHelper.getAndCheckMoAddressesExist(moAddressIds, validation);
 
         // 3.
         areaHelper.checkOrderExists(orderId, validation);
@@ -1373,7 +1378,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 4.
-        List<Long> moAddressesIds = addresses.stream()
+        List<Long> moAddressesIds = moAddresses.stream()
                 .map(MoAddress::getId)
                 .collect(Collectors.toList());
         List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(moAddressesIds);
@@ -1383,7 +1388,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 5.
-        areaHelper.delMoAddresses(addresses);
+        areaHelper.delMoAddresses(moAddresses);
+
+        for (MoAddress moAddress: moAddresses) {
+            historyHelper.sendHistory(moAddress, null, MoAddress.class);
+        }
+
     }
 
     // (К_УУ_23) Получение списка территорий обслуживания МО

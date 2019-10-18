@@ -18,9 +18,11 @@ import java.util.Objects;
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
+import org.hibernate.annotations.Proxy;
 
 @Entity @Journalable(ServiceName.AREA)
 @Table(name = "ADDRESS_ALLOCATION_ORDERS")
+@Proxy(lazy=false)
 @SequenceGenerator(name = "SEQ_ADDRESS_ALLOCATION_ORDERS", sequenceName = "SEQ_ADDRESS_ALLOCATION_ORDERS", allocationSize=1)
 public class AddressAllocationOrders implements Serializable {
 
