@@ -1,12 +1,11 @@
 package area.service;
 
-import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
@@ -94,7 +93,7 @@ public class MockRepositoriesConfiguration {
     public MoAddressCRUDRepository moAddressCRUDRepository;
     
     @MockBean
-    public AreaAddressCRUDRepository areaAddressCRUDRepository;
+    public AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
     
     @MockBean
     public MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;

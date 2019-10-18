@@ -1,12 +1,16 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress_;
 import moscow.ptnl.contingent.area.entity.area.Area_;
 import moscow.ptnl.contingent.area.entity.area.MoAddress_;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,7 +25,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAddressRepository {
 
     @Autowired
-    AreaAddressCRUDRepository areaAddressCRUDRepository;
+    AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
 
     // Спека поиска актуальных территорий обслуживания
     private Specification<AreaAddress> activeAreaAddressesSpec() {
@@ -52,33 +56,31 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
             );
 
         specification = specification.and(activeAreaAddressesSpec());
-        return areaAddressCRUDRepository.findAll(specification);
+        return areaAddressPagingAndSortingRepository.findAll(specification);
     }
 
     @Override
     public List<AreaAddress> findAreaAddresses(List<Long> moAddressIds) {
-        return areaAddressCRUDRepository.findAll(findMoAddressesByIdsSpec(moAddressIds));
+        return areaAddressPagingAndSortingRepository.findAll(findMoAddressesByIdsSpec(moAddressIds));
     }
 
     @Override
     public List<AreaAddress> findAreaAddressesActual(List<Long> areaAddressIds) {
-        return areaAddressCRUDRepository.findAll(findAreaAddressesByIdsSpec(areaAddressIds).and(activeAreaAddressesSpec()));
+        return areaAddressPagingAndSortingRepository.findAll(findAreaAddressesByIdsSpec(areaAddressIds).and(activeAreaAddressesSpec()));
     }
 
     @Override
-    public List<AreaAddress> findAreaAddressesByAreaId(long areaId) {
+    public Page<AreaAddress> findAreaAddressesByAreaId(long areaId, Pageable paging) {
         Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get(AreaAddress_.area.getName()), areaId);
+            criteriaBuilder.equal(root.get(AreaAddress_.area.getName()).get(Area_.id.getName()), areaId);
+        specification = specification.and(activeAreaAddressesSpec());
 
-        return areaAddressCRUDRepository.findAll(specification.and(activeAreaAddressesSpec()));
-    }
 
-    @Override
-    public List<AreaAddress> findAreaAddressByAddress(Addresses addresses) {
-        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get(AreaAddress_.address.getName()), addresses);
-
-        return areaAddressCRUDRepository.findAll(specification.and(activeAreaAddressesSpec()));
+        if (paging == null) {
+            return new PageImpl<>(areaAddressPagingAndSortingRepository.findAll(specification, Sort.by(AreaAddress_.id.getName()).ascending()));
+        }
+        return areaAddressPagingAndSortingRepository.findAll(specification,
+                PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(AreaAddress_.id.getName()).ascending()));
     }
 
     @Override
@@ -86,16 +88,6 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
         Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) ->
                 root.get(AreaAddress_.address).in(addressIds);
 
-        return areaAddressCRUDRepository.findAll(specification);
-    }
-
-    @Override
-    public List<AreaAddress> findActualAreaAddress() {
-        Specification<AreaAddress> specification = (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.or(
-                        criteriaBuilder.greaterThanOrEqualTo(root.get(AreaAddress_.endDate), LocalDate.now()),
-                        criteriaBuilder.isNull(root.get(AreaAddress_.endDate))
-                );
-        return areaAddressCRUDRepository.findAll(specification);
+        return areaAddressPagingAndSortingRepository.findAll(specification);
     }
 }

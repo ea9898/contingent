@@ -8,5 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
-public interface AreaAddressCRUDRepository extends PagingAndSortingRepository<AreaAddress, Long> {
+public interface AreaAddressPagingAndSortingRepository extends PagingAndSortingRepository<AreaAddress, Long> {
 }

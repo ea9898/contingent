@@ -45,7 +45,7 @@ import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDReposito
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
@@ -83,7 +83,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.naturalOrder;
@@ -143,7 +142,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaAddressRepository areaAddressRepository;
 
     @Autowired
-    private AreaAddressCRUDRepository areaAddressCRUDRepository;
+    private AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
 
     @Autowired
     private MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
@@ -1005,7 +1004,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaAddress.setUpdateDate(LocalDateTime.now());
             return areaAddress;
         }).collect(Collectors.toList());
-        areaAddressCRUDRepository.saveAll(areaAddresses);
+        areaAddressPagingAndSortingRepository.saveAll(areaAddresses);
 
         // 10. аннотация @LogESU
 
@@ -1047,13 +1046,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 AreaAddress areaAddressOld = areaAddressClone.clone(areaAddress);
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
-                areaAddressCRUDRepository.save(areaAddress);
+                areaAddressPagingAndSortingRepository.save(areaAddress);
                 historyHelper.sendHistory(areaAddressOld, areaAddress, AreaAddress.class);
             } else {
                 historyHelper.sendHistory(areaAddress, null, AreaAddress.class);
 
                 // 5.2.
-                areaAddressCRUDRepository.delete(areaAddress);
+                areaAddressPagingAndSortingRepository.delete(areaAddress);
             }
         }
 
@@ -1074,34 +1073,21 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 2.
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId);
-
-        if (areaAddresses.isEmpty()) {
-            return new PageImpl<>(new ArrayList<>(), paging, 0);
-        }
-
-        // 3.
-        TreeMap<Long, Addresses> addresses = new TreeMap<Long, Addresses>();
-        areaAddresses.forEach(aa -> {
-            //TODO ошибка, т.к. будет выведен только один адрес участка
-            addresses.put(aa.getArea().getId(), aa.getAddress());
-        });
+        // 2. 3.
+        Page<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId, paging);
 
         // 4.
-        // TODO: https://wiki.emias.mos.ru/pages/viewpage.action?pageId=71674265 п.4. НЕРЕАЛИЗУЕМО
-        // Сделано без объединения
         List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
-        addresses.forEach((id, addr) -> {
+        areaAddresses.forEach(addr -> {
             moscow.ptnl.contingent.area.model.area.AddressArea addressArea = new AddressArea();
-            addressArea.setAreaAddressId(id);
-            addressArea.setAddresses(addr);
+            addressArea.setAreaAddressId(addr.getId());
+            addressArea.setAddresses(addr.getAddress());
             addressAreas.add(addressArea);
         });
 
         // 5.
         return new PageImpl<>(new ArrayList<>(addressAreas),
-                paging, addressAreas.size());
+                areaAddresses.getPageable(), areaAddresses.getTotalElements());
     }
 
     // (К_УУ_16) Архивирование участка обслуживания

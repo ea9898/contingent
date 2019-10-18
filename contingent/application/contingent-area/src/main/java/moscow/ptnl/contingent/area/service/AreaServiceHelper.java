@@ -38,7 +38,7 @@ import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
@@ -103,7 +103,7 @@ public class AreaServiceHelper {
     private PositionNomRepository positionNomRepository;
 
     @Autowired
-    private AreaAddressCRUDRepository areaAddressCRUDRepository;
+    private AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
 
     @Autowired
     private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
@@ -659,7 +659,7 @@ public class AreaServiceHelper {
     public void delAreaAddresses(List<AreaAddress> addresses) {
         addresses.forEach(a -> {
             if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
-                areaAddressCRUDRepository.delete(a);
+                areaAddressPagingAndSortingRepository.delete(a);
             }
             else {
                 a.setEndDate(LocalDate.now().minusDays(1));

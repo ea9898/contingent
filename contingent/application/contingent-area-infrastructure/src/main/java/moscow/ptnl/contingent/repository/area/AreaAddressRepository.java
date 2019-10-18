@@ -2,6 +2,8 @@ package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
@@ -9,15 +11,15 @@ import java.util.List;
 @NoRepositoryBean
 public interface AreaAddressRepository {
 
-	List<AreaAddress> getActiveAreaAddresses(long moId, long areaTypeCode);
+    List<AreaAddress> getActiveAreaAddresses(long moId, long areaTypeCode);
 
-	List<AreaAddress> findAreaAddresses(List<Long> moAddressIds);
+    List<AreaAddress> findAreaAddresses(List<Long> moAddressIds);
 
     List<AreaAddress> findAreaAddressesActual(List<Long> moAddressIds);
 
-    List<AreaAddress> findAreaAddressesByAreaId(long areaId);
+    Page<AreaAddress> findAreaAddressesByAreaId(long areaId, Pageable paging);
 
-    List<AreaAddress> findAreaAddressByAddress(Addresses addresses);
+
     List<AreaAddress> findAreaAddressByAddressIds(List<Long> addressIds);
-    List<AreaAddress> findActualAreaAddress();
+
 }

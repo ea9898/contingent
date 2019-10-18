@@ -394,7 +394,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                 areaAddresses.getContent().stream()
                 .map(areaAddressMapper::entityToDtoTransform)
                         .collect(Collectors.toList()));
-            
+            soapCustomMapper.mapPagingResults(response, areaAddresses);
             return response;
         }
         catch (Exception ex) {
