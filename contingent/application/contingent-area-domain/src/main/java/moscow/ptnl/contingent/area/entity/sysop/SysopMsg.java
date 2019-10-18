@@ -8,12 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "SYSOP_MSG")
@@ -31,17 +32,27 @@ public class SysopMsg implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Sysop sysop;
 
+    @JoinColumn(name = "SYSOP_MSG_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SysopMsg parentMessage;
+
     @Column(name = "TYPE", nullable = false)
     @Size(max = 40)
     private String type;
 
     @Size(max = 40)
-    @Column(name = "CODE")
+    @Column(name = "CODE", nullable = false)
     private String code;
 
     @Size(max = 1000)
-    @Column(name = "MESSAGE")
+    @Column(name = "MESSAGE", nullable = false)
     private String message;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentMessage")
+    private Set<SysopMsg> childMessages;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sysopMsg")
+    private Set<SysopMsgParam> params;
 
     public Long getId() {
         return id;
@@ -81,6 +92,30 @@ public class SysopMsg implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public SysopMsg getParentMessage() {
+        return parentMessage;
+    }
+
+    public void setParentMessage(SysopMsg parentMessage) {
+        this.parentMessage = parentMessage;
+    }
+
+    public Set<SysopMsg> getChildMessages() {
+        return childMessages;
+    }
+
+    public void setChildMessages(Set<SysopMsg> childMessages) {
+        this.childMessages = childMessages;
+    }
+
+    public Set<SysopMsgParam> getParams() {
+        return params;
+    }
+
+    public void setParams(Set<SysopMsgParam> params) {
+        this.params = params;
     }
 
     @Override
