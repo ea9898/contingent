@@ -19,9 +19,7 @@
             <column name="IS_COMPLETED" type="NUMBER(1)" defaultValueNumeric="0">
                 <constraints nullable="false" />
             </column>
-            <column name="HAS_SUCCEEDED" type="NUMBER(1)" defaultValueNumeric="0">
-                <constraints nullable="false" />
-            </column>
+            <column name="HAS_SUCCEEDED" type="NUMBER(1)" defaultValueNumeric="0" />
         </createTable>
         <rollback>
             <dropTable tableName="SYSOP"/>

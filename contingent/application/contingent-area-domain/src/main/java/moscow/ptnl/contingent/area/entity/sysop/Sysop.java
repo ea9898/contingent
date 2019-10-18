@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.entity.sysop;
 
+import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 
 import javax.persistence.Column;
@@ -36,9 +37,9 @@ public class Sysop implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private boolean completed;
 
-    @Column(name = "HAS_SUCCEEDED", nullable = false)
-    @Convert(converter = BooleanStrictIntegerConverter.class)
-    private boolean successful;
+    @Column(name = "HAS_SUCCEEDED")
+    @Convert(converter = BooleanIntegerConverter.class)
+    private Boolean successful;
 
     public Long getId() {
         return id;
@@ -64,11 +65,11 @@ public class Sysop implements Serializable {
         this.completed = completed;
     }
 
-    public boolean isSuccessful() {
+    public Boolean isSuccessful() {
         return successful;
     }
 
-    public void setSuccessful(boolean successful) {
+    public void setSuccessful(Boolean successful) {
         this.successful = successful;
     }
 
