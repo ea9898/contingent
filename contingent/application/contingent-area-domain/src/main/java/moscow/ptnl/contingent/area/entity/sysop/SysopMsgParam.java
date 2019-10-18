@@ -31,7 +31,7 @@ public class SysopMsgParam implements Serializable {
     private SysopMsg sysopMsg;
 
     @Size(max = 100)
-    @Column(name = "KEY")
+    @Column(name = "KEY", nullable = false)
     private String key;
 
     @Size(max = 1000)

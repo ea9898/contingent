@@ -151,7 +151,9 @@
             <column name="SYSOP_MSG_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
-            <column name="KEY" type="VARCHAR2(100)"/>
+            <column name="KEY" type="VARCHAR2(100)">
+                <constraints nullable="false" />
+            </column>
             <column name="VALUE" type="VARCHAR2(1000)"/>
         </createTable>
         <rollback>
