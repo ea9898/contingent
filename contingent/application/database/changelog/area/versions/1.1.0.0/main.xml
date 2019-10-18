@@ -367,4 +367,15 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-427-1" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="ESU_INPUT" columnName="host" newDataType="varchar2(255)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-427-2" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="ESU_OUTPUT" columnName="host" newDataType="varchar2(255)"/>
+        <rollback></rollback>
+    </changeSet>
 </databaseChangeLog>
