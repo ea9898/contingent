@@ -3,7 +3,6 @@ package moscow.ptnl.contingent.nsi.transform;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationMessage;
-import moscow.ptnl.contingent.error.ValidationMessageType;
 import moscow.ptnl.contingent.error.ValidationParameter;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.Fault;
 import ru.mos.emias.system.v1.faults.BusinessFault;
@@ -16,6 +15,7 @@ import ru.mos.emias.system.v1.faults.UnexpectedFault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import ru.mos.emias.errors.domain.ErrorMessageType;
 
 public class SoapExceptionMapper {
 
@@ -81,7 +81,7 @@ public class SoapExceptionMapper {
         return null;
     }
 
-    private static ErrorMessageTypes map(ValidationMessageType messageType) {
+    private static ErrorMessageTypes map(ErrorMessageType messageType) {
         switch (messageType) {
             case INFO: return ErrorMessageTypes.INFO;
             case WARNING: return ErrorMessageTypes.WARNING;

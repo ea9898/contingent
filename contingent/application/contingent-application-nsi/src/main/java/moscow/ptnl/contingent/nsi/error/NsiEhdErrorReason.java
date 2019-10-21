@@ -1,6 +1,8 @@
 package moscow.ptnl.contingent.nsi.error;
 
-import moscow.ptnl.contingent.error.ErrorReason;
+import ru.mos.emias.errors.domain.ErrorMessageType;
+import ru.mos.emias.errors.domain.ErrorReason;
+
 
 public enum NsiEhdErrorReason implements ErrorReason {
 
@@ -11,19 +13,31 @@ public enum NsiEhdErrorReason implements ErrorReason {
 
     private final String description;
     private final String code;
-
+    private final ErrorMessageType messageType;
+    
     NsiEhdErrorReason(String code, String description) {
+        this(code, description, ErrorMessageType.ERROR);
+    }
+
+    NsiEhdErrorReason(String code, String description, ErrorMessageType messageType) {
         this.code = code;
         this.description = description;
+        this.messageType = messageType;
     }
 
     @Override
     public String getDescription() {
         return description;
     }
+    
     @Override
     public String getCode() {
         return code;
+    }
+
+    @Override
+    public ErrorMessageType getMessageType() {
+        return messageType;
     }
 
 }

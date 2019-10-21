@@ -8,8 +8,9 @@ public interface SettingService {
     String Par4 = "synchronize_k2_and_k1";
     String Par5 = "paging_default_page_number";
     String Par6 = "paging_default_page_size";
-    /** Глобальная настройка для отключения слушателей всех топиков ЕСУ */
+    /** Глобальная настройка для отключения слушателей всех топиков ЕСУ. */
     String TOPICS_CONSUMERS_RUN_MODE = "topics.consumers.run.mode";
+    /** Настройки ограничения доступа к методам web-сервиса. */
     String SERVICES_SECURITY_SETTINGS = "services.security.settings";
     
     <T> T getSettingProperty(String propertyName);

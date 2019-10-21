@@ -365,4 +365,55 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-430-1" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <columnExists tableName="AD_CONFIG" columnName="val"/>
+            </and>
+        </preConditions>
+        <comment>Увеличение длины типа для хранения данных</comment>
+        <modifyDataType tableName="AD_CONFIG" columnName="val" newDataType="VARCHAR(10000)"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-430-2" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'services.security.settings'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка безопасности методов web-сервиса</comment>
+        <loadData catalogName="cat"
+            encoding="UTF-8"
+            file="changelog/area/versions/1.1.0.0/files/security.config.csv"
+            quotchar=""
+            separator="#"
+            tableName="AD_CONFIG">
+            <column name="code" type="STRING"/>
+            <column name="val" type="STRING"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-430-3" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'services.security.settings'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Создание настройки безопасности методов web-сервиса</comment>
+        <update tableName="AD_CONFIG">
+            <column name="type" value="3"/>
+            <column name="description" value="Настройки ограничения доступа к методам web-сервиса"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+            <where>code = 'services.security.settings'</where>
+        </update>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='services.security.settings'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

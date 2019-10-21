@@ -4,24 +4,21 @@ package moscow.ptnl.contingent.error;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import ru.mos.emias.errors.domain.ErrorMessageType;
+import ru.mos.emias.errors.domain.ErrorReason;
+import ru.mos.emias.errors.domain.Message;
 
 /**
- * Результат валидации
+ * Результат валидации.
+ * 
  */
-public class ValidationMessage {
-    /**
-     * Код сообщения
-     */
-    private String code;
-
-    /**
-     * Сообщение или параметры
-     */
-    private String message;
+public class ValidationMessage extends Message {
+    
     /**
      * Тип сообщения
      */
-    private ValidationMessageType type;
+    private ErrorMessageType type;
 
     /**
      * Параметры валидации
@@ -31,15 +28,15 @@ public class ValidationMessage {
     public ValidationMessage() {
     }
 
-    public ValidationMessage(ErrorReason errorReason, ValidationMessageType type) {
+    public ValidationMessage(ErrorReason errorReason, ErrorMessageType type) {
         if (errorReason == null) {
             throw new IllegalArgumentException("errorReason не может быть null");
         }
         if (type == null) {
             throw new IllegalArgumentException("type не может быть null");
         }
-        this.code = errorReason.getCode();
-        this.message = errorReason.getDescription();
+        setCode(errorReason.getCode());
+        setMessage(errorReason.getDescription());
         this.type = type;
     }
 
@@ -50,27 +47,11 @@ public class ValidationMessage {
         return this;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public ValidationMessageType getType() {
+    public ErrorMessageType getType() {
         return type;
     }
 
-    public void setType(ValidationMessageType type) {
+    public void setType(ErrorMessageType type) {
         this.type = type;
     }
 
@@ -85,8 +66,8 @@ public class ValidationMessage {
 
         ValidationMessage that = (ValidationMessage) o;
 
-        if (code != null ? !code.equals(that.code) : that.code != null) return false;
-        if (message != null ? !message.equals(that.message) : that.message != null) return false;
+        if (getCode() != null ? !getCode().equals(that.getCode()) : that.getCode() != null) return false;
+        if (getMessage() != null ? !getMessage().equals(that.getMessage()) : that.getMessage() != null) return false;
         if (type != that.type) return false;
         return !(parameters != null ? !parameters.equals(that.parameters) : that.parameters != null);
 
@@ -94,15 +75,15 @@ public class ValidationMessage {
 
     @Override
     public int hashCode() {
-        int result = code != null ? code.hashCode() : 0;
-        result = 31 * result + (message != null ? message.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
+        int result = Objects.hashCode(getCode());
+        result = 31 * result + Objects.hash(getMessage());
+        result = 31 * result + Objects.hash(type);
         result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return String.format("%s  %s \n", code, message);
+        return String.format("%s  %s \n", getCode(), getMessage());
     }
 }

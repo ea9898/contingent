@@ -1,9 +1,10 @@
 package moscow.ptnl.contingent.area.error;
 
-import moscow.ptnl.contingent.error.ErrorReason;
+import ru.mos.emias.errors.domain.ErrorMessageType;
+import ru.mos.emias.errors.domain.ErrorReason;
 
 /**
- * Пользовательские сообщения возвращаемые при работе с участками
+ * Пользовательские сообщения возвращаемые при работе с участками.
  */
 public enum AreaErrorReason implements ErrorReason {
 
@@ -74,10 +75,16 @@ public enum AreaErrorReason implements ErrorReason {
 
     private final String description;
     private final String code;
+    private final ErrorMessageType messageType;
 
     AreaErrorReason(String code, String description) {
+        this(code, description, ErrorMessageType.ERROR);
+    }
+    
+    AreaErrorReason(String code, String description, ErrorMessageType messageType) {
         this.code = code;
         this.description = description;
+        this.messageType = messageType;
     }
 
     @Override
@@ -87,6 +94,11 @@ public enum AreaErrorReason implements ErrorReason {
     @Override
     public String getCode() {
         return code;
+    }
+
+    @Override
+    public ErrorMessageType getMessageType() {
+        return messageType;
     }
 
 }

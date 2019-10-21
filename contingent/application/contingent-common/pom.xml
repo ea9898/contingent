@@ -19,6 +19,11 @@
     
     <dependencies>
         <dependency>
+            <groupId>ru.mos.emias.errors</groupId>
+            <artifactId>emias-errors</artifactId>
+            <version>${emias.errors.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>

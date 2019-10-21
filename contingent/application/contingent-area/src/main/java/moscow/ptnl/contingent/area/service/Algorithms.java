@@ -5,7 +5,6 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
-import moscow.ptnl.contingent.area.error.ErrorReasonImpl;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
@@ -29,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.error.CustomErrorReason;
 
 /**
  * Это класс с алгоритмами А_УУ_хх
@@ -273,7 +273,7 @@ public class Algorithms {
 
             //Агрегированная ошибка С_УУ_108
             if (codesNotSetError.length() != AreaErrorReason.CODES_NOT_SET.getDescription().length()) {
-                validation.error(new ErrorReasonImpl(codesNotSetError, AreaErrorReason.CODES_NOT_SET.getCode())
+                validation.error(new CustomErrorReason(codesNotSetError, AreaErrorReason.CODES_NOT_SET.getCode())
                         , new ValidationParameter("globalId", address.getGlobalIdNsi())
                         , new ValidationParameter("aoLevel", address.getAoLevel()));
             }

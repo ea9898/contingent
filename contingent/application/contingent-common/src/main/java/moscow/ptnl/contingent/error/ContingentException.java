@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.error;
 
+import ru.mos.emias.errors.domain.ErrorReason;
+
 public class ContingentException extends Exception {
 
     private final Validation validation;

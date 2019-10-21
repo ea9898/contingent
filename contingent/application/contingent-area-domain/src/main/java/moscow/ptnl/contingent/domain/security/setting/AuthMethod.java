@@ -2,6 +2,8 @@ package moscow.ptnl.contingent.domain.security.setting;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -9,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author mkachalov
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class AuthMethod {
     
     private boolean enabled = true;
@@ -24,6 +27,14 @@ public class AuthMethod {
 
     public List<Long> getPermissions() {
         return permissions;
+    }
+    
+    public long[] getAccessPermissions() {
+        long[] accessPermissions = new long[permissions.size()];
+        for (int i = 0; i < accessPermissions.length; i++) {
+            accessPermissions[i] = permissions.get(i);
+        }
+        return accessPermissions;
     }
 
     public void setPermissions(List<Long> permissions) {

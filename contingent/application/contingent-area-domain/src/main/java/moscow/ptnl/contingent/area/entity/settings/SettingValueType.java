@@ -22,7 +22,7 @@ public enum SettingValueType {
     STRING(3),
     /** Время в формате "00:00:00" */
     TIME(4),
-    /** 1 = TRUE, все остальное, кроме null, это FALSE */
+    /** 1 = TRUE, все остальное это FALSE */
     BOOLEAN(5);
     
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
