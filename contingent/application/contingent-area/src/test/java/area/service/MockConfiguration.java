@@ -13,6 +13,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelper;
+import moscow.ptnl.contingent.service.TransactionRunner;
 import moscow.ptnl.contingent.service.setting.SettingService;
 import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
@@ -32,7 +33,6 @@ import moscow.ptnl.contingent.area.endpoint.ESUEventEndpoint;
 import moscow.ptnl.contingent.service.esu.EsuService;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
@@ -153,4 +153,7 @@ public class MockConfiguration {
 
     @MockBean
     private HistoryServiceHelper historyServiceHelper;
+
+    @MockBean
+    private TransactionRunner transactionRunner;
 }

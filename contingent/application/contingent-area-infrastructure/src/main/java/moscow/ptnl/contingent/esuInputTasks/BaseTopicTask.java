@@ -69,9 +69,6 @@ abstract class BaseTopicTask<T> implements Tasklet {
                 T event = convertEvent(message.getMessage());
                 eventId = getEventId(event);
 
-                if (!esuInputRepository.findByEventId(eventId).isEmpty()) {
-                    throw new RuntimeException("Повторное сообщение");
-                }
                 //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
                 Future future = CompletableFuture.runAsync(() -> transactionRunner.run(() -> processMessage(event)));
 

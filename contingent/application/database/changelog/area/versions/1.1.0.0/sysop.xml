@@ -1,0 +1,225 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="CONTINGENT2-408-1" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="SYSOP"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы SYSOP</comment>
+        <createTable tableName="SYSOP">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="COMPLETENESS_PROGRESS" type="NUMBER(3)" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="IS_COMPLETED" type="NUMBER(1)" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="HAS_SUCCEEDED" type="NUMBER(1)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="SYSOP"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-2" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SYSOP_SEQ" />
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы SYSOP</comment>
+        <createSequence sequenceName="SYSOP_SEQ"/>
+        <rollback>
+            <dropSequence sequenceName="SYSOP_SEQ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-3" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="SYSOP" columnName="HAS_SUCCEEDED"/>
+        </preConditions>
+        <comment>Создание ограничения столбца HAS_SUCCEEDED таблицы SYSOP</comment>
+        <sql>
+            alter table SYSOP add constraint "SYSOP_CK1" check (HAS_SUCCEEDED in ('0','1'));
+        </sql>
+        <rollback>
+            <dropUniqueConstraint constraintName="SYSOP_CK1"
+                                  tableName="SYSOP"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-4" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="SYSOP" columnName="IS_COMPLETED"/>
+        </preConditions>
+        <comment>Создание ограничения столбца IS_COMPLETED таблицы SYSOP</comment>
+        <sql>
+            alter table SYSOP add constraint "SYSOP_CK2" check (IS_COMPLETED in ('0','1'));
+        </sql>
+        <rollback>
+            <dropUniqueConstraint constraintName="SYSOP_CK2"
+                                  tableName="SYSOP"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-5" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="SYSOP_MSG"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы SYSOP_MSG</comment>
+        <createTable tableName="SYSOP_MSG">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="SYSOP_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="SYSOP_MSG_ID" type="BIGINT" />
+            <column name="TYPE" type="VARCHAR2(40)">
+                <constraints nullable="false" />
+            </column>
+            <column name="CODE" type="VARCHAR2(40)">
+                <constraints nullable="false" />
+            </column>
+            <column name="MESSAGE" type="VARCHAR2(1000)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="SYSOP_MSG"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-6" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SYSOP_MSG_SEQ" />
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы SYSOP_MSG</comment>
+        <createSequence sequenceName="SYSOP_MSG_SEQ"/>
+        <rollback>
+            <dropSequence sequenceName="SYSOP_MSG_SEQ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-7" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="SYSOP_MSG" columnName="TYPE"/>
+        </preConditions>
+        <comment>Создание ограничения столбца TYPE таблицы SYSOP_MSG</comment>
+        <sql>
+            alter table SYSOP_MSG add constraint "SYSOP_MSG_CK1" check (TYPE in ('ERROR','WARNING','INFO'));
+        </sql>
+        <rollback>
+            <dropUniqueConstraint constraintName="SYSOP_MSG_CK1"
+                                  tableName="SYSOP_MSG"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-8" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="SYSOP"/>
+            <tableExists tableName="SYSOP_MSG"/>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_SYSOP_MSG_TO_SYSOP"/>
+            </not>
+        </preConditions>
+        <comment>Создание внешнего ключа для таблицы SYSOP_MSG</comment>
+        <addForeignKeyConstraint baseColumnNames="SYSOP_ID"
+                                 baseTableName="SYSOP_MSG"
+                                 constraintName="FK_SYSOP_MSG_TO_SYSOP"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="SYSOP"
+                                 onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="SYSOP_MSG" constraintName="FK_SYSOP_MSG_TO_SYSOP"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-9" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="SYSOP_MSG"/>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_SYSOP_MSG_TO_SYSOP_MSG"/>
+            </not>
+        </preConditions>
+        <comment>Создание внешнего ключа 2 для таблицы SYSOP_MSG</comment>
+        <addForeignKeyConstraint baseColumnNames="SYSOP_MSG_ID"
+                                 baseTableName="SYSOP_MSG"
+                                 constraintName="FK_SYSOP_MSG_TO_SYSOP_MSG"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="SYSOP_MSG"
+                                 onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="SYSOP_MSG" constraintName="FK_SYSOP_MSG_TO_SYSOP_MSG"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-10" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="SYSOP_MSG_PARAM"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы SYSOP_MSG_PARAM</comment>
+        <createTable tableName="SYSOP_MSG_PARAM">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="SYSOP_MSG_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="KEY" type="VARCHAR2(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="VALUE" type="VARCHAR2(1000)"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="SYSOP_MSG_PARAM"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-11" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SYSOP_MSG_PARAM_SEQ" />
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы SYSOP_MSG_PARAM</comment>
+        <createSequence sequenceName="SYSOP_MSG_PARAM_SEQ"/>
+        <rollback>
+            <dropSequence sequenceName="SYSOP_MSG_PARAM_SEQ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-408-12" author="sorlov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="SYSOP_MSG"/>
+            <tableExists tableName="SYSOP_MSG_PARAM"/>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_SYSOP_MSG_PARAM_TO_SYSOP_MSG"/>
+            </not>
+        </preConditions>
+        <comment>Создание внешнего ключа для таблицы SYSOP_MSG_PARAM</comment>
+        <addForeignKeyConstraint baseColumnNames="SYSOP_MSG_ID"
+                                 baseTableName="SYSOP_MSG_PARAM"
+                                 constraintName="FK_SYSOP_MSG_PARAM_TO_SYSOP_MSG"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="SYSOP_MSG"
+                                 onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="SYSOP_MSG_PARAM" constraintName="FK_SYSOP_MSG_PARAM_TO_SYSOP_MSG"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

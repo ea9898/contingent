@@ -8,6 +8,8 @@
         <tagDatabase tag="1.1.0.0"/>
     </changeSet>
 
+    <include file="sysop.xml" relativeToChangelogFile="true"/>
+
     <changeSet id="CONTINGENT2-383-1" author="shnaider" labels="1.1.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="jl_history_requests" columnName="id"/>
@@ -365,6 +367,18 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-427-1" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="ESU_INPUT" columnName="host" newDataType="varchar2(255)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-427-2" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="ESU_OUTPUT" columnName="host" newDataType="varchar2(255)"/>
+        <rollback></rollback>
+    </changeSet>
+
     <changeSet id="CONTINGENT2-430-1" author="mkachalov" labels="1.1.0.0">
         <preConditions onFail="MARK_RAN">
             <and>
@@ -414,6 +428,7 @@
                 <where>code='services.security.settings'</where>
             </delete>
         </rollback>
+
     </changeSet>
 
 </databaseChangeLog>

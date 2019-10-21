@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.entity.sysop.Sysop;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
@@ -16,6 +17,7 @@ import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
+import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,9 @@ public class Algorithms {
 
     @Autowired
     private AddressesRepository addressesRepository;
+
+    @Autowired
+    private SysopCRUDRepository sysopCRUDRepository;
 
     public Algorithms() {
         super();
@@ -223,7 +228,7 @@ public class Algorithms {
                         || address.getAreaOMKTE().getCode().length() == 0)) {
                     codesNotSetError += " код района Москвы;";
                     //5
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.AREA.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.AREA.getLevel())
                         && (address.getArea() == null || address.getArea().getCode() == null
                         || address.getArea().getCode().length() == 0)) {
                     codesNotSetError += " код района;";
@@ -246,7 +251,7 @@ public class Algorithms {
                 } else if (address.getAoLevel().equals(AddressLevelType.STREET.getLevel())
                         && (address.getStreet() == null || address.getStreet().getCode() == null
                         || address.getStreet().getCode().length() == 0)) {
-                    codesNotSetError += " код код улицы;";
+                    codesNotSetError += " код улицы;";
                     //10
                 } else if (address.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
                     if (address.getBuilding() == null || (
@@ -333,6 +338,11 @@ public class Algorithms {
             }
         }
         return new ArrayList<>(resultAddresses);
+    }
+
+    //Регистрация асинхронной операции (А_УУ_9)
+    public long sysOperationRegistration() {
+        return  sysopCRUDRepository.save(new Sysop(0, false)).getId();
     }
 
 }

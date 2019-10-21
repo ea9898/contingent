@@ -45,7 +45,7 @@ import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDReposito
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
@@ -83,7 +83,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.naturalOrder;
@@ -143,7 +142,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaAddressRepository areaAddressRepository;
 
     @Autowired
-    private AreaAddressCRUDRepository areaAddressCRUDRepository;
+    private AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
 
     @Autowired
     private MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
@@ -836,7 +835,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
                 validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
                         new ValidationParameter("InputSpecialization", specialization.getTitle()),
-                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
+                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                         new ValidationParameter("AreaSpecialization", area.getAreaType().getCode()));
 
             }
@@ -847,7 +846,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (positions != null && positions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(empl.getPositionCode()))) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionNom.getTitle()),
-                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobId()),
+                        new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                         new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
             }
         }
@@ -961,13 +960,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 6.
         List<MoAddress> findMoAddress = new ArrayList<>();
         addressesRegistry.forEach(ar -> {
-            MoAddress moAddressInterspect = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
+            MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
                     addressesRegistry, validation);
-            if (moAddressInterspect == null || !moAddressInterspect.getMoId().equals(area.getMoId())) {
+            if (moAddressIntersect == null || !moAddressIntersect.getMoId().equals(area.getMoId())) {
                 validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
                         new ValidationParameter("moId", area.getMoId()));
-            } else if (moAddressInterspect.getMoId().equals(area.getMoId())) {
-                findMoAddress.add(moAddressInterspect);
+            } else if (moAddressIntersect.getMoId().equals(area.getMoId())) {
+                findMoAddress.add(moAddressIntersect);
             }
         });
 
@@ -977,10 +976,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 7.
         addressesRegistry.forEach(ar -> {
-            Long areaIdInterspect = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
-            if (areaIdInterspect != null) {
-                if (!areaIdInterspect.equals(area.getId())) {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA, new ValidationParameter("areaType", ar.getArea().getCode()));
+            Long areaIdIntersect = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
+            if (areaIdIntersect != null) {
+                if (!areaIdIntersect.equals(area.getId())) {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA, new ValidationParameter("areaType", area.getAreaType().getCode()));
                 } else {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", ar.getAddressString()));
                 }
@@ -1003,9 +1002,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaAddress.setAddress(addr);
             areaAddress.setCreateDate(LocalDateTime.now());
             areaAddress.setUpdateDate(LocalDateTime.now());
+            areaAddress.setStartDate(LocalDate.now());
             return areaAddress;
         }).collect(Collectors.toList());
-        areaAddressCRUDRepository.saveAll(areaAddresses);
+        areaAddressPagingAndSortingRepository.saveAll(areaAddresses);
 
         // 10. аннотация @LogESU
 
@@ -1047,13 +1047,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 AreaAddress areaAddressOld = areaAddressClone.clone(areaAddress);
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
-                areaAddressCRUDRepository.save(areaAddress);
+                areaAddressPagingAndSortingRepository.save(areaAddress);
                 historyHelper.sendHistory(areaAddressOld, areaAddress, AreaAddress.class);
             } else {
                 historyHelper.sendHistory(areaAddress, null, AreaAddress.class);
 
                 // 5.2.
-                areaAddressCRUDRepository.delete(areaAddress);
+                areaAddressPagingAndSortingRepository.delete(areaAddress);
             }
         }
 
@@ -1074,34 +1074,21 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 2.
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId);
-
-        if (areaAddresses.isEmpty()) {
-            return new PageImpl<>(new ArrayList<>(), paging, 0);
-        }
-
-        // 3.
-        TreeMap<Long, Addresses> addresses = new TreeMap<Long, Addresses>();
-        areaAddresses.forEach(aa -> {
-            //TODO ошибка, т.к. будет выведен только один адрес участка
-            addresses.put(aa.getArea().getId(), aa.getAddress());
-        });
+        // 2. 3.
+        Page<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId, paging);
 
         // 4.
-        // TODO: https://wiki.emias.mos.ru/pages/viewpage.action?pageId=71674265 п.4. НЕРЕАЛИЗУЕМО
-        // Сделано без объединения
         List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
-        addresses.forEach((id, addr) -> {
+        areaAddresses.forEach(addr -> {
             moscow.ptnl.contingent.area.model.area.AddressArea addressArea = new AddressArea();
-            addressArea.setAreaAddressId(id);
-            addressArea.setAddresses(addr);
+            addressArea.setAreaAddressId(addr.getId());
+            addressArea.setAddresses(addr.getAddress());
             addressAreas.add(addressArea);
         });
 
         // 5.
         return new PageImpl<>(new ArrayList<>(addressAreas),
-                paging, addressAreas.size());
+                areaAddresses.getPageable(), areaAddresses.getTotalElements());
     }
 
     // (К_УУ_16) Архивирование участка обслуживания
@@ -1309,6 +1296,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     new ValidationParameter("orderId", orderId));
         }
 
+        addressesRegistry = areaHelper.filterDistinctAddressesByGlobalId(addressesRegistry);
         // 4.
         algorithms.checkAddressFLK(addressesRegistry, validation);
 
@@ -1323,7 +1311,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             if (moAddress != null) {
                 validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
                         new ValidationParameter("address", addr.getAddressString()),
-                        new ValidationParameter("moId", moAddress.getId()));
+                        new ValidationParameter("moId", moAddress.getMoId()));
             }
         });
         if (!validation.isSuccess()) {
@@ -1349,6 +1337,11 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             moAddresses.add(moAddress);
         });
 
+        // Логирование добавление адресов
+        for (MoAddress moAddress: moAddresses) {
+            historyHelper.sendHistory(null, moAddress, MoAddress.class);
+        }
+
         return moAddresses.stream().map(MoAddress::getId).collect(Collectors.toList());
     }
 
@@ -1362,8 +1355,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("moAddressId", settingService.getPar2()));
         }
 
+        moAddressIds = moAddressIds.stream().distinct().collect(Collectors.toList());
         // 2.
-        List<MoAddress> addresses = areaHelper.getAndCheckMoAddressesExist(moAddressIds, validation);
+        List<MoAddress> moAddresses = areaHelper.getAndCheckMoAddressesExist(moAddressIds, validation);
 
         // 3.
         areaHelper.checkOrderExists(orderId, validation);
@@ -1373,7 +1367,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 4.
-        List<Long> moAddressesIds = addresses.stream()
+        List<Long> moAddressesIds = moAddresses.stream()
                 .map(MoAddress::getId)
                 .collect(Collectors.toList());
         List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(moAddressesIds);
@@ -1383,7 +1377,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 5.
-        areaHelper.delMoAddresses(addresses);
+        areaHelper.delMoAddresses(moAddresses);
+
+        for (MoAddress moAddress: moAddresses) {
+            historyHelper.sendHistory(moAddress, null, MoAddress.class);
+        }
+
     }
 
     // (К_УУ_23) Получение списка территорий обслуживания МО
@@ -1494,6 +1493,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 paging, totalSize);
     }
 
-
-
+    @Override
+    public Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode,
+                                          List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
+                                          Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                          boolean autoAssignForAttachment, Boolean attachByMedicalReason,
+                                          List<AddMedicalEmployee> addMedicalEmployees,
+                                          List<AddressRegistryBaseType> addresses) throws ContingentException {
+        return null;
+    }
 }

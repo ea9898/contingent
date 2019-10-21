@@ -34,7 +34,7 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
     AddressesCRUDRepository addressesCRUDRepository;
 
     @Autowired
-    AreaAddressCRUDRepository areaAddressCRUDRepository;
+    AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
 
     @Override
     public List<Addresses> findAddresses(List<Long> nsiGlobalIds) {
@@ -56,7 +56,7 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
                     addressesJoin.get(Addresses_.globalId).in(nsiGlobalIds));
         };
 
-        return areaAddressCRUDRepository.findAll(specification)
+        return areaAddressPagingAndSortingRepository.findAll(specification)
                 .stream().map(AreaAddress::getAddress).collect(Collectors.toList());
     }
 
@@ -101,7 +101,7 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), REGION_TE.getLevel())));
         };
 
-        return areaAddressCRUDRepository.findAll(specification)
+        return areaAddressPagingAndSortingRepository.findAll(specification)
                 .stream().map(AreaAddress::getAddress).collect(Collectors.toSet());
     }
 }

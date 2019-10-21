@@ -22,6 +22,8 @@ public class HistoryEventBuilder {
     
     private HistoryEventBuilder(Class<?> objectType, String objectId) {
         this.event = new HistoryEvent();
+        // TODO переделать под марировку в соответствии с докумиентацией
+        // https://wiki.emias.mos.ru/pages/viewpage.action?pageId=74770777
         this.event.setObjectType(getTableName(objectType));
         this.event.setObjectId(objectId);
         this.event.setChangeDate(LocalDateTime.now());        
