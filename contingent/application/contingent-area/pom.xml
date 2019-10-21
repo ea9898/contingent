@@ -246,6 +246,15 @@
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v2/emias.contingent2.v2.wsdl</wsdl>
                                         <serviceName>AreaService</serviceName>
                                     </wsdlOption>
+                                    <wsdlOption>
+                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/sysop/emias.contingent2.sysop.v1.wsdl</wsdl>
+                                        <serviceName>SysopService</serviceName>
+                                        <extraargs>
+                                            <extraarg>-verbose</extraarg>
+                                            <extraarg>-p</extraarg>
+                                            <extraarg>http://emias.mos.ru/contingent2/sysop/v1/types/=ru.mos.emias.contingent2.sysop.types</extraarg>
+                                        </extraargs>
+                                    </wsdlOption>
                                 </wsdlOptions>
                             </configuration>
                             <goals>

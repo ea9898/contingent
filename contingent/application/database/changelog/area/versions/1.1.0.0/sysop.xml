@@ -15,11 +15,13 @@
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="COMPLETENESS_PROGRESS" type="NUMBER(3)"/>
+            <column name="COMPLETENESS_PROGRESS" type="NUMBER(3)" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
             <column name="IS_COMPLETED" type="NUMBER(1)" defaultValueNumeric="0">
                 <constraints nullable="false" />
             </column>
-            <column name="HAS_SUCCEEDED" type="NUMBER(1)" defaultValueNumeric="0" />
+            <column name="HAS_SUCCEEDED" type="NUMBER(1)" />
         </createTable>
         <rollback>
             <dropTable tableName="SYSOP"/>

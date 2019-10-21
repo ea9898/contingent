@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://emias.mos.ru/contingent2/sysop/v1/types/"
+           targetNamespace="http://emias.mos.ru/contingent2/sysop/v1/types/"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:include schemaLocation="../emias/emias.core.v1.xsd"/>
+
+    <!--lists of entities-->
+    <xs:element name="getOperationStatusRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="tns:operationId" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getOperationStatusResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="operationExecutionStatus" type="tns:OperationExecutionStatus" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
