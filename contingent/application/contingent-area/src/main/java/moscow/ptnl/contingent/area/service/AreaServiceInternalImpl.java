@@ -1355,6 +1355,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("moAddressId", settingService.getPar2()));
         }
 
+        moAddressIds = moAddressIds.stream().distinct().collect(Collectors.toList());
         // 2.
         List<MoAddress> moAddresses = areaHelper.getAndCheckMoAddressesExist(moAddressIds, validation);
 
