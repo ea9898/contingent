@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "SYSOP")
@@ -29,7 +30,7 @@ public class Sysop implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "COMPLETENESS_PROGRESS")
+    @Column(name = "COMPLETENESS_PROGRESS", nullable = false)
     private Integer progress;
 
     @Column(name = "IS_COMPLETED", nullable = false)
@@ -81,6 +82,12 @@ public class Sysop implements Serializable {
 
     public void setMessages(Set<SysopMsg> messages) {
         this.messages = messages;
+    }
+
+    public Set<SysopMsg> getRootMessages() {
+        return messages.stream()
+                .filter(m -> m.getParentMessage() == null)
+                .collect(Collectors.toSet());
     }
 
     @Override
