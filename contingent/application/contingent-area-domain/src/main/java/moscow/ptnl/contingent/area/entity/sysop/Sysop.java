@@ -43,6 +43,20 @@ public class Sysop implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "sysop")
     private Set<SysopMsg> messages;
 
+    public Sysop() {
+    }
+
+    public Sysop(Integer progress, boolean completed) {
+        this(null, progress, completed, null);
+    }
+
+    public Sysop(Long id, Integer progress, boolean completed, Boolean successful) {
+        this.id = id;
+        this.progress = progress;
+        this.completed = completed;
+        this.successful = successful;
+    }
+
     public Long getId() {
         return id;
     }

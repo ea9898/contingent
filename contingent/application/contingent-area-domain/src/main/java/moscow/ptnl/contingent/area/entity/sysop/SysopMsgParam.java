@@ -38,6 +38,15 @@ public class SysopMsgParam implements Serializable {
     @Column(name = "VALUE")
     private String value;
 
+    public SysopMsgParam() {
+    }
+
+    public SysopMsgParam(SysopMsg sysopMsg, String key, String value) {
+        this.sysopMsg = sysopMsg;
+        this.key = key;
+        this.value = value;
+    }
+
     public Long getId() {
         return id;
     }

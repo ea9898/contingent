@@ -31,8 +31,13 @@ import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 
+import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
+import moscow.ptnl.contingent.repository.sysop.SysopMsgCRUDRepository;
+import moscow.ptnl.contingent.repository.sysop.SysopMsgParamCRUDRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -131,4 +136,15 @@ public class MockRepositoriesConfiguration {
     @MockBean
     private AreaTypeRelationsRepository areaTypeRelationsRepository;
 
+    @MockBean
+    private SysopCRUDRepository sysopCRUDRepository;
+
+    @MockBean
+    private SysopMsgCRUDRepository sysopMsgCRUDRepository;
+
+    @MockBean
+    private SysopMsgParamCRUDRepository sysopMsgParamCRUDRepository;
+
+    @MockBean
+    private EntityManager entityManager;
 }

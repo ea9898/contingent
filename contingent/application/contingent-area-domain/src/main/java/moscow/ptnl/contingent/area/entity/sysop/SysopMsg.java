@@ -54,6 +54,16 @@ public class SysopMsg implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "sysopMsg")
     private Set<SysopMsgParam> params;
 
+    public SysopMsg() {
+    }
+
+    public SysopMsg(Sysop sysop, String type, String code, String message) {
+        this.sysop = sysop;
+        this.type = type;
+        this.code = code;
+        this.message = message;
+    }
+
     public Long getId() {
         return id;
     }
