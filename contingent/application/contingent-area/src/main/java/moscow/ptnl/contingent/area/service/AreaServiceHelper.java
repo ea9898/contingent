@@ -65,6 +65,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -458,6 +459,13 @@ public class AreaServiceHelper {
         if (addresses.size() > maxAddresses) {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAddresses));
         }
+    }
+
+    public List<AddressRegistryBaseType> filterDistinctAddressesByGlobalId(List<AddressRegistryBaseType> addresses) throws ContingentException {
+        Set<Long> exist = new HashSet<>();
+        return addresses.stream()
+                .filter(a -> a.getGlobalIdNsi() == null || exist.add(a.getGlobalIdNsi()))
+                .collect(Collectors.toList());
     }
 
     public List<MoAddress> getAndCheckMoAddressesExist(List<Long> moAddressIds, Validation validation) {

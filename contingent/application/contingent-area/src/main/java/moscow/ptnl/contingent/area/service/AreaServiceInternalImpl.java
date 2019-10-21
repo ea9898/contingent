@@ -960,13 +960,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 6.
         List<MoAddress> findMoAddress = new ArrayList<>();
         addressesRegistry.forEach(ar -> {
-            MoAddress moAddressInterspect = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
+            MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
                     addressesRegistry, validation);
-            if (moAddressInterspect == null || !moAddressInterspect.getMoId().equals(area.getMoId())) {
+            if (moAddressIntersect == null || !moAddressIntersect.getMoId().equals(area.getMoId())) {
                 validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
                         new ValidationParameter("moId", area.getMoId()));
-            } else if (moAddressInterspect.getMoId().equals(area.getMoId())) {
-                findMoAddress.add(moAddressInterspect);
+            } else if (moAddressIntersect.getMoId().equals(area.getMoId())) {
+                findMoAddress.add(moAddressIntersect);
             }
         });
 
@@ -1002,6 +1002,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaAddress.setAddress(addr);
             areaAddress.setCreateDate(LocalDateTime.now());
             areaAddress.setUpdateDate(LocalDateTime.now());
+            areaAddress.setStartDate(LocalDate.now());
             return areaAddress;
         }).collect(Collectors.toList());
         areaAddressPagingAndSortingRepository.saveAll(areaAddresses);
@@ -1295,6 +1296,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                     new ValidationParameter("orderId", orderId));
         }
 
+        addressesRegistry = areaHelper.filterDistinctAddressesByGlobalId(addressesRegistry);
         // 4.
         algorithms.checkAddressFLK(addressesRegistry, validation);
 
