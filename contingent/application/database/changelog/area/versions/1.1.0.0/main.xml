@@ -398,7 +398,7 @@
             </and>
         </preConditions>
         <comment>Настройка безопасности методов web-сервиса</comment>
-        <loadData catalogName="cat"
+        <loadData
             encoding="UTF-8"
             file="changelog/area/versions/1.1.0.0/files/security.config.csv"
             quotchar=""
@@ -428,7 +428,6 @@
                 <where>code='services.security.settings'</where>
             </delete>
         </rollback>
-
     </changeSet>
 
 </databaseChangeLog>

@@ -222,4 +222,24 @@
         </rollback>
     </changeSet>
 
+   <changeSet id="CONTINGENT2-467" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'services.security.settings'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка безопасности методов web-сервиса с учетом метода getOperationStatus в отдельном сервисе</comment>
+        <loadUpdateData
+            encoding="UTF-8"
+            file="changelog/area/versions/1.1.0.0/files/security.config.1.csv"
+            quotchar=""
+            separator="#"
+            tableName="AD_CONFIG"
+	    primaryKey="code">
+            <column name="code" type="STRING"/>
+            <column name="val" type="STRING"/>
+        </loadUpdateData>
+    </changeSet>
+
 </databaseChangeLog>

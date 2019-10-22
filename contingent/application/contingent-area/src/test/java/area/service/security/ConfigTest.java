@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package area.service.security;
 
 import java.io.IOException;
@@ -12,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import moscow.ptnl.contingent.area.ws.sysop.SysopWebService;
 import moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl;
 import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
 import moscow.ptnl.contingent.domain.security.setting.AuthMethod;
@@ -42,7 +38,8 @@ public class ConfigTest {
     
     private String CONFIG;
     private final Class<?>[] SERVICES = new Class<?>[]{
-        AreaServiceImpl.class
+        AreaServiceImpl.class,
+        SysopWebService.class
     };
     
     @BeforeEach
@@ -50,7 +47,8 @@ public class ConfigTest {
         CONFIG = getFileContent("security/config.json");
     }
     
-    //@Test
+    @Test
+    //проверяет наличие настроек для аннотированных методов
     public void checkMethods() {
         Map<String, AuthService> configSetting = settingService.unmarshall(CONFIG); //сгенерен по файлу
         Map<String, AuthService> configGenerated = createConfig(SERVICES); //сгенерен по реальным методам
@@ -76,7 +74,8 @@ public class ConfigTest {
         }
     }
     
-    //@Test метод для генерации конфига (без прав) по списку методов класса web-сервиса
+    //@Test 
+    //метод для генерации конфига (без прав) по списку методов класса web-сервиса
     public void generateConfig() {        
         try {
             String config = settingService.marshall(createConfig(SERVICES));

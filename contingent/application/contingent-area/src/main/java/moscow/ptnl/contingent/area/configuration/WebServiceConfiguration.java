@@ -96,7 +96,7 @@ public class WebServiceConfiguration {
         endpoint.setAddress("/SysopService");
         endpoint.publish();
         endpoint.getInInterceptors().add(soapVersionInterceptor);
-//        endpoint.getInInterceptors().add(credentialsValidator());
+        endpoint.getInInterceptors().add(credentialsValidator());
         return endpoint;
     }
 

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
+import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
 
 /**
  *
@@ -40,7 +41,7 @@ public class SysopWebService extends BaseService implements SysopPT {
     @Autowired
     private SysopMapper sysopMapper;
 
-    @Override
+    @Override @EMIASSecured
     public GetOperationStatusResponse getOperationStatus(GetOperationStatusRequest body) throws Fault {
         try {
             GetOperationStatusResponse response = new GetOperationStatusResponse();
