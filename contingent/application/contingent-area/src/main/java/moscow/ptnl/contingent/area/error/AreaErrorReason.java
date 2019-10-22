@@ -51,7 +51,7 @@ public enum AreaErrorReason implements ErrorReason {
     CANT_RESTORE_PERSONAL_KIND_AREA("UE069", "Восстановление из архива невозможно, т.к. вид участка «Именной»"),
     INCORRECT_ADDRESS_NESTING("UE070", "Некорректная вложенность адреса, не указано муниципальное образование"),
     AREA_TYPE_IS_NOT_PRIMARY("UE071", "Невозможно создать/изменить участок, т.к. тип участка %s не является типом участка первичного класса"),
-    INCORRECT_ADDRESS_LEVEL("UE072", "Некорректный уровень адреса (1 - г. Москва)"),
+    INCORRECT_ADDRESS_LEVEL("UE072", "Некорректный уровень адреса (%s)"),
     //TODO одинаковый код ошибки 073
     NO_ADDRESS_IN_CATALOG("UE073", "В справочнике отсутствует адрес с ИД %s и уровнем %s"),
     CODES_NOT_SET("UE073", "Для адреса с кодом %s и уровнем %s не переданы:"),
