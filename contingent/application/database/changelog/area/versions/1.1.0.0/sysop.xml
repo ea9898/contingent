@@ -222,4 +222,20 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-403-1" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="SYSOP"/>
+            <not>
+                <columnExists tableName="SYSOP" columnName="result"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки result в таблицу SYSOP</comment>
+        <addColumn tableName="sysop">
+            <column name="result" type="text"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="SYSOP" columnName="result"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

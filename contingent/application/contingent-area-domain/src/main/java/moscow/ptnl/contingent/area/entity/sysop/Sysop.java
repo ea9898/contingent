@@ -41,6 +41,9 @@ public class Sysop implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean successful;
 
+    @Column(name = "RESULT")
+    private String result;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "sysop")
     private Set<SysopMsg> messages;
 
@@ -52,10 +55,15 @@ public class Sysop implements Serializable {
     }
 
     public Sysop(Long id, Integer progress, boolean completed, Boolean successful) {
+        this(id, progress, completed, successful, null);
+    }
+
+    public Sysop(Long id, Integer progress, boolean completed, Boolean successful, String result) {
         this.id = id;
         this.progress = progress;
         this.completed = completed;
         this.successful = successful;
+        this.result = result;
     }
 
     public Long getId() {
@@ -92,6 +100,14 @@ public class Sysop implements Serializable {
 
     public Set<SysopMsg> getMessages() {
         return messages;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 
     public void setMessages(Set<SysopMsg> messages) {

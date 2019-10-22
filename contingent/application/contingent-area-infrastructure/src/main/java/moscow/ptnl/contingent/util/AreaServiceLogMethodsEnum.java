@@ -11,7 +11,8 @@ public enum AreaServiceLogMethodsEnum {
     ADD_AREA_ADDRESS("addAreaAddress"),
     ADD_MO_ADDRESS("addMoAddress"),
     DEL_AREA_ADDRESS("delAreaAddress"),
-    DEL_MO_ADDRESS("delMoAddress");
+    DEL_MO_ADDRESS("delMoAddress"),
+    INITIATE_CREATE_PRIMARY_AREA("initiateCreatePrimaryArea");
 
     private String name;
 
@@ -24,9 +25,6 @@ public enum AreaServiceLogMethodsEnum {
     }
 
     public static boolean contains(String name) {
-        if (Arrays.stream(AreaServiceLogMethodsEnum.values()).anyMatch(method -> method.getName().equals(name))) {
-            return true;
-        }
-        return false;
+        return Arrays.stream(AreaServiceLogMethodsEnum.values()).anyMatch(method -> method.getName().equals(name));
     }
 }
