@@ -90,10 +90,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -970,21 +972,25 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         Validation validation = new Validation();
 
-        // 1. и 2.
+        // 2 и 3
         Area area = areaHelper.checkAndGetArea(areaId, validation);
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
-        // 3.
+        // 4
         areaHelper.checkTooManyAddresses(addressesRegistry, settingService.getPar1());
 
-        // 4.
+        // 5
+        Set<Long> addrSet = new HashSet<>(addressesRegistry.size());
+        addressesRegistry.removeIf(addr -> !addrSet.add(addr.getGlobalIdNsi()));
+
+        // 6
         algorithms.checkAddressFLK(addressesRegistry, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 6.
+        // 7
         List<MoAddress> findMoAddress = new ArrayList<>();
         addressesRegistry.forEach(ar -> {
             MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
@@ -1001,7 +1007,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 7.
+        // 8
         addressesRegistry.forEach(ar -> {
             Long areaIdIntersect = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
             if (areaIdIntersect != null) {
@@ -1016,12 +1022,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 8.
+        // 9
         List<Addresses> addresses = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
                 .collect(Collectors.toList());
         addressesCRUDRepository.saveAll(addresses);
 
-        // 9.
+        // 10
         List<AreaAddress> areaAddresses = addresses.stream().map(addr -> {
             AreaAddress areaAddress = new AreaAddress();
             areaAddress.setArea(area);
@@ -1034,9 +1040,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }).collect(Collectors.toList());
         areaAddressPagingAndSortingRepository.saveAll(areaAddresses);
 
-        // 10. аннотация @LogESU
+        // 11 аннотация @LogESU
 
-        //
+        // 12
         for (AreaAddress areaAddress: areaAddresses) {
             historyHelper.sendHistory(null, areaAddress, AreaAddress.class);
         }
