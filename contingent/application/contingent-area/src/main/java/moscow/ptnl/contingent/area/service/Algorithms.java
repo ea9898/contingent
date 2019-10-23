@@ -10,6 +10,7 @@ import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
+import moscow.ptnl.contingent.error.CustomErrorReason;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
@@ -30,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.error.CustomErrorReason;
 
 /**
  * Это класс с алгоритмами А_УУ_хх
@@ -219,8 +219,10 @@ public class Algorithms {
                 validation.error(AreaErrorReason.AO_LEVEL_NOT_SET);
             } else {
                 //2
-                if (address.getAoLevel().equals(AddressLevelType.MOSCOW.getLevel())) {
-                    validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
+                if (address.getAoLevel().equals(AddressLevelType.MOSCOW.getLevel())
+                        || address.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
+                    validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
+                            new ValidationParameter("aoLevel", address.getAoLevel()));
                 }
                 //4
                 if (!address.getAoLevel().equals(AddressLevelType.REGION_TE.getLevel())
