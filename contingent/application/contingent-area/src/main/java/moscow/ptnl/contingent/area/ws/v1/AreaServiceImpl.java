@@ -402,7 +402,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public InitiateCreatePrimaryAreaResponse initiateCreatePrimaryArea(InitiateCreatePrimaryAreaRequest body) throws Fault {
         try {
             InitiateCreatePrimaryAreaResponse response = new InitiateCreatePrimaryAreaResponse();

@@ -112,6 +112,10 @@
                 "getMoAddress":{
                     "enabled":true,
                     "permissions":[320023]
+                },
+                "initiateCreatePrimaryArea": {
+                    "enabled":true,
+                    "permissions":[320026]
                 }
             }
 	}
