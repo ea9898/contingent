@@ -9,6 +9,7 @@
     </changeSet>
 
     <include file="sysop.xml" relativeToChangelogFile="true"/>
+    <include file="area.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="CONTINGENT2-383-1" author="shnaider" labels="1.1.0.0">
         <preConditions onFail="MARK_RAN">

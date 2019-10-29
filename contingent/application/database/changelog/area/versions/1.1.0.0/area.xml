@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="CONTINGENT2-481-2" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="addresses" columnName="region_te_typename" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-3" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="addresses" columnName="area_te_typename" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-5" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="addresses" columnName="area_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-6" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="addresses" columnName="city_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-7" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="addresses" columnName="place_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-8" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="addresses" columnName="plan_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-9" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="addresses" columnName="street_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+<!--
+    Нет такого поля
+    <changeSet id="CONTINGENT2-481-10" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="region_te_name_short" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+-->
+
+    <changeSet id="CONTINGENT2-481-11" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="region_te_typename" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-12" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="area_te_typename" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-13" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="kod_givz" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-14" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="area_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-15" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="city_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-16" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="place_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-17" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="plan_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-481-18" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="street_bti_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
+</databaseChangeLog>
