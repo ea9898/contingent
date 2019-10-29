@@ -38,6 +38,7 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
                     if (!AddressLevelType.REGION_TE.getLevel().equals(e.getAoLevel())) {
                         address.setOmkTeRegionCode(e.getAreaCodeOmkTe());
                     }
+/*
                     if (AddressLevelType.AREA.getLevel().equals(e.getAoLevel())) {
                         address.setStreetBTICode(e.getAreaBtiCode());
                     }
@@ -56,6 +57,7 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
                         address.setHouse(e.getL1Value());
                         address.setBuilding(e.getL2Value());
                         address.setConstruction(e.getL3Value());
+                        TODO EMIASUPK-8004
                         if (e.getStreetBtiCode() != null) {
                             address.setStreetBTICode(e.getStreetBtiCode());
                         }else if (e.getPlanBtiCode() != null) {
@@ -71,6 +73,7 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
                     if (AddressLevelType.PLAN.getLevel().equals(e.getAoLevel())) {
                         address.setStreetBTICode(e.getPlanBtiCode());
                     }
+*/
                     addresses.getAddress().add(address);
                 });
         return addresses;
