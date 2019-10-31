@@ -256,7 +256,8 @@
             <column name="val" type="STRING"/>
         </loadUpdateData>
     </changeSet>
-    <changeSet id="CONTINGENT2-480" author="ddryuchin" labels="1.1.0.0">
+
+    <changeSet id="CONTINGENT2-392" author="ddryuchin" labels="1.1.0.0">
         <preConditions onFail="MARK_RAN">
             <and>
                 <tableExists tableName="AD_CONFIG"/>
@@ -266,7 +267,7 @@
         <comment>Настройка безопасности методов web-сервиса с учетом метода getOperationStatus в отдельном сервисе</comment>
         <loadUpdateData
             encoding="UTF-8"
-            file="changelog/area/versions/1.1.0.0/files/security.config.2.csv"
+            file="changelog/area/versions/1.1.0.0/files/security.config.3.csv"
             quotchar=""
             separator="#"
             tableName="AD_CONFIG"
