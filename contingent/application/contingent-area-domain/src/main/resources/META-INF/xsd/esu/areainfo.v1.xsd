@@ -159,7 +159,7 @@
                 </xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="code" minOccurs="1" maxOccurs="unbounded"/>
+                        <xs:element name="code" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>

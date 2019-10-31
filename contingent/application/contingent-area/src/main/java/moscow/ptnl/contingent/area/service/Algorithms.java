@@ -207,7 +207,8 @@ public class Algorithms {
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
     public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {
-        return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
+        return areaInfoEvent;
     }
 
     // Форматно-логический контроль адреса (А_УУ_6)

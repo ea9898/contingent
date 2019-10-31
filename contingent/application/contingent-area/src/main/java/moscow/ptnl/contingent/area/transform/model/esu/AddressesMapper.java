@@ -7,6 +7,7 @@ import moscow.ptnl.contingent2.area.info.Address;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Set;
 
 @Component
@@ -33,47 +34,68 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
                 )
                 .forEach(e -> {
                     Address address = new Address();
+                    // Уровень адреса (aolevel) = AOLEVEL (заполняется для всех уровней адреса);
                     address.setAolevel(e.getAoLevel());
+                    // Код округа (omkTeDistrictCode) = REGION_TE_CODE (заполняется для всех уровней адреса);
                     address.setOmkTeDistrictCode(e.getRegionTeCode());
+
+                    Address.StreetBTI streetBTI = new Address.StreetBTI();
+
+                    // Код района (omkTeRegionCode) = AREACODE_OMK_TE (заполняется для всех уровней адреса, кроме 2);
                     if (!AddressLevelType.REGION_TE.getLevel().equals(e.getAoLevel())) {
                         address.setOmkTeRegionCode(e.getAreaCodeOmkTe());
                     }
-/*
+
+                    // Код улицы по ОМК УМ (omkUmCode) = STREET_OMK_UM (может быть заполнен для уровней адреса 7, 8);
+                    if (AddressLevelType.STREET.getLevel().equals(e.getAoLevel()) ||
+                            AddressLevelType.ID.getLevel().equals(e.getAoLevel())) {
+                        address.setOmkUmCode(e.getStreetOmkUm());
+                    }
+
+                    // - 3 - AREA_BTI_CODE,
                     if (AddressLevelType.AREA.getLevel().equals(e.getAoLevel())) {
-                        address.setStreetBTICode(e.getAreaBtiCode());
+                        streetBTI.getCode().addAll(Arrays.asList(e.getAreaBtiCode().split(";")));
                     }
+
+                    // - 4 - CITY_BTI_CODE,
                     if (AddressLevelType.CITY.getLevel().equals(e.getAoLevel())) {
-                        address.setStreetBTICode(e.getCityBtiCode());
+                        streetBTI.getCode().addAll(Arrays.asList(e.getCityBtiCode().split(";")));
                     }
+
+                    // - 6 - PLACE_BTI_CODE,
                     if (AddressLevelType.PLACE.getLevel().equals(e.getAoLevel())) {
-                        address.setStreetBTICode(e.getPlaceBtiCode());
+                        streetBTI.getCode().addAll(Arrays.asList(e.getPlaceBtiCode().split(";")));
                     }
-                    if (AddressLevelType.STREET.getLevel().equals(e.getAoLevel())) {
-                        address.setOmkUmCode(e.getStreetOmkUm());
-                        address.setStreetBTICode(e.getStreetBtiCode());
+
+                    // - 6 - PLACE_BTI_CODE,
+                    if (AddressLevelType.PLAN.getLevel().equals(e.getAoLevel())) {
+                        streetBTI.getCode().addAll(Arrays.asList(e.getPlanBtiCode().split(";")));
                     }
+
+                    // - 7 - STREET_BTI_CODE,
+                    if (AddressLevelType.STREET.getLevel().equals(e.getAoLevel()) && e.getStreetBtiCode() != null) {
+                        streetBTI.getCode().addAll(Arrays.asList(e.getStreetBtiCode().split(";")));
+                    }
+
                     if (AddressLevelType.ID.getLevel().equals(e.getAoLevel())) {
-                        address.setOmkUmCode(e.getStreetOmkUm());
                         address.setHouse(e.getL1Value());
                         address.setBuilding(e.getL2Value());
                         address.setConstruction(e.getL3Value());
-                        TODO EMIASUPK-8004
+
                         if (e.getStreetBtiCode() != null) {
-                            address.setStreetBTICode(e.getStreetBtiCode());
+                            streetBTI.getCode().addAll(Arrays.asList(e.getStreetBtiCode().split(";")));
                         }else if (e.getPlanBtiCode() != null) {
-                            address.setStreetBTICode(e.getPlanBtiCode());
+                            streetBTI.getCode().addAll(Arrays.asList(e.getPlanBtiCode().split(";")));
                         }else if (e.getPlaceBtiCode() != null) {
-                            address.setStreetBTICode(e.getPlaceBtiCode());
+                            streetBTI.getCode().addAll(Arrays.asList(e.getPlaceBtiCode().split(";")));
                         }else if (e.getCityBtiCode() != null) {
-                            address.setStreetBTICode(e.getCityBtiCode());
+                            streetBTI.getCode().addAll(Arrays.asList(e.getCityBtiCode().split(";")));
                         }else if (e.getAreaBtiCode() != null) {
-                            address.setStreetBTICode(e.getAreaBtiCode());
+                            streetBTI.getCode().addAll(Arrays.asList(e.getAreaBtiCode().split(";")));
                         }
                     }
-                    if (AddressLevelType.PLAN.getLevel().equals(e.getAoLevel())) {
-                        address.setStreetBTICode(e.getPlanBtiCode());
-                    }
-*/
+
+                    address.setStreetBTI(streetBTI);
                     addresses.getAddress().add(address);
                 });
         return addresses;
