@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.area.service;
 
+import static moscow.ptnl.contingent.area.model.area.AddressLevelType.*;
+
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
@@ -7,6 +9,7 @@ import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.sysop.Sysop;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
@@ -23,6 +26,7 @@ import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
 import java.util.ArrayList;
@@ -290,52 +294,54 @@ public class Algorithms {
 
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
     // алгоритм изменён, вместо входного списка адресов НСИ, делаем запросы в нси с нужными фильтрами
-    public List<Addresses> findIntersectingAddressesSearch(List<AddressRegistryBaseType> addressesRegistryType) {
+    public List<Addresses> findIntersectingAddressesSearch(List<SearchAreaAddress> addressesRegistryType) {
 
         List<Long> inputIds = addressesRegistryType.stream()
-                .map(AddressRegistryBaseType::getGlobalIdNsi).collect(Collectors.toList());
+                .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList());
 
         Set<Addresses> resultAddresses = new HashSet<>(addressesRepository.findActualAddresses(inputIds));
 
-        for (AddressRegistryBaseType address : addressesRegistryType) {
-            switch (AddressLevelType.find(address.getAoLevel())) {
+        for (SearchAreaAddress address : addressesRegistryType) {
+            AddressLevelType level = AddressLevelType.find(address.getAoLevel());
+            List<String> areaOmkTeCodes = address.getAreaOMKTEcode() == null ? null : Arrays.asList(address.getAreaOMKTEcode().split(";"));
+            List<String> regionTeCodes = address.getRegionOMKTEcode() == null ? null : Arrays.asList(address.getRegionOMKTEcode().split(";"));
+
+            switch (level) {
                 case ID:
                 case STREET:
-                    if (address.getStreet() != null && address.getStreet().getCode() != null) {
-                        resultAddresses.addAll(addressesRepository.findActualAddresses(address.getStreet().getCode(),
-                                null, null, null, null, null, null));
+                    if (StringUtils.hasText(address.getStreetCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(address.getStreetCode(), address.getPlanCode(),
+                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, STREET.equals(level)));
                     }
                 case PLAN:
-                    if (address.getPlan() != null && address.getPlan().getCode() != null) {
-                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
-                                address.getPlan().getCode(), null, null, null, null, null));
+                    if (StringUtils.hasText(address.getPlanCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null, address.getPlanCode(),
+                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, PLAN.equals(level)));
                     }
                 case PLACE:
-                    if (address.getPlace() != null && address.getPlace().getCode() != null) {
-                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
-                                null, address.getPlace().getCode(), null, null, null, null));
+                    if (StringUtils.hasText(address.getPlaceCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null, null,
+                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, PLACE.equals(level)));
                     }
                 case CITY:
-                    if (address.getCity() != null && address.getCity().getCode() != null) {
-                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
-                                null, null, address.getCity().getCode(), null, null, null));
+                    if (StringUtils.hasText(address.getCityCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null, null,
+                                null, address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, CITY.equals(level)));
                     }
                 case AREA:
-                    if (address.getArea() != null && address.getArea().getCode() != null) {
-                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
-                                null, null, null, address.getArea().getCode(), null, null));
+                    if (StringUtils.hasText(address.getAreaCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,null,
+                                null, null, address.getAreaCode(), areaOmkTeCodes, regionTeCodes, AREA.equals(level)));
                     }
                 case AREA_TE:
-                    if (address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode() != null) {
-                        List<String> areaOmkTeCodes = Arrays.asList(address.getAreaOMKTE().getCode().split(";"));
+                    if (StringUtils.hasText(address.getAreaOMKTEcode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null,
-                                null, null, null, null, areaOmkTeCodes, null));
+                                null, null, null, null, areaOmkTeCodes, null, AREA_TE.equals(level)));
                     }
                 case REGION_TE:
-                    if (address.getRegionOMKTE() != null && address.getRegionOMKTE().getCode() != null) {
-                        List<String> regionTeCodes = Arrays.asList(address.getRegionOMKTE().getCode().split(";"));
+                    if (StringUtils.hasText(address.getRegionOMKTEcode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null,
-                                null, null, null, null, null, regionTeCodes));
+                                null, null, null, null, null, regionTeCodes, REGION_TE.equals(level)));
                     }
 
             }

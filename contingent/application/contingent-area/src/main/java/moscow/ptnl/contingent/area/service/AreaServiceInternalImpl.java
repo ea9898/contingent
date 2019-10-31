@@ -1490,8 +1490,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                         .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
             //4.3.3
             } else {
-                addresses = algorithms.findIntersectingAddressesSearch(searchAreaAddresses.stream()
-                        .map(AddressRegistryBaseTypeMapper::entityToDtoTransform).collect(Collectors.toList()));
+                addresses = algorithms.findIntersectingAddressesSearch(searchAreaAddresses);
             }
             //4.3.4
             if (!addresses.isEmpty()) {

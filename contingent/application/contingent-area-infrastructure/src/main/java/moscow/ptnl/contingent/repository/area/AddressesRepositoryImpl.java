@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -63,7 +64,7 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
     @Override
     public Set<Addresses> findActualAddresses(String streetCode, String planCode,
                                               String placeCode, String cityCode, String areaCode,
-                                              List<String> areaOmkTeCodes, List<String> regionTeCodes) {
+                                              List<String> areaOmkTeCodes, List<String> regionTeCodes, boolean skipLevelFilter) {
         Specification<AreaAddress> specification = (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) -> {
             final Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.LEFT);
             return criteriaBuilder.and(
@@ -74,31 +75,48 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
                     streetCode == null ? criteriaBuilder.conjunction() :
                             criteriaBuilder.and(
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.streetCode), streetCode),
-                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), STREET.getLevel())),
+                                    skipLevelFilter ? criteriaBuilder.conjunction() :
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), STREET.getLevel())),
                     planCode == null ? criteriaBuilder.conjunction() :
                             criteriaBuilder.and(
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode), planCode),
-                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), PLAN.getLevel())),
+                                    skipLevelFilter ? criteriaBuilder.conjunction() :
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), PLAN.getLevel())),
                     placeCode == null ? criteriaBuilder.conjunction() :
                             criteriaBuilder.and(
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.placeCode), placeCode),
-                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), PLACE.getLevel())),
+                                    skipLevelFilter ? criteriaBuilder.conjunction() :
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), PLACE.getLevel())),
                     cityCode == null ? criteriaBuilder.conjunction() :
                             criteriaBuilder.and(
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.cityCode), cityCode),
-                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), CITY.getLevel())),
+                                    skipLevelFilter ? criteriaBuilder.conjunction() :
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), CITY.getLevel())),
                     areaCode == null ? criteriaBuilder.conjunction() :
                             criteriaBuilder.and(
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCode), areaCode),
-                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), AREA.getLevel())),
+                                    skipLevelFilter ? criteriaBuilder.conjunction() :
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), AREA.getLevel())),
                     areaOmkTeCodes == null || areaOmkTeCodes.size() == 0 ? criteriaBuilder.conjunction() :
                             criteriaBuilder.and(
-                                    addressesJoin.get(Addresses_.areaCodeOmkTe).in(areaOmkTeCodes),
-                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), AREA_TE.getLevel())),
+//                                    addressesJoin.get(Addresses_.areaCodeOmkTe).in(areaOmkTeCodes),
+                                    //AREACODE_OMK_TE LIKE '%AREACODE_OMK_TE%' (если в адресе из входных параметров содержится несколько значений, разделенных ";", то данное условие проверяется для каждого значения)
+                                    criteriaBuilder.or(areaOmkTeCodes.stream()
+                                            .distinct()
+                                            .map(c -> criteriaBuilder.like(addressesJoin.get(Addresses_.areaCodeOmkTe), "%" + c + "%"))
+                                            .toArray(Predicate[]::new)),
+                                    skipLevelFilter ? criteriaBuilder.conjunction() :
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), AREA_TE.getLevel())),
                     regionTeCodes == null || regionTeCodes.size() == 0 ? criteriaBuilder.conjunction() :
                             criteriaBuilder.and(
-                                    addressesJoin.get(Addresses_.regionTeCode).in(regionTeCodes),
-                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), REGION_TE.getLevel())));
+//                                    addressesJoin.get(Addresses_.regionTeCode).in(regionTeCodes),
+                                    //REGION_TE_CODE LIKE '%REGION_TE_CODE%' (если в адресе из входных параметров содержится несколько значений, разделенных ";", то данное условие проверяется для каждого значения)
+                                    criteriaBuilder.or(regionTeCodes.stream()
+                                            .distinct()
+                                            .map(c -> criteriaBuilder.like(addressesJoin.get(Addresses_.regionTeCode), "%" + c + "%"))
+                                            .toArray(Predicate[]::new)),
+                                    skipLevelFilter ? criteriaBuilder.conjunction() :
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel), REGION_TE.getLevel())));
         };
 
         return areaAddressPagingAndSortingRepository.findAll(specification)
