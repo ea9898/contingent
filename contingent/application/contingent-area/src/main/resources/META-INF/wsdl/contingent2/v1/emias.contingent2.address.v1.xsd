@@ -24,7 +24,7 @@
                                         <xs:documentation>Уникальный идентификатор адреса в ЕМИАС.НСИ</xs:documentation>
                                 </xs:annotation>
                         </xs:element>
-                        <xs:element name="regionOMKTEcode" type="restr:stringLimit4">
+                        <xs:element name="regionOMKTEcode" type="xs:string">
                                 <xs:annotation>
                                         <xs:documentation>Код округа Москвы</xs:documentation>
                                 </xs:annotation>
