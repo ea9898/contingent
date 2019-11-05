@@ -1455,14 +1455,15 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                                      List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
                                      List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch,
                                      PageRequest paging) throws ContingentException {
-        //1
+        //2
         areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
                 isArchived, medicalEmployees, searchAreaAddresses);
-        //2
-        areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
 
         //3
         areaHelper.checkSearchAreaInaccurateAddress(isExactAddressMatch, searchAreaAddresses);
+
+        //4
+        areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
 
         //4.1
         List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description, isArchived);

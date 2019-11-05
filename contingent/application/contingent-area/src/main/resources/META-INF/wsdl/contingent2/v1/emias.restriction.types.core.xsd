@@ -16,6 +16,12 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="stringStrict">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="stringLimit2">
         <xs:restriction base="xs:string">
             <xs:maxLength value="2"/>
@@ -28,9 +34,23 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="stringLimitStrict3">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="3"/>
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="stringLimit4">
         <xs:restriction base="xs:string">
             <xs:maxLength value="4"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="stringLimitStrict4">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="4"/>
+            <xs:minLength value="1"/>
         </xs:restriction>
     </xs:simpleType>
 

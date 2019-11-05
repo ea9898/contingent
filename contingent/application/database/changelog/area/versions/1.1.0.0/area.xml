@@ -102,4 +102,10 @@
         <rollback></rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-389-1" author="ashnaider" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="addresses" columnName="region_te_code" newDataType="varchar2(4000)"/>
+        <rollback></rollback>
+    </changeSet>
+
 </databaseChangeLog>

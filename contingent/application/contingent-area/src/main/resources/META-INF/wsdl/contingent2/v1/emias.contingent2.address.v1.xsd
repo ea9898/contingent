@@ -6,74 +6,74 @@
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
-        <xs:include schemaLocation="../../emias/emias.core.address.v1.xsd"/>
-        <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="emias.restriction.types.core.xsd"/>
+    <xs:include schemaLocation="../../emias/emias.core.address.v1.xsd"/>
+    <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="emias.restriction.types.core.xsd"/>
 
-        <xs:complexType name="SearchAreaAddress">
+    <xs:complexType name="SearchAreaAddress">
+        <xs:annotation>
+            <xs:documentation>Сведения адреса для метода searchArea</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="aoLevel" type="restr:stringLimit2">
                 <xs:annotation>
-                        <xs:documentation>Сведения адреса для метода searchArea</xs:documentation>
+                    <xs:documentation>Уровень адресного объекта (по уровням Адресного реестра НСИ). Обязательно для заполнения</xs:documentation>
                 </xs:annotation>
-                <xs:sequence>
-                        <xs:element name="aoLevel" type="restr:stringLimit2">
-                                <xs:annotation>
-                                        <xs:documentation>Уровень адресного объекта (по уровням Адресного реестра НСИ). Обязательно для заполнения</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="globalIdNsi" type="xs:long">
-                                <xs:annotation>
-                                        <xs:documentation>Уникальный идентификатор адреса в ЕМИАС.НСИ</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="regionOMKTEcode" type="restr:stringLimit4">
-                                <xs:annotation>
-                                        <xs:documentation>Код округа Москвы</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="areaOMKTEcode" type="xs:string" minOccurs="0">
-                                <xs:annotation>
-                                        <xs:documentation>Код района Москвы</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="areaCode" type="restr:stringLimit3" minOccurs="0">
-                                <xs:annotation>
-                                        <xs:documentation>Код района</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="cityCode" type="restr:stringLimit3" minOccurs="0">
-                                <xs:annotation>
-                                        <xs:documentation>Код города</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="placeCode" type="restr:stringLimit3" minOccurs="0">
-                                <xs:annotation>
-                                        <xs:documentation>Код населенного пункта</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="planCode" type="restr:stringLimit4" minOccurs="0">
-                                <xs:annotation>
-                                        <xs:documentation>Код элемента планировочной структуры</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="streetCode" type="restr:stringLimit4" minOccurs="0">
-                                <xs:annotation>
-                                        <xs:documentation>Код улицы</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="house" type="xs:string" minOccurs="0">
-                                <xs:annotation>
-                                        <xs:documentation>Дом</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="build" type="xs:string" minOccurs="0">
-                                <xs:annotation>
-                                        <xs:documentation>Корпус</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                        <xs:element name="construction" type="xs:string" minOccurs="0">
-                                <xs:annotation>
-                                        <xs:documentation>Строение</xs:documentation>
-                                </xs:annotation>
-                        </xs:element>
-                </xs:sequence>
-        </xs:complexType>
+            </xs:element>
+            <xs:element name="globalIdNsi" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Уникальный идентификатор адреса в ЕМИАС.НСИ</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="regionOMKTEcode" type="restr:stringStrict">
+                <xs:annotation>
+                    <xs:documentation>Код округа Москвы</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="areaOMKTEcode" type="restr:stringStrict" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код района Москвы</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="areaCode" type="restr:stringLimitStrict3" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код района</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="cityCode" type="restr:stringLimitStrict3" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код города</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="placeCode" type="restr:stringLimitStrict3" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код населенного пункта</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="planCode" type="restr:stringLimitStrict4" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код элемента планировочной структуры</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="streetCode" type="restr:stringLimitStrict4" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код улицы</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="house" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дом</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="build" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Корпус</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="construction" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Строение</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>
