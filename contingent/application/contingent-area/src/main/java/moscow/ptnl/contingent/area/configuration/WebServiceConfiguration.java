@@ -93,7 +93,7 @@ public class WebServiceConfiguration {
         EndpointImpl endpoint = new EndpointImpl(cxfBus, sysopService);
         endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/sysop/v1/", "SysopService"));
         endpoint.setWsdlLocation("classpath:META-INF/wsdl/sysop/emias.contingent2.sysop.v1.wsdl");
-        endpoint.setAddress("/SysopService");
+        endpoint.setAddress("v1/SysopService");
         endpoint.publish();
         endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
