@@ -27,6 +27,7 @@ import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import ru.mos.emias.contingent2.address.AddressBaseType;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
 import java.util.ArrayList;
@@ -133,12 +134,10 @@ public class Algorithms {
     public List<Addresses> findIntersectingAddressesAdd(List<AddressRegistryBaseType> addressRegistryTypes,
                                                         List<Addresses> addresses, Validation validation) {
 
-        List<Addresses> crossAddresses = new ArrayList<>();
-
         // 1.
-        addressesRepository.findAddresses(addressRegistryTypes.stream()
-                .map(AddressRegistryBaseType::getGlobalIdNsi).collect(Collectors.toList()))
-                .forEach(crossAddresses::add);
+        List<Addresses> crossAddresses = addresses.stream().filter(addr ->
+                addressRegistryTypes.stream().map(AddressBaseType::getGlobalIdNsi).collect(Collectors.toList()).contains(addr.getGlobalId()))
+                .collect(Collectors.toList());
 
         if (!crossAddresses.isEmpty()) {
             return crossAddresses;
@@ -152,23 +151,58 @@ public class Algorithms {
             }
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.STREET.getLevel())) {
-                crossAddresses = AlgorithmsHelper.searchByStreetCode.apply(addressRegistry, addresses);
+                    List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                            AlgorithmsHelper.streetCodeFilter.test(addressRegistry, addr))
+                            .collect(Collectors.toList());
+                    if (!outAddresses.isEmpty()) {
+                        return outAddresses;
+                    } else {
+                        return AlgorithmsHelper.checkPlanCodeExist.apply(addressRegistry, addresses);
+                    }
             }
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.PLAN.getLevel())) {
-                crossAddresses = AlgorithmsHelper.searchByPlanCode.apply(addressRegistry, addresses);
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        AlgorithmsHelper.planCodeFilter.test(addressRegistry, addr))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    return AlgorithmsHelper.checkPlaceCodeExist.apply(addressRegistry, addresses);
+                }
             }
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.PLACE.getLevel())) {
-                crossAddresses = AlgorithmsHelper.searchByPlaceCode.apply(addressRegistry, addresses);
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        AlgorithmsHelper.placeCodeFilter.test(addressRegistry, addr))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    return AlgorithmsHelper.checkCityCodeExist.apply(addressRegistry, addresses);
+                }
             }
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.CITY.getLevel())) {
-                crossAddresses = AlgorithmsHelper.searchByCityCode.apply(addressRegistry, addresses);
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        AlgorithmsHelper.cityCodeFilter.test(addressRegistry, addr))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    return AlgorithmsHelper.checkAreaCodeExist.apply(addressRegistry, addresses);
+                }
             }
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA.getLevel())) {
-                crossAddresses = AlgorithmsHelper.searchByAreaCode.apply(addressRegistry, addresses);
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        AlgorithmsHelper.areaCodeFilter.test(addressRegistry, addr))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    return AlgorithmsHelper.checkAreaOmkTeCodeExist.apply(addressRegistry, addresses);
+                }
             }
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA_TE.getLevel())) {
@@ -181,10 +215,6 @@ public class Algorithms {
         }
         if (crossAddresses == null) {
             validation.error(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
-        }
-        //TODO непонятное условие. не имеет смысла и может вызвать NPE
-        if (!crossAddresses.isEmpty()) {
-            return crossAddresses;
         }
         return crossAddresses;
     }

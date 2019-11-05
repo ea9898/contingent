@@ -8,6 +8,7 @@ import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 @Component
@@ -15,11 +16,45 @@ public class AlgorithmsHelper {
 
     private static final String ADDRESS_CODE_VALUES_SPLITTER = ";";
 
+    // REGION_TE_CODE  LIKE '%REGION_TE_CODE%'
+    // AREACODE_OMK_TE  LIKE '%AREACODE_OMK_TE%'
+    public static BiPredicate<AddressRegistryBaseType, Addresses> regionTeAndAreaOmkTeFilter = (addressRegistry, addr) ->
+            addressRegistry.getRegionOMKTE().getCode().contains(addr.getRegionTeCode()) &&
+            addressRegistry.getArea().getCodeOMKTE().contains(addr.getAreaCodeOmkTe());
+
+    // AREACODE = AREACODE
+    public static BiPredicate<AddressRegistryBaseType, Addresses> areaCodeFilter = (addressRegistry, addr) ->
+            regionTeAndAreaOmkTeFilter.test(addressRegistry, addr) &&
+            addr.getAreaCode().equals(addressRegistry.getArea().getCode());
+
+    // CITYCODE = CITYCODE
+    public static BiPredicate<AddressRegistryBaseType, Addresses> cityCodeFilter = (addressRegistry, addr) ->
+            areaCodeFilter.test(addressRegistry, addr) &&
+                    addr.getCityCode().equals(addressRegistry.getCity().getCode());
+
+    // PLACECODE = PLACECODE
+    public static BiPredicate<AddressRegistryBaseType, Addresses> placeCodeFilter = (addressRegistry, addr) ->
+            cityCodeFilter.test(addressRegistry, addr) &&
+                    addr.getPlaceCode().equals(addressRegistry.getPlace().getCode());
+
+    // PLANCODE = PLANCODE
+    public static BiPredicate<AddressRegistryBaseType, Addresses> planCodeFilter = (addressRegistry, addr) ->
+            placeCodeFilter.test(addressRegistry, addr) &&
+                    addr.getPlanCode().equals(addressRegistry.getPlan().getCode());
+
+    // STREETCODE = STREETCODE
+    public static BiPredicate<AddressRegistryBaseType, Addresses> streetCodeFilter = (addressRegistry, addr) ->
+            planCodeFilter.test(addressRegistry, addr) &&
+                    addr.getStreetCode().equals(addressRegistry.getStreet().getCode());
+
+
     // А_УУ_3 2.1.
     public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByStreetCode =
             (addressRegistry, addresses) -> {
-                List<Addresses> outAddresses = addresses.stream().filter(addr -> addr.getAoLevel()
-                        .equals(AddressLevelType.STREET.getLevel()) && addr.getStreetCode().equals(addressRegistry.getStreet().getCode()))
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        streetCodeFilter.test(addressRegistry, addr)
+                        // AOLEVEL = 7
+                        && addr.getAoLevel().equals(AddressLevelType.STREET.getLevel()))
                         .collect(Collectors.toList());
                 if (!outAddresses.isEmpty()) {
                     return outAddresses;
@@ -31,8 +66,10 @@ public class AlgorithmsHelper {
     // А_УУ_3 2.2.
     public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByPlanCode =
             (addressRegistry, addresses) -> {
-                List<Addresses> outAddresses = addresses.stream().filter(addr -> addr.getAoLevel()
-                        .equals(AddressLevelType.PLAN.getLevel()) && addr.getPlanCode().equals(addressRegistry.getPlan().getCode()))
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        planCodeFilter.test(addressRegistry, addr)
+                        // AOLEVEL = 65
+                        && addr.getAoLevel().equals(AddressLevelType.PLAN.getLevel()))
                         .collect(Collectors.toList());
                 if (!outAddresses.isEmpty()) {
                     return outAddresses;
@@ -44,8 +81,10 @@ public class AlgorithmsHelper {
     // А_УУ_3 2.3.
     public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByPlaceCode =
             (addressRegistry, addresses) -> {
-                List<Addresses> outAddresses = addresses.stream().filter(addr -> addr.getAoLevel()
-                        .equals(AddressLevelType.PLACE.getLevel()) && addr.getPlaceCode().equals(addressRegistry.getPlace().getCode()))
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        placeCodeFilter.test(addressRegistry, addr)
+                        // AOLEVEL = 6
+                        && addr.getAoLevel().equals(AddressLevelType.PLACE.getLevel()))
                         .collect(Collectors.toList());
                 if (!outAddresses.isEmpty()) {
                     return outAddresses;
@@ -57,8 +96,10 @@ public class AlgorithmsHelper {
     // А_УУ_3 2.4.
     public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByCityCode =
             (addressRegistry, addresses) -> {
-                List<Addresses> outAddresses = addresses.stream().filter(addr -> addr.getAoLevel()
-                        .equals(AddressLevelType.CITY.getLevel()) && addr.getCityCode().equals(addressRegistry.getCity().getCode()))
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        cityCodeFilter.test(addressRegistry, addr)
+                        // AOLEVEL = 4
+                        && addr.getAoLevel().equals(AddressLevelType.CITY.getLevel()))
                         .collect(Collectors.toList());
                 if (!outAddresses.isEmpty()) {
                     return outAddresses;
@@ -70,8 +111,10 @@ public class AlgorithmsHelper {
     // А_УУ_3 2.5.
     public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByAreaCode =
             (addressRegistry, addresses) -> {
-                List<Addresses> outAddresses = addresses.stream().filter(addr -> addr.getAoLevel()
-                        .equals(AddressLevelType.AREA.getLevel()) && addr.getAreaCode().equals(addressRegistry.getArea().getCode()))
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        areaCodeFilter.test(addressRegistry, addr)
+                        // AOLEVEL = 3
+                        && addr.getAoLevel().equals(AddressLevelType.AREA.getLevel()))
                         .collect(Collectors.toList());
                 if (!outAddresses.isEmpty()) {
                     return outAddresses;
