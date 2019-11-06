@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Component
 public class AlgorithmsHelper {
 
-    private static final String ADDRESS_CODE_VALUES_SPLITTER = ";";
+    static final String ADDRESS_CODE_VALUES_SPLITTER = ";";
 
     // REGION_TE_CODE  LIKE '%REGION_TE_CODE%'
     // AREACODE_OMK_TE  LIKE '%AREACODE_OMK_TE%'
@@ -130,7 +130,7 @@ public class AlgorithmsHelper {
                 String[] codes = addressRegistry.getAreaOMKTE().getCode().split(ADDRESS_CODE_VALUES_SPLITTER);
                 List<Addresses> outAddresses = addresses.stream().filter(
                         addr -> addr.getAoLevel().equals(AddressLevelType.AREA_TE.getLevel()) &&
-                                Arrays.stream(codes).allMatch(c -> addr.getAreaCode().contains(c)))
+                                Arrays.stream(codes).anyMatch(c -> addr.getAreaCodeOmkTe().equals(c)))
                         .collect(Collectors.toList());
                 if (!outAddresses.isEmpty()) {
                     return outAddresses;
@@ -139,7 +139,7 @@ public class AlgorithmsHelper {
                         String[] codes2 = addressRegistry.getRegionOMKTE().getCode().split(ADDRESS_CODE_VALUES_SPLITTER);
                         return addresses.stream().filter(addr ->
                                 addr.getAoLevel().equals(AddressLevelType.REGION_TE.getLevel()) &&
-                                        Arrays.stream(codes2).allMatch(c -> addr.getRegionTeCode().contains(c)))
+                                        Arrays.stream(codes2).anyMatch(c -> addr.getRegionTeCode().equals(c)))
                                 .collect(Collectors.toList());
                     } else {
                         return new ArrayList<>();

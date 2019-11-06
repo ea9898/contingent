@@ -206,7 +206,29 @@ public class Algorithms {
             }
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA_TE.getLevel())) {
-                crossAddresses = AlgorithmsHelper.searchByAreaOmkTeCode.apply(addressRegistry, addresses);
+                String[] codes = addressRegistry.getAreaOMKTE().getCode().split(AlgorithmsHelper.ADDRESS_CODE_VALUES_SPLITTER);
+                List<Addresses> outAddresses = addresses.stream().filter(
+                        addr -> Arrays.stream(codes).anyMatch(c -> addr.getAreaCodeOmkTe() != null && addr.getAreaCodeOmkTe().equals(c)))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    if (addressRegistry.getRegionOMKTE() != null) {
+                        String[] codes2 = addressRegistry.getRegionOMKTE().getCode().split(AlgorithmsHelper.ADDRESS_CODE_VALUES_SPLITTER);
+                        return addresses.stream().filter(addr ->
+                                        Arrays.stream(codes2).anyMatch(c -> addr.getRegionTeCode() != null && addr.getRegionTeCode().equals(c)))
+                                .collect(Collectors.toList());
+                    } else {
+                        return new ArrayList<>();
+                    }
+                }
+            }
+
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.REGION_TE.getLevel())) {
+                String[] codesRegion = addressRegistry.getRegionOMKTE().getCode().split(AlgorithmsHelper.ADDRESS_CODE_VALUES_SPLITTER);
+                return addresses.stream().filter(addr ->
+                        Arrays.stream(codesRegion).anyMatch(c -> addr.getRegionTeCode() != null && addr.getRegionTeCode().equals(c)))
+                        .collect(Collectors.toList());
             }
 
             if (crossAddresses == null || !crossAddresses.isEmpty()) {
