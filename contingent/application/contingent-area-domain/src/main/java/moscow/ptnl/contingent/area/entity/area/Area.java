@@ -118,7 +118,7 @@ public class Area implements Serializable {
 
     @LogIt
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
-    private Set<AreaAddress> areaAddresses;
+    private Set<AreaAddress> areaAddresses = new HashSet<>();
 
     public Area() {
     }

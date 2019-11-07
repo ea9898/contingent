@@ -4,6 +4,8 @@ package moscow.ptnl.contingent.error;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import ru.mos.emias.errors.domain.ErrorMessageType;
+import ru.mos.emias.errors.domain.ErrorReason;
 
 /**
  * Результат выполнения валидации
@@ -37,7 +39,7 @@ public class Validation {
 
         if (params.size() > 0)
             message.setMessage(String.format(message.getMessage(), params.toArray()));
-        success = success && message.getType() != ValidationMessageType.ERROR;
+        success = success && message.getType() != ErrorMessageType.ERROR;
     }
 
     public Validation merge(Validation b){
@@ -53,12 +55,12 @@ public class Validation {
     }
 
     public Validation error(ErrorReason reason, ValidationParameter... parameters){
-        addMessage(new ValidationMessage(reason, ValidationMessageType.ERROR).addParameter(parameters));
+        addMessage(new ValidationMessage(reason, ErrorMessageType.ERROR).addParameter(parameters));
         return this;
     }
 
     public Validation warning(ErrorReason reason, ValidationParameter... parameters){
-        addMessage(new ValidationMessage(reason, ValidationMessageType.WARNING).addParameter(parameters));
+        addMessage(new ValidationMessage(reason, ErrorMessageType.WARNING).addParameter(parameters));
         return this;
     }
 

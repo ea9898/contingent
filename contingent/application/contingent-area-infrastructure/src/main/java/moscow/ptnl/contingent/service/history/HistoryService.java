@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.service.history;
 
-import moscow.ptnl.contingent.security.Principal;
+import moscow.ptnl.contingent.domain.security.Principal;
 
 
 /**

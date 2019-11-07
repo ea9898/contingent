@@ -1,27 +1,33 @@
 package moscow.ptnl.contingent.area.service;
 
+import static moscow.ptnl.contingent.area.model.area.AddressLevelType.*;
+
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.entity.sysop.Sysop;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
-import moscow.ptnl.contingent.area.error.ErrorReasonImpl;
-import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
+import moscow.ptnl.contingent.error.CustomErrorReason;
+import moscow.ptnl.contingent.error.Validation;
+import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
+import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import ru.mos.emias.contingent2.address.AddressBaseType;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
 import java.util.ArrayList;
@@ -59,6 +65,9 @@ public class Algorithms {
     @Autowired
     private AddressesRepository addressesRepository;
 
+    @Autowired
+    private SysopCRUDRepository sysopCRUDRepository;
+
     public Algorithms() {
         super();
     }
@@ -68,8 +77,8 @@ public class Algorithms {
     }
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
-    public MoAddress searchServiceDistrictMOByAddress (Long moId, AreaType areaType, Long orderId,
-            List<AddressRegistryBaseType> addressRegistryTypes, Validation validation) {
+    public MoAddress searchServiceDistrictMOByAddress(Long moId, AreaType areaType, Long orderId,
+                                                      List<AddressRegistryBaseType> addressRegistryTypes, Validation validation) {
 
         // 1.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
@@ -96,7 +105,7 @@ public class Algorithms {
 
     // Поиск участков по адресу (А_УУ_2)
     public Long searchAreaByAddress(Long moId, AreaType areaTypeCode, List<AddressRegistryBaseType> addressRegistryTypes,
-            Validation validation) {
+                                    Validation validation) {
 
         // 1.
         List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddresses(moId, areaTypeCode.getCode());
@@ -125,47 +134,102 @@ public class Algorithms {
     public List<Addresses> findIntersectingAddressesAdd(List<AddressRegistryBaseType> addressRegistryTypes,
                                                         List<Addresses> addresses, Validation validation) {
 
-        List<Addresses> crossAddresses = new ArrayList<>();
-
         // 1.
-        addressesRepository.findAddresses(addressRegistryTypes.stream()
-                .map(AddressRegistryBaseType::getGlobalIdNsi).collect(Collectors.toList()))
-                .forEach(crossAddresses::add);
+        List<Addresses> crossAddresses = addresses.stream().filter(addr ->
+                addressRegistryTypes.stream().map(AddressBaseType::getGlobalIdNsi).collect(Collectors.toList()).contains(addr.getGlobalId()))
+                .collect(Collectors.toList());
 
         if (!crossAddresses.isEmpty()) {
             return crossAddresses;
         }
 
         // А_УУ_3 2. - 9.
-        for (AddressRegistryBaseType addressRegistry: addressRegistryTypes) {
+        for (AddressRegistryBaseType addressRegistry : addressRegistryTypes) {
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.checkStreetCodeExist.apply(addressRegistry, addresses);
-                }
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
+                crossAddresses = AlgorithmsHelper.checkStreetCodeExist.apply(addressRegistry, addresses);
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.STREET.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByStreetCode.apply(addressRegistry, addresses);
-                }
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.STREET.getLevel())) {
+                    List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                            AlgorithmsHelper.streetCodeFilter.test(addressRegistry, addr))
+                            .collect(Collectors.toList());
+                    if (!outAddresses.isEmpty()) {
+                        return outAddresses;
+                    } else {
+                        return AlgorithmsHelper.checkPlanCodeExist.apply(addressRegistry, addresses);
+                    }
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.PLAN.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByPlanCode.apply(addressRegistry, addresses);
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.PLAN.getLevel())) {
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        AlgorithmsHelper.planCodeFilter.test(addressRegistry, addr))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    return AlgorithmsHelper.checkPlaceCodeExist.apply(addressRegistry, addresses);
                 }
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.PLACE.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByPlaceCode.apply(addressRegistry, addresses);
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.PLACE.getLevel())) {
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        AlgorithmsHelper.placeCodeFilter.test(addressRegistry, addr))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    return AlgorithmsHelper.checkCityCodeExist.apply(addressRegistry, addresses);
                 }
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.CITY.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByCityCode.apply(addressRegistry, addresses);
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.CITY.getLevel())) {
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        AlgorithmsHelper.cityCodeFilter.test(addressRegistry, addr))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    return AlgorithmsHelper.checkAreaCodeExist.apply(addressRegistry, addresses);
                 }
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByAreaCode.apply(addressRegistry, addresses);
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA.getLevel())) {
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        AlgorithmsHelper.areaCodeFilter.test(addressRegistry, addr))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    return AlgorithmsHelper.checkAreaOmkTeCodeExist.apply(addressRegistry, addresses);
                 }
+            }
 
-                if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA_TE.getLevel())) {
-                    crossAddresses = AlgorithmsHelper.searchByAreaOmkTeCode.apply(addressRegistry, addresses);
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.AREA_TE.getLevel())) {
+                String[] codes = addressRegistry.getAreaOMKTE().getCode().split(AlgorithmsHelper.ADDRESS_CODE_VALUES_SPLITTER);
+                List<Addresses> outAddresses = addresses.stream().filter(
+                        addr -> Arrays.stream(codes).anyMatch(c -> addr.getAreaCodeOmkTe() != null && addr.getAreaCodeOmkTe().equals(c)))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    if (addressRegistry.getRegionOMKTE() != null) {
+                        String[] codes2 = addressRegistry.getRegionOMKTE().getCode().split(AlgorithmsHelper.ADDRESS_CODE_VALUES_SPLITTER);
+                        return addresses.stream().filter(addr ->
+                                        Arrays.stream(codes2).anyMatch(c -> addr.getRegionTeCode() != null && addr.getRegionTeCode().equals(c)))
+                                .collect(Collectors.toList());
+                    } else {
+                        return new ArrayList<>();
+                    }
                 }
+            }
+
+            if (addressRegistry.getAoLevel().equals(AddressLevelType.REGION_TE.getLevel())) {
+                String[] codesRegion = addressRegistry.getRegionOMKTE().getCode().split(AlgorithmsHelper.ADDRESS_CODE_VALUES_SPLITTER);
+                return addresses.stream().filter(addr ->
+                        Arrays.stream(codesRegion).anyMatch(c -> addr.getRegionTeCode() != null && addr.getRegionTeCode().equals(c)))
+                        .collect(Collectors.toList());
+            }
 
             if (crossAddresses == null || !crossAddresses.isEmpty()) {
                 break;
@@ -173,10 +237,6 @@ public class Algorithms {
         }
         if (crossAddresses == null) {
             validation.error(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
-        }
-        //TODO непонятное условие. не имеет смысла и может вызвать NPE
-        if (!crossAddresses.isEmpty()) {
-            return crossAddresses;
         }
         return crossAddresses;
     }
@@ -197,13 +257,14 @@ public class Algorithms {
             return attachOnAreaChangeMapper.entityToDtoTransform(new AttachOnAreaChangeEvent(
                     AttachOnAreaChangeEvent.OperationType.CREATE, dependentArea, new HashSet<>(primaryAreasIdCreateAttachments)));
         }
-        
+
         throw new IllegalArgumentException("недопустимые аргументы для создания топика");
     }
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
-    public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {        
-        return areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
+    public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
+        return areaInfoEvent;
     }
 
     // Форматно-логический контроль адреса (А_УУ_6)
@@ -215,52 +276,54 @@ public class Algorithms {
                 validation.error(AreaErrorReason.AO_LEVEL_NOT_SET);
             } else {
                 //2
-                if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.MOSCOW.getLevel())) {
-                    validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
+                if (address.getAoLevel().equals(AddressLevelType.MOSCOW.getLevel())
+                        || address.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
+                    validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
+                            new ValidationParameter("aoLevel", address.getAoLevel()));
                 }
                 //4
-                if (!Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.REGION_TE.getLevel())
+                if (!address.getAoLevel().equals(AddressLevelType.REGION_TE.getLevel())
                         && (address.getAreaOMKTE() == null || address.getAreaOMKTE().getCode() == null
-                            || address.getAreaOMKTE().getCode().length() == 0)) {
+                        || address.getAreaOMKTE().getCode().length() == 0)) {
                     codesNotSetError += " код района Москвы;";
                     //5
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.AREA.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.AREA.getLevel())
                         && (address.getArea() == null || address.getArea().getCode() == null
-                            || address.getArea().getCode().length() == 0)) {
+                        || address.getArea().getCode().length() == 0)) {
                     codesNotSetError += " код района;";
                     //6
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.CITY.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.CITY.getLevel())
                         && (address.getCity() == null || address.getCity().getCode() == null
-                            || address.getCity().getCode().length() == 0)) {
+                        || address.getCity().getCode().length() == 0)) {
                     codesNotSetError += " код города;";
                     //7
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.PLACE.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.PLACE.getLevel())
                         && (address.getPlace() == null || address.getPlace().getCode() == null
-                            || address.getPlace().getCode().length() == 0)) {
+                        || address.getPlace().getCode().length() == 0)) {
                     codesNotSetError += " код населенного пункта;";
                     //8
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.PLAN.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.PLAN.getLevel())
                         && (address.getPlan() == null || address.getPlan().getCode() == null
-                            || address.getPlan().getCode().length() == 0)) {
+                        || address.getPlan().getCode().length() == 0)) {
                     codesNotSetError += " код планировочной структуры;";
                     //9
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.STREET.getLevel())
+                } else if (address.getAoLevel().equals(AddressLevelType.STREET.getLevel())
                         && (address.getStreet() == null || address.getStreet().getCode() == null
-                            || address.getStreet().getCode().length() == 0)) {
-                    codesNotSetError += " код код улицы;";
+                        || address.getStreet().getCode().length() == 0)) {
+                    codesNotSetError += " код улицы;";
                     //10
-                } else if (Integer.valueOf(address.getAoLevel()).equals(AddressLevelType.ID.getLevel())) {
+                } else if (address.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
                     if (address.getBuilding() == null || (
                             address.getBuilding().getHouse() == null || address.getBuilding().getHouse().getName() == null
-                                || address.getBuilding().getHouse().getName().length() == 0)
+                                    || address.getBuilding().getHouse().getName().length() == 0)
                             && (address.getBuilding().getBuild() == null || address.getBuilding().getBuild().getName() == null
-                                || address.getBuilding().getBuild().getName().length() == 0)
+                            || address.getBuilding().getBuild().getName().length() == 0)
                             && (address.getBuilding().getConstruction() == null || address.getBuilding().getConstruction().getName() == null
-                                || address.getBuilding().getConstruction().getName().length() == 0)) {
+                            || address.getBuilding().getConstruction().getName().length() == 0)) {
                         codesNotSetError += " код дома или корпуса или строения;";
                     }
                     if (address.getRegionOMKTE() != null && address.getRegionOMKTE().getCode().split(";").length > 1
-                    || address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode().split(";").length  > 1) {
+                            || address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode().split(";").length > 1) {
                         validation.error(AreaErrorReason.NOT_SINGLE_AREA_OR_REGION);
                     }
                 }
@@ -274,7 +337,7 @@ public class Algorithms {
 
             //Агрегированная ошибка С_УУ_108
             if (codesNotSetError.length() != AreaErrorReason.CODES_NOT_SET.getDescription().length()) {
-                validation.error(new ErrorReasonImpl(codesNotSetError, AreaErrorReason.CODES_NOT_SET.getCode())
+                validation.error(new CustomErrorReason(codesNotSetError, AreaErrorReason.CODES_NOT_SET.getCode())
                         , new ValidationParameter("globalId", address.getGlobalIdNsi())
                         , new ValidationParameter("aoLevel", address.getAoLevel()));
             }
@@ -282,54 +345,65 @@ public class Algorithms {
     }
 
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
-    public List<Addresses> findIntersectingAddressesSearch(List<Addresses> nsiAddresses,
-                                                           List<AddressRegistryBaseType> addressesRegistryType) {
+    // алгоритм изменён, вместо входного списка адресов НСИ, делаем запросы в нси с нужными фильтрами
+    public List<Addresses> findIntersectingAddressesSearch(List<SearchAreaAddress> addressesRegistryType) {
 
-        // 1.
-        Set<Addresses> resultAddresses = nsiAddresses.stream().filter(addr ->
-                addressesRegistryType.stream().anyMatch(
-                        addrReg -> addrReg.getGlobalIdNsi().equals(addr.getGlobalId())
-                )
-        ).collect(Collectors.toSet());
+        List<Long> inputIds = addressesRegistryType.stream()
+                .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList());
 
-        for (AddressRegistryBaseType address : addressesRegistryType) {
-            switch (AddressLevelType.find(address.getAoLevel())) {
+        Set<Addresses> resultAddresses = new HashSet<>(addressesRepository.findActualAddresses(inputIds));
+
+        for (SearchAreaAddress address : addressesRegistryType) {
+            AddressLevelType level = AddressLevelType.find(address.getAoLevel());
+            List<String> areaOmkTeCodes = address.getAreaOMKTEcode() == null ? null : Arrays.asList(address.getAreaOMKTEcode().split(";"));
+            List<String> regionTeCodes = address.getRegionOMKTEcode() == null ? null : Arrays.asList(address.getRegionOMKTEcode().split(";"));
+
+            switch (level) {
                 case ID:
                 case STREET:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.STREET.getLevel()) && addr.getStreetCode().equals(address.getStreet().getCode()))
-                            .collect(Collectors.toList()));
+                    if (StringUtils.hasText(address.getStreetCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(address.getStreetCode(), address.getPlanCode(),
+                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, STREET.equals(level)));
+                    }
                 case PLAN:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.PLAN.getLevel()) && addr.getPlanCode().equals(address.getPlan().getCode()))
-                            .collect(Collectors.toList()));
+                    if (StringUtils.hasText(address.getPlanCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null, address.getPlanCode(),
+                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, PLAN.equals(level)));
+                    }
                 case PLACE:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.PLACE.getLevel()) && addr.getPlaceCode().equals(address.getPlace().getCode()))
-                            .collect(Collectors.toList()));
+                    if (StringUtils.hasText(address.getPlaceCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null, null,
+                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, PLACE.equals(level)));
+                    }
                 case CITY:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.CITY.getLevel()) && addr.getCityCode().equals(address.getCity().getCode()))
-                            .collect(Collectors.toList()));
+                    if (StringUtils.hasText(address.getCityCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null, null,
+                                null, address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, CITY.equals(level)));
+                    }
                 case AREA:
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.AREA.getLevel()) && addr.getAreaCode().equals(address.getArea().getCode()))
-                            .collect(Collectors.toList()));
+                    if (StringUtils.hasText(address.getAreaCode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,null,
+                                null, null, address.getAreaCode(), areaOmkTeCodes, regionTeCodes, AREA.equals(level)));
+                    }
                 case AREA_TE:
-                    String[] areaOmkTeCodes = address.getAreaOMKTE().getCode().split(";");
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.AREA_TE.getLevel())
-                            && Arrays.stream(areaOmkTeCodes).anyMatch(areaOmkTeCode -> addr.getAreaCodeOmkTe().contains(areaOmkTeCode)))
-                            .collect(Collectors.toList()));
+                    if (StringUtils.hasText(address.getAreaOMKTEcode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
+                                null, null, null, null, areaOmkTeCodes, null, AREA_TE.equals(level)));
+                    }
                 case REGION_TE:
-                    String[] regionTeCodes = address.getRegionOMKTE().getCode().split(";");
-                    resultAddresses.addAll(nsiAddresses.stream().filter(addr -> addr.getAoLevel()
-                            .equals(AddressLevelType.REGION_TE.getLevel())
-                            && Arrays.stream(regionTeCodes).anyMatch(regionTeCode -> addr.getRegionTeCode().contains(regionTeCode)))
-                            .collect(Collectors.toList()));
+                    if (StringUtils.hasText(address.getRegionOMKTEcode())) {
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,
+                                null, null, null, null, null, regionTeCodes, REGION_TE.equals(level)));
+                    }
+
             }
         }
         return new ArrayList<>(resultAddresses);
+    }
+
+    //Регистрация асинхронной операции (А_УУ_9)
+    public long sysOperationRegistration() {
+        return  sysopCRUDRepository.save(new Sysop(0, false)).getId();
     }
 
 }

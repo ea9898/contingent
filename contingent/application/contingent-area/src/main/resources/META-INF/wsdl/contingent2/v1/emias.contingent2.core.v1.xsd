@@ -161,7 +161,7 @@
             <xs:documentation>Сведения медработника для добавления на участок</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="medicalEmployeeJobId" type="xs:long"/>
+            <xs:element name="medicalEmployeeJobInfoId" type="xs:long"/>
             <xs:element name="snils" type="restr:stringLimit20"/>
             <xs:element name="positionCode" type="xs:string"/>
             <xs:element name="subdivisionId" type="xs:long"/>

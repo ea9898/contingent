@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.service.setting.SettingService;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
@@ -13,7 +14,6 @@ import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.model.area.NotNsiAddress;
 import moscow.ptnl.contingent.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.area.transform.AreaMedicalEmployeesClone;
@@ -31,8 +31,6 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyTypeEnum;
-import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
-import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
@@ -40,7 +38,7 @@ import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
@@ -67,6 +65,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -105,7 +104,7 @@ public class AreaServiceHelper {
     private PositionNomRepository positionNomRepository;
 
     @Autowired
-    private AreaAddressCRUDRepository areaAddressCRUDRepository;
+    private AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
 
     @Autowired
     private AreaMedicalEmployeeCRUDRepository areaMedicalEmployeeCRUDRepository;
@@ -462,6 +461,13 @@ public class AreaServiceHelper {
         }
     }
 
+    public List<AddressRegistryBaseType> filterDistinctAddressesByGlobalId(List<AddressRegistryBaseType> addresses) throws ContingentException {
+        Set<Long> exist = new HashSet<>();
+        return addresses.stream()
+                .filter(a -> a.getGlobalIdNsi() == null || exist.add(a.getGlobalIdNsi()))
+                .collect(Collectors.toList());
+    }
+
     public List<MoAddress> getAndCheckMoAddressesExist(List<Long> moAddressIds, Validation validation) {
         List<MoAddress> result = new ArrayList<>();
 
@@ -638,7 +644,7 @@ public class AreaServiceHelper {
         List<AreaMedicalEmployees> newAME = new ArrayList<>();
         addEmployees.forEach(empl -> {
             AreaMedicalEmployees medicalEmployees = new AreaMedicalEmployees(
-                    empl.getMedicalEmployeeJobId(),
+                    empl.getMedicalEmployeeJobInfoId(),
                     area,
                     empl.isIsReplacement(),
                     empl.getStartDate(),
@@ -661,7 +667,7 @@ public class AreaServiceHelper {
     public void delAreaAddresses(List<AreaAddress> addresses) {
         addresses.forEach(a -> {
             if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
-                areaAddressCRUDRepository.delete(a);
+                areaAddressPagingAndSortingRepository.delete(a);
             }
             else {
                 a.setEndDate(LocalDate.now().minusDays(1));
@@ -749,83 +755,6 @@ public class AreaServiceHelper {
             List<Area> areas = areaRepository.findAreas(null, area.getMuId(), area.getAreaType().getCode(), null, null);
             areas.stream().filter(a -> !Objects.equals(area.getId(), a.getId())).forEach(a -> a.setAutoAssignForAttach(false));
         }
-    }
-
-    private List<ValidationParameter> getValidationParamsForNotNsiAddress(NotNsiAddress notNsiAddress) {
-        List<ValidationParameter> validationParameters = new ArrayList<>();
-        validationParameters.add(new ValidationParameter("id", notNsiAddress.getParentId()));
-        validationParameters.add(new ValidationParameter("house", notNsiAddress.getHouseType() + notNsiAddress.getHouse()));
-        if (notNsiAddress.getConstructionType() != null && notNsiAddress.getConstruction() != null) {
-            validationParameters.add(new ValidationParameter("construction", notNsiAddress.getConstructionType() + notNsiAddress.getConstruction()));
-        } else {
-            validationParameters.add(new ValidationParameter("construction", ""));
-        }
-        if (notNsiAddress.getBuildingType() != null && notNsiAddress.getBuilding() != null) {
-            validationParameters.add(new ValidationParameter("building", notNsiAddress.getBuildingType() + notNsiAddress.getBuilding()));
-        } else {
-            validationParameters.add(new ValidationParameter("building", ""));
-        }
-        return validationParameters;
-    }
-
-    /* К_УУ_13 Система проверяет, что каждый из списка адресов не обслуживается участком такого же типа, как и участок из входных параметров */
-    public void checkAddressNotServiceByAreaType(Area area, List<AddressWrapper> addressWrapperList, Validation validation) throws ContingentException {
-/*
-        for (AddressWrapper addressWrapper: addressWrapperList) {
-            if (addressWrapper.getNsiAddress() != null) {
-                NsiAddress nsiAddress = addressWrapper.getNsiAddress();
-                Long foundAreaId = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(),
-                        Collections.singletonList(nsiAddress));
-                if (foundAreaId != null) {
-                    if (!foundAreaId.equals(area.getId())) {
-                        validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
-                                new ValidationParameter("areaId", foundAreaId));
-                    } else {
-                        validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI,
-                                new ValidationParameter("id", nsiAddress.getGlobalId()),
-                                new ValidationParameter("level", nsiAddress.getLevelAddress()));
-                    }
-                }
-            }
-        }
-*/
-    }
-
-    public List<AddressWrapper> convertToAddressWrapper(List<NsiAddress> nsiAddresses) {
-        List<AddressWrapper> addressWrapperList = new ArrayList<>();
-        if (nsiAddresses != null) {
-            addressWrapperList.addAll(nsiAddresses.stream().map(AddressWrapper::new).collect(Collectors.toList()));
-        }
-        return addressWrapperList;
-    }
-
-    public void addMoAddressToAddressWrapper(Area area, List<AddressWrapper> addressWrapperList, Validation validation) throws ContingentException {
-
-/*
-        for (AddressWrapper addressWrapper: addressWrapperList) {
-            MoAddress serviceDistrictMO = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
-                    addressWrapper.getNsiAddress() != null ? Collections.singletonList(addressWrapper.getNsiAddress()) : new ArrayList<>(),
-                    validation);
-
-            if (serviceDistrictMO != null && serviceDistrictMO.getMoId().equals(area.getMoId())) {
-                // если найдена территории обслуживания
-                addressWrapper.setMoAddress(serviceDistrictMO);
-            } else if (serviceDistrictMO == null) {
-                // если территория обслуживания МО для адреса не найдена
-                validation.error(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
-            } else {
-                // найдена территория обслуживания, где ИД МО <> ИД МО участка
-                if (addressWrapper.getNsiAddress() != null) {
-                    // НСИ адрес
-                    validation.error(
-                            AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI,
-                            new ValidationParameter("levelAddress", addressWrapper.getNsiAddress().getLevelAddress()),
-                            new ValidationParameter("globalId", addressWrapper.getNsiAddress().getGlobalId()),
-                            new ValidationParameter("moId", area.getMoId()));
-                }
-            }
-        }
-*/
     }
 
     // К_УУ_1 2.
@@ -1041,6 +970,12 @@ public class AreaServiceHelper {
         }
     }
 
+    public void checkSearchAreaInaccurateAddress(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
+        if (Boolean.FALSE.equals(exactAddressMatch) && addresses.size() > 1) {
+            throw new ContingentException(AreaErrorReason.SEARCH_AREA_INACCURATE_ADDRESS_ERROR);
+        }
+    }
+
     public void checkSearchAreaAddresses(List<SearchAreaAddress> addresses) throws ContingentException {
         if (addresses.stream().anyMatch(addr -> AddressLevelType.MOSCOW.getLevel().equals(addr.getAoLevel()))) {
             throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
@@ -1048,17 +983,27 @@ public class AreaServiceHelper {
         ListIterator<SearchAreaAddress> iter = addresses.listIterator();
         while (iter.hasNext()) {
             SearchAreaAddress current = iter.next();
-            String[] areas = current.getAreaOMKTEcode().split(";");
             String[] regions = current.getRegionOMKTEcode().split(";");
-            if (areas.length > 1) {
+            if (current.getAreaOMKTEcode() != null) {
+                String[] areas = current.getAreaOMKTEcode().split(";");
+                if (areas.length > 1 || regions.length > 1) {
+                    iter.remove();
+                    for (String area : areas) {
+                        SearchAreaAddress copy = new SearchAreaAddress(current);
+                        copy.setAreaOMKTEcode(area);
+                        String firstTwoDigits = area.substring(0, 2);
+                        Optional<String> region = Arrays.stream(regions).filter(
+                                reg -> reg.startsWith(firstTwoDigits)).findFirst();
+                        region.ifPresent(copy::setRegionOMKTEcode);
+                        iter.add(copy);
+                    }
+                }
+            } else if (regions.length > 1){
                 iter.remove();
-                for (String area : areas) {
+                for (String region : regions) {
                     SearchAreaAddress copy = new SearchAreaAddress(current);
-                    copy.setAreaOMKTEcode(area);
-                    String firstTwoDigits = area.substring(0, 2);
-                    copy.setRegionOMKTEcode(Arrays.stream(regions).filter(
-                            reg -> reg.startsWith(firstTwoDigits)).findFirst().get());
-                    iter.add(current.copy());
+                    copy.setRegionOMKTEcode(region);
+                    iter.add(copy);
                 }
             }
         }

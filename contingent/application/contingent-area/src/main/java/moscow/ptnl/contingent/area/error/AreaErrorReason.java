@@ -1,9 +1,10 @@
 package moscow.ptnl.contingent.area.error;
 
-import moscow.ptnl.contingent.error.ErrorReason;
+import ru.mos.emias.errors.domain.ErrorMessageType;
+import ru.mos.emias.errors.domain.ErrorReason;
 
 /**
- * Пользовательские сообщения возвращаемые при работе с участками
+ * Пользовательские сообщения возвращаемые при работе с участками.
  */
 public enum AreaErrorReason implements ErrorReason {
 
@@ -50,7 +51,7 @@ public enum AreaErrorReason implements ErrorReason {
     CANT_RESTORE_PERSONAL_KIND_AREA("UE069", "Восстановление из архива невозможно, т.к. вид участка «Именной»"),
     INCORRECT_ADDRESS_NESTING("UE070", "Некорректная вложенность адреса, не указано муниципальное образование"),
     AREA_TYPE_IS_NOT_PRIMARY("UE071", "Невозможно создать/изменить участок, т.к. тип участка %s не является типом участка первичного класса"),
-    INCORRECT_ADDRESS_LEVEL("UE072", "Некорректный уровень адреса (1 - г. Москва)"),
+    INCORRECT_ADDRESS_LEVEL("UE072", "Некорректный уровень адреса (%s)"),
     //TODO одинаковый код ошибки 073
     NO_ADDRESS_IN_CATALOG("UE073", "В справочнике отсутствует адрес с ИД %s и уровнем %s"),
     CODES_NOT_SET("UE073", "Для адреса с кодом %s и уровнем %s не переданы:"),
@@ -68,15 +69,22 @@ public enum AreaErrorReason implements ErrorReason {
     POLICY_TYPE_NOT_SET_FOR_AREA("UE084", "Тип полиса с кодом %s не задан для участка с ИД %s"),
     AREA_NOT_DEPEND_ON_AREA_TYPE("UE085", "Участок с ИД %s не зависит от первичного типа участка %s"),
     NO_MU_ID_PARAMETER("UE086", "Не указан филиал МО"),
-    AREA_ALREADY_DEPENDS_ON_AREA_TYPE("UE087", "Участок с ИД %s уже зависит от первичного типа участка %s")
+    AREA_ALREADY_DEPENDS_ON_AREA_TYPE("UE087", "Участок с ИД %s уже зависит от первичного типа участка %s"),
+    SEARCH_AREA_INACCURATE_ADDRESS_ERROR("UE088", "Поиск участков по неточному совпадению может быть выполнен только для одного адреса")
     ;
 
     private final String description;
     private final String code;
+    private final ErrorMessageType messageType;
 
     AreaErrorReason(String code, String description) {
+        this(code, description, ErrorMessageType.ERROR);
+    }
+    
+    AreaErrorReason(String code, String description, ErrorMessageType messageType) {
         this.code = code;
         this.description = description;
+        this.messageType = messageType;
     }
 
     @Override
@@ -86,6 +94,11 @@ public enum AreaErrorReason implements ErrorReason {
     @Override
     public String getCode() {
         return code;
+    }
+
+    @Override
+    public ErrorMessageType getMessageType() {
+        return messageType;
     }
 
 }

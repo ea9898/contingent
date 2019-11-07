@@ -5,6 +5,7 @@ import java.util.Arrays;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
 
+import moscow.ptnl.contingent.area.ws.sysop.SysopWebService;
 import moscow.ptnl.contingent.area.ws.v1.AreaCompositeServiceImpl;
 import moscow.ptnl.metrics.MetricsInterceptorService;
 import moscow.ptnl.soap.log.SoapLogInterceptorService;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.MessageChannel;
+import ru.mos.emias.contingent2.sysop.v1.SysopPT;
 
 /**
  * Конфигурационный файл для создания Aoache CXF SOAP-сервисов.
@@ -83,6 +85,18 @@ public class WebServiceConfiguration {
         endpoint.getInInterceptors().add(credentialsValidator());
         metricsInterceptorService.setupInterceptors(endpoint);
         soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestUUID);
+        return endpoint;
+    }
+
+    @Bean
+    public Endpoint SysopService(@Qualifier(SysopWebService.SERVICE_NAME) SysopPT sysopService, SpringBus cxfBus) {
+        EndpointImpl endpoint = new EndpointImpl(cxfBus, sysopService);
+        endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/sysop/v1/", "SysopService"));
+        endpoint.setWsdlLocation("classpath:META-INF/wsdl/sysop/emias.contingent2.sysop.v1.wsdl");
+        endpoint.setAddress("v1/SysopService");
+        endpoint.publish();
+        endpoint.getInInterceptors().add(soapVersionInterceptor);
+        endpoint.getInInterceptors().add(credentialsValidator());
         return endpoint;
     }
 

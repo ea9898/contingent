@@ -19,6 +19,11 @@
     
     <dependencies>
         <dependency>
+            <groupId>ru.mos.emias.errors</groupId>
+            <artifactId>emias-errors</artifactId>
+            <version>${emias.errors.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
@@ -34,7 +39,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${api.slf4j}</version>
-            <scope>${artefact.scope}</scope>
+            <scope>${slf4j.scope}</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

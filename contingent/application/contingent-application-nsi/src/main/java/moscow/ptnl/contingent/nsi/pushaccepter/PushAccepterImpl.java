@@ -45,7 +45,7 @@ public class PushAccepterImpl extends PushAccepter {
     @Override
     public Answer getPush(Package pack, Long pushEventId) {
         Object pushEventEntity = null;
-        switch (NsiTablesEnum.getByName(pack.catalog.name)) {
+        switch (NsiTablesEnum.getByCatalogName(pack.catalog.name)) {
             case AREA_TYPE:
                 pushEventEntity = entityMapper.mapTyped(pack, AreaType.class); 
                 break;

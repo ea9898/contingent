@@ -1,12 +1,11 @@
 package area.service;
 
-import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
@@ -32,8 +31,13 @@ import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 
+import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
+import moscow.ptnl.contingent.repository.sysop.SysopMsgCRUDRepository;
+import moscow.ptnl.contingent.repository.sysop.SysopMsgParamCRUDRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -94,7 +98,7 @@ public class MockRepositoriesConfiguration {
     public MoAddressCRUDRepository moAddressCRUDRepository;
     
     @MockBean
-    public AreaAddressCRUDRepository areaAddressCRUDRepository;
+    public AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
     
     @MockBean
     public MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
@@ -132,4 +136,15 @@ public class MockRepositoriesConfiguration {
     @MockBean
     private AreaTypeRelationsRepository areaTypeRelationsRepository;
 
+    @MockBean
+    private SysopCRUDRepository sysopCRUDRepository;
+
+    @MockBean
+    private SysopMsgCRUDRepository sysopMsgCRUDRepository;
+
+    @MockBean
+    private SysopMsgParamCRUDRepository sysopMsgParamCRUDRepository;
+
+    @MockBean
+    private EntityManager entityManager;
 }

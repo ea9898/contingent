@@ -1,6 +1,9 @@
-package moscow.ptnl.contingent.security;
+package moscow.ptnl.contingent.domain.security;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,9 +20,11 @@ public class Principal {
     private Long userRoleId;
     private String ipAddress;
     private String fullName;
+    private final Set<Long> accessRights;
     
     public Principal(String username) {
         this.username = username;
+        this.accessRights = new HashSet<>();
     }
     
     /** 
@@ -88,6 +93,10 @@ public class Principal {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public Set<Long> getAccessRights() {
+        return accessRights;
     }
     
 }

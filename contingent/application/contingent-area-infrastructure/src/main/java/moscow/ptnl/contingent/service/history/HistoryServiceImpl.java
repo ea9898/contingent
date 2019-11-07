@@ -15,7 +15,7 @@ import moscow.ptnl.contingent.domain.history.converter.DefaultConverter;
 import moscow.ptnl.contingent.domain.history.meta.FieldConverter;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
-import moscow.ptnl.contingent.security.Principal;
+import moscow.ptnl.contingent.domain.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,10 @@ public class HistoryServiceImpl implements HistoryService {
 
         List<StackTraceElement> stElements = Arrays.asList(Thread.currentThread().getStackTrace());
 
-        String methodName = stElements.stream().filter(ste -> ste.getFileName() != null && ste.getFileName().startsWith("AreaServiceImpl")).findFirst().get().getMethodName();
+        //TODO исправить хардкод
+        String methodName = stElements.stream().filter(ste ->
+                ste.getFileName() != null && (ste.getFileName().startsWith("AreaServiceImpl")
+                        || ste.getFileName().startsWith("AreaServiceInternalImpl"))).findFirst().get().getMethodName();
         
         //получаем аннотацию Journalable которой должна быть аннотирована журналируемая сущность
         Journalable classAnnotation = oldObject.getClass().getAnnotation(Journalable.class);        

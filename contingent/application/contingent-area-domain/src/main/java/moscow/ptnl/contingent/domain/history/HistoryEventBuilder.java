@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.domain.history;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import moscow.ptnl.contingent.security.Principal;
+import moscow.ptnl.contingent.domain.security.Principal;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
@@ -22,6 +22,8 @@ public class HistoryEventBuilder {
     
     private HistoryEventBuilder(Class<?> objectType, String objectId) {
         this.event = new HistoryEvent();
+        // TODO переделать под марировку в соответствии с докумиентацией
+        // https://wiki.emias.mos.ru/pages/viewpage.action?pageId=74770777
         this.event.setObjectType(getTableName(objectType));
         this.event.setObjectId(objectId);
         this.event.setChangeDate(LocalDateTime.now());        

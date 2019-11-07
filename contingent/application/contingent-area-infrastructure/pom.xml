@@ -43,7 +43,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${api.slf4j}</version>
-            <scope>${artefact.scope}</scope>
+            <scope>${slf4j.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -108,6 +108,11 @@
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>${fasterxml-jackson.version}</version>
         </dependency>
     </dependencies>
 

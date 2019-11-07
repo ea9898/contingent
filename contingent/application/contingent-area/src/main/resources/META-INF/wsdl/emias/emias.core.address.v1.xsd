@@ -88,7 +88,7 @@
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
-				<xs:attribute name="id" type="xs:string" use="required">
+				<xs:attribute name="id" type="xs:string">
 					<xs:annotation>
 						<xs:documentation>global_id ЕМИАС.НСИ</xs:documentation>
 					</xs:annotation>

@@ -3,8 +3,11 @@ package moscow.ptnl.contingent.area.configuration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.annotation.PreDestroy;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +29,8 @@ import ru.mos.emias.esu.lib.producer.EsuProducer;
 @EnableKafka
 @PropertySource("classpath:application-esu.properties")
 public class ESUKafkaConfiguration {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ESUKafkaConfiguration.class);
 
     @Value("${esu.service.address}")
     private String bootstrapServers;
@@ -59,7 +64,16 @@ public class ESUKafkaConfiguration {
     
     @Bean @Lazy
     public EsuProducer esuProducer() {
-        return new EsuProducer(esuServers, esuProducer, esuErrorSendTimeout, Optional.of(esuErrorRetries));
+        return new EsuProducer(esuServers, esuProducer, esuErrorSendTimeout, Optional.of(esuErrorRetries)){
+            @PreDestroy
+            public void preDestroy() {
+                try {
+                    close();
+                } catch (Exception e) {
+                    LOG.error("ошибка закрытия соединени продюсера ЕСУ", e);
+                }
+            }
+        };
     }
    
     /**

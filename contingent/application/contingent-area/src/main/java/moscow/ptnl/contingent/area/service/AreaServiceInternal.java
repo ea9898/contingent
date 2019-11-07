@@ -83,4 +83,10 @@ public interface AreaServiceInternal {
     Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
                         Integer number, String description, Boolean isArchived, List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
                         List<SearchAreaAddress> addresses, Boolean isExactAddressMatch, PageRequest paging) throws ContingentException;
+
+    Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode,
+                                   List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
+                                   Integer ageMaxM, Integer ageMinW, Integer ageMaxW, boolean autoAssignForAttachment,
+                                   Boolean attachByMedicalReason, List<AddMedicalEmployee> addMedicalEmployees,
+                                   List<AddressRegistryBaseType> addresses) throws ContingentException;
 }

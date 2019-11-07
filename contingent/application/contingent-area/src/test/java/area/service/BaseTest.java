@@ -5,6 +5,9 @@ import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelper;
+import moscow.ptnl.contingent.area.transform.AddressMapper;
+import moscow.ptnl.contingent.area.transform.model.esu.AddressesMapper;
+import moscow.ptnl.contingent.area.transform.model.esu.AreaRestrictionMapper;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
@@ -57,9 +60,6 @@ public class BaseTest {
     public XMLGregorianCalendarMapper xmlGregorianCalendarMapper;
 
     @Mock
-    public AreaInfoEventMapper areaInfoEventMapper;
-
-    @Mock
     public AreaAddressRepository areaAddressRepository;
 
     @Mock
@@ -102,6 +102,18 @@ public class BaseTest {
 
     @InjectMocks
     public Algorithms algorithms;
+
+    @Spy
+    @InjectMocks
+    public AreaInfoEventMapper areaInfoEventMapper;
+
+    @Spy
+    @InjectMocks
+    public AreaRestrictionMapper areaRestrictionMapper;
+
+    @Spy
+    @InjectMocks
+    private AddressesMapper addressesMapper;
 
     @Spy
     @InjectMocks

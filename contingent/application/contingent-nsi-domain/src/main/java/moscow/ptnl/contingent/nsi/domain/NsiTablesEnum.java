@@ -35,4 +35,8 @@ public enum NsiTablesEnum {
         return Arrays.stream(NsiTablesEnum.values()).filter(e -> e.getCode() != null && e.getCode().equals(code)).findFirst()
                 .orElse(NsiTablesEnum.UNKNOWN);
     }
+
+    public static NsiTablesEnum getByCatalogName(String name) {
+        return getByCode(Integer.parseInt(Arrays.asList(name.split("_")).get(1)));
+    }
 }

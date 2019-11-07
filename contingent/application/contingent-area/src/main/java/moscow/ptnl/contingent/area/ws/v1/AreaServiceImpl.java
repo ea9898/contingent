@@ -62,6 +62,8 @@ import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdResponse;
+import ru.mos.emias.contingent2.area.types.InitiateCreatePrimaryAreaRequest;
+import ru.mos.emias.contingent2.area.types.InitiateCreatePrimaryAreaResponse;
 import ru.mos.emias.contingent2.area.types.RestoreAreaRequest;
 import ru.mos.emias.contingent2.area.types.RestoreAreaResponse;
 import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
@@ -85,6 +87,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
+import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
 
 /**
  *
@@ -126,7 +129,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
 
-    @Override
+    @Override @EMIASSecured
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
             CreatePrimaryAreaResponse response = new CreatePrimaryAreaResponse();
@@ -143,7 +146,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public DelAreaAddressResponse delAreaAddress(DelAreaAddressRequest body) throws Fault {
         try {
             areaService.delAreaAddress(body.getAreaId(), body.getAreaAddressIds());
@@ -153,7 +156,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         try {
             CreateDependentAreaResponse response = new CreateDependentAreaResponse();
@@ -172,7 +175,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws Fault {
         try {
             areaService.updatePrimaryArea(body.getAreaId(), body.getNumber(),
@@ -188,7 +191,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws Fault {
         try {
             areaService.updateDependentArea(body.getAreaId(), body.getMuId(), body.getNumber(), body.getDescription(),
@@ -205,7 +208,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
         try {
             
@@ -221,7 +224,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws Fault {
         try {
             areaService.updateOrder(body.getId(), body.getNumber(), body.getDate(), body.getOuz(), body.getName());
@@ -233,7 +236,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         try {
             Page<AddressAllocationOrders> results = areaService.searchOrder(body.getId(), body.getNumber(), body.getDate(),
@@ -250,7 +253,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
             AreaInfo area = areaService.getAreaById(body.getAreaId());
@@ -263,7 +266,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public SetMedicalEmployeeOnAreaResponse setMedicalEmployeeOnArea(SetMedicalEmployeeOnAreaRequest body) throws Fault {
         try {
             List<Long> assignmentIds = areaService.setMedicalEmployeeOnArea(body.getAreaId(),
@@ -278,7 +281,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
         try {
             AddAreaAddressResponse response = new AddAreaAddressResponse();
@@ -291,7 +294,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
         try {
             areaService.restoreArea(body.getAreaId());
@@ -303,7 +306,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public AddMoAddressResponse addMoAddress(AddMoAddressRequest body) throws Fault {
         try {
             AddMoAddressResponse response = new AddMoAddressResponse();
@@ -317,7 +320,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public SearchAreaResponse searchArea(SearchAreaRequest body) throws Fault {
         try {
             Page<AreaInfo> areas = areaService.searchArea(body.getAreaTypeClassCode(), body.getMoId(),
@@ -341,7 +344,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public GetMoAddressResponse getMoAddress(GetMoAddressRequest body) throws Fault {
         try {
             GetMoAddressResponse response = new GetMoAddressResponse();
@@ -368,7 +371,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public DelMoAddressResponse delMoAddress(DelMoAddressRequest body) throws Fault {
         try {
             areaService.delMoAddress(body.getMoAddressIds(), body.getOrderId());
@@ -380,7 +383,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
         try {
             GetAreaAddressResponse response = new GetAreaAddressResponse();
@@ -391,7 +394,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                 areaAddresses.getContent().stream()
                 .map(areaAddressMapper::entityToDtoTransform)
                         .collect(Collectors.toList()));
-            
+            soapCustomMapper.mapPagingResults(response, areaAddresses);
             return response;
         }
         catch (Exception ex) {
@@ -399,7 +402,37 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
+    public InitiateCreatePrimaryAreaResponse initiateCreatePrimaryArea(InitiateCreatePrimaryAreaRequest body) throws Fault {
+        try {
+            InitiateCreatePrimaryAreaResponse response = new InitiateCreatePrimaryAreaResponse();
+            Long id = areaService.initiateCreatePrimaryArea(
+                    body.getMoId(),
+                    body.getMuId(),
+                    body.getNumber(),
+                    body.getDescription(),
+                    body.getAreaTypeCode(),
+                    body.getPolicyTypes() == null ? new ArrayList<>() : body.getPolicyTypes().getPolicyTypeCodes(),
+                    body.getAgeMin(),
+                    body.getAgeMax(),
+                    body.getAgeMinM(),
+                    body.getAgeMaxM(),
+                    body.getAgeMinW(),
+                    body.getAgeMaxW(),
+                    body.isAutoAssignForAttachment(),
+                    body.isAttachByMedicalReason(),
+                    body.getAddMedicalEmployees() == null ? Collections.EMPTY_LIST : body.getAddMedicalEmployees().getAddMedicalEmployees(),
+                    body.getAddresses() == null ? Collections.EMPTY_LIST : body.getAddresses());
+
+            response.setId(id);
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured
     public ArchiveAreaResponse archiveArea(ArchiveAreaRequest body) throws Fault {
         try {
             areaService.archiveArea(body.getAreaId());
@@ -411,7 +444,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
         try {
             GetNewAreaIdResponse response = new GetNewAreaIdResponse();
@@ -424,7 +457,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public AddMoAvailableAreaTypesResponse addMoAvailableAreaTypes(AddMoAvailableAreaTypesRequest body) throws Fault {
         try {
             areaService.addMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
@@ -436,7 +469,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public DelMoAvailableAreaTypesResponse delMoAvailableAreaTypes(DelMoAvailableAreaTypesRequest body) throws Fault {
         try {
             areaService.delMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
@@ -448,7 +481,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public GetMoAvailableAreaTypesResponse getMoAvailableAreaTypes(GetMoAvailableAreaTypesRequest body) throws Fault {
         try {
             GetMoAvailableAreaTypesResponse result = new GetMoAvailableAreaTypesResponse();
@@ -463,7 +496,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public AddMuAvailableAreaTypesResponse addMuAvailableAreaTypes(AddMuAvailableAreaTypesRequest body) throws Fault {
         try {
             areaService.addMuAvailableAreaTypes(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
@@ -475,7 +508,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public DelMuAvailableAreaTypesResponse delMuAvailableAreaTypes(DelMuAvailableAreaTypesRequest body) throws Fault {
         try {
             areaService.delMuAvailableAreaTypes(body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
@@ -487,7 +520,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured
     public GetMuAvailableAreaTypesResponse getMuAvailableAreaTypes(GetMuAvailableAreaTypesRequest body) throws Fault {
         try {
             return getMuAvailableAreaTypesResponseMapper.entityToDtoTransform(areaService.getMuAvailableAreaTypes(
