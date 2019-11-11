@@ -116,6 +116,10 @@
                 "initiateCreatePrimaryArea": {
                     "enabled":true,
                     "permissions":[320026]
+                },
+                "initiateAddAreaAddress": {
+                    "enabled":true,
+                    "permissions":[320028]
                 }
             }
 	}

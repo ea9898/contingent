@@ -219,16 +219,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private TransactionRunner transactionRunner;
 
     @Autowired
-    private EntityManager entityManager;
-
-    @Autowired
-    private SysopCRUDRepository sysopCRUDRepository;
-
-    @Autowired
     private SysopMsgCRUDRepository sysopMsgCRUDRepository;
 
     @Autowired
     private SysopMsgParamCRUDRepository sysopMsgParamCRUDRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
+    private SysopCRUDRepository sysopCRUDRepository;
 
     public AreaServiceInternalImpl() {
     }
@@ -1437,8 +1437,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        /* TODO https://wiki.emias.mos.ru/pages/viewpage.action?pageId=71674475 п.4. НЕРЕАЛИЗУЕМ */
-
         return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
     }
 
@@ -1526,6 +1524,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 paging, totalSize);
     }
 
+    // (К_УУ_26) Инициация процесса создания участка обслуживания первичного класса
     @Override
     public Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode,
                                           List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
@@ -1549,13 +1548,29 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return sysopId;
     }
 
-    //Асинхронное создание участка первичного класса (А_УУ_10)
+    // (К_УУ_28) Инициация процесса добавления адресов на участок обслуживания
+    @Override
+    public Long initiateAddAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry) throws ContingentException {
+        // 2
+        long sysopId = algorithms.sysOperationRegistration();
+
+        // 3
+        // TODO реализовать
+
+        // 4 - auto
+
+        // 5
+        return sysopId;
+    }
+
+
+    // Асинхронное создание участка первичного класса (А_УУ_10)
     private void asyncCreatePrimaryArea(UserContext userContext, long sysopId, long moId, Long muId, Integer number, String description, Long areaTypeCode,
-                                        List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
-                                        Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                        boolean autoAssignForAttachment, Boolean attachByMedicalReason,
-                                        List<AddMedicalEmployee> addMedicalEmployees,
-                                        List<AddressRegistryBaseType> addresses) {
+                                       List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
+                                       Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                       boolean autoAssignForAttachment, Boolean attachByMedicalReason,
+                                       List<AddMedicalEmployee> addMedicalEmployees,
+                                       List<AddressRegistryBaseType> addresses) {
         try {
             UserContextHolder.setContext(userContext);
             Long areaId = createPrimaryArea(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
@@ -1566,12 +1581,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         } catch (ContingentException e) {
             for (ValidationMessage error : e.getValidation().getMessages()) {
                 long sysopMsgId = sysopMsgCRUDRepository.save(new SysopMsg(
-                        entityManager.getReference(Sysop.class, sysopId),
+                        entityManager.getReference(Sysop.class, sysopId), // TODO Этого быть не должно!
                         error.getType().value(),
                         error.getCode(),
                         error.getMessage())).getId();
                 List<SysopMsgParam> params = error.getParameters().stream().map(param -> new SysopMsgParam(
-                        entityManager.getReference(SysopMsg.class, sysopMsgId),
+                        entityManager.getReference(SysopMsg.class, sysopMsgId), // TODO Этого быть не должно!
                         param.getCode(),
                         param.getValue()
                 )).collect(Collectors.toList());

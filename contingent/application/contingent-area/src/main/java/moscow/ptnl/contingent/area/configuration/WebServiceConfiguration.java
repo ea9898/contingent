@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.scheduling.annotation.EnableAsync;
 import ru.mos.emias.contingent2.sysop.v1.SysopPT;
 
 /**
@@ -33,6 +34,7 @@ import ru.mos.emias.contingent2.sysop.v1.SysopPT;
  */
 @Configuration
 @ComponentScan(basePackages = "moscow.ptnl")
+@EnableAsync
 public class WebServiceConfiguration {
     
     @Autowired

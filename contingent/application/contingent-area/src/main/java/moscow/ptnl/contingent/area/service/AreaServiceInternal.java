@@ -89,4 +89,6 @@ public interface AreaServiceInternal {
                                    Integer ageMaxM, Integer ageMinW, Integer ageMaxW, boolean autoAssignForAttachment,
                                    Boolean attachByMedicalReason, List<AddMedicalEmployee> addMedicalEmployees,
                                    List<AddressRegistryBaseType> addresses) throws ContingentException;
+
+    Long initiateAddAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry) throws ContingentException;
 }

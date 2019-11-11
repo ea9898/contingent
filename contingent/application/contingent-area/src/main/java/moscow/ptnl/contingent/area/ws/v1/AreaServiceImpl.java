@@ -62,6 +62,8 @@ import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest;
 import ru.mos.emias.contingent2.area.types.GetNewAreaIdResponse;
+import ru.mos.emias.contingent2.area.types.InitiateAddAreaAddressRequest;
+import ru.mos.emias.contingent2.area.types.InitiateAddAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.InitiateCreatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.types.InitiateCreatePrimaryAreaResponse;
 import ru.mos.emias.contingent2.area.types.RestoreAreaRequest;
@@ -202,6 +204,21 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW());
 
             return new UpdateDependentAreaResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured
+    public InitiateAddAreaAddressResponse initiateAddAreaAddress(InitiateAddAreaAddressRequest body) throws Fault {
+        try {
+            InitiateAddAreaAddressResponse response = new InitiateAddAreaAddressResponse();
+            Long id = areaService.initiateAddAreaAddress(
+                    body.getAreaId(),
+                    body.getAddresses());
+            response.setId(id);
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);
