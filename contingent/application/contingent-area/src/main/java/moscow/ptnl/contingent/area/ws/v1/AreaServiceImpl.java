@@ -90,6 +90,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
+import ru.mos.emias.contingent2.area.types.InitiateAddMoAddressRequest;
+import ru.mos.emias.contingent2.area.types.InitiateAddMoAddressResponse;
 
 /**
  *
@@ -130,7 +132,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
-
+    
     @Override @EMIASSecured
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
@@ -547,6 +549,22 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             throw mapException(ex);
         }
     }
+    
+    
+
+    @Override //@EMIASSecured
+    public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
+        try {
+            Long result = areaService.initiateAddMoAddress(
+                    body.getMoId(), body.getAreaTypeCode(), body.getOrderId(), body.getAddresses());
+            InitiateAddMoAddressResponse response = new InitiateAddMoAddressResponse();
+            response.setId(result);
+            return response;            
+        } catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+    
 
     private Fault mapException(Exception ex) {
         if (!(ex instanceof ContingentException)) {

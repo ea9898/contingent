@@ -13,8 +13,6 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface PagingAndSortingRepository<T, ID extends Serializable> extends CommonRepository<T, ID>, JpaSpecificationExecutor<T> {
 
-	Iterable<T> findAll(Sort sort);
-
 	Page<T> findAll(Pageable pageable);
 	
 	Page<T> findAll(Specification<T> spec, Pageable pageRequest);

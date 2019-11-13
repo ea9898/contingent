@@ -416,5 +416,9 @@ public class Algorithms {
     public long sysOperationRegistration() {
         return  sysopCRUDRepository.save(new Sysop(0, false)).getId();
     }
+    
+    public void sysOperationComplete(long sysopId, boolean successful, String message) {
+        sysopCRUDRepository.save(new Sysop(sysopId, 100, true, successful, message));
+    }
 
 }

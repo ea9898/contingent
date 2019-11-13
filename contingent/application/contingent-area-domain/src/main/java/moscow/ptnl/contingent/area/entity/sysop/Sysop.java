@@ -50,15 +50,15 @@ public class Sysop implements Serializable {
     public Sysop() {
     }
 
-    public Sysop(Integer progress, boolean completed) {
+    public Sysop(int progress, boolean completed) {
         this(null, progress, completed, null);
     }
 
-    public Sysop(Long id, Integer progress, boolean completed, Boolean successful) {
+    public Sysop(Long id, int progress, boolean completed, Boolean successful) {
         this(id, progress, completed, successful, null);
     }
 
-    public Sysop(Long id, Integer progress, boolean completed, Boolean successful, String result) {
+    public Sysop(Long id, int progress, boolean completed, Boolean successful, String result) {
         this.id = id;
         this.progress = progress;
         this.completed = completed;

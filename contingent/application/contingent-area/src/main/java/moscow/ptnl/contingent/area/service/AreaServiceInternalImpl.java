@@ -10,16 +10,12 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.sysop.Sysop;
-import moscow.ptnl.contingent.area.entity.sysop.SysopMsg;
-import moscow.ptnl.contingent.area.entity.sysop.SysopMsgParam;
 import moscow.ptnl.contingent.area.error.AreaErrorReason;
 import moscow.ptnl.contingent.area.model.area.AddressArea;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
-import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeMapper;
 import moscow.ptnl.contingent.area.transform.AreaAddressClone;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.util.Period;
@@ -27,7 +23,6 @@ import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.error.ValidationMessage;
 import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
@@ -64,10 +59,6 @@ import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopMsgCRUDRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopMsgParamCRUDRepository;
-import moscow.ptnl.contingent.service.TransactionRunner;
 import moscow.ptnl.contingent.service.setting.SettingService;
 import moscow.ptnl.util.Strings;
 import moscow.ptnl.ws.security.UserContextHolder;
@@ -84,7 +75,6 @@ import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -96,7 +86,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.naturalOrder;
@@ -213,22 +202,10 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaAddressClone areaAddressClone;
 
     @Autowired
-    private HistoryServiceHelper historyHelper;
-
+    private HistoryServiceHelper historyHelper;   
+    
     @Autowired
-    private TransactionRunner transactionRunner;
-
-    @Autowired
-    private SysopMsgCRUDRepository sysopMsgCRUDRepository;
-
-    @Autowired
-    private SysopMsgParamCRUDRepository sysopMsgParamCRUDRepository;
-
-    @Autowired
-    private EntityManager entityManager;
-
-    @Autowired
-    private SysopCRUDRepository sysopCRUDRepository;
+    private AreaServiceInternalImplAsync asyncService;
 
     public AreaServiceInternalImpl() {
     }
@@ -1522,7 +1499,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         return new PageImpl<>(new ArrayList<>(areaInfos),
                 paging, totalSize);
-    }
+    }      
 
     // (К_УУ_26) Инициация процесса создания участка обслуживания первичного класса
     @Override
@@ -1537,15 +1514,33 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         long sysopId = algorithms.sysOperationRegistration();
         // 3
         UserContext context = UserContextHolder.getContext();
-        CompletableFuture.runAsync(() -> transactionRunner.run(() ->
-                asyncCreatePrimaryArea(context,sysopId, moId, muId, number, description,
+        asyncService.asyncCreatePrimaryArea(context, sysopId, moId, muId, number, description,
                         areaTypeCode, policyTypes, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW,
-                        autoAssignForAttachment, attachByMedicalReason, addMedicalEmployees, addresses)));
+                        autoAssignForAttachment, attachByMedicalReason, addMedicalEmployees, addresses);
 
         // 4 выполняется автоматически после выполнения createPrimaryArea, setMedicalEmployeeOnArea, addAreaAddress
 
         // 5
         return sysopId;
+    }
+    
+    // (К_УУ_27) Инициация процесса распределения жилых домов к территории обслуживания МО
+    @Override
+    public Long initiateAddMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addresses) throws ContingentException {
+        //1. Система выполняет проверку полномочий пользователя.
+        // Реализовано через аннотацию 
+        
+        //2. Система выполняет регистрацию новой асинхронной операции
+        long sysopId = algorithms.sysOperationRegistration();
+        
+        //3. Система инициирует процесс (выполняется асинхронно) распределения жилых домов к территории обслуживания МО. (А_УУ_11)        
+        asyncService.asyncInitiateAddMoAddress(sysopId, UserContextHolder.getContext(), moId, areaTypeCode, orderId, addresses);
+        
+        //4. Система инициирует процесс журналирования (выполняется асинхронно) по инициации распределения жилых домов к территории обслуживания МО. (А_УУ_8), п.1
+        // происходит в п 3
+        
+        //5. Система возвращает в качестве результата: ИД операции
+         return sysopId;
     }
 
     // (К_УУ_28) Инициация процесса добавления адресов на участок обслуживания
@@ -1563,36 +1558,5 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return sysopId;
     }
 
-
-    // Асинхронное создание участка первичного класса (А_УУ_10)
-    private void asyncCreatePrimaryArea(UserContext userContext, long sysopId, long moId, Long muId, Integer number, String description, Long areaTypeCode,
-                                       List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
-                                       Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                       boolean autoAssignForAttachment, Boolean attachByMedicalReason,
-                                       List<AddMedicalEmployee> addMedicalEmployees,
-                                       List<AddressRegistryBaseType> addresses) {
-        try {
-            UserContextHolder.setContext(userContext);
-            Long areaId = createPrimaryArea(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
-                    ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
-            setMedicalEmployeeOnArea(areaId, addMedicalEmployees, Collections.emptyList());
-            addAreaAddress(areaId, addresses);
-            sysopCRUDRepository.save(new Sysop(sysopId, 100, true, true, areaId.toString()));
-        } catch (ContingentException e) {
-            for (ValidationMessage error : e.getValidation().getMessages()) {
-                long sysopMsgId = sysopMsgCRUDRepository.save(new SysopMsg(
-                        entityManager.getReference(Sysop.class, sysopId), // TODO Этого быть не должно!
-                        error.getType().value(),
-                        error.getCode(),
-                        error.getMessage())).getId();
-                List<SysopMsgParam> params = error.getParameters().stream().map(param -> new SysopMsgParam(
-                        entityManager.getReference(SysopMsg.class, sysopMsgId), // TODO Этого быть не должно!
-                        param.getCode(),
-                        param.getValue()
-                )).collect(Collectors.toList());
-                sysopMsgParamCRUDRepository.saveAll(params);
-            }
-            sysopCRUDRepository.save(new Sysop(sysopId, 100, true, false));
-        }
-    }
+    
 }
