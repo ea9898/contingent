@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.nsi.domain.area;
 
+import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Cacheable;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
@@ -26,7 +28,7 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 @Cacheable
 @Proxy(lazy=false)
 @MapToNsi(table = NsiTablesEnum.AREA_TYPE)
-public class AreaType extends CodeName implements Serializable, Keyable {
+public class AreaType extends CodeName implements Serializable, Keyable, NsiExternalEntity {
 
     private static final long serialVersionUID = -1047920239396677745L;
 
@@ -120,6 +122,13 @@ public class AreaType extends CodeName implements Serializable, Keyable {
     @Column(name = "GLOBAL_ID")
     @MapToNsi("GLOBAL_ID")
     private Long globalId;
+
+    @Column(name = "UPDATE_DATE", nullable = false)
+    private LocalDateTime updateDate;
+
+    @Column(name = "SOURCE")
+    @Size(max = 4000)
+    private String source;
 
     public AreaType() {
     }
@@ -292,6 +301,26 @@ public class AreaType extends CodeName implements Serializable, Keyable {
 
     public void setAreaCountLimit(Integer areaCountLimit) {
         this.areaCountLimit = areaCountLimit;
+    }
+
+    @Override
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    @Override
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    @Override
+    public String getSource() {
+        return source;
+    }
+
+    @Override
+    public void setSource(String source) {
+        this.source = source;
     }
 
     @Override

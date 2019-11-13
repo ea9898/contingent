@@ -1,6 +1,8 @@
 package moscow.ptnl.contingent.nsi.pushaccepter;
 
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.NSI_EVENT_CHANNEL_NAME;
+
+import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiPushEventConstraint;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
@@ -22,9 +24,13 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class PushAccepterImpl extends PushAccepter {
-    
+
+    private static final String NSI_ENTITY_SOURCE = "push";
+
     @Autowired
     private NsiEntityMapper entityMapper;
 
@@ -79,6 +85,10 @@ public class PushAccepterImpl extends PushAccepter {
             case D_POSITION_NOM:
                 pushEventEntity = entityMapper.mapTyped(pack, PositionNom.class);
                 break;
+        }
+        if (pushEventEntity instanceof NsiExternalEntity) {
+            ((NsiExternalEntity) pushEventEntity).setUpdateDate(LocalDateTime.now());
+            ((NsiExternalEntity) pushEventEntity).setSource(NSI_ENTITY_SOURCE);
         }
         nsiChannel.send(MessageBuilder
                 .withPayload(pushEventEntity)

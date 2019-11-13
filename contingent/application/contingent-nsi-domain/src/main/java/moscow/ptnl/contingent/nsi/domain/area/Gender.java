@@ -8,7 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 
@@ -16,7 +20,7 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 @Table(name = "Gender")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.GENDER)
-public class Gender implements Serializable {
+public class Gender implements Serializable, Keyable, NsiExternalEntity {
 
     private static final long serialVersionUID = 7174737671670446575L;
 
@@ -38,6 +42,13 @@ public class Gender implements Serializable {
     @Convert(converter = BooleanStrictIntegerConverter.class)
     @MapToNsi
     private Boolean archived;
+
+    @Column(name = "UPDATE_DATE", nullable = false)
+    private LocalDateTime updateDate;
+
+    @Column(name = "SOURCE")
+    @Size(max = 4000)
+    private String source;
 
     public String getCode() {
         return code;
@@ -69,6 +80,31 @@ public class Gender implements Serializable {
 
     public void setArchived(Boolean archived) {
         this.archived = archived;
+    }
+
+    @Override
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    @Override
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    @Override
+    public String getSource() {
+        return source;
+    }
+
+    @Override
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    @Override
+    public Serializable getKey() {
+        return getCode();
     }
 
     @Override

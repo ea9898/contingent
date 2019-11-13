@@ -1,5 +1,8 @@
 package moscow.ptnl.contingent.nsi.ws;
 
+import moscow.ptnl.contingent.domain.Keyable;
+import moscow.ptnl.contingent.nsi.domain.NsiActionsEnum;
+import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
@@ -31,6 +34,7 @@ import moscow.ptnl.contingent.nsi.repository.GenderCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
+import moscow.ptnl.contingent.repository.CommonRepository;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +50,8 @@ import ru.mos.emias.pushaccepterproduct.adminservice.v1.Fault;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.SyncNsiRequest;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.SyncNsiResponse;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
@@ -57,7 +63,9 @@ import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
     public static final String SERVICE_NAME = "NSI_ADMIN_V1";
-    
+
+    private static final String NSI_ENTITY_SOURCE = "syncNsi";
+
     @Autowired
     private NsiEntityMapper entityMapper;
 
@@ -152,47 +160,47 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
             switch (nsiTablesEnum) {
                 case AREA_TYPE:
                     List<AreaType> areaTypes = entityMapper.mapTypedList(rows, AreaType.class);
-                    areaTypesCRUDRepository.saveAll(areaTypes);
+                    saveAll(areaTypesCRUDRepository, areaTypes);
                     break;
                 case AREA_TYPE_CLASS:
                     List<AreaTypeClass> areaTypeClasses = entityMapper.mapTypedList(rows, AreaTypeClass.class);
-                    areaTypesClassCRUDRepository.saveAll(areaTypeClasses);
+                    saveAll(areaTypesClassCRUDRepository, areaTypeClasses);
                     break;
                 case AREA_TYPE_KIND:
                     List<AreaTypeKind> areaTypeKinds = entityMapper.mapTypedList(rows, AreaTypeKind.class);
-                    areaTypesKindCRUDRepository.saveAll(areaTypeKinds);
+                    saveAll(areaTypesKindCRUDRepository, areaTypeKinds);
                     break;
-               case AREA_TYPE_MEDICAL_POSITIONS:
+                case AREA_TYPE_MEDICAL_POSITIONS:
                     List<AreaTypeMedicalPositions> areaTypeMedicalPositions = entityMapper.mapTypedList(rows, AreaTypeMedicalPositions.class);
-                    areaTypeMedicalPositionsCRUDRepository.saveAll(areaTypeMedicalPositions);
+                    saveAll(areaTypeMedicalPositionsCRUDRepository, areaTypeMedicalPositions);
                     break;
-               case AREA_TYPE_RELATIONS:
+                case AREA_TYPE_RELATIONS:
                     List<AreaTypeRelations> areaTypeRelations = entityMapper.mapTypedList(rows, AreaTypeRelations.class);
-                    areaTypeRelationsCRUDRepository.saveAll(areaTypeRelations);
+                    saveAll(areaTypeRelationsCRUDRepository, areaTypeRelations);
                     break;
-               case AREA_TYPE_SPECIALIZATIONS:
+                case AREA_TYPE_SPECIALIZATIONS:
                     List<AreaTypeSpecializations> areaTypeSpecializations = entityMapper.mapTypedList(rows, AreaTypeSpecializations.class);
-                    areaTypeSpecializationsCRUDRepository.saveAll(areaTypeSpecializations);
+                    saveAll(areaTypeSpecializationsCRUDRepository, areaTypeSpecializations);
                     break;
-               case SPECIALIZATION:
+                case SPECIALIZATION:
                     List<Specialization> specializations = entityMapper.mapTypedList(rows, Specialization.class);
-                    specializationCRUDRepository.saveAll(specializations);
+                    saveAll(specializationCRUDRepository, specializations);
                     break;
-               case POSITION_CODE:
+                case POSITION_CODE:
                     List<PositionCode> positionCodes = entityMapper.mapTypedList(rows, PositionCode.class);
-                    positionCodeCRUDRepository.saveAll(positionCodes);
+                    saveAll(positionCodeCRUDRepository, positionCodes);
                     break;
-               case GENDER:
+                case GENDER:
                     List<Gender> genders = entityMapper.mapTypedList(rows, Gender.class);
-                    genderCRUDRepository.saveAll(genders);
+                    saveAll(genderCRUDRepository, genders);
                     break;
-               case POLICY_TYPE:
+                case POLICY_TYPE:
                     List<PolicyType> policyTypes = entityMapper.mapTypedList(rows, PolicyType.class);
-                    policyTypeCRUDRepository.saveAll(policyTypes);
+                    saveAll(policyTypeCRUDRepository, policyTypes);
                     break;
                 case D_POSITION_NOM:
                     List<PositionNom> positionNoms = entityMapper.mapTypedList(rows, PositionNom.class);
-                    positionNomCRUDRepository.saveAll(positionNoms);
+                    saveAll(positionNomCRUDRepository, positionNoms);
                     break;
             }
         } catch (Exception e) {
@@ -204,5 +212,15 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
         }
 
         return new SyncNsiResponse();
+    }
+
+    private <T extends Serializable, K extends Serializable> void saveAll(CommonRepository<T, K> repository, List<T> entities) {
+        entities.forEach(e -> {
+            if (e instanceof NsiExternalEntity) {
+                ((NsiExternalEntity) e).setUpdateDate(LocalDateTime.now());
+                ((NsiExternalEntity) e).setSource(NSI_ENTITY_SOURCE);
+            }
+        });
+        repository.saveAll(entities);
     }
 }

@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.nsi.domain.area;
 
+import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 
@@ -14,13 +15,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "POSITION_NOM")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.D_POSITION_NOM)
-public class PositionNom implements Serializable {
+public class PositionNom implements Serializable, NsiExternalEntity {
 
     private static final long serialVersionUID = 3663299049984020497L;
 
@@ -51,6 +53,13 @@ public class PositionNom implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @MapToNsi(value = "SPECIALIZATION_ID", findEntityByField = "globalId")
     private Specialization specialization;
+
+    @Column(name = "UPDATE_DATE", nullable = false)
+    private LocalDateTime updateDate;
+
+    @Column(name = "SOURCE")
+    @Size(max = 4000)
+    private String source;
 
     public PositionNom() {
     }
@@ -110,6 +119,26 @@ public class PositionNom implements Serializable {
 
     public void setPositionCode(PositionCode positionCode) {
         this.positionCode = positionCode;
+    }
+
+    @Override
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    @Override
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    @Override
+    public String getSource() {
+        return source;
+    }
+
+    @Override
+    public void setSource(String source) {
+        this.source = source;
     }
 
     @Override
