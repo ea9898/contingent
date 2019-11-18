@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.service.AreaAddressChecker;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
+import moscow.ptnl.contingent.area.service.AreaServiceInternalImplAsync;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelper;
 import moscow.ptnl.contingent.service.TransactionRunner;
@@ -141,6 +142,9 @@ public class MockConfiguration {
 
     @MockBean
     public AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
+
+    @MockBean
+    public AreaServiceInternalImplAsync asyncService;
 
     @MockBean
     public SearchAreaAddressCloner searchAreaAddressCloner;

@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.error;
+package moscow.ptnl.contingent.area;
 
 import ru.mos.emias.errors.domain.ErrorMessageType;
 import ru.mos.emias.errors.domain.ErrorReason;

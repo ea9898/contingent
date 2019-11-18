@@ -1,7 +1,7 @@
 package service.methods;
 
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
+import moscow.ptnl.contingent.area.AreaErrorReason;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.junit.jupiter.api.Test;
 
