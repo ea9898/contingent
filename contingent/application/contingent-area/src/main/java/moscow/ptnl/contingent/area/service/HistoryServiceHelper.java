@@ -17,6 +17,6 @@ public class HistoryServiceHelper {
     }
 
     public <T> void sendHistory(T oldObject, T newObject, Class<T> cls) {
-        historyService.write(UserContextHolder.getRequestUUID(), UserContextHolder.getPrincipal(), oldObject, newObject, cls);
+        historyService.write(UserContextHolder.getContext().getRequestId(), UserContextHolder.getContext().getPrincipal(), oldObject, newObject, cls);
     }
 }

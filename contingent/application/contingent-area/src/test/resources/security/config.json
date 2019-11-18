@@ -117,6 +117,10 @@
                     "enabled":true,
                     "permissions":[320026]
                 },
+                "initiateAddMoAddress":{
+                    "enabled":true,
+                    "permissions":[320027]
+                },
                 "initiateAddAreaAddress": {
                     "enabled":true,
                     "permissions":[320028]

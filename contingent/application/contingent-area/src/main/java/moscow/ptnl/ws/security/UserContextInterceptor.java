@@ -44,6 +44,6 @@ public class UserContextInterceptor extends AbstractSoapInterceptor {
         // На всякий случай, контекст может быть не задан, а в БД поле имени пользователя обязательное
         if (userContext.getUserName() == null) { userContext.setUserName("Не задано");}
 
-        UserContextHolder.setContext(userContext);
+        UserContextHolder.setContext(new RequestContext(userContext));
     }
 }

@@ -73,7 +73,6 @@ import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
-import ru.mos.emias.system.v1.usercontext.UserContext;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1343,9 +1342,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             moAddress.setAddressAllocationOrder(order);
             moAddress.setStartDate(LocalDate.now());
             moAddress.setCreateDate(LocalDateTime.now());
-            moAddressCRUDRepository.save(moAddress);
             moAddresses.add(moAddress);
         });
+        moAddressCRUDRepository.saveAll(moAddresses);
 
         // Логирование добавление адресов
         for (MoAddress moAddress: moAddresses) {
@@ -1512,9 +1511,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 2
         long sysopId = algorithms.sysOperationRegistration();
+        
         // 3
-        UserContext context = UserContextHolder.getContext();
-        asyncService.asyncCreatePrimaryArea(context, sysopId, moId, muId, number, description,
+        asyncService.asyncCreatePrimaryArea(UserContextHolder.getContext(), sysopId, moId, muId, number, description,
                         areaTypeCode, policyTypes, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW,
                         autoAssignForAttachment, attachByMedicalReason, addMedicalEmployees, addresses);
 

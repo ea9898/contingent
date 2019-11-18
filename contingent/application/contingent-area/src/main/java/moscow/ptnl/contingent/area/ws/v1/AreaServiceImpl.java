@@ -552,7 +552,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     
     
 
-    @Override //@EMIASSecured
+    @Override @EMIASSecured
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
         try {
             Long result = areaService.initiateAddMoAddress(
