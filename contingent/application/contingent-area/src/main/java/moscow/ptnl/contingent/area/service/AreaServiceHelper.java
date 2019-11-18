@@ -978,7 +978,8 @@ public class AreaServiceHelper {
 
     public void checkSearchAreaAddresses(List<SearchAreaAddress> addresses) throws ContingentException {
         if (addresses.stream().anyMatch(addr -> AddressLevelType.MOSCOW.getLevel().equals(addr.getAoLevel()))) {
-            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
+            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
+                    new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
         }
         ListIterator<SearchAreaAddress> iter = addresses.listIterator();
         while (iter.hasNext()) {
