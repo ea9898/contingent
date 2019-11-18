@@ -58,7 +58,7 @@ public class AreaServiceInternalImplAsync {
     public void asyncInitiateAddMoAddress(long sysopId, RequestContext requestContext, long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addresses) throws ContingentException {
         try {
             UserContextHolder.setContext(requestContext);
-            List<Long> ids = areaService.addMoAddress(moId, areaTypeCode, orderId, addresses);
+            List<Long> ids = areaService.addMoAddress(moId, areaTypeCode, orderId, addresses, false);
             String sysopResult = ids.stream().map(id -> id.toString()).collect(Collectors.joining(";"));
             algorithms.sysOperationComplete(sysopId, true, sysopResult);
         } catch (ContingentException e) {

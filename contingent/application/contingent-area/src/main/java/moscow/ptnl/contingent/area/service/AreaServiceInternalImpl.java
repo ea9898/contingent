@@ -1284,11 +1284,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_21) Распределение жилых домов к территории обслуживания МО
     @Override
-    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addressesRegistry)
+    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addressesRegistry, boolean limitAddress)
             throws ContingentException {
         Validation validation = new Validation();
         // 1.
-        areaHelper.checkTooManyAddresses(addressesRegistry, settingService.getPar1());
+        if (limitAddress) {
+            areaHelper.checkTooManyAddresses(addressesRegistry, settingService.getPar1());
+        }
 
         // 2.
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation);

@@ -331,7 +331,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             AddMoAddressResponse response = new AddMoAddressResponse();
             response.getMoAddressIds().addAll(
                     areaService.addMoAddress(body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
-                            body.getAddresses()));
+                            body.getAddresses(),  true));
             return response;
         }
         catch (Exception ex) {
