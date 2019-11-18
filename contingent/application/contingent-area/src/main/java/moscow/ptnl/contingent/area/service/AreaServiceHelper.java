@@ -239,7 +239,8 @@ public class AreaServiceHelper {
     }
 
     private boolean checkAgeSetupFilling(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType) {
-        return (ageMin != null && ageMinAreaType == null) || (ageMax != null && ageMaxAreaType == null);
+        return (ageMin != null && ageMinAreaType == null) || (ageMin == null && ageMinAreaType != null) ||
+                (ageMax != null && ageMaxAreaType == null) || (ageMax == null && ageMaxAreaType != null);
     }
 
     public void checkAgeSetupRange(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType,
@@ -263,13 +264,13 @@ public class AreaServiceHelper {
 
     public void checkAreaTypeRelations(AreaType dependentAreaType, AreaType primaryAreaType, Validation validation) {
         Optional<AreaTypeRelations>areaTypeRelations = areaTypeRelationsRepository.getByDependentAndPrimaryAreaTypes(dependentAreaType, primaryAreaType);
-        if (!areaTypeRelations.isPresent()) {
-            validation.error(AreaErrorReason.AREA_TYPE_RELATIONS_NOT_EXISTS,
-                    new ValidationParameter("dependentAreaTypeTitle", dependentAreaType.getTitle()),
-                    new ValidationParameter("primaryAreaTypeTitle", primaryAreaType.getTitle()));
-        }
+        if (!areaTypeRelations.isPresent())
+    {
+        validation.error(AreaErrorReason.AREA_TYPE_RELATIONS_NOT_EXISTS,
+                new ValidationParameter("dependentAreaTypeTitle", dependentAreaType.getTitle()),
+                new ValidationParameter("primaryAreaTypeTitle", primaryAreaType.getTitle()));
     }
-
+}
     // Проверяет существует ли участок с указанным идентификатором и не находится ли он в архиве
     public Area checkAndGetArea(long areaId, Validation validation) {
         Area area = areaCRUDRepository.findById(areaId).orElse(null);
