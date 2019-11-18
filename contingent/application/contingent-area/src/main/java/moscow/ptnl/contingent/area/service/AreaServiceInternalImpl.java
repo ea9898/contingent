@@ -586,7 +586,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 5.
         if (muId != null && (area.getAreaType().getAreaTypeKind() == null ||
-                !Objects.equals(area.getAreaType().getAreaTypeKind().getCode(), AreaTypeKindEnum.PERSONAL.getCode()))) {
+                !AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode()))) {
             validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
         }
         if (!validation.isSuccess()) {
