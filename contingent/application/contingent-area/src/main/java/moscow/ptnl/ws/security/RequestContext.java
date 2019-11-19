@@ -21,26 +21,32 @@ public class RequestContext {
         this.userContext = userContext;
     }
     
-    public String getRequestId() {
+    //пакетный доступ, чтобы зря не дергали метод
+    String getRequestId() {
         return this.requestId.toString();
     }
 
-    public String getMethodName() {
+    //пакетный доступ, чтобы зря не дергали метод
+    String getMethodName() {
         return methodName;
     }
     
-    public UserContext getUserContext() {
+    //пакетный доступ, чтобы зря не дергали метод
+    UserContext getUserContext() {
         return this.userContext;
     }
     
-    public Principal getPrincipal() {        
-        if (userContext == null) {
+    //пакетный доступ, чтобы зря не дергали метод
+    Principal getPrincipal() {        
+        if (this.userContext == null) {
             return null;
         }
         Principal principal = new Principal(userContext.getUserName());
         principal.setIpAddress(userContext.getHostIp());
         principal.setUserRoleId((userContext.getUserRoleId() != 0) ? userContext.getUserRoleId() : null);
-        principal.getAccessRights().addAll(userContext.getUserRights().getUserRightIds());
+        if (userContext.getUserRights() != null) {
+            principal.getAccessRights().addAll(userContext.getUserRights().getUserRightIds());
+        }
         principal.setJobInfoId(userContext.getJobExecutionId()); //FIXME - это правильно?
         //TODO не понятно как заполнять
         //principal.setAccountId(Long.MIN_VALUE);
