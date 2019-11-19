@@ -101,6 +101,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsFirst;
+import moscow.ptnl.ws.security.RequestContext;
 
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
@@ -1537,9 +1538,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 2
         long sysopId = algorithms.sysOperationRegistration();
         // 3
-        UserContext context = UserContextHolder.getContext();
+        RequestContext context = UserContextHolder.getContext();
         CompletableFuture.runAsync(() -> transactionRunner.run(() ->
-                asyncCreatePrimaryArea(context,sysopId, moId, muId, number, description,
+                asyncCreatePrimaryArea(context, sysopId, moId, muId, number, description,
                         areaTypeCode, policyTypes, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW,
                         autoAssignForAttachment, attachByMedicalReason, addMedicalEmployees, addresses)));
 
@@ -1550,14 +1551,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     }
 
     //Асинхронное создание участка первичного класса (А_УУ_10)
-    private void asyncCreatePrimaryArea(UserContext userContext, long sysopId, long moId, Long muId, Integer number, String description, Long areaTypeCode,
+    private void asyncCreatePrimaryArea(RequestContext context, long sysopId, long moId, Long muId, Integer number, String description, Long areaTypeCode,
                                         List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
                                         Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                         boolean autoAssignForAttachment, Boolean attachByMedicalReason,
                                         List<AddMedicalEmployee> addMedicalEmployees,
                                         List<AddressRegistryBaseType> addresses) {
         try {
-            UserContextHolder.setContext(userContext);
+            UserContextHolder.setContext(context);
             Long areaId = createPrimaryArea(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
                     ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
             setMedicalEmployeeOnArea(areaId, addMedicalEmployees, Collections.emptyList());

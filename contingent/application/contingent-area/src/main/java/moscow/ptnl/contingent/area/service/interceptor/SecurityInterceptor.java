@@ -55,7 +55,7 @@ public class SecurityInterceptor {
                     LOG.warn("В настройках ограничений доступа для сервиса: {}, метод: {} не перечислен", serviceName, methodName);
                     throw SoapExceptionMapper.map(new UnauthorizedException(methodSetting.get(methodName).getAccessPermissions()));
                 } else if (methodSetting.get(methodName).isEnabled()) { //включена проверка авторизации для метода
-                    if (!hasAcessRights(methodSetting.get(methodName).getPermissions(), UserContextHolder.getPrincipal().getAccessRights())) {
+                    if (!hasAcessRights(methodSetting.get(methodName).getPermissions(), UserContextHolder.getContext().getPrincipal().getAccessRights())) {
                         throw SoapExceptionMapper.map(new UnauthorizedException(methodSetting.get(methodName).getAccessPermissions()));
                     }
                 }
