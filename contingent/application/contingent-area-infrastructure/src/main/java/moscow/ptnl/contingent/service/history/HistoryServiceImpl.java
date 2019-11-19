@@ -3,10 +3,7 @@ package moscow.ptnl.contingent.service.history;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.List;
 import javax.persistence.Transient;
-import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.history.EntityConverterHelper;
 import moscow.ptnl.contingent.domain.history.HistoryEventBuilder;
@@ -39,7 +36,7 @@ public class HistoryServiceImpl implements HistoryService {
     private final FieldConverter defaultConverter = new DefaultConverter();
 
     @Override
-    public <T> void write(String uuid, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException {
+    public <T> void write(String requestUuid, String methodName, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException {
         if (principal == null) {
             throw new IllegalArgumentException("нет данных о пользователе вызвавшем метод");
         }
@@ -59,14 +56,7 @@ public class HistoryServiceImpl implements HistoryService {
             }
         } catch (Exception e) {
             throw new RuntimeException("Такого быть не может.");
-        }
-
-        List<StackTraceElement> stElements = Arrays.asList(Thread.currentThread().getStackTrace());
-
-        //TODO исправить хардкод
-        String methodName = stElements.stream().filter(ste ->
-                ste.getFileName() != null && (ste.getFileName().startsWith("AreaServiceImpl")
-                        || ste.getFileName().startsWith("AreaServiceInternalImpl"))).findFirst().get().getMethodName();
+        }        
         
         //получаем аннотацию Journalable которой должна быть аннотирована журналируемая сущность
         Journalable classAnnotation = oldObject.getClass().getAnnotation(Journalable.class);        
@@ -84,7 +74,7 @@ public class HistoryServiceImpl implements HistoryService {
                 .withEntity(cls, entityId)
                 .setPrincipal(principal)
                 .setMethodName(methodName)
-                .setRequestUUID(uuid)
+                .setRequestUUID(requestUuid)
                 .setServiceName(serviceName);
         
         //обходим поля объекта и ищем проаннотированные

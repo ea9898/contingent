@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package moscow.ptnl.ws.security;
 
 import java.util.UUID;
@@ -10,21 +5,28 @@ import moscow.ptnl.contingent.domain.security.Principal;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
 /**
- *
+ * Инкапсулирует данные о запросе.
+ * 
  * @author m.kachalov
  */
 public class RequestContext {
     
-    private final UUID requestId;
+    private final UUID requestId; //произвольный уникальтный идентификатор запроса
+    private final String methodName; //имя вызываемого метода web-сервиса
     private final UserContext userContext;
     
-    public RequestContext(UserContext userContext) {
+    public RequestContext(String methodName, UserContext userContext) {
         this.requestId = UUID.randomUUID();
+        this.methodName = methodName;
         this.userContext = userContext;
     }
     
     public String getRequestId() {
         return this.requestId.toString();
+    }
+
+    public String getMethodName() {
+        return methodName;
     }
     
     public UserContext getUserContext() {

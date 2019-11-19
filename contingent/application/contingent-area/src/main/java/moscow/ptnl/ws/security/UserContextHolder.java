@@ -19,6 +19,14 @@ public class UserContextHolder {
         return context.getRequestId();
     }
     
+    public static String getMethodName() {
+        RequestContext context = getContext();
+        if (context == null) {
+            return null;
+        }
+        return context.getMethodName();
+    }
+    
     public static UserContext getUserContext() {
         RequestContext context = getContext();
         if (context == null) {

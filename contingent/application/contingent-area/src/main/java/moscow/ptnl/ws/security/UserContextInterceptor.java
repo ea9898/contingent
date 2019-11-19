@@ -12,7 +12,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
-import java.util.UUID;
 
 public class UserContextInterceptor extends AbstractSoapInterceptor {
 
@@ -43,7 +42,14 @@ public class UserContextInterceptor extends AbstractSoapInterceptor {
 
         // На всякий случай, контекст может быть не задан, а в БД поле имени пользователя обязательное
         if (userContext.getUserName() == null) { userContext.setUserName("Не задано");}
-
-        UserContextHolder.setContext(new RequestContext(userContext));
+        
+        String methodName = soapMessage
+                .getExchange()
+                .getBindingOperationInfo()
+                .getOperationInfo()
+                .getName()
+                .getLocalPart();
+        
+        UserContextHolder.setContext(new RequestContext(methodName, userContext));
     }
 }

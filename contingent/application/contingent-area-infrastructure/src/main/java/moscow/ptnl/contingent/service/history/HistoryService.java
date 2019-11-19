@@ -26,12 +26,13 @@ public interface HistoryService {
      * Запись изменных полей сущности в журнал логирования изменений.
      * 
      * @param <T>
-     * @param uuid заполняется как UserContextHolder.getRequestUUID()
+     * @param requestUuid заполняется как UserContextHolder.getRequestUUID()
+     * @param methodName имя метода web-сервиса при вызове которого происходит запись в историю: UserContextHolder.getMethodName()
      * @param principal заполняется как UserContextHolder.getPrincipal()
      * @param oldObject
      * @param newObject
      * @throws RuntimeException 
      */
-    <T> void write(String uuid, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException;
+    <T> void write(String requestUuid, String methodName, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException;
         
 }
