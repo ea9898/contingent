@@ -1,5 +1,6 @@
 package moscow.ptnl.ws.security;
 
+import moscow.ptnl.contingent.domain.security.Principal;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
 
@@ -33,6 +34,14 @@ public class UserContextHolder {
             return null;
         }
         return context.getUserContext();
+    }
+    
+    public static Principal getPrincipal() {
+        RequestContext context = getContext();
+        if (context == null) {
+            return null;
+        }
+        return context.getPrincipal();
     }
     
     public static void setContext(RequestContext context) {

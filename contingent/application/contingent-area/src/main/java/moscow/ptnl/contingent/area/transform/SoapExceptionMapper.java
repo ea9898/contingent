@@ -45,7 +45,7 @@ public class SoapExceptionMapper {
             
             SecurityFault fault = new SecurityFault();
             fault.setType(FaultTypes.SECURITY);
-            fault.setUserContext(UserContextHolder.getContext().getUserContext());
+            fault.setUserContext(UserContextHolder.getUserContext());
             fault.setUnauthorizedRequestSecurityException(urse);
                         
             return new Fault(e.getMessage(), fault);
@@ -59,7 +59,7 @@ public class SoapExceptionMapper {
             
             SecurityFault fault = new SecurityFault();
             fault.setType(FaultTypes.SECURITY);
-            fault.setUserContext(UserContextHolder.getContext().getUserContext());
+            fault.setUserContext(UserContextHolder.getUserContext());
             fault.setOtherSecurityException(ose);
             
             return new Fault(e.getMessage(), fault);

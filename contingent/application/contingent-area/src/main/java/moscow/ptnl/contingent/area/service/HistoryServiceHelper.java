@@ -31,7 +31,7 @@ public class HistoryServiceHelper {
         historyService.write(
                 UserContextHolder.getRequestId(), 
                 UserContextHolder.getMethodName(), 
-                UserContextHolder.getContext().getPrincipal(), 
+                UserContextHolder.getPrincipal(), 
                 oldObject, newObject, cls);
     }
 }
