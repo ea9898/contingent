@@ -221,8 +221,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.getAddresses());
             response.setId(id);
             return response;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw mapException(ex);
         }
     }
@@ -305,7 +304,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             AddAreaAddressResponse response = new AddAreaAddressResponse();
             response.getAreaAddressIds().addAll(areaService.addAreaAddress(body.getAreaId(),
-                    body.getAddresses()));
+                    body.getAddresses(), true));
             return response;
         }
         catch (Exception ex) {

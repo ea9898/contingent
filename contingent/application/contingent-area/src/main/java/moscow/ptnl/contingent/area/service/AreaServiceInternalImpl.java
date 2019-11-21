@@ -944,7 +944,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_13) Добавление адресов на участок обслуживания
     @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
-    public List<Long> addAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry) throws ContingentException {
+    public List<Long> addAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry, boolean limitAddress) throws ContingentException {
 
         Validation validation = new Validation();
 
@@ -953,7 +953,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
         // 4
-        areaHelper.checkTooManyAddresses(addressesRegistry, settingService.getPar1());
+        if (limitAddress) {
+            areaHelper.checkTooManyAddresses(addressesRegistry, settingService.getPar1());
+        }
 
         // 5
         Set<Long> addrSet = new HashSet<>(addressesRegistry.size());
@@ -1547,15 +1549,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     // (К_УУ_28) Инициация процесса добавления адресов на участок обслуживания
     @Override
     public Long initiateAddAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry) throws ContingentException {
-        // 2
+        //1. Система выполняет проверку полномочий пользователя.
+        // Реализовано через аннотацию
+        
+        // 2. Система выполняет регистрацию новой асинхронной операции
         long sysopId = algorithms.sysOperationRegistration();
 
-        // 3
-        // TODO реализовать
+        // 3. Система инициирует процесс (выполняется асинхронно) добавления адресов на участок обслуживания.
+        asyncService.asyncAddAreaAddress(UserContextHolder.getContext(), sysopId, areaId, addressesRegistry);
 
-        // 4 - auto
+        // 4. Система инициирует процесс журналирования (выполняется асинхронно) по инициации добавления адресов на участок обслуживания.
+        // выполняется в п 3
 
-        // 5
+        // 5. Система возвращает в качестве результата: ИД операции
         return sysopId;
     }
 

@@ -80,8 +80,21 @@ public class AreaServiceInternalImplAsync {
             Long areaId = areaService.createPrimaryArea(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
                     ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
             areaService.setMedicalEmployeeOnArea(areaId, addMedicalEmployees, Collections.emptyList());
-            areaService.addAreaAddress(areaId, addresses);
+            areaService.addAreaAddress(areaId, addresses, false);
             algorithms.sysOperationComplete(sysopId, true, areaId.toString());            
+        } catch (ContingentException e) {
+            processException(e, sysopId);
+        }
+    }
+    
+    @Async
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void asyncAddAreaAddress(RequestContext requestContext, long sysopId, Long areaId, List<AddressRegistryBaseType> addressesRegistry) {
+        try {
+            UserContextHolder.setContext(requestContext);
+            List<Long> ids = areaService.addAreaAddress(areaId, addressesRegistry, false);
+            String sysopResult = ids.stream().map(id -> id.toString()).collect(Collectors.joining(";"));
+            algorithms.sysOperationComplete(sysopId, true, sysopResult);
         } catch (ContingentException e) {
             processException(e, sysopId);
         }

@@ -53,7 +53,7 @@ public class SecurityInterceptor {
                 Map<String, AuthMethod> methodSetting = serviceSetting.getAuthMethods();
                 if (!methodSetting.containsKey(methodName)) {
                     LOG.warn("В настройках ограничений доступа для сервиса: {}, метод: {} не перечислен", serviceName, methodName);
-                    throw SoapExceptionMapper.map(new UnauthorizedException(methodSetting.get(methodName).getAccessPermissions()));
+                    throw SoapExceptionMapper.map(new UnauthorizedException((methodSetting.get(methodName) != null) ? methodSetting.get(methodName).getAccessPermissions() : new long[]{0}));
                 } else if (methodSetting.get(methodName).isEnabled()) { //включена проверка авторизации для метода
                     if (!hasAcessRights(methodSetting.get(methodName).getPermissions(), UserContextHolder.getPrincipal().getAccessRights())) {
                         throw SoapExceptionMapper.map(new UnauthorizedException(methodSetting.get(methodName).getAccessPermissions()));
