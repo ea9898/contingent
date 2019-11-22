@@ -8,5 +8,4 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface CommonRepository<T, ID extends Serializable> extends JpaRepository<T, ID > {
 
-
 }

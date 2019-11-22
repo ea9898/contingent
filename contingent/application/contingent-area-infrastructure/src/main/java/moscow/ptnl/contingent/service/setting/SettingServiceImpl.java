@@ -1,27 +1,35 @@
 package moscow.ptnl.contingent.service.setting;
 
 import moscow.ptnl.contingent.area.entity.settings.Setting;
-import moscow.ptnl.contingent.repository.settings.SettingCRUDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
+import moscow.ptnl.contingent.repository.settings.SettingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(propagation=Propagation.REQUIRED)
 public class SettingServiceImpl implements SettingService {
     
     private static final Logger LOG = LoggerFactory.getLogger(SettingServiceImpl.class);
-
+    
     @Autowired
-    private SettingCRUDRepository settingCRUDRepository;
+    private SettingsRepository settingsRepository;
 
     @Override
     public <T> T getSettingProperty(String propertyName) {
-        Optional<Setting> settingOptional = settingCRUDRepository.findById(propertyName);
+        return getSettingProperty(propertyName, false);
+    }
+    
+    @Override
+    public <T> T getSettingProperty(String propertyName, boolean refresh) {
+        Optional<Setting> settingOptional = settingsRepository.findById(propertyName, refresh);        
         if (settingOptional.isPresent()) {
             Setting setting = settingOptional.get();
-            try {
+            try {                
                 return setting.getType().typeValue(setting.getVal());
             } catch (Exception ex) {
                 LOG.error(String.format("Ошибка парсинга настройки %s1", propertyName), ex);
@@ -64,4 +72,6 @@ public class SettingServiceImpl implements SettingService {
         Long param = getSettingProperty(Par6);
         return param == null ? 20 : param.intValue();
     }
+
+    
 }

@@ -146,7 +146,7 @@ public class EsuConsumerService {
     private boolean isConsumerOn(String topicName) {
         
         //глобальная настройка прослушивателей для всех топиков
-        Boolean runMode = Boolean.TRUE.equals((Boolean) settingService.getSettingProperty(SettingService.TOPICS_CONSUMERS_RUN_MODE));
+        Boolean runMode = Boolean.TRUE.equals((Boolean) settingService.getSettingProperty(SettingService.TOPICS_CONSUMERS_RUN_MODE, true));
         if (!runMode) {
             LOG.warn("Обработка топиков отключена в настройке {}", SettingService.TOPICS_CONSUMERS_RUN_MODE);
             return false; 
@@ -154,7 +154,7 @@ public class EsuConsumerService {
         
         //настройка прослушивания конкретного топика
         String runModeSettingName = topicName + SETTING_RUN_MODE_POSTFIX;
-        runMode = Boolean.TRUE.equals((Boolean) settingService.getSettingProperty(runModeSettingName));
+        runMode = Boolean.TRUE.equals((Boolean) settingService.getSettingProperty(runModeSettingName, true));
         if (!runMode) {
             LOG.warn("Обработка топика {} отключена в настройке {}", topicName, runModeSettingName);
             return false; //если ничего не сказано, то и ничего не делаем - топик не слушаем
@@ -166,8 +166,8 @@ public class EsuConsumerService {
         
         LocalTime[] workInterval = null;
         try {
-            LocalTime begin = settingService.getSettingProperty(beginSettingName);
-            LocalTime end = settingService.getSettingProperty(endSettingName);
+            LocalTime begin = settingService.getSettingProperty(beginSettingName, true);
+            LocalTime end = settingService.getSettingProperty(endSettingName, true);
             // получение рабочего интервала
             workInterval = new LocalTime[]{begin, end};
             LOG.debug("Обработка топика {} возможна в интервале от {} до {}", topicName, workInterval[0], workInterval[1]);
