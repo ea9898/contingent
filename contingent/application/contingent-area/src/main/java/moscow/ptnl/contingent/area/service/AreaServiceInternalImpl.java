@@ -428,16 +428,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         Validation validation = new Validation();
 
-        //1
+        //2
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
         AreaType areaType = areaTypes.get(0);
 
-        //2
-        areaHelper.checkAreaTypeIsDependent(areaType, validation);
         //3
+        areaHelper.checkAreaTypeIsDependent(areaType, validation);
+        //4
         primaryAreaTypeCodesIds = primaryAreaTypeCodesIds.stream().distinct().collect(Collectors.toList());
 
         primaryAreaTypeCodesIds.forEach(code -> {
@@ -458,7 +458,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        //7
+        //8
         if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
         }
@@ -466,28 +466,28 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        //8
+        //9
         areaHelper.checkPolicyTypesIsOMS(policyTypeCodesIds, validation);
 
-        //9
+        //10
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        //10
+        //11
         Area area = new Area(moId, muId, areaType, number, null, false, description,
                 null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 
-        //11.
+        //12.
         for (Long areaTypeCodeId : primaryAreaTypeCodesIds) {
             AreaToAreaType areaToAreaType = new AreaToAreaType();
             areaToAreaType.setArea(area);
             areaToAreaType.setAreaType(areaTypesCRUDRepository.findById(areaTypeCodeId).get());
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         }
-        //12
+        //13
         List<PolicyType> policyTypeList = policyTypeRepository.findByIds(policyTypeCodesIds);
 
         if (policyTypeCodesIds != null && !policyTypeCodesIds.isEmpty()) {
@@ -497,14 +497,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaPolicyTypesCRUDRepository.save(areaPolicyTypes);
         }
 
-        //13
+        //14
         List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, true);
 
-        //14
-        esuHelperService.sendAttachOnAreaChangeEvent(primAreas.stream().map(Area::getId).collect(Collectors.toList()),
-                null, area);
-
         //15
+        if (primAreas != null && !primAreas.isEmpty()) {
+            esuHelperService.sendAttachOnAreaChangeEvent(primAreas.stream().map(Area::getId).collect(Collectors.toList()),
+                    null, area);
+        }
+
+        //16
+        historyHelper.sendHistory(null, area, Area.class);
+
+        //17
         return area.getId();
     }
 
