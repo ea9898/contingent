@@ -1029,9 +1029,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 9
-        List<Addresses> addresses = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
-                .collect(Collectors.toList());
-        addressesCRUDRepository.saveAll(addresses);
+        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry);
 
         // 10
         List<AreaAddress> areaAddresses = addresses.stream().map(addr -> {
@@ -1358,9 +1356,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 6.
-        List<Addresses> addresses = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
-                .collect(Collectors.toList());
-        addressesCRUDRepository.saveAll(addresses);
+        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry);
 
         // 7.
         List<MoAddress> moAddresses = new ArrayList<>();

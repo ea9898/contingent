@@ -1,5 +1,9 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.area.entity.area.Addresses;
+import moscow.ptnl.contingent.area.transform.AddressMapper;
+import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.service.setting.SettingService;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
@@ -146,10 +150,16 @@ public class AreaServiceHelper {
     private AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
 
     @Autowired
-    private SearchAreaAddressCloner searchAreaAddressCloner;
+    private AddressMapper addressMapper;
 
     @Autowired
     private AreaMedicalEmployeesClone areaMedicalEmployeesClone;
+
+    @Autowired
+    private AddressesRepository addressesRepository;
+
+    @Autowired
+    private AddressesCRUDRepository addressesCRUDRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -1009,5 +1019,14 @@ public class AreaServiceHelper {
                 }
             }
         }
+    }
+
+    public List<Addresses> getMoAreaAddresses(List<AddressRegistryBaseType> addressesRegistry) {
+        List<Addresses> addressesInput = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
+                .collect(Collectors.toList());
+        List<Addresses> addresses = addressesRepository.findAddresses(addressesInput.stream().map(Addresses::getGlobalId).collect(Collectors.toList()));
+        addressesCRUDRepository.saveAll(addressesInput.stream().filter(ai -> !addresses.stream().map(Addresses::getGlobalId).collect(Collectors.toList())
+                .contains(ai.getGlobalId())).collect(Collectors.toList())).forEach(addresses::add);
+        return addresses;
     }
 }
