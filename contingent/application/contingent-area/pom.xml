@@ -9,14 +9,15 @@
     <url>http://maven.apache.org</url>
 
     <parent>
-       <groupId>moscow.ptnl.contingent</groupId>
-       <artifactId>contingent</artifactId>
-       <relativePath>../pom.xml</relativePath>
+        <groupId>moscow.ptnl.contingent</groupId>
+        <artifactId>contingent</artifactId>
+        <relativePath>../pom.xml</relativePath>
         <version>1.2.0</version>
     </parent>
 
     <properties>
     </properties>
+    
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <resources>
@@ -512,6 +513,7 @@
             <version>3.0.7.RELEASE</version>
             <scope>${artefact.scope}</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
@@ -530,6 +532,7 @@
             <version>${metrics.version}</version>
             <scope>${artefact.scope}</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -540,6 +543,11 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
