@@ -21,7 +21,7 @@ import javax.management.MBeanServer;
 import javax.sql.DataSource;
 import moscow.ptnl.metrics.bind.DataSourceMetrics;
 import moscow.ptnl.metrics.bind.JMXMetrics;
-import org.springframework.beans.factory.annotation.Autowired;
+import moscow.ptnl.metrics.bind.WildFlyUndertowMetrics;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -53,15 +53,15 @@ public class MetricsConfiguration {
         return metrics;
     }
     
-    /*
+    
     @Bean
     public JMXMetrics wildFlyMetrics(MeterRegistry registry, MBeanServer mBeanServer) {
         //undertow_request_count
-        JMXMetrics metrics = new JMXMetrics(mBeanServer);
+        WildFlyUndertowMetrics metrics = new WildFlyUndertowMetrics(mBeanServer);
         metrics.bindTo(registry);
         return metrics;
     }
-    */
+    
     
     @Bean
     public MBeanServer mBeanServer() {
