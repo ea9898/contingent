@@ -1,5 +1,9 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.area.entity.area.Addresses;
+import moscow.ptnl.contingent.area.transform.AddressMapper;
+import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.service.setting.SettingService;
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
 import moscow.ptnl.contingent.area.entity.area.Area;
@@ -146,10 +150,16 @@ public class AreaServiceHelper {
     private AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
 
     @Autowired
-    private SearchAreaAddressCloner searchAreaAddressCloner;
+    private AddressMapper addressMapper;
 
     @Autowired
     private AreaMedicalEmployeesClone areaMedicalEmployeesClone;
+
+    @Autowired
+    private AddressesRepository addressesRepository;
+
+    @Autowired
+    private AddressesCRUDRepository addressesCRUDRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
     «ИД типа участка» с признаком архивности = 0.
@@ -239,7 +249,8 @@ public class AreaServiceHelper {
     }
 
     private boolean checkAgeSetupFilling(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType) {
-        return (ageMin != null && ageMinAreaType == null) || (ageMax != null && ageMaxAreaType == null);
+        return (ageMin != null && ageMinAreaType == null) || (ageMin == null && ageMinAreaType != null) ||
+                (ageMax != null && ageMaxAreaType == null) || (ageMax == null && ageMaxAreaType != null);
     }
 
     public void checkAgeSetupRange(Integer ageMin, Integer ageMax, Integer ageMinAreaType, Integer ageMaxAreaType,
@@ -263,13 +274,13 @@ public class AreaServiceHelper {
 
     public void checkAreaTypeRelations(AreaType dependentAreaType, AreaType primaryAreaType, Validation validation) {
         Optional<AreaTypeRelations>areaTypeRelations = areaTypeRelationsRepository.getByDependentAndPrimaryAreaTypes(dependentAreaType, primaryAreaType);
-        if (!areaTypeRelations.isPresent()) {
-            validation.error(AreaErrorReason.AREA_TYPE_RELATIONS_NOT_EXISTS,
-                    new ValidationParameter("dependentAreaTypeTitle", dependentAreaType.getTitle()),
-                    new ValidationParameter("primaryAreaTypeTitle", primaryAreaType.getTitle()));
-        }
+        if (!areaTypeRelations.isPresent())
+    {
+        validation.error(AreaErrorReason.AREA_TYPE_RELATIONS_NOT_EXISTS,
+                new ValidationParameter("dependentAreaTypeTitle", dependentAreaType.getTitle()),
+                new ValidationParameter("primaryAreaTypeTitle", primaryAreaType.getTitle()));
     }
-
+}
     // Проверяет существует ли участок с указанным идентификатором и не находится ли он в архиве
     public Area checkAndGetArea(long areaId, Validation validation) {
         Area area = areaCRUDRepository.findById(areaId).orElse(null);
@@ -978,7 +989,8 @@ public class AreaServiceHelper {
 
     public void checkSearchAreaAddresses(List<SearchAreaAddress> addresses) throws ContingentException {
         if (addresses.stream().anyMatch(addr -> AddressLevelType.MOSCOW.getLevel().equals(addr.getAoLevel()))) {
-            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
+            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
+                    new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
         }
         ListIterator<SearchAreaAddress> iter = addresses.listIterator();
         while (iter.hasNext()) {
@@ -1007,5 +1019,14 @@ public class AreaServiceHelper {
                 }
             }
         }
+    }
+
+    public List<Addresses> getMoAreaAddresses(List<AddressRegistryBaseType> addressesRegistry) {
+        List<Addresses> addressesInput = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
+                .collect(Collectors.toList());
+        List<Addresses> addresses = addressesRepository.findAddresses(addressesInput.stream().map(Addresses::getGlobalId).collect(Collectors.toList()));
+        addressesCRUDRepository.saveAll(addressesInput.stream().filter(ai -> !addresses.stream().map(Addresses::getGlobalId).collect(Collectors.toList())
+                .contains(ai.getGlobalId())).collect(Collectors.toList())).forEach(addresses::add);
+        return addresses;
     }
 }

@@ -86,7 +86,7 @@ public class WebServiceConfiguration {
         endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
         metricsInterceptorService.setupInterceptors(endpoint);
-        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestUUID);
+        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestId);
         return endpoint;
     }
 
@@ -120,7 +120,7 @@ public class WebServiceConfiguration {
     	endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
         metricsInterceptorService.setupInterceptors(endpoint);
-        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestUUID);
+        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestId);
     }
     
 }

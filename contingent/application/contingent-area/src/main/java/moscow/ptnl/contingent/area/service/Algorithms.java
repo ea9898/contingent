@@ -13,6 +13,7 @@ import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
+import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.CustomErrorReason;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
@@ -276,8 +277,8 @@ public class Algorithms {
                 validation.error(AreaErrorReason.AO_LEVEL_NOT_SET);
             } else {
                 //2
-                if (address.getAoLevel().equals(AddressLevelType.MOSCOW.getLevel())
-                        || address.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
+                AddressLevelType addressLevelType = AddressLevelType.find(address.getAoLevel());
+                if (addressLevelType == null || addressLevelType.getLevel().equals(AddressLevelType.MOSCOW.getLevel())) {
                     validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
                             new ValidationParameter("aoLevel", address.getAoLevel()));
                 }
@@ -346,7 +347,7 @@ public class Algorithms {
 
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
     // алгоритм изменён, вместо входного списка адресов НСИ, делаем запросы в нси с нужными фильтрами
-    public List<Addresses> findIntersectingAddressesSearch(List<SearchAreaAddress> addressesRegistryType) {
+    public List<Addresses> findIntersectingAddressesSearch(List<SearchAreaAddress> addressesRegistryType) throws ContingentException {
 
         List<Long> inputIds = addressesRegistryType.stream()
                 .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList());
@@ -389,6 +390,8 @@ public class Algorithms {
                     if (StringUtils.hasText(address.getAreaOMKTEcode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null,
                                 null, null, null, null, areaOmkTeCodes, null, AREA_TE.equals(level)));
+                    } else {
+                        throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
                     }
                 case REGION_TE:
                     if (StringUtils.hasText(address.getRegionOMKTEcode())) {
