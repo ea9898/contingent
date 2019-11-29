@@ -34,6 +34,5 @@ public interface HistoryService {
      * @throws RuntimeException 
      */
     <T> void write(String requestUuid, String methodName, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException;
-
         
 }

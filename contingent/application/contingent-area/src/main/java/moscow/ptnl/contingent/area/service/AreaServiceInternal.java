@@ -54,9 +54,9 @@ public interface AreaServiceInternal {
 
     Long getNewAreaId() throws ContingentException;
 
-    List<Long> addAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry) throws ContingentException;
+    List<Long> addAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry, boolean limitAddress) throws ContingentException;
 
-    List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addresses) throws ContingentException;
+    List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addresses, boolean limitAddress) throws ContingentException;
 
     Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
 

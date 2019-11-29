@@ -7,7 +7,7 @@ import ru.mos.emias.system.v1.usercontext.UserContext;
 /**
  * Инкапсулирует данные о запросе.
  *
- * @author mkachalov
+ * @author m.kachalov
  */
 public class RequestContext {
     
@@ -38,7 +38,7 @@ public class RequestContext {
     
     //пакетный доступ, чтобы зря не дергали метод
     Principal getPrincipal() {        
-        if (this.userContext == null) {
+        if (userContext == null) {
             return null;
         }
         Principal principal = new Principal(userContext.getUserName());

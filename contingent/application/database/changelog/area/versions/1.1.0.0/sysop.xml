@@ -276,4 +276,5 @@
             <column name="val" type="STRING"/>
         </loadUpdateData>
     </changeSet>
+
 </databaseChangeLog>

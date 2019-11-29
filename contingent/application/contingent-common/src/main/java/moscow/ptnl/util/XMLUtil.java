@@ -42,10 +42,12 @@ public class XMLUtil {
     public static <T> T convertMessageToObject(String message, Class<T> typeClass, String xsdPath) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(typeClass.getPackage().getName(), typeClass.getClassLoader());
-            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = sf.newSchema(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource(xsdPath)));
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            jaxbUnmarshaller.setSchema(schema);
+            if (xsdPath != null) {
+                SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                Schema schema = sf.newSchema(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource(xsdPath)));            
+                jaxbUnmarshaller.setSchema(schema);
+            }
             StringReader reader = new StringReader(message);
 
             return (T) jaxbUnmarshaller.unmarshal(reader);

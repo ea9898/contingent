@@ -9,5 +9,6 @@
     </changeSet>
 
     <include file="nsi.xml" relativeToChangelogFile="true"/>
+    <include file="sysop.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

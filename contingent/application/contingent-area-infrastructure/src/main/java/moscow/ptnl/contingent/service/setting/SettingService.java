@@ -13,7 +13,16 @@ public interface SettingService {
     /** Настройки ограничения доступа к методам web-сервиса. */
     String SERVICES_SECURITY_SETTINGS = "services.security.settings";
     
+    /**
+     * Свойство извлекается из кэша.
+     * 
+     * @param <T>
+     * @param propertyName
+     * @return 
+     */
     <T> T getSettingProperty(String propertyName);
+    
+    <T> T getSettingProperty(String propertyName, boolean refesh);
 
     Long getPar1();
 
