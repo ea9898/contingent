@@ -14,7 +14,7 @@ public enum AreaServiceLogMethodsEnum {
     DEL_MO_ADDRESS("delMoAddress"),
     INITIATE_CREATE_PRIMARY_AREA("initiateCreatePrimaryArea");
 
-    private String name;
+    private final String name;
 
     AreaServiceLogMethodsEnum(String name) {
         this.name = name;

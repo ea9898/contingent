@@ -6,7 +6,7 @@ import moscow.ptnl.contingent.domain.esu.EsuInput;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.esu.EsuInputRepository;
 import moscow.ptnl.contingent.service.TransactionRunner;
-import moscow.ptnl.contingent.util.CommonUtils;
+import moscow.ptnl.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;

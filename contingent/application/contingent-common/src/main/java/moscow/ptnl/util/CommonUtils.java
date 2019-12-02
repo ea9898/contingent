@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.util;
+package moscow.ptnl.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

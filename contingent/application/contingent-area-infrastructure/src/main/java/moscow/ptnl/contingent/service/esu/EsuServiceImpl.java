@@ -4,7 +4,7 @@ import moscow.ptnl.contingent.domain.esu.EsuOutput;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.esu.EsuOutputCRUDRepository;
 import moscow.ptnl.contingent.repository.esu.EsuOutputRepository;
-import moscow.ptnl.contingent.util.CommonUtils;
+import moscow.ptnl.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

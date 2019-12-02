@@ -5,10 +5,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.management.Attribute;
-import javax.management.AttributeList;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
@@ -36,7 +35,7 @@ public abstract class JMXMetrics implements MeterBinder {
             } catch (Exception e){
                 e.printStackTrace();
             }
-        });        
+        });
     }
     
     protected Map<String, MBeanAttributeInfo> getMBeanAttributes() {
@@ -51,6 +50,8 @@ public abstract class JMXMetrics implements MeterBinder {
         return attributes;
     }
     
+    protected abstract String[] getPropertiesNames();
+    
     /**
      * Коллекция имен MBean выбранных по шаблонам.
      * 
@@ -58,7 +59,7 @@ public abstract class JMXMetrics implements MeterBinder {
      */
     protected Set<ObjectName> getMBeans() {
         Set<ObjectName> beans = new HashSet<>();
-        patterns.forEach(p -> {
+        this.patterns.forEach(p -> {
             try {
                 beans.addAll(getMBeansByPattern(p));
             } catch (Exception e){
@@ -89,6 +90,8 @@ public abstract class JMXMetrics implements MeterBinder {
         return attributes; 
     }
     
+    
+    
     /**
      * Возвращает текущие значения атрибутов.
      * 
@@ -96,10 +99,24 @@ public abstract class JMXMetrics implements MeterBinder {
      * @param attributesNames
      * @return 
      */
-    protected Map<String, Object> getAttributesValues(ObjectName beanObjectName, String[] attributesNames) throws Exception {
+    protected Map<String, Object> getAttributesValues(ObjectName beanObjectName, String[] attributesNames) {
         Map<String, Object> attributes = new HashMap<>();
-        AttributeList attributeList = getMBeanServer().getAttributes(beanObjectName, attributesNames);
-        attributeList.asList().forEach(a -> attributes.put(a.getName(), a.getValue()));
+        try {
+            for(String attributeName : attributesNames) {
+                try {
+                    attributes.put(attributeName, getMBeanServer().getAttribute(beanObjectName, attributeName)); //пришлось так не скопом, из-за того что в зазных MBean разные наборы свойств
+                } catch (Exception e) {}
+            }
+            /*
+            AttributeList attributeList = getMBeanServer().getAttributes(beanObjectName, attributesNames);
+            attributeList.asList().forEach(a -> {
+                System.out.println("name: " + a.getName());
+                attributes.put(a.getName(), a.getValue());
+            });
+            */
+        } catch (Exception e) {
+            e.printStackTrace();            
+        } 
         return attributes;
     }
     
@@ -108,17 +125,16 @@ public abstract class JMXMetrics implements MeterBinder {
         return String.valueOf(value);
     }
     
+    public Map<String, Object> getValues(ObjectName beanName) {
+        return getAttributesValues(beanName, getPropertiesNames());
+    }
 
     /**
      * @return the MBeanServer
      */
     public MBeanServer getMBeanServer() {
         return mBeanServer;
-    }
-
-    public Set<String> getPatterns() {
-        return patterns;
-    }
+    }   
 
     public Set<ObjectName> getMBeansNames() {
         return attributesInfo.keySet();
@@ -126,6 +142,16 @@ public abstract class JMXMetrics implements MeterBinder {
     
     public Map<String, MBeanAttributeInfo> getAttributesInfo(ObjectName beanObjectName) {
         return attributesInfo.get(beanObjectName);
+    }
+    
+    public Optional<MBeanAttributeInfo> getAttributeInfo(ObjectName beanName, String name) {
+        try {
+            MBeanAttributeInfo info = getAttributesInfo(beanName).get(name);
+            return (info != null) ? Optional.of(info): Optional.empty();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
     
     

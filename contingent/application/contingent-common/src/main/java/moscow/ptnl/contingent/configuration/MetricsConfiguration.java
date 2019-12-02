@@ -21,7 +21,9 @@ import javax.management.MBeanServer;
 import javax.sql.DataSource;
 import moscow.ptnl.metrics.bind.DataSourceMetrics;
 import moscow.ptnl.metrics.bind.JMXMetrics;
+import moscow.ptnl.metrics.bind.WildFlyDataSourceMetrics;
 import moscow.ptnl.metrics.bind.WildFlyUndertowMetrics;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,7 +37,10 @@ public class MetricsConfiguration {
     @Bean
     public PrometheusMeterRegistry meterRegistry() {
         PrometheusMeterRegistry meterRegistry = 
-                new PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM);        
+                new PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM);
+        //List<Tag> tags = new ArrayList<>();
+        //tags.add(Tag.of("node", CommonUtils.getHostName()));
+        //meterRegistry.config().commonTags(tags);
         new ClassLoaderMetrics().bindTo(meterRegistry);
         new JvmMemoryMetrics().bindTo(meterRegistry);
         new JvmGcMetrics().bindTo(meterRegistry);
@@ -47,8 +52,9 @@ public class MetricsConfiguration {
     }
     
     @Bean
-    public DataSourceMetrics dataSourceMetrics(MeterRegistry registry, DataSource dataSource) {
-        DataSourceMetrics metrics = new DataSourceMetrics(dataSource);
+    public WildFlyDataSourceMetrics dataSourceMetrics(MeterRegistry registry, MBeanServer mBeanServer, DataSource dataSource) {
+        //DataSourceMetrics metrics = new DataSourceMetrics(dataSource);
+        WildFlyDataSourceMetrics metrics = new WildFlyDataSourceMetrics(mBeanServer, dataSource);
         metrics.bindTo(registry);
         return metrics;
     }
@@ -61,6 +67,8 @@ public class MetricsConfiguration {
         metrics.bindTo(registry);
         return metrics;
     }
+    
+    
     
     
     @Bean
