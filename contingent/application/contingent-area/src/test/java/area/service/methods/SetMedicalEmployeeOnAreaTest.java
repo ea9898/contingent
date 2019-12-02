@@ -4,7 +4,7 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
+import moscow.ptnl.contingent.area.AreaErrorReason;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;

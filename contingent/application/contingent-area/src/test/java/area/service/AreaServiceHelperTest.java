@@ -6,8 +6,7 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
-import moscow.ptnl.contingent.error.ValidationMessage;
+import moscow.ptnl.contingent.area.AreaErrorReason;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
@@ -37,7 +36,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;

@@ -5,7 +5,6 @@ import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelper;
-import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AddressesMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaRestrictionMapper;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
@@ -35,7 +34,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.messaging.MessageChannel;
 
 @ExtendWith(MockitoExtension.class)

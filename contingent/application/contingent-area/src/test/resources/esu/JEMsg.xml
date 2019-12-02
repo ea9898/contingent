@@ -1,0 +1,37 @@
+<ns5:JobExecutionInfoMsg action="CREATE" actionId="98519BEA-9CF0-6130-E053-31730000A73A" code="0300" title="Принять" operation="APPROVE" xmlns="http://emias.mos.ru/svmr2/core/v1/types" xmlns:ns5="http://emias.mos.ru/svmr2/systemInformerService/v1" xmlns:ns2="http://emias.mos.ru/skuu/svmr/systemInformerService/v1/types/" xmlns:ns4="http://emias.mos.ru/svmr2/producer/v1/types" xmlns:ns3="http://emias.mos.ru/skuu/svmr/core/v1/">
+    <ns5:jeCreate archived="false" id="10776819945">
+        <ns4:department archived="false" id="13947494">
+            <ns4:organization type="MEDICAL_ORGANIZATION" archived="false" id="204">
+                <ns4:shortName>ГБУЗ "ГП № 175 ДЗМ"</ns4:shortName>
+            </ns4:organization>
+            <ns4:departmentNom id="125693041">
+                <ns4:code>AMB_MED_47</ns4:code>
+                <ns4:title>Кабинет неврологии</ns4:title>
+            </ns4:departmentNom>
+            <ns4:parentDepartment id="13950561" />
+        </ns4:department>
+        <ns4:employee archived="false" id="10776819811">
+            <ns4:fio>
+                <ns4:lastName>Мутко</ns4:lastName>
+                <ns4:firstName>Виталий</ns4:firstName>
+                <ns4:middleName>Леонтьевич</ns4:middleName>
+            </ns4:fio>
+            <ns4:snils>18272355479</ns4:snils>
+        </ns4:employee>
+        <ns4:positionNom id="125685505">
+            <ns4:code>AMB_MED_170</ns4:code>
+            <ns4:title>Заведующий кабинетом неврологии - врач - невролог</ns4:title>
+        </ns4:positionNom>
+        <ns4:period>
+            <ns4:start>2019-11-01</ns4:start>
+            <ns4:end>2019-11-30</ns4:end>
+        </ns4:period>
+        <ns4:attributes>
+            <ns4:positionType id="125677601">
+                <ns4:code>MAIN_JOB</ns4:code>
+                <ns4:title>Основная должность</ns4:title>
+            </ns4:positionType>
+            <ns4:rate>1.0</ns4:rate>
+        </ns4:attributes>
+    </ns5:jeCreate>
+</ns5:JobExecutionInfoMsg>

@@ -10,7 +10,7 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
+import moscow.ptnl.contingent.area.AreaErrorReason;
 import moscow.ptnl.contingent.area.model.area.AddressArea;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
@@ -89,6 +89,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsFirst;
+import moscow.ptnl.ws.security.RequestContext;
 
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {
@@ -201,8 +202,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaAddressClone areaAddressClone;
 
     @Autowired
-    private HistoryServiceHelper historyHelper;   
-    
+    private HistoryServiceHelper historyHelper;
+
     @Autowired
     private AreaServiceInternalImplAsync asyncService;
 
@@ -403,16 +404,16 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         Validation validation = new Validation();
 
-        //1
+        //2
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
         AreaType areaType = areaTypes.get(0);
 
-        //2
-        areaHelper.checkAreaTypeIsDependent(areaType, validation);
         //3
+        areaHelper.checkAreaTypeIsDependent(areaType, validation);
+        //4
         primaryAreaTypeCodesIds = primaryAreaTypeCodesIds.stream().distinct().collect(Collectors.toList());
 
         primaryAreaTypeCodesIds.forEach(code -> {
@@ -433,7 +434,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        //7
+        //8
         if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
         }
@@ -441,28 +442,28 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        //8
+        //9
         areaHelper.checkPolicyTypesIsOMS(policyTypeCodesIds, validation);
 
-        //9
+        //10
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        //10
+        //11
         Area area = new Area(moId, muId, areaType, number, null, false, description,
                 null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
         areaCRUDRepository.save(area);
 
-        //11.
+        //12.
         for (Long areaTypeCodeId : primaryAreaTypeCodesIds) {
             AreaToAreaType areaToAreaType = new AreaToAreaType();
             areaToAreaType.setArea(area);
             areaToAreaType.setAreaType(areaTypesCRUDRepository.findById(areaTypeCodeId).get());
             areaToAreaTypeCRUDRepository.save(areaToAreaType);
         }
-        //12
+        //13
         List<PolicyType> policyTypeList = policyTypeRepository.findByIds(policyTypeCodesIds);
 
         if (policyTypeCodesIds != null && !policyTypeCodesIds.isEmpty()) {
@@ -472,14 +473,19 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             areaPolicyTypesCRUDRepository.save(areaPolicyTypes);
         }
 
-        //13
+        //14
         List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, true);
 
-        //14
-        esuHelperService.sendAttachOnAreaChangeEvent(primAreas.stream().map(Area::getId).collect(Collectors.toList()),
-                null, area);
-
         //15
+        if (primAreas != null && !primAreas.isEmpty()) {
+            esuHelperService.sendAttachOnAreaChangeEvent(primAreas.stream().map(Area::getId).collect(Collectors.toList()),
+                    null, area);
+        }
+
+        //16
+        historyHelper.sendHistory(null, area, Area.class);
+
+        //17
         return area.getId();
     }
 
@@ -585,7 +591,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 5.
         if (muId != null && (area.getAreaType().getAreaTypeKind() == null ||
-                !Objects.equals(area.getAreaType().getAreaTypeKind().getCode(), AreaTypeKindEnum.PERSONAL.getCode()))) {
+                !AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode()))) {
             validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_SPECIAL_OFFICE);
         }
         if (!validation.isSuccess()) {
@@ -1001,9 +1007,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 9
-        List<Addresses> addresses = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
-                .collect(Collectors.toList());
-        addressesCRUDRepository.saveAll(addresses);
+        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry);
 
         // 10
         List<AreaAddress> areaAddresses = addresses.stream().map(addr -> {
@@ -1332,9 +1336,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 6.
-        List<Addresses> addresses = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
-                .collect(Collectors.toList());
-        addressesCRUDRepository.saveAll(addresses);
+        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry);
 
         // 7.
         List<MoAddress> moAddresses = new ArrayList<>();
@@ -1502,7 +1504,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         return new PageImpl<>(new ArrayList<>(areaInfos),
                 paging, totalSize);
-    }      
+    }
 
     // (К_УУ_26) Инициация процесса создания участка обслуживания первичного класса
     @Override
@@ -1526,22 +1528,22 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 5
         return sysopId;
     }
-    
+
     // (К_УУ_27) Инициация процесса распределения жилых домов к территории обслуживания МО
     @Override
     public Long initiateAddMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addresses) throws ContingentException {
         //1. Система выполняет проверку полномочий пользователя.
-        // Реализовано через аннотацию 
-        
+        // Реализовано через аннотацию
+
         //2. Система выполняет регистрацию новой асинхронной операции
         long sysopId = algorithms.sysOperationRegistration();
-        
-        //3. Система инициирует процесс (выполняется асинхронно) распределения жилых домов к территории обслуживания МО. (А_УУ_11)        
+
+        //3. Система инициирует процесс (выполняется асинхронно) распределения жилых домов к территории обслуживания МО. (А_УУ_11)
         asyncService.asyncInitiateAddMoAddress(sysopId, UserContextHolder.getContext(), moId, areaTypeCode, orderId, addresses);
-        
+
         //4. Система инициирует процесс журналирования (выполняется асинхронно) по инициации распределения жилых домов к территории обслуживания МО. (А_УУ_8), п.1
         // происходит в п 3
-        
+
         //5. Система возвращает в качестве результата: ИД операции
          return sysopId;
     }
@@ -1565,5 +1567,5 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return sysopId;
     }
 
-    
+
 }

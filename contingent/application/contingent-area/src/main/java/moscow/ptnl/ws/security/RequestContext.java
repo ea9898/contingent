@@ -6,7 +6,7 @@ import ru.mos.emias.system.v1.usercontext.UserContext;
 
 /**
  * Инкапсулирует данные о запросе.
- * 
+ *
  * @author m.kachalov
  */
 public class RequestContext {

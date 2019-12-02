@@ -7,9 +7,7 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.sysop.Sysop;
-import moscow.ptnl.contingent.area.entity.sysop.SysopMsg;
-import moscow.ptnl.contingent.area.entity.sysop.SysopMsgParam;
-import moscow.ptnl.contingent.area.error.AreaErrorReason;
+import moscow.ptnl.contingent.area.AreaErrorReason;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
@@ -18,7 +16,6 @@ import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.CustomErrorReason;
 import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.error.ValidationMessage;
 import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
@@ -26,23 +23,16 @@ import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopMsgCRUDRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopMsgParamCRUDRepository;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
-import moscow.ptnl.ws.security.UserContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import ru.mos.emias.contingent2.address.AddressBaseType;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
-import ru.mos.emias.contingent2.core.AddMedicalEmployee;
-import ru.mos.emias.system.v1.usercontext.UserContext;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -287,8 +277,8 @@ public class Algorithms {
                 validation.error(AreaErrorReason.AO_LEVEL_NOT_SET);
             } else {
                 //2
-                if (address.getAoLevel().equals(AddressLevelType.MOSCOW.getLevel())
-                        || address.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
+                AddressLevelType addressLevelType = AddressLevelType.find(address.getAoLevel());
+                if (addressLevelType == null || addressLevelType.getLevel().equals(AddressLevelType.MOSCOW.getLevel())) {
                     validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
                             new ValidationParameter("aoLevel", address.getAoLevel()));
                 }
@@ -357,7 +347,7 @@ public class Algorithms {
 
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
     // алгоритм изменён, вместо входного списка адресов НСИ, делаем запросы в нси с нужными фильтрами
-    public List<Addresses> findIntersectingAddressesSearch(List<SearchAreaAddress> addressesRegistryType) {
+    public List<Addresses> findIntersectingAddressesSearch(List<SearchAreaAddress> addressesRegistryType) throws ContingentException {
 
         List<Long> inputIds = addressesRegistryType.stream()
                 .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList());
@@ -400,6 +390,8 @@ public class Algorithms {
                     if (StringUtils.hasText(address.getAreaOMKTEcode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null,
                                 null, null, null, null, areaOmkTeCodes, null, AREA_TE.equals(level)));
+                    } else {
+                        throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
                     }
                 case REGION_TE:
                     if (StringUtils.hasText(address.getRegionOMKTEcode())) {

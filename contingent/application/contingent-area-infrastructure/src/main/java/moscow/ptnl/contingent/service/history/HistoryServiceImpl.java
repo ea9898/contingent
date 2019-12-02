@@ -56,7 +56,7 @@ public class HistoryServiceImpl implements HistoryService {
             }
         } catch (Exception e) {
             throw new RuntimeException("Такого быть не может.");
-        }        
+        }
         
         //получаем аннотацию Journalable которой должна быть аннотирована журналируемая сущность
         Journalable classAnnotation = oldObject.getClass().getAnnotation(Journalable.class);        
