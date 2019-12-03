@@ -97,7 +97,7 @@ public class WildFlyDataSourceMetrics extends JMXMetrics {
             }
             
             Gauge.builder(
-                    "datasource_", 
+                    "datasource", 
                     this, 
                     value -> value.status(beanName.getKeyProperty("data-source")) ? UP : DOWN)
                 .description("DataSource status")
