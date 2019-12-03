@@ -256,7 +256,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
             }
             try {
                 //2.10
-                createAreaMedicalEmployee(area, positionNom.get(), jeCreate);
+                createAreaMedicalEmployee(area, positionCode.get(), jeCreate);
             }
             catch (Throwable e) {
                 throw new RuntimeException("Ошибка добавления МР на участок: " + e.getMessage(), e);
@@ -275,13 +275,13 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         return area;
     }
 
-    private AreaMedicalEmployees createAreaMedicalEmployee(Area area, PositionNom positionNom, JeCreate jeCreate) {
+    private AreaMedicalEmployees createAreaMedicalEmployee(Area area, PositionCode positionCode, JeCreate jeCreate) {
         AreaMedicalEmployees medicalEmployee = new AreaMedicalEmployees();
         medicalEmployee.setArea(area);
         medicalEmployee.setMedicalEmployeeJobId(jeCreate.getId());
         medicalEmployee.setReplacement(false);
         medicalEmployee.setSnils(jeCreate.getEmployee().getSnils());
-//        medicalEmployee.setPositionNomCode(positionNom.getCode()); CONTINGENT2-280
+        medicalEmployee.setPositionCode(positionCode.getCode());
         medicalEmployee.setSubdivisionId(jeCreate.getDepartment().getId());
         medicalEmployee.setStartDate(EsuInputTaskHelper.convertToLocalDate(jeCreate.getPeriod().getStart()));
         medicalEmployee.setEndDate(jeCreate.getPeriod().getEnd().isNil() ? null :
