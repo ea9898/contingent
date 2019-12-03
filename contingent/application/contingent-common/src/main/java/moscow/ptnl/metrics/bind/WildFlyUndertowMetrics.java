@@ -4,17 +4,18 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 /**
- *
+ * Сбор статистики по http(s) коннекторам WildFly.
+ * Предварительно сбор статистики должен быть включен в настройках WildFly, 
+ * например командой: /subsystem=undertow:write-attribute(name=statistics-enabled, value=true)
+ * через jboss-cli.
+ * 
  * @author mkachalov
  */
 public class WildFlyUndertowMetrics extends JMXMetrics {

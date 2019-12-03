@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package moscow.ptnl.contingent.configuration;
 
 import io.micrometer.core.instrument.Clock;
@@ -19,11 +14,10 @@ import io.prometheus.client.CollectorRegistry;
 import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
 import javax.sql.DataSource;
-import moscow.ptnl.metrics.bind.DataSourceMetrics;
 import moscow.ptnl.metrics.bind.JMXMetrics;
 import moscow.ptnl.metrics.bind.WildFlyDataSourceMetrics;
 import moscow.ptnl.metrics.bind.WildFlyUndertowMetrics;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -51,24 +45,22 @@ public class MetricsConfiguration {
         return meterRegistry;
     }
     
+    
     @Bean
-    public WildFlyDataSourceMetrics dataSourceMetrics(MeterRegistry registry, MBeanServer mBeanServer, DataSource dataSource) {
-        //DataSourceMetrics metrics = new DataSourceMetrics(dataSource);
+    public WildFlyDataSourceMetrics dataSourceMetrics(MeterRegistry registry, MBeanServer mBeanServer, @Qualifier("contingentDataSource") DataSource dataSource) {
         WildFlyDataSourceMetrics metrics = new WildFlyDataSourceMetrics(mBeanServer, dataSource);
         metrics.bindTo(registry);
         return metrics;
     }
-    
+        
     
     @Bean
-    public JMXMetrics wildFlyMetrics(MeterRegistry registry, MBeanServer mBeanServer) {
+    public JMXMetrics undertowMetrics(MeterRegistry registry, MBeanServer mBeanServer) {
         //undertow_request_count
         WildFlyUndertowMetrics metrics = new WildFlyUndertowMetrics(mBeanServer);
         metrics.bindTo(registry);
         return metrics;
     }
-    
-    
     
     
     @Bean

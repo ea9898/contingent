@@ -1,24 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package moscow.ptnl.metrics.bind;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
-import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -26,7 +21,15 @@ import javax.sql.DataSource;
 import static moscow.ptnl.metrics.bind.JMXMetrics.toSnakeCase;
 
 /**
- * https://www.appdynamics.com/community/exchange/jboss-monitoring-extension/
+ * Сбор статистики и проверка статуса датасорсов в WildFly.
+ * Предварительно сбор статистики должен быть включен в настройках WildFly, 
+ * например командами: 
+ * 
+ * /subsystem=datasources/data-source=ИмяПула/statistics=pool:write-attribute(name=statistics-enabled,value=true)
+ * /subsystem=datasources/data-source=ИмяПула/statistics=jdbc:write-attribute(name=statistics-enabled,value=true)
+ * 
+ * через jboss-cli.
+ * 
  * @author m.kachalov
  */
 public class WildFlyDataSourceMetrics extends JMXMetrics {
@@ -52,9 +55,15 @@ public class WildFlyDataSourceMetrics extends JMXMetrics {
         "PreparedStatementCacheAccessCount",
         "PreparedStatementCacheMissCount"
     };
+        
+     //TODO это бы хорошо вынести в настройки, так как для разных БД запрос проверки коннекта разный или брать из настроек пула
+    private static final String DEFAULT_CHECK_VALID_SQL_QUERY = "SELECT 1;";
+    private static final int QUERY_TIMEOUT = 1;
+    private static final double UP = 1.0;
+    private static final double DOWN = 0.0;
     
-    private final Set<DataSource> dataSources;
-    private final Set<String> dataSourcesNames;
+    private final Map<String, DataSource> dataSources; //ключ - имя датасорса из настроек WildFly, значение - соответствующий DataSource
+    private final Map<String, String> CHECK_VALID_SQL_QUERY; //запросы для проверки статуса датасоурсов - живой/не живой
         
     /**
      * 
@@ -63,13 +72,18 @@ public class WildFlyDataSourceMetrics extends JMXMetrics {
      */
     public WildFlyDataSourceMetrics(MBeanServer mBeanServer, DataSource ... dataSources) {
         super(mBeanServer, PATTERNS);
-        this.dataSources = new HashSet<>(Arrays.asList(dataSources));
-        this.dataSourcesNames = getDataSourceStatMBeans(this.dataSources);
+        this.dataSources = getDataSourceStatMBeans(new HashSet<>(Arrays.asList(dataSources)));
+        this.CHECK_VALID_SQL_QUERY = fillValidationQuery();
+        /*
+        getMBeans().stream().filter(b -> this.dataSources.keySet().contains(b.getKeyProperty("data-source"))).forEach(beanName -> {
+            this.getAttributesInfo(beanName).keySet().forEach(k -> System.out.println("PROP: " + k));
+        });
+        */
     }
 
     @Override
     public void bindTo(MeterRegistry meterRegistry) {
-        getMBeans().stream().filter(b -> dataSourcesNames.contains(b.getKeyProperty("data-source"))).forEach(beanName -> {
+        getMBeans().stream().filter(b -> dataSources.keySet().contains(b.getKeyProperty("data-source"))).forEach(beanName -> {
             for (String property : PROPERTIES) {
                 Optional<MBeanAttributeInfo> info = getAttributeInfo(beanName, property);
                 if (info.isPresent()) {
@@ -81,27 +95,56 @@ public class WildFlyDataSourceMetrics extends JMXMetrics {
                         .register(meterRegistry);
                 }
             }
+            
+            Gauge.builder(
+                    "datasource_", 
+                    this, 
+                    value -> value.status(beanName.getKeyProperty("data-source")) ? UP : DOWN)
+                .description("DataSource status")
+                .tags(tags(beanName))
+                .baseUnit("status")
+                .register(meterRegistry);
         });
     }
     
+    private Map<String, String> fillValidationQuery() {
+        Map<String, String> querys = new HashMap<>();
+        dataSources.keySet().forEach(ds_name -> {
+            try {
+                ObjectName dsBean = this.getMBeansByPattern("jboss.as:subsystem=datasources,data-source=" + ds_name).iterator().next();
+                Object value = getAttributesValues(dsBean, new String[] {"checkValidConnectionSql"}).get("checkValidConnectionSql");
+                if (value != null && !((String) value).isEmpty()) {
+                    querys.put(ds_name, (String) value);
+                } else {
+                   querys.put(ds_name, DEFAULT_CHECK_VALID_SQL_QUERY);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return querys;
+    }
+    
     /**
-     * Метод использует для идентификации нужных бинов URL из DataSource. 
-     * Такой способ будет раотать неверно, если есть несколько конектов с 
+     * Устанавливает соответствие между именем датасорса в WildFly и объектом
+     * типа DataSource.
+     * Использует для связи MBean-ов их URL и URL из DataSource. 
+     * Такой способ будет работать неверно, если есть несколько конектов с 
      * одинаковым "connectionUrl" и разным "userName".
+     * 
      * @param dataSources
      * @return
      * @throws Exception 
      */
-    private Set<String> getDataSourceStatMBeans(Set<DataSource> dataSources) {
+    private Map<String, DataSource> getDataSourceStatMBeans(Set<DataSource> dataSources) {
         
-        Set<String> mBeansPatterns = new HashSet<>() ;
+        Map<String, DataSource> ds_map = new HashMap<>() ;
         
         try {
-            Set<String> urls = new HashSet<>();
+            Map<String, DataSource> urls = new HashMap<>();
             for (DataSource ds : dataSources) {
                 String url = ds.getConnection().getMetaData().getURL();
-                System.out.println("URL: " + url);
-                urls.add(url);
+                urls.put(url, ds);
             }
         
             Set<ObjectName> dsBeans = this.getMBeansByPattern("jboss.as:subsystem=datasources,data-source=*"); //все датасоурсы       
@@ -111,11 +154,9 @@ public class WildFlyDataSourceMetrics extends JMXMetrics {
                     MBeanAttributeInfo urlAttr = attributes.get("connectionUrl"); //альтернатвно, можно искать по атрибуту "jndiName" или добавить в сравнение "userName"
                     Map<String, Object> values = getAttributesValues(b, new String[] {"connectionUrl"});
                     String url = processBeanValue(urlAttr, values.get("connectionUrl"));
-                    if (url != null && urls.contains(url)) {
+                    if (url != null && urls.keySet().contains(url)) {
                         String dataSourceName = b.getKeyProperty("data-source");
-                        //mBeansPatterns.add("jboss.as:subsystem=datasources,data-source=" + dataSourceName + ",statistics=jdbc");
-                        //mBeansPatterns.add("jboss.as:subsystem=datasources,data-source=" + dataSourceName + ",statistics=pool");
-                        mBeansPatterns.add(dataSourceName);
+                        ds_map.put(dataSourceName, urls.get(url));
                     } 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -125,7 +166,7 @@ public class WildFlyDataSourceMetrics extends JMXMetrics {
             e.printStackTrace();
         }
         
-        return mBeansPatterns;
+        return ds_map;
     }
     
     @Override
@@ -137,6 +178,25 @@ public class WildFlyDataSourceMetrics extends JMXMetrics {
         List<Tag> tags = new ArrayList<>();
         tags.add(Tag.of("name", beanName.getKeyProperty("data-source")));
         return tags;
+    }
+    
+    /**
+     * Проверяет статус доступности датасорса.
+     * Проверка статуса выполяется отправкой реального запроса.
+     * 
+     * @param dataSourceName
+     * @return 
+     */
+    private boolean status(String dataSourceName) {
+        DataSource dataSource = this.dataSources.get(dataSourceName);
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(CHECK_VALID_SQL_QUERY.get(dataSourceName));
+            statement.setQueryTimeout(QUERY_TIMEOUT);
+            statement.executeQuery();
+            return true;
+        } catch (SQLException ignored) {
+            return false;
+        }
     }
     
 }

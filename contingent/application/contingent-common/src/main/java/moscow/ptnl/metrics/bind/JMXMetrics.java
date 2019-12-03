@@ -15,7 +15,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 /**
- * https://github.com/prometheus/jmx_exporter/blob/master/example_configs/wildfly-10.yaml
+ * Родительский класс для получения данных из MBean.
  * 
  * @author m.kachalov
  */
