@@ -49,6 +49,9 @@ public class MetricsServlet extends HttpServlet {
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
         resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
+        resp.setHeader("Pragma", "no-cache");
+        resp.addDateHeader("Last-Modified", System.currentTimeMillis());
         resp.setContentType(TextFormat.CONTENT_TYPE_004);
 
         try (Writer writer = resp.getWriter()) {

@@ -324,6 +324,11 @@
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>metrics</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>area-domain</artifactId>
             <version>${version}</version>
         </dependency>
@@ -349,7 +354,12 @@
             <version>1.0.1</version>
             <scope>${artefact.scope}</scope>
         </dependency> -->
-                
+        <dependency>
+            <groupId>io.github.mweirauch</groupId>
+            <artifactId>micrometer-jvm-extras</artifactId>
+            <version>0.2.0</version>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
