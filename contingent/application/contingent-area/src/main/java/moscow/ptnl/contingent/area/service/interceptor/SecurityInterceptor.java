@@ -16,6 +16,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.mos.emias.errors.domain.UnauthorizedException;
@@ -26,7 +27,7 @@ import ru.mos.emias.errors.domain.UnauthorizedException;
  * 
  * @author mkachalov
  */
-@Aspect
+@Aspect @Order(1)
 @Component
 public class SecurityInterceptor {
     

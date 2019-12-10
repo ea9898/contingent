@@ -3,7 +3,6 @@ package moscow.ptnl.metrics.bind;
 import com.sun.management.UnixOperatingSystemMXBean;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -50,15 +49,20 @@ public class SystemMetrics implements MeterBinder {
         
         if (unixOs != null) {
             
-            Gauge.builder("process_open_fds", unixOs, v -> v.getOpenFileDescriptorCount())            
+            Gauge.builder("process.open.fds", unixOs, v -> v.getOpenFileDescriptorCount())            
                 .description("The open file descriptor count")
+                .baseUnit("files")
                 .register(registry);
 
-            Gauge.builder("process_max_fds", unixOs, v -> v.getMaxFileDescriptorCount())
+            Gauge.builder("process.max.fds", unixOs, v -> v.getMaxFileDescriptorCount())
                 .description("The maximum file descriptor count")
+                .baseUnit("files")
                 .register(registry);
 
-            Gauge.builder("process_cpu_seconds_total", unixOs, v -> v.getProcessCpuTime() / 1000)
+            Gauge.builder("process.cpu.seconds.total", unixOs, v -> {
+                    double invoke = v.getProcessCpuTime();
+                    return (double) TimeUnit.SECONDS.convert((long) invoke, TimeUnit.NANOSECONDS);
+                })
                 .description("Number of ticks executing code of that process")
                 .register(registry);
 
@@ -99,11 +103,15 @@ public class SystemMetrics implements MeterBinder {
             
         }
         
-        TimeGauge.builder("process_uptime", runtimeMXBean, TimeUnit.SECONDS, value -> value.getUptime() / 1000)
+        Gauge.builder("process.uptime.seconds", runtimeMXBean, v -> {
+                return (double) TimeUnit.SECONDS.convert(v.getUptime(), TimeUnit.MILLISECONDS);
+            })
             .description("The uptime of the Java virtual machine")
             .register(registry);
 
-        TimeGauge.builder("process_start_time", runtimeMXBean, TimeUnit.SECONDS, value -> value.getStartTime() / 1000)                
+        Gauge.builder("process.start.time.seconds", runtimeMXBean, v -> {
+                return (double) TimeUnit.SECONDS.convert(v.getStartTime(), TimeUnit.MILLISECONDS);
+            })                
             .description("Start time of the process since unix epoch.")
             .register(registry);       
         
