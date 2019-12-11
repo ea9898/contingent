@@ -17,6 +17,7 @@ import moscow.ptnl.contingent.service.setting.SettingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -36,11 +37,16 @@ public class SecuritySettingService {
     
     @Autowired
     private SettingService settingService;
-    
-    @PostConstruct
-    protected void init() {
+
+    public SecuritySettingService() {
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(new JaxbAnnotationModule());
+    }
+    
+    @PostConstruct
+    @Scheduled(fixedRate = 60000 * 5, initialDelay = 60000)
+    protected void init() {
+        LOG.info("Чтение настроек безопасности");
         this.settings = unmarshall(settingService.getSettingProperty(SettingService.SERVICES_SECURITY_SETTINGS));
     }
     
@@ -64,7 +70,7 @@ public class SecuritySettingService {
         try {
             return mapper.writeValueAsString(object);
         } catch (Exception e) {
-            LOG.error("Ошибка сериализации настроек", e);
+            LOG.error("Ошибка сериализации настроек безопасности", e);
             throw new RuntimeException(e);
         }
     }
@@ -77,7 +83,7 @@ public class SecuritySettingService {
         try {
             return mapper.readValue(jsonString.trim(), typeRef);
         } catch (Exception e) {
-            LOG.error("Ошибка десериализации настроек", e);
+            LOG.error("Ошибка десериализации настроек безопасности", e);
             throw new RuntimeException(e);
         }
     }
