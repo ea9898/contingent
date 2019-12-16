@@ -33,12 +33,6 @@ public class WildFlyUndertowMetrics extends JMXMetrics {
         "bytesReceived"
     };
     
-    private static final String[] TAGS = new String[] {
-        "http-listener",
-        "https-listener",
-        "server"
-    };
-    
     public WildFlyUndertowMetrics(MBeanServer mBeanServer) {
         super(mBeanServer, PATTERNS);        
     }
@@ -61,12 +55,23 @@ public class WildFlyUndertowMetrics extends JMXMetrics {
     
     private List<Tag> tags(ObjectName beanName) {
         List<Tag> tags = new ArrayList<>();
-        for (String tagName : TAGS) {
-            String value = beanName.getKeyProperty(tagName);
-            if (value != null) {
-                tags.add(Tag.of(tagName, value));
-            }
+        
+        tags.add(Tag.of("server", beanName.getKeyProperty("server")));
+        
+        String listener = null;
+        String name = null;
+        if (beanName.getKeyProperty("http-listener") != null) {
+            listener = "http";
+            name = beanName.getKeyProperty("http-listener");
+        } else if (beanName.getKeyProperty("https-listener") != null) {
+            listener = "https";
+            name = beanName.getKeyProperty("https-listener");
         }
+        if (listener != null && name != null){
+            tags.add(Tag.of("listener", listener));
+            tags.add(Tag.of("name", name));
+        }
+        
         return tags;
     }
 
