@@ -31,7 +31,7 @@ import moscow.ptnl.contingent.area.transform.model.esu.MainEmployeesMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.ReplacementEmployeesMapper;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.area.endpoint.ESUEventEndpoint;
-import moscow.ptnl.contingent.service.esu.EsuService;
+import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import moscow.ptnl.contingent.service.history.HistoryService;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;

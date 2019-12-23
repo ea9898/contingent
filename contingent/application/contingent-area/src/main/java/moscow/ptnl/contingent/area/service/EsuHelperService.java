@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.area.service;
 import java.util.List;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
-import moscow.ptnl.contingent.domain.esu.event.ESUEventHelper;
+import moscow.ptnl.contingent.domain.esu.ESUEventHelper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import moscow.ptnl.contingent.area.entity.area.Area;

@@ -42,6 +42,18 @@
             <scope>${slf4j.scope}</scope>
         </dependency>
         <dependency>
+            <groupId>ru.mos.emias.esu</groupId>
+            <artifactId>esu-producer-lib</artifactId>
+            <version>1.1.1</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.mos.emias.esu</groupId>
+            <artifactId>esu-consumer-lib</artifactId>
+            <version>2.1.6</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${fasterxml-jackson.version}</version>
@@ -80,7 +92,29 @@
             <version>${spring.data}</version>
             <scope>${artefact.scope}</scope>
         </dependency>
-        
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+            <version>${spring.integration.version}</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>${spring.data}</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>${hibernate.jpamodelgen.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.3.Final</version>
+            <scope>compile</scope>
+        </dependency>
         <!-- Метрики CONTINGENT2-514 -->
         <dependency>
             <groupId>io.prometheus</groupId>
@@ -103,5 +137,142 @@
             <version>${micrometer.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/annotations</source>
+                                <source>${project.build.directory}/generated-sources/cxf</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.5.0</version>
+                <executions>
+                    <execution>
+                        <id>xjc2</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <clearOutputDir>false</clearOutputDir>
+                            <encoding>UTF-8</encoding>
+                            <sources>
+                                <source>src/main/resources/META-INF/xsd/esu/areainfo.v1.xsd</source>
+                            </sources>
+                            <packageName>moscow.ptnl.contingent2.area.info</packageName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>xjc3</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <clearOutputDir>false</clearOutputDir>
+                            <encoding>UTF-8</encoding>
+                            <sources>
+                                <source>src/main/resources/META-INF/xsd/esu/createcloseattachment.v1.xsd</source>
+                            </sources>
+                            <packageName>moscow.ptnl.contingent2.attachment.disp.event</packageName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>xjc4</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <clearOutputDir>false</clearOutputDir>
+                            <encoding>UTF-8</encoding>
+                            <sources>
+                                <source>src/main/resources/META-INF/xsd/esu/attachtodependentarea.v1.xsd</source>
+                            </sources>
+                            <packageName>moscow.ptnl.contingent2.attachment.deparea.event</packageName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>xjc5</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <clearOutputDir>false</clearOutputDir>
+                            <encoding>UTF-8</encoding>
+                            <sources>
+                                <source>src/main/resources/META-INF/xsd/esu/attachmentprimary.v1.xsd</source>
+                            </sources>
+                            <packageName>moscow.ptnl.contingent2.attachment.changeprimarea.event</packageName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>xjc6</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <clearOutputDir>false</clearOutputDir>
+                            <encoding>UTF-8</encoding>
+                            <sources>
+                                <source>src/main/resources/META-INF/xsd/esu/attachoonareachange.v1.xsd</source>
+                            </sources>
+                            <packageName>moscow.ptnl.contingent2.attachment.changearea.event</packageName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>xjc7</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <clearOutputDir>false</clearOutputDir>
+                            <encoding>UTF-8</encoding>
+                            <sources>
+                                <source>src/main/resources/META-INF/xsd/esu/jobExecutionInfoMsg.xsd</source>
+                            </sources>
+                            <packageName>moscow.ptnl.contingent2.rmr.event</packageName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>xjc8</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <clearOutputDir>false</clearOutputDir>
+                            <encoding>UTF-8</encoding>
+                            <sources>
+                                <source>src/main/resources/META-INF/xsd/esu/dn.attach.xsd</source>
+                                <source>src/main/resources/META-INF/xsd/esu/dn.event.informer.xsd</source>
+                            </sources>
+                            <packageName>moscow.ptnl.contingent2.rmr.event.dn</packageName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

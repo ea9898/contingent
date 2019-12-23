@@ -1,5 +1,6 @@
-package moscow.ptnl.contingent.service.esu;
+package moscow.ptnl.contingent.configuration;
 
+import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,7 +17,7 @@ public class AsyncEsuExecutor {
     
     @Async 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void publishToESU(final EsuService esuService, final Long recordId, final String publishTopic, final String message) {        
+    public void publishToESU(final EsuService esuService, final Long recordId, final String publishTopic, final String message) {
         esuService.publishToESU(recordId, publishTopic, message);
     }   
     

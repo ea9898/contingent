@@ -19,7 +19,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.service.setting.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.service.esu.EsuService;
+import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -64,7 +64,7 @@ public class ESUKafkaConfiguration {
     
     @Bean @Lazy
     public EsuProducer esuProducer() {
-        return new EsuProducer(esuServers, esuProducer, esuErrorSendTimeout, Optional.of(esuErrorRetries)){
+        return new EsuProducer(esuServers, esuProducer, esuErrorSendTimeout, Optional.of(esuErrorRetries), null){
             @PreDestroy
             public void preDestroy() {
                 try {

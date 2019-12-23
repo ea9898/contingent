@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://ptnl.moscow/contingent2/event/type/attachment/"
+            xmlns:tns="http://ptnl.moscow/contingent2/event/type/attachment/">
+
+
+
+    <xs:element name="attachOnAreaChange">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="tns:ID" minOccurs="1" maxOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор сообщения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="operationDate" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation>Дата и время наступления события, инициировавшего отправку сообщения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="dependendArea" minOccurs="1" maxOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation>Зависимый участок</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="moId" type="tns:ID" minOccurs="1" maxOccurs="1">
+                                <xs:annotation>
+                                    <xs:documentation>Идентификатор Медицинской организации</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="muId" type="tns:ID" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Идентификатор Медицинского учреждения</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="areaId" type="tns:ID" minOccurs="1" maxOccurs="1">
+                                <xs:annotation>
+                                    <xs:documentation>Идентификатор участка</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="areaRestriction" type="tns:AreaRestriction" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Ограничения контингента для прикрепления на участок</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="policyType" type="tns:ID" minOccurs="1" maxOccurs="unbounded">
+                                <xs:annotation>
+                                    <xs:documentation>Тип полиса первичного прикрепления (ОМС, ДМС, Платный...). Изначально в Контингент0 все прикрепления с типом ОМС</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="primaryAreaAdd" type="tns:ID" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>Идентификаторы первичных участков для создания прикреплений к зависимым.
+                            В одном сообщении указываются только те участки,
+                            которые соответствуют dependentAreaId.policyType тип полиса (ОМС, ДМС, Платный...).
+                            Если указан хоть один primaryAreaAdd, то не должны быть указаны primaryAreaDel</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="primaryAreaDel" type="tns:ID" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>Идентификаторы первичных участков для удаления прикреплений к зависимым.
+                            В одном сообщении указываются только те участки,
+                            которые соответствуют dependentAreaId.policyType тип полиса (ОМС, ДМС, Платный...).
+                            Если указан хоть один primaryAreaAdd, то не должны быть указаны primaryAreaDel</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+	
+	<xs:simpleType name="ID">
+        <xs:annotation>
+            <xs:documentation>Идентификатор</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:long"/>
+    </xs:simpleType>
+
+    <xs:complexType name="AreaRestriction">
+        <xs:sequence>
+            <xs:element name="gender" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>код Пол, соответствует справочнику полов ЕМИАС</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="minAge" type="xs:int" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Возраст мин. Если указано, то не должно быть указано Возраст М min и Возраст Ж min. Количество полных лет</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="maxAge" type="xs:int" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Возраст макс. Если указано, то не должно быть указано Возраст М max и Возраст Ж max. Количество полных лет</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="minAgeMale" type="xs:int" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Возраст М мин. Количество полных лет</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="maxAgeMale" type="xs:int" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Возраст М макс. Количество полных лет</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="minAgeFemale" type="xs:int" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Возраст Ж мин. Количество полных лет</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="maxAgeFemale" type="xs:int" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Возраст Ж макс. Количество полных лет</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

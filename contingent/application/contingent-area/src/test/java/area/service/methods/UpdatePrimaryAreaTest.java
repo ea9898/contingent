@@ -21,7 +21,7 @@ import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
-import moscow.ptnl.contingent.service.esu.EsuService;
+import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

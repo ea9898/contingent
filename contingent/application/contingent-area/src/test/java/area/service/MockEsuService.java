@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import moscow.ptnl.contingent.domain.esu.event.ESUEventHelper;
-import moscow.ptnl.contingent.service.esu.EsuService;
+import moscow.ptnl.contingent.domain.esu.ESUEventHelper;
+import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import org.springframework.stereotype.Service;
 
 /**

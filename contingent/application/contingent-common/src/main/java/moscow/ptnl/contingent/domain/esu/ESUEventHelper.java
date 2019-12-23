@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.domain.esu.event;
+package moscow.ptnl.contingent.domain.esu;
 
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;

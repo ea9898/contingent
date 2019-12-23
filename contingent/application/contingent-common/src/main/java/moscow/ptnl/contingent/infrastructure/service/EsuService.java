@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.service.esu;
+package moscow.ptnl.contingent.infrastructure.service;
 
 
 import java.time.LocalDateTime;
