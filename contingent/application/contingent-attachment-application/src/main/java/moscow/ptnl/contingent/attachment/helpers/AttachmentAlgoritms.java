@@ -18,7 +18,8 @@ public class AttachmentAlgoritms {
 
     // A_UP_1
     public List<Area> findPersonalAreasByJobId(long job) {
-        return areaMedicalEmployeeRepository.findAreasByEmployee(job).stream()
+        List<Area> areaList = areaMedicalEmployeeRepository.findAreasByEmployee(job);
+        return areaList.stream()
                 .filter(area -> area.isActual() && area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.PERSONAL.getCode()))
                 .collect(Collectors.toList());
     }

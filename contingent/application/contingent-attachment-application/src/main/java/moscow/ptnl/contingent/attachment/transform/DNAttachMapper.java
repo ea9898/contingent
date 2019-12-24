@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.attachment.transform;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.rmr.event.dn.DnAttach;
 
-import javax.xml.datatype.DatatypeFactory;
 import java.time.LocalDateTime;
 
 public class DNAttachMapper {
@@ -12,18 +12,18 @@ public class DNAttachMapper {
 
         DnAttach dnAttach = new DnAttach();
         dnAttach.setPatientEmiasId(patientId);
-        try {
-            dnAttach.setOperationDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(operationDate.toString()));
-        } catch (Exception ex) {}
+        dnAttach.setOperationDate(XMLGregorianCalendarMapper.entityToDtoTransform(operationDate));
 
         if (createAttachmentArea != null) {
             DnAttach.CreateAttachment createAttachment = new DnAttach.CreateAttachment();
-            createAttachment.setAreaId(createAttachment.getAreaId());
+            createAttachment.setAreaId(createAttachmentArea.getId());
             createAttachment.setMoId(createAttachmentArea.getMoId());
             createAttachment.setNotForSelfAppointment(false);
+            dnAttach.setCreateAttachment(createAttachment);
         } else if (closeAttachmentArea != null) {
             DnAttach.CloseAttachment closeAttachment = new DnAttach.CloseAttachment();
-            closeAttachment.setAreaId(closeAttachment.getAreaId());
+            closeAttachment.setAreaId(closeAttachmentArea.getId());
+            dnAttach.setCloseAttachment(closeAttachment);
         }
 
         return dnAttach;

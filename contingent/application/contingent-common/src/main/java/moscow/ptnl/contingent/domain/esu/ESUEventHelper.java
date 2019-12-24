@@ -51,6 +51,13 @@ public class ESUEventHelper {
                 event.setOperationDate(XMLUtil.getCurrentDate());
             }
             return XMLUtil.convertObjectToMessage(event, event.getClass());
+        } else if (publishObject instanceof DnAttach) {
+            DnAttach event = (DnAttach) publishObject;
+            event.setId(String.valueOf(eventId));
+            if (event.getOperationDate() == null) {
+                event.setOperationDate(XMLUtil.getCurrentDate());
+            }
+            return XMLUtil.convertObjectToMessage(event, event.getClass());
         }
         throw new IllegalArgumentException("неподдерживаемый тип события: " + publishObject.getClass().getName());
     }

@@ -54,8 +54,6 @@ public class AttachmentServiceInternalImpl implements AttachmentServiceInternal 
             throw new ContingentException(validation);
         }
 
-
-
         if (closeAttachmentJobId != null) {
             List<Area> closeAreasList = attachmentAlgoritms.findPersonalAreasByJobId(closeAttachmentJobId);
 
