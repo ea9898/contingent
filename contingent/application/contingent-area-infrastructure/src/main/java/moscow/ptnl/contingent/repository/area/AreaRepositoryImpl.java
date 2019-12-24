@@ -7,8 +7,12 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType_;
 import moscow.ptnl.contingent.area.entity.area.Area_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations_;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.support.incrementer.PostgresSequenceMaxValueIncrementer;
 import org.springframework.stereotype.Repository;
@@ -16,12 +20,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
@@ -55,12 +59,44 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                 criteriaBuilder.equal(root.get(Area_.moId.getName()), moId);
     }
 
+    private Specification<Area> searchByMuIdsSpec(List<Long> muIds) {
+        return (root, criteriaQuery, cb) -> root.get(Area_.muId.getName()).in(muIds);
+    }
+
+    private Specification<Area> searchByAreaTypeCodesSpec(List<Long> areaTypeCodes) {
+        return (root, criteriaQuery, cb) -> root.get(Area_.areaType.getName()).in(areaTypeCodes);
+    }
+
+    private Specification<Area> searchByAreaIdsSpec(List<Long> areaIds) {
+        return (root, criteriaQuery, cb) -> root.get(Area_.id.getName()).in(areaIds);
+    }
+
+    private Specification<Area> searchWithMainEmployeesSpec() {
+        return (root, criteriaQuery, cb) -> {
+            Subquery<AreaMedicalEmployees> sub = criteriaQuery.subquery(AreaMedicalEmployees.class);
+            Root<AreaMedicalEmployees> subRoot = sub.from(AreaMedicalEmployees.class);
+            return cb.exists(sub.where(cb.and(
+                    cb.equal(subRoot.get(AreaMedicalEmployees_.area.getName()), root.get(Area_.id.getName())),
+                    cb.equal(subRoot.get(AreaMedicalEmployees_.replacement.getName()), false)
+            )).select(subRoot));
+        };
+    }
+
+    private Specification<Area> searchBySpecializationCodesSpec(List<Long> specializationCodes) {
+        return (root, criteriaQuery, cb) -> {
+            Subquery<AreaTypeSpecializations> sub = criteriaQuery.subquery(AreaTypeSpecializations.class);
+            Root<AreaTypeSpecializations> subRoot = sub.from(AreaTypeSpecializations.class);
+            return cb.exists(sub.where(cb.and(
+                    cb.equal(subRoot.get(AreaTypeSpecializations_.areaType.getName()), root.get(Area_.areaType.getName())),
+                    subRoot.get(AreaTypeSpecializations_.specializationCode.getName()).in(specializationCodes)
+            )).select(subRoot));
+        };
+    }
+
     private Specification<Area> searchEmptyMuIdSpec() {
         return (root, criteriaQuery, criteriaBuilder) ->
                 root.get(Area_.muId.getName()).isNull();
     }
-
-
 
     private Specification<Area> searchActive() {
         return (root, criteriaQuery, criteriaBuilder) ->
@@ -243,5 +279,29 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     @Override
     public Long getNextAreaId() {
         return areaSequenceIncrementer.nextLongValue();
+    }
+
+    @Override
+    public Page<Area> findAreas(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds, PageRequest paging) {
+        Specification<Area> specification = searchWithMainEmployeesSpec();
+
+        if (moId != null) {
+            specification = specification.and(searchByMoIdSpec(moId));
+        }
+        if (!muIds.isEmpty()) {
+            specification = specification.and(searchByMuIdsSpec(muIds));
+        }
+        if (!areaTypeCodes.isEmpty()) {
+            specification = specification.and(searchByAreaTypeCodesSpec(areaTypeCodes));
+        }
+        if (!areaIds.isEmpty()) {
+            specification = specification.and(searchByAreaIdsSpec(areaIds));
+        }
+        if (!specializationCodes.isEmpty()) {
+            specification = specification.and(searchBySpecializationCodesSpec(specializationCodes));
+        }
+        specification = specification.and(searchActive());
+
+        return areaCRUDRepository.findAll(specification, paging);
     }
 }

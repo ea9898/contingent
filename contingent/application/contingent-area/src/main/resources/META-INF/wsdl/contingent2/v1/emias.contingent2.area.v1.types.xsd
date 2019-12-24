@@ -671,4 +671,54 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="searchDnAreaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" minOccurs="0" />
+                <xs:element name="mu" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="muId" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="areaTypes" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="specializations" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="specializationCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="areas" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaId" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchDnAreaResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="area" type="core:AreaDn" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

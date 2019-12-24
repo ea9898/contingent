@@ -251,6 +251,14 @@
         <wsdl:part name="body" element="ns1:initiateAddMoAddressResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="searchDnAreaInput">
+        <wsdl:part name="body" element="ns1:searchDnAreaRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="searchDnAreaOutput">
+        <wsdl:part name="body" element="ns1:searchDnAreaResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
             <wsdl:documentation>
@@ -474,6 +482,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:initiateAddAreaAddressInput"/>
             <wsdl:output message="tns:initiateAddAreaAddressOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="searchDnArea">
+            <wsdl:documentation>
+                Получение списка участков для ДН (К_УУ_29)
+            </wsdl:documentation>
+            <wsdl:input message="tns:searchDnAreaInput"/>
+            <wsdl:output message="tns:searchDnAreaOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -861,6 +877,20 @@
         
         <wsdl:operation name="initiateAddMoAddress">
             <soap:operation soapAction="initiateAddMoAddress"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="searchDnArea">
+            <soap:operation soapAction="searchDnArea"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

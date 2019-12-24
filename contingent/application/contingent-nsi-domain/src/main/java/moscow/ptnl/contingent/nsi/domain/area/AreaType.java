@@ -11,11 +11,14 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
+
 import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
@@ -129,6 +132,9 @@ public class AreaType extends CodeName implements Serializable, Keyable, NsiExte
     @Column(name = "SOURCE")
     @Size(max = 4000)
     private String source;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "areaType")
+    private Set<AreaTypeSpecializations> areaTypeSpecializations;
 
     public AreaType() {
     }
@@ -321,6 +327,14 @@ public class AreaType extends CodeName implements Serializable, Keyable, NsiExte
     @Override
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public Set<AreaTypeSpecializations> getAreaTypeSpecializations() {
+        return areaTypeSpecializations;
+    }
+
+    public void setAreaTypeSpecializations(Set<AreaTypeSpecializations> areaTypeSpecializations) {
+        this.areaTypeSpecializations = areaTypeSpecializations;
     }
 
     @Override

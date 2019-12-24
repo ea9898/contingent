@@ -9,4 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
 public interface SpecializationCRUDRepository extends CommonRepository<Specialization, Long> {
+
+    Specialization getByCode(Long code);
 }

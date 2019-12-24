@@ -52,6 +52,14 @@
             <xs:extension base="tns:CodeNameType"/>
         </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="Specialization">
+        <xs:annotation>
+            <xs:documentation>Специализация участка</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:CodeNameType"/>
+        </xs:complexContent>
+    </xs:complexType>
     <xs:complexType name="PrimaryAreaTypeCodes">
         <xs:sequence>
             <xs:element name="primaryAreaTypeCode" type="xs:long" maxOccurs="unbounded" />
@@ -141,6 +149,29 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="medicalEmployee" type="tns:MedicalEmployee" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AreaDn">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" />
+            <xs:element name="moId" type="xs:long" />
+            <xs:element name="muId" type="xs:long" minOccurs="0" />
+            <xs:element name="number" type="restr:int5digits" minOccurs="0" />
+            <xs:element name="areaType" type="tns:AreaTypeShort" />
+            <xs:element name="specialization" type="tns:Specialization" maxOccurs="unbounded" />
+            <xs:element name="medicalEmployee" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="xs:long" />
+                        <xs:element name="medicalEmployeeJobId" type="xs:long" />
+                        <xs:element name="snils" type="restr:stringLimit20" minOccurs="0" />
+                        <xs:element name="position" type="tns:PositionNomClinic" minOccurs="0" />
+                        <xs:element name="startDate" type="xs:date" minOccurs="0" />
+                        <xs:element name="endDate" type="xs:date" minOccurs="0" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>

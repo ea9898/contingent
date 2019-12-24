@@ -7,7 +7,10 @@ import ru.mos.emias.contingent2.core.Area;
 import ru.mos.emias.contingent2.core.AreaTypeClass;
 import ru.mos.emias.contingent2.core.AreaTypeKind;
 import ru.mos.emias.contingent2.core.AreaTypeShort;
+import ru.mos.emias.contingent2.core.MedicalEmployee;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -42,21 +45,25 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
         area.setAttachByMedicalReason(areaObj.getAttachByMedicalReason());
         area.setArchive(Boolean.TRUE.equals(areaObj.getArchived()));
 
+        List<MedicalEmployee> employees = new ArrayList<>();
+
         if (entityObject.getMainAreaMedicalEmployees() != null
                 && !entityObject.getMainAreaMedicalEmployees().isEmpty()) {
-            Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
-            medicalEmployees.getMedicalEmployees().addAll(entityObject.getMainAreaMedicalEmployees().stream()
+            employees.addAll(entityObject.getMainAreaMedicalEmployees().stream()
                     .map(areaMedicalEmployeeMapper::entityToDtoTransform)
                     .collect(Collectors.toList()));
-            area.setMedicalEmployees(medicalEmployees);
         }
 
         if (entityObject.getReplacementAreaMedicalEmployees() != null
                 && !entityObject.getReplacementAreaMedicalEmployees().isEmpty()) {
-            Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
-            medicalEmployees.getMedicalEmployees().addAll(entityObject.getReplacementAreaMedicalEmployees().stream()
+            employees.addAll(entityObject.getReplacementAreaMedicalEmployees().stream()
                     .map(areaMedicalEmployeeMapper::entityToDtoTransform)
                     .collect(Collectors.toList()));
+
+        }
+        if (!employees.isEmpty()) {
+            Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
+            medicalEmployees.getMedicalEmployees().addAll(employees);
             area.setMedicalEmployees(medicalEmployees);
         }
 
