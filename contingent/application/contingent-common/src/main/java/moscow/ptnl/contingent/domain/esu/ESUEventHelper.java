@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.domain.esu;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import moscow.ptnl.contingent2.attachment.deparea.event.AttachToDependentAreaEvent;
+import moscow.ptnl.contingent2.rmr.event.dn.DnAttach;
 import moscow.ptnl.util.XMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +76,8 @@ public class ESUEventHelper {
             topicName = "AttachToDependentArea";
         } else if (publishObject instanceof AttachOnAreaChange) {
             topicName= "AttachOnAreaChange";
+        } else if (publishObject instanceof DnAttach) {
+            topicName= "DnAttach";
         }
         
         if (topicName == null) {

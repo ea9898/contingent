@@ -1,7 +1,5 @@
 package moscow.ptnl.contingent.attachment.configuration;
 
-import io.micrometer.prometheus.PrometheusMeterRegistry;
-import moscow.ptnl.metrics.servlet.MetricsServlet;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +8,11 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import java.lang.invoke.MethodHandles;
 
-public class ContingentWebApplicationInitializer implements WebApplicationInitializer {
+public class ContingentAttachmentWebApplicationInitializer implements WebApplicationInitializer {
     
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
     
@@ -23,9 +20,11 @@ public class ContingentWebApplicationInitializer implements WebApplicationInitia
     public void onStartup(ServletContext container) throws ServletException {
         
         AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
+        container.addListener(new ContextLoaderListener(dispatcherContext));
+
+//        MetricsServlet metricsServlet = new MetricsServlet();
         
-        MetricsServlet metricsServlet = new MetricsServlet();
-        
+/*
         container.addListener(new ContextLoaderListener(dispatcherContext){
             @Override
             public void contextInitialized(ServletContextEvent event) {
@@ -39,9 +38,10 @@ public class ContingentWebApplicationInitializer implements WebApplicationInitia
                 }
             }
         });
-        
+*/
+
         dispatcherContext.register(new Class[]{
-            WebServiceConfiguration.class
+                WebServiceConfiguration.class
         });
         
         ServletRegistration.Dynamic cXFServlet = container.addServlet("CXFServlet", new CXFServlet());
@@ -51,10 +51,6 @@ public class ContingentWebApplicationInitializer implements WebApplicationInitia
         cXFServlet.setInitParameter("redirects-list", "/info.json");
         cXFServlet.setInitParameter("redirect-attributes", "javax.servlet.include.request_uri");
         cXFServlet.setInitParameter("redirect-servlet-name", "default");
-        
-        ServletRegistration.Dynamic metrics = container.addServlet("metrics", metricsServlet);
-        metrics.setLoadOnStartup(2);
-        metrics.addMapping("/metrics");
     }
     
 }

@@ -17,5 +17,7 @@ public interface AreaMedicalEmployeeRepository {
 
     List<AreaMedicalEmployees> findEmployees(long jobId, Boolean replacement);
 
+    List<Area> findAreasByEmployee(long jobId);
+
     List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils);
 }

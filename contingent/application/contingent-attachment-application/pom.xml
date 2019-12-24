@@ -5,10 +5,11 @@
     <parent>
         <artifactId>contingent</artifactId>
         <groupId>moscow.ptnl.contingent</groupId>
+        <relativePath>../pom.xml</relativePath>
         <version>1.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <name>contingent-attachment</name>
+    <name>attachment</name>
 
     <groupId>moscow.ptnl.contingent</groupId>
     <artifactId>attachment-application</artifactId>
@@ -272,6 +273,11 @@
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>area-domain</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>attachment-domain</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>

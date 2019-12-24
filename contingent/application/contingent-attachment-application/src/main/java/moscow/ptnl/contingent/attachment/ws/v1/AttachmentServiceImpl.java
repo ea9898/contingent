@@ -1,8 +1,12 @@
 package moscow.ptnl.contingent.attachment.ws.v1;
 
+import moscow.ptnl.contingent.attachment.service.AttachmentServiceInternal;
+import moscow.ptnl.contingent.attachment.transform.SoapExceptionMapper;
+import moscow.ptnl.contingent.error.ContingentException;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +22,6 @@ import java.lang.invoke.MethodHandles;
  * @author mkachalov
  */
 @Service(AttachmentServiceImpl.SERVICE_NAME)
-@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
 public class AttachmentServiceImpl implements AttachmentPT {
 
@@ -26,9 +29,28 @@ public class AttachmentServiceImpl implements AttachmentPT {
 
     public static final String SERVICE_NAME = "V1";
 
+    @Autowired
+    private AttachmentServiceInternal attachmentServiceInternal;
 
     @Override
     public InitiatePersonalAreaAttachmentResponse initiatePersonalAreaAttachment(InitiatePersonalAreaAttachmentRequest body) throws Fault {
-        return new InitiatePersonalAreaAttachmentResponse();
+        try {
+            attachmentServiceInternal.initiatePersonalAreaAttachment(body.getPatientEmiasId(), body.getOperationDate(),
+                    body.getCreateAttachment() != null ? body.getCreateAttachment().getJobId() : null,
+                    body.getCloseAttachment() != null ? body.getCloseAttachment().getJobId() : null);
+            return new InitiatePersonalAreaAttachmentResponse();
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+
+
+    private Fault mapException(Exception ex) {
+        if (!(ex instanceof ContingentException)) {
+            LOG.error(ex.getMessage(), ex);
+        }
+        return SoapExceptionMapper.map(ex);
     }
 }

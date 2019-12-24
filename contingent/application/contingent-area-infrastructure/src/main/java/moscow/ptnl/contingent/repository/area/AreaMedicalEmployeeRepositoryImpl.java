@@ -85,6 +85,13 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     }
 
     @Override
+    public List<Area> findAreasByEmployee(long jobId) {
+        Specification<AreaMedicalEmployees> specification = getEmployeesByJobIdSpec(jobId);
+        return areaMedicalEmployeeCRUDRepository.findAll(specification).
+                stream().map(AreaMedicalEmployees::getArea).collect(Collectors.toList());
+    }
+
+    @Override
     public List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<AreaMedicalEmployees> criteria = criteriaBuilder.createQuery(AreaMedicalEmployees.class);
