@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:tns="http://emias.mos.ru/contingent2/attachment/v1/types/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:core="http://emias.mos.ru/contingent2/core/v1/"
+           targetNamespace="http://emias.mos.ru/contingent2/attachment/v1/types/"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+    <xs:import namespace="http://emias.mos.ru/contingent2/core/v1/" schemaLocation="emias.contingent2.attachment.core.v1.xsd"/>
+
+    <xs:element name="initiatePersonalAreaAttachmentRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="patientEmiasId" type="core:ID" />
+                <xs:element name="operationDate" type="xs:dateTime" />
+                <xs:element name="createAttachment" type="core:JobId" />
+                <xs:element name="closeAttachment" type="core:JobId" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="initiatePersonalAreaAttachmentResponse">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
