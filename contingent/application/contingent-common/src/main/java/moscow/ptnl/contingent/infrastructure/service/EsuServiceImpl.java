@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.mos.emias.esu.lib.producer.EsuProducer;
-
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -27,7 +26,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import ru.mos.emias.esu.lib.producer.MessageMetadata;
 
 import javax.annotation.PostConstruct;
 
@@ -117,8 +115,8 @@ public class EsuServiceImpl implements EsuService {
      */
     @Override
     public void publishToESU(final Long recordId, final String publishTopic, final String message) {
-                
-        MessageMetadata esuAnswer = null;
+
+        EsuProducer.MessageMetadata esuAnswer = null;
         //запускаем в потоке чтобы иметь возможность прервать по таймауту
         try {
             esuAnswer = CompletableFuture.supplyAsync(() -> {
