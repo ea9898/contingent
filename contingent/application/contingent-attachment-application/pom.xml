@@ -12,7 +12,7 @@
     <name>attachment</name>
 
     <groupId>moscow.ptnl.contingent</groupId>
-    <artifactId>attachment-application</artifactId>
+    <artifactId>attachment</artifactId>
     <packaging>war</packaging>
 
     <build>
