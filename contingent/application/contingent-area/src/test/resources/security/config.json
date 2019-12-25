@@ -17,10 +17,6 @@
                     "enabled":true,
                     "permissions":[320018]
                 },
-                "getNewAreaId":{
-                        "enabled":true,
-                        "permissions":[320024]
-                },
                 "delMuAvailableAreaTypes":{
                     "enabled":true,
                     "permissions":[320005]
