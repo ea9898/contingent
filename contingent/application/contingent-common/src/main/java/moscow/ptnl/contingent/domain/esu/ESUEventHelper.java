@@ -84,7 +84,7 @@ public class ESUEventHelper {
         } else if (publishObject instanceof AttachOnAreaChange) {
             topicName= "AttachOnAreaChange";
         } else if (publishObject instanceof DnAttach) {
-            topicName= "DnAttach";
+            topicName= "DNAttach";
         }
         
         if (topicName == null) {
