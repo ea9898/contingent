@@ -1567,5 +1567,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return sysopId;
     }
 
-
+    // (К_УУ_29) Получение списка участков для ДН
+    @Override
+    public Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes,
+                                       List<Long> areaIds, PageRequest paging) throws ContingentException {
+        //2
+        areaHelper.checkSearchDnParameters(moId, muIds, areaTypeCodes, specializationCodes, areaIds);
+        //3, 4, 5
+        return areaRepository.findAreas(moId, muIds, areaTypeCodes, specializationCodes, areaIds, paging);
+    }
 }

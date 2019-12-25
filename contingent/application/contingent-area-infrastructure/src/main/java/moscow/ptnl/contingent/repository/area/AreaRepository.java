@@ -1,6 +1,8 @@
 package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
@@ -27,6 +29,7 @@ public interface AreaRepository {
 
     List<Area> findPrimaryAreasByAreaEqAreaType(Area area);
 
+    Page<Area> findAreas(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds, PageRequest paging);
 
     Long getNextAreaId();
     

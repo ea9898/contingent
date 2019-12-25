@@ -1,7 +1,9 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
+import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.area.transform.AreaDnMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
@@ -70,6 +72,8 @@ import ru.mos.emias.contingent2.area.types.RestoreAreaRequest;
 import ru.mos.emias.contingent2.area.types.RestoreAreaResponse;
 import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.area.types.SearchAreaResponse;
+import ru.mos.emias.contingent2.area.types.SearchDnAreaRequest;
+import ru.mos.emias.contingent2.area.types.SearchDnAreaResponse;
 import ru.mos.emias.contingent2.area.types.SearchOrderRequest;
 import ru.mos.emias.contingent2.area.types.SearchOrderResponse;
 import ru.mos.emias.contingent2.area.types.SetMedicalEmployeeOnAreaRequest;
@@ -130,6 +134,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AreaAddressMapper areaAddressMapper;
+
+    @Autowired
+    private AreaDnMapper areaDnMapper;
 
     @Autowired
     private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
@@ -528,6 +535,26 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     }
 
     @Override @EMIASSecured @Metrics
+    public SearchDnAreaResponse searchDnArea(SearchDnAreaRequest body) throws Fault {
+        try {
+            Page<Area> areas = areaService.searchDnArea(body.getMoId(),
+                    body.getMu() == null ? Collections.emptyList() : body.getMu().getMuIds(),
+                    body.getAreaTypes() == null ? Collections.emptyList() : body.getAreaTypes().getAreaTypeCodes(),
+                    body.getSpecializations() == null ? Collections.emptyList() : body.getSpecializations().getSpecializationCodes(),
+                    body.getAreas() == null ? Collections.emptyList() : body.getAreas().getAreaIds(),
+                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions())
+            );
+            SearchDnAreaResponse response = new SearchDnAreaResponse();
+            soapCustomMapper.mapPagingResults(response, areas);
+            response.getAreas().addAll(areas.stream().map(area -> areaDnMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured @Metrics
     public DelMuAvailableAreaTypesResponse delMuAvailableAreaTypes(DelMuAvailableAreaTypesRequest body) throws Fault {
         try {
             areaService.delMuAvailableAreaTypes(body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
@@ -549,8 +576,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             throw mapException(ex);
         }
     }
-    
-    
 
     @Override @EMIASSecured @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
@@ -564,7 +589,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             throw mapException(ex);
         }
     }
-    
 
     private Fault mapException(Exception ex) {
         if (!(ex instanceof ContingentException)) {

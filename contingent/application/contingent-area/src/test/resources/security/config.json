@@ -124,6 +124,10 @@
                 "initiateAddAreaAddress": {
                     "enabled":true,
                     "permissions":[320028]
+                },
+                "searchDnArea":{
+                    "enabled":true,
+                    "permissions":[320029]
                 }
             }
 	}

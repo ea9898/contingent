@@ -981,6 +981,12 @@ public class AreaServiceHelper {
         }
     }
 
+    public void checkSearchDnParameters(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds) throws ContingentException {
+        if (moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && specializationCodes.isEmpty() && areaIds.isEmpty()) {
+            throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
+        }
+    }
+
     public void checkSearchAreaInaccurateAddress(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
         if (Boolean.FALSE.equals(exactAddressMatch) && addresses.size() > 1) {
             throw new ContingentException(AreaErrorReason.SEARCH_AREA_INACCURATE_ADDRESS_ERROR);
