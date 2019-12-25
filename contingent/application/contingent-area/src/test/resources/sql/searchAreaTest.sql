@@ -29,7 +29,8 @@ INSERT INTO AREA_TYPE
             RESIDENTS_BIND_RATE,
             GLOBAL_ID)
 VALUES
-(10, 'Area type Primary', 1, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 0, 0, 0, 0, NULL, 100, 11111)
+(10, 'Area type Primary', 1, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 0, 0, 0, 0, NULL, 100, 11111),
+(20, 'Area type Secondary', 1, 2, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, 0, 0, 0, 0, NULL, 100, 11112)
 ;
 
 INSERT INTO AREAS
@@ -52,7 +53,8 @@ INSERT INTO AREAS
              UPDATE_DATE)
 VALUES
 (2, 204, 100, 10, 123, 0, 0, 'Description area 2', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate()),
-(4, 204, 100, 10, 234, 0, 0, 'Description area 4', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate())
+(4, 204, 100, 10, 234, 0, 0, 'Description area 4', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate()),
+(8, 204, 100, 20, 238, 0, 0, 'Description area 8', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate())
 ;
 
 INSERT INTO AREA_MEDICAL_EMPLOYEES
@@ -68,7 +70,8 @@ INSERT INTO AREA_MEDICAL_EMPLOYEES
              SUBDIVISION_ID)
 VALUES
 (1, 123, 2, 0, sysdate(), 'snilscode1', '234', sysdate(), sysdate(), 1),
-(2, 234, 4, 1, sysdate(), 'snilscode2', '345', sysdate(), sysdate(), 1)
+(2, 234, 4, 1, sysdate(), 'snilscode2', '345', sysdate(), sysdate(), 1),
+(3, 235, 8, 0, sysdate(), 'snilscode3', '346', sysdate(), sysdate(), 1)
 ;
 
 INSERT INTO ADDRESSES
@@ -92,4 +95,28 @@ INSERT INTO AREA_ADDRESSES
 VALUES
 (3, 2, sysdate(), 1, sysdate(), sysdate()),
 (4, 4, sysdate(), 2, sysdate(), sysdate())
+;
+
+INSERT INTO SPECIALIZATION
+            (CODE,
+             TITLE,
+             ARCHIVED,
+             GLOBAL_ID,
+             UPDATE_DATE,
+             SOURCE)
+VALUES
+(49, 'SPEC 1', 0, 1, sysdate(), 's'),
+(76, 'SPEC 2', 0, 2, sysdate(), 's')
+;
+
+INSERT INTO AREA_TYPE_SPECIALIZATIONS
+            (GLOBAL_ID,
+             AREA_TYPE_CODE,
+             SPECIALIZATION_CODE,
+             ARCHIVED,
+             UPDATE_DATE,
+             SOURCE)
+VALUES
+(123, 10, 49, 0, sysdate(), 's'),
+(124, 20, 76, 0, sysdate(), 's')
 ;

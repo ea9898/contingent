@@ -31,7 +31,8 @@ public class AreaDnMapper implements Transform<AreaDn, Area> {
         area.setMuId(entityObject.getMuId());
         area.setNumber(entityObject.getNumber());
         area.setAreaType(areaTypeShortMapper.entityToDtoTransform(entityObject.getAreaType()));
-        area.getSpecializations().addAll(entityObject.getAreaType().getAreaTypeSpecializations().stream()
+        area.setSpecializations(new AreaDn.Specializations());
+        area.getSpecializations().getSpecializations().addAll(entityObject.getAreaType().getAreaTypeSpecializations().stream()
                 .map(this::mapSpecialization)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList())
