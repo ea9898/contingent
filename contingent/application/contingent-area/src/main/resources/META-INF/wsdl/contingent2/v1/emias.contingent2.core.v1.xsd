@@ -162,7 +162,13 @@
             <xs:element name="muId" type="xs:long" minOccurs="0" />
             <xs:element name="number" type="restr:int5digits" minOccurs="0" />
             <xs:element name="areaType" type="tns:AreaTypeShort" />
-            <xs:element name="specialization" type="tns:Specialization" maxOccurs="unbounded" />
+            <xs:element name="specializations">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="specialization" type="tns:Specialization" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
             <xs:element name="medicalEmployee" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
