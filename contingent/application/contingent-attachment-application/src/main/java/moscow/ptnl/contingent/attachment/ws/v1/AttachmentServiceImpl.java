@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.attachment.service.AttachmentServiceInternal;
 import moscow.ptnl.contingent.attachment.transform.SoapExceptionMapper;
 import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
 import moscow.ptnl.contingent.error.ContingentException;
+import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public class AttachmentServiceImpl implements AttachmentPT {
     @Autowired
     private AttachmentServiceInternal attachmentServiceInternal;
 
-    @Override @EMIASSecured
+    @Override @EMIASSecured @Metrics
     public InitiatePersonalAreaAttachmentResponse initiatePersonalAreaAttachment(InitiatePersonalAreaAttachmentRequest body) throws Fault {
         try {
             attachmentServiceInternal.initiatePersonalAreaAttachment(body.getPatientEmiasId(), body.getOperationDate(),
