@@ -286,32 +286,32 @@ public class Algorithms {
                 if (!address.getAoLevel().equals(AddressLevelType.REGION_TE.getLevel())
                         && (address.getAreaOMKTE() == null || address.getAreaOMKTE().getCode() == null
                         || address.getAreaOMKTE().getCode().length() == 0)) {
-                    codesNotSetError += " код района Москвы;";
+                    codesNotSetError += " код района Москвы (areaOMKTE/code);";
                     //5
                 } else if (address.getAoLevel().equals(AddressLevelType.AREA.getLevel())
                         && (address.getArea() == null || address.getArea().getCode() == null
                         || address.getArea().getCode().length() == 0)) {
-                    codesNotSetError += " код района;";
+                    codesNotSetError += " код района (area/code);";
                     //6
                 } else if (address.getAoLevel().equals(AddressLevelType.CITY.getLevel())
                         && (address.getCity() == null || address.getCity().getCode() == null
                         || address.getCity().getCode().length() == 0)) {
-                    codesNotSetError += " код города;";
+                    codesNotSetError += " код города (city/code);";
                     //7
                 } else if (address.getAoLevel().equals(AddressLevelType.PLACE.getLevel())
                         && (address.getPlace() == null || address.getPlace().getCode() == null
                         || address.getPlace().getCode().length() == 0)) {
-                    codesNotSetError += " код населенного пункта;";
+                    codesNotSetError += " код населенного пункта (place/code);";
                     //8
                 } else if (address.getAoLevel().equals(AddressLevelType.PLAN.getLevel())
                         && (address.getPlan() == null || address.getPlan().getCode() == null
                         || address.getPlan().getCode().length() == 0)) {
-                    codesNotSetError += " код планировочной структуры;";
+                    codesNotSetError += " код планировочной структуры (plan/code);";
                     //9
                 } else if (address.getAoLevel().equals(AddressLevelType.STREET.getLevel())
                         && (address.getStreet() == null || address.getStreet().getCode() == null
                         || address.getStreet().getCode().length() == 0)) {
-                    codesNotSetError += " код улицы;";
+                    codesNotSetError += " код улицы (street/code);";
                     //10
                 } else if (address.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
                     if (address.getBuilding() == null || (
@@ -321,7 +321,7 @@ public class Algorithms {
                             || address.getBuilding().getBuild().getName().length() == 0)
                             && (address.getBuilding().getConstruction() == null || address.getBuilding().getConstruction().getName() == null
                             || address.getBuilding().getConstruction().getName().length() == 0)) {
-                        codesNotSetError += " код дома или корпуса или строения;";
+                        codesNotSetError += " код дома (building/house/name) или корпуса (building/build/name) или строения (building/construction/name);";
                     }
                     if (address.getRegionOMKTE() != null && address.getRegionOMKTE().getCode().split(";").length > 1
                             || address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode().split(";").length > 1) {
@@ -333,7 +333,7 @@ public class Algorithms {
             if (address.getRegionOMKTE() == null
                     || address.getRegionOMKTE().getCode() == null
                     || address.getRegionOMKTE().getCode().length() == 0) {
-                codesNotSetError += " код округа;";
+                codesNotSetError += " код округа (regionOMKTE/code);";
             }
 
             //Агрегированная ошибка С_УУ_108

@@ -29,28 +29,6 @@ public class AreaAddressChecker {
     @Autowired
     private AreaAddressRepository areaAddressRepository;
 
-    public void checkNsiAddresses(List<NsiAddress> addresses, Validation validation) {
-        addresses.forEach(a -> {
-            if (a.getLevelAddress() == 1) {
-                validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL);
-            }
-            else if (Objects.equals(a.getLevelAddress(), AddressLevelType.ID.getLevel())) {
-                if (buildingRegistryRepository.getBuildingsRegistry(a.getGlobalId()).isEmpty()) {
-                    validation.error(AreaErrorReason.NO_ADDRESS_IN_CATALOG,
-                            new ValidationParameter("globalId", a.getGlobalId()),
-                            new ValidationParameter("levelAddress", a.getLevelAddress()));
-                }
-            }
-            else {
-                if (addressFormingElementRepository.getAddressFormingElements(a.getGlobalId(), a.getLevelAddress()).isEmpty()) {
-                    validation.error(AreaErrorReason.NO_ADDRESS_IN_CATALOG,
-                            new ValidationParameter("globalId", a.getGlobalId()),
-                            new ValidationParameter("levelAddress", a.getLevelAddress()));
-                }
-            }
-        });
-    }
-
     public void checkMoAddressesExist(long moId, long areaTypeCode, List<AddressWrapper> newAddresses, Validation validation) {
         List<AddressWrapper> existingAddresses = new ArrayList<>();
 
