@@ -27,6 +27,8 @@ import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import ru.mos.emias.contingent2.address.AddressBaseType;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
@@ -405,10 +407,13 @@ public class Algorithms {
     }
 
     //Регистрация асинхронной операции (А_УУ_9)
+    //Делаем в новой транзакции, чтобы закомитить до вызова асинхронного метода,
+    // иначе иногда получали EntityNotFoundException: Unable to find moscow.ptnl.contingent.area.entity.sysop.Sysop
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public long sysOperationRegistration() {
-        return  sysopCRUDRepository.save(new Sysop(0, false)).getId();
+        return sysopCRUDRepository.save(new Sysop(0, false)).getId();
     }
-    
+
     public void sysOperationComplete(long sysopId, boolean successful, String message) {
         sysopCRUDRepository.save(new Sysop(sysopId, 100, true, successful, message));
     }
