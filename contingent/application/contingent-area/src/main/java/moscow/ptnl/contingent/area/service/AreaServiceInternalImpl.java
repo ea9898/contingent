@@ -976,9 +976,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 7
         List<MoAddress> findMoAddress = new ArrayList<>();
+        MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
+                addressesRegistry, validation);
         addressesRegistry.forEach(ar -> {
-            MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
-                    addressesRegistry, validation);
             if (moAddressIntersect == null || !moAddressIntersect.getMoId().equals(area.getMoId())) {
                 validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
                         new ValidationParameter("moId", area.getMoId()));
@@ -992,8 +992,8 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         // 8
+        Long areaIdIntersect = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
         addressesRegistry.forEach(ar -> {
-            Long areaIdIntersect = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
             if (areaIdIntersect != null) {
                 if (!areaIdIntersect.equals(area.getId())) {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA, new ValidationParameter("areaType", area.getAreaType().getCode()));
