@@ -39,7 +39,7 @@ public abstract class PushAccepter {
                 responseElement.setOut("OK");
             } else {
                 responseElement = new ResponseElement();
-                responseElement.setOut("FAIL! " + answer.getMessage());
+                responseElement.setOut("FAIL! " + (answer != null ? answer.getMessage() : ""));
             }
             return responseElement;
         } catch (Exception e) {

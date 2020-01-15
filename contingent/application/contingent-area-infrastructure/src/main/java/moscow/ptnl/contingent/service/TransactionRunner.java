@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Deprecated() //Перенесен в Common
 public class TransactionRunner {
 
     @Transactional(propagation = Propagation.REQUIRED)

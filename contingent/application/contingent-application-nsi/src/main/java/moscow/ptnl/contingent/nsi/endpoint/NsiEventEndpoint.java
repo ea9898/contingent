@@ -42,25 +42,23 @@ public class NsiEventEndpoint {
         LOG.info("получено сообщение: " + msg);
         Keyable entity = (Keyable) msg.getPayload();
         String action = (String) msg.getHeaders().get(NsiPushEventConstraint.PUSH_EVENT_ACTION_HEADER);
+        Long eventId = (Long) msg.getHeaders().get(NsiPushEventConstraint.PUSH_EVENT_ID_HEADER);
+        NsiPushEvent event;
+
+        try {
+            event = nsiPushEventCRUDRepository.findById(eventId).get();
+        } catch (Throwable error) {
+            LOG.error("Не найдена запись о приеме сообщения с ID=" + eventId + ". Сообщение не обработано!", error);
+            return;
+        }
         try {
             Future<Void> result = eventProcessor.processMesage(entity, action);        
             result.get(); //асинхронный вызов для создания разных транзакций
+            event.setError(false);
         } catch (Throwable error) {
-            saveError(error, msg);
-        }
-    }
-    
-    private void saveError(Throwable error, Message<Object> msg) {
-        try {
-            NsiPushEvent event = nsiPushEventCRUDRepository.findById((Long) msg.getHeaders().get(NsiPushEventConstraint.PUSH_EVENT_ID_HEADER)).get();
             event.setError(true);
             String errorMessage = ExceptionUtil.getStackTrace(error);
-            event.setErrorMessage(errorMessage);            
-            nsiPushEventCRUDRepository.save(event);
-        } catch (Throwable e) {
-            LOG.error("ошибка сохранения сведений об ошибке", e);
+            event.setErrorMessage(errorMessage);
         }
     }
-    
-    
 }

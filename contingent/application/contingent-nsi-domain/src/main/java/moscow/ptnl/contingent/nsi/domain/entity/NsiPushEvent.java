@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 
 @Entity
@@ -34,11 +36,11 @@ public class NsiPushEvent implements Serializable {
     @Column(name = "received_time")
     private LocalDateTime receivedTime;
 
-    @Column(name = "input_message")
+    @Column(name = "input_message", nullable = false)
     private String inputMessage;
 
     @Column(name = "error")
-    @Convert(converter = BooleanStrictIntegerConverter.class)
+    @Convert(converter = BooleanIntegerConverter.class)
     private Boolean error;
 
     @Column(name = "error_message")
@@ -47,7 +49,7 @@ public class NsiPushEvent implements Serializable {
     public NsiPushEvent() {
     }
 
-    public NsiPushEvent(String inType, LocalDateTime receivedTime, String inputMessage, boolean error) {
+    public NsiPushEvent(String inType, LocalDateTime receivedTime, String inputMessage, Boolean error) {
         this.error = error;
         this.inType = inType;
         this.receivedTime = receivedTime;

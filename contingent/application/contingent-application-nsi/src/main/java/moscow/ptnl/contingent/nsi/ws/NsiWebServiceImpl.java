@@ -1,8 +1,10 @@
 package moscow.ptnl.contingent.nsi.ws;
 
+import moscow.ptnl.contingent.infrastructure.service.TransactionRunner;
 import moscow.ptnl.contingent.nsi.domain.entity.NsiPushEvent;
 import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,9 @@ import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ChangeEleme
 import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ResponseElement;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service(NsiWebServiceImpl.SERVICE_NAME)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
@@ -25,17 +30,35 @@ public class NsiWebServiceImpl implements PushaccepterServicePortType {
     private PushAccepter pushAccepter;
 
     @Autowired
+    private TransactionRunner transactionRunner;
+
+    @Autowired
     private NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
 
     @Override
     public ResponseElement get(ChangeElement getChangeElement) {
-        NsiPushEvent event = new NsiPushEvent(getChangeElement.getIntype(), LocalDateTime.now(), getChangeElement.getIn(), false);
-        NsiPushEvent savedEvent = nsiPushEventCRUDRepository.save(event);
-        ResponseElement responseElement = pushAccepter.get(getChangeElement, savedEvent.getId());
-        if (responseElement.getOut().startsWith("ERROR")) {
-            savedEvent.setError(true);
-            savedEvent.setErrorMessage(responseElement.getOut());
-            nsiPushEventCRUDRepository.save(savedEvent);
+        Long id;
+
+        try {
+            //Сохраняем в отедльной транзакции, чтобы при асинхронной обработке сообщения в БД точно была сохранена запись
+            id = transactionRunner.run(() -> {
+                NsiPushEvent event = new NsiPushEvent(getChangeElement.getIntype(), LocalDateTime.now(),
+                        getChangeElement.getIn().trim(), null);
+                nsiPushEventCRUDRepository.save(event);
+                return event.getId();
+            }).get();
+        }
+        catch (InterruptedException | ExecutionException e) {
+            ResponseElement responseElement = new ResponseElement();
+            responseElement.setOut("FAIL! " + ExceptionUtils.getStackTrace(e));
+            return responseElement;
+        }
+        ResponseElement responseElement = pushAccepter.get(getChangeElement, id);
+
+        if (!responseElement.getOut().startsWith("OK")) {
+            NsiPushEvent event = nsiPushEventCRUDRepository.findById(id).get();
+            event.setError(true);
+            event.setErrorMessage(responseElement.getOut());
         }
         return responseElement;
     }
