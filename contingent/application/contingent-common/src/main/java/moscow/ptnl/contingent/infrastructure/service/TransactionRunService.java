@@ -10,7 +10,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 @Service
-public class TransactionRunner {
+public class TransactionRunService {
 
     @Async
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)

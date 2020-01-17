@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.nsi.ws;
 
-import moscow.ptnl.contingent.infrastructure.service.TransactionRunner;
+import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
 import moscow.ptnl.contingent.nsi.domain.entity.NsiPushEvent;
 import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
@@ -15,9 +15,7 @@ import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ChangeEleme
 import ru.mos.emias.pushaccepterproduct.pushaccepterservice.v1.types.ResponseElement;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 @Service(NsiWebServiceImpl.SERVICE_NAME)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
@@ -30,7 +28,7 @@ public class NsiWebServiceImpl implements PushaccepterServicePortType {
     private PushAccepter pushAccepter;
 
     @Autowired
-    private TransactionRunner transactionRunner;
+    private TransactionRunService transactionRunService;
 
     @Autowired
     private NsiPushEventCRUDRepository nsiPushEventCRUDRepository;
@@ -41,7 +39,7 @@ public class NsiWebServiceImpl implements PushaccepterServicePortType {
 
         try {
             //Сохраняем в отедльной транзакции, чтобы при асинхронной обработке сообщения в БД точно была сохранена запись
-            id = transactionRunner.run(() -> {
+            id = transactionRunService.run(() -> {
                 NsiPushEvent event = new NsiPushEvent(getChangeElement.getIntype(), LocalDateTime.now(),
                         getChangeElement.getIn().trim(), null);
                 nsiPushEventCRUDRepository.save(event);
