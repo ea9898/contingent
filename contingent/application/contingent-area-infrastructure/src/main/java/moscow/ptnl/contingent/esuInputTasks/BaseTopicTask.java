@@ -91,7 +91,7 @@ abstract class BaseTopicTask<T> implements Tasklet {
                 updateStatus(message, EsuStatusType.SUCCESS, eventId, null);
             }
             catch (Throwable ex) {
-                LOG.debug("Ошибка обработки входящего сообщения ЕСУ с ID={}", message.getEsuId(), ex);
+                LOG.warn("Ошибка обработки входящего сообщения ЕСУ с ID={}", message.getEsuId(), ex);
                 updateStatus(message, EsuStatusType.UNSUCCESS, eventId, ex.getMessage());
             }
         }
