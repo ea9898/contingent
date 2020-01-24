@@ -379,10 +379,12 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             response.setMoId(body.getMoId());
             response.getAreaTypes().addAll(addresses.getContent().stream()
                     .map(MoAddress::getAreaType)
+                    .distinct()
                     .map(areaTypeShortMapper::entityToDtoTransform)
                     .collect(Collectors.toSet()));
             response.getOrders().addAll(addresses.getContent().stream()
                     .map(MoAddress::getAddressAllocationOrder)
+                    .distinct()
                     .map(addressAllocationOrderMapper::entityToDtoTransform)
                     .collect(Collectors.toSet()));
             response.getMoAddresses().addAll(addresses.getContent().stream()
