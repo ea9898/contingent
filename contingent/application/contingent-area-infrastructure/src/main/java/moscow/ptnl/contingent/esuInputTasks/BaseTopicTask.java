@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import moscow.ptnl.contingent.domain.esu.EsuInput;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
+import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
 import moscow.ptnl.contingent.repository.esu.EsuInputRepository;
-import moscow.ptnl.contingent.service.TransactionRunner;
 import moscow.ptnl.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +39,7 @@ abstract class BaseTopicTask<T> implements Tasklet {
     private EsuInputRepository esuInputRepository;
 
     @Autowired
-    private TransactionRunner transactionRunner;
+    private TransactionRunService transactionRunner;
 
     @Value("${esu.consumer.group.id}")
     private String consumerGroupId;
@@ -76,7 +76,10 @@ abstract class BaseTopicTask<T> implements Tasklet {
                 eventId = getEventId(event);
 
                 //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
-                Future future = CompletableFuture.runAsync(() -> transactionRunner.run(() -> processMessage(event)));
+                Future future = transactionRunner.run(() -> {
+                    processMessage(event);
+                    return true;
+                });
 
                 try {
                     // Если за 5 секунд не закомителось, то что то идет не так...
@@ -92,6 +95,7 @@ abstract class BaseTopicTask<T> implements Tasklet {
             }
             catch (Throwable ex) {
                 LOG.warn("Ошибка обработки входящего сообщения ЕСУ с ID={}", message.getEsuId(), ex);
+                ex = Objects.equals(ex.getMessage(), "Transaction has thrown an Exception") ? ex.getCause() : ex;
                 updateStatus(message, EsuStatusType.UNSUCCESS, eventId, ex.getMessage());
             }
         }

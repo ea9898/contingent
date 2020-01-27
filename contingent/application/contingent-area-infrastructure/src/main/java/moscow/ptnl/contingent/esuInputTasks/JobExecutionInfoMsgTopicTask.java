@@ -176,13 +176,12 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         if (!areaTypeSpecialization.isPresent()) {
             throw new RuntimeException("Специализация ИДМР не соответствует именному виду участка");
         }
-
+        Long moId = jeCreate.getDepartment().getOrganization().getId();
         //2.4
         if (SpecializationEnum.CHILD_ONCOLOGY.getCode() != specialization.get().getCode()
                 && SpecializationEnum.ONCOLOGY.getCode() != specialization.get().getCode()) {
 
             //2.4.1
-            Long moId = jeCreate.getDepartment().getOrganization().getId();
             List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId);
 
             if (moAvailableAreaTypes.isEmpty()) {
@@ -214,53 +213,52 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
             if (primarySpecializationsTotal.stream().anyMatch(s -> Objects.equals(s.getSpecializationCode(), specialization.get().getCode()))) {
                 throw new RuntimeException("Специализация ИДМР совпадает со специализацией разрешенного для МО типа участка первичного класса");
             }
+        }
+        //2.5
+        AreaType areaType = areaTypeSpecialization.get().getAreaType();
 
-            //2.5
-            AreaType areaType = areaTypeSpecialization.get().getAreaType();
+        //2.6
+        List<AreaTypeMedicalPositions> areaTypeMedicalPositions =
+                areaTypeMedicalPositionsRepository.getPositionsByAreaType(areaType.getCode());
+        if (areaTypeMedicalPositions != null && areaTypeMedicalPositions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(jeCreate.getPositionNom().getCode()))) {
+            throw new RuntimeException(String.format("Должность ИДМР не разрешена для типа участка %s", areaType.getTitle()));
+        }
 
-            //2.6
-            List<AreaTypeMedicalPositions> areaTypeMedicalPositions =
-                    areaTypeMedicalPositionsRepository.getPositionsByAreaType(areaType.getCode());
-            if (areaTypeMedicalPositions != null && areaTypeMedicalPositions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(jeCreate.getPositionNom().getCode()))) {
-                throw new RuntimeException(String.format("Должность ИДМР не разрешена для типа участка %s", areaType.getTitle()));
-            }
+        //2.7
+        List<Area> areas = areaRepository.findAreas(moId, null, areaType.getCode(), null, true);
+        if (areas.stream()
+                .flatMap(a -> a.getActualMainMedicalEmployees().stream())
+                .anyMatch(a -> Objects.equals(a.getMedicalEmployeeJobId(), jeCreate.getId()))) {
+            throw new RuntimeException("Для данного ИДМР участок уже существует");
+        }
+        Area area;
 
-            //2.7
-            List<Area> areas = areaRepository.findAreas(moId, null, areaType.getCode(), null, true);
-            if (areas.stream()
-                    .flatMap(a -> a.getActualMainMedicalEmployees().stream())
-                    .anyMatch(a -> Objects.equals(a.getMedicalEmployeeJobId(), jeCreate.getId()))) {
-                throw new RuntimeException("Для данного ИДМР участок уже существует");
-            }
-            Area area;
+        //2.8
+        Optional<AreaMedicalEmployees> areaMedicalEmployee = areas.stream()
+                .filter(a -> a.getMuId() == null)
+                .flatMap(a -> a.getActualMainMedicalEmployees().stream())
+                .filter(a -> !Objects.equals(a.getMedicalEmployeeJobId(), jeCreate.getId()) &&
+                        Objects.equals(a.getSnils(), jeCreate.getEmployee().getSnils()))
+                .findFirst();
 
-            //2.8
-            Optional<AreaMedicalEmployees> areaMedicalEmployee = areas.stream()
-                    .filter(a -> a.getMuId() == null)
-                    .flatMap(a -> a.getActualMainMedicalEmployees().stream())
-                    .filter(a -> !Objects.equals(a.getMedicalEmployeeJobId(), jeCreate.getId()) &&
-                            Objects.equals(a.getSnils(), jeCreate.getEmployee().getSnils()))
-                    .findFirst();
-
-            if (areaMedicalEmployee.isPresent() && areaMedicalEmployee.get().getArea() != null) {
-                //AC.1
-                area = areaMedicalEmployee.get().getArea();
-            }
-            else {
-                //2.9
-                try {
-                    area = createArea(moId, areaType);
-                } catch (Throwable e) {
-                    throw new RuntimeException("Ошибка создания участка: " + e.getMessage(), e);
-                }
-            }
+        if (areaMedicalEmployee.isPresent() && areaMedicalEmployee.get().getArea() != null) {
+            //AC.1
+            area = areaMedicalEmployee.get().getArea();
+        }
+        else {
+            //2.9
             try {
-                //2.10
-                createAreaMedicalEmployee(area, positionCode.get(), jeCreate);
+                area = createArea(moId, areaType);
+            } catch (Throwable e) {
+                throw new RuntimeException("Ошибка создания участка: " + e.getMessage(), e);
             }
-            catch (Throwable e) {
-                throw new RuntimeException("Ошибка добавления МР на участок: " + e.getMessage(), e);
-            }
+        }
+        try {
+            //2.10
+            createAreaMedicalEmployee(area, positionCode.get(), jeCreate);
+        }
+        catch (Throwable e) {
+            throw new RuntimeException("Ошибка добавления МР на участок: " + e.getMessage(), e);
         }
     }
 
