@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,6 +42,12 @@ public class Sysop implements Serializable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean successful;
 
+    @Column(name = "START_DATE", nullable = false)
+    private LocalDateTime startDate;
+
+    @Column(name = "END_DATE")
+    private LocalDateTime endDate;
+
     @Column(name = "RESULT")
     private String result;
 
@@ -51,11 +58,9 @@ public class Sysop implements Serializable {
     }
 
     public Sysop(int progress, boolean completed) {
-        this(null, progress, completed, null);
-    }
-
-    public Sysop(Long id, int progress, boolean completed, Boolean successful) {
-        this(id, progress, completed, successful, null);
+        this.progress = progress;
+        this.completed = completed;
+        this.startDate = LocalDateTime.now();
     }
 
     public Sysop(Long id, int progress, boolean completed, Boolean successful, String result) {
@@ -64,6 +69,7 @@ public class Sysop implements Serializable {
         this.completed = completed;
         this.successful = successful;
         this.result = result;
+        this.endDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -112,6 +118,22 @@ public class Sysop implements Serializable {
 
     public void setMessages(Set<SysopMsg> messages) {
         this.messages = messages;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
     }
 
     public Set<SysopMsg> getRootMessages() {

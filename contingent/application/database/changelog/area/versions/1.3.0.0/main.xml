@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1.3.0.0" author="sorlov" labels ="1.2.0.0">
+        <tagDatabase tag="1.3.0.0"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-559-1" author="ddryuchin" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="SYSOP" columnName="START_DATE"/>
+                <columnExists tableName="SYSOP" columnName="END_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="SYSOP">
+            <column name="START_DATE" type="TIMESTAMP(6)" />
+            <column name="END_DATE" type="TIMESTAMP(6)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="SYSOP" columnName="START_DATE"/>
+            <dropColumn tableName="SYSOP" columnName="UPDATE_DATE"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

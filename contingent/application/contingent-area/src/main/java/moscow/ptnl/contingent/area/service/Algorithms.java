@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 import ru.mos.emias.contingent2.address.AddressBaseType;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -415,7 +416,13 @@ public class Algorithms {
     }
 
     public void sysOperationComplete(long sysopId, boolean successful, String message) {
-        sysopCRUDRepository.save(new Sysop(sysopId, 100, true, successful, message));
+        Sysop sysop = sysopCRUDRepository.findById(sysopId).get();
+        sysop.setProgress(100);
+        sysop.setCompleted(true);
+        sysop.setSuccessful(successful);
+        sysop.setResult(message);
+        sysop.setEndDate(LocalDateTime.now());
+        sysopCRUDRepository.save(sysop);
     }
 
 }
