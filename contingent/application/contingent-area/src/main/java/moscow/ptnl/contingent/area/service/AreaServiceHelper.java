@@ -1030,7 +1030,8 @@ public class AreaServiceHelper {
     public List<Addresses> getMoAreaAddresses(List<AddressRegistryBaseType> addressesRegistry) {
         List<Addresses> addressesInput = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
                 .collect(Collectors.toList());
-        List<Addresses> addresses = addressesRepository.findAddresses(addressesInput.stream().map(Addresses::getGlobalId).collect(Collectors.toList()));
+        List<Long> addressIds = addressesInput.stream().map(Addresses::getGlobalId).collect(Collectors.toList());
+        List<Addresses> addresses = addressIds.isEmpty() ? Collections.emptyList() : addressesRepository.findAddresses(addressIds);
         addressesCRUDRepository.saveAll(addressesInput.stream().filter(ai -> !addresses.stream().map(Addresses::getGlobalId).collect(Collectors.toList())
                 .contains(ai.getGlobalId())).collect(Collectors.toList())).forEach(addresses::add);
         return addresses;

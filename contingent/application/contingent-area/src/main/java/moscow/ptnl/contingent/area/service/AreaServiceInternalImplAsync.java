@@ -7,12 +7,15 @@ package moscow.ptnl.contingent.area.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.entity.sysop.SysopMsg;
 import moscow.ptnl.contingent.area.entity.sysop.SysopMsgParam;
 import moscow.ptnl.contingent.area.error.SysopErrorReason;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.ValidationMessage;
+import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
 import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
 import moscow.ptnl.contingent.repository.sysop.SysopMsgCRUDRepository;
 import moscow.ptnl.contingent.repository.sysop.SysopMsgParamCRUDRepository;
@@ -57,6 +60,9 @@ public class AreaServiceInternalImplAsync {
     @Autowired
     private SysopCRUDRepository sysopCRUDRepository;
 
+    @Autowired
+    private TransactionRunService transactionRunner;
+
 
     // Асинхронная инициация процесса распределения жилых домов к территории обслуживания МО (К_УУ_27)
     @Async 
@@ -64,7 +70,11 @@ public class AreaServiceInternalImplAsync {
     public void asyncInitiateAddMoAddress(long sysopId, RequestContext requestContext, long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addresses) throws ContingentException {
         try {
             UserContextHolder.setContext(requestContext);
-            List<Long> ids = areaService.addMoAddress(moId, areaTypeCode, orderId, addresses, false);
+            //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
+            List<Long> ids = transactionRunner.run(() -> {
+                UserContextHolder.setContext(requestContext);
+                return areaService.addMoAddress(moId, areaTypeCode, orderId, addresses, false);
+            }).get();
             String sysopResult = ids.stream().map(id -> id.toString()).collect(Collectors.joining(";"));
             algorithms.sysOperationComplete(sysopId, true, sysopResult);
         } catch (Throwable e) {
@@ -83,11 +93,17 @@ public class AreaServiceInternalImplAsync {
                                        List<AddressRegistryBaseType> addresses) {
         try {
             UserContextHolder.setContext(requestContext);
-            Long areaId = areaService.createPrimaryArea(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
-                    ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
-            areaService.setMedicalEmployeeOnArea(areaId, addMedicalEmployees, Collections.emptyList());
-            areaService.addAreaAddress(areaId, addresses, false);
-            algorithms.sysOperationComplete(sysopId, true, areaId.toString());            
+            //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
+            Long areaId = transactionRunner.run(() -> {
+                UserContextHolder.setContext(requestContext);
+                Long id = areaService.createPrimaryArea(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
+                        ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
+                areaService.setMedicalEmployeeOnArea(id, addMedicalEmployees, Collections.emptyList());
+                areaService.addAreaAddress(id, addresses, false);
+
+                return id;
+            }).get();
+            algorithms.sysOperationComplete(sysopId, true, areaId.toString());
         } catch (Throwable e) {
             processException(e, sysopId);
         }
@@ -98,7 +114,11 @@ public class AreaServiceInternalImplAsync {
     public void asyncAddAreaAddress(RequestContext requestContext, long sysopId, Long areaId, List<AddressRegistryBaseType> addressesRegistry) {
         try {
             UserContextHolder.setContext(requestContext);
-            List<Long> ids = areaService.addAreaAddress(areaId, addressesRegistry, false);
+            //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
+            List<Long> ids = transactionRunner.run(() -> {
+                UserContextHolder.setContext(requestContext);
+                return areaService.addAreaAddress(areaId, addressesRegistry, false);
+            }).get();
             String sysopResult = ids.stream().map(id -> id.toString()).collect(Collectors.joining(";"));
             algorithms.sysOperationComplete(sysopId, true, sysopResult);
         } catch (Throwable e) {
@@ -107,6 +127,9 @@ public class AreaServiceInternalImplAsync {
     }
     
     private void processException(Throwable th, long sysopId) {
+        if (th instanceof ExecutionException) {
+            th = th.getCause() instanceof RuntimeException ? th.getCause().getCause() : th.getCause();
+        }
         if (th instanceof ContingentException) {
             for (ValidationMessage error : ((ContingentException) th).getValidation().getMessages()) {
                 long sysopMsgId = sysopMsgCRUDRepository.save(new SysopMsg(
