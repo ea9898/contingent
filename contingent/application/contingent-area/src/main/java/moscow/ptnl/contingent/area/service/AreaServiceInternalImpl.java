@@ -15,6 +15,7 @@ import moscow.ptnl.contingent.area.model.area.AddressArea;
 import moscow.ptnl.contingent.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
+import moscow.ptnl.contingent.area.model.sysop.SysopMethodType;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AreaAddressClone;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
@@ -1516,7 +1517,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                                           List<AddressRegistryBaseType> addresses) throws ContingentException {
 
         // 2
-        long sysopId = algorithms.sysOperationRegistration();
+        long sysopId = algorithms.sysOperationRegistration(SysopMethodType.INITIATE_CREATE_PRIMARY_AREA);
         
         // 3
         asyncService.asyncCreatePrimaryArea(UserContextHolder.getContext(), sysopId, moId, muId, number, description,
@@ -1536,7 +1537,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // Реализовано через аннотацию
 
         //2. Система выполняет регистрацию новой асинхронной операции
-        long sysopId = algorithms.sysOperationRegistration();
+        long sysopId = algorithms.sysOperationRegistration(SysopMethodType.INITIATE_ADD_MO_ADDRESS);
 
         //3. Система инициирует процесс (выполняется асинхронно) распределения жилых домов к территории обслуживания МО. (А_УУ_11)
         asyncService.asyncInitiateAddMoAddress(sysopId, UserContextHolder.getContext(), moId, areaTypeCode, orderId, addresses);
@@ -1555,7 +1556,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // Реализовано через аннотацию
         
         // 2. Система выполняет регистрацию новой асинхронной операции
-        long sysopId = algorithms.sysOperationRegistration();
+        long sysopId = algorithms.sysOperationRegistration(SysopMethodType.INITIATE_ADD_AREA_ADDRESS);
 
         // 3. Система инициирует процесс (выполняется асинхронно) добавления адресов на участок обслуживания.
         asyncService.asyncAddAreaAddress(UserContextHolder.getContext(), sysopId, areaId, addressesRegistry);

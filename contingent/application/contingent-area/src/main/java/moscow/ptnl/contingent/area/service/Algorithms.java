@@ -9,6 +9,7 @@ import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.sysop.Sysop;
 import moscow.ptnl.contingent.area.AreaErrorReason;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.area.model.sysop.SysopMethodType;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
@@ -411,8 +412,11 @@ public class Algorithms {
     //Делаем в новой транзакции, чтобы закомитить до вызова асинхронного метода,
     // иначе иногда получали EntityNotFoundException: Unable to find moscow.ptnl.contingent.area.entity.sysop.Sysop
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-    public long sysOperationRegistration() {
-        return sysopCRUDRepository.save(new Sysop(0, false)).getId();
+    public long sysOperationRegistration(SysopMethodType methodType) {
+        Sysop sysop = new Sysop(0, false);
+        sysop.setMethodName(methodType.getValue());
+
+        return sysopCRUDRepository.save(sysop).getId();
     }
 
     public void sysOperationComplete(long sysopId, boolean successful, String message) {

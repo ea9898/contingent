@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -41,6 +42,10 @@ public class Sysop implements Serializable {
     @Column(name = "HAS_SUCCEEDED")
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean successful;
+
+    @Column(name = "METHOD_NAME")
+    @Size(max = 255)
+    private String methodName;
 
     @Column(name = "START_DATE", nullable = false)
     private LocalDateTime startDate;
@@ -134,6 +139,14 @@ public class Sysop implements Serializable {
 
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
     }
 
     public Set<SysopMsg> getRootMessages() {
