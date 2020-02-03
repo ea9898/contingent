@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
 
+import moscow.ptnl.contingent.repository.sysop.SysopMsgCRUDRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

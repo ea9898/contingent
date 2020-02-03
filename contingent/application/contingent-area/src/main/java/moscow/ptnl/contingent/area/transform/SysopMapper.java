@@ -19,7 +19,7 @@ public interface SysopMapper {
             @Mapping(source = "progress", target = "completenessProgress", qualifiedByName = "ToOperationCompletenessPercentage"),
             @Mapping(source = "completed", target = "isCompleted"),
             @Mapping(source = "successful", target = "hasSucceded"),
-            @Mapping(source = "rootMessages", target = "messages")
+            @Mapping(target = "messages", ignore = true)
     })
     OperationExecutionStatus entityToDtoTransform(Sysop entityObject);
 

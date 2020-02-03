@@ -19,9 +19,9 @@ public interface SysopMsgMapper {
     @Mappings({
             @Mapping(source = "type", target = "type"),
             @Mapping(source = "code", target = "code"),
-            @Mapping(source = "message", target = "message"),
-            @Mapping(source = "params", target = "parameters"),
-            @Mapping(source = "childMessages", target = "messages")
+            @Mapping(target = "message", ignore = true),
+            @Mapping(target = "parameters", ignore = true),
+            @Mapping(target = "messages", ignore = true)
     })
     ErrorMessage entityToDtoTransform(SysopMsg entityObject);
 
