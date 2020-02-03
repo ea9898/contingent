@@ -1468,7 +1468,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             List<AreaAddress> areaAddresses;
             //4.3.2
             if (isExactAddressMatch == null || isExactAddressMatch) {
-                addresses = addressesRepository.findActualAddresses(searchAreaAddresses.stream()
+                addresses = addressesRepository.findAddresses(searchAreaAddresses.stream()
                         .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
             //4.3.3
             } else {

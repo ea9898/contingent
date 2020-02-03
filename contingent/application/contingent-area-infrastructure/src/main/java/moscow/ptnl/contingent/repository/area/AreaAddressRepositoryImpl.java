@@ -85,8 +85,14 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
 
     @Override
     public List<AreaAddress> findAreaAddressByAddressIds(List<Long> addressIds) {
-        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) ->
-                root.get(AreaAddress_.address).in(addressIds);
+        Specification<AreaAddress> specification = (root, criteriaQuery, cb) ->
+                cb.and(
+                        root.get(AreaAddress_.address).in(addressIds),
+                        cb.or(
+                                cb.greaterThanOrEqualTo(root.get(AreaAddress_.endDate), LocalDate.now()),
+                                cb.isNull(root.get(AreaAddress_.endDate))
+                        )
+                );
 
         return areaAddressPagingAndSortingRepository.findAll(specification);
     }

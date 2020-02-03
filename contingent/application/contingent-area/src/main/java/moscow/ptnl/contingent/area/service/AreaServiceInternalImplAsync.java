@@ -127,8 +127,9 @@ public class AreaServiceInternalImplAsync {
     }
     
     private void processException(Throwable th, long sysopId) {
-        if (th instanceof ExecutionException) {
-            th = th.getCause() instanceof RuntimeException ? th.getCause().getCause() : th.getCause();
+        if (th instanceof ExecutionException && th.getCause() != null) {
+            th = th.getCause() instanceof RuntimeException && th.getCause().getCause() != null
+                    ? th.getCause().getCause() : th.getCause();
         }
         if (th instanceof ContingentException) {
             for (ValidationMessage error : ((ContingentException) th).getValidation().getMessages()) {
