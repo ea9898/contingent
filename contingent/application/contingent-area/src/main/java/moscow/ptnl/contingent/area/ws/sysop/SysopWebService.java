@@ -111,16 +111,18 @@ public class SysopWebService extends BaseService implements SysopPT {
             errorMessage.setCode(msg.getCode());
             errorMessage.setMessage(msg.getMessage());
 
-            ErrorMessage.Parameters parameters = new ErrorMessage.Parameters();
-            parameters.getParameters().addAll(
-                    sysopMsgParamsMap.get(msg).stream().map(sysopMsgParamMapper::entityToDtoTransform).collect(Collectors.toList())
-            );
+            if (sysopMsgParamsMap.get(msg) != null && !sysopMsgParamsMap.get(msg).isEmpty()) {
+                ErrorMessage.Parameters parameters = new ErrorMessage.Parameters();
+                parameters.getParameters().addAll(
+                        sysopMsgParamsMap.get(msg).stream().map(sysopMsgParamMapper::entityToDtoTransform).collect(Collectors.toList())
+                );
+                errorMessage.setParameters(parameters);
+            }
 
             if (parentSysopMsgMap.get(msg) != null && !parentSysopMsgMap.get(msg).isEmpty()) {
                 errorMessage.setMessages(mapErrorMessages(new ArrayList<>(msg.getChildMessages())));
             }
 
-            errorMessage.setParameters(parameters);
             errorMessageCollection.getMessages().add(errorMessage);
             }
         );

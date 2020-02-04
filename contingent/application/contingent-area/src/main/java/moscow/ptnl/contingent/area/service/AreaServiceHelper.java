@@ -184,6 +184,7 @@ public class AreaServiceHelper {
    •	ИД МУ (MU_ID) = input ИД МУ;
    •	ИД типа участка (AREA_TYPE_CODE) = input ИД типа участка.
    Иначе возвращает ошибку */
+    @Deprecated
     public void checkMuAddlAreaTypeExist(Long muId, List<Long> areaTypes, Validation validation) {
         List<MuAddlAreaTypes> muAddlAreaTypes = muAddlAreaTypesRepository.findMuAddlAreaTypes(
                 Collections.singletonList(muId), areaTypes);
@@ -216,6 +217,7 @@ public class AreaServiceHelper {
     •	ИД типа участка (AREA_TYPE_CODE) = input ИД тип участка;
     •	Архивность (ARCHIVE) = 0.
      */
+    @Deprecated
     public void checkMuActiveAreasNotExist(Long muId, List<Long> areaTypes, Validation validation) {
         List<Area> areas = areaRepository.findAreas(null, muId, areaTypes, null,true);
 
