@@ -506,9 +506,9 @@ public class AreaServiceHelper {
                 if (current.getEndDate() == null
                         || next.getStartDate().minusDays(1).isBefore(current.getEndDate())) {
                     validation.error(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP,
-                            new ValidationParameter("specialization1",
+                            new ValidationParameter("JobInfoId",
                                     current.getMedicalEmployeeJobId()),
-                            new ValidationParameter("specialization2",
+                            new ValidationParameter("JobInfoId",
                                     next.getMedicalEmployeeJobId()));
                 }
             }
