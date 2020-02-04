@@ -83,7 +83,9 @@ public class SysopWebService extends BaseService implements SysopPT {
 
             List<SysopMsg> sysopMsgList = sysopMsgRepository.getSysopMsgBySysop(sysop);
 
-            operationExecutionStatus.setMessages(mapErrorMessages(sysopMsgList));
+            if (sysopMsgList != null && !sysopMsgList.isEmpty()){
+                operationExecutionStatus.setMessages(mapErrorMessages(sysopMsgList));
+            }
 
             response.setOperationExecutionStatus(operationExecutionStatus);
 
