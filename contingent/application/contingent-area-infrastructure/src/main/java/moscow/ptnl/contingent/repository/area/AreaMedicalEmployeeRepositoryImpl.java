@@ -107,6 +107,6 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
                                 root.get(AreaMedicalEmployees_.snils).in(snils))
         );
         return entityManager.createQuery(criteria).getResultList().
-                stream().map(AreaMedicalEmployees::getArea).collect(Collectors.toList());
+                stream().map(AreaMedicalEmployees::getArea).distinct().collect(Collectors.toList());
     }
 }
