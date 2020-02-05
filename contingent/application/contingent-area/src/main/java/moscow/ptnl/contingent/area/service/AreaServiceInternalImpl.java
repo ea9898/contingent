@@ -40,6 +40,7 @@ import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
 import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
+import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
@@ -207,6 +208,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private AreaServiceInternalImplAsync asyncService;
+
+    @Autowired
+    private SpecializationCRUDRepository specializationCRUDRepository;
 
     public AreaServiceInternalImpl() {
     }
@@ -420,7 +424,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         primaryAreaTypeCodesIds.forEach(code -> {
             Optional<AreaType> primaryAreaTypeOptional = areaTypesCRUDRepository.findById(code);
             if (!primaryAreaTypeOptional.isPresent()) {
-                validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaType", code));
+                validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaTypeCode", code));
                 return;
             }
             AreaType primaryAreaType = primaryAreaTypeOptional.get();
@@ -437,7 +441,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
         //8
         if (!areaRepository.findAreas(moId, muId, areaTypeCode, null, true).isEmpty()) {
-            validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeCode", areaTypeCode));
+            validation.error(AreaErrorReason.AREA_WITH_TYPE_EXISTS_IN_MO, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
         }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -606,7 +610,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             Optional<AreaType> primaryAreaTypeOptional = areaTypesCRUDRepository.findById(pat);
 
             if (!primaryAreaTypeOptional.isPresent()) {
-                validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaType", pat));
+                validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaTypeCode", pat));
                 return;
             }
 
@@ -780,14 +784,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             AreaMedicalEmployees emplDb = null;
             if (!employee.isPresent()) {
                 validation.error(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
-                        new ValidationParameter("id", inputEmpl.getAssignmentId()));
+                        new ValidationParameter("jobInfoId", inputEmpl.getAssignmentId()));
             } else {
                 emplDb = employee.get();
                 //4.1
                 if (inputEmpl.getEndDate() != null && inputEmpl.getEndDate().isBefore(LocalDate.now())
                         || employee.get().getArea().getId() != areaId) {
                     validation.error(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
-                            new ValidationParameter("id", inputEmpl.getAssignmentId()));
+                            new ValidationParameter("jobInfoId", inputEmpl.getAssignmentId()));
                 }
             }
 
@@ -846,10 +850,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             // 5.5.
             if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
                 validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
-                        new ValidationParameter("InputSpecialization", specialization.getTitle()),
+                        new ValidationParameter("SpecializationTitle", specialization.getTitle()),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
-                        new ValidationParameter("AreaSpecialization", area.getAreaType().getCode()));
-
+                        new ValidationParameter("AreaSpecializationTitles", areaTypeSpecializations.stream()
+                                .map(AreaTypeSpecializations::getSpecializationCode)
+                                .distinct()
+                                .map(specializationCRUDRepository::getByCode)
+                                .map(Specialization::getTitle)
+                                .collect(Collectors.joining(", "))));
             }
 
             // 5.6.            
@@ -859,7 +867,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionNom.getTitle()),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
-                        new ValidationParameter("areaTypeName", area.getAreaType().getTitle()));
+                        new ValidationParameter("areaTypeTitle", area.getAreaType().getTitle()));
             }
         }
         if (!validation.isSuccess()) {
@@ -997,7 +1005,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         addressesRegistry.forEach(ar -> {
             if (areaIdIntersect != null) {
                 if (!areaIdIntersect.equals(area.getId())) {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA, new ValidationParameter("areaType", area.getAreaType().getCode()));
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA, new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
                 } else {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", ar.getAddressString()));
                 }

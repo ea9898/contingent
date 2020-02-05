@@ -192,7 +192,7 @@ public class AreaServiceHelper {
         if (muAddlAreaTypes != null && !muAddlAreaTypes.isEmpty()) {
             for (MuAddlAreaTypes muAddlAreaType : muAddlAreaTypes) {
                 validation.error(AreaErrorReason.AREA_TYPE_ALREADY_EXISTS,
-                        new ValidationParameter("areaType", muAddlAreaType.getAreaType().getTitle()));
+                        new ValidationParameter("areaTypeTitle", muAddlAreaType.getAreaType().getTitle()));
             }
         }
     }
@@ -208,7 +208,9 @@ public class AreaServiceHelper {
 
         if (!areaTypesDiff.isEmpty()) {
             validation.error(AreaErrorReason.AREA_TYPE_NOT_EXISTS_IN_MO,
-                new ValidationParameter("areaType", areaTypesDiff.stream().map(String::valueOf).collect(Collectors.joining(", "))));
+                new ValidationParameter("areaTypeTitle", areaTypesDiff.stream()
+                        .map(a -> areaTypesCRUDRepository.findById(a).map(AreaType::getTitle).orElse(String.valueOf(a)))
+                        .collect(Collectors.joining(", "))));
         }
     }
 
@@ -259,8 +261,8 @@ public class AreaServiceHelper {
                                        String paramMinCode, String paramMaxCode, Validation validation) {
         if (!(ageMin == null || ageMin >= ageMinAreaType) || !(ageMax == null || ageMax <= ageMaxAreaType)) {
             validation.error(AreaErrorReason.AREA_AGE_SETUP_EXCEEDED,
-                    new ValidationParameter(paramMinCode, ageMin), new ValidationParameter(paramMaxCode, ageMax),
-                    new ValidationParameter(paramMinCode, ageMinAreaType), new ValidationParameter(paramMaxCode, ageMaxAreaType));
+                    new ValidationParameter(paramMinCode + "1", ageMin), new ValidationParameter(paramMaxCode + "1", ageMax),
+                    new ValidationParameter(paramMinCode + "2", ageMinAreaType), new ValidationParameter(paramMaxCode + "2", ageMaxAreaType));
         }
     }
 
@@ -269,8 +271,8 @@ public class AreaServiceHelper {
                 .map(AreaToAreaType::getAreaType)
                 .anyMatch(a -> Objects.equals(a, areaType))) {
             validation.error(AreaErrorReason.AREA_ALREADY_DEPENDS_ON_AREA_TYPE,
-                    new ValidationParameter("area", area.getId()),
-                    new ValidationParameter("areaType.title", areaType.getTitle()));
+                    new ValidationParameter("areaId", area.getId()),
+                    new ValidationParameter("areTypeTitle", areaType.getTitle()));
         }
     }
 
@@ -369,8 +371,8 @@ public class AreaServiceHelper {
         }
         if (areas.stream().anyMatch(a -> excludeAreaId == null || !Objects.equals(a.getId(), excludeAreaId))) {
             validation.error(AreaErrorReason.AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO,
-                    new ValidationParameter("areaType", areaType.getTitle()),
-                    new ValidationParameter("number", number));
+                    new ValidationParameter("areaTypeTitle", areaType.getTitle()),
+                    new ValidationParameter("areaNumber", number));
         }
     }
     
@@ -508,9 +510,9 @@ public class AreaServiceHelper {
                 if (current.getEndDate() == null
                         || next.getStartDate().minusDays(1).isBefore(current.getEndDate())) {
                     validation.error(AreaErrorReason.MAIN_EMPLOYEE_DATE_OVERLAP,
-                            new ValidationParameter("JobInfoId",
+                            new ValidationParameter("JobInfoId1",
                                     current.getMedicalEmployeeJobId()),
-                            new ValidationParameter("JobInfoId",
+                            new ValidationParameter("JobInfoId2",
                                     next.getMedicalEmployeeJobId()));
                 }
             }
@@ -717,13 +719,13 @@ public class AreaServiceHelper {
 
     public void checkAreaTypeIsPrimary(AreaType areaType, Validation validation) {
         if (!isAreaTypePrimary(areaType)) {
-            validation.error(AreaErrorReason.AREA_TYPE_IS_NOT_PRIMARY, new ValidationParameter("areaType", areaType.getTitle()));
+            validation.error(AreaErrorReason.AREA_TYPE_IS_NOT_PRIMARY, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
         }
     }
 
     public void checkAreaTypeIsDependent(AreaType areaType, Validation validation) {
         if (!isAreaTypeDependent(areaType)) {
-            validation.error(AreaErrorReason.AREA_TYPE_IS_NOT_DEPENDENT, new ValidationParameter("areaType", areaType.getTitle()));
+            validation.error(AreaErrorReason.AREA_TYPE_IS_NOT_DEPENDENT, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
         }
     }
 
@@ -779,7 +781,7 @@ public class AreaServiceHelper {
         areaTypes.forEach(a -> {
             if (availableAreaTypes.contains(a)) {
                 validation.error(AreaErrorReason.AREA_TYPE_ALREADY_EXISTS,
-                        new ValidationParameter("areaType", a.getTitle()));
+                        new ValidationParameter("areaTypeTitle", a.getTitle()));
             }
         });
     }
@@ -793,7 +795,7 @@ public class AreaServiceHelper {
         areaTypes.forEach(a -> {
             if (availableAreaTypes.contains(a)) {
                 validation.error(AreaErrorReason.AREA_TYPE_ALREADY_EXISTS,
-                        new ValidationParameter("areaType", a.getTitle()));
+                        new ValidationParameter("areaTypeTitle", a.getTitle()));
             }
         });
     }
@@ -809,7 +811,7 @@ public class AreaServiceHelper {
         areaTypeCodes.forEach(a -> {
             if (!availableAreaTypes.contains(a)) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_EXISTS_IN_MO,
-                        new ValidationParameter("areaType", areaTypesCRUDRepository.findById(a).map(AreaType::getTitle).orElse(String.valueOf(a))));
+                        new ValidationParameter("areaTypeTitle", areaTypesCRUDRepository.findById(a).map(AreaType::getTitle).orElse(String.valueOf(a))));
             }
         });
         return moAvailableAreaTypes.stream()
@@ -942,8 +944,8 @@ public class AreaServiceHelper {
         if (attachByMedicalReason != null && areaType.getAttachByMedicalReason() != null &&
                 !Objects.equals(attachByMedicalReason, areaType.getAttachByMedicalReason())) {
             validation.error(AreaErrorReason.ATTACH_BY_MEDICAL_REASON_INCORRECT,
-                    new ValidationParameter("attachByMedicalReason", attachByMedicalReason),
-                    new ValidationParameter("attachByMedicalReason", areaType.getAttachByMedicalReason()));
+                    new ValidationParameter("attachByMedicalReason1", attachByMedicalReason),
+                    new ValidationParameter("attachByMedicalReason2", areaType.getAttachByMedicalReason()));
         }
     }
 

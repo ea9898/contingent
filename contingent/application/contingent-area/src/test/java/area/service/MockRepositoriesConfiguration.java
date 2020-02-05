@@ -1,6 +1,7 @@
 package area.service;
 
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
+import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopMsgCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopMsgParamCRUDRepository;
@@ -144,6 +145,9 @@ public class MockRepositoriesConfiguration {
 
     @MockBean
     private SysopMsgParamCRUDRepository sysopMsgParamCRUDRepository;
+
+    @MockBean
+    private SpecializationCRUDRepository specializationCRUDRepository;
 
     @MockBean
     private EntityManager entityManager;
