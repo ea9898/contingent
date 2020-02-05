@@ -6,7 +6,8 @@ import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.area.entity.sysop.Sysop;
+import moscow.ptnl.contingent.repository.SysopCRUDRepository;
+import moscow.ptnl.contingent.sysop.entity.Sysop;
 import moscow.ptnl.contingent.area.AreaErrorReason;
 import moscow.ptnl.contingent.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.model.sysop.SysopMethodType;
@@ -23,7 +24,6 @@ import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -410,7 +410,7 @@ public class Algorithms {
 
     //Регистрация асинхронной операции (А_УУ_9)
     //Делаем в новой транзакции, чтобы закомитить до вызова асинхронного метода,
-    // иначе иногда получали EntityNotFoundException: Unable to find moscow.ptnl.contingent.area.entity.sysop.Sysop
+    // иначе иногда получали EntityNotFoundException: Unable to find Sysop
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public long sysOperationRegistration(SysopMethodType methodType) {
         Sysop sysop = new Sysop(0, false);

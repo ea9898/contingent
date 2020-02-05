@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.area.entity.sysop.SysopMsgParam;
+import moscow.ptnl.contingent.sysop.entity.SysopMsgParam;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

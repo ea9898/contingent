@@ -71,7 +71,7 @@ public class WebServiceConfiguration {
         endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/attachment/" + pathPart, "AttachmentService"));
         String wsdlLocation = "classpath:META-INF/wsdl/contingent2/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "emias.contingent2.attachment." + (version == null ? "v1" : version) + ".wsdl";
         endpoint.setWsdlLocation(wsdlLocation);
-        endpoint.setAddress("/" + pathPart + "AttachmentService");
+        endpoint.setAddress("/" + pathPart + "attachmentService");
         endpoint.publish();
 
     	endpoint.getInInterceptors().add(soapVersionInterceptor);

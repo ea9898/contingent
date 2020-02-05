@@ -22,6 +22,9 @@
         <module>contingent-nsi-infrastructure</module>
         <module>contingent-attachment-application</module>
         <module>contingent-attachment-domain</module>
+        <module>contingent-sysop-application</module>
+        <module>contingent-sysop-domain</module>
+        <module>contingent-sysop-infrastructure</module>
     </modules>
 
     <properties>

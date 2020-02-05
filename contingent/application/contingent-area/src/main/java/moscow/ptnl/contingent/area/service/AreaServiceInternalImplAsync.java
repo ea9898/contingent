@@ -8,17 +8,17 @@ package moscow.ptnl.contingent.area.service;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.area.entity.sysop.SysopMsg;
-import moscow.ptnl.contingent.area.entity.sysop.SysopMsgParam;
-import moscow.ptnl.contingent.area.error.SysopErrorReason;
+
+import moscow.ptnl.contingent.repository.SysopCRUDRepository;
+import moscow.ptnl.contingent.repository.SysopMsgCRUDRepository;
+import moscow.ptnl.contingent.repository.SysopMsgParamCRUDRepository;
+import moscow.ptnl.contingent.sysop.SysopErrorReason;
+import moscow.ptnl.contingent.sysop.entity.SysopMsg;
+import moscow.ptnl.contingent.sysop.entity.SysopMsgParam;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.ValidationMessage;
 import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
-import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopMsgCRUDRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopMsgParamCRUDRepository;
 import moscow.ptnl.ws.security.RequestContext;
 import moscow.ptnl.ws.security.UserContextHolder;
 import org.slf4j.Logger;
@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
-import ru.mos.emias.errors.domain.ErrorMessageType;
 
 /**
  * Реализация методов сервиса {@see AreaServiceInternalImpl} 

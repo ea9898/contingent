@@ -5,7 +5,6 @@ import java.util.Arrays;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
 
-import moscow.ptnl.contingent.area.ws.sysop.SysopWebService;
 import moscow.ptnl.contingent.area.ws.v1.AreaCompositeServiceImpl;
 import moscow.ptnl.metrics.MetricsInterceptorService;
 import moscow.ptnl.soap.log.SoapLogInterceptorService;
@@ -22,7 +21,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.scheduling.annotation.EnableAsync;
-import ru.mos.emias.contingent2.sysop.v1.SysopPT;
 
 /**
  * Конфигурационный файл для создания Aoache CXF SOAP-сервисов.
@@ -81,24 +79,12 @@ public class WebServiceConfiguration {
         EndpointImpl endpoint = new EndpointImpl(cxfBus, areaCompositService);
         endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/composite/v1/", "AreaCompositeService"));
         endpoint.setWsdlLocation("classpath:META-INF/wsdl/composite/emias.contingent2.composite.v1.wsdl");
-        endpoint.setAddress("/composite/v1/AreaCompositeService");
+        endpoint.setAddress("/composite/v1/areaCompositeService");
         endpoint.publish();
         endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
         metricsInterceptorService.setupInterceptors(endpoint);
         soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestId);
-        return endpoint;
-    }
-
-    @Bean
-    public Endpoint SysopService(@Qualifier(SysopWebService.SERVICE_NAME) SysopPT sysopService, SpringBus cxfBus) {
-        EndpointImpl endpoint = new EndpointImpl(cxfBus, sysopService);
-        endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/sysop/v1/", "SysopService"));
-        endpoint.setWsdlLocation("classpath:META-INF/wsdl/sysop/emias.contingent2.sysop.v1.wsdl");
-        endpoint.setAddress("v1/SysopService");
-        endpoint.publish();
-        endpoint.getInInterceptors().add(soapVersionInterceptor);
-        endpoint.getInInterceptors().add(credentialsValidator());
         return endpoint;
     }
 
@@ -114,7 +100,7 @@ public class WebServiceConfiguration {
         endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/" + pathPart, "AreaService"));
         String wsdlLocation = "classpath:META-INF/wsdl/contingent2/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "emias.contingent2." + (version == null ? "v1" : version) + ".wsdl";
         endpoint.setWsdlLocation(wsdlLocation);
-        endpoint.setAddress("/" + pathPart + "AreaService");
+        endpoint.setAddress("/" + pathPart + "areaService");
         endpoint.publish();
 
     	endpoint.getInInterceptors().add(soapVersionInterceptor);

@@ -1,14 +1,4 @@
 {
-    "SYSOP":
-        {
-            "enabled":true,
-            "authMethods":{
-                "getOperationStatus":{
-                    "enabled":true,
-                     "permissions":[320100]
-                }
-            }
-        },
     "V1":
 	{
             "enabled":true,

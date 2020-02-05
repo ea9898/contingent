@@ -1,6 +1,9 @@
 package area.service;
 
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
+import moscow.ptnl.contingent.repository.SysopCRUDRepository;
+import moscow.ptnl.contingent.repository.SysopMsgCRUDRepository;
+import moscow.ptnl.contingent.repository.SysopMsgParamCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
@@ -31,9 +34,6 @@ import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 
-import moscow.ptnl.contingent.repository.sysop.SysopCRUDRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopMsgCRUDRepository;
-import moscow.ptnl.contingent.repository.sysop.SysopMsgParamCRUDRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 

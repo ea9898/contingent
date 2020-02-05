@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.area.entity.sysop.SysopMsg;
+import moscow.ptnl.contingent.sysop.entity.SysopMsg;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

@@ -36,7 +36,17 @@
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>sysop-domain</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>nsi-infrastructure</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>sysop-infrastructure</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>

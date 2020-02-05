@@ -30,6 +30,11 @@
             <version>${version}</version>
         </dependency>
         <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>sysop-domain</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${api.slf4j}</version>

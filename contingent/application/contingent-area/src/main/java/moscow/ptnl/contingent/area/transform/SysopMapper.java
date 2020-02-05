@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.area.entity.sysop.Sysop;
+import moscow.ptnl.contingent.sysop.entity.Sysop;
 import org.mapstruct.Named;
 import ru.mos.emias.contingent2.sysop.types.OperationCompletenessPercentage;
 import ru.mos.emias.contingent2.sysop.types.OperationExecutionStatus;

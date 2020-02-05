@@ -343,6 +343,11 @@
             <version>${version}</version>
         </dependency>
         <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>sysop-infrastructure</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
             <groupId>ru.mos.emias.errors</groupId>
             <artifactId>emias-errors</artifactId>
             <version>${emias.errors.version}</version>

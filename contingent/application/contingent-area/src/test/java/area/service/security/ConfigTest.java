@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import moscow.ptnl.contingent.area.ws.sysop.SysopWebService;
 import moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl;
 import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
 import moscow.ptnl.contingent.domain.security.setting.AuthMethod;
@@ -38,8 +37,7 @@ public class ConfigTest {
     
     private String CONFIG;
     private final Class<?>[] SERVICES = new Class<?>[]{
-        AreaServiceImpl.class,
-        SysopWebService.class
+        AreaServiceImpl.class
     };
     
     @BeforeEach
