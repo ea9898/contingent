@@ -14,5 +14,5 @@ public interface AddressesRepository {
 	List<Addresses> findActualAddresses(List<Long> nsiGlobalIds);
 	Set<Addresses> findActualAddresses(String streetCode, String planCode,
 									   String placeCode, String cityCode, String areaCode, List<String> areaOmkTeCodes,
-									   List<String> regionTeCodes, boolean skipLevelFilter);
+									   List<String> regionTeCodes, String aoLevel);
 }

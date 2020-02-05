@@ -368,39 +368,39 @@ public class Algorithms {
                 case STREET:
                     if (StringUtils.hasText(address.getStreetCode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(address.getStreetCode(), address.getPlanCode(),
-                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, STREET.equals(level)));
+                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, STREET.getLevel()));
                     }
                 case PLAN:
                     if (StringUtils.hasText(address.getPlanCode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null, address.getPlanCode(),
-                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, PLAN.equals(level)));
+                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, PLAN.getLevel()));
                     }
                 case PLACE:
                     if (StringUtils.hasText(address.getPlaceCode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null, null,
-                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, PLACE.equals(level)));
+                                address.getPlaceCode(), address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, PLACE.getLevel()));
                     }
                 case CITY:
                     if (StringUtils.hasText(address.getCityCode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null, null,
-                                null, address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, CITY.equals(level)));
+                                null, address.getCityCode(), address.getAreaCode(), areaOmkTeCodes, regionTeCodes, CITY.getLevel()));
                     }
                 case AREA:
                     if (StringUtils.hasText(address.getAreaCode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null,null,
-                                null, null, address.getAreaCode(), areaOmkTeCodes, regionTeCodes, AREA.equals(level)));
+                                null, null, address.getAreaCode(), areaOmkTeCodes, regionTeCodes, AREA.getLevel()));
                     }
                 case AREA_TE:
                     if (StringUtils.hasText(address.getAreaOMKTEcode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null,
-                                null, null, null, null, areaOmkTeCodes, null, AREA_TE.equals(level)));
+                                null, null, null, null, areaOmkTeCodes, null, AREA_TE.getLevel()));
                     } else {
                         throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
                     }
                 case REGION_TE:
                     if (StringUtils.hasText(address.getRegionOMKTEcode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null,
-                                null, null, null, null, null, regionTeCodes, REGION_TE.equals(level)));
+                                null, null, null, null, null, regionTeCodes, REGION_TE.getLevel()));
                     }
 
             }
