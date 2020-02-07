@@ -41,4 +41,38 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-586-1" author="ddryuchin" labels="1.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="ADDRESSES" columnName="AREA_TE_ID"/>
+                <columnExists tableName="ADDRESSES" columnName="AREA_ID"/>
+                <columnExists tableName="ADDRESSES" columnName="CITY_ID"/>
+                <columnExists tableName="ADDRESSES" columnName="PLACE_ID"/>
+                <columnExists tableName="ADDRESSES" columnName="PLAN_ID"/>
+                <columnExists tableName="ADDRESSES" columnName="STREET_ID"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ADDRESSES">
+            <column name="AREA_TE_ID" type="BIGINT" remarks="ИД района в округе" />
+            <column name="AREA_ID" type="BIGINT" remarks="global_id района в регионе" />
+            <column name="CITY_ID" type="BIGINT" remarks="global_id города" />
+            <column name="PLACE_ID" type="BIGINT" remarks="global_id населенного пункта" />
+            <column name="PLAN_ID" type="BIGINT" remarks="global_id элемента планировочной структуры" />
+            <column name="STREET_ID" type="BIGINT" remarks="global_id улицы" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TE_ID"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_ID"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITY_ID"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACE_ID"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLAN_ID"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_ID"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-586-2" author="ddryuchin" labels="1.3.0.0">
+        <setColumnRemarks columnName="AREACODE_OMK_TE" remarks="Код района в округе ОМК ТЕ" tableName="ADDRESSES"/>
+        <setColumnRemarks columnName="AREACODE" remarks="Код района в регионе" tableName="ADDRESSES"/>
+    </changeSet>
+
 </databaseChangeLog>
