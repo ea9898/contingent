@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -174,6 +175,9 @@ public class NsiAddressFormingElement implements Serializable {
 
     @Column(name = "STREET_ID")
     private Long streetId;
+
+    @Column(name = "UPDATE_DATE")
+    private LocalDateTime updateDate;
 
     public NsiAddressFormingElement() {
         super();
@@ -523,6 +527,14 @@ public class NsiAddressFormingElement implements Serializable {
 
     public void setStreetId(Long streetId) {
         this.streetId = streetId;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 
     @Override
