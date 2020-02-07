@@ -188,6 +188,24 @@ public class Addresses implements Serializable {
     @Column(name = "STREET_BTI_CODE")
     private String streetBtiCode;
 
+    @Column(name = "AREA_TE_ID")
+    private Long areaTeId;
+
+    @Column(name = "AREA_ID")
+    private Long areaId;
+
+    @Column(name = "CITY_ID")
+    private Long cityId;
+
+    @Column(name = "PLACE_ID")
+    private Long placeId;
+
+    @Column(name = "PLAN_ID")
+    private Long planId;
+
+    @Column(name = "STREET_ID")
+    private Long streetId;
+
     @Size(max = 256)
     @Column(name = "L1_TYPE")
     private String l1Type;
@@ -662,6 +680,53 @@ public class Addresses implements Serializable {
 
     public void setRegionTypename(String regionTypename) { this.regionTypename = regionTypename; }
 
+    public Long getAreaTeId() {
+        return areaTeId;
+    }
+
+    public void setAreaTeId(Long areaTeId) {
+        this.areaTeId = areaTeId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public Long getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(Long placeId) {
+        this.placeId = placeId;
+    }
+
+    public Long getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(Long planId) {
+        this.planId = planId;
+    }
+
+    public Long getStreetId() {
+        return streetId;
+    }
+
+    public void setStreetId(Long streetId) {
+        this.streetId = streetId;
+    }
 
     @Override
     public boolean equals(Object o) {
