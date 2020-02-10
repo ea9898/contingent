@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.entity.settings;
+package moscow.ptnl.contingent.domain.settings;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,7 +10,7 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import moscow.ptnl.contingent.area.entity.settings.converter.SettingValueTypeConverter;
+import moscow.ptnl.contingent.domain.converter.SettingValueTypeConverter;
 
 @Entity
 @Table(name = "AD_CONFIG")

@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.service.setting;
+package moscow.ptnl.contingent.infrastructure.service.setting;
 
 public interface SettingService {
     
@@ -12,7 +12,11 @@ public interface SettingService {
     String TOPICS_CONSUMERS_RUN_MODE = "topics.consumers.run.mode";
     /** Настройки ограничения доступа к методам web-сервиса. */
     String SERVICES_SECURITY_SETTINGS = "services.security.settings";
-    
+    /** Максимально допустимое количество адресных объектов для разового обновления из АР СУ НСИ */
+    String UPDATE_ADDRESS_BY_GLOBAL_ID_MAXCOUNT = "updateAddressByGlobalId.maxcount";
+    /** Максимально допустимое количество адресных объектов для разового обновления из АР СУ НСИ */
+    String UPDATE_ADDRESS_BY_GLOBAL_ID_THREADS = "updateAddressByGlobalId.threads";
+
     /**
      * Свойство извлекается из кэша.
      * 

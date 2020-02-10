@@ -6,7 +6,7 @@
 package moscow.ptnl.contingent.repository.settings;
 
 import java.util.Optional;
-import moscow.ptnl.contingent.area.entity.settings.Setting;
+import moscow.ptnl.contingent.domain.settings.Setting;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;

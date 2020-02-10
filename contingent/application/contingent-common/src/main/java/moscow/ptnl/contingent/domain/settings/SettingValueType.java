@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moscow.ptnl.contingent.area.entity.settings;
+package moscow.ptnl.contingent.domain.settings;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;

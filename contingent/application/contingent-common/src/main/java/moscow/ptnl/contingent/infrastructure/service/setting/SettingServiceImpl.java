@@ -1,6 +1,6 @@
-package moscow.ptnl.contingent.service.setting;
+package moscow.ptnl.contingent.infrastructure.service.setting;
 
-import moscow.ptnl.contingent.area.entity.settings.Setting;
+import moscow.ptnl.contingent.domain.settings.Setting;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
 import moscow.ptnl.contingent.repository.settings.SettingsRepository;

@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import moscow.ptnl.contingent.service.setting.SettingService;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
