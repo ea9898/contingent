@@ -18,11 +18,6 @@ public class AddressFormingElementRepositoryImpl extends BaseRepository implemen
     @Autowired
     AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
 
-    private Specification<NsiAddressFormingElement> searchByIdSpec(long afeId) {
-        return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(NsiAddressFormingElement_.id.getName()), afeId);
-    }
-
     private Specification<NsiAddressFormingElement> searchByGlobalIdSpec(long globalId) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get(NsiAddressFormingElement_.globalId.getName()), globalId);
@@ -36,11 +31,6 @@ public class AddressFormingElementRepositoryImpl extends BaseRepository implemen
     @Override
     public List<NsiAddressFormingElement> getAddressFormingElements(long globalId, int level) {
         return addressFormingElementCRUDRepository.findAll(searchByGlobalIdSpec(globalId).and(searchByLevelSpec(level)));
-    }
-
-    @Override
-    public List<NsiAddressFormingElement> findAfeByIdAndLevel(long afeId, int level) {
-        return addressFormingElementCRUDRepository.findAll(searchByIdSpec(afeId).and(searchByLevelSpec(level)));
     }
 
     @Override
