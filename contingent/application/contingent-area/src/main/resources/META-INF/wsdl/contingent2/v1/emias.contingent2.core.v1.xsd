@@ -306,6 +306,9 @@
 
     <xs:complexType name="AreaAddress">
         <xs:sequence>
+            <xs:element name="moId" type="xs:long" />
+            <xs:element name="muId" type="xs:long" minOccurs="0" />
+            <xs:element name="areaId" type="xs:long" />
             <xs:element name="areaAddressId" type="xs:long" />
             <xs:element name="address" type="address:AddressRegistryBaseType" />
         </xs:sequence>

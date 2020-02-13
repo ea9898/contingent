@@ -68,7 +68,8 @@ public enum AreaErrorReason implements ErrorReason {
     AREA_NOT_DEPEND_ON_AREA_TYPE("UE085", "Участок с ИД %s не зависит от первичного типа участка %s"),
     NO_MU_ID_PARAMETER("UE086", "Не указан филиал МО"),
     AREA_ALREADY_DEPENDS_ON_AREA_TYPE("UE087", "Участок с ИД %s уже зависит от первичного типа участка %s"),
-    SEARCH_AREA_INACCURATE_ADDRESS_ERROR("UE088", "Поиск участков по неточному совпадению может быть выполнен только для одного адреса")
+    SEARCH_AREA_INACCURATE_ADDRESS_ERROR("UE088", "Поиск участков по неточному совпадению может быть выполнен только для одного адреса"),
+    AREAS_NOT_IN_MO("UE089", "Участки с ИД %s не входят в состав МО с ИД %s")
     ;
 
     private final String description;

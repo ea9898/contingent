@@ -14,6 +14,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImplAsync;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelper;
+import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
 import moscow.ptnl.contingent.service.setting.SettingService;
 import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
@@ -160,4 +161,7 @@ public class MockConfiguration {
 
     @MockBean
     private TransactionRunService transactionRunService;
+
+    @MockBean
+    private AreaAddressMapper areaAddressMapper;
 }

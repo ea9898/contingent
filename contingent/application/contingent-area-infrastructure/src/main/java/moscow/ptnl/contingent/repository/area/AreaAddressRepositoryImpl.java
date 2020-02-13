@@ -70,14 +70,17 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     }
 
     @Override
-    public Page<AreaAddress> findAreaAddressesByAreaId(long areaId, Pageable paging) {
+    public Page<AreaAddress> findAreaAddressesByAreaId(Long moId, List<Long> areaIds, Pageable paging) {
         Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get(AreaAddress_.area.getName()).get(Area_.id.getName()), areaId);
+                criteriaBuilder.and(
+                        root.get(AreaAddress_.area.getName()).get(Area_.moId.getName()).in(moId),
+                        root.get(AreaAddress_.area.getName()).get(Area_.id.getName()).in(areaIds)
+                );
         specification = specification.and(activeAreaAddressesSpec());
 
 
         if (paging == null) {
-            return new PageImpl<>(areaAddressPagingAndSortingRepository.findAll(specification, Sort.by(AreaAddress_.id.getName()).ascending()));
+            return new PageImpl<>(areaAddressPagingAndSortingRepository.findAll(specification, Sort.by(AreaAddress_.area.getName(), AreaAddress_.id.getName()).ascending()));
         }
         return areaAddressPagingAndSortingRepository.findAll(specification,
                 PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(AreaAddress_.id.getName()).ascending()));

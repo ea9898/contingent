@@ -416,8 +416,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             GetAreaAddressResponse response = new GetAreaAddressResponse();
             
-            Page<moscow.ptnl.contingent.area.model.area.AddressArea> areaAddresses = areaService.getAreaAddress(body.getAreaId(),
-                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
+            Page<moscow.ptnl.contingent.area.model.area.AddressArea> areaAddresses = areaService.getAreaAddress(body.getMoId(),
+                    body.getAreas().getAreaIds(), pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             response.getAreaAddresses().addAll(
                 areaAddresses.getContent().stream()
                 .map(areaAddressMapper::entityToDtoTransform)

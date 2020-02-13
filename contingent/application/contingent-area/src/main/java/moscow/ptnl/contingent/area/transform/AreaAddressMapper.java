@@ -15,8 +15,21 @@ public class AreaAddressMapper implements Transform<AreaAddress, moscow.ptnl.con
     @Override
     public AreaAddress entityToDtoTransform(moscow.ptnl.contingent.area.model.area.AddressArea entityObject) {
         AreaAddress areaAddress = new AreaAddress();
+        areaAddress.setMoId(entityObject.getMoId());
+        areaAddress.setMuId(entityObject.getMuId());
+        areaAddress.setAreaId(entityObject.getAreaId());
         areaAddress.setAreaAddressId(entityObject.getAreaAddressId());
         areaAddress.setAddress(addressMapper.entityToDtoTransform(entityObject.getAddresses()));
+        return areaAddress;
+    }
+
+    public moscow.ptnl.contingent.area.model.area.AddressArea entityToModelTransform(moscow.ptnl.contingent.area.entity.area.AreaAddress entityObject) {
+        moscow.ptnl.contingent.area.model.area.AddressArea areaAddress = new moscow.ptnl.contingent.area.model.area.AddressArea();
+        areaAddress.setMoId(entityObject.getArea().getMoId());
+        areaAddress.setMuId(entityObject.getArea().getMuId());
+        areaAddress.setAreaId(entityObject.getArea().getId());
+        areaAddress.setAreaAddressId(entityObject.getId());
+        areaAddress.setAddresses(entityObject.getAddress());
         return areaAddress;
     }
 

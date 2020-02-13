@@ -61,7 +61,7 @@ public interface AreaServiceInternal {
 
     Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
 
-    Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(long areaId, PageRequest paging) throws ContingentException;
+    Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(Long moId, List<Long> areaIds, PageRequest paging) throws ContingentException;
 
     void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException;
 

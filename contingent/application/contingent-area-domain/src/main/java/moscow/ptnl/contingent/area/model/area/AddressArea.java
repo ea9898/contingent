@@ -9,9 +9,39 @@ import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
  */
 public class AddressArea {
 
+    private Long moId;
+
+    private Long muId;
+
+    private Long areaId;
+
     private Long areaAddressId;
 
     private Addresses addresses;
+
+    public Long getMoId() {
+        return moId;
+    }
+
+    public void setMoId(Long moId) {
+        this.moId = moId;
+    }
+
+    public Long getMuId() {
+        return muId;
+    }
+
+    public void setMuId(Long muId) {
+        this.muId = muId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
 
     public Long getAreaAddressId() {
         return areaAddressId;

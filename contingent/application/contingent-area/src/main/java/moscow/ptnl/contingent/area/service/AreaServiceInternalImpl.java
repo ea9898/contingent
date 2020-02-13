@@ -18,6 +18,7 @@ import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.area.model.sysop.SysopMethodType;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AreaAddressClone;
+import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.util.Period;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
@@ -199,6 +200,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     @Autowired
     private AddressMapper addressMapper;
+
+    @Autowired
+    private AreaAddressMapper areaAddressMapper;
 
     @Autowired
     private AreaAddressClone areaAddressClone;
@@ -1088,29 +1092,38 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_15) Получение списка адресов участка обслуживания
     @Override
-    public Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(long areaId, PageRequest paging) throws ContingentException {
+    public Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(Long moId, List<Long> areaIds, PageRequest paging) throws ContingentException {
         Validation validation = new Validation();
 
-        // 1.
+        // 2.
         areaHelper.checkMaxPage(paging, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 2. 3.
-        Page<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(areaId, paging);
+        // 3.
+        List<Area> areas = areaCRUDRepository.findAllById(areaIds);
+        List<Long> areaIdsNotInMo = areas.stream().filter(area -> !area.getMoId().equals(moId))
+                .map(Area::getId).collect(Collectors.toList());
+        if (!areaIdsNotInMo.isEmpty())  {
+            validation.error(AreaErrorReason.AREAS_NOT_IN_MO,
+                    new ValidationParameter("areaIds", areaIdsNotInMo.stream().map(Object::toString)
+                            .collect(Collectors.joining(","))),
+                    new ValidationParameter("moId", moId));
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         // 4.
-        List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas = new ArrayList<>();
-        areaAddresses.forEach(addr -> {
-            moscow.ptnl.contingent.area.model.area.AddressArea addressArea = new AddressArea();
-            addressArea.setAreaAddressId(addr.getId());
-            addressArea.setAddresses(addr.getAddress());
-            addressAreas.add(addressArea);
-        });
+        Page<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(moId, areaIds, paging);
 
         // 5.
+        List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas =
+                areaAddresses.stream().map(areaAddressMapper::entityToModelTransform).collect(Collectors.toList());
+
+        // 6.
         return new PageImpl<>(new ArrayList<>(addressAreas),
                 areaAddresses.getPageable(), areaAddresses.getTotalElements());
     }
