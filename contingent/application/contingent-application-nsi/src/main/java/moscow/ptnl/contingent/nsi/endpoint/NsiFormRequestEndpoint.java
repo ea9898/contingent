@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -41,23 +40,24 @@ public class NsiFormRequestEndpoint {
     public void nsiFormRequestConsumer(Message<Object> msg) {
         LOG.info("{} сообщение: {}", NSI_FORM_REQUEST_CHANNEL_NAME, msg);
         Long globalId = (Long) msg.getPayload();
-//        Long globalId = (Long) msg.getHeaders().get(NsiFormConstraint.GLOBAL_ID_HEADER);
         Long formId = (Long) msg.getHeaders().get(NsiFormConstraint.FORM_ID_HEADER);
         NsiFormTablesEnum entityType = (NsiFormTablesEnum) msg.getHeaders().get(NsiFormConstraint.ENTITY_TYPE_HEADER);
         UserContext context = (UserContext) msg.getHeaders().get(NsiFormConstraint.USER_CONTEXT);
+        Document response;
 
         try {
-            Document response = nsiFormServiceHelper.searchByGlobalId(formId, globalId, context);
-            //Отправляем дальше на парсинг и сохранение в БД
-            saveChannel.send(MessageBuilder
-                    .withPayload(response)
-                    .setHeader(NsiFormConstraint.FORM_ID_HEADER, formId)
-                    .setHeader(NsiFormConstraint.GLOBAL_ID_HEADER, globalId)
-                    .setHeader(NsiFormConstraint.ENTITY_TYPE_HEADER, entityType)
-                    .build());
+            response = nsiFormServiceHelper.searchByGlobalId(formId, globalId, context);
         }
         catch (Throwable th) {
             LOG.error("Ошибка при вызове НСИ метода searchByGlobalId", th);
+            return;
         }
+        //Отправляем дальше на парсинг и сохранение в БД
+        saveChannel.send(MessageBuilder
+                .withPayload(response)
+                .setHeader(NsiFormConstraint.FORM_ID_HEADER, formId)
+                .setHeader(NsiFormConstraint.GLOBAL_ID_HEADER, globalId)
+                .setHeader(NsiFormConstraint.ENTITY_TYPE_HEADER, entityType)
+                .build());
     }
 }

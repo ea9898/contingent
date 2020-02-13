@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageChannel;
@@ -26,9 +27,6 @@ public class EventChannelsConfiguration {
     
     private static final Logger LOG = LoggerFactory.getLogger(EventChannelsConfiguration.class);
 
-    @Autowired
-    private SettingService settingService;
-      
     /**
      * Канал для отправки сообщений в НСИ.
      *
@@ -47,8 +45,7 @@ public class EventChannelsConfiguration {
      */
     @Bean(name = NSI_FORM_REQUEST_CHANNEL_NAME)
     public MessageChannel createNsiFormRequestChannel() {
-        Long size = settingService.getSettingProperty(SettingService.UPDATE_ADDRESS_BY_GLOBAL_ID_THREADS);
-        return new QueueChannel(size.intValue());
+        return new DirectChannel();
     }
 
     /**
@@ -58,7 +55,6 @@ public class EventChannelsConfiguration {
      */
     @Bean(name = NSI_FORM_CHANNEL_NAME)
     public MessageChannel createNsiFormChannel() {
-        Long size = settingService.getSettingProperty(SettingService.UPDATE_ADDRESS_BY_GLOBAL_ID_THREADS);
-        return new QueueChannel(size.intValue());
+        return new DirectChannel();
     }
 }

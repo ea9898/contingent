@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.nsi.configuration;
 
 import moscow.ptnl.contingent.nsi.ws.NsiAdminWebServiceImpl;
+import moscow.ptnl.contingent.nsi.ws.security.UserContextInterceptor;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import javax.xml.ws.Endpoint;
@@ -58,6 +59,7 @@ public class WebServiceConfiguration  {
         endpoint.setWsdlLocation("classpath:META-INF/wsdl/pushaccepterProduct.adminService.v1.wsdl");
         endpoint.setAddress("/adminService");
         endpoint.publish(); // http://localhost:8080/nsi/adminService?wsdl
+        endpoint.getInInterceptors().add(new UserContextInterceptor());
         return endpoint;
     }
 }

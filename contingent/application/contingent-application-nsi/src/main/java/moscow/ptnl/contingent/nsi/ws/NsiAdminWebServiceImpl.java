@@ -2,7 +2,6 @@ package moscow.ptnl.contingent.nsi.ws;
 
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
-import moscow.ptnl.contingent.nsi.domain.NsiFormConstraint;
 import moscow.ptnl.contingent.nsi.domain.NsiFormTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
@@ -11,7 +10,6 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
-import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
@@ -27,6 +25,7 @@ import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.PolicyTypeCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomCRUDRepository;
+import moscow.ptnl.contingent.nsi.service.NsiAdminService;
 import moscow.ptnl.contingent.nsi.service.NsiFormServiceHelper;
 import moscow.ptnl.contingent.nsi.transform.NsiFormResponseMapper;
 import moscow.ptnl.contingent.nsi.transform.SoapExceptionMapper;
@@ -40,20 +39,14 @@ import moscow.ptnl.contingent.nsi.repository.GenderCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
-import moscow.ptnl.contingent.nsi.ws.security.UserContextHolder;
 import moscow.ptnl.contingent.repository.CommonRepository;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.integration.dispatcher.MessageDispatcher;
-import org.springframework.integration.support.MessageBuilder;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.Document;
 import ru.mos.emias.nsiproduct.core.v1.PagingOptions;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsRequest;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsResponse;
@@ -67,16 +60,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.UpdateAddressByGlobalIdRequest;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.UpdateAddressByGlobalIdResponse;
 
-import static moscow.ptnl.contingent.nsi.configuration.Constraint.NSI_FORM_CHANNEL_NAME;
-import static moscow.ptnl.contingent.nsi.configuration.Constraint.NSI_FORM_REQUEST_CHANNEL_NAME;
-
 
 @Service(NsiAdminWebServiceImpl.SERVICE_NAME)
-@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @SchemaValidation(type = SchemaValidation.SchemaValidationType.BOTH)
 public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
@@ -147,10 +137,10 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     private NsiFormResponseMapper nsiFormResponseMapper;
 
     @Autowired
-    @Qualifier(NSI_FORM_REQUEST_CHANNEL_NAME)
-    private MessageChannel nsiRequestChannel;
+    private NsiAdminService nsiAdminService;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public SyncNsiResponse syncNsi(SyncNsiRequest body) throws Fault {
         Validation validation = new Validation();
 
@@ -255,6 +245,9 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
     @Override
     public UpdateAddressByGlobalIdResponse updateAddressByGlobalId(UpdateAddressByGlobalIdRequest body) throws Fault {
+        if (body.getArGlobalId().isEmpty()) {
+            return new UpdateAddressByGlobalIdResponse();
+        }
         Validation validation = new Validation();
 
         try {
@@ -267,49 +260,17 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
             if (entityType == null) {
                 validation.error(NsiEhdErrorReason.INCORRECT_TABLE_NAME);
+            }
+            if (!validation.isSuccess()) {
                 throw SoapExceptionMapper.map(new ContingentException(validation));
             }
-            body.getArGlobalId().forEach(id -> nsiRequestChannel.send(MessageBuilder
-                    .withPayload(id)
-                    .setHeader(NsiFormConstraint.FORM_ID_HEADER, body.getFormId())
-//                    .setHeader(NsiFormConstraint.GLOBAL_ID_HEADER, id)
-                    .setHeader(NsiFormConstraint.ENTITY_TYPE_HEADER, entityType)
-                    .setHeader(NsiFormConstraint.USER_CONTEXT, UserContextHolder.getUserContext())
-                    .build()));
-//            body.getArGlobalId().forEach(id -> {
-//                Object entity = null;
-//                Document response;
-//
-//                try {
-//                    response = nsiFormServiceHelper.searchByGlobalId(body.getFormId(), id, UserContextHolder.getUserContext());
-//                }
-//                catch (Throwable th) {
-//                    LOG.error("Ошибка при вызове НСИ метода searchByGlobalId", th);
-//                    return;
-//                }
-//                if (NsiFormTablesEnum.ADDRESSES.equals(entityType)) {
-//                    entity = null; //TODO fix
-////                    entity = entity == null ? new Addresses() : entity;
-//                }
-//                else if (NsiFormTablesEnum.NSI_ADDRESS_FORMING_ELEMENT.equals(entityType)) {
-//                    entity = addressFormingElementRepository.findAfeByGlobalId(id);
-//                    entity = entity == null ? addressFormingElementCRUDRepository.save(new NsiAddressFormingElement()) : entity;
-//                    ((NsiAddressFormingElement) entity).setUpdateDate(LocalDateTime.now());
-//                }
-//                try {
-//                    nsiFormResponseMapper.transformAndMergeEntity(response, entity);
-//                }
-//                catch (Exception ex) {
-//                    throw new RuntimeException(ex);
-////                    LOG.error("Ошибка мапинга НСИ адреса на сущность {}", NsiAddressFormingElement.class.getSimpleName(), th);
-////                    return;
-//                }
-//            });
+            nsiAdminService.updateAddressesByGlobalId(body.getFormId(), body.getArGlobalId(), entityType);
+        }
+        catch (Fault e) {
+            throw e;
         }
         catch (Exception e) {
             validation.error(NsiEhdErrorReason.UNEXPECTED_ERROR, new ValidationParameter("message", e.getMessage()));
-        }
-        if (!validation.isSuccess()) {
             throw SoapExceptionMapper.map(new ContingentException(validation));
         }
         return new UpdateAddressByGlobalIdResponse();
