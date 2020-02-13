@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -17,14 +18,11 @@ public class NsiAddressFormingElement implements Serializable {
     private static final long serialVersionUID = 5085904638016789913L;
 
     @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    private Long id;
-
-    @Column(name = "GLOBAL_ID")
+    @Column(name = "GLOBAL_ID", unique = true, nullable = false)
     private Long globalId;
 
     @Size(max = 2)
-    @Column(name = "AO_LEVEL")
+    @Column(name = "AOLEVEL")
     private String aoLevel;
 
     @Size(max = 11)
@@ -42,6 +40,7 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "REGION_NAME")
     private String regionName;
 
+    @Size(max = 1000)
     @Column(name = "REGION_TE_ID")
     private String regionTeId;
 
@@ -157,8 +156,9 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "ADDRESS", nullable = false)
     private String address;
 
+    @Size(max = 1000)
     @Column(name = "AREA_TE_ID")
-    private Long areaTeId;
+    private String areaTeId;
 
     @Column(name = "AREA_ID")
     private Long areaId;
@@ -175,11 +175,14 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "STREET_ID")
     private Long streetId;
 
+    @Column(name = "UPDATE_DATE")
+    private LocalDateTime updateDate;
+
     public NsiAddressFormingElement() {
         super();
     }
 
-    public NsiAddressFormingElement(Long id, Long globalId, String aoLevel, String codeGivz, String regionTeCode, String regionTeName,
+    public NsiAddressFormingElement(Long globalId, String aoLevel, String codeGivz, String regionTeCode, String regionTeName,
                                     String regionTeTypeName, String areaCodeOmkTe, String areaTeName, String areaTeTypeName,
                                     String areaCode, String areaBtiCode, String areaName, String areaTypeName,
                                     String cityCode, String cityBtiCode, String cityName, String cityTypeName,
@@ -187,7 +190,6 @@ public class NsiAddressFormingElement implements Serializable {
                                     String planCode, String planBtiCode, String planName, String planTypeName,
                                     String streetCode, String streetBtiCode, String streetName, String streetOmkUm,
                                     String streetTypeName, String address) {
-        this.id = id;
         this.globalId = globalId;
         this.aoLevel = aoLevel;
         this.codeGivz = codeGivz;
@@ -219,14 +221,6 @@ public class NsiAddressFormingElement implements Serializable {
         this.streetOmkUm = streetOmkUm;
         this.streetTypeName = streetTypeName;
         this.address = address;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getGlobalId() {
@@ -477,11 +471,11 @@ public class NsiAddressFormingElement implements Serializable {
         this.address = address;
     }
 
-    public Long getAreaTeId() {
+    public String getAreaTeId() {
         return areaTeId;
     }
 
-    public void setAreaTeId(Long areaTeId) {
+    public void setAreaTeId(String areaTeId) {
         this.areaTeId = areaTeId;
     }
 
@@ -525,16 +519,24 @@ public class NsiAddressFormingElement implements Serializable {
         this.streetId = streetId;
     }
 
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NsiAddressFormingElement that = (NsiAddressFormingElement) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(globalId, that.globalId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(globalId);
     }
 }

@@ -62,7 +62,7 @@ import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.service.setting.SettingService;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.util.Strings;
 import moscow.ptnl.ws.security.UserContextHolder;
 import org.slf4j.Logger;
@@ -92,7 +92,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsFirst;
-import moscow.ptnl.ws.security.RequestContext;
 
 @Service
 public class AreaServiceInternalImpl implements AreaServiceInternal {

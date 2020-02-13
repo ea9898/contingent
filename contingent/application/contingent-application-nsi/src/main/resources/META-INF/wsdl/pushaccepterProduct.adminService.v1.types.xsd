@@ -24,4 +24,41 @@
         <xs:complexType>
         </xs:complexType>
     </xs:element>
+
+    <xs:element name="updateAddressByGlobalIdRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="tableName" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Наименование таблицы. Возможные варианты:
+                            ADDRESSES
+                            NSI_ADDRESS_FORMING_ELEMENT
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="formId" type="xs:long">
+                    <xs:annotation>
+                        <xs:documentation>
+                            ИД формы, отдающей сведения АР (по умолчанию использовать 127)
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="arGlobalId" type="xs:long" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>
+                            globalId адреса из АР СУ НСИ
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="tns:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="updateAddressByGlobalIdResponse">
+        <xs:complexType>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

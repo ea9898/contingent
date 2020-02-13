@@ -27,11 +27,22 @@
     <wsdl:message name="syncNsiOutput">
         <wsdl:part name="body" element="ns1:syncNsiResponse"/>
     </wsdl:message>
+    <wsdl:message name="updateAddressByGlobalIdInput">
+        <wsdl:part name="body" element="ns1:updateAddressByGlobalIdRequest"/>
+    </wsdl:message>
+    <wsdl:message name="updateAddressByGlobalIdOutput">
+        <wsdl:part name="body" element="ns1:updateAddressByGlobalIdResponse"/>
+    </wsdl:message>
 
     <wsdl:portType name="adminServicePortType">
         <wsdl:operation name="syncNsi">
             <wsdl:input message="tns:syncNsiInput" name="syncNsiInput" />
             <wsdl:output message="tns:syncNsiOutput" name="syncNsiOutput" />
+            <wsdl:fault message="tns:fault" name="fault" />
+        </wsdl:operation>
+        <wsdl:operation name="updateAddressByGlobalId">
+            <wsdl:input message="tns:updateAddressByGlobalIdInput" name="updateAddressByGlobalIdInput" />
+            <wsdl:output message="tns:updateAddressByGlobalIdOutput" name="updateAddressByGlobalIdOutput" />
             <wsdl:fault message="tns:fault" name="fault" />
         </wsdl:operation>
     </wsdl:portType>
@@ -45,6 +56,20 @@
                 <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="syncNsiOutput">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="updateAddressByGlobalId">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="updateAddressByGlobalIdInput">
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="updateAddressByGlobalIdOutput">
                 <soap:body use="literal"/>
             </wsdl:output>
             <wsdl:fault name="fault">

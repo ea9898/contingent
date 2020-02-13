@@ -2,8 +2,12 @@ package moscow.ptnl.util;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.AbstractList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Objects;
+import java.util.RandomAccess;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,6 +18,9 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -66,5 +73,25 @@ public class XMLUtil {
         }
         return xgcal;
     }
-    
+
+    public static List<Node> asList(NodeList n) {
+        return n.getLength() == 0 ? Collections.emptyList(): new NodeListWrapper(n);
+    }
+
+    static final class NodeListWrapper extends AbstractList<Node> implements RandomAccess {
+
+        private final NodeList list;
+
+        NodeListWrapper(NodeList l) {
+            list=l;
+        }
+
+        public Node get(int index) {
+            return list.item(index);
+        }
+
+        public int size() {
+            return list.getLength();
+        }
+    }
 }

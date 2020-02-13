@@ -6,7 +6,7 @@
 package area.service.security;
 
 import moscow.ptnl.contingent.service.security.SecuritySettingService;
-import moscow.ptnl.contingent.service.setting.SettingService;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

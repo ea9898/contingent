@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moscow.ptnl.contingent.area.entity.settings.converter;
+package moscow.ptnl.contingent.domain.converter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import moscow.ptnl.contingent.area.entity.settings.SettingValueType;
+import moscow.ptnl.contingent.domain.settings.SettingValueType;
 
 /**
  *

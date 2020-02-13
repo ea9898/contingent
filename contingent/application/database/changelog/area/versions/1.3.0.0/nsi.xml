@@ -30,6 +30,83 @@
             <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="STREET_ID" />
         </rollback>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-592-2" author="sorlov" labels="1.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+            <not>
+                <columnExists tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="UPDATE_DATE" />
+            </not>
+        </preConditions>
+        <comment>Доработка таблицы NSI_ADDRESS_FORMING_ELEMENT</comment>
+        <addColumn tableName="NSI_ADDRESS_FORMING_ELEMENT">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="UPDATE_DATE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-593-3" author="sorlov" labels="1.3.0.0">
+        <preConditions>
+            <columnExists tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="AREA_TE_ID" />
+        </preConditions>
+        <modifyDataType tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="AREA_TE_ID" newDataType="VARCHAR2(1000)"/>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-593-4" author="sorlov" labels="1.3.0.0">
+        <preConditions>
+            <columnExists tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_TE_ID" />
+        </preConditions>
+        <modifyDataType tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_TE_ID" newDataType="VARCHAR2(1000)"/>
+        <rollback>
+        </rollback>
+    </changeSet>
+
     <!-- END NSI_ADDRESS_FORMING_ELEMENT -->
+
+    <changeSet id="CONTINGENT2-593-1" author="sorlov" labels="1.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'updateAddressByGlobalId.maxcount'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="updateAddressByGlobalId.maxcount"/>
+            <column name="type" value="1"/>
+            <column name="val" value="100"/>
+            <column name="description" value="Максимально допустимое количество адресных объектов для разового обновления из АР СУ НСИ"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='updateAddressByGlobalId.maxcount'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-593-2" author="sorlov" labels="1.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'updateAddressByGlobalId.threads'</sqlCheck>
+            </and>
+        </preConditions>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="updateAddressByGlobalId.threads"/>
+            <column name="type" value="1"/>
+            <column name="val" value="10"/>
+            <column name="description" value="Кол-во параллельных потоков для разового обновления из АР СУ НСИ"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='updateAddressByGlobalId.threads'</where>
+            </delete>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

@@ -10,8 +10,6 @@ public interface AddressFormingElementRepository {
 
 	List<NsiAddressFormingElement> getAddressFormingElements(long globalId, int level);
 
-	List<NsiAddressFormingElement> findAfeByIdAndLevel(long afeId, int level);
-
 	NsiAddressFormingElement findAfeByGlobalId(Long globalId);
 
 }

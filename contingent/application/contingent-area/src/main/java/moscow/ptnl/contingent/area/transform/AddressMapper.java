@@ -72,7 +72,16 @@ public abstract class AddressMapper {
             @Mapping(target = "l3Type", source = "building.construction.type.full"),
             @Mapping(target = "l3TypeShort", source = "building.construction.type.short"),
             @Mapping(target = "l3Value", source = "building.construction.name"),
-            @Mapping(target = "updateDate", expression = "java( java.time.LocalDateTime.now() )")
+            @Mapping(target = "updateDate", expression = "java( java.time.LocalDateTime.now() )"),
+
+            @Mapping(target = "areaTeId", source = "areaOMKTE.id"),
+            @Mapping(target = "areaId", source = "area.id"),
+            @Mapping(target = "cityId", source = "city.id"),
+            @Mapping(target = "placeId", source = "place.id"),
+            @Mapping(target = "planId", source = "plan.id"),
+            @Mapping(target = "streetId", source = "street.id"),
+
+            @Mapping(target = "createDate", expression = "java( java.time.LocalDateTime.now() )")
     })
     public abstract Addresses dtoToEntityTransform(AddressRegistryBaseType addressRegistry);
 
@@ -137,6 +146,13 @@ public abstract class AddressMapper {
             @Mapping(source = "l3Value", target = "building.construction.name"),
             @Mapping(source = "l3Type", target = "building.construction.type.full"),
             @Mapping(source = "l3TypeShort", target = "building.construction.type.short"),
+
+            @Mapping(source = "areaTeId", target = "areaOMKTE.id"),
+            @Mapping(source = "areaId", target = "area.id"),
+            @Mapping(source = "cityId", target = "city.id"),
+            @Mapping(source = "placeId", target = "place.id"),
+            @Mapping(source = "planId", target = "plan.id"),
+            @Mapping(source = "streetId", target = "street.id")
     })
     public abstract AddressRegistryBaseType entityToDtoTransform(Addresses address);
 

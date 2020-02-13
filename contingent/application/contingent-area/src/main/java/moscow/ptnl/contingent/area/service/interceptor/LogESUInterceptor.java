@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.service.interceptor;
 
-import moscow.ptnl.contingent.service.setting.SettingService;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
