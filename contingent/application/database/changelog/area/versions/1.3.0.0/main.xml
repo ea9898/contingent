@@ -75,4 +75,42 @@
         <setColumnRemarks columnName="AREACODE" remarks="Код района в регионе" tableName="ADDRESSES"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-586-3" author="sorlov" labels="1.3.0.0">
+        <preConditions>
+            <columnExists tableName="ADDRESSES" columnName="AREA_TE_ID" />
+        </preConditions>
+        <modifyDataType tableName="ADDRESSES" columnName="AREA_TE_ID" newDataType="VARCHAR2(1000)"/>
+        <rollback>
+            <modifyDataType tableName="ADDRESSES" columnName="AREA_TE_ID" newDataType="BIGINT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-586-4" author="sorlov" labels="1.3.0.0">
+        <preConditions>
+            <columnExists tableName="ADDRESSES" columnName="REGION_TE_ID" />
+        </preConditions>
+        <modifyDataType tableName="ADDRESSES" columnName="REGION_TE_ID" newDataType="VARCHAR2(1000)"/>
+        <rollback>
+            <modifyDataType tableName="ADDRESSES" columnName="REGION_TE_ID" newDataType="VARCHAR2(255)"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-586-5" author="sorlov" labels="1.3.0.0">
+        <preConditions>
+            <columnExists tableName="ADDRESSES" columnName="AREA_BTI_CODE" />
+        </preConditions>
+        <modifyDataType tableName="ADDRESSES" columnName="AREA_BTI_CODE" newDataType="VARCHAR2(255)"/>
+        <modifyDataType tableName="ADDRESSES" columnName="CITY_BTI_CODE" newDataType="VARCHAR2(255)"/>
+        <modifyDataType tableName="ADDRESSES" columnName="PLACE_BTI_CODE" newDataType="VARCHAR2(255)"/>
+        <modifyDataType tableName="ADDRESSES" columnName="PLAN_BTI_CODE" newDataType="VARCHAR2(255)"/>
+        <modifyDataType tableName="ADDRESSES" columnName="STREET_BTI_CODE" newDataType="VARCHAR2(255)"/>
+        <rollback>
+            <modifyDataType tableName="ADDRESSES" columnName="AREA_BTI_CODE" newDataType="VARCHAR2(11)"/>
+            <modifyDataType tableName="ADDRESSES" columnName="CITY_BTI_CODE" newDataType="VARCHAR2(11)"/>
+            <modifyDataType tableName="ADDRESSES" columnName="PLACE_BTI_CODE" newDataType="VARCHAR2(11)"/>
+            <modifyDataType tableName="ADDRESSES" columnName="PLAN_BTI_CODE" newDataType="VARCHAR2(11)"/>
+            <modifyDataType tableName="ADDRESSES" columnName="STREET_BTI_CODE" newDataType="VARCHAR2(11)"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

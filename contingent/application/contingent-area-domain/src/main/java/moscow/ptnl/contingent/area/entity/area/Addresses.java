@@ -49,6 +49,7 @@ public class Addresses implements Serializable {
     @Column(name = "REGION_TYPENAME")
     private String regionTypename;
 
+    @Size(max = 1000)
     @Column(name = "REGION_TE_ID")
     private String regionTeId;
 
@@ -88,7 +89,7 @@ public class Addresses implements Serializable {
     @Column(name = "AREACODE")
     private String areaCode;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "AREA_BTI_CODE")
     private String areaBtiCode;
 
@@ -108,7 +109,7 @@ public class Addresses implements Serializable {
     @Column(name = "CITYCODE")
     private String cityCode;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "CITY_BTI_CODE")
     private String cityBtiCode;
 
@@ -128,7 +129,7 @@ public class Addresses implements Serializable {
     @Column(name = "PLACECODE")
     private String placeCode;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "PLACE_BTI_CODE")
     private String placeBtiCode;
 
@@ -148,7 +149,7 @@ public class Addresses implements Serializable {
     @Column(name = "PLANCODE")
     private String planCode;
 
-    @Size(max = 1)
+    @Size(max = 255)
     @Column(name = "PLAN_BTI_CODE")
     private String planBtiCode;
 
@@ -184,12 +185,13 @@ public class Addresses implements Serializable {
     @Column(name = "STREET_TYPENAME_SHORT")
     private String streetTypeNameShort;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "STREET_BTI_CODE")
     private String streetBtiCode;
 
+    @Size(max = 1000)
     @Column(name = "AREA_TE_ID")
-    private Long areaTeId;
+    private String areaTeId;
 
     @Column(name = "AREA_ID")
     private Long areaId;
@@ -680,11 +682,11 @@ public class Addresses implements Serializable {
 
     public void setRegionTypename(String regionTypename) { this.regionTypename = regionTypename; }
 
-    public Long getAreaTeId() {
+    public String getAreaTeId() {
         return areaTeId;
     }
 
-    public void setAreaTeId(Long areaTeId) {
+    public void setAreaTeId(String areaTeId) {
         this.areaTeId = areaTeId;
     }
 

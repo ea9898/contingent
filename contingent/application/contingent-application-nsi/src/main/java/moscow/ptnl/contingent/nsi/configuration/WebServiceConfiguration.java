@@ -11,13 +11,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 @Configuration
-@ComponentScan(basePackages = "moscow.ptnl")
+@ComponentScan(basePackages = "moscow.ptnl",
+        //Из area-infrastructure нам надо только репозитории, остальное исключаем
+        excludeFilters = { @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.area.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.esuInputTasks.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.scheduler.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.service.*")})
 public class WebServiceConfiguration  {
 
     @Bean

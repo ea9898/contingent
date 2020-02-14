@@ -25,7 +25,7 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "AOLEVEL")
     private String aoLevel;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "KOD_GIVZ")
     private String codeGivz;
 
@@ -72,7 +72,7 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "AREACODE")
     private String areaCode;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "AREA_BTI_CODE")
     private String areaBtiCode;
 
@@ -88,7 +88,7 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "CITYCODE")
     private String cityCode;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "CITY_BTI_CODE")
     private String cityBtiCode;
 
@@ -104,7 +104,7 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "PLACECODE")
     private String placeCode;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "PLACE_BTI_CODE")
     private String placeBtiCode;
 
@@ -120,7 +120,7 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "PLANCODE")
     private String planCode;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "PLAN_BTI_CODE")
     private String planBtiCode;
 
@@ -136,7 +136,7 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "STREETCODE")
     private String streetCode;
 
-    @Size(max = 11)
+    @Size(max = 255)
     @Column(name = "STREET_BTI_CODE")
     private String streetBtiCode;
 

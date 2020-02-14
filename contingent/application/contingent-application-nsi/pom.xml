@@ -131,6 +131,16 @@
             <version>${version}</version>
         </dependency>
         <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>area-domain</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>area-infrastructure</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>${api.javaee}</version>
