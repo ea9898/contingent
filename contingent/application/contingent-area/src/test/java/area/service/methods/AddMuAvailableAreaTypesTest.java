@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.Mockito.doReturn;
+
 /**
  * (К_УУ_4)	Добавление типов, доступных для МУ
  */
@@ -117,6 +119,7 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
      */
     @Test
     public void test_C_YY_74_1() {
+        doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
         moAvailableAreaTypes10.setId(1L);
@@ -159,6 +162,7 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
      */
     @Test
     public void test_correct() {
+        doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
         moAvailableAreaTypes10.setId(1L);

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,6 +87,8 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
      */
     @Test
     public void test_C_YY_74_1() {
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
+
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
         moAvailableAreaTypes10.setId(1L);
@@ -126,6 +129,7 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
      */
     @Test
     public void test_correct() {
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
         moAvailableAreaTypes10.setId(1L);

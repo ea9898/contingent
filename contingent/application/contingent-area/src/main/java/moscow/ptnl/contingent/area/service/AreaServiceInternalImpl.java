@@ -252,6 +252,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public void delMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
         areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
         Validation validation = new Validation();
+        areaTypeCodes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation).stream()
+                .map(AreaType::getCode)
+                .collect(Collectors.toList());
         List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
         areaHelper.checkAndGetAreaTypesNotExistInMU(moAvailableAreaTypes, areaTypeCodes, validation);
 
@@ -275,6 +278,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public void addMuAvailableAreaTypes(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException {
         areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
         Validation validation = new Validation();
+        areaTypeCodes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation).stream()
+                .map(AreaType::getCode)
+                .collect(Collectors.toList());
         // 1.
         List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
         // 2.
@@ -301,6 +307,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public void delMuAvailableAreaTypes(long muId, List<Long> areaTypeCodes) throws ContingentException {
         areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
         Validation validation = new Validation();
+        areaTypeCodes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation).stream()
+                .map(AreaType::getCode)
+                .collect(Collectors.toList());
         // 1.
         List<MuAvailableAreaTypes> areaTypes = areaHelper.checkAndGetAreaTypesNotExistInMU(muId, areaTypeCodes, validation);
 
@@ -1062,7 +1071,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         areaAddressIds.forEach(aai -> {
             List<Long> areaAddressesIdsDiff = areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
             if (areaAddresses.stream().map(AreaAddress::getId).noneMatch(aa -> aa.equals(aai))) {
-                validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("areaAddressId", aai));
+                validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("addressId", aai));
             }
         });
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
@@ -1244,12 +1253,12 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 2.
         if (order == null) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
-                    new ValidationParameter("id", id));
+                    new ValidationParameter("orderId", id));
             throw new ContingentException(validation);
         }
         if (Boolean.TRUE.equals(order.getArchived())) {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
-                    new ValidationParameter("id", id));
+                    new ValidationParameter("orderId", id));
         }
         AddressAllocationOrders oldOrder = historyHelper.clone(order);
 
@@ -1388,7 +1397,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
         // 1.
         if (moAddressIds.size() > settingService.getPar2()) {
-            validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("moAddressId", settingService.getPar2()));
+            validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", settingService.getPar2()));
         }
 
         moAddressIds = moAddressIds.stream().distinct().collect(Collectors.toList());

@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.AreaErrorReason;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -81,6 +82,8 @@ public class DelMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
      */
     @Test
     public void delMoAvailableAreaTypesCorrectTest() {
+        doReturn(Optional.of(areaType1)).when(areaTypesCRUDRepository).findById(areaType1.getCode());
+        doReturn(Optional.of(areaType2)).when(areaTypesCRUDRepository).findById(areaType2.getCode());
         doReturn(Arrays.asList(moAvailableAreaType1, moAvailableAreaType2))
                 .when(moAvailableAreaTypesRepository).findAreaTypes(moId);
         try {
@@ -92,18 +95,20 @@ public class DelMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
 
     @Test
     public void delMoAvailableAreaTypesExceptionTest() {
+        doReturn(Optional.of(areaType1)).when(areaTypesCRUDRepository).findById(areaType1.getCode());
+        doReturn(Optional.of(areaType2)).when(areaTypesCRUDRepository).findById(areaType2.getCode());
+        doReturn(Optional.of(areaType3)).when(areaTypesCRUDRepository).findById(areaType3.getCode());
         moAvailableAreaType2.setMuAvailableAreaTypes(
                 new HashSet<>(Arrays.asList(muAvailableAreaType1, muAvailableAreaType2)));
         doReturn(Arrays.asList(moAvailableAreaType1, moAvailableAreaType2))
                 .when(moAvailableAreaTypesRepository).findAreaTypes(moId);
-        doReturn(Optional.of(areaType3)).when(areaTypesCRUDRepository).findById(areaType3.getCode());
         try {
             areaServiceInternal.delMoAvailableAreaTypes(
                     moId, Arrays.asList(areaType1.getCode(), areaType2.getCode(), areaType3.getCode()));
         } catch (ContingentException e) {
             assertFalse(e.getValidation().isSuccess());
             assertEquals(3, e.getValidation().getMessages().size());
-            assertEquals(String.format(AreaErrorReason.AREA_TYPE_NOT_EXISTS_IN_MO.getDescription(), areaType3.getTitle())
+            assertEquals(String.format(AreaErrorReason.AREA_TYPE_NOT_FOUND.getDescription(), areaType3.getCode())
                     , e.getValidation().getMessages().get(0).getMessage());
             assertEquals(String.format(AreaErrorReason.CANT_DELETE_AREA_TYPE.getDescription()
                     , areaType2.getCode(), muAvailableAreaType2.getMuId())

@@ -225,7 +225,7 @@ public class AreaServiceHelper {
         if (!areas.isEmpty()) {
             for (Area area: areas) {
                 validation.error(AreaErrorReason.CANT_DELETE_AREA_TYPE,
-                        new ValidationParameter("areaType", area.getAreaType().getTitle()),
+                        new ValidationParameter("areaTypeTitle", area.getAreaType().getTitle()),
                         new ValidationParameter("areaNumber", area.getNumber()));
             }
 
@@ -490,7 +490,7 @@ public class AreaServiceHelper {
 
             if (!order.isPresent() ||
                     order.get().getEndDate() != null && order.get().getEndDate().isBefore(LocalDate.now())) {
-                validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("moAddressId", a));
+                validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("addressId", a));
             }
             else {
                 result.add(order.get());
@@ -850,8 +850,8 @@ public class AreaServiceHelper {
             for (PolicyType policy : policyTypesDel) {
                 if (areaPolicyTypesRepository.findAll(area, policy).isEmpty()) {
                     validation.error(AreaErrorReason.POLICY_TYPE_NOT_SET_FOR_AREA,
-                            new ValidationParameter("areaTypeCode", policy.getCode()),
-                            new ValidationParameter("areaid", area.getId()));
+                            new ValidationParameter("policyCode", policy.getCode()),
+                            new ValidationParameter("areaId", area.getId()));
                 }
             }
             if (!validation.isSuccess()) {
@@ -885,7 +885,7 @@ public class AreaServiceHelper {
         areaTypeCodes.forEach(a -> {
             if (!availableAreaTypes.contains(a)) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_EXISTS_IN_MU,
-                        new ValidationParameter("areaType", areaTypesCRUDRepository.findById(a).map(AreaType::getTitle).orElse(String.valueOf(a))));
+                        new ValidationParameter("areaTypeTitle", areaTypesCRUDRepository.findById(a).map(AreaType::getTitle).orElse(String.valueOf(a))));
             }
         });
         return muAvailableAreaTypes.stream()
@@ -931,7 +931,7 @@ public class AreaServiceHelper {
             if (areaType.getMpguAvailable() != null
                     && !Boolean.TRUE.equals(areaType.getMpguAvailable())) {
                 validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
-                        new ValidationParameter("areaType", areaType.getTitle() ));
+                        new ValidationParameter("areaTypeTitle", areaType.getTitle() ));
             }
             if (Boolean.TRUE.equals(attachByMedicalReason)) {
                 validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
