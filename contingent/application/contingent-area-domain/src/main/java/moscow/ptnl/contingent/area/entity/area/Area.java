@@ -320,6 +320,12 @@ public class Area implements Serializable {
                 .collect(Collectors.toSet());
     }
 
+    public Set<AreaMedicalEmployees> getMainMedicalEmployees() {
+        return getMedicalEmployees().stream()
+                .filter(e -> Boolean.FALSE.equals(e.getReplacement()))
+                .collect(Collectors.toSet());
+    }
+
     public Set<AreaMedicalEmployees> getActualReplacementMedicalEmployees() {
         return getActualMedicalEmployees().stream()
                 .filter(e -> Boolean.TRUE.equals(e.getReplacement()))
