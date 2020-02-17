@@ -1110,8 +1110,17 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 3.
         List<Area> areas = areaCRUDRepository.findAllById(areaIds);
+        // 3.
+        if (areaIds.size() != areas.size()) {
+            List<Long> foundAreasIds = areas.stream().map(Area::getId).collect(Collectors.toList());
+            areaIds.stream().filter(aIn -> !foundAreasIds.contains(aIn)).forEach(aIn ->
+                    validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", aIn)));
+
+            if (!validation.isSuccess()) { throw new ContingentException(validation); }
+        }
+
+        // 4.
         List<Long> areaIdsNotInMo = areas.stream().filter(area -> !area.getMoId().equals(moId))
                 .map(Area::getId).collect(Collectors.toList());
         if (!areaIdsNotInMo.isEmpty())  {
@@ -1124,14 +1133,14 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
 
-        // 4.
+        // 5.
         Page<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(moId, areaIds, paging);
 
-        // 5.
+        // 6.
         List<moscow.ptnl.contingent.area.model.area.AddressArea> addressAreas =
                 areaAddresses.stream().map(areaAddressMapper::entityToModelTransform).collect(Collectors.toList());
 
-        // 6.
+        // 7.
         return new PageImpl<>(new ArrayList<>(addressAreas),
                 areaAddresses.getPageable(), areaAddresses.getTotalElements());
     }
