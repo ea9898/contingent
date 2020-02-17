@@ -83,7 +83,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
             return new PageImpl<>(areaAddressPagingAndSortingRepository.findAll(specification, Sort.by(AreaAddress_.area.getName(), AreaAddress_.id.getName()).ascending()));
         }
         return areaAddressPagingAndSortingRepository.findAll(specification,
-                PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(AreaAddress_.id.getName()).ascending()));
+                PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(AreaAddress_.area.getName(), AreaAddress_.id.getName()).ascending()));
     }
 
     @Override
