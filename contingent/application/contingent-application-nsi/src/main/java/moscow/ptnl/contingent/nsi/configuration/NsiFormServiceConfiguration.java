@@ -21,7 +21,7 @@ public class NsiFormServiceConfiguration {
     @Bean
     public FormServicePortType formServiceFactoryBean(@Value("${nsi.form.service.address}") String address,
                                                       @Value("${security.upk2.login}") String login,
-                                                      @Value("${nsi.form.service.user.name}") String userName) {
+                                                      @Value("${nsi.service.username}") String userName) {
 
         JaxWsProxyFactoryBean jaxWsProxyFactoryBean = new JaxWsProxyFactoryBean();
         jaxWsProxyFactoryBean.setServiceClass(FormServicePortType.class);
