@@ -90,6 +90,7 @@ import ru.mos.emias.contingent2.area.AreaPT;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
@@ -389,7 +390,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     .collect(Collectors.toSet()));
             response.getMoAddresses().addAll(addresses.getContent().stream()
                     .map(moAddressMapper::entityToDtoTransform)
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toList())
+                    .stream().sorted(Comparator.comparing(ru.mos.emias.contingent2.core.MoAddress::getMoAddressId)).collect(Collectors.toList()));
             soapCustomMapper.mapPagingResults(response, addresses);
 
             return response;
