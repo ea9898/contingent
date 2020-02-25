@@ -58,6 +58,9 @@ public class EsuOutput implements Serializable {
     @Column(name = "HOST")
     private String host;
 
+    @Column(name = "CREATE_DATE", nullable = false)
+    private LocalDateTime createDate;
+
     public Long getId() {
         return id;
     }
@@ -136,6 +139,14 @@ public class EsuOutput implements Serializable {
 
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
     @Override

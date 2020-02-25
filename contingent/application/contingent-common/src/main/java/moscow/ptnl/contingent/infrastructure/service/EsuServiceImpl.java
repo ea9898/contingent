@@ -75,6 +75,7 @@ public class EsuServiceImpl implements EsuService {
             esuOutput.setSentTime(LocalDateTime.now());
             esuOutput.setStatus(EsuStatusType.INPROGRESS);
             esuOutput.setMessage(" ");
+            esuOutput.setCreateDate(LocalDateTime.now());
             esuOutput = esuOutputCRUDRepository.save(esuOutput);
             
             String message = ESUEventHelper.toESUMessage(event, esuOutput.getId());
