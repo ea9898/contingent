@@ -8,6 +8,7 @@
         <tagDatabase tag="1.3.0.0"/>
     </changeSet>
 
+    <include file="area.xml" relativeToChangelogFile="true"/>
     <include file="nsi.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="CONTINGENT2-559-1" author="ddryuchin" labels="1.3.0.0">
