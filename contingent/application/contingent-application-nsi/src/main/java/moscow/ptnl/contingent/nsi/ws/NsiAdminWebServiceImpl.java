@@ -39,6 +39,7 @@ import moscow.ptnl.contingent.nsi.repository.GenderCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
+import moscow.ptnl.contingent.nsi.transform.UpdateAddressByGlobalIdResponseMapper;
 import moscow.ptnl.contingent.repository.CommonRepository;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
@@ -60,6 +61,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.UpdateAddressByGlobalIdRequest;
@@ -138,6 +140,9 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
     @Autowired
     private NsiAdminService nsiAdminService;
+
+    @Autowired
+    private UpdateAddressByGlobalIdResponseMapper updateAddressByGlobalIdResponseMapper;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -248,6 +253,7 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
         if (body.getArGlobalId().isEmpty()) {
             return new UpdateAddressByGlobalIdResponse();
         }
+        List<Long> unrecognizedAddresses;
         Validation validation = new Validation();
 
         try {
@@ -264,7 +270,7 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
             if (!validation.isSuccess()) {
                 throw SoapExceptionMapper.map(new ContingentException(validation));
             }
-            nsiAdminService.updateAddressesByGlobalId(body.getFormId(), body.getArGlobalId(), entityType);
+            unrecognizedAddresses = nsiAdminService.updateAddressesByGlobalId(body.getFormId(), body.getArGlobalId(), entityType);
         }
         catch (Fault e) {
             throw e;
@@ -273,7 +279,7 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
             validation.error(NsiEhdErrorReason.UNEXPECTED_ERROR, new ValidationParameter("message", e.getMessage()));
             throw SoapExceptionMapper.map(new ContingentException(validation));
         }
-        return new UpdateAddressByGlobalIdResponse();
+        return updateAddressByGlobalIdResponseMapper.transform(unrecognizedAddresses);
     }
 
     private <T extends Serializable, K extends Serializable> void saveAll(CommonRepository<T, K> repository, List<T> entities) {

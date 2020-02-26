@@ -58,6 +58,15 @@
 
     <xs:element name="updateAddressByGlobalIdResponse">
         <xs:complexType>
+            <xs:sequence>
+                <xs:element name="unrecognizedAddresses" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="arGlobalId" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 

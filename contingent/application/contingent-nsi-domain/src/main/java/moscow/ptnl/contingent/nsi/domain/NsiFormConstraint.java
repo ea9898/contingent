@@ -15,4 +15,5 @@ public interface NsiFormConstraint {
     String GLOBAL_ID_HEADER = "globalId";
     String ENTITY_TYPE_HEADER = "entityType";
     String USER_CONTEXT = "userContext";
+    String UNRECOGNIZED_ADDRESSES = "unrecognizedAddresses";
 }

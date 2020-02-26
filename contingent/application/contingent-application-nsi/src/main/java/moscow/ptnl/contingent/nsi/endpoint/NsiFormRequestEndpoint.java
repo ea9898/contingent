@@ -16,6 +16,11 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
+import javax.xml.ws.soap.SOAPFaultException;
+
+import java.util.Queue;
+import java.util.Set;
+
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.*;
 
 /**
@@ -28,6 +33,8 @@ import static moscow.ptnl.contingent.nsi.configuration.Constraint.*;
 public class NsiFormRequestEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(NsiFormRequestEndpoint.class);
+
+    private static final String NSI_SOAP_NOT_FOUND_MSG = "Объект не найден";
 
     @Autowired
     @Qualifier(NSI_FORM_CHANNEL_NAME)
@@ -43,13 +50,18 @@ public class NsiFormRequestEndpoint {
         Long formId = (Long) msg.getHeaders().get(NsiFormConstraint.FORM_ID_HEADER);
         NsiFormTablesEnum entityType = (NsiFormTablesEnum) msg.getHeaders().get(NsiFormConstraint.ENTITY_TYPE_HEADER);
         UserContext context = (UserContext) msg.getHeaders().get(NsiFormConstraint.USER_CONTEXT);
+        Queue<Long> unrecognizedAddresses = (Queue<Long>) msg.getHeaders().get(NsiFormConstraint.UNRECOGNIZED_ADDRESSES);
         Document response;
 
         try {
             response = nsiFormServiceHelper.searchByGlobalId(formId, globalId, context);
         }
         catch (Throwable th) {
-            LOG.error("Ошибка при вызове НСИ метода searchByGlobalId", th);
+            LOG.debug("Ошибка при вызове НСИ метода searchByGlobalId", th);
+
+            if (unrecognizedAddresses != null) {
+                unrecognizedAddresses.offer(globalId);
+            }
             return;
         }
         //Отправляем дальше на парсинг и сохранение в БД

@@ -11,9 +11,12 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Service;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
@@ -30,7 +33,8 @@ public class NsiAdminService {
     @Qualifier(NSI_FORM_REQUEST_CHANNEL_NAME)
     private MessageChannel nsiRequestChannel;
 
-    public void updateAddressesByGlobalId(Long formId, List<Long> globalIds, NsiFormTablesEnum entityType) {
+    public List<Long> updateAddressesByGlobalId(Long formId, List<Long> globalIds, NsiFormTablesEnum entityType) {
+        Queue<Long> unrecognizedAddresses = new ConcurrentLinkedQueue<>();
         long threadsNumber = settingService.getSettingProperty(SettingService.UPDATE_ADDRESS_BY_GLOBAL_ID_THREADS);
         UserContext context = UserContextHolder.getUserContext();
         ExecutorService executor = Executors.newFixedThreadPool((int) threadsNumber);
@@ -44,6 +48,7 @@ public class NsiAdminService {
                             .setHeader(NsiFormConstraint.FORM_ID_HEADER, formId)
                             .setHeader(NsiFormConstraint.ENTITY_TYPE_HEADER, entityType)
                             .setHeader(NsiFormConstraint.USER_CONTEXT, context)
+                            .setHeader(NsiFormConstraint.UNRECOGNIZED_ADDRESSES, unrecognizedAddresses)
                             .build()), executor)
                     ).toArray(CompletableFuture<?>[]::new);
             CompletableFuture<?> future = CompletableFuture.allOf(futures);
@@ -58,5 +63,6 @@ public class NsiAdminService {
         finally {
             executor.shutdownNow();
         }
+        return new ArrayList<>(unrecognizedAddresses);
     }
 }
