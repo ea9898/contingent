@@ -11,9 +11,11 @@ public class UpdateAddressByGlobalIdResponseMapper {
 
     public UpdateAddressByGlobalIdResponse transform(List<Long> unrecognizedAddresses) {
         UpdateAddressByGlobalIdResponse response = new UpdateAddressByGlobalIdResponse();
-        response.setUnrecognizedAddresses(new UnrecognizedAddresses());
-        response.getUnrecognizedAddresses().getArGlobalId().addAll(unrecognizedAddresses);
 
+        if (unrecognizedAddresses != null && !unrecognizedAddresses.isEmpty()) {
+            response.setUnrecognizedAddresses(new UnrecognizedAddresses());
+            response.getUnrecognizedAddresses().getArGlobalId().addAll(unrecognizedAddresses);
+        }
         return response;
     }
 }
