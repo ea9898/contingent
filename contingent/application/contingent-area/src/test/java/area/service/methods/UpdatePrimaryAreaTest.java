@@ -116,8 +116,14 @@ public class UpdatePrimaryAreaTest {
         moAvailableAreaTypes.setCreateDate(LocalDateTime.now());
         moAvailableAreaTypes.setId(1L);
         moAvailableAreaTypes.setMoId(moId);
-        areaPrimary1 = new Area(1L, moId, null, areaTypePrimary1, false, LocalDateTime.now());
-        areaPrimary1.setNumber(123);
+        areaPrimary1 = Area.builder()
+                .id(1L)
+                .moId(moId)
+                .areaType(areaTypePrimary1)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .number(123)
+                .build();
         policyType1 = new PolicyType();
         policyType1.setCode(1L);
         policyType1.setTitle("Test policy type");

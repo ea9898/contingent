@@ -161,9 +161,21 @@ public class UpdateDependentAreaTest {
         policyType1.setArchived(false);
         policyType1.setCode(policyTypeCode);
         policyType1.setTitle("Policy type 1");
-        areaPrimary1 = new Area(2L, moId, null, areaTypePrimary1, false, LocalDateTime.now());
+        areaPrimary1 = Area.builder()
+                .id(2L)
+                .moId(moId)
+                .areaType(areaTypePrimary1)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .build();
         areaPrimary1.setNumber(14);
-        areaDep1 = new Area(1L, moId, null, areaTypeDependent, false, LocalDateTime.now());
+        areaDep1 = Area.builder()
+                .id(1L)
+                .moId(moId)
+                .areaType(areaTypeDependent)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .build();
         areaDep1.setNumber(123);
         areaDep1.setPrimaryAreaTypes(new HashSet<>());
         areaDep1.getPrimaryAreaTypes().add(new AreaToAreaType() {{

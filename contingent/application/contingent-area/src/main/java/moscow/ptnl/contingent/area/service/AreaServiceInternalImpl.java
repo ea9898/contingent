@@ -396,8 +396,23 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
             throw new ContingentException(validation);
         }
         // 12
-        Area area = new Area(moId, muId, areaType, number, autoAssignForAttachment, false, description,
-                attachByMedicalReason, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
+        Area area = Area.builder()
+                .moId(moId)
+                .muId(muId)
+                .areaType(areaType)
+                .number(number)
+                .autoAssignForAttach(autoAssignForAttachment)
+                .archived(false)
+                .description(description)
+                .attachByMedicalReason(attachByMedicalReason)
+                .ageMin(ageMin)
+                .ageMax(ageMax)
+                .ageMMin(ageMinM)
+                .ageMMax(ageMaxM)
+                .ageWMin(ageMinW)
+                .ageWMax(ageMaxW)
+                .createDate(LocalDateTime.now())
+                .build();        
         areaCRUDRepository.save(area);
 
         // 13
@@ -469,8 +484,21 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         }
 
         //11
-        Area area = new Area(moId, muId, areaType, number, null, false, description,
-                null, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, LocalDateTime.now());
+        Area area = Area.builder()
+                .moId(moId)
+                .muId(muId)
+                .areaType(areaType)
+                .number(number)
+                .archived(false)
+                .description(description)
+                .ageMin(ageMin)
+                .ageMax(ageMax)
+                .ageMMin(ageMinM)
+                .ageMMax(ageMaxM)
+                .ageWMin(ageMinW)
+                .ageWMax(ageMaxW)
+                .createDate(LocalDateTime.now())
+                .build();        
         areaCRUDRepository.save(area);
 
         //12.
