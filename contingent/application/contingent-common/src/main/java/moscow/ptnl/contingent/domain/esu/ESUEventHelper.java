@@ -53,7 +53,7 @@ public class ESUEventHelper {
             return XMLUtil.convertObjectToMessage(event, event.getClass());
         } else if (publishObject instanceof DnAttach) {
             DnAttach event = (DnAttach) publishObject;
-            event.setId(String.valueOf(eventId));
+            event.setId(eventId);
             if (event.getOperationDate() == null) {
                 event.setOperationDate(XMLUtil.getCurrentDate());
             }

@@ -264,7 +264,7 @@
                             <clearOutputDir>false</clearOutputDir>
                             <encoding>UTF-8</encoding>
                             <sources>
-                                <source>src/main/resources/META-INF/xsd/esu/dn.attach.xsd</source>
+                                <source>src/main/resources/META-INF/xsd/esu/dnAttach.xsd</source>
                                 <source>src/main/resources/META-INF/xsd/esu/dn.event.informer.xsd</source>
                             </sources>
                             <packageName>moscow.ptnl.contingent2.rmr.event.dn</packageName>
