@@ -142,7 +142,7 @@ public class RestoreAreaTest {
         area.setMoId(1L);
         
         List<Area> findedPrimaryAreas = new ArrayList<>();
-        findedPrimaryAreas.add(new Area(1L, null, null, null, false, LocalDateTime.now()));
+        findedPrimaryAreas.add(new Area(1L, 2L, null, null, false, LocalDateTime.now()));
             
         try {
             
