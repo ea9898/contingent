@@ -39,8 +39,22 @@ public class SetMedicalEmployeeOnAreaTest extends BaseTest {
     @BeforeEach
     public void init() {
         areaType = new AreaType(3L, "школьный", false);
-        area1 = new Area(1L, 1L, 1L, areaType, false, LocalDateTime.now());
-        area2 = new Area(2L, 1L, 1L, areaType, false, LocalDateTime.now());
+        area1 = Area.builder()
+                .id(1L)
+                .moId(1L)
+                .muId(1L)
+                .areaType(areaType)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .build();                
+        area2 = Area.builder()
+                .id(2L)
+                .moId(1L)
+                .muId(1L)
+                .areaType(areaType)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .build();
         positionCode = Optional.of(new PositionCode(10L, "testNom", 12345L, "testPositionCode", "testTitle"));
         employee1 = new AreaMedicalEmployees(1L, 1L, area1, true, LocalDate.of(2025, 1, 10), null, "123", positionCode, LocalDateTime.now(), null, 1L);
         employee2 = new AreaMedicalEmployees(2L, 1L, area1, false, LocalDate.of(2025, 2, 3), LocalDate.of(2025, 2, 10), "123", positionCode, LocalDateTime.now(), null, 1L);

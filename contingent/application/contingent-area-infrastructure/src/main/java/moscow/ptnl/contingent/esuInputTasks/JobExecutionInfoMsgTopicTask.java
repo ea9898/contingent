@@ -266,8 +266,9 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         Area area = new Area();
         area.setMoId(moId);
         area.setAreaType(areaType);
-        area.setCreateDate(LocalDateTime.now());
-        area.setUpdateDate(LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        area.setCreateDate(now);
+        area.setUpdateDate(now);
         areaCRUDRepository.save(area);
 
         return area;

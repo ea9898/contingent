@@ -47,11 +47,29 @@ public class A_YY_4_Test  extends BaseTest {
         areaTypeDependent2.setAreaTypeClass(areaTypeClass2);
         areaTypeDependent2.setAgeMin(1);
         areaTypeDependent2.setAgeMax(16);
-        areaPrimary1 = new Area(1L, moId, null, areaTypePrimary1, false, LocalDateTime.now());
-        areaDependent1 = new Area(2L, moId, null, areaTypeDependent1, false, LocalDateTime.now());
-        areaDependent1.setAgeMin(1);
-        areaDependent1.setAgeMax(16);
-        areaDependent2 = new Area(3L, moId, null, areaTypeDependent2, false, LocalDateTime.now());
+        areaPrimary1 = Area.builder()
+                .id(1L)
+                .moId(moId)
+                .areaType(areaTypePrimary1)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .build();                
+        areaDependent1 = Area.builder()
+                .id(2L)
+                .moId(moId)
+                .areaType(areaTypeDependent1)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .ageMin(1)
+                .ageMax(16)
+                .build();
+        areaDependent2 = Area.builder()
+                .id(3L)
+                .moId(moId)
+                .areaType(areaTypeDependent2)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .build();                
         areaToAreaType1 = new AreaToAreaType();
         areaToAreaType1.setId(1L);
         areaToAreaType1.setArea(areaDependent1);

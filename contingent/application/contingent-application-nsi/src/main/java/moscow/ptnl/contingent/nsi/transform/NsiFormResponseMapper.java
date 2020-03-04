@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.nsi.transform;
 
+import com.google.common.base.Strings;
+
 import moscow.ptnl.util.XMLUtil;
 
 import org.slf4j.Logger;
@@ -93,6 +95,8 @@ public class NsiFormResponseMapper {
         return values.getLength() > 0 ?
                 XMLUtil.asList(values).stream()
                         .map(Node::getTextContent)
+                        .map(Strings::emptyToNull)
+                        .filter(Objects::nonNull)
                         .map(NsiFormResponseMapper::valueToString)
                         .distinct()
                         .collect(Collectors.joining(";"))

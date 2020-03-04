@@ -85,11 +85,23 @@ public class ArchiveAreaTest {
         areaTypePrimary1.setAreaTypeClass(areaTypeClass1);
         areaTypeDependent1 = new AreaType(20L, "Терапевтический 2", false);
         areaTypeDependent1.setAreaTypeClass(areaTypeClass2);
-        areaPrimary1 = new Area(1L, moId, null, areaTypePrimary1, false, LocalDateTime.now());
-        areaPrimary1.setNumber(123);
-        areaDependent1 = new Area(2L, moId, null, areaTypeDependent1, false, LocalDateTime.now());
-        areaDependent1.setAgeMin(1);
-        areaDependent1.setAgeMax(16);
+        areaPrimary1 = Area.builder()
+                .id(1L)
+                .moId(moId)
+                .areaType(areaTypePrimary1)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .number(123)
+                .build();
+        areaDependent1 = Area.builder()
+                .id(2L)
+                .moId(moId)
+                .areaType(areaTypeDependent1)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .ageMin(1)
+                .ageMax(16)
+                .build();
         areaToAreaType1 = new AreaToAreaType();
         areaToAreaType1.setId(1L);
         areaToAreaType1.setArea(areaDependent1);

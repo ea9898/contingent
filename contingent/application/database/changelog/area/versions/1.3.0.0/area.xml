@@ -20,4 +20,11 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="ONTINGENT2-628-1" author="mkachalov" labels="1.3.0.0">
+       <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREAS" columnName="UPDATE_DATE"/>
+        </preConditions>
+        <addNotNullConstraint tableName="AREAS" columnName="UPDATE_DATE"/>
+    </changeSet>
+
 </databaseChangeLog>

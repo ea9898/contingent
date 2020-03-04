@@ -108,12 +108,24 @@ public class AreaServiceHelperTest {
         areaTypeDependent1 = new AreaType(5L, "Терапевтический 2", false);
         areaTypeDependent1.setAreaTypeClass(areaTypeClass2);
         areaTypeDependent1.setAreaCountLimit(3);
-        areaPrimary1 = new Area(3L, moId, null, areaTypePrimary1, false, LocalDateTime.now());
-        areaPrimary1.setNumber(areaPrimary1Number);
-        areaDependent1 = new Area(5L, moId, null, areaTypeDependent1, false, LocalDateTime.now());
-        areaDependent1.setNumber(124);
-        areaDependent1.setAgeMin(1);
-        areaDependent1.setAgeMax(16);
+        areaPrimary1 = Area.builder()
+                .id(3L)
+                .moId(moId)
+                .areaType(areaTypePrimary1)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .number(areaPrimary1Number)
+                .build();
+        areaDependent1 = Area.builder()
+                .id(5L)
+                .moId(moId)
+                .areaType(areaTypeDependent1)
+                .archived(false)
+                .createDate(LocalDateTime.now())
+                .number(124)
+                .ageMin(1)
+                .ageMax(16)
+                .build();
         areaToAreaType1 = new AreaToAreaType();
         areaToAreaType1.setId(1L);
         areaToAreaType1.setArea(areaDependent1);
