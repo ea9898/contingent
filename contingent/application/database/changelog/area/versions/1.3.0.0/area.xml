@@ -24,7 +24,7 @@
        <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREAS" columnName="UPDATE_DATE"/>
         </preConditions>
-        <addNotNullConstraint tableName="AREAS" columnName="UPDATE_DATE"/>
+        <addNotNullConstraint tableName="AREAS" columnName="UPDATE_DATE" columnDataType="TIMESTAMP(6)"/>
     </changeSet>
 
 </databaseChangeLog>
