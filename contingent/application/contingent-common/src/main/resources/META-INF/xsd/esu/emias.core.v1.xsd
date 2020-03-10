@@ -132,7 +132,9 @@
 		<xs:annotation>
 			<xs:documentation>Параметры пагинации</xs:documentation>
 		</xs:annotation>
-		<xs:sequence/>
+		<xs:sequence>
+			<xs:element ref="sortingOptions" minOccurs="0"/>
+		</xs:sequence>
 		<xs:attribute name="pageNumber" type="xs:int" use="required">
 			<xs:annotation>
 				<xs:documentation>Номер страницы (zero-based)</xs:documentation>
@@ -141,6 +143,42 @@
 		<xs:attribute name="pageSize" type="xs:int" use="required">
 			<xs:annotation>
 				<xs:documentation>Размер страницы</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!--sorting-->
+	<xs:element name="sortingOptions" type="SortingOptions">
+		<xs:annotation>
+			<xs:documentation>Параметры сортировки</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="SortingOptions">
+		<xs:annotation>
+			<xs:documentation>Условия сортировки</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="sortOrder" type="SortOrder" maxOccurs="3">
+				<xs:annotation>
+					<xs:documentation>
+Условия сортировки
+(используются в соответствии с
+переданной последовательностью)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SortOrder">
+		<xs:annotation>
+			<xs:documentation>Сортировка</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="attributeName" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Наименование поля, по которому должна быть произведена сортировка</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="desceding" type="xs:boolean" default="false">
+			<xs:annotation>
+				<xs:documentation>Направление сортировки</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>

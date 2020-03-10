@@ -21,23 +21,29 @@ import java.io.StringReader;
 @Component
 public class NsiFormServiceHelper {
 
-    private DocumentBuilder builder;
+    private ThreadLocal<DocumentBuilder> builders = new ThreadLocal<>();
 
     @Autowired
     private FormServicePortType formService;
 
-    @PostConstruct
-    void init() throws ParserConfigurationException {
-        builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    private DocumentBuilder getParser() throws ParserConfigurationException {
+        if (builders.get() == null) {
+            builders.set(DocumentBuilderFactory.newInstance().newDocumentBuilder());
+        }
+        else {
+            builders.get().reset();
+        }
+        return builders.get();
     }
 
-    public Document searchByGlobalId(long formId, long globalId, UserContext userContext) throws Fault, IOException, SAXException {
+    public Document searchByGlobalId(long formId, long globalId, UserContext userContext)
+            throws Fault, IOException, SAXException, ParserConfigurationException {
         PhpSphinxSearchFromGlobalIdRequest request = new PhpSphinxSearchFromGlobalIdRequest();
         request.setFormId((int) formId);
         request.setGlobalId((int) globalId);
 
         String xml = formService.searchByGlobalId(request, userContext).getOut();
 
-        return builder.parse(new InputSource(new StringReader(xml)));
+        return getParser().parse(new InputSource(new StringReader(xml)));
     }
 }
