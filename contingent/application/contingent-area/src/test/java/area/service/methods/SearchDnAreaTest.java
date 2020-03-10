@@ -76,4 +76,11 @@ public class SearchDnAreaTest {
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());
         assertEquals((Long) 8L, areas.getContent().get(0).getId());
     }
+
+    @Test
+    @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void searchDnArea_CONTINGENT2_638_Test() {
+        Page<Area> areas = assertDoesNotThrow(() -> areaServiceInternal.searchDnArea(136L, EL, EL, EL, EL, PR));
+        assertEquals(1, areas.getNumberOfElements());
+    }
 }
