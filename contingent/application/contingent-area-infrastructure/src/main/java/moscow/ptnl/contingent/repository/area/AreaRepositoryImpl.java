@@ -27,6 +27,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 import javax.sql.DataSource;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -71,13 +72,17 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         return (root, criteriaQuery, cb) -> root.get(Area_.id.getName()).in(areaIds);
     }
 
-    private Specification<Area> searchWithMainEmployeesSpec() {
+    private Specification<Area> searchWithActualMainEmployeesSpec() {
         return (root, criteriaQuery, cb) -> {
             Subquery<AreaMedicalEmployees> sub = criteriaQuery.subquery(AreaMedicalEmployees.class);
             Root<AreaMedicalEmployees> subRoot = sub.from(AreaMedicalEmployees.class);
             return cb.exists(sub.where(cb.and(
                     cb.equal(subRoot.get(AreaMedicalEmployees_.area.getName()), root.get(Area_.id.getName())),
-                    cb.equal(subRoot.get(AreaMedicalEmployees_.replacement.getName()), false)
+                    cb.equal(subRoot.get(AreaMedicalEmployees_.replacement.getName()), false),
+                    cb.or(
+                        cb.isNull(subRoot.get(AreaMedicalEmployees_.endDate)),
+                        cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate.getName()), LocalDate.now())
+                    )
             )).select(subRoot));
         };
     }
@@ -283,7 +288,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
     @Override
     public Page<Area> findAreas(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds, PageRequest paging) {
-        Specification<Area> specification = searchWithMainEmployeesSpec();
+        Specification<Area> specification = searchWithActualMainEmployeesSpec();
 
         if (moId != null) {
             specification = specification.and(searchByMoIdSpec(moId));
