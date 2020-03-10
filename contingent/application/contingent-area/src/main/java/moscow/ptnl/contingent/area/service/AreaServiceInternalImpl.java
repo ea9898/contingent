@@ -1420,9 +1420,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         moAddressCRUDRepository.saveAll(moAddresses);
 
         // Логирование добавление адресов
-        for (MoAddress moAddress: moAddresses) {
+        moAddresses.forEach((moAddress) -> {
             historyHelper.sendHistory(null, moAddress, MoAddress.class);
-        }
+        });
 
         return moAddresses.stream().map(MoAddress::getId).collect(Collectors.toList());
     }
@@ -1609,7 +1609,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         asyncService.asyncInitiateAddMoAddress(sysopId, UserContextHolder.getContext(), moId, areaTypeCode, orderId, addresses);
 
         //4. Система инициирует процесс журналирования (выполняется асинхронно) по инициации распределения жилых домов к территории обслуживания МО. (А_УУ_8), п.1
-        // происходит в п 3
+        // происходит в п 3 (не забываем добавлять имя метода в AreaServiceLogMethodsEnum)
 
         //5. Система возвращает в качестве результата: ИД операции
          return sysopId;
@@ -1628,7 +1628,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         asyncService.asyncAddAreaAddress(UserContextHolder.getContext(), sysopId, areaId, addressesRegistry);
 
         // 4. Система инициирует процесс журналирования (выполняется асинхронно) по инициации добавления адресов на участок обслуживания.
-        // выполняется в п 3
+        // выполняется в п 3 (не забываем добавлять имя метода в AreaServiceLogMethodsEnum)
 
         // 5. Система возвращает в качестве результата: ИД операции
         return sysopId;

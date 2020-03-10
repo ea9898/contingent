@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.repository;
 
 import moscow.ptnl.contingent.sysop.entity.SysopMsg;
-import moscow.ptnl.contingent.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

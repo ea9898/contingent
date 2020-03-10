@@ -12,7 +12,9 @@ public enum AreaServiceLogMethodsEnum {
     ADD_MO_ADDRESS("addMoAddress"),
     DEL_AREA_ADDRESS("delAreaAddress"),
     DEL_MO_ADDRESS("delMoAddress"),
-    INITIATE_CREATE_PRIMARY_AREA("initiateCreatePrimaryArea");
+    INITIATE_CREATE_PRIMARY_AREA("initiateCreatePrimaryArea"),
+    INITIATE_ADD_AREA_ADDRESS("initiateAddAreaAddress"),
+    INITIATE_ADD_MO_ADDRESS("initiateAddMoAddress"); 
 
     private final String name;
 

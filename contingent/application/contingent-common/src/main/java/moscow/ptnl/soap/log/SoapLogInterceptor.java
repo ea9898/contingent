@@ -18,6 +18,10 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 
+/**
+ * Логирует SOAP запросы и ответы, но не все, а те что перечислены в 
+ * AreaServiceLogMethodsEnum.
+ */
 @Component
 public class SoapLogInterceptor extends AbstractPhaseInterceptor<Message> {
 
@@ -26,17 +30,16 @@ public class SoapLogInterceptor extends AbstractPhaseInterceptor<Message> {
     private MessageChannel eventChannel;
     private Callable<String> uuidProvider;
 
-    SoapLogInterceptor() {
-        super(Phase.SEND);
+    public SoapLogInterceptor() {
+        super(Phase.SEND_ENDING);
     }
 
     @Override
     public void handleMessage(Message message) throws Fault {
         try {
             if (MessageUtils.isRequestor(message) ^ MessageUtils.isOutbound(message) && message.getExchange() != null) {
-                SoapContextData data = new SoapContextData();
-
                 try (CachedOutputStream contentIn = message.getExchange().getInMessage().getContent(CachedOutputStream.class)) {
+                    SoapContextData data = new SoapContextData();
                     CachedOutputStream contentOut = (CachedOutputStream) message.getContent(OutputStream.class);
                     StringBuilder name = new StringBuilder();
                     OperationInfo opInfo = message.getExchange().get(OperationInfo.class);
@@ -49,8 +52,9 @@ public class SoapLogInterceptor extends AbstractPhaseInterceptor<Message> {
                     data.setResponse(new String(contentOut.getBytes()));
                     data.setMethod(name.toString());
                     data.setTime(LocalDateTime.now());
+                    tryToSendEvent(data);
                 }
-                tryToSendEvent(data);
+                
             }
         }
         catch(Throwable th){
@@ -58,7 +62,7 @@ public class SoapLogInterceptor extends AbstractPhaseInterceptor<Message> {
         }
     }
 
-    private void tryToSendEvent(SoapContextData data) {
+    private void tryToSendEvent(final SoapContextData data) {
         if (eventChannel == null || data == null) {
             return;
         }
