@@ -946,7 +946,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
                 areaHelper.addNew(replacementEmployees, addEmployeesInput.stream()
                         .filter(AddMedicalEmployee::isIsReplacement).collect(Collectors.toList()), area);
                 replacementEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate, nullsFirst(naturalOrder())));
-                areaHelper.checkReplacementWithoutMain(periodsWithoutMainEmpl, replacementEmployees, validation);
+//                areaHelper.checkReplacementWithoutMain(periodsWithoutMainEmpl, replacementEmployees, validation); https://jira.emias.mos.ru/browse/CONTINGENT2-643
             }
         }
 
