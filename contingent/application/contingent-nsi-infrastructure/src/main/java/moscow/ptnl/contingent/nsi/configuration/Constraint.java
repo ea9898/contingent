@@ -12,17 +12,18 @@ package moscow.ptnl.contingent.nsi.configuration;
 public interface Constraint {
     
     /**
-     * Имя SI канала для приема сообщений NSI
+     * Имя SI канала для приема сообщений NSI.
      */
     String NSI_EVENT_CHANNEL_NAME = "NSIEventChannel";
 
     /**
-     * Имя SI канала для приема сообщений NSI form
+     * Имя SI канала для приема сообщений NSI form.
      */
     String NSI_FORM_CHANNEL_NAME = "NsiFormChannel";
 
     /**
-     * Имя SI канала для приема сообщений NSI form
+     * Имя SI канала для приема сообщений NSI form.
      */
     String NSI_FORM_REQUEST_CHANNEL_NAME = "NsiFormRequestChannel";
+    
 }

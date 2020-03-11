@@ -24,7 +24,7 @@ import java.util.Set;
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.*;
 
 /**
- * Точка получения событий из канала NSI_FORM_REQUEST_CHANNEL_NAME
+ * Точка получения событий из канала NSI_FORM_REQUEST_CHANNEL_NAME.
  * 
  * @author sorlov
  */
@@ -45,6 +45,7 @@ public class NsiFormRequestEndpoint {
 
     @ServiceActivator(inputChannel = NSI_FORM_REQUEST_CHANNEL_NAME, async = "true")
     public void nsiFormRequestConsumer(Message<Object> msg) {
+        String tn = Thread.currentThread().getName();
         LOG.info("{} сообщение: {}", NSI_FORM_REQUEST_CHANNEL_NAME, msg);
         Long globalId = (Long) msg.getPayload();
         Long formId = (Long) msg.getHeaders().get(NsiFormConstraint.FORM_ID_HEADER);
@@ -55,9 +56,10 @@ public class NsiFormRequestEndpoint {
 
         try {
             response = nsiFormServiceHelper.searchByGlobalId(formId, globalId, context);
+            LOG.debug("Вызов НСИ метода searchByGlobalId [formId = " + formId + " globalId = " + globalId + "]");
         }
         catch (Throwable th) {
-            LOG.debug("Ошибка при вызове НСИ метода searchByGlobalId", th);
+            LOG.info("Ошибка при вызове НСИ метода searchByGlobalId [formId = " + formId + " globalId = " + globalId + "]", th);
 
             if (unrecognizedAddresses != null) {
                 unrecognizedAddresses.offer(globalId);

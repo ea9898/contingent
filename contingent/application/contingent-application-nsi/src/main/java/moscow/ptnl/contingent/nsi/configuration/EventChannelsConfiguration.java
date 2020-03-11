@@ -3,10 +3,8 @@ package moscow.ptnl.contingent.nsi.configuration;
 import static moscow.ptnl.contingent.configuration.EventChannelsConfiguration.QUEUE_LENGTH;
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.*;
 
-import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
@@ -47,6 +45,7 @@ public class EventChannelsConfiguration {
     public MessageChannel createNsiFormRequestChannel() {
         return new DirectChannel();
     }
+    
 
     /**
      * Канал для сохранения адреса из НСИ.

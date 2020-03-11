@@ -19,12 +19,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.NSI_FORM_REQUEST_CHANNEL_NAME;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class NsiAdminService {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(NsiAdminService.class);
 
     @Autowired
     private SettingService settingService;
@@ -32,7 +37,8 @@ public class NsiAdminService {
     @Autowired
     @Qualifier(NSI_FORM_REQUEST_CHANNEL_NAME)
     private MessageChannel nsiRequestChannel;
-
+    
+    
     public List<Long> updateAddressesByGlobalId(Long formId, List<Long> globalIds, NsiFormTablesEnum entityType) {
         Queue<Long> unrecognizedAddresses = new ConcurrentLinkedQueue<>();
         long threadsNumber = settingService.getSettingProperty(SettingService.UPDATE_ADDRESS_BY_GLOBAL_ID_THREADS);
@@ -59,10 +65,21 @@ public class NsiAdminService {
                         return null;
                     }));
             future.join();
-        }
-        finally {
-            executor.shutdownNow();
+        } finally {
+            shutdownExecutor(executor);
         }
         return new ArrayList<>(unrecognizedAddresses);
     }
+    
+    private static void shutdownExecutor(ExecutorService executor) {
+        executor.shutdown();
+        try {
+            executor.awaitTermination(100, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            LOG.error("Ошибка закрытия пула потоков", e);
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+    
 }
