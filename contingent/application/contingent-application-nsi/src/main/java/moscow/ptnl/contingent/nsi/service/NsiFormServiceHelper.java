@@ -20,8 +20,6 @@ import java.io.StringReader;
 @Component
 public class NsiFormServiceHelper {
 
-    //private ThreadLocal<DocumentBuilder> builders = new ThreadLocal<>();
-
     @Autowired
     private FormServicePortType formService;
     
@@ -57,16 +55,5 @@ public class NsiFormServiceHelper {
         builder.reset();
         return builder;
     }
-    
-    /*
-    private DocumentBuilder getParser() throws ParserConfigurationException {
-        if (builders.get() == null) {
-            builders.set(DocumentBuilderFactory.newInstance().newDocumentBuilder());
-        }
-        else {
-            builders.get().reset();
-        }
-        return builders.get();
-    }*/
    
 }
