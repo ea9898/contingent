@@ -1,17 +1,8 @@
 package area.service.algorithms;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import moscow.ptnl.contingent.area.entity.area.Addresses;
-import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
+import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
 import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
-import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.model.area.NsiAddress;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 import ru.mos.emias.contingent2.address.Area;
 import ru.mos.emias.contingent2.address.AreaOMKTE;
@@ -20,7 +11,6 @@ import ru.mos.emias.contingent2.address.Place;
 import ru.mos.emias.contingent2.address.Plan;
 import ru.mos.emias.contingent2.address.RegionOMKTE;
 import ru.mos.emias.contingent2.address.Street;
-import ru.mos.emias.contingent2.core.Address;
 import service.BaseTest;
 
 import java.util.ArrayList;

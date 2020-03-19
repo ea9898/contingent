@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.area.entity.area.MoAddress_;
+import moscow.ptnl.contingent.domain.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.area.MoAddress_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;

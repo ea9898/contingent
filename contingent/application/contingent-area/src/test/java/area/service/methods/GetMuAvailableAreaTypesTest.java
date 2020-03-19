@@ -1,17 +1,13 @@
 package area.service.methods;
 
-import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
-import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
+import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 
 /**

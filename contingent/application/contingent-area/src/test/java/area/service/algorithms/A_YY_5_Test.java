@@ -1,8 +1,8 @@
 package area.service.algorithms;
 
-import moscow.ptnl.contingent.area.entity.area.Addresses;
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import org.junit.jupiter.api.Test;

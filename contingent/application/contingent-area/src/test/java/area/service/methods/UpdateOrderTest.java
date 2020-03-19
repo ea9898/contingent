@@ -1,7 +1,7 @@
 package area.service.methods;
 
-import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.area.AreaErrorReason;
+import moscow.ptnl.contingent.domain.area.entity.area.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

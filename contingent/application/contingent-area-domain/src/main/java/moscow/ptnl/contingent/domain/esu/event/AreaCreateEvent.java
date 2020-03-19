@@ -2,8 +2,8 @@ package moscow.ptnl.contingent.domain.esu.event;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
 
 @Deprecated
 public class AreaCreateEvent extends AreaEvent {

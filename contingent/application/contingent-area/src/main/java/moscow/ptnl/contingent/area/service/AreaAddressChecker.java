@@ -1,13 +1,12 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.area.entity.area.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaAddress;
 import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
-import moscow.ptnl.contingent.area.AreaErrorReason;
+import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
-import moscow.ptnl.contingent.area.model.area.AddressLevelType;
-import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.model.area.NsiAddress;
+import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.domain.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;

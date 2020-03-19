@@ -1,16 +1,16 @@
 package moscow.ptnl.contingent.area.service;
 
-import static moscow.ptnl.contingent.area.model.area.AddressLevelType.*;
+import static moscow.ptnl.contingent.domain.area.model.area.AddressLevelType.*;
 
-import moscow.ptnl.contingent.area.entity.area.Addresses;
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.repository.SysopCRUDRepository;
 import moscow.ptnl.contingent.sysop.entity.Sysop;
-import moscow.ptnl.contingent.area.AreaErrorReason;
-import moscow.ptnl.contingent.area.model.area.AddressLevelType;
-import moscow.ptnl.contingent.area.model.sysop.SysopMethodType;
+import moscow.ptnl.contingent.domain.AreaErrorReason;
+import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.domain.area.model.sysop.SysopMethodType;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;

@@ -1,11 +1,11 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
-import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees_;
-import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
-import moscow.ptnl.contingent.area.entity.area.AreaToAreaType_;
-import moscow.ptnl.contingent.area.entity.area.Area_;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaMedicalEmployees_;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType_;
+import moscow.ptnl.contingent.domain.area.entity.area.Area_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations_;

@@ -1,18 +1,16 @@
 package moscow.ptnl.contingent.attachment.service;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
 import moscow.ptnl.contingent.attachment.AttachmentErrorReason;
 import moscow.ptnl.contingent.attachment.helpers.AttachmentAlgoritms;
 import moscow.ptnl.contingent.attachment.transform.DNAttachMapper;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent2.rmr.event.dn.DnAttach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.datatype.DatatypeFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.area.transform.Transform;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
@@ -13,7 +14,7 @@ public class AttachOnAreaChangeMapper implements Transform<AttachOnAreaChange, m
     @Override
     public AttachOnAreaChange entityToDtoTransform(moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent entity) {
         AttachOnAreaChange event = new AttachOnAreaChange();
-        moscow.ptnl.contingent.area.entity.area.Area area = entity.getArea();
+        Area area = entity.getArea();
 
         event.setOperationDate(XMLGregorianCalendarMapper.entityToDtoTransform(entity.getOperationDate()));
         AttachOnAreaChange.DependendArea dependendArea = new AttachOnAreaChange.DependendArea();

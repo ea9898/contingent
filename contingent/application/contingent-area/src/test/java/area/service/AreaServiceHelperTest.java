@@ -1,12 +1,12 @@
 package area.service;
 
 
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
-import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
-import moscow.ptnl.contingent.area.AreaErrorReason;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.area.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.area.MuAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaPolicyTypes;
+import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;

@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.attachment.ws.v1;
 
 import moscow.ptnl.contingent.attachment.service.AttachmentServiceInternal;
 import moscow.ptnl.contingent.attachment.transform.SoapExceptionMapper;
-import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
+import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.contingent2.attachment.v1.AttachmentPT;
 import ru.mos.emias.contingent2.attachment.v1.Fault;
 import ru.mos.emias.contingent2.attachment.v1.types.InitiatePersonalAreaAttachmentRequest;

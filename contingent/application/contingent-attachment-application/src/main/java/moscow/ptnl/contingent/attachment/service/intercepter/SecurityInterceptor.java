@@ -2,8 +2,8 @@ package moscow.ptnl.contingent.attachment.service.intercepter;
 
 import moscow.ptnl.contingent.attachment.transform.SoapExceptionMapper;
 import moscow.ptnl.contingent.attachment.ws.security.UserContextHolder;
-import moscow.ptnl.contingent.domain.security.setting.AuthMethod;
-import moscow.ptnl.contingent.domain.security.setting.AuthService;
+import moscow.ptnl.contingent.security.setting.AuthMethod;
+import moscow.ptnl.contingent.security.setting.AuthService;
 import moscow.ptnl.contingent.service.security.SecuritySettingService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -40,7 +40,7 @@ public class SecurityInterceptor {
         value = "execution(public * *(..)) && @annotation(annotation)",
         argNames="annotation"
     )
-    public Object secured(ProceedingJoinPoint joinPoint, moscow.ptnl.contingent.domain.security.annotation.EMIASSecured annotation) throws Throwable {
+    public Object secured(ProceedingJoinPoint joinPoint, moscow.ptnl.contingent.security.annotation.EMIASSecured annotation) throws Throwable {
 
         String serviceName = getServiceName(joinPoint.getTarget().getClass());
         String methodName = joinPoint.getSignature().getName();

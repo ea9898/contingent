@@ -1,13 +1,14 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
-import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.area.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.transform.AreaDnMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
+import moscow.ptnl.contingent.domain.area.model.area.AddressArea;
 import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.area.model.area.AreaInfo;
-import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
@@ -94,7 +95,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
-import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
+import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import ru.mos.emias.contingent2.area.types.InitiateAddMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.InitiateAddMoAddressResponse;
@@ -418,7 +419,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             GetAreaAddressResponse response = new GetAreaAddressResponse();
             
-            Page<moscow.ptnl.contingent.area.model.area.AddressArea> areaAddresses = areaService.getAreaAddress(body.getMoId(),
+            Page<AddressArea> areaAddresses = areaService.getAreaAddress(body.getMoId(),
                     body.getAreas().getAreaIds(), pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             response.getAreaAddresses().addAll(
                 areaAddresses.getContent().stream()

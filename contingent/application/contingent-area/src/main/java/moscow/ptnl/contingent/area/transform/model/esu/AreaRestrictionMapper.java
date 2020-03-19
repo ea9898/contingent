@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
 import moscow.ptnl.contingent.area.transform.Transform;
 import moscow.ptnl.contingent2.area.info.AreaRestriction;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class AreaRestrictionMapper implements Transform<AreaRestriction, Area> {
 
     @Override
-    public AreaRestriction entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.Area entity) {
+    public AreaRestriction entityToDtoTransform(Area entity) {
         AreaRestriction restriction = new AreaRestriction();
         if (entity.getAreaType() != null) {
             restriction.setGender(entity.getAreaType().getGender());
@@ -29,7 +29,7 @@ public class AreaRestrictionMapper implements Transform<AreaRestriction, Area> {
     }
 
     @Override
-    public moscow.ptnl.contingent.area.entity.area.Area dtoToEntityTransform(AreaRestriction dtoObject) {
+    public Area dtoToEntityTransform(AreaRestriction dtoObject) {
         return null;
     }
 }

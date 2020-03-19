@@ -1,9 +1,9 @@
 package service.algorithms;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
 import service.BaseTest;
 
-import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent2.attachment.changearea.event.AreaRestriction;

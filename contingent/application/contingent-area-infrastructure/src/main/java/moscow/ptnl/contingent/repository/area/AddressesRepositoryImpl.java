@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.Addresses;
-import moscow.ptnl.contingent.area.entity.area.Addresses_;
-import moscow.ptnl.contingent.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.area.entity.area.AreaAddress_;
+import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.area.Addresses_;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.area.AreaAddress_;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,14 +18,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static moscow.ptnl.contingent.area.model.area.AddressLevelType.AREA;
-import static moscow.ptnl.contingent.area.model.area.AddressLevelType.AREA_TE;
-import static moscow.ptnl.contingent.area.model.area.AddressLevelType.CITY;
-import static moscow.ptnl.contingent.area.model.area.AddressLevelType.PLACE;
-import static moscow.ptnl.contingent.area.model.area.AddressLevelType.PLAN;
-import static moscow.ptnl.contingent.area.model.area.AddressLevelType.REGION_TE;
-import static moscow.ptnl.contingent.area.model.area.AddressLevelType.STREET;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)

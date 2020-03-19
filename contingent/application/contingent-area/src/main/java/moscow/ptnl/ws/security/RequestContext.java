@@ -1,7 +1,7 @@
 package moscow.ptnl.ws.security;
 
 import java.util.UUID;
-import moscow.ptnl.contingent.domain.security.Principal;
+import moscow.ptnl.contingent.security.Principal;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
 /**

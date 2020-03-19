@@ -1,14 +1,15 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.area.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
+import moscow.ptnl.contingent.domain.area.model.area.AddressArea;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.area.model.area.AreaInfo;
-import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
-import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
+import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
@@ -61,7 +62,7 @@ public interface AreaServiceInternal {
 
     Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
 
-    Page<moscow.ptnl.contingent.area.model.area.AddressArea> getAreaAddress(Long moId, List<Long> areaIds, PageRequest paging) throws ContingentException;
+    Page<AddressArea> getAreaAddress(Long moId, List<Long> areaIds, PageRequest paging) throws ContingentException;
 
     void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException;
 

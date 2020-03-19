@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.area.entity.area.Addresses;
-import moscow.ptnl.contingent.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 

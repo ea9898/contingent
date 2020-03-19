@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.nsi.endpoint;
 
-import moscow.ptnl.contingent.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
 import moscow.ptnl.contingent.nsi.domain.NsiFormTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository;

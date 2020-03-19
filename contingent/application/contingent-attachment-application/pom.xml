@@ -272,11 +272,6 @@
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
-            <artifactId>area-domain</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>attachment-domain</artifactId>
             <version>${version}</version>
         </dependency>
