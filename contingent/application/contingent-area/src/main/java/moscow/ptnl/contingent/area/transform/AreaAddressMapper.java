@@ -22,7 +22,7 @@ public class AreaAddressMapper implements Transform<AreaAddress, AddressArea> {
         return areaAddress;
     }
 
-    public AddressArea entityToModelTransform(moscow.ptnl.contingent.domain.area.entity.area.AreaAddress entityObject) {
+    public AddressArea entityToModelTransform(moscow.ptnl.contingent.domain.area.entity.AreaAddress entityObject) {
         AddressArea areaAddress = new AddressArea();
         areaAddress.setMoId(entityObject.getArea().getMoId());
         areaAddress.setMuId(entityObject.getArea().getMuId());

@@ -18,7 +18,7 @@ import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository;

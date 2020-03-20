@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

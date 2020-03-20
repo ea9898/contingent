@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.domain.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

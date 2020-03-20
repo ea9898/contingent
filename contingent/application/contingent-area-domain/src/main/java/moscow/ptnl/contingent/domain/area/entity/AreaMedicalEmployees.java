@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.domain.area.entity.area;
+package moscow.ptnl.contingent.domain.area.entity;
 
 import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.domain.history.ServiceName;

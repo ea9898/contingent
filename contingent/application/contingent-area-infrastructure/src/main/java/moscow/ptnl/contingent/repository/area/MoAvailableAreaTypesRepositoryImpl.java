@@ -1,7 +1,8 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.domain.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAvailableAreaTypes_;
+import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes_;
+import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,11 @@ public class MoAvailableAreaTypesRepositoryImpl extends BaseRepository implement
                         );
 
         return moAvailableAreaTypesCRUDRepository.findAll(specification);
+    }
+
+    @Override
+    public MoAvailableAreaTypes save(MoAvailableAreaTypes moAvailableAreaTypes) {
+        return moAvailableAreaTypesCRUDRepository.save(moAvailableAreaTypes);
     }
 
 }

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Collections;

@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType_;
-import moscow.ptnl.contingent.domain.area.entity.area.Area_;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType_;
+import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;

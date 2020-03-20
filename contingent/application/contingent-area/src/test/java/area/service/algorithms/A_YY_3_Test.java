@@ -1,6 +1,6 @@
 package area.service.algorithms;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.error.Validation;
 import org.junit.jupiter.api.Test;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;

@@ -1,6 +1,6 @@
 package area.service.methods;
 
-import moscow.ptnl.contingent.domain.area.entity.area.MuAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationMessage;

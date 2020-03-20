@@ -1,20 +1,20 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
-import moscow.ptnl.contingent.domain.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaMedicalEmployees;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaPolicyTypes;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.domain.area.entity.area.MuAddlAreaTypes;
-import moscow.ptnl.contingent.domain.area.entity.area.MuAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.MuAddlAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.domain.area.model.area.AddressWrapper;
@@ -49,7 +49,7 @@ import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -773,6 +773,7 @@ public class AreaServiceHelper {
 
     // К_УУ_1 2.
     // Система проверяет, что в списке доступных для МО отсутствует Тип участка с переданным кодом
+    @Deprecated
     public void checkAreaTypesExistInMO(long moId, List<AreaType> areaTypes, Validation validation) {
         List<AreaType> availableAreaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId).stream()
                 .map(MoAvailableAreaTypes::getAreaType)

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.domain.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform.model.esu;
 
-import moscow.ptnl.contingent.domain.area.entity.area.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.area.transform.Transform;
 import moscow.ptnl.contingent2.area.info.Address;

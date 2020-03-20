@@ -6,7 +6,7 @@ import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.domain.esu.ESUEventHelper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

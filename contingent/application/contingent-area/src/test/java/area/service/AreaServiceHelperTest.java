@@ -1,11 +1,11 @@
 package area.service;
 
 
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.domain.area.entity.area.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaPolicyTypes;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
 import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
@@ -19,7 +19,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;

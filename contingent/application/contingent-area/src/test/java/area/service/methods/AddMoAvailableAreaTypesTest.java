@@ -23,6 +23,7 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
     /**
      * Тест п.1 С_УУ_2
      */
+    /*
     @Test
     public void checkAndGetAreaTypesExistTest() {
         doReturn(Optional.of(areaType1)).when(areaTypesCRUDRepository).findById(areaType1.getCode());
@@ -42,9 +43,9 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
                 , validation.getMessages().get(0).getMessage());
     }
 
-    /**
+    *//**
      * Тест п.2 С_УУ_74
-     */
+     *//*
     @Test
     public void checkAreaTypesExistInMOTest() {
         doReturn(Arrays.asList(moAvailableAreaType1, moAvailableAreaType2))
@@ -61,9 +62,9 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
                 , validation.getMessages().get(1).getMessage());
     }
 
-    /**
+    *//**
      * Тест п.3 записи в БД типов участков доступный для МО
-     */
+     *//*
     @Test
     public void addMoAvailableAreaTypesTest() {
         doReturn(Optional.of(areaType1)).when(areaTypesCRUDRepository).findById(areaType1.getCode());
@@ -94,5 +95,5 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
 
         }
     }
-
+*/
 }

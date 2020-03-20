@@ -1,8 +1,8 @@
 package moscow.ptnl.contingent.esuInputTasks;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaMedicalEmployees;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
@@ -20,7 +20,7 @@ import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent2.rmr.event.JeChangeDateEnd;
 import moscow.ptnl.contingent2.rmr.event.JeCreate;
 import moscow.ptnl.contingent2.rmr.event.JobExecutionInfoMsg;

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.attachment.service;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.attachment.AttachmentErrorReason;
 import moscow.ptnl.contingent.attachment.helpers.AttachmentAlgoritms;
 import moscow.ptnl.contingent.attachment.transform.DNAttachMapper;

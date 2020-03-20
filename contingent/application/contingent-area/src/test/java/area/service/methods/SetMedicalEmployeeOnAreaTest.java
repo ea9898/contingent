@@ -1,7 +1,7 @@
 package service.methods;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.domain.AreaErrorReason;

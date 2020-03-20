@@ -2,10 +2,10 @@ package moscow.ptnl.contingent.area.service;
 
 import static moscow.ptnl.contingent.domain.area.model.area.AddressLevelType.*;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.repository.SysopCRUDRepository;
 import moscow.ptnl.contingent.sysop.entity.Sysop;
 import moscow.ptnl.contingent.domain.AreaErrorReason;

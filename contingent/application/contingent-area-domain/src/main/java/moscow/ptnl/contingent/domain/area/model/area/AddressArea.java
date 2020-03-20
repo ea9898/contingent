@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.domain.area.model.area;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
 
 /*
 Выходной объекта метода getAreaAddress из слоя Service

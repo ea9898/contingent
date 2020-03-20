@@ -1,8 +1,7 @@
-package moscow.ptnl.contingent.area.service;
+package moscow.ptnl.contingent.domain.area;
 
-import moscow.ptnl.contingent.domain.area.CatalogDomainService;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +23,4 @@ public class CatalogDomainServiceImpl implements CatalogDomainService {
         return (result != null) ? Optional.of(result) : Optional.empty();
     }
 
-    @Override
-    public List<MoAvailableAreaTypes> findAreaTypesByMoId(long moId) {
-        return moAvailableAreaTypesRepository.findAreaTypes(moId);
-    }
 }

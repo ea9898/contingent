@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.domain.area.entity.area;
+package moscow.ptnl.contingent.domain.area.entity;
 
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;

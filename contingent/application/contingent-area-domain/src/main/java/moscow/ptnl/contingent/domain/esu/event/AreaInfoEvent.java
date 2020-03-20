@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.domain.esu.event;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 
 import java.time.LocalDateTime;
 

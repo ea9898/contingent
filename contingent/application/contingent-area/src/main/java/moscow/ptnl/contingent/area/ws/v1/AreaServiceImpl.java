@@ -1,8 +1,9 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
-import moscow.ptnl.contingent.domain.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.domain.area.MoService;
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.area.transform.AreaDnMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.domain.area.model.area.AddressArea;
@@ -139,6 +140,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AreaDnMapper areaDnMapper;
+
+    @Autowired
+    private MoService moService;
 
     @Autowired
     private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
@@ -491,7 +495,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public AddMoAvailableAreaTypesResponse addMoAvailableAreaTypes(AddMoAvailableAreaTypesRequest body) throws Fault {
         try {
-            areaService.addMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
+            moService.addMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new AddMoAvailableAreaTypesResponse();
         }

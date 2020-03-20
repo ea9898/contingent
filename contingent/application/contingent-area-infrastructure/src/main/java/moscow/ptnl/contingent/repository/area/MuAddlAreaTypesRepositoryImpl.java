@@ -1,8 +1,8 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.domain.area.entity.area.MuAddlAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.MuAddlAreaTypes;
 
-import moscow.ptnl.contingent.domain.area.entity.area.MuAddlAreaTypes_;
+import moscow.ptnl.contingent.domain.area.entity.MuAddlAreaTypes_;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;

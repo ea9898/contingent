@@ -5,8 +5,8 @@ import area.service.MockConfiguration;
 import area.service.MockEsuService;
 import area.service.MockRepositoriesConfiguration;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
@@ -16,7 +16,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 

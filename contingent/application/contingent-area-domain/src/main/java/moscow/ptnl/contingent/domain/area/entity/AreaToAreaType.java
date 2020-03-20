@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.domain.area.entity.area;
+package moscow.ptnl.contingent.domain.area.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

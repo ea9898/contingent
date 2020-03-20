@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;

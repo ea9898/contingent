@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.domain.area.model.area;
 
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 
 import java.util.List;
 

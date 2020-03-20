@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.domain.area.entity.area.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;

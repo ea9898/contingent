@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class AreaMapper implements Transform<Area, AreaInfo> {
     public Area entityToDtoTransform(AreaInfo entityObject) {
         Area area = new Area();
 
-        moscow.ptnl.contingent.domain.area.entity.area.Area areaObj = entityObject.getArea();
+        moscow.ptnl.contingent.domain.area.entity.Area areaObj = entityObject.getArea();
         area.setId(areaObj.getId());
         area.setMoId(areaObj.getMoId());
         area.setMuId(areaObj.getMuId());

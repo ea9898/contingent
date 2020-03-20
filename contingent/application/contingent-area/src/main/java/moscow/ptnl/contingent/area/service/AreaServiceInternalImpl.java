@@ -1,21 +1,19 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.domain.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.domain.area.entity.area.Addresses;
-import moscow.ptnl.contingent.domain.area.entity.area.Area;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaAddress;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaMedicalEmployees;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaPolicyTypes;
-import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.domain.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.domain.area.entity.area.MuAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.AreaErrorReason;
-import moscow.ptnl.contingent.domain.area.methods.AreaFactoryMethod;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
-import moscow.ptnl.contingent.domain.area.model.params.MoAvailableAreaTypesParams;
 import moscow.ptnl.contingent.domain.area.model.sysop.SysopMethodType;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AreaAddressClone;
@@ -61,7 +59,7 @@ import moscow.ptnl.contingent.repository.area.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
@@ -217,9 +215,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     @Autowired
     private SpecializationCRUDRepository specializationCRUDRepository;
 
-    @Autowired
-    private AreaFactoryMethod areaFactoryMethod;
-
     public AreaServiceInternalImpl() {
     }
 
@@ -228,20 +223,9 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         this.areaHelper = areaHelper;
     }
 
-    // (К_УУ_1) Добавление типов участков, доступных для МО
-    @Override
-    public void addMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
-        MoAvailableAreaTypesParams params = new MoAvailableAreaTypesParams();
-        params.setMoId(moId);
-        params.setAreaTypeCodes(areaTypeCodes);
-
-        List<MoAvailableAreaTypes> moAvailableAreaTypes = areaFactoryMethod.addMoAvailableAreaTypes(params);
-        moAvailableAreaTypesCRUDRepository.saveAll(moAvailableAreaTypes);
-
-    }
-
     // (К_УУ_2)	Удаление типов участков из доступных для МО
     @Override
+    @Deprecated
     public void delMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
         areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
         Validation validation = new Validation();
@@ -260,6 +244,7 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
 
     // (К_УУ_3)	Предоставление типов участков, доступных для МО
     @Override
+    @Deprecated
     public List<AreaType> getMoAvailableAreaTypes(long moId) throws ContingentException {
         List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId);
 

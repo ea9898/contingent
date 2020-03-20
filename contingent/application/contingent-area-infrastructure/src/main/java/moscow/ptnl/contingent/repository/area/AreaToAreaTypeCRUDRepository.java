@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.domain.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
