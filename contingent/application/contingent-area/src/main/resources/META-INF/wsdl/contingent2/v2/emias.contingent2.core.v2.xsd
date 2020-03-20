@@ -5,7 +5,7 @@
            xmlns:tns="http://emias.mos.ru/contingent2/core/v2/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
-    <xs:include schemaLocation="../emias/emias.core.v1.xsd"/>
+    <xs:include schemaLocation="../../emias/emias.core.v1.xsd"/>
     <!--business entities-->
     <xs:complexType name="AreaTypeShort">
         <xs:annotation>
@@ -64,7 +64,7 @@
     <xs:complexType name="MedicalEmployee">
         <xs:sequence>
             <xs:element name="id" type="xs:long" />
-            <xs:element name="medicalEmployeeJobInfoId" type="xs:long" />
+            <xs:element name="medicalEmployeeJobId" type="xs:long" />
             <xs:element name="snils" type="xs:string" />
             <xs:element name="positionId" type="xs:long" />
             <xs:element name="isReplacement" type="xs:boolean" />

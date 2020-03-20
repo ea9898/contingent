@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Endpoint;
+
+import moscow.ptnl.contingent.area.ws.v1.AreaCompositeServiceImpl;
 import moscow.ptnl.metrics.MetricsInterceptorService;
+import moscow.ptnl.soap.log.SoapLogInterceptorService;
+import moscow.ptnl.ws.security.UserContextHolder;
 import moscow.ptnl.ws.security.UserContextInterceptor;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
@@ -15,6 +19,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * Конфигурационный файл для создания Aoache CXF SOAP-сервисов.
@@ -26,14 +32,21 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan(basePackages = "moscow.ptnl")
+@EnableAsync
 public class WebServiceConfiguration {
     
     @Autowired
-    private MetricsInterceptorService interceptorService;
+    private MetricsInterceptorService metricsInterceptorService;
+
+    @Autowired
+    private SoapLogInterceptorService soapLogInterceptorService;
 
     @Autowired
     private SoapVersionInterceptor soapVersionInterceptor;
-    
+
+    @Autowired
+    @Qualifier(EventChannelsConfiguration.SOAP_LOG_EVENT_CHANNEL_NAME)
+    private MessageChannel soapLogChannel;
 
     @Bean(name = Bus.DEFAULT_BUS_ID)
     SpringBus springBus(LoggingFeature loggingFeature) {
@@ -54,29 +67,27 @@ public class WebServiceConfiguration {
         return new UserContextInterceptor(); 
     }
     
-    @Bean //http://localhost:8080/area/nsi/receive_changes?wsdl
-    public Endpoint NSIReceiveService(@Qualifier(moscow.ptnl.contingent.area.ws.nsi.ReceiveChangesImpl.SERVICE_NAME) ru.mos.op.receive_changes.ReceiveChangesPort receiveService, SpringBus cxfBus) {
-        EndpointImpl endpoint = new EndpointImpl(cxfBus, receiveService);
-        
-        endpoint.setServiceName(new QName("http://op.mos.ru/receive_changes", "receive_changes"));
-        endpoint.setWsdlLocation("classpath:META-INF/wsdl/nsi/ReceiveChangesWS.wsdl");
-        endpoint.setAddress("/nsi/receive_changes");
-        endpoint.publish();
-
-    	//endpoint.getInInterceptors().add(soapVersionInterceptor); //FIXME временно заблокировано так как WSDL не соответствует требованиям (версия SOAP < 1.2)
-        endpoint.getInInterceptors().add(credentialsValidator());
-        interceptorService.setupInterceptors(endpoint);
-        
-        return endpoint;
-    }
-    
-    @Bean 
+    @Bean
     public Endpoint AreaServiceV1(@Qualifier(moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl.SERVICE_NAME) ru.mos.emias.contingent2.area.AreaPT areaService, SpringBus cxfBus) {
         EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
         initAreaService(endpoint, "v1");
         return endpoint;
     }
-    
+
+    @Bean
+    public Endpoint AreaCompositServiceV1(@Qualifier(AreaCompositeServiceImpl.SERVICE_NAME) ru.mos.emias.contingent2.area.composit.AreaCompositePT areaCompositService, SpringBus cxfBus) {
+        EndpointImpl endpoint = new EndpointImpl(cxfBus, areaCompositService);
+        endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/composite/v1/", "AreaCompositeService"));
+        endpoint.setWsdlLocation("classpath:META-INF/wsdl/composite/emias.contingent2.composite.v1.wsdl");
+        endpoint.setAddress("/composite/v1/areaCompositeService");
+        endpoint.publish();
+        endpoint.getInInterceptors().add(soapVersionInterceptor);
+        endpoint.getInInterceptors().add(credentialsValidator());
+        metricsInterceptorService.setupInterceptors(endpoint);
+        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestId);
+        return endpoint;
+    }
+
 //    @Bean
 //    public Endpoint AreaServiceV5(@Qualifier(moscow.ptnl.contingent.area.ws.v2.AreaServiceImpl.SERVICE_NAME) ru.gov.emias2.contingent.v2._public.area.AreaPT areaService, SpringBus cxfBus) {
 //        EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
@@ -89,12 +100,13 @@ public class WebServiceConfiguration {
         endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/" + pathPart, "AreaService"));
         String wsdlLocation = "classpath:META-INF/wsdl/contingent2/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "emias.contingent2." + (version == null ? "v1" : version) + ".wsdl";
         endpoint.setWsdlLocation(wsdlLocation);
-        endpoint.setAddress("/" + pathPart + "AreaService");
+        endpoint.setAddress("/" + pathPart + "areaService");
         endpoint.publish();
 
     	endpoint.getInInterceptors().add(soapVersionInterceptor);
         endpoint.getInInterceptors().add(credentialsValidator());
-        interceptorService.setupInterceptors(endpoint);
+        metricsInterceptorService.setupInterceptors(endpoint);
+        soapLogInterceptorService.setupInterceptors(endpoint, soapLogChannel, UserContextHolder::getRequestId);
     }
     
 }

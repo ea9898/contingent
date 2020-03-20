@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 2 (http://www.altova.com) by DIT (DIT) -->
+<xs:schema xmlns="http://emias.mos.ru/svmr2/producer/v1/types" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   targetNamespace="http://emias.mos.ru/svmr2/producer/v1/types" elementFormDefault="qualified"
+		   attributeFormDefault="unqualified">
+	<xs:include schemaLocation="emias.core.v1.xsd"/>
+	<!--Basic types-->
+	<xs:complexType name="Base" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Базовый абстрактный тип для компонентов сущностей</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="id" type="ID" use="required">
+			<xs:annotation>
+				<xs:documentation>Идентификатор</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="EntityBase" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Базовый абстрактный тип, используемый для описания сущностей</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Base">
+				<xs:attribute name="archived" type="xs:boolean" use="required">
+					<xs:annotation>
+						<xs:documentation>Признак "Архивная сущность"</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DictionaryTypeBase" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Базовый абстрактный тип для справочника</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Base">
+				<xs:sequence>
+					<xs:element name="code" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Код (бизнесовый идентификатор)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--DictionaryTypes-->
+	<xs:complexType name="DepartmentAffilation">
+		<xs:annotation>
+			<xs:documentation>Сведения из справочника Ведомственной принадлежности</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="DictionaryTypeShort">
+				<xs:sequence minOccurs="0">
+					<xs:element name="parent" type="DictionaryTypeShort" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Родительская запись</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicalActivity">
+		<xs:annotation>
+			<xs:documentation>Сведения из справочника Вид медицинской деятельности</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="DictionaryTypeShort">
+				<xs:sequence minOccurs="0">
+					<xs:element name="parent" type="DictionaryTypeShort" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Родительская запись</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--Extension types-->
+	<xs:complexType name="FIO">
+		<xs:annotation>
+			<xs:documentation>Тип для ФИО</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="lastName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Фамилия</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="firstName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Имя</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="middleName" type="xs:string" nillable="true" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Отчество</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RequredStartPeriod">
+		<xs:annotation>
+			<xs:documentation>Период действия с обязательной датой начала</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="start" type="xs:date" nillable="false">
+				<xs:annotation>
+					<xs:documentation>Дата начала периода</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="end" type="xs:date" nillable="true" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дата окончания периода</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DictionaryTypeShort">
+		<xs:annotation>
+			<xs:documentation>Тип для описания кратких сведений справочника</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="DictionaryTypeBase">
+				<xs:sequence>
+					<xs:element name="title" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Наименование</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ParentMedicalFacilityShort">
+		<xs:annotation>
+			<xs:documentation>Вышестоящее МУ</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Base"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ParentDepartmentShort">
+		<xs:annotation>
+			<xs:documentation>Вышестоящее подразделение</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Base"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="JobExecutionUpdatableAttributes">
+		<xs:annotation>
+			<xs:documentation>Обновляемые атрибуты Исполнения должности</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="positionType" type="DictionaryTypeShort" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Тип занятия должности</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="rate" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ставка</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrganizationUpdatableAttributes">
+		<xs:sequence minOccurs="0">
+			<xs:element name="name" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Полное наименование</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="shortName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Краткое наименование</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ogrn" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Код ОГРН</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="okopf" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Код ОКОПФ</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="inn" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ИНН</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="kpp" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>КПП</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="regDate" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дата регистрации в ЕГРЮЛ</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="departmentAffilation" type="DepartmentAffilation" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ведомственная принадлежность</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MedicalOrganizationUpdatableAttributes">
+		<xs:sequence minOccurs="0">
+			<xs:element name="medicalActivity" type="MedicalActivity" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Вид медицинской деятельности</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="territory" type="DictionaryTypeShort" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Территориальный признак</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MedicalFacilityUpdatableAttributes">
+		<xs:sequence minOccurs="0">
+			<xs:element name="medicalOrganization" type="MedicalOrganizationShort" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Медицинская организация</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="name" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Полное наименование</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="shortName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Краткое наименование</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="independence" type="DictionaryTypeShort" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Обособленность</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="parentMedicalFacility" type="ParentMedicalFacilityShort" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Вышестоящее МУ</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="medicalFacilityType" type="DictionaryTypeShort" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Тип МУ</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="periodStart" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Начало периода функционирования</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="periodEnd" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Окончание периода функционирования</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="clo" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Код ЦЛО</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="mgfoms" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Код МГФОМС</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="isHead" type="xs:boolean">
+			<xs:annotation>
+				<xs:documentation>Является Головным</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!--Entities (short)-->
+	<xs:complexType name="AddressObjectShort">
+		<xs:annotation>
+			<xs:documentation>Краткие сведения об Адресном объекте</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="EntityBase">
+				<xs:sequence>
+					<xs:element name="addressShort">
+						<xs:annotation>
+							<xs:documentation>Краткие сведения об адресе (из Адресного реестра НСИ)</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="Base">
+									<xs:sequence>
+										<xs:element name="addressString" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Полное наименование адреса (адрес строкой)</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicalOrganizationShort">
+		<xs:annotation>
+			<xs:documentation>Краткие сведения о Медицинской организации</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OrganizationShort"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DepartmentShort">
+		<xs:annotation>
+			<xs:documentation>Краткие сведения о Структурном подразделении организации</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="EntityBase">
+				<xs:sequence>
+					<xs:element name="organization" type="OrganizationShort">
+						<xs:annotation>
+							<xs:documentation>Организация</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="departmentNom">
+						<xs:annotation>
+							<xs:documentation>Подразделение из номенклатуры</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="DictionaryTypeShort"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="parentDepartment" type="ParentDepartmentShort" nillable="true" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Вышестоящее подразделение</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EmployeeShort">
+		<xs:annotation>
+			<xs:documentation>Краткие сведения о Работнике</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="EntityBase">
+				<xs:sequence>
+					<xs:element name="fio" type="FIO">
+						<xs:annotation>
+							<xs:documentation>ФИО</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="snils" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>СНИЛС</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="omsPolicy" nillable="true" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Полис ОМС</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:annotation>
+								<xs:documentation>Полис ОМС</xs:documentation>
+							</xs:annotation>
+							<xs:sequence>
+								<xs:element name="series" type="xs:string" nillable="true" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Серия</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="number" type="xs:string" nillable="false">
+									<xs:annotation>
+										<xs:documentation>Номер</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="JobExecutionShort">
+		<xs:annotation>
+			<xs:documentation>Краткие сведения об Исполнении должности</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="EntityBase">
+				<xs:sequence>
+					<xs:element name="department" type="DepartmentShort">
+						<xs:annotation>
+							<xs:documentation>Структурное подразделение</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="employee" type="EmployeeShort">
+						<xs:annotation>
+							<xs:documentation>Работник организации</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="positionNom" type="DictionaryTypeShort">
+						<xs:annotation>
+							<xs:documentation>Должность из номенклатуры</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="period" type="RequredStartPeriod">
+						<xs:annotation>
+							<xs:documentation>Период действия</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PeriodAbsenceShort">
+		<xs:annotation>
+			<xs:documentation>Краткие сведения о Периоде отсутствия</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Base">
+				<xs:sequence>
+					<xs:element name="period" type="RequredStartPeriod">
+						<xs:annotation>
+							<xs:documentation>Период действия</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="reasonAbsenceCode" type="DictionaryTypeShort">
+						<xs:annotation>
+							<xs:documentation>Причина отсутствия</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OrganizationShort">
+		<xs:annotation>
+			<xs:documentation>Краткие сведения об Организации</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="EntityBase">
+				<xs:sequence>
+					<xs:element name="shortName" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Краткое наименование</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="type" type="OrganizationTypes" use="required">
+					<xs:annotation>
+						<xs:documentation>Тип организации</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!--Entities (extension)-->
+	<xs:complexType name="MedicalOrganizationExtension">
+		<xs:annotation>
+			<xs:documentation>Расширенные сведения о Медицинской организации</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OrganizationExtension">
+				<xs:sequence>
+					<xs:element name="medicalOrganizationAttributes">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="MedicalOrganizationUpdatableAttributes">
+									<xs:sequence>
+										<xs:element name="medicalActivity" type="MedicalActivity">
+											<xs:annotation>
+												<xs:documentation>Вид медицинской деятельности</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="territory" type="DictionaryTypeShort">
+											<xs:annotation>
+												<xs:documentation>Территориальный признак</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicalFacilityExtension">
+		<xs:annotation>
+			<xs:documentation>Расширенные сведения о Медицинском учреждении</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="MedicalFacilityUpdatableAttributes">
+				<xs:sequence>
+					<xs:element name="medicalOrganization" type="MedicalOrganizationShort">
+						<xs:annotation>
+							<xs:documentation>Медицинская организация</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="name" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Полное наименование</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="shortName" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Краткое наименование</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="independence" type="DictionaryTypeShort">
+						<xs:annotation>
+							<xs:documentation>Обособленность</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="parentMedicalFacility" type="ParentMedicalFacilityShort" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Вышестоящее МУ</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="medicalFacilityType" type="DictionaryTypeShort">
+						<xs:annotation>
+							<xs:documentation>Тип МУ</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="periodStart" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>Начало периода функционирования</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="periodEnd" type="xs:date" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Окончание периода функционирования</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="clo" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Код ЦЛО</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="mgfoms" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Код МГФОМС</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="isHead" type="xs:boolean" use="required">
+					<xs:annotation>
+						<xs:documentation>Является Головным</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DepartmentExtension">
+		<xs:annotation>
+			<xs:documentation>Расширенные сведения о Структурном подразделении организации</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="DepartmentShort">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>Наименование подразделения</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="medicalCareProfile" type="DictionaryTypeShort" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Профиль медицинской помощи</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EmployeeExtension">
+		<xs:annotation>
+			<xs:documentation>Расширенные сведения о Работнике</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="EmployeeShort">
+				<xs:sequence>
+					<xs:element name="birthDate" type="xs:date">
+						<xs:annotation>
+							<xs:documentation>Дата рождения</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="gender" type="DictionaryTypeShort">
+						<xs:annotation>
+							<xs:documentation>Пол</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="citizenship" nillable="true" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Страна гражданства</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="DictionaryTypeBase">
+									<xs:sequence>
+										<xs:element name="shortName" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Краткое (общепринятое) наименование</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="inn" type="xs:string" nillable="true" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>ИНН</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="JobExecutionExtension">
+		<xs:annotation>
+			<xs:documentation>Расширенные сведения об Исполнении должности</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="JobExecutionShort">
+				<xs:sequence>
+					<xs:element name="attributes">
+						<xs:annotation>
+							<xs:documentation>Расширенные сведения</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="JobExecutionUpdatableAttributes">
+									<xs:sequence>
+										<xs:element name="positionType" type="DictionaryTypeShort">
+											<xs:annotation>
+												<xs:documentation>Тип занятия должности</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="rate" type="xs:float">
+											<xs:annotation>
+												<xs:documentation>Ставка</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OrganizationExtension">
+		<xs:annotation>
+			<xs:documentation>Расширенные сведения об Организации</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="attributes">
+				<xs:annotation>
+					<xs:documentation>Расширенные сведения</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:restriction base="OrganizationUpdatableAttributes">
+							<xs:sequence>
+								<xs:element name="name" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>Полное наименование</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="shortName" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>Краткое наименование</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="ogrn" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>Код ОГРН</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="okopf" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>Код ОКОПФ</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="inn" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>ИНН</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="kpp" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>КПП</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="regDate" type="xs:date">
+									<xs:annotation>
+										<xs:documentation>Дата регистрации в ЕГРЮЛ</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="departmentAffilation" type="DepartmentAffilation" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Ведомственная принадлежность</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:restriction>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="type" type="OrganizationTypes" use="required">
+			<xs:annotation>
+				<xs:documentation>Тип организации</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<!--Enumeration-->
+	<xs:simpleType name="OrganizationTypes">
+		<xs:annotation>
+			<xs:documentation> Типы организаций</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MEDICAL_ORGANIZATION">
+				<xs:annotation>
+					<xs:documentation>Медицинская организация</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="EDUCATIONAL_ORGANIZATION">
+				<xs:annotation>
+					<xs:documentation>Образовательная организация</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="DUMMY_ORGANIZATION">
+				<xs:annotation>
+					<xs:documentation>Модельная организациия</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes_;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,10 +34,13 @@ public class MoAvailableAreaTypesRepositoryImpl extends BaseRepository implement
     }
 
     @Override
-    public List<MoAvailableAreaTypes> findByAreaTypes(AreaType areaType) {
+    public List<MoAvailableAreaTypes> findByAreaTypes(AreaType areaType, Long moId) {
         Specification<MoAvailableAreaTypes> specification =
                 (root, criteriaQuery, criteriaBuilder) ->
-                        criteriaBuilder.equal(root.get(MoAvailableAreaTypes_.areaType.getName()), areaType);
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(root.get(MoAvailableAreaTypes_.areaType.getName()), areaType),
+                                moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAvailableAreaTypes_.moId.getName()), moId)
+                        );
 
         return moAvailableAreaTypesCRUDRepository.findAll(specification);
     }

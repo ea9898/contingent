@@ -208,4 +208,65 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-152-1" author="shnaider" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_ESU_INPUT_EVENT_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки EVENT_ID таблицы ESU_INPUT</comment>
+        <createIndex indexName="IDX_ESU_INPUT_EVENT_ID"
+                     tableName="ESU_INPUT"
+                     unique="false">
+            <column name="EVENT_ID" type="VARCHAR2(36)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-263" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ESU_OUTPUT"/>
+            <not>
+                <columnExists tableName="ESU_OUTPUT" columnName="method_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ESU_OUTPUT">
+            <column name="method_name" type="VARCHAR2(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="method_name" tableName="ESU_OUTPUT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-264-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ESU_INPUT"/>
+            <not>
+                <columnExists tableName="ESU_INPUT" columnName="host"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ESU_INPUT">
+            <column name="host" type="VARCHAR2(36)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="host" tableName="ESU_INPUT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-264-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ESU_OUTPUT"/>
+            <not>
+                <columnExists tableName="ESU_OUTPUT" columnName="host"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ESU_OUTPUT">
+            <column name="host" type="VARCHAR2(50)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="host" tableName="ESU_OUTPUT"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import javax.persistence.Transient;
-import moscow.ptnl.contingent.configuration.EventChannelsConfiguration;
+import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.history.EntityConverterHelper;
 import moscow.ptnl.contingent.domain.history.HistoryEventBuilder;
 import moscow.ptnl.contingent.domain.history.ServiceName;
@@ -12,7 +12,7 @@ import moscow.ptnl.contingent.domain.history.converter.DefaultConverter;
 import moscow.ptnl.contingent.domain.history.meta.FieldConverter;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
-import moscow.ptnl.contingent.security.Principal;
+import moscow.ptnl.contingent.domain.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,19 +29,33 @@ public class HistoryServiceImpl implements HistoryService {
     
     private static final Logger LOG = LoggerFactory.getLogger(HistoryServiceImpl.class);
     
-    @Autowired @Qualifier(EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME)
+    @Autowired @Qualifier(HISTORY_EVENT_CHANNEL_NAME)
     private MessageChannel historyChannel;
     
     //инстанс дефолтного конвертера полей, для ускорения обработки
     private final FieldConverter defaultConverter = new DefaultConverter();
 
     @Override
-    public <T> void write(Principal principal, T oldObject, T newObject) throws RuntimeException {
+    public <T> void write(String requestUuid, String methodName, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException {
         if (principal == null) {
             throw new IllegalArgumentException("нет данных о пользователе вызвавшем метод");
         }
-        if (oldObject == null || newObject == null) {
-            throw new IllegalArgumentException("журналируемый объект не может быть null");
+        if (oldObject == null && newObject == null) {
+            throw new IllegalAccessError("Нечего сравнивать!");
+        }
+        String entityId = "";
+        try {
+            if (oldObject == null) {
+                oldObject = cls.newInstance();
+                entityId = EntityConverterHelper.getEntityId(newObject);
+            } else if (newObject == null) {
+                newObject = cls.newInstance();
+                entityId = EntityConverterHelper.getEntityId(oldObject);
+            } else {
+                entityId = EntityConverterHelper.getEntityId(oldObject);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Такого быть не может.");
         }
         
         //получаем аннотацию Journalable которой должна быть аннотирована журналируемая сущность
@@ -55,15 +69,16 @@ public class HistoryServiceImpl implements HistoryService {
         if (serviceName == null) {
             throw new IllegalArgumentException("неизвестный тип сервиса");
         }
-        
+
         HistoryEventBuilder eventBuilder = HistoryEventBuilder
-                .withEntity(oldObject.getClass(), EntityConverterHelper.getEntityId(oldObject))
+                .withEntity(cls, entityId)
                 .setPrincipal(principal)
+                .setMethodName(methodName)
+                .setRequestUUID(requestUuid)
                 .setServiceName(serviceName);
         
         //обходим поля объекта и ищем проаннотированные
-        Class objectType = oldObject.getClass();
-        for (Field f : objectType.getDeclaredFields()) {
+        for (Field f : cls.getDeclaredFields()) {
             try {
                 f.setAccessible(true);
                 LogIt logAnnotation = f.getAnnotation(LogIt.class);
@@ -82,10 +97,10 @@ public class HistoryServiceImpl implements HistoryService {
                 Object newValue = f.get(newObject);
                 //ищем измененные значения
                 if (!converter.equals(oldValue, newValue)) {                
-                    eventBuilder.addValue(f.getName(), converter.toString(oldValue), converter.toString(newValue));
+                    eventBuilder.addValue(f.getName(), converter.toString(oldValue), converter.toString(newValue), cls);
                 }
             } catch (Exception e) {
-                LOG.error("ошибка логирования поля: " + f.getName() + " в классе: " + objectType.getName(), e);
+                LOG.error("ошибка логирования поля: " + f.getName() + " в классе: " + cls.getName(), e);
                 throw new RuntimeException(e);
             }
         }

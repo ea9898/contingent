@@ -1,10 +1,9 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.area.error.ContingentException;
-import moscow.ptnl.contingent.area.error.Validation;
-import moscow.ptnl.contingent.area.error.ValidationMessage;
-import moscow.ptnl.contingent.area.error.ValidationMessageType;
-import moscow.ptnl.contingent.area.error.ValidationParameter;
+import moscow.ptnl.contingent.error.ContingentException;
+import moscow.ptnl.contingent.error.Validation;
+import moscow.ptnl.contingent.error.ValidationMessage;
+import moscow.ptnl.contingent.error.ValidationParameter;
 import ru.mos.emias.contingent2.area.Fault;
 import ru.mos.emias.system.v1.faults.BusinessFault;
 import ru.mos.emias.system.v1.faults.ErrorMessage;
@@ -12,10 +11,19 @@ import ru.mos.emias.system.v1.faults.ErrorMessageCollection;
 import ru.mos.emias.system.v1.faults.ErrorMessageTypes;
 import ru.mos.emias.system.v1.faults.KeyValuePair;
 import ru.mos.emias.system.v1.faults.UnexpectedFault;
+import ru.mos.emias.system.v1.faults.SecurityFault;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import moscow.ptnl.ws.security.UserContextHolder;
+import ru.mos.emias.errors.domain.ErrorMessageType;
+import ru.mos.emias.errors.domain.Message;
+import ru.mos.emias.errors.domain.OtherSecurityException;
+import ru.mos.emias.errors.domain.UnauthorizedException;
+import ru.mos.emias.system.v1.faults.FaultTypes;
+import ru.mos.emias.system.v1.faults.SecurityExceptionTypes;
+import ru.mos.emias.system.v1.faults.UnauthorizedRequestSecurityException;
 
 public class SoapExceptionMapper {
 
@@ -26,6 +34,34 @@ public class SoapExceptionMapper {
             fault.setMessages(map(((ContingentException) e).getValidation()));
             fault.setHasErrors(!((ContingentException) e).getValidation().isSuccess());
 
+            return new Fault(e.getMessage(), fault);
+        } else if (e instanceof UnauthorizedException) {
+            UnauthorizedRequestSecurityException.RequiredRights rights = new UnauthorizedRequestSecurityException.RequiredRights();
+            rights.getUserRightIds().addAll(((UnauthorizedException) e).getUserRights());            
+            
+            UnauthorizedRequestSecurityException urse = new UnauthorizedRequestSecurityException();
+            urse.setType(SecurityExceptionTypes.UNAUTHORIZED_REQUEST_EXCEPTION);
+            urse.setRequiredRights(rights);
+            
+            SecurityFault fault = new SecurityFault();
+            fault.setType(FaultTypes.SECURITY);
+            fault.setUserContext(UserContextHolder.getUserContext());
+            fault.setUnauthorizedRequestSecurityException(urse);
+                        
+            return new Fault(e.getMessage(), fault);
+        } else if (e instanceof OtherSecurityException) {
+            ru.mos.emias.system.v1.faults.OtherSecurityException ose = new ru.mos.emias.system.v1.faults.OtherSecurityException();
+            List<Message> messages = ((OtherSecurityException) e).getMessages();
+            if (!messages.isEmpty()) {
+                ose.setMessage(map(messages.get(0)));
+            }
+            ose.setType(SecurityExceptionTypes.OTHER_SECURITY_EXCEPTION);
+            
+            SecurityFault fault = new SecurityFault();
+            fault.setType(FaultTypes.SECURITY);
+            fault.setUserContext(UserContextHolder.getUserContext());
+            fault.setOtherSecurityException(ose);
+            
             return new Fault(e.getMessage(), fault);
         }
         UnexpectedFault fault = new UnexpectedFault();
@@ -80,8 +116,18 @@ public class SoapExceptionMapper {
         }
         return null;
     }
+    
+    private static ru.mos.emias.system.v1.faults.Message map(Message msg) {
+        if (msg != null) {
+            ru.mos.emias.system.v1.faults.Message message = new ru.mos.emias.system.v1.faults.Message();
+            message.setCode(msg.getCode());
+            message.setMessage(msg.getMessage());
+            return message;
+        }
+        return null;
+    }
 
-    private static ErrorMessageTypes map(ValidationMessageType messageType) {
+    private static ErrorMessageTypes map(ErrorMessageType messageType) {
         switch (messageType) {
             case INFO: return ErrorMessageTypes.INFO;
             case WARNING: return ErrorMessageTypes.WARNING;

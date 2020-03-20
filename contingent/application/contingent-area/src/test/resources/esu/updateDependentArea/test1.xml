@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:attachOnAreaChange xmlns:ns2="http://ptnl.moscow/contingent2/event/type/attachment/">
+    <id>1</id>
+    <operationDate>2019-08-09T17:08:56.931+03:00</operationDate>
+    <dependendArea>
+        <moId>204</moId>
+        <areaId>1</areaId>
+        <areaRestriction>
+            <minAge>2</minAge>
+            <maxAge>12</maxAge>
+        </areaRestriction>
+        <policyType>1</policyType>
+    </dependendArea>
+    <primaryAreaDel>2</primaryAreaDel>
+</ns2:attachOnAreaChange>

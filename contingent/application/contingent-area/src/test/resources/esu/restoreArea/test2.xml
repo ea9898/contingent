@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:areaInfoEvent xmlns:ns2="http://ptnl.moscow/contingent2/event/type/area/">
+    <id>1</id>
+    <operationDate>2019-08-12T12:05:48.088+03:00</operationDate>
+    <operationType>restoreArea</operationType>
+    <areaId>0</areaId>
+    <areaType>0</areaType>
+    <muId>1</muId>
+    <number>0</number>
+    <archive>false</archive>
+    <autoAssignForAttachment>false</autoAssignForAttachment>
+    <areaRestriction/>
+    <addresses/>
+</ns2:areaInfoEvent>

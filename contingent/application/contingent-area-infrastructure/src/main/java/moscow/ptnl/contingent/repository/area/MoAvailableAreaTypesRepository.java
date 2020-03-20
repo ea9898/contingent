@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
@@ -11,5 +11,5 @@ public interface MoAvailableAreaTypesRepository {
 
     List<MoAvailableAreaTypes> findAreaTypes(long moId);
 
-    List<MoAvailableAreaTypes> findByAreaTypes(AreaType areaType);
+    List<MoAvailableAreaTypes> findByAreaTypes(AreaType areaType, Long moId);
 }

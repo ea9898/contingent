@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1.1.0.0" author="shnaider" labels ="1.1.0.0">
+        <tagDatabase tag="1.1.0.0"/>
+    </changeSet>
+
+    <include file="sysop.xml" relativeToChangelogFile="true"/>
+    <include file="area.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="CONTINGENT2-383-1" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history_requests" columnName="id"/>
+        </preConditions>
+        <comment>Изменение колонки ID таблицы jl_history_requests</comment>
+        <modifyDataType tableName="jl_history_requests" columnName="id" newDataType="VARCHAR(36)"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-2" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="jl_history" columnName="jl_history_requests_id"/>
+            </not>
+        </preConditions>
+        <comment>добавление колонки jl_history_requests_id в таблицу jl_history</comment>
+        <addColumn tableName="jl_history">
+            <column name="jl_history_requests_id" type="VARCHAR(36)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="jl_history" columnName="jl_history_requests_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-3" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="account_id"/>
+        </preConditions>
+        <comment>удаление колонки account_id в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="account_id"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-4" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="lpu_id"/>
+        </preConditions>
+        <comment>удаление колонки lpu_id в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="lpu_id"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-5" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="source_type"/>
+        </preConditions>
+        <comment>удаление колонки source_type в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="source_type"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-6" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="event_id"/>
+        </preConditions>
+        <comment>удаление колонки event_id в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="event_id"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-7" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="jl_history" columnName="notification_id"/>
+        </preConditions>
+        <comment>удаление колонки notification_id в таблице jl_history</comment>
+        <dropColumn tableName="jl_history" columnName="notification_id"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-8" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="jl_history_columns" columnName="TABLE_NAME"/>
+            </not>
+        </preConditions>
+        <comment>добавление колонки TABLE_NAME в таблицу jl_history_columns</comment>
+        <addColumn tableName="jl_history_columns">
+            <column name="TABLE_NAME" type="VARCHAR(255)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="jl_history_columns" columnName="TABLE_NAME"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-9" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="jl_history_columns_seq_id" />
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса jl_history_columns_seq_id для таблицы jl_history_columns</comment>
+        <createSequence sequenceName="jl_history_columns_seq_id"/>
+        <rollback>
+            <dropSequence sequenceName="jl_history_columns_seq_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-383-11" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="jl_history_columns"/>
+            <not>
+                <columnExists tableName="jl_history_columns" columnName="id"/>
+            </not>
+        </preConditions>
+        <comment>Добавление первичного ключа id в таблицу jl_history_columns</comment>
+        <delete tableName="jl_history_columns"/>
+        <addColumn tableName="jl_history_columns">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addPrimaryKey tableName="jl_history_columns"
+                       columnNames="id" />
+        <rollback>
+            <dropColumn tableName="jl_history_columns" columnName="id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-386-1" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="addresses" columnName="region_te_id"/>
+        </preConditions>
+        <comment>Изменение колонки region_te_id таблицы addresses</comment>
+        <modifyDataType tableName="addresses" columnName="region_te_id" newDataType="VARCHAR(255)"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-386-2" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="nsi_address_forming_element" columnName="region_te_id"/>
+        </preConditions>
+        <comment>Изменение колонки region_te_id таблицы addresses</comment>
+        <modifyDataType tableName="nsi_address_forming_element" columnName="region_te_id" newDataType="VARCHAR(255)"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-402-1" author="shnaider" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="position_nom" columnName="position_code_id"/>
+        </preConditions>
+        <comment>Изменение колонки position_code_id таблицы position_nom</comment>
+        <delete tableName="position_nom"/>
+        <modifyDataType tableName="position_nom" columnName="position_code_id" newDataType="bigint"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-1" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'topics.consumers.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Глобальная настройка для отключения слушателей всех топиков ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="topics.consumers.run.mode"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Отключение слушателей всех топиков ЕСУ (0-отключены, 1-включены)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='topics.consumers.run.mode'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-2" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'JEMsg.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка для отключения слушателя топика JEMsg ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="JEMsg.run.mode"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Отключение слушателя топика JEMsg (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='JEMsg.run.mode'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-3" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'AttachmentPrimary.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка для отключения слушателя топика AttachmentPrimary ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="AttachmentPrimary.run.mode"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Отключение слушателя топика AttachmentPrimary (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='AttachmentPrimary.run.mode'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-4" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'DNEventInformer.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка для отключения слушателя топика DNEventInformer ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="DNEventInformer.run.mode"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Отключение слушателя топика DNEventInformer (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='DNEventInformer.run.mode'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-5" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'JEMsg.run.begin-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка начала времени работы слушателя топика JEMsg ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="JEMsg.run.begin-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="00:00:00"/>
+            <column name="description" value="Время начала работы слушателя топика JEMsg (00:00:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='JEMsg.run.begin-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-6" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'AttachmentPrimary.run.begin-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка начала времени работы слушателя топика AttachmentPrimary ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="AttachmentPrimary.run.begin-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="00:00:00"/>
+            <column name="description" value="Время начала работы слушателя топика AttachmentPrimary (00:00:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='AttachmentPrimary.run.begin-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-7" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'DNEventInformer.run.begin-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка начала времени работы слушателя топика DNEventInformer ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="DNEventInformer.run.begin-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="00:00:00"/>
+            <column name="description" value="Время начала работы слушателя топика DNEventInformer (00:00:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='DNEventInformer.run.begin-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-8" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'JEMsg.run.end-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка окончания времени работы слушателя топика JEMsg ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="JEMsg.run.end-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="23:59:00"/>
+            <column name="description" value="Время окончания работы слушателя топика JEMsg (23:59:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='JEMsg.run.end-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-9" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'AttachmentPrimary.run.end-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка окончания времени работы слушателя топика AttachmentPrimary ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="AttachmentPrimary.run.end-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="23:59:00"/>
+            <column name="description" value="Время окончания работы слушателя топика AttachmentPrimary (23:59:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='AttachmentPrimary.run.end-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-416-10" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'DNEventInformer.run.end-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка окончания времени работы слушателя топика DNEventInformer ЕСУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="DNEventInformer.run.end-date"/>
+            <column name="type" value="4"/>
+            <column name="val" value="23:59:00"/>
+            <column name="description" value="Время окончания работы слушателя топика DNEventInformer (23:59:00)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='DNEventInformer.run.end-date'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-427-1" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="ESU_INPUT" columnName="host" newDataType="varchar2(255)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-427-2" author="ddryuchin" labels="1.1.0.0">
+        <preConditions></preConditions>
+        <modifyDataType tableName="ESU_OUTPUT" columnName="host" newDataType="varchar2(255)"/>
+        <rollback></rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-430-1" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <columnExists tableName="AD_CONFIG" columnName="val"/>
+            </and>
+        </preConditions>
+        <comment>Увеличение длины типа для хранения данных</comment>
+        <modifyDataType tableName="AD_CONFIG" columnName="val" newDataType="VARCHAR(10000)"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-430-2" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'services.security.settings'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Настройка безопасности методов web-сервиса</comment>
+        <loadData
+            encoding="UTF-8"
+            file="changelog/area/versions/1.1.0.0/files/security.config.csv"
+            quotchar=""
+            separator="#"
+            tableName="AD_CONFIG">
+            <column name="code" type="STRING"/>
+            <column name="val" type="STRING"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-430-3" author="mkachalov" labels="1.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'services.security.settings'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Создание настройки безопасности методов web-сервиса</comment>
+        <update tableName="AD_CONFIG">
+            <column name="type" value="3"/>
+            <column name="description" value="Настройки ограничения доступа к методам web-сервиса"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+            <where>code = 'services.security.settings'</where>
+        </update>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='services.security.settings'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

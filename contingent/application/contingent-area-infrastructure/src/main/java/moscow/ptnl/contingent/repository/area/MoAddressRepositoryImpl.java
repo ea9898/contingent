@@ -2,8 +2,7 @@ package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
 import moscow.ptnl.contingent.area.entity.area.MoAddress_;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType_;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
+
+import javax.persistence.criteria.JoinType;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
@@ -47,14 +49,17 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
 
     @Override
     public List<MoAddress> getActiveMoAddresses(AreaType areaType) {
-        Specification<MoAddress> moAddressSpecification = (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.and(
-                criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+        Specification<MoAddress> moAddressSpecification = (root, criteriaQuery, criteriaBuilder) -> {
+            //Принудительная загрузка адресов (отмена Fetch.LAZY), для ускорения выборки
+            root.fetch(MoAddress_.address, JoinType.INNER);
+
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
                     criteriaBuilder.or(
                             criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
                             root.get(MoAddress_.endDate.getName()).isNull()
-            ));
-
+                    ));
+        };
         return moAddressPagingAndSortingRepository.findAll(moAddressSpecification);
     }
 }

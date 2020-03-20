@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,6 +41,16 @@ public class MuAvailableAreaTypes implements Serializable {
 
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
+
+    public MuAvailableAreaTypes() {
+    }
+
+    public MuAvailableAreaTypes(Long muId, AreaType areaType, MoAvailableAreaTypes moAvailableAreaType, LocalDateTime createDate) {
+        this.muId = muId;
+        this.areaType = areaType;
+        this.moAvailableAreaType = moAvailableAreaType;
+        this.createDate = createDate;
+    }
 
     public Long getId() {
         return id;

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+    <deployment>
+        <dependencies>
+            <module name="org.infinispan" export="true" services="import"/>
+            <module name="org.infinispan.commons" export="true" services="import"/>            
+        </dependencies>
+        <exclude-subsystems>
+            <subsystem name="webservices"/>
+            <subsystem name="jaxrs"/>
+            <subsystem name="weld"/>
+            <subsystem name="org.hibernate" />
+            <subsystem name="org.hibernate.validator" />
+        </exclude-subsystems>
+        <exclusions>
+            <module name="org.hibernate" />
+            <module name="org.hibernate.validator" />
+        </exclusions>
+    </deployment>
+</jboss-deployment-structure>

@@ -24,6 +24,14 @@ public class NsiAddress {
         this.levelAddress = levelAddress;
     }
 
+    public NsiAddress() {
+    }
+
+    public NsiAddress(Long globalId, Integer levelAddress) {
+        this.globalId = globalId;
+        this.levelAddress = levelAddress;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

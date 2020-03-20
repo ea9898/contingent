@@ -12,11 +12,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserContextInterceptor extends AbstractSoapInterceptor {
+    
+    private final static Logger LOG = LoggerFactory.getLogger(UserContextInterceptor.class);
 
     public UserContextInterceptor() {
-        super(Phase.PRE_PROTOCOL);
+        super(Phase.PRE_INVOKE);
     }
 
     @Override
@@ -36,13 +40,26 @@ public class UserContextInterceptor extends AbstractSoapInterceptor {
                 final Unmarshaller unmarshaller = context.createUnmarshaller();
                 userContext = (UserContext) unmarshaller.unmarshal(elem);
             } catch (JAXBException e) {
-                e.printStackTrace();
+                LOG.error("Ошибка получения парсинга пользовательского контекста", e);
             }
         }
 
         // На всякий случай, контекст может быть не задан, а в БД поле имени пользователя обязательное
         if (userContext.getUserName() == null) { userContext.setUserName("Не задано");}
-
-        UserContextHolder.setContext(userContext);
+        
+        String methodName = null;
+        try {           
+            methodName = soapMessage
+                .getExchange()
+                .getBindingOperationInfo()
+                .getOperationInfo()
+                .getName()
+                .getLocalPart();
+        } catch (Exception e) {
+            LOG.error("Ошибка получения имени вызываемого метода", e);
+            throw new RuntimeException("Не определен action");
+        }
+        
+        UserContextHolder.setContext(new RequestContext(methodName, userContext));
     }
 }

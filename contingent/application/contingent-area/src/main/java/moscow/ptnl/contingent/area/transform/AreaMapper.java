@@ -4,8 +4,13 @@ import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.Area;
+import ru.mos.emias.contingent2.core.AreaTypeClass;
+import ru.mos.emias.contingent2.core.AreaTypeKind;
 import ru.mos.emias.contingent2.core.AreaTypeShort;
+import ru.mos.emias.contingent2.core.MedicalEmployee;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,6 +33,8 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
         area.setNumber(areaObj.getNumber());
         area.setDescription(areaObj.getDescription());
         area.setAreaType(areaTypeShortMapper.entityToDtoTransform(areaObj.getAreaType()));
+        area.setAreaTypeClass(new CodeNameTypeMapper<>(new AreaTypeClass(), areaObj.getAreaType().getAreaTypeClass()).entityToDtoTransform());
+        area.setAreaTypeKind(new CodeNameTypeMapper<>(new AreaTypeKind(), areaObj.getAreaType().getAreaTypeKind()).entityToDtoTransform());
         area.setAgeMin(areaObj.getAgeMin());
         area.setAgeMax(areaObj.getAgeMax());
         area.setAgeMinM(areaObj.getAgeMMin());
@@ -38,26 +45,33 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
         area.setAttachByMedicalReason(areaObj.getAttachByMedicalReason());
         area.setArchive(Boolean.TRUE.equals(areaObj.getArchived()));
 
-        if (!entityObject.getMainAreaMedicalEmployees().isEmpty()) {
-            Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
-            medicalEmployees.getMedicalEmployees().addAll(entityObject.getMainAreaMedicalEmployees().stream()
+        List<MedicalEmployee> employees = new ArrayList<>();
+
+        if (entityObject.getMainAreaMedicalEmployees() != null
+                && !entityObject.getMainAreaMedicalEmployees().isEmpty()) {
+            employees.addAll(entityObject.getMainAreaMedicalEmployees().stream()
                     .map(areaMedicalEmployeeMapper::entityToDtoTransform)
                     .collect(Collectors.toList()));
+        }
+
+        if (entityObject.getReplacementAreaMedicalEmployees() != null
+                && !entityObject.getReplacementAreaMedicalEmployees().isEmpty()) {
+            employees.addAll(entityObject.getReplacementAreaMedicalEmployees().stream()
+                    .map(areaMedicalEmployeeMapper::entityToDtoTransform)
+                    .collect(Collectors.toList()));
+
+        }
+        if (!employees.isEmpty()) {
+            Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
+            medicalEmployees.getMedicalEmployees().addAll(employees);
             area.setMedicalEmployees(medicalEmployees);
         }
 
-        if (!entityObject.getReplacementAreaMedicalEmployees().isEmpty()) {
-            Area.MedicalEmployees medicalEmployees = new Area.MedicalEmployees();
-            medicalEmployees.getMedicalEmployees().addAll(entityObject.getReplacementAreaMedicalEmployees().stream()
-                    .map(areaMedicalEmployeeMapper::entityToDtoTransform)
-                    .collect(Collectors.toList()));
-            area.setMedicalEmployees(medicalEmployees);
-        }
-
-        if (!entityObject.getArea().getPrimaryAreaTypes().isEmpty()) {
+        if (entityObject.getArea() != null && entityObject.getArea().getPrimaryAreaTypes() != null
+                && !entityObject.getArea().getPrimaryAreaTypes().isEmpty()) {
             Area.PrimaryAreaTypeCodes areaTypeCodes = new Area.PrimaryAreaTypeCodes();
 
-            entityObject.getArea().getPrimaryAreaTypes()
+            areaTypeCodes.getAreaTypes().addAll(entityObject.getArea().getPrimaryAreaTypes()
                 .stream().map(AreaToAreaType::getAreaType)
                     .map(aat -> {
                         AreaTypeShort areaTypeShort = new AreaTypeShort();
@@ -65,7 +79,7 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
                         areaTypeShort.setName(aat.getTitle());
                         return areaTypeShort;
                     })
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()));
             area.setPrimaryAreaTypeCodes(areaTypeCodes);
         }
         return area;

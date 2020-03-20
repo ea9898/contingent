@@ -20,6 +20,10 @@ public class AreaInfo {
         this.replacementAreaMedicalEmployees = replacementAreaMedicalEmployees;
     }
 
+    public AreaInfo(Area area) {
+        this.area = area;
+    }
+
     public Area getArea() {
         return area;
     }

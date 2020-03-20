@@ -24,5 +24,7 @@ public @interface LogESU {
     String[] parameters() default {};
     
     boolean useResult() default false;
+
+    String methodName() default "";
     
 }

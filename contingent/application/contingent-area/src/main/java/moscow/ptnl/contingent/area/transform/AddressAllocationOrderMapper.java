@@ -1,26 +1,17 @@
 package moscow.ptnl.contingent.area.transform;
 
 import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AddressAllocationOrder;
 
-@Component
-public class AddressAllocationOrderMapper implements Transform<AddressAllocationOrder, AddressAllocationOrders> {
+@Mapper(componentModel="spring")
+public interface AddressAllocationOrderMapper {
 
-    @Override
-    public AddressAllocationOrder entityToDtoTransform(AddressAllocationOrders entityObject) {
-        AddressAllocationOrder allocationOrder = new AddressAllocationOrder();
-        allocationOrder.setId(entityObject.getId());
-        allocationOrder.setNumber(entityObject.getNumber());
-        allocationOrder.setDate(entityObject.getDate());
-        allocationOrder.setName(entityObject.getName());
-        allocationOrder.setOuz(entityObject.getOuz());
+    AddressAllocationOrderMapper MAPPER = Mappers.getMapper(AddressAllocationOrderMapper.class);
 
-        return allocationOrder;
-    }
+    AddressAllocationOrder entityToDtoTransform(AddressAllocationOrders entityObject);
 
-    @Override
-    public AddressAllocationOrders dtoToEntityTransform(AddressAllocationOrder dtoObject) {
-        return null;
-    }
+    AddressAllocationOrders dtoToEntityTransform(AddressAllocationOrder dtoObject);
 }

@@ -1,0 +1,4 @@
+/subsystem=undertow:write-attribute(name=statistics-enabled, value=true)
+/subsystem=datasources/data-source=Contingent2DS:write-attribute(name=statistics-enabled,value=true)
+
+reload

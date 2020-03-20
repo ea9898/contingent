@@ -1,6 +1,10 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.domain.history.ServiceName;
+import moscow.ptnl.contingent.domain.history.meta.Journalable;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
+@Entity @Journalable(ServiceName.AREA)
+@Proxy(lazy=false)
 @Table(name = "MO_ADDRESSES")
 @SequenceGenerator(name = "SEQ_MO_ADDRESSES", sequenceName = "SEQ_MO_ADDRESSES", allocationSize=1)
 public class MoAddress implements Serializable {
@@ -29,33 +34,42 @@ public class MoAddress implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    @LogIt
     @Column(name = "MO_ID")
     private Long moId;
 
+    @LogIt
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType areaType;
 
+    @LogIt
     @JoinColumn(name = "ORDER_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private AddressAllocationOrders addressAllocationOrder;
 
+    @LogIt
     @Column(name = "START_DATE")
     private LocalDate startDate;
 
+    @LogIt
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
+    @LogIt
     @JoinColumn(name = "REJECT_ORDER_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private AddressAllocationOrders addressRejectOrder;
 
+    @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
+    @LogIt
     @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 
+    @LogIt
     @JoinColumn(name = "ADDRESS_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Addresses address;

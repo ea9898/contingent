@@ -1,13 +1,14 @@
 package moscow.ptnl.contingent.domain.history;
 
 import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -16,14 +17,19 @@ import javax.persistence.Table;
  * @author m.kachalov
  */
 @Entity
-@IdClass(HistoryEventValue.Key.class)
 @Table(name = "JL_HISTORY_COLUMNS")
+@SequenceGenerator(name = "JL_HISTORY_COLUMNS_SEQ_ID", sequenceName = "JL_HISTORY_COLUMNS_SEQ_ID", allocationSize=1)
 public class HistoryEventValue implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="JL_HISTORY_COLUMNS_SEQ_ID")
+    @Column(name = "ID", unique = true, nullable = false)
+    private Long id;
     
-    @Id @ManyToOne @JoinColumn(name = "JRN_ID", nullable = false)
+    @ManyToOne @JoinColumn(name = "JRN_ID", nullable = false)
     private HistoryEvent event;
     
-    @Id @Column(name = "COLUMN_NAME", nullable = false)
+    @Column(name = "COLUMN_NAME", nullable = false)
     private String columnName;
     
     @Column(name = "OLD_VALUE")
@@ -31,18 +37,18 @@ public class HistoryEventValue implements Serializable {
 
     @Column(name = "NEW_VALUE")
     private String newValue;
+
+    @Column(name = "TABLE_NAME")
+    private String tableName;
     
     public HistoryEventValue(){}
     
-    public HistoryEventValue(HistoryEvent event, String columnName, String oldValue, String newValue){
+    public HistoryEventValue(HistoryEvent event, String columnName, String oldValue, String newValue, String tableName){
         this.event = event;
         this.columnName = columnName;
         this.oldValue = oldValue;
         this.newValue = newValue;
-    }
-    
-    public Key getKey() {
-        return new Key(event, columnName);
+        this.tableName = tableName;
     }
     
     public HistoryEvent getEvent() {
@@ -76,67 +82,46 @@ public class HistoryEventValue implements Serializable {
     public void setNewValue(String newValue) {
         this.newValue = newValue;
     }
-    
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
     @Override
-    public boolean equals(Object object) {
-        if (object == null)
-            return false;
-        if (object == this)
-            return true;
-        if (!(object instanceof HistoryEventValue))
-            return false;
-        return ((HistoryEventValue) object).getKey().equals(this.getKey());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HistoryEventValue)) return false;
+
+        HistoryEventValue that = (HistoryEventValue) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (event != null ? !event.equals(that.event) : that.event != null) return false;
+        if (columnName != null ? !columnName.equals(that.columnName) : that.columnName != null) return false;
+        if (oldValue != null ? !oldValue.equals(that.oldValue) : that.oldValue != null) return false;
+        if (newValue != null ? !newValue.equals(that.newValue) : that.newValue != null) return false;
+        return tableName != null ? tableName.equals(that.tableName) : that.tableName == null;
     }
 
     @Override
     public int hashCode() {
-        return this.getKey().hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (event != null ? event.hashCode() : 0);
+        result = 31 * result + (columnName != null ? columnName.hashCode() : 0);
+        result = 31 * result + (oldValue != null ? oldValue.hashCode() : 0);
+        result = 31 * result + (newValue != null ? newValue.hashCode() : 0);
+        result = 31 * result + (tableName != null ? tableName.hashCode() : 0);
+        return result;
     }
-    
-    public static class Key implements Serializable {
-        
-        private HistoryEvent event;
-        private String columnName;
-        
-        public Key(){}
-        
-        public Key(HistoryEvent event, String columnName){
-            this.event = event;
-            this.columnName = columnName;
-        }  
-        
-        @Override
-        public boolean equals(Object object) {
-            if (object == null)
-                return false;
-            if (object == this)
-                return true;
-            if (!(object instanceof Key))
-                return false;
-            Key external = (Key) object;
-            return external.getColumnName().equals(this.columnName) && external.getEvent().equals(this.event);
-        }
-
-        @Override
-        public int hashCode() {            
-            return Objects.hash(this.event, this.getColumnName());
-        }
-
-        public HistoryEvent getEvent() {
-            return event;
-        }
-
-        public void setEvent(HistoryEvent event) {
-            this.event = event;
-        }
-
-        public String getColumnName() {
-            return columnName;
-        }
-
-        public void setColumnName(String columnName) {
-            this.columnName = columnName;
-        }
-    }
-    
 }

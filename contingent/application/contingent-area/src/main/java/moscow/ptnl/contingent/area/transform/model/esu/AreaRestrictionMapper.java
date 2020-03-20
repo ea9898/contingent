@@ -11,6 +11,9 @@ public class AreaRestrictionMapper implements Transform<AreaRestriction, Area> {
     @Override
     public AreaRestriction entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.Area entity) {
         AreaRestriction restriction = new AreaRestriction();
+        if (entity.getAreaType() != null) {
+            restriction.setGender(entity.getAreaType().getGender());
+        }
         boolean empty = entity.getAgeMin() == null && entity.getAgeMax() == null &&
                 entity.getAgeMMin() == null && entity.getAgeWMax() == null &&
                 entity.getAgeWMin() == null && entity.getAgeWMax() == null;

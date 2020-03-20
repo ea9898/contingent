@@ -93,3 +93,11 @@ contingent/application/contingent-infrastructure-area/src/
 contingent/application/contingent-infrastructure-area/target/classes/
 /contingent/application/contingent-area-domain/target/
 /contingent/application/contingent-area-infrastructure/target/
+
+contingent/application/contingent-nsi/soap_z_core/target/
+contingent/application/contingent-nsi/pushaccepter_jar_test/target/
+contingent/application/contingent-nsi/pushaccepter_jar/target/
+/contingent/application/contingent-application-nsi/target/
+/contingent/application/contingent-nsi-infrastructure/target/
+/contingent/application/contingent-nsi-domain/target/
+/contingent/application/contingent-metrics/target/

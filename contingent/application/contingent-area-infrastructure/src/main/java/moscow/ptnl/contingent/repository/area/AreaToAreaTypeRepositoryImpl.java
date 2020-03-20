@@ -4,7 +4,6 @@ import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
 import moscow.ptnl.contingent.area.entity.area.AreaToAreaType_;
 import moscow.ptnl.contingent.area.entity.area.Area_;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -35,11 +34,11 @@ public class AreaToAreaTypeRepositoryImpl extends BaseRepository implements Area
     }
 
     @Override
-    public List<AreaToAreaType> findAreaTypesByAreaAndTypeCode(Area area, List<AreaType> areaType) {
+    public List<AreaToAreaType> findAreaTypesByAreaAndTypeCode(Area area, List<Long> areaTypes) {
         Specification<AreaToAreaType> specification = (root, criteriaQuery, criteriaBuilder) ->
             criteriaBuilder.and(
                 criteriaBuilder.equal(root.get(AreaToAreaType_.area), area),
-                root.get(AreaToAreaType_.areaType).in(areaType)
+                root.get(AreaToAreaType_.areaType).in(areaTypes)
             );
 
         return areaToAreaTypeCRUDRepository.findAll(specification);

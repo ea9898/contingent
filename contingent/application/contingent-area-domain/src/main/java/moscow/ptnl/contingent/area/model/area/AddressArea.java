@@ -1,29 +1,46 @@
 package moscow.ptnl.contingent.area.model.area;
 
 import moscow.ptnl.contingent.area.entity.area.Addresses;
-import moscow.ptnl.contingent.area.entity.nsi.AddressFormingElement;
-import moscow.ptnl.contingent.area.entity.nsi.BuildingRegistry;
+import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
+import moscow.ptnl.contingent.nsi.domain.area.NsiBuildingRegistry;
 
 /*
 Выходной объекта метода getAreaAddress из слоя Service
  */
 public class AddressArea {
 
+    private Long moId;
+
+    private Long muId;
+
+    private Long areaId;
+
     private Long areaAddressId;
 
-    private BuildingRegistry buildingRegistry;
+    private Addresses addresses;
 
-    private AddressFormingElement addressFormingElement;
-
-    public AddressArea(Long areaAddressId, AddressFormingElement addressFormingElement) {
-        this.areaAddressId = areaAddressId;
-        this.addressFormingElement = addressFormingElement;
+    public Long getMoId() {
+        return moId;
     }
 
-    public AddressArea(Long areaAddressId, BuildingRegistry buildingRegistry, AddressFormingElement addressFormingElement) {
-        this.areaAddressId = areaAddressId;
-        this.buildingRegistry = buildingRegistry;
-        this.addressFormingElement = addressFormingElement;
+    public void setMoId(Long moId) {
+        this.moId = moId;
+    }
+
+    public Long getMuId() {
+        return muId;
+    }
+
+    public void setMuId(Long muId) {
+        this.muId = muId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 
     public Long getAreaAddressId() {
@@ -34,19 +51,11 @@ public class AddressArea {
         this.areaAddressId = areaAddressId;
     }
 
-    public BuildingRegistry getBuildingRegistry() {
-        return buildingRegistry;
+    public Addresses getAddresses() {
+        return addresses;
     }
 
-    public void setBuildingRegistry(BuildingRegistry buildingRegistry) {
-        this.buildingRegistry = buildingRegistry;
-    }
-
-    public AddressFormingElement getAddressFormingElement() {
-        return addressFormingElement;
-    }
-
-    public void setAddressFormingElement(AddressFormingElement addressFormingElement) {
-        this.addressFormingElement = addressFormingElement;
+    public void setAddresses(Addresses addresses) {
+        this.addresses = addresses;
     }
 }

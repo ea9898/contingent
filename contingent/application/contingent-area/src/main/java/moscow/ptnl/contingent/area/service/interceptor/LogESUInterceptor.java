@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.service.interceptor;
 
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -13,6 +14,7 @@ import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.EsuHelperService;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
+import moscow.ptnl.contingent.repository.area.AreaRepository;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -20,6 +22,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,7 +31,7 @@ import org.springframework.stereotype.Component;
  * 
  * @author mkachalov
  */
-@Aspect
+@Aspect @Order(3)
 @Component
 public class LogESUInterceptor {
     
@@ -43,6 +46,12 @@ public class LogESUInterceptor {
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
     
+    @Autowired
+    private AreaRepository areaRepository;
+
+    @Autowired
+    private SettingService settingService;
+
     @Around(
         value = "execution(public * *(..)) && @annotation(annotation)",
         argNames="annotation"
@@ -54,26 +63,31 @@ public class LogESUInterceptor {
         Object[] args = joinPoint.getArgs();
             
         method.setAccessible(true);
-        String methodName = method.getName();
+        String methodName = annotation.methodName().isEmpty() ? method.getName() : annotation.methodName();
         
         final Object result = joinPoint.proceed();
         
         if (annotation.type().isAssignableFrom(AreaInfoEvent.class)) {
-            List<Long> areaIds = getAreaId(annotation, method, args, result);
+            if (Boolean.TRUE.equals(settingService.getPar4())) {
+                List<Long> areaIds = getAreaId(annotation, method, methodName, args, result);
 
-            if (areaIds.isEmpty()) {
-                throw new IllegalArgumentException("идентификатор сущности null");
-            }
-            for (Long areaId : areaIds) {
-                Optional<Area> area = areaCRUDRepository.findById(areaId);
-
-                if (!area.isPresent()) {
-                    throw new IllegalArgumentException("сущность с идентификатором " + areaId + " не найдена");
+                if (areaIds.isEmpty()) {
+                    throw new IllegalArgumentException("идентификатор сущности null");
                 }
-                Area areaObject = area.get();
+                
+                areaRepository.getEntityManager().flush(); //актуализируем данные при не завершенной транзакции
+                
+                for (Long areaId : areaIds) {
+                    Optional<Area> area = areaCRUDRepository.findById(areaId);
 
-                if (areaHelper.isAreaPrimary(areaObject)) {
-                    esuHelperService.sendAreaInfoEvent(areaObject, methodName);
+                    if (!area.isPresent()) {
+                        throw new IllegalArgumentException("сущность с идентификатором " + areaId + " не найдена");
+                    }
+                    Area areaObject = area.get();
+                    
+                    if (areaHelper.isAreaPrimary(areaObject)) {
+                        esuHelperService.sendAreaInfoEvent(areaObject, methodName);
+                    }
                 }
             }
         } else {
@@ -83,33 +97,33 @@ public class LogESUInterceptor {
         return result;
     }
     
-    private List<Long> getAreaId(LogESU annotation, Method method, Object[] args, Object result) {
+    private List<Long> getAreaId(LogESU annotation, Method method, String methodName, Object[] args, Object result) {
         Object value;
 
         if (annotation.useResult()) {
             if (result == null) {
-                throw new IllegalArgumentException("в методе " + method.getName() + " результат не может быть null");
+                throw new IllegalArgumentException("в методе " + methodName + " результат не может быть null");
             }
             value = result;
         } else {
             if (annotation.parameters().length == 0) {
-                throw new IllegalArgumentException("в методе " + method.getName() + " в списке параметров должно быть название параметра содержащего идентификатор сущности");
+                throw new IllegalArgumentException("в методе " + methodName + " в списке параметров должно быть название параметра содержащего идентификатор сущности");
             }
             String parameterName = annotation.parameters()[0];
             Optional<Object> parameterValue = getParameterByName(method, args, parameterName);
             if (!parameterValue.isPresent()) {
-                throw new IllegalArgumentException("в методе " + method.getName() + " не найден параметр " + parameterName);
+                throw new IllegalArgumentException("в методе " +methodName + " не найден параметр " + parameterName);
             }
             value = parameterValue.get();
 
             if (value == null) {
-                throw new IllegalArgumentException("в методе " + method.getName() + " параметр " + parameterName + " не может быть null");
+                throw new IllegalArgumentException("в методе " + methodName + " параметр " + parameterName + " не может быть null");
             }
         }
         List<Long> areaIds = mapObjectToAreaIds(value);
 
         if (areaIds.isEmpty()) {
-            throw new IllegalArgumentException("в методе " + method.getName() + " невозможно получить идентификатор сущности из результата выполнения метода");
+            throw new IllegalArgumentException("в методе " + methodName + " невозможно получить идентификатор сущности из результата выполнения метода");
         }
         return areaIds;
     }

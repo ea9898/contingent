@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.repository.area;
 
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes_;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,10 +34,13 @@ public class MuAvailableAreaTypesRepositoryImpl extends BaseRepository implement
     }
 
     @Override
-    public List<MuAvailableAreaTypes> findByAreaTypes(AreaType areaType) {
+    public List<MuAvailableAreaTypes> findByAreaTypes(AreaType areaType, Long muId) {
         Specification<MuAvailableAreaTypes> specification =
                 (root, criteriaQuery, criteriaBuilder) ->
-                        criteriaBuilder.equal(root.get(MuAvailableAreaTypes_.areaType.getName()), areaType);
+                        criteriaBuilder.and(
+                                criteriaBuilder.equal(root.get(MuAvailableAreaTypes_.areaType.getName()), areaType),
+                                muId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MuAvailableAreaTypes_.muId.getName()), muId)
+                        );
 
         return muAvailableAreaTypesCRUDRepository.findAll(specification);
     }

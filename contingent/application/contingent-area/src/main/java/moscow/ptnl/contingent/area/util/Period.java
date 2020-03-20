@@ -38,10 +38,11 @@ public class Period {
     }
 
     public boolean isInterceptWith(LocalDate otherStartDate, LocalDate otherEndDate) {
-        if (this.endDate == null && otherEndDate == null
-                || otherStartDate.isBefore(this.startDate.plusDays(1)) && otherEndDate != null
+        if (otherStartDate == null && (otherEndDate == null || this.startDate.isBefore(otherEndDate.plusDays(1)))
+                || this.endDate == null && otherEndDate == null
+                || otherStartDate != null && otherStartDate.isBefore(this.startDate.plusDays(1)) && otherEndDate != null
                     && this.startDate.isBefore(otherEndDate.plusDays(1))
-                || this.startDate.isBefore(otherStartDate.plusDays(1)) && this.endDate != null
+                || otherStartDate !=null && this.startDate.isBefore(otherStartDate.plusDays(1)) && this.endDate != null
                     && otherStartDate.isBefore(this.endDate.plusDays(1))) {
             return true;
         }

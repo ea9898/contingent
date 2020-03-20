@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -19,10 +19,11 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
@@ -117,56 +118,9 @@ public class Area implements Serializable {
 
     @LogIt
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
-    private Set<AreaAddress> areaAddresses;
+    private Set<AreaAddress> areaAddresses = new HashSet<>();
 
     public Area() {
-    }
-
-    public Area(Long id, Long moId, Long muId, AreaType areaType, Boolean archived, LocalDateTime createDate) {
-        this.id = id;
-        this.moId = moId;
-        this.muId = muId;
-        this.areaType = areaType;
-        this.archived = archived;
-        this.createDate = createDate;
-    }
-
-    public Area(Long moId, Long muId, AreaType areaType, Integer number, Boolean autoAssignForAttach, Boolean archived, String description, Boolean attachByMedicalReason, Integer ageMin, Integer ageMax, Integer ageMMin, Integer ageMMax, Integer ageWMin, Integer ageWMax, LocalDateTime createDate) {
-        this.moId = moId;
-        this.muId = muId;
-        this.areaType = areaType;
-        this.number = number;
-        this.autoAssignForAttach = autoAssignForAttach;
-        this.archived = archived;
-        this.description = description;
-        this.attachByMedicalReason = attachByMedicalReason;
-        this.ageMin = ageMin;
-        this.ageMax = ageMax;
-        this.ageMMin = ageMMin;
-        this.ageMMax = ageMMax;
-        this.ageWMin = ageWMin;
-        this.ageWMax = ageWMax;
-        this.createDate = createDate;
-        this.updateDate = getCreateDate();
-    }
-
-    public Area(Area copy) {
-        setMoId(copy.getMoId());
-        setMuId(copy.getMuId());
-        setAreaType(copy.getAreaType());
-        setArchived(copy.getArchived());
-        setCreateDate(copy.getCreateDate());
-        setUpdateDate(copy.getUpdateDate());
-        setAutoAssignForAttach(copy.getAutoAssignForAttach());
-        setDescription(copy.getDescription());
-        setAttachByMedicalReason(copy.getAttachByMedicalReason());
-        setAgeMin(copy.getAgeMin());
-        setAgeMax(copy.getAgeMax());
-        setAgeMMin(copy.getAgeMMin());
-        setAgeMMax(copy.getAgeMMax());
-        setAgeWMin(copy.getAgeWMin());
-        setAgeWMax(copy.getAgeWMax());
-        setNumber(copy.getNumber());
     }
 
     public Long getId() {
@@ -302,6 +256,10 @@ public class Area implements Serializable {
     }
 
     public Set<AreaMedicalEmployees> getActualMedicalEmployees() {
+        if (medicalEmployees == null || medicalEmployees.isEmpty()) {
+            return new HashSet<>();
+        }
+
         LocalDate now = LocalDate.now();
 
         return medicalEmployees.stream()
@@ -346,11 +304,19 @@ public class Area implements Serializable {
     }
 
     public Set<AreaAddress> getActualAreaAddresses() {
+        if (areaAddresses == null || areaAddresses.isEmpty()) {
+            return new HashSet<>();
+        }
+
         LocalDate now = LocalDate.now();
 
         return areaAddresses.stream()
                 .filter(e -> e.getEndDate() == null || e.getEndDate().isAfter(now) || e.getEndDate().equals(now))
                 .collect(Collectors.toSet());
+    }
+
+    public boolean isActual() {
+        return !Boolean.TRUE.equals(archived);
     }
 
     @Override
@@ -366,5 +332,137 @@ public class Area implements Serializable {
             return ((Area) obj).getId().equals(this.id);
         }
         return false;
+    }
+    
+    public static Builder builder() {
+        return new Builder();
+    }
+    
+    public static class Builder {
+        
+        private final Area area;
+        
+        private Builder(){
+            this.area = new Area();
+        }
+        
+        public Builder id(Long id) {
+            area.setId(id);
+            return this;
+        }
+        
+        public Builder moId(Long moId) {
+            area.setMoId(moId);
+            return this;
+        }
+        
+        public Builder muId(Long muId) {
+            area.setMuId(muId);
+            return this;
+        }
+        
+        public Builder areaType(AreaType areaType) {
+            area.setAreaType(areaType);
+            return this;
+        }
+        
+        public Builder number(Integer number) {
+            area.setNumber(number);
+            return this;
+        }
+        
+        public Builder autoAssignForAttach(Boolean autoAssignForAttach) {
+            area.setAutoAssignForAttach(autoAssignForAttach);
+            return this;
+        }
+        
+        public Builder archived(Boolean archived) {
+            area.setArchived(archived);
+            return this;
+        }
+        
+        public Builder description(String description) {
+            area.setDescription(description);
+            return this;
+        }
+        
+        public Builder attachByMedicalReason(Boolean attachByMedicalReason) {
+            area.setAttachByMedicalReason(attachByMedicalReason);
+            return this;
+        }
+        
+        public Builder ageMin(Integer ageMin) {
+            area.setAgeMin(ageMin);
+            return this;
+        }
+        
+        public Builder ageMax(Integer ageMax) {
+            area.setAgeMax(ageMax);
+            return this;
+        }
+        
+        public Builder ageMMin(Integer ageMMin) {
+            area.setAgeMMin(ageMMin);
+            return this;
+        }
+        
+        public Builder ageMMax(Integer ageMMax) {
+            area.setAgeMMax(ageMMax);
+            return this;
+        }
+        
+        public Builder ageWMin(Integer ageWMin) {
+            area.setAgeWMin(ageWMin);
+            return this;
+        }
+        
+        public Builder ageWMax(Integer ageWMax) {
+            area.setAgeWMax(ageWMax);
+            return this;
+        }
+        
+        public Builder createDate(LocalDateTime createDate) {
+            area.setCreateDate(createDate);
+            return this;
+        }
+        
+        public Builder updateDate(LocalDateTime updateDate) {
+            area.setUpdateDate(updateDate);
+            return this;
+        }
+        
+        public Builder copy(Area copy) {
+            area.setMoId(copy.getMoId());
+            area.setMuId(copy.getMuId());
+            area.setAreaType(copy.getAreaType());
+            area.setArchived(copy.getArchived());
+            area.setCreateDate(copy.getCreateDate());
+            area.setUpdateDate(copy.getUpdateDate());
+            area.setAutoAssignForAttach(copy.getAutoAssignForAttach());
+            area.setDescription(copy.getDescription());
+            area.setAttachByMedicalReason(copy.getAttachByMedicalReason());
+            area.setAgeMin(copy.getAgeMin());
+            area.setAgeMax(copy.getAgeMax());
+            area.setAgeMMin(copy.getAgeMMin());
+            area.setAgeMMax(copy.getAgeMMax());
+            area.setAgeWMin(copy.getAgeWMin());
+            area.setAgeWMax(copy.getAgeWMax());
+            area.setNumber(copy.getNumber());
+            return this;
+        }
+        
+        public Area build() {
+            if (area.getMoId() == null) {
+                throw new IllegalStateException("Не заполнен moId");
+            }
+            if (area.getCreateDate() == null) {
+                throw new IllegalStateException("Не заполнен createDate");
+            }
+            if (area.getUpdateDate() == null) {
+                area.setUpdateDate(area.getCreateDate());
+            }
+            return area;
+        }
+        
     }
 }

@@ -1,7 +1,11 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanIntegerConverter;
-import moscow.ptnl.contingent.area.entity.nsi.PositionNom;
+import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
+import moscow.ptnl.contingent.domain.history.ServiceName;
+import moscow.ptnl.contingent.domain.history.meta.Journalable;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
+import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
+import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -19,8 +23,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
-@Entity
+@Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREA_MEDICAL_EMPLOYEES")
 @SequenceGenerator(name = "seq_area_medical_employee", sequenceName = "seq_area_medical_employee", allocationSize=1)
 public class AreaMedicalEmployees implements Serializable {
@@ -32,60 +37,69 @@ public class AreaMedicalEmployees implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    @LogIt
     @Column(name = "MEDICAL_EMPLOYEE_JOB_ID")
-    private Long medicalEmployeeJobInfoId;
+    private Long medicalEmployeeJobId;
 
+    @LogIt
     @JoinColumn(name = "AREA_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
 
+    @LogIt
     @Column(name = "IS_REPLACEMENT")
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean replacement;
 
+    @LogIt
     @Column(name = "START_DATE")
     private LocalDate startDate;
 
+    @LogIt
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
+    @LogIt
     @Column(name = "SNILS")
     @Size(max = 20)
     private String snils;
 
-    @JoinColumn(name = "POSITION_CODE")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private PositionNom positionNom;
+    @LogIt
+    @Column(name = "POSITION_CODE")
+    private String positionCode;
 
+    @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
+    @LogIt
     @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 
+    @LogIt
     @Column(name = "SUBDIVISION_ID")
     private Long subdivisionId;
 
     public AreaMedicalEmployees() {
     }
 
-    public AreaMedicalEmployees(Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
-                                LocalDate endDate, String snils, PositionNom positionNom,
+    public AreaMedicalEmployees(Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
+                                LocalDate endDate, String snils, Optional<PositionCode> positionCode,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
-        this(null, medicalEmployeeJobInfoId, area, replacement, startDate, endDate, snils, positionNom, createDate, updateDate, subdivisionId);
+        this(null, medicalEmployeeJobId, area, replacement, startDate, endDate, snils, positionCode, createDate, updateDate, subdivisionId);
     }
 
-    public AreaMedicalEmployees(Long id, Long medicalEmployeeJobInfoId, Area area, Boolean replacement, LocalDate startDate,
-                                LocalDate endDate, String snils, PositionNom positionNom,
+    public AreaMedicalEmployees(Long id, Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
+                                LocalDate endDate, String snils, Optional<PositionCode> positionCode,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
         this.id = id;
-        this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
+        this.medicalEmployeeJobId = medicalEmployeeJobId;
         this.area = area;
         this.replacement = replacement;
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
-        this.positionNom = positionNom;
+        this.positionCode = positionCode.map(PositionCode::getCode).orElse(null);
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subdivisionId = subdivisionId;
@@ -101,12 +115,12 @@ public class AreaMedicalEmployees implements Serializable {
         this.id = id;
     }
 
-    public Long getMedicalEmployeeJobInfoId() {
-        return medicalEmployeeJobInfoId;
+    public Long getMedicalEmployeeJobId() {
+        return medicalEmployeeJobId;
     }
 
-    public void setMedicalEmployeeJobInfoId(Long medicalEmployeeJobInfoId) {
-        this.medicalEmployeeJobInfoId = medicalEmployeeJobInfoId;
+    public void setMedicalEmployeeJobId(Long medicalEmployeeJobId) {
+        this.medicalEmployeeJobId = medicalEmployeeJobId;
     }
 
     public Area getArea() {
@@ -148,15 +162,7 @@ public class AreaMedicalEmployees implements Serializable {
     public void setSnils(String snils) {
         this.snils = snils;
     }
-
-    public PositionNom getPositionNom() {
-        return positionNom;
-    }
-
-    public void setPositionNom(PositionNom positionNom) {
-        this.positionNom = positionNom;
-    }
-
+    
     public LocalDateTime getCreateDate() {
         return createDate;
     }
@@ -165,20 +171,24 @@ public class AreaMedicalEmployees implements Serializable {
         this.createDate = createDate;
     }
 
-    public LocalDateTime getUpdateDate() {
-        return updateDate;
-    }
-
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
     }
 
-    public Long getSubdivisionId() {
-        return subdivisionId;
-    }
-
     public void setSubdivisionId(Long subdivisionId) {
         this.subdivisionId = subdivisionId;
+    }
+
+    public String getPositionCode() {
+        return positionCode;
+    }
+
+    public void setPositionCode(String positionCode) {
+        this.positionCode = positionCode;
+    }
+
+    public Long getSubdivisionId() {
+        return subdivisionId;
     }
 
     @Override

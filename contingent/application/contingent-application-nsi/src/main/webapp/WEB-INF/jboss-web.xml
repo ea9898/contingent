@@ -1,0 +1,4 @@
+<!DOCTYPE xml>
+<jboss-web>
+    <context-root>nsi</context-root>
+</jboss-web>

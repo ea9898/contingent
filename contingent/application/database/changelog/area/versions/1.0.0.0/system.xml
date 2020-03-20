@@ -97,6 +97,73 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-194-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where CODEDOC = 'PAR_4'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Синхронизация К2 и К1</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="CODE" value="synchronize_k2_and_k1"/>
+            <column name="CODEDOC" value="PAR_4"/>
+            <column name="DESCRIPTION" value="Синхронизация К2 и К1"/>
+            <column name="TYPE" value="1" />
+            <column name="VAL" value="1"/>
+            <column name="LAST_CHANGE" valueDate="now()"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>CODE='PAR_4'</where>
+            </delete>
+        </rollback>
+    </changeSet>
 
+    <changeSet id="CONTINGENT2-346-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where CODEDOC = 'PAR_5'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Номер страницы пейджинга по умолчанию</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="CODE" value="paging_default_page_number"/>
+            <column name="CODEDOC" value="PAR_5"/>
+            <column name="DESCRIPTION" value="Номер страницы пейджинга по умолчанию"/>
+            <column name="TYPE" value="1" />
+            <column name="VAL" value="0"/>
+            <column name="LAST_CHANGE" valueDate="now()"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>CODEDOC='PAR_5'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-346-2" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where CODEDOC = 'PAR_6'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Размер страницы пейджинга по умолчанию</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="CODE" value="paging_default_page_size"/>
+            <column name="CODEDOC" value="PAR_6"/>
+            <column name="DESCRIPTION" value="Размер страницы пейджинга по умолчанию"/>
+            <column name="TYPE" value="1" />
+            <column name="VAL" value="20"/>
+            <column name="LAST_CHANGE" valueDate="now()"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>CODEDOC='PAR_6'</where>
+            </delete>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

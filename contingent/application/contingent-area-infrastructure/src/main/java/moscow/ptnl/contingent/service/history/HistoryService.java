@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.service.history;
 
-import moscow.ptnl.contingent.security.Principal;
+import moscow.ptnl.contingent.domain.security.Principal;
 
 
 /**
@@ -26,11 +26,13 @@ public interface HistoryService {
      * Запись изменных полей сущности в журнал логирования изменений.
      * 
      * @param <T>
+     * @param requestUuid заполняется как UserContextHolder.getRequestUUID()
+     * @param methodName имя метода web-сервиса при вызове которого происходит запись в историю: UserContextHolder.getMethodName()
      * @param principal заполняется как UserContextHolder.getPrincipal()
      * @param oldObject
      * @param newObject
      * @throws RuntimeException 
      */
-    <T> void write(Principal principal, T oldObject, T newObject) throws RuntimeException;
+    <T> void write(String requestUuid, String methodName, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException;
         
 }

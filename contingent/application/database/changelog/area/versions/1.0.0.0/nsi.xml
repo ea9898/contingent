@@ -13,7 +13,7 @@
         </preConditions>
         <comment>Создание таблицы SPECIALIZATION</comment>
         <createTable tableName="SPECIALIZATION">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="TITLE" type="VARCHAR2(100)">
@@ -28,7 +28,64 @@
             <dropTable tableName="SPECIALIZATION"/>
         </rollback>
     </changeSet>
+
     <!-- !!!! SPECIALIZATION !!!! -->
+
+    <!-- POSITION_CODE -->
+    <changeSet id="CONTINGENT2-NSI-14-1" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="POSITION_CODE" />
+            </not>
+        </preConditions>
+        <createTable tableName="POSITION_CODE">
+            <column name="GLOBAL_ID" type="BIGINT" />
+            <column name="NOM_TYPE" type="VARCHAR2(10)">
+                <constraints nullable="false" />
+            </column>
+            <column name="SERIAL_NUM" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="CODE" type="VARCHAR2(100)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="CONSTANT_TITLE" type="VARCHAR2(255)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="POSITION_CODE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-14-2" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <columnExists columnName="CODE" tableName="POSITION_CODE" />
+        </preConditions>
+        <addUniqueConstraint columnNames="CODE"
+                             constraintName="UNIQ_CODE_PC"
+                             disabled="true"
+                             tableName="POSITION_CODE"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-14-3" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_POSITION_CODE_CODE01"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки SPECIALIZATION_ID таблицы POSITION_NOM</comment>
+        <createIndex indexName="IXFK_POSITION_CODE_CODE01"
+                     tableName="POSITION_CODE"
+                     unique="false">
+            <column name="CODE" type="VARCHAR2(100)"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="POSITION_CODE" indexName="IXFK_POSITION_CODE_CODE01" />
+        </rollback>
+    </changeSet>
+
+    <!-- POSITION_CODE -->
 
     <!-- POSITION_NOM -->
     <changeSet id="CONTINGENT2-NSI-2" author="sorlov" labels="1.0.0.0">
@@ -40,11 +97,8 @@
         <comment>Создание таблицы POSITION_NOM</comment>
         <createTable tableName="POSITION_NOM"
                      remarks="Номенклатура должностей медицинских организаций, оказывающих первичную медико-санитарную помощь">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="CODE" type="VARCHAR2(100)">
-                <constraints nullable="false" />
             </column>
             <column name="TITLE" type="VARCHAR2(1000)">
                 <constraints nullable="false" />
@@ -54,26 +108,11 @@
             </column>
             <column name="END" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
             <column name="SPECIALIZATION_ID" type="BIGINT" />
-            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
-                <constraints nullable="false" />
-            </column>
+            <column name="POSITION_CODE_ID" type="VARCHAR(100)" />
         </createTable>
         <rollback>
             <dropTable tableName="POSITION_NOM"/>
         </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-2-1" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="SPECIALIZATION" columnName="ID" />
-            <columnExists tableName="POSITION_NOM" columnName="SPECIALIZATION_ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_POSITION_NOM_SPECIALIZATION_01</comment>
-        <addForeignKeyConstraint baseColumnNames="SPECIALIZATION_ID"
-                                 baseTableName="POSITION_NOM"
-                                 constraintName="FK_POSITION_NOM_SPECIALIZATION_01"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="SPECIALIZATION"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-NSI-2-2" author="ddryuchin" labels="1.0.0.0">
@@ -89,6 +128,7 @@
             <column name="SPECIALIZATION_ID" type="BIGINT"/>
         </createIndex>
     </changeSet>
+
     <!-- !!!! POSITION_NOM !!!! -->
 
     <!-- AREA_TYPES_CLASS -->
@@ -107,11 +147,15 @@
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
         </createTable>
         <rollback>
             <dropTable tableName="AREA_TYPES_CLASS"/>
         </rollback>
     </changeSet>
+
     <!-- !!!! AREA_TYPES_CLASS !!!! -->
 
     <!-- AREA_TYPES_KIND -->
@@ -130,11 +174,15 @@
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
         </createTable>
         <rollback>
             <dropTable tableName="AREA_TYPES_KIND"/>
         </rollback>
     </changeSet>
+
     <!-- !!!! AREA_TYPES_KIND !!!! -->
 
     <!-- AREA_TYPE -->
@@ -159,7 +207,7 @@
             <column name="ATTACH_BY_REQUEST" type="NUMBER(1)" remarks="Прикрепление по заявлению"/>
             <column name="MPGU_AVAILABLE" type="NUMBER(1)" remarks="Возможно прикрепление через МПГУ"/>
             <column name="AREA_COUNT_LIMIT_CODE" type="NUMBER(4)" remarks="Ограничение количества участков"/>
-            <column name="GENDER_CODE" type="VARCHAR2(1)" remarks="Пол, 0 - любой, 1 - м, 2- ж" />
+            <column name="GENDER_CODE" type="VARCHAR2(50)" remarks="Пол" />
             <column name="RESIDENTS_BIND_RATE" type="NUMBER(8)" remarks="Норма прикрепления	" />
             <column name="AGE_MIN" type="SMALLINT" remarks="Возраст мин" />
             <column name="AGE_MAX" type="SMALLINT" remarks="Возраст макс" />
@@ -169,6 +217,9 @@
             <column name="AGE_W_MAX" type="SMALLINT" remarks="Возраст Ж макс" />
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
+            </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
             </column>
         </createTable>
         <rollback>
@@ -229,6 +280,7 @@
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPES_KIND"/>
     </changeSet>
+
     <!-- !!!! AREA_TYPE !!!! -->
 
     <!-- AREA_TYPE_MEDICAL_POSITIONS -->
@@ -241,11 +293,11 @@
         <comment>Создание таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
         <createTable tableName="AREA_TYPE_MEDICAL_POSITIONS"
                      remarks="Должности МР на типе участка">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка. Код" />
-            <column name="POSITION_CODE" type="BIGINT" />
+            <column name="POSITION_CODE" type="VARCHAR2(100)" />
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
@@ -253,20 +305,6 @@
         <rollback>
             <dropTable tableName="AREA_TYPE_MEDICAL_POSITIONS"/>
         </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-6-1" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AREA_TYPE_ME_POSITIO01"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки POSITION_NOM_ID таблицы AREA_TYPE_MEDICAL_POSITIONS</comment>
-        <createIndex indexName="IXFK_AREA_TYPE_ME_POSITIO01"
-                     tableName="AREA_TYPE_MEDICAL_POSITIONS"
-                     unique="false">
-            <column name="POSITION_CODE" type="number"/>
-        </createIndex>
     </changeSet>
 
     <changeSet id="CONTINGENT2-NSI-6-2" author="sorlov" labels="1.0.0.0">
@@ -283,19 +321,6 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-6-3" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
-            <columnExists tableName="POSITION_NOM" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AREA_TYPE_ME_POSITION_NO_01</comment>
-        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
-                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
-                                 constraintName="FK_AREA_TYPE_ME_POSITION_NO_01"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="POSITION_NOM"/>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-NSI-6-4" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="AREA_TYPE_CODE" />
@@ -308,6 +333,25 @@
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-6-5-4" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="POSITION_CODE" />
+            <columnExists tableName="POSITION_CODE" columnName="CODE" />
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_ATMP_PCC"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
+                                 baseTableName="AREA_TYPE_MEDICAL_POSITIONS"
+                                 constraintName="FK_ATMP_PCC"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="POSITION_CODE"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="AREA_TYPE_MEDICAL_POSITIONS" constraintName="FK_ATMP_PCC"/>
+        </rollback>
+    </changeSet>
+
     <!-- !!!! AREA_TYPE_MEDICAL_POSITIONS !!!! -->
 
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
@@ -320,7 +364,7 @@
         <comment>Создание таблицы AREA_TYPE_RELATIONS</comment>
         <createTable tableName="AREA_TYPE_RELATIONS"
                      remarks="Связь зависимых и первичных">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="DEPENDENT_AREA_TYPE_CODE" type="BIGINT" remarks="Код зависимого типа участка">
@@ -391,73 +435,9 @@
                                  referencedColumnNames="CODE"
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
+
     <!-- !!!! AREA_TYPE_RELATIONS !!!! -->
 
-    <!-- ADDRESS_FORMING_ELEMENT -->
-    <changeSet id="CONTINGENT2-NSI-8" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="ADDRESS_FORMING_ELEMENT"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы ADDRESS_FORMING_ELEMENT</comment>
-        <createTable tableName="ADDRESS_FORMING_ELEMENT"
-                     remarks="Адресообразующий элемент">
-            <column name="ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="GLOBAL_ID" type="BIGINT" remarks="Уникальный идентификатор объекта" />
-            <column name="AO_LEVEL" type="VARCHAR2(2)" remarks="Уровень адресного объекта"/>
-            <column name="REGION_TE_ID" type="BIGINT" />
-            <column name="REGION_TE_CODE" type="VARCHAR2(4)" remarks="Код округа ОМК ТЕ"/>
-            <column name="REGION_TE_NAME" type="VARCHAR2(4000)" />
-            <column name="REGION_TE_TYPE_NAME" type="VARCHAR2(256)" />
-            <column name="AREA_TE_ID" type="BIGINT" />
-            <column name="AREA_CODE_OMK_TE" type="VARCHAR2(50)" remarks="Код района ОМК ТЕ"/>
-            <column name="AREA_TE_NAME" type="VARCHAR2(4000)" />
-            <column name="AREA_TE_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="AREA_ID" type="BIGINT" />
-            <column name="AREA_CODE" type="VARCHAR2(3)" remarks="Код района"/>
-            <column name="AREA_NAME" type="VARCHAR2(4000)" />
-            <column name="AREA_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="CITY_ID" type="BIGINT" />
-            <column name="CITY_CODE" type="VARCHAR2(3)" remarks="Код города"/>
-            <column name="CITY_NAME" type="VARCHAR2(4000)" />
-            <column name="CITY_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="PLACE_ID" type="BIGINT" />
-            <column name="PLACE_CODE" type="VARCHAR2(3)" remarks="Код населенного пункта"/>
-            <column name="PLACE_NAME" type="VARCHAR2(4000)" />
-            <column name="PLACE_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="PLAN_ID" type="BIGINT" />
-            <column name="PLAN_CODE" type="VARCHAR2(3)" remarks="Код элемента планировочной структуры"/>
-            <column name="PLAN_NAME" type="VARCHAR2(4000)" />
-            <column name="PLAN_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="STREET_ID" type="BIGINT" />
-            <column name="STREET_CODE" type="VARCHAR2(4)" remarks="Код улицы"/>
-            <column name="STREET_NAME" type="VARCHAR2(4000)" />
-            <column name="STREET_OMK_UM" type="VARCHAR2(10)" remarks="Код ОМК УМ улицы"/>
-            <column name="STREET_TYPE_NAME" type="VARCHAR2(128)" />
-            <column name="ADDRESS" type="VARCHAR2(4000)" remarks="Полное наименование адресообразующего элемента" />
-        </createTable>
-        <rollback>
-            <dropTable tableName="ADDRESS_FORMING_ELEMENT"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-8-1" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AFE_GLOBAL_ID"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки GLOBAL_ID таблицы ADDRESS_FORMING_ELEMENT</comment>
-        <createIndex indexName="IXFK_AFE_GLOBAL_ID"
-                     tableName="ADDRESS_FORMING_ELEMENT"
-                     unique="false">
-            <column name="GLOBAL_ID" type="BIGINT"/>
-        </createIndex>
-    </changeSet>
-    <!-- !!!! ADDRESS_FORMING_ELEMENT !!!! -->
 
     <!-- POLICY_TYPE -->
     <changeSet id="CONTINGENT2-NSI-9" author="ddryuchin" labels="1.0.0.0">
@@ -478,6 +458,9 @@
             <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
                 <constraints nullable="false" />
             </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
         </createTable>
         <rollback>
             <dropTable tableName="POLICY_TYPE"/>
@@ -485,91 +468,35 @@
     </changeSet>
     <!-- !!!! POLICY_TYPE !!!! -->
 
-    <!-- BUILDING_REGISTRY -->
+    <!-- NSI_BUILDING_REGISTRY -->
     <changeSet id="CONTINGENT2-NSI-10" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="BUILDING_REGISTRY"/>
+                <tableExists tableName="NSI_BUILDING_REGISTRY"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы BUILDING_REGISTRY</comment>
-        <createTable tableName="BUILDING_REGISTRY"
+        <comment>Создание таблицы NSI_BUILDING_REGISTRY</comment>
+        <createTable tableName="NSI_BUILDING_REGISTRY"
                      remarks="Сведения по отдельным зданиям, сооружениям">
-            <column name="ID" type="BIGINT" >
+            <column name="GLOBAL_ID" type="BIGINT" remarks="Уникальный идентификатор объекта" >
                 <constraints primaryKey="true" nullable="false" />
-            </column>
-            <column name="GLOBAL_ID" type="BIGINT" remarks="Уникальный идентификатор объекта" />
-            <column name="AFE_ID" type="BIGINT">
-                <constraints nullable="false" />
             </column>
             <column name="ADDR_ID" type="BIGINT" />
             <column name="L1_TYPE" type="VARCHAR2(256)" remarks="Тип номера дома, владения"/>
+            <column name="L1_TYPE_SHORT" type="VARCHAR2(16)" remarks="Краткий тип номера дома, владения"/>
             <column name="L1_VALUE" type="VARCHAR2(256)" remarks="Номер дома, владения"/>
             <column name="L2_TYPE" type="VARCHAR2(256)" remarks="Тип номера корпуса"/>
+            <column name="L2_TYPE_SHORT" type="VARCHAR2(16)" remarks="Краткий тип номера корпуса"/>
             <column name="L2_VALUE" type="VARCHAR2(256)" remarks="Номер корпуса"/>
             <column name="L3_TYPE" type="VARCHAR2(256)" remarks="Тип номера строения, сооружения"/>
+            <column name="L3_TYPE_SHORT" type="VARCHAR2(16)" remarks="Краткий тип номера строения, сооружения"/>
             <column name="L3_VALUE" type="VARCHAR2(256)" remarks="Номер строения, сооружения"/>
             <column name="ADDRESS" type="VARCHAR2(4000)" remarks="Адрес" />
         </createTable>
         <rollback>
-            <dropTable tableName="BUILDING_REGISTRY"/>
+            <dropTable tableName="NSI_BUILDING_REGISTRY"/>
         </rollback>
     </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-10-1" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IDX_BUILDING_REGISTRY_AFE_ID"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки ADDRESS_FORMING_ELEMENT_ID таблицы BUILDING_REGISTRY</comment>
-        <createIndex indexName="IDX_BUILDING_REGISTRY_AFE_ID"
-                     tableName="BUILDING_REGISTRY"
-                     unique="false">
-            <column name="AFE_ID" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-10-2" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="BUILDING_REGISTRY" columnName="AFE_ID" />
-            <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_BUILDING_REGISTRY_AFE</comment>
-        <addForeignKeyConstraint baseColumnNames="AFE_ID"
-                                 baseTableName="BUILDING_REGISTRY"
-                                 constraintName="FK_BUILDING_REGISTRY_AFE"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="ADDRESS_FORMING_ELEMENT"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-10-3" author="ddryuchin" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IDX_BUILDING_REGISTRY_GLOBAL_ID"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки GLOBAL_ID таблицы BUILDING_REGISTRY</comment>
-        <createIndex indexName="IDX_BUILDING_REGISTRY_GLOBAL_ID"
-                     tableName="BUILDING_REGISTRY"
-                     unique="false">
-            <column name="GLOBAL_ID" type="BIGINT"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-NSI-10-4" author="sorlov">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <sequenceExists sequenceName="SEQ_BUILDING_REGISTRY"/>
-            </not>
-        </preConditions>
-        <comment>Создание сиквенса для таблицы BUILDING_REGISTRY</comment>
-        <createSequence sequenceName="SEQ_BUILDING_REGISTRY"/>
-        <rollback>
-            <dropSequence sequenceName="SEQ_BUILDING_REGISTRY"/>
-        </rollback>
-    </changeSet>
-    <!-- !!!! BUILDING_REGISTRY !!!! -->
 
     <!-- AREA_TYPE_SPECIALIZATIONS -->
     <changeSet id="CONTINGENT2-NSI-11" author="ddryuchin" labels="1.0.0.0">
@@ -580,7 +507,7 @@
         </preConditions>
         <comment>Создание таблицы AREA_TYPE_SPECIALIZATIONS</comment>
         <createTable tableName="AREA_TYPE_SPECIALIZATIONS">
-            <column name="ID" type="BIGINT">
+            <column name="GLOBAL_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Тип участка">
@@ -639,20 +566,272 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-NSI-11-3" author="sorlov">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <sequenceExists sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
-            </not>
-        </preConditions>
-        <comment>Создание сиквенса для таблицы AREA_TYPE_SPECIALIZATIONS</comment>
-        <createSequence sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
-        <rollback>
-            <dropSequence sequenceName="SEQ_AREA_TYPE_SPECIALIZATIONS"/>
-        </rollback>
-    </changeSet>
     <!-- !!!! AREA_TYPE_SPECIALIZATIONS !!!! -->
 
+    <!-- GENDER -->
+    <changeSet id="CONTINGENT2-NSI-12" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="GENDER"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы GENDER</comment>
+        <createTable tableName="GENDER">
+            <column name="CODE" type="VARCHAR2(50)" remarks="Код">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(50)" remarks="Наименование">
+                <constraints nullable="false" />
+            </column>
+            <column name="ARCHIVED" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="GENDER"/>
+        </rollback>
+    </changeSet>
 
+    <changeSet id="CONTINGENT2-NSI-12-5" author="ddryuchin" labels="1.0.0.0">
+        <modifyDataType columnName="CODE"
+                        newDataType="VARCHAR(50)"
+                        tableName="GENDER"/>
+    </changeSet>
+
+    <!-- !!!! GENDER !!!! -->
+
+    <changeSet id="CONTINGENT2-NSI-12-1" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_NSI_PUSH_LOG"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы NSI_PUSH_LOG</comment>
+        <createSequence sequenceName="SEQ_NSI_PUSH_LOG"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_NSI_PUSH_LOG"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-12-2" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="NSI_PUSH_LOG"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы логирования входящих пуш запросов NSI_PUSH_LOG</comment>
+        <createTable tableName="NSI_PUSH_LOG">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="in_type" type="VARCHAR2(100)"/>
+            <column name="received_time" type="timestamp(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="in" type="text">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="NSI_PUSH_LOG"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-12-3" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="NSI_PUSH_LOG" columnName="input_message" />
+            </not>
+        </preConditions>
+        <renameColumn newColumnName="input_message"
+                      oldColumnName="in"
+                      tableName="NSI_PUSH_LOG"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-191-NSI-3" author="mkachalov"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="POSITION_NOM" />
+        </preConditions>
+        <dropNotNullConstraint columnDataType="DATE" columnName="START" tableName="POSITION_NOM"/>
+    </changeSet>
+
+
+    <changeSet id="CONTINGENT2-191-NSI-4-2" author="mkachalov"  labels="1.0.0.0" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="position_nom" />
+                <sqlCheck expectedResult ="1">SELECT COUNT(column_name) FROM information_schema.columns WHERE table_name='position_nom' AND column_name='END'</sqlCheck>
+            </and>
+        </preConditions>
+        <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="p_end" oldColumnName="END" tableName="position_nom"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-206-3-1" author="mkachalov"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="position_nom" />
+                <columnExists tableName="position_nom" columnName="p_end" />
+            </and>
+        </preConditions>
+        <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="end_date" oldColumnName="p_end" tableName="position_nom"  remarks="Дата окончания действия"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-206-3-2" author="mkachalov"  labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="position_nom" />
+                <columnExists tableName="position_nom" columnName="start" />
+            </and>
+        </preConditions>
+        <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="start_date" oldColumnName="start" tableName="position_nom" remarks="Дата начала действия"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-12-4" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="NSI_PUSH_LOG"/>
+            <not>
+                <columnExists tableName="NSI_PUSH_LOG" columnName="error"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки status в таблицу логирования входящих пуш запросов NSI_PUSH_LOG</comment>
+        <addColumn tableName="NSI_PUSH_LOG">
+            <column name="error" type="NUMBER(1)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="error" tableName="NSI_PUSH_LOG"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-12-5" author="shnaider_ab">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="NSI_PUSH_LOG"/>
+            <not>
+                <columnExists tableName="NSI_PUSH_LOG" columnName="error_message"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки error в таблицу логирования входящих пуш запросов NSI_PUSH_LOG</comment>
+        <addColumn tableName="NSI_PUSH_LOG">
+            <column name="error_message" type="text"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="error_message" tableName="NSI_PUSH_LOG"/>
+        </rollback>
+    </changeSet>
+
+    <!-- ADDRESS_FORMING_ELEMENT -->
+    <changeSet id="CONTINGENT2-303-1" author="shnaider_ab" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы NSI_ADDRESS_FORMING_ELEMENT</comment>
+        <createTable tableName="NSI_ADDRESS_FORMING_ELEMENT"
+                     remarks="Адресообразующий элемент">
+            <column name="GLOBAL_ID" type="BIGINT" remarks="Уникальный идентификатор объекта">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="KOD_GIVZ" type="VARCHAR2(11)" remarks="Код БТИ"/>
+            <column name="AOLEVEL" type="VARCHAR2(2)" remarks="Уровень адресного объекта"/>
+            <column name="REGION_TE_CODE" type="VARCHAR2(4000)" remarks="Код округа ОМК ТЕ"/>
+            <column name="REGION_TE_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование округа"/>
+            <column name="REGION_TE_TYPENAME" type="VARCHAR2(256)" remarks="Наименование типа округа"/>
+            <column name="REGION_TE_TYPENAME_SHORT" type="VARCHAR2(256)" remarks="Краткое наименование типа округа"/>
+            <column name="AREACODE_OMK_TE" type="VARCHAR2(4000)" remarks="Код района ОМК ТЕ"/>
+            <column name="AREA_TE_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование муниципального образования"/>
+            <column name="AREA_TE_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа муниципального образования"/>
+            <column name="AREA_TE_TYPENAME_SHORT" type="VARCHAR2(128)" remarks="Краткое наименование типа муниципального образования"/>
+            <column name="AREACODE" type="VARCHAR2(3)" remarks="Код района"/>
+            <column name="AREA_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код района"/>
+            <column name="AREA_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование района"/>
+            <column name="AREA_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа района"/>
+            <column name="AREA_TYPENAME_SHORT" type="VARCHAR2(128)" remarks="Наименование типа района"/>
+            <column name="CITYCODE" type="VARCHAR2(3)" remarks="Код города"/>
+            <column name="CITY_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код города"/>
+            <column name="CITY_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование города"/>
+            <column name="CITY_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа города"/>
+            <column name="CITY_TYPENAME_SHORT" type="VARCHAR2(128)" remarks="Наименование типа города"/>
+            <column name="PLACECODE" type="VARCHAR2(3)" remarks="Код населенного пункта"/>
+            <column name="PLACE_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код населённого пункта"/>
+            <column name="PLACE_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование населённого пункта"/>
+            <column name="PLACE_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа населенного пункта"/>
+            <column name="PLACE_TYPENAME_SHORT" type="VARCHAR2(128)" remarks="Наименование типа населенного пункта"/>
+            <column name="PLANCODE" type="VARCHAR2(4)" remarks="Код элемента планировочной структуры"/>
+            <column name="PLAN_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код элемента планировочной структуры"/>
+            <column name="PLAN_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование элемента планировочной структуры"/>
+            <column name="PLAN_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа элемента планировочной структуры"/>
+            <column name="PLAN_TYPENAME_SHORT" type="VARCHAR2(128)" remarks="Наименование типа элемента планировочной структуры"/>
+            <column name="STREETCODE" type="VARCHAR2(4)" remarks="Код улицы"/>
+            <column name="STREET_BTI_CODE" type="VARCHAR2(11)" remarks="БТИ код улицы"/>
+            <column name="STREET_NAME" type="VARCHAR2(4000)" remarks="Официальное наименование улицы"/>
+            <column name="STREET_OMK_UM" type="VARCHAR2(10)" remarks="Код ОМК УМ улицы"/>
+            <column name="STREET_TYPENAME" type="VARCHAR2(128)" remarks="Наименование типа улицы"/>
+            <column name="STREET_TYPENAME_SHORT" type="VARCHAR2(128)" remarks="Наименование типа улицы"/>
+            <column name="ADDRESS" type="VARCHAR2(4000)" remarks="Полное наименование адресообразующего элемента">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-NSI-8-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IXFK_AFE_GLOBAL_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки GLOBAL_ID таблицы ADDRESS_FORMING_ELEMENT</comment>
+        <createIndex indexName="IXFK_AFE_GLOBAL_ID"
+                     tableName="NSI_ADDRESS_FORMING_ELEMENT"
+                     unique="false">
+            <column name="GLOBAL_ID" type="BIGINT"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-379-2" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="NSI_ADDRESS_FORMING_ELEMENT"/>
+            <not>
+                <columnExists tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_ID"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="NSI_ADDRESS_FORMING_ELEMENT">
+            <column name="REGION_ID" type="BIGINT" remarks="Регион" />
+            <column name="REGION_CODE" type="VARCHAR2(11)" remarks="Код региона" />
+            <column name="REGION_NAME" type="VARCHAR2(4000)" remarks="Название региона" />
+            <column name="REGION_TE_ID" type="BIGINT" remarks="Регион" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_ID"/>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_CODE"/>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_NAME"/>
+            <dropColumn tableName="NSI_ADDRESS_FORMING_ELEMENT" columnName="REGION_TE_ID"/>
+        </rollback>
+    </changeSet>
+
+
+    <!-- !!!! ADDRESS_FORMING_ELEMENT !!!! -->
+
+    <!-- View definitions -->
+    <changeSet id="CONTINGENT2-313-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <viewExists viewName="AREA_TYPE_VIEW"/>
+            </not>
+        </preConditions>
+        <comment>Создание view AREA_TYPE_VIEW</comment>
+        <createView replaceIfExists="true"
+                    viewName="AREA_TYPE_VIEW">SELECT code, title, area_type_kind_code, area_type_class_code, head_finance,
+                        attach_by_medical_reason, has_service_territory, attach_by_request, mpgu_available, gender_code,
+                        age_min, age_max, age_m_min, age_m_max, age_w_min, age_w_max, archived FROM area_type</createView>
+        <rollback>
+            <dropView viewName="AREA_TYPE_VIEW" />
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

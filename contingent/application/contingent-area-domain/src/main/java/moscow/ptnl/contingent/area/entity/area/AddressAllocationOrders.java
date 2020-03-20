@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.entity.area;
 
-import moscow.ptnl.contingent.area.entity.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -18,9 +18,11 @@ import java.util.Objects;
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
+import org.hibernate.annotations.Proxy;
 
 @Entity @Journalable(ServiceName.AREA)
 @Table(name = "ADDRESS_ALLOCATION_ORDERS")
+@Proxy(lazy=false)
 @SequenceGenerator(name = "SEQ_ADDRESS_ALLOCATION_ORDERS", sequenceName = "SEQ_ADDRESS_ALLOCATION_ORDERS", allocationSize=1)
 public class AddressAllocationOrders implements Serializable {
 
@@ -121,6 +123,16 @@ public class AddressAllocationOrders implements Serializable {
 
     public void setOuz(String ouz) {
         this.ouz = ouz;
+    }
+
+    public boolean equalsOrd(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AddressAllocationOrders that = (AddressAllocationOrders) o;
+        return Objects.equals(number, that.number) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(ouz, that.ouz) &&
+                Objects.equals(date, that.date);
     }
 
     @Override

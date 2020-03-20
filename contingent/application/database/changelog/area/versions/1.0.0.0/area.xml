@@ -58,32 +58,6 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-AREA-1-4" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="ADDRESSES" columnName="AFE_ID" />
-            <columnExists tableName="ADDRESS_FORMING_ELEMENT" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_ADDRESSES_AFE</comment>
-        <addForeignKeyConstraint baseColumnNames="AFE_ID"
-                                 baseTableName="ADDRESSES"
-                                 constraintName="FK_ADDRESSES_AFE"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="ADDRESS_FORMING_ELEMENT"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-AREA-1-5" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="ADDRESSES" columnName="BR_ID" />
-            <columnExists tableName="BUILDING_REGISTRY" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_ADDRESSES_REGISTRY_B</comment>
-        <addForeignKeyConstraint baseColumnNames="BR_ID"
-                                 baseTableName="ADDRESSES"
-                                 constraintName="FK_ADDRESSES_REGISTRY_B"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="BUILDING_REGISTRY"/>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-AREA-1-6" author="sorlov">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -226,11 +200,11 @@
     <changeSet id="CONTINGENT2-AREA-2" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="AREA_MEDICAL_EMPLOYEE"/>
+                <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
             </not>
         </preConditions>
-        <comment>Создание таблицы AREA_MEDICAL_EMPLOYEE</comment>
-        <createTable tableName="AREA_MEDICAL_EMPLOYEE"
+        <comment>Создание таблицы AREA_MEDICAL_EMPLOYEES</comment>
+        <createTable tableName="AREA_MEDICAL_EMPLOYEES"
                      remarks="МР на участке">
             <column name="ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false" />
@@ -238,11 +212,10 @@
             <column name="MEDICAL_EMPLOYEE_JOB_ID" type="BIGINT" remarks="ИД Исполнения должности" />
             <column name="AREA_ID" type="BIGINT" />
             <column name="IS_REPLACEMENT" type="NUMBER(1)" remarks="Роль МУ на участке (тип обслуживнаия)" />
-            <column name="OUZ" type="VARCHAR2(50)" />
             <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала работы на участке" />
             <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания работы на участке" />
             <column name="SNILS" type="VARCHAR2(20)" />
-            <column name="POSITION_CODE" type="BIGINT" />
+            <column name="POSITION_CODE" type="VARCHAR2(100)" />
             <column name="SUBDIVISION_ID" type="BIGINT" />
             <column name="CREATE_DATE" type="TIMESTAMP(6)">
                 <constraints nullable="false" />
@@ -250,7 +223,7 @@
             <column name="UPDATE_DATE" type="TIMESTAMP(6)" />
         </createTable>
         <rollback>
-            <dropTable tableName="AREA_MEDICAL_EMPLOYEE"/>
+            <dropTable tableName="AREA_MEDICAL_EMPLOYEES"/>
         </rollback>
     </changeSet>
 
@@ -262,50 +235,23 @@
         </preConditions>
         <comment>Создание индекса колонки AREA_ID таблицы AREA_MEDICAL_EMPLOYEE</comment>
         <createIndex indexName="IXFK_AREA_MEDICAL_EMPLOYEE_AREA"
-                     tableName="AREA_MEDICAL_EMPLOYEE"
+                     tableName="AREA_MEDICAL_EMPLOYEES"
                      unique="false">
             <column name="AREA_ID" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-AREA-2-2" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="IXFK_AME_POSITION_NOM_CLINIC"/>
-            </not>
-        </preConditions>
-        <comment>Создание индекса колонки POSITION_CODE таблицы AREA_MEDICAL_EMPLOYEE</comment>
-        <createIndex indexName="IXFK_AME_POSITION_NOM_CLINIC"
-                     tableName="AREA_MEDICAL_EMPLOYEE"
-                     unique="false">
-            <column name="POSITION_CODE" type="number"/>
-        </createIndex>
-    </changeSet>
-
     <changeSet id="CONTINGENT2-AREA-2-3" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="AREA_ID" />
+            <columnExists tableName="AREA_MEDICAL_EMPLOYEES" columnName="AREA_ID" />
             <columnExists tableName="AREAS" columnName="ID" />
         </preConditions>
         <comment>Создание внешнего ключа FK_AME_AREA</comment>
         <addForeignKeyConstraint baseColumnNames="AREA_ID"
-                                 baseTableName="AREA_MEDICAL_EMPLOYEE"
+                                 baseTableName="AREA_MEDICAL_EMPLOYEES"
                                  constraintName="FK_AME_AREA"
                                  referencedColumnNames="ID"
                                  referencedTableName="AREAS"/>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-AREA-2-4" author="sorlov" labels="1.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <columnExists tableName="AREA_MEDICAL_EMPLOYEE" columnName="POSITION_CODE" />
-            <columnExists tableName="POSITION_NOM" columnName="ID" />
-        </preConditions>
-        <comment>Создание внешнего ключа FK_AME_POSITION_NOM</comment>
-        <addForeignKeyConstraint baseColumnNames="POSITION_CODE"
-                                 baseTableName="AREA_MEDICAL_EMPLOYEE"
-                                 constraintName="FK_AME_POSITION_NOM"
-                                 referencedColumnNames="ID"
-                                 referencedTableName="POSITION_NOM"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-AREA-2-5" author="shnaider_ab">
@@ -321,25 +267,20 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-AREA-2-6" author="ddryuchin" labels="1.0.0.0">
+    <changeSet id="CONTINGENT2-AREA-2-8" author="sorlov" labels="1.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+                <indexExists indexName="IXFK_AME_MEJI"/>
             </not>
         </preConditions>
-        <comment>Переименование таблицы AREA_MEDICAL_EMPLOYEE</comment>
-        <renameTable newTableName="AREA_MEDICAL_EMPLOYEES"
-                     oldTableName="AREA_MEDICAL_EMPLOYEE"/>
-        <rollback>
-            <renameTable newTableName="AREA_MEDICAL_EMPLOYEE"
-                         oldTableName="AREA_MEDICAL_EMPLOYEES"/>
-        </rollback>
+        <comment>Создание индекса колонки MEDICAL_EMPLOYEE_JOB_ID таблицы AREA_MEDICAL_EMPLOYEES</comment>
+        <createIndex indexName="IXFK_AME_MEJI"
+                     tableName="AREA_MEDICAL_EMPLOYEES"
+                     unique="false">
+            <column name="MEDICAL_EMPLOYEE_JOB_ID" type="number"/>
+        </createIndex>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-AREA-2-7" author="ddryuchin" labels="1.0.0.0">
-        <dropColumn columnName="OUZ"
-                    tableName="AREA_MEDICAL_EMPLOYEES"/>
-    </changeSet>
     <!-- !!!! AREA_MEDICAL_EMPLOYEE !!!! -->
 
     <!-- ADDRESS_ALLOCATION_ORDERS -->
@@ -994,6 +935,19 @@
                                  referencedTableName="ADDRESSES"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-AREA-10-6" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AREA_ADDRESS"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы AREA_ADDRESS</comment>
+        <createSequence sequenceName="SEQ_AREA_ADDRESS"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_AREA_ADDRESS"/>
+        </rollback>
+    </changeSet>
+
     <changeSet id="CONTINGENT2-148" author="shnaider">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -1007,4 +961,215 @@
         </rollback>
     </changeSet>
     <!-- !!!! AREA_ADDRESSES !!!! -->
+
+    <changeSet id="CONTINGENT2-277-3" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESSES" columnName="AFE_ID"/>
+            <columnExists tableName="ADDRESSES" columnName="BR_ID"/>
+        </preConditions>
+        <dropColumn tableName="ADDRESSES" columnName="AFE_ID"/>
+        <dropColumn tableName="ADDRESSES" columnName="BR_ID"/>
+        <rollback>
+            <addColumn tableName="ADDRESSES">
+                <column name="AFE_ID" type="BIGINT" />
+                <column name="BR_ID" type="BIGINT" />
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-277-4" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ADDRESSES" columnName="LEVEL"/>
+        </preConditions>
+        <dropColumn tableName="ADDRESSES" columnName="LEVEL"/>
+        <addColumn tableName="ADDRESSES">
+            <column name="AOLEVEL" type="VARCHAR2(2)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESSES" columnName="AOLEVEL"/>
+            <addColumn tableName="ADDRESSES">
+                <column name="LEVEL" type="SMALLINT">
+                    <constraints nullable="false" />
+                </column>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-277-5" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESSES"/>
+            <not>
+                <columnExists tableName="ADDRESSES" columnName="GLOBAL_ID"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ADDRESSES">
+            <column name="GLOBAL_ID" type="BIGINT" remarks="ИД НСИ" />
+            <column name="REGION_TE_CODE" type="VARCHAR2(4)" remarks="Код округа ОМК ТЕ"/>
+            <column name="REGION_TE_NAME" type="VARCHAR2(4000)" />
+            <column name="REGION_TE_TYPENAME" type="VARCHAR2(256)" />
+            <column name="REGION_TE_TYPENAME_SHORT" type="VARCHAR2(256)" />
+            <column name="AREACODE_OMK_TE" type="VARCHAR2(4000)" remarks="Код района ОМК ТЕ"/>
+            <column name="AREA_TE_NAME" type="VARCHAR2(4000)" />
+            <column name="AREA_TE_TYPENAME" type="VARCHAR2(128)" />
+            <column name="AREA_TE_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="AREACODE" type="VARCHAR2(3)" remarks="Код района"/>
+            <column name="AREA_BTI_CODE" type="VARCHAR2(11)"/>
+            <column name="AREA_NAME" type="VARCHAR2(4000)" />
+            <column name="AREA_TYPENAME" type="VARCHAR2(128)" />
+            <column name="AREA_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="CITYCODE" type="VARCHAR2(3)" remarks="Код города"/>
+            <column name="CITY_BTI_CODE" type="VARCHAR2(11)"/>
+            <column name="CITY_NAME" type="VARCHAR2(4000)" />
+            <column name="CITY_TYPENAME" type="VARCHAR2(128)" />
+            <column name="CITY_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="PLACECODE" type="VARCHAR2(3)" remarks="Код населенного пункта"/>
+            <column name="PLACE_BTI_CODE" type="VARCHAR2(11)" remarks="Код населенного пункта"/>
+            <column name="PLACE_NAME" type="VARCHAR2(4000)" />
+            <column name="PLACE_TYPENAME" type="VARCHAR2(128)" />
+            <column name="PLACE_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="PLANCODE" type="VARCHAR2(4)" remarks="Код элемента планировочной структуры"/>
+            <column name="PLAN_BTI_CODE" type="VARCHAR2(11)"/>
+            <column name="PLAN_NAME" type="VARCHAR2(4000)" />
+            <column name="PLAN_TYPENAME" type="VARCHAR2(128)" />
+            <column name="PLAN_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="STREETCODE" type="VARCHAR2(4)" remarks="Код улицы"/>
+            <column name="STREET_NAME" type="VARCHAR2(4000)" />
+            <column name="STREET_OMK_UM" type="VARCHAR2(10)" remarks="Код ОМК УМ улицы"/>
+            <column name="STREET_TYPENAME" type="VARCHAR2(128)" />
+            <column name="STREET_TYPENAME_SHORT" type="VARCHAR2(128)" />
+            <column name="STREET_BTI_CODE" type="VARCHAR2(11)" />
+            <column name="L1_TYPE" type="VARCHAR2(256)" remarks="Тип номера дома, владения"/>
+            <column name="L1_TYPE_SHORT" type="VARCHAR2(16)"/>
+            <column name="L1_VALUE" type="VARCHAR2(256)" remarks="Номер дома, владения"/>
+            <column name="L2_TYPE" type="VARCHAR2(256)" remarks="Тип номера корпуса"/>
+            <column name="L2_TYPE_SHORT" type="VARCHAR2(16)"/>
+            <column name="L2_VALUE" type="VARCHAR2(256)" remarks="Номер корпуса"/>
+            <column name="L3_TYPE" type="VARCHAR2(256)" remarks="Тип номера строения, сооружения"/>
+            <column name="L3_TYPE_SHORT" type="VARCHAR2(16)"/>
+            <column name="L3_VALUE" type="VARCHAR2(256)" remarks="Номер строения, сооружения"/>
+            <column name="ADDRESS" type="VARCHAR2(4000)" defaultValue="">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESSES" columnName="GLOBAL_ID"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TE_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TE_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TE_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TE_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREACODE_OMK_TE"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TE_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TE_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TE_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREACODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="AREA_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITYCODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITY_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITY_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITY_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="CITY_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACECODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACE_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACE_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACE_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLACE_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLANCODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLAN_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLAN_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLAN_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="PLAN_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREETCODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_OMK_UM"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_TYPENAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_TYPENAME_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="STREET_BTI_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L1_TYPE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L1_TYPE_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="L1_VALUE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L2_TYPE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L2_TYPE_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="L2_VALUE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L3_TYPE"/>
+            <dropColumn tableName="ADDRESSES" columnName="L3_TYPE_SHORT"/>
+            <dropColumn tableName="ADDRESSES" columnName="L3_VALUE"/>
+            <dropColumn tableName="ADDRESSES" columnName="ADDRESS"/>
+            <dropColumn tableName="ADDRESSES" columnName="UPDATE_DATE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-379-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESSES"/>
+            <not>
+                <columnExists tableName="ADDRESSES" columnName="REGION_ID"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ADDRESSES">
+            <column name="REGION_ID" type="BIGINT" remarks="Регион" />
+            <column name="REGION_CODE" type="VARCHAR2(11)" remarks="Код региона" />
+            <column name="REGION_NAME" type="VARCHAR2(4000)" remarks="Название региона" />
+            <column name="REGION_TE_ID" type="BIGINT" remarks="Регион" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_ID"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_CODE"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_NAME"/>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TE_ID"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-379-3" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="ADDRESSES"/>
+            <not>
+                <columnExists tableName="ADDRESSES" columnName="REGION_TYPENAME"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ADDRESSES">
+            <column name="REGION_TYPENAME" type="VARCHAR2(128)" remarks="Название типа региона." />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ADDRESSES" columnName="REGION_TYPENAME"/>
+        </rollback>
+    </changeSet>
+
+    <!-- View definitions -->
+    <changeSet id="CONTINGENT2-314-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <viewExists viewName="AREAS_VIEW"/>
+            </not>
+        </preConditions>
+        <comment>Создание view AREAS_VIEW</comment>
+        <createView replaceIfExists="true"
+                    viewName="AREAS_VIEW">SELECT id, mo_id, mu_id, area_type_code, number, is_auto_assign_for_attach,
+                        description, attach_by_medical_reason, age_min, age_max, age_m_min, age_m_max,
+                        age_w_min, age_w_max, create_date, update_date, archived FROM areas</createView>
+        <rollback>
+            <dropView viewName="AREAS_VIEW" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-315-1" author="sorlov" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <viewExists viewName="AREA_MEDICAL_EMPLOYEES_VIEW"/>
+            </not>
+        </preConditions>
+        <comment>Создание view AREA_MEDICAL_EMPLOYEES_VIEW</comment>
+        <createView replaceIfExists="true"
+                    viewName="AREA_MEDICAL_EMPLOYEES_VIEW">SELECT id, medical_employee_job_id, area_id, is_replacement, start_date,
+                        end_date, position_code, subdivision_id, create_date, update_date FROM area_medical_employees</createView>
+        <rollback>
+            <dropView viewName="AREA_MEDICAL_EMPLOYEES_VIEW" />
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

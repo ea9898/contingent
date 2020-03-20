@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="CONTINGENT2-494-1" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPES_CLASS" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_TYPES_CLASS">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPES_CLASS" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="AREA_TYPES_CLASS" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-2" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPES_KIND" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_TYPES_KIND">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPES_KIND" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="AREA_TYPES_KIND" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-3" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_TYPE">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="AREA_TYPE" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-4" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_TYPE_MEDICAL_POSITIONS">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="AREA_TYPE_MEDICAL_POSITIONS" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-5" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE_RELATIONS" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_TYPE_RELATIONS">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE_RELATIONS" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="AREA_TYPE_RELATIONS" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-6" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE_SPECIALIZATIONS" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_TYPE_SPECIALIZATIONS">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE_SPECIALIZATIONS" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="AREA_TYPE_SPECIALIZATIONS" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-7" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="POSITION_CODE" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="POSITION_CODE">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="POSITION_CODE" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="POSITION_CODE" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-8" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="POSITION_NOM" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="POSITION_NOM">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="POSITION_NOM" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="POSITION_NOM" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-9" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="SPECIALIZATION" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="SPECIALIZATION">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="SPECIALIZATION" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="SPECIALIZATION" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-10" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="GENDER" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="GENDER">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="GENDER" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="GENDER" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-494-11" author="sorlov" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="POLICY_TYPE" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="POLICY_TYPE">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="POLICY_TYPE" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="POLICY_TYPE" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
+
+</databaseChangeLog>

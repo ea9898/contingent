@@ -1,37 +1,54 @@
 package moscow.ptnl.ws.security;
 
-import moscow.ptnl.contingent.security.Principal;
+import moscow.ptnl.contingent.domain.security.Principal;
 import ru.mos.emias.system.v1.usercontext.UserContext;
+
 
 public class UserContextHolder {
 
-    private static ThreadLocal<UserContext> userContexts = new ThreadLocal<>();
-
-    public static UserContext getContext() {
-        return userContexts.get();
+    private static final ThreadLocal<RequestContext> REQUEST_CONTEXT = new ThreadLocal<>();
+       
+    public static RequestContext getContext() {
+        return REQUEST_CONTEXT.get();
     }
-
-    public static void setContext(UserContext userContext) {
-        if (userContext != null) {
-            userContexts.set(userContext);
-        } else {
-            userContexts.remove();
+    
+    public static String getRequestId() {
+        RequestContext context = getContext();
+        if (context == null) {
+            return null;
         }
+        return context.getRequestId();
+    }
+    
+    public static String getMethodName() {
+        RequestContext context = getContext();
+        if (context == null) {
+            return null;
+        }
+        return context.getMethodName();
+    }
+    
+    public static UserContext getUserContext() {
+        RequestContext context = getContext();
+        if (context == null) {
+            return null;
+        }
+        return context.getUserContext();
     }
     
     public static Principal getPrincipal() {
-        UserContext userContext = getContext();
-        if (userContext == null) {
+        RequestContext context = getContext();
+        if (context == null) {
             return null;
         }
-        Principal principal = new Principal(userContext.getUserName());
-        principal.setIpAddress(userContext.getHostIp());
-        principal.setUserRoleId((userContext.getUserRoleId() != 0) ? userContext.getUserRoleId() : null);
-        principal.setJobInfoId(userContext.getJobExecutionId()); //FIXME - это правильно?
-        //TODO не понятно как заполнять
-        //principal.setAccountId(Long.MIN_VALUE);
-        //principal.setFullName(fullName);
-        //principal.setLpuId(Long.MIN_VALUE);
-        return principal;
+        return context.getPrincipal();
+    }
+    
+    public static void setContext(RequestContext context) {
+        if (context != null) {
+            REQUEST_CONTEXT.set(context);
+        } else {
+            REQUEST_CONTEXT.remove();;
+        }
     }
 }

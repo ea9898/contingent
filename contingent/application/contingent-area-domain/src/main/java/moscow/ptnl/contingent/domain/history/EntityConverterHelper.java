@@ -24,7 +24,8 @@ public final class EntityConverterHelper {
     private static final Logger LOG = LoggerFactory.getLogger(EntityConverterHelper.class);
     
     private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private final static DateTimeFormatter LOCAL_DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private final static DateTimeFormatter LOCAL_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+    private final static DateTimeFormatter LOCAL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static final String COLLECTION_DELIMITER = ",";
     public static final String COMPOSITE_KEY_DELIMITER = ",";
     
@@ -115,7 +116,7 @@ public final class EntityConverterHelper {
             case LOCAL_DATE:
                 return ((java.time.LocalDate) value).format(LOCAL_DATE_FORMAT);
             case LOCAL_DATE_TIME:
-                return ((java.time.LocalDateTime) value).format(LOCAL_DATE_FORMAT);
+                return ((java.time.LocalDateTime) value).format(LOCAL_DATE_TIME_FORMAT);
             case ENUM:
                 return ((Enum) value).name();
             case ENTITY:

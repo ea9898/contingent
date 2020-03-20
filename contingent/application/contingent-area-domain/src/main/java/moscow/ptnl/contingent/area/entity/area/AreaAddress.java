@@ -3,9 +3,12 @@ package moscow.ptnl.contingent.area.entity.area;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -13,38 +16,50 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import moscow.ptnl.contingent.area.entity.area.Addresses;
 import moscow.ptnl.contingent.area.entity.area.MoAddress;
+import moscow.ptnl.contingent.domain.history.ServiceName;
+import moscow.ptnl.contingent.domain.history.meta.Journalable;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
 
-@Entity
+@Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREA_ADDRESSES")
+@SequenceGenerator(name = "seq_area_address", sequenceName = "seq_area_address", allocationSize=1)
 public class AreaAddress implements Serializable {
 
     private static final long serialVersionUID = 5982770527711526102L;
 
     @Id
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="seq_area_address")
     @Column(name = "ID", unique = true, nullable = false)
     private Long id;
 
+    @LogIt
     @JoinColumn(name = "MO_ADDRESS_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private MoAddress moAddress;
 
+    @LogIt
     @JoinColumn(name = "AREA_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
 
+    @LogIt
     @Column(name = "START_DATE")
     private LocalDate startDate;
 
+    @LogIt
     @Column(name = "END_DATE")
     private LocalDate endDate;
 
+    @LogIt
     @JoinColumn(name = "ADDRESS_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private Addresses address;
 
+    @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
+    @LogIt
     @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
 

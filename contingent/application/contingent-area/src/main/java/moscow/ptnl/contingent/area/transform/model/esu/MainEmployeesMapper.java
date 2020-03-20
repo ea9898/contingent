@@ -14,7 +14,7 @@ public class MainEmployeesMapper implements Transform<AreaInfoEvent.MainEmployee
     @Override
     public AreaInfoEvent.MainEmployees entityToDtoTransform(Set<AreaMedicalEmployees> entity) {
         AreaInfoEvent.MainEmployees employees = new AreaInfoEvent.MainEmployees();
-        employees.getIdmr().addAll(entity.stream().map(AreaMedicalEmployees::getMedicalEmployeeJobInfoId).collect(Collectors.toList()));
+        employees.getIdmr().addAll(entity.stream().map(AreaMedicalEmployees::getMedicalEmployeeJobId).collect(Collectors.toList()));
 
         return employees;
     }

@@ -5,15 +5,14 @@
     <artifactId>requests</artifactId>
     <groupId>moscow.ptnl.contingent</groupId>
     <packaging>war</packaging>
-    <version>1.0.0</version>
     <name>contingent-requests</name>
     <url>http://maven.apache.org</url>
 
     <parent>
        <groupId>moscow.ptnl.contingent</groupId>
        <artifactId>contingent</artifactId>
-       <version>1.0.0</version>
        <relativePath>../pom.xml</relativePath>
+        <version>1.3.0</version>
     </parent>
 
     <build>
@@ -341,7 +340,7 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                     <version>${api.slf4j}</version>
-                    <scope>${artefact.scope}</scope>
+                    <scope>${slf4j.scope}</scope>
             </dependency>
             <dependency>
                     <groupId>org.apache.logging.log4j</groupId>

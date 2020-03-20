@@ -1,8 +1,9 @@
 package moscow.ptnl.contingent.esuInputTasks;
 
 import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.nsi.AreaType;
-import moscow.ptnl.contingent.area.entity.nsi.PolicyTypeEnum;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.PolicyTypeEnum;
+import moscow.ptnl.contingent2.attachment.changeprimarea.event.AttachPrimaryPatientEvent;
 import moscow.ptnl.contingent2.attachment.deparea.event.AreaRestriction;
 import moscow.ptnl.contingent2.attachment.deparea.event.AttachToDependentAreaEvent;
 import moscow.ptnl.util.XMLUtil;
@@ -15,40 +16,43 @@ import java.util.stream.Collectors;
 public class AttachToDependentAreaEventMapper {
 
 
-    public static AttachToDependentAreaEvent entityToDtoTransform(Area area, AreaType areaType, List<Area> dependentAreas) {
+    public static AttachToDependentAreaEvent entityToDtoTransform(AttachPrimaryPatientEvent attachPrimaryPatientEvent,
+                                                                  List<Area> dependentAreas) {
         AttachToDependentAreaEvent event = new AttachToDependentAreaEvent();
         event.setOperationDate(XMLUtil.getCurrentDate());
-        event.setPatientEmiasId(event.getPatientEmiasId());
-        event.setPrimaryAreaId(event.getPrimaryAreaId());
-        event.getDependentArea().addAll(dependentAreas.stream().map(
+        event.setPatientEmiasId(attachPrimaryPatientEvent.getPatientEmiasId());
+        event.setPrimaryAreaId(attachPrimaryPatientEvent.getPrimaryAreaId());
+        event.getDependendAttachment().addAll(dependentAreas.stream().map(
                 depArea -> {
-                    AttachToDependentAreaEvent.DependentArea dependentArea = new AttachToDependentAreaEvent.DependentArea();
-                    dependentArea.setMoId(depArea.getMoId());
-                    dependentArea.setMuId(depArea.getMuId());
-                    dependentArea.setAreaId(depArea.getId());
+                    AttachToDependentAreaEvent.DependendAttachment attachment = new AttachToDependentAreaEvent.DependendAttachment();
+                    attachment.setMoId(depArea.getMoId());
+                    attachment.setMuId(depArea.getMuId());
+                    attachment.setAreaId(depArea.getId());
                     AreaRestriction restriction = new AreaRestriction();
-                    restriction.setGender(area.getAreaType().getCode());
-                    AreaType depAreaType = area.getAreaType();
-                    if (depAreaType.getAgeMin() == null && depAreaType.getAgeMax() == null
-                            && depAreaType.getAgeMMin() == null && depAreaType.getAgeMMax() == null
-                            && depAreaType.getAgeWMin() == null && depAreaType.getAgeWMax() == null) {
-                        restriction.setMinAge(areaType.getAgeMin());
-                        restriction.setMaxAge(areaType.getAgeMax());
-                        restriction.setMinAgeMale(areaType.getAgeMMin());
-                        restriction.setMaxAgeMale(areaType.getAgeMMax());
-                        restriction.setMinAgeFemale(areaType.getAgeWMin());
-                        restriction.setMaxAgeFemale(areaType.getAgeWMax());
-                    } else {
+                    AreaType depAreaType = depArea.getAreaType();
+                    if (depAreaType.getGender() != null && depAreaType.getGender().length() != 0) {
+                        restriction.setGender(Long.valueOf(depAreaType.getGender()));
+                    }
+                    if (depArea.getAgeMin() == null && depArea.getAgeMax() == null
+                            && depArea.getAgeMMin() == null && depArea.getAgeMMax() == null
+                            && depArea.getAgeWMin() == null && depArea.getAgeWMax() == null) {
                         restriction.setMinAge(depAreaType.getAgeMin());
                         restriction.setMaxAge(depAreaType.getAgeMax());
                         restriction.setMinAgeMale(depAreaType.getAgeMMin());
                         restriction.setMaxAgeMale(depAreaType.getAgeMMax());
                         restriction.setMinAgeFemale(depAreaType.getAgeWMin());
                         restriction.setMaxAgeFemale(depAreaType.getAgeWMax());
+                    } else {
+                        restriction.setMinAge(depArea.getAgeMin());
+                        restriction.setMaxAge(depArea.getAgeMax());
+                        restriction.setMinAgeMale(depArea.getAgeMMin());
+                        restriction.setMaxAgeMale(depArea.getAgeMMax());
+                        restriction.setMinAgeFemale(depArea.getAgeWMin());
+                        restriction.setMaxAgeFemale(depArea.getAgeWMax());
                     }
-                    dependentArea.setAreaRestriction(restriction);
-                    dependentArea.setPolicyType(PolicyTypeEnum.OMS.getCode());
-                    return dependentArea;
+                    attachment.setAreaRestriction(restriction);
+                    attachment.setPolicyType(PolicyTypeEnum.OMS.getCode());
+                    return attachment;
                 }).collect(Collectors.toList()));
         return event;
     }

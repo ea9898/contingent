@@ -9,17 +9,6 @@ import ru.mos.emias.contingent2.core.PagingResults;
 @Component
 public class SoapCustomMapper {
 
-    public AreaTypeShort mapMuProfileToAreaTypeShort(MuAddlAreaTypes profile) {
-        if (profile == null || profile.getAreaType() == null) {
-            return null;
-        }
-        AreaTypeShort areaType = new AreaTypeShort();
-        areaType.setCode(profile.getAreaType().getCode());
-        areaType.setName(profile.getAreaType().getTitle());
-
-        return areaType;
-    }
-
     public void mapPagingResults(PagingResults results, Page<?> page) {
         results.setPageNumber(page.getNumber());
         results.setPageSize(page.getSize());
