@@ -14,4 +14,6 @@ public interface MoAvailableAreaTypesRepository {
     List<MoAvailableAreaTypes> findByAreaTypes(AreaType areaType, Long moId);
 
     MoAvailableAreaTypes save(MoAvailableAreaTypes moAvailableAreaTypes);
+
+    void delete(MoAvailableAreaTypes moAvailableAreaTypes);
 }

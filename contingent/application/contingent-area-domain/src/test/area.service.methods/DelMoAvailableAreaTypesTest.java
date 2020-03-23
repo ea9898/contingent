@@ -24,7 +24,7 @@ public class DelMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
     /**
      * Тест С_УУ_73
      */
-    @Test
+/*    @Test
     public void checkAndGetAreaTypesNotExistInMOTest() {
         doReturn(Arrays.asList(moAvailableAreaType1, moAvailableAreaType2))
                 .when(moAvailableAreaTypesRepository).findAreaTypes(moId);
@@ -37,9 +37,9 @@ public class DelMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
                 , validation.getMessages().get(0).getMessage());
     }
 
-    /**
+    *//**
      * Тест С_УУ_77
-     */
+     *//*
     @Test
     public void checkAndGetAreaTypesNotExistInMUTrueTest() {
         doReturn(Arrays.asList(moAvailableAreaType1, moAvailableAreaType2))
@@ -76,9 +76,9 @@ public class DelMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
     }
 
 
-    /**
+    *//**
      * Тест п.3
-     */
+     *//*
     @Test
     public void delMoAvailableAreaTypesCorrectTest() {
         doReturn(Optional.of(areaType1)).when(areaTypesCRUDRepository).findById(areaType1.getCode());
@@ -117,5 +117,5 @@ public class DelMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
                             , areaType1.getCode(), muAvailableAreaType1.getMuId())
                     , e.getValidation().getMessages().get(2).getMessage());
         }
-    }
+    }*/
 }

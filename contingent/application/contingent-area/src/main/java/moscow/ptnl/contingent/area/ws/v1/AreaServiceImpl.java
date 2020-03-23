@@ -507,7 +507,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public DelMoAvailableAreaTypesResponse delMoAvailableAreaTypes(DelMoAvailableAreaTypesRequest body) throws Fault {
         try {
-            areaService.delMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
+            moService.delMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new DelMoAvailableAreaTypesResponse();
         }
@@ -520,7 +520,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetMoAvailableAreaTypesResponse getMoAvailableAreaTypes(GetMoAvailableAreaTypesRequest body) throws Fault {
         try {
             GetMoAvailableAreaTypesResponse result = new GetMoAvailableAreaTypesResponse();
-            result.getMoAvailableAreaTypes().addAll(areaService.getMoAvailableAreaTypes(body.getMoId()).stream()
+            result.getMoAvailableAreaTypes().addAll(moService.getMoAvailableAreaTypes(body.getMoId()).stream()
                     .map(areaTypeShortMapper::entityToDtoTransform)
                     .collect(Collectors.toList())
             );

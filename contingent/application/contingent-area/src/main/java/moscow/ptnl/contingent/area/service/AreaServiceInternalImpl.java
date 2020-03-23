@@ -223,34 +223,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         this.areaHelper = areaHelper;
     }
 
-    // (К_УУ_2)	Удаление типов участков из доступных для МО
-    @Override
-    @Deprecated
-    public void delMoAvailableAreaTypes(long moId, List<Long> areaTypeCodes) throws ContingentException {
-        areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
-        Validation validation = new Validation();
-        areaTypeCodes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation).stream()
-                .map(AreaType::getCode)
-                .collect(Collectors.toList());
-        List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
-        areaHelper.checkAndGetAreaTypesNotExistInMU(moAvailableAreaTypes, areaTypeCodes, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        // TODO перееписать с deleteAll
-        moAvailableAreaTypes.forEach(a -> moAvailableAreaTypesCRUDRepository.delete(a));
-    }
-
-    // (К_УУ_3)	Предоставление типов участков, доступных для МО
-    @Override
-    @Deprecated
-    public List<AreaType> getMoAvailableAreaTypes(long moId) throws ContingentException {
-        List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId);
-
-        return moAvailableAreaTypes.stream().map(MoAvailableAreaTypes::getAreaType).collect(Collectors.toList());
-    }
-
     // (К_УУ_4)	Добавление типов, доступных для МУ
     @Override
     public void addMuAvailableAreaTypes(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException {

@@ -51,4 +51,9 @@ public class MoAvailableAreaTypesRepositoryImpl extends BaseRepository implement
         return moAvailableAreaTypesCRUDRepository.save(moAvailableAreaTypes);
     }
 
+    @Override
+    public void delete(MoAvailableAreaTypes moAvailableAreaTypes) {
+        moAvailableAreaTypesCRUDRepository.delete(moAvailableAreaTypes);
+    }
+
 }
