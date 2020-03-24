@@ -14,7 +14,7 @@ import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

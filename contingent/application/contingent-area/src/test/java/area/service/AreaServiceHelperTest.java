@@ -18,9 +18,9 @@ import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 
 import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import org.junit.jupiter.api.BeforeEach;

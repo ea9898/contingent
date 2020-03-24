@@ -5,7 +5,6 @@ import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
-import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
@@ -23,8 +22,6 @@ import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.area.transform.AreaMedicalEmployeesClone;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.util.Period;
-import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
-import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
@@ -42,16 +39,16 @@ import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAddlAreaTypesRepository;
-import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -461,14 +458,6 @@ public class AreaServiceHelper {
         validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
     }
 
-    public void checkOrderExists(long orderId, Validation validation) {
-        Optional<AddressAllocationOrders> order = addressAllocationOrderCRUDRepository.findById(orderId);
-
-        if (!order.isPresent() || Boolean.TRUE.equals(order.get().getArchived())) {
-            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS, new ValidationParameter("orderId", orderId));
-        }
-    }
-
     public void checkTooManyAddresses(List<AddressRegistryBaseType> addresses, Long maxAddresses) throws ContingentException {
         if (addresses.size() > maxAddresses) {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAddresses));
@@ -674,37 +663,6 @@ public class AreaServiceHelper {
         return newAME;
     }
 
-    /**
-     * Система закрывает территории обслуживания участка
-     * @param addresses
-     */
-    public void delAreaAddresses(List<AreaAddress> addresses) {
-        addresses.forEach(a -> {
-            if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
-                areaAddressPagingAndSortingRepository.delete(a);
-            }
-            else {
-                a.setEndDate(LocalDate.now().minusDays(1));
-            }
-        });
-    }
-
-    /**
-     * Система закрывает территории обслуживания МО
-     * @param addresses
-     */
-    public void delMoAddresses(List<MoAddress> addresses) {
-        addresses.forEach(a -> {
-            if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
-                moAddressCRUDRepository.delete(a);
-            }
-            else {
-                a.setEndDate(LocalDate.now().minusDays(1));
-                moAddressCRUDRepository.save(a);
-            }
-        });
-    }
-
     public void delAreaMedicalEmployees(List<AreaMedicalEmployees> employees) {
         employees.forEach(a -> {
             if (a.getStartDate().equals(LocalDate.now())) {
@@ -753,14 +711,6 @@ public class AreaServiceHelper {
     public void tooManyAreaAddresses(List<Long> areaAddressIds, Long maxAreaAddress, Validation validation) {
         if (areaAddressIds.size() > maxAreaAddress) {
             validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAreaAddress));
-        }
-    }
-
-    // Система проверяет, что размер страницы, указанный во входных параметрах, не превышает максимально допустимое значение, указанное во внутреннем системном параметре (PAR_3).
-    // Иначе возвращает ошибку
-    public void checkMaxPage(PageRequest paging, Validation validation) {
-        if (paging != null && paging.getPageSize() > settingService.getPar3()) {
-            validation.error(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
         }
     }
 
@@ -949,25 +899,6 @@ public class AreaServiceHelper {
         }
     }
 
-
-    /**
-     * Такое название из
-     * @param addresses
-     * @return
-     */
-    @LogESU(type = AreaInfoEvent.class, useResult = true, methodName = "delMoAddress")
-    public Set<Area> deleteAreaAddress(List<AreaAddress> addresses) {
-
-        Set<Area> areas = addresses.stream().map(AreaAddress::getArea).collect(Collectors.toSet());
-
-        delAreaAddresses(addresses);
-
-        //Возвращаем участки, адреса которых были удалены, для передачи в ЕСУ
-        return areas;
-    }
-
-
-
     public void checkEmptyMuId(Long muId, AreaType areaType) throws ContingentException {
         if (muId == null && (AreaTypeKindEnum.MILDLY_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode()) ||
                 AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(areaType.getAreaTypeKind().getCode()))) {
@@ -981,12 +912,6 @@ public class AreaServiceHelper {
                                       List<SearchAreaAddress> addresses) throws ContingentException {
         if (areaTypeClassCode == null && moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && number == null
                 && description == null && isArchived == null && medicalEmployees.isEmpty() && addresses.isEmpty()) {
-            throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
-        }
-    }
-
-    public void checkSearchDnParameters(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds) throws ContingentException {
-        if (moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && specializationCodes.isEmpty() && areaIds.isEmpty()) {
             throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
         }
     }
@@ -1040,4 +965,29 @@ public class AreaServiceHelper {
                 .contains(ai.getGlobalId())).collect(Collectors.toList())).forEach(addresses::add);
         return addresses;
     }
+
+    /**
+     * Система закрывает территории обслуживания участка
+     * @param addresses
+     */
+    public void delAreaAddresses(List<AreaAddress> addresses) {
+        addresses.forEach(a -> {
+            if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
+                areaAddressRepository.delete(a);
+            }
+            else {
+                a.setEndDate(LocalDate.now().minusDays(1));
+            }
+        });
+    }
+
+    // Система проверяет, что размер страницы, указанный во входных параметрах, не превышает максимально допустимое значение, указанное во внутреннем системном параметре (PAR_3).
+    // Иначе возвращает ошибку
+    public void checkMaxPage(PageRequest paging, Validation validation) {
+        if (paging != null && paging.getPageSize() > settingService.getPar3()) {
+            validation.error(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
+        }
+    }
+
+
 }

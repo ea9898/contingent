@@ -7,7 +7,7 @@ import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.domain.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -8,6 +8,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.error.ContingentException;
@@ -38,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SearchDnAreaTest {
 
     @Autowired
-    private AreaServiceInternal areaServiceInternal;
+    private AreaService areaService;
 
     private static final PageRequest PR = PageRequest.of(0, 10);
     private static final List EL = Collections.emptyList();
@@ -52,14 +53,14 @@ public class SearchDnAreaTest {
 
     @Test
     public void searchDnAreaExceptionTest() {
-        Throwable exception = assertThrows(ContingentException.class, () -> areaServiceInternal.searchDnArea(null, EL, EL, EL, EL, PR));
+        Throwable exception = assertThrows(ContingentException.class, () -> areaService.searchDnArea(null, EL, EL, EL, EL, PR));
         assertEquals(exception.getMessage(), "Не заданы критерии поиска");
     }
 
     @Test
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchDnAreaAllParametersTest() {
-        Page<Area> areas = assertDoesNotThrow(() -> areaServiceInternal.searchDnArea(
+        Page<Area> areas = assertDoesNotThrow(() -> areaService.searchDnArea(
                 204L, Collections.singletonList(100L), Collections.singletonList(10L), Collections.singletonList(49L), EL, PR));
         assertNotNull(areas);
         assertEquals(1, areas.getNumberOfElements());
@@ -70,7 +71,7 @@ public class SearchDnAreaTest {
     @Test
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchDnAreaByAreaIdsTest() {
-        Page<Area> areas = assertDoesNotThrow(() -> areaServiceInternal.searchDnArea(null, EL, EL, EL, Collections.singletonList(8L), PR));
+        Page<Area> areas = assertDoesNotThrow(() -> areaService.searchDnArea(null, EL, EL, EL, Collections.singletonList(8L), PR));
         assertNotNull(areas);
         assertEquals(1, areas.getNumberOfElements());
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());
@@ -80,7 +81,7 @@ public class SearchDnAreaTest {
     @Test
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchDnArea_CONTINGENT2_638_Test() {
-        Page<Area> areas = assertDoesNotThrow(() -> areaServiceInternal.searchDnArea(136L, EL, EL, EL, EL, PR));
+        Page<Area> areas = assertDoesNotThrow(() -> areaService.searchDnArea(136L, EL, EL, EL, EL, PR));
         assertEquals(1, areas.getNumberOfElements());
     }
 }

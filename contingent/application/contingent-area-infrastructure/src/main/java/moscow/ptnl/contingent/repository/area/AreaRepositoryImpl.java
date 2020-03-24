@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees_;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType_;
 import moscow.ptnl.contingent.domain.area.entity.Area_;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations_;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 import org.slf4j.Logger;
@@ -177,48 +179,9 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         return entityManager.createQuery(criteria).getResultList();
     }
 
-    @Deprecated
-    @Override
-    public List<Area> findAreasWithMuIdNullAndNotAreaTypeKindCode(Long moId, Long areaTypeCode, Long areaTypeKindCode, Integer number, Boolean actual) {
-        Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.and(
-                        moId == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.moId.getName()), moId),
-                                criteriaBuilder.isNull(root.get(Area_.muId.getName())),
-                        number == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.number.getName()), number),
-                        areaTypeCode == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.areaType.getName()), areaTypeCode),
-                        areaTypeKindCode == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.notEqual(root.get(Area_.areaType.getName()).get(AreaType_.areaTypeKind.getName()), areaTypeKindCode),
-                        actual == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.archived.getName()), !actual));
-        return areaCRUDRepository.findAll(specification);
-    }
-
     @Override
     public List<Area> findAreas(Long moId, Long muId, Long areaTypeCode, Integer number, Boolean actual) {
         return findAreas(moId, muId, Collections.singletonList(areaTypeCode), number, actual);
-    }
-
-    @Deprecated
-    @Override
-    public List<Area> findAreasWithNotAreaTypeKindCode(Long moId, Long muId, Long areaTypeCode, Long areaTypeKindCode, Integer number, Boolean actual) {
-        Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.and(
-                        moId == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.moId.getName()), moId),
-                        muId == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.muId.getName()), muId),
-                        number == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.number.getName()), number),
-                        areaTypeCode == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.areaType.getName()), areaTypeCode),
-                        areaTypeKindCode == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.notEqual(root.get(Area_.areaType.getName()).get(AreaType_.areaTypeKind.getName()), areaTypeKindCode),
-                        actual == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.archived.getName()), !actual));
-        return areaCRUDRepository.findAll(specification);
     }
 
     @Override
@@ -241,24 +204,6 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         );
 
         return entityManager.createQuery(criteria).getResultList();
-    }
-
-    @Override
-    public List<Area> findDependentAreasByAreaEqAreaType(Area area) {
-        Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.and(
-                    criteriaBuilder.or(
-                            criteriaBuilder.equal(root.get(Area_.muId), area.getMuId()),
-                            criteriaBuilder.and(
-                                    root.get(Area_.moId.getName()).isNull(),
-                                    criteriaBuilder.equal(root.get(Area_.moId), area.getMoId())
-                            )
-                    )
-                );
-        List<Area> depAreas = areaCRUDRepository.findAll(specification.and(searchActive()));
-
-        return depAreas.stream().filter(da -> !da.getPrimaryAreaTypes().isEmpty() &&
-                da.getPrimaryAreaTypes().contains(area.getAreaType())).collect(Collectors.toList());
     }
 
     @Override
@@ -309,4 +254,12 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
         return areaCRUDRepository.findAll(specification, paging);
     }
+
+    @Override
+    public List<Area> findAllById(List<Long> areaIds) {
+        return areaCRUDRepository.findAllById(areaIds);
+    }
+
+    @Override
+    public Optional<Area> findById(Long areaId) { return areaCRUDRepository.findById(areaId); }
 }

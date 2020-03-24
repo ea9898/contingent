@@ -30,7 +30,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
 
         MuAreaTypesFull muAreaTypesFull = null;
         try {
-            muAreaTypesFull = areaServiceInternal.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.ALL);
+            muAreaTypesFull = moMuService.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.ALL);
         } catch (ContingentException e) {
             Assertions.fail("В этом методе ошибок не предусмотрено");
         }
@@ -49,7 +49,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
 
         MuAreaTypesFull muAreaTypesFull = null;
         try {
-            muAreaTypesFull = areaServiceInternal.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.AVAILABLE_TO_ADD);
+            muAreaTypesFull = moMuService.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.AVAILABLE_TO_ADD);
         } catch (ContingentException e) {
             Assertions.fail("В этом методе ошибок не предусмотрено");
         }
@@ -69,7 +69,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
 
         MuAreaTypesFull muAreaTypesFull = null;
         try {
-            muAreaTypesFull = areaServiceInternal.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.USED_IN_MU);
+            muAreaTypesFull = moMuService.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.USED_IN_MU);
         } catch (ContingentException e) {
             Assertions.fail("В этом методе ошибок не предусмотрено");
         }

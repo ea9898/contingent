@@ -4,23 +4,25 @@ import moscow.ptnl.contingent.area.service.Algorithms;
 import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
-import moscow.ptnl.contingent.area.service.HistoryServiceHelper;
+import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.model.esu.AddressesMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaRestrictionMapper;
+import moscow.ptnl.contingent.domain.area.MoMuService;
+import moscow.ptnl.contingent.domain.area.OrderService;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
+import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
-import moscow.ptnl.contingent.repository.area.MoAddressRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
@@ -123,10 +125,16 @@ public class BaseTest {
 
     @Spy
     @InjectMocks
-    private HistoryServiceHelper historyServiceHelper;
+    private HistoryServiceHelperImpl historyServiceHelperImpl;
 
     @InjectMocks
     public AreaServiceInternalImpl areaServiceInternal;
+
+    @Spy
+    public MoMuService moMuService;
+
+    @Spy
+    public OrderService orderService;
 
     @BeforeEach
     public void init() {

@@ -1,15 +1,8 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
-import moscow.ptnl.contingent.domain.area.entity.Area;
-import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
-import moscow.ptnl.contingent.domain.area.model.area.AddressArea;
-import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
-import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
-import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
@@ -18,7 +11,6 @@ import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface AreaServiceInternal {
@@ -41,40 +33,18 @@ public interface AreaServiceInternal {
                              List<Long> policyTypesAdd, List<Long> policyTypesDel,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW) throws ContingentException;
 
-    Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException;
-
-    void updateOrder(Long id, String number, LocalDate date, String ouz, String name) throws ContingentException;
-
-    Page<AddressAllocationOrders> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException;
-
-    AreaInfo getAreaById(Long areaId) throws ContingentException;
-
     List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addMedicalEmployees,
                                         List<ChangeMedicalEmployee> changeMedicalEmployees) throws ContingentException;
 
     void restoreArea(Long areaId) throws ContingentException;
 
-    Long getNewAreaId() throws ContingentException;
-
     List<Long> addAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry, boolean limitAddress) throws ContingentException;
 
     List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addresses, boolean limitAddress) throws ContingentException;
 
-    Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
-
-    Page<AddressArea> getAreaAddress(Long moId, List<Long> areaIds, PageRequest paging) throws ContingentException;
-
-    void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException;
-
     void archiveArea(long areaId) throws ContingentException;
 
     void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException;
-
-    void addMuAvailableAreaTypes(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException;
-
-    void delMuAvailableAreaTypes(long muId, List<Long> areaTypeCodes) throws ContingentException;
-
-    MuAreaTypesFull getMuAvailableAreaTypes(long moId, long muId, AreaTypeStateType areaTypeState) throws ContingentException;
 
     Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
                         Integer number, String description, Boolean isArchived, List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
@@ -90,6 +60,4 @@ public interface AreaServiceInternal {
 
     Long initiateAddAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry) throws ContingentException;
 
-    Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes,
-                            List<Long> areaIds, PageRequest paging) throws ContingentException;
 }

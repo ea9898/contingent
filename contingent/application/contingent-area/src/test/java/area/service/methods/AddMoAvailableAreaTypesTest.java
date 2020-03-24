@@ -1,4 +1,4 @@
-package service.methods;
+package area.service.methods;
 
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.domain.AreaErrorReason;
@@ -23,7 +23,6 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
     /**
      * Тест п.1 С_УУ_2
      */
-    /*
     @Test
     public void checkAndGetAreaTypesExistTest() {
         doReturn(Optional.of(areaType1)).when(areaTypesCRUDRepository).findById(areaType1.getCode());
@@ -43,9 +42,7 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
                 , validation.getMessages().get(0).getMessage());
     }
 
-    *//**
-     * Тест п.2 С_УУ_74
-     *//*
+    // Тест п.2 С_УУ_74
     @Test
     public void checkAreaTypesExistInMOTest() {
         doReturn(Arrays.asList(moAvailableAreaType1, moAvailableAreaType2))
@@ -62,9 +59,7 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
                 , validation.getMessages().get(1).getMessage());
     }
 
-    *//**
-     * Тест п.3 записи в БД типов участков доступный для МО
-     *//*
+    // Тест п.3 записи в БД типов участков доступный для МО
     @Test
     public void addMoAvailableAreaTypesTest() {
         doReturn(Optional.of(areaType1)).when(areaTypesCRUDRepository).findById(areaType1.getCode());
@@ -74,7 +69,7 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
         doReturn(moAvailableAreaType1).when(moAvailableAreaTypesCRUDRepository).save(moAvailableAreaType1);
         doReturn(moAvailableAreaType2).when(moAvailableAreaTypesCRUDRepository).save(moAvailableAreaType2);
         try {
-            areaServiceInternal.addMoAvailableAreaTypes(moId, Arrays.asList(areaType1.getCode(),areaType2.getCode()));
+            moMuService.addMoAvailableAreaTypes(moId, Arrays.asList(areaType1.getCode(),areaType2.getCode()));
         } catch (ContingentException e) {
             fail();
         }
@@ -86,7 +81,7 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
         doReturn(Arrays.asList(moAvailableAreaType1, moAvailableAreaType2))
                 .when(moAvailableAreaTypesRepository).findAreaTypes(moId);
         try {
-            areaServiceInternal.addMoAvailableAreaTypes(moId, Arrays.asList(areaType1.getCode(),areaType2.getCode()));
+            moMuService.addMoAvailableAreaTypes(moId, Arrays.asList(areaType1.getCode(),areaType2.getCode()));
         } catch (ContingentException e) {
             assertEquals(String.format(AreaErrorReason.AREA_TYPE_NOT_FOUND.getDescription(), areaType2.getCode())
                     , e.getValidation().getMessages().get(0).getMessage());
@@ -95,5 +90,4 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
 
         }
     }
-*/
 }

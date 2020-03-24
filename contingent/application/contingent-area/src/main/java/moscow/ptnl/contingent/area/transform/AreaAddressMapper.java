@@ -6,34 +6,24 @@ import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AreaAddress;
 
 @Component
-public class AreaAddressMapper implements Transform<AreaAddress, AddressArea> {
+public class AreaAddressMapper implements Transform<AreaAddress, moscow.ptnl.contingent.domain.area.entity.AreaAddress> {
 
     @Autowired
     private AddressMapper addressMapper;
 
     @Override
-    public AreaAddress entityToDtoTransform(AddressArea entityObject) {
+    public AreaAddress entityToDtoTransform(moscow.ptnl.contingent.domain.area.entity.AreaAddress entityObject) {
         AreaAddress areaAddress = new AreaAddress();
-        areaAddress.setMoId(entityObject.getMoId());
-        areaAddress.setMuId(entityObject.getMuId());
-        areaAddress.setAreaId(entityObject.getAreaId());
-        areaAddress.setAreaAddressId(entityObject.getAreaAddressId());
-        areaAddress.setAddress(addressMapper.entityToDtoTransform(entityObject.getAddresses()));
-        return areaAddress;
-    }
-
-    public AddressArea entityToModelTransform(moscow.ptnl.contingent.domain.area.entity.AreaAddress entityObject) {
-        AddressArea areaAddress = new AddressArea();
         areaAddress.setMoId(entityObject.getArea().getMoId());
         areaAddress.setMuId(entityObject.getArea().getMuId());
         areaAddress.setAreaId(entityObject.getArea().getId());
         areaAddress.setAreaAddressId(entityObject.getId());
-        areaAddress.setAddresses(entityObject.getAddress());
+        areaAddress.setAddress(addressMapper.entityToDtoTransform(entityObject.getAddress()));
         return areaAddress;
     }
 
     @Override
-    public AddressArea dtoToEntityTransform(AreaAddress dtoObject) {
+    public moscow.ptnl.contingent.domain.area.entity.AreaAddress dtoToEntityTransform(AreaAddress dtoObject) {
         return null;
     }
 }

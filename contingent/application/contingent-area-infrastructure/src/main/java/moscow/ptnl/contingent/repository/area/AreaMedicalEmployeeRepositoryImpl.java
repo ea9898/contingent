@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.repository.area;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees_;
+import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;

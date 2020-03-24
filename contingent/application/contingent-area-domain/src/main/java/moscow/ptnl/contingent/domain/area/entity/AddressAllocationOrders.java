@@ -149,4 +149,57 @@ public class AddressAllocationOrders implements Serializable {
     public int hashCode() {        
         return Objects.hashCode(this.id);
     }
+
+    public static AddressAllocationOrders.Builder builder() {
+        return new AddressAllocationOrders.Builder();
+    }
+
+    public static class Builder {
+
+        private final AddressAllocationOrders addressAllocationOrders;
+
+        private Builder(){
+            this.addressAllocationOrders = new AddressAllocationOrders();
+        }
+
+        public Builder createDate(LocalDateTime createDate) {
+            addressAllocationOrders.setCreateDate(createDate);
+            return this;
+        }
+
+        public Builder updateDate(LocalDateTime updateDate) {
+            addressAllocationOrders.setUpdateDate(updateDate);
+            return this;
+        }
+
+        public Builder archived(Boolean archived) {
+            addressAllocationOrders.setArchived(archived);
+            return this;
+        }
+
+        public Builder number(String number) {
+            addressAllocationOrders.setNumber(number);
+            return this;
+        }
+
+        public Builder date(LocalDate date) {
+            addressAllocationOrders.setDate(date);
+            return this;
+        }
+
+        public Builder ouz(String ouz) {
+            addressAllocationOrders.setOuz(ouz);
+            return this;
+        }
+
+        public Builder name(String name) {
+            addressAllocationOrders.setName(name);
+            return this;
+        }
+
+        public AddressAllocationOrders build() {
+            return addressAllocationOrders;
+        }
+    }
 }
+

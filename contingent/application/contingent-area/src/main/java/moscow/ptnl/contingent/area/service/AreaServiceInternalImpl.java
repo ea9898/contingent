@@ -8,19 +8,13 @@ import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
-import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
-import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
-import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.domain.area.model.sysop.SysopMethodType;
-import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.AreaAddressClone;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
 import moscow.ptnl.contingent.area.util.Period;
-import moscow.ptnl.contingent.domain.area.model.area.AddressArea;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import moscow.ptnl.contingent.error.ContingentException;
@@ -33,35 +27,29 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
 import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
 import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
+import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.repository.area.AreaToAreaTypeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MoAddressRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.util.Strings;
 import moscow.ptnl.ws.security.UserContextHolder;
@@ -150,31 +138,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
 
     @Autowired
-    private MoAvailableAreaTypesCRUDRepository moAvailableAreaTypesCRUDRepository;
-
-    @Autowired
-    private MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
-
-    @Autowired
     private AreaServiceHelper areaHelper;
-
-    @Autowired
-    private AreaAddressChecker areaAddressChecker;
 
     @Autowired
     private EsuHelperService esuHelperService;
 
     @Autowired
     private SettingService settingService;
-
-    @Autowired
-    private AddressFormingElementRepository addressFormingElementRepository;
-
-    @Autowired
-    private MuAvailableAreaTypesCRUDRepository muAvailableAreaTypesCRUDRepository;
-
-    @Autowired
-    private MuAvailableAreaTypesRepository muAvailableAreaTypesRepository;
 
     @Autowired
     private Algorithms algorithms;
@@ -195,19 +165,13 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     private PolicyTypeRepository policyTypeRepository;
 
     @Autowired
-    private PositionCodeRepository positionCodeRepository;
-
-    @Autowired
-    private AddressMapper addressMapper;
-
-    @Autowired
     private AreaAddressMapper areaAddressMapper;
 
     @Autowired
     private AreaAddressClone areaAddressClone;
 
     @Autowired
-    private HistoryServiceHelper historyHelper;
+    private HistoryServiceHelperImpl historyHelper;
 
     @Autowired
     private AreaServiceInternalImplAsync asyncService;
@@ -221,74 +185,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
     public AreaServiceInternalImpl(Algorithms algorithms, AreaServiceHelper areaHelper) {
         this.algorithms = algorithms;
         this.areaHelper = areaHelper;
-    }
-
-    // (К_УУ_4)	Добавление типов, доступных для МУ
-    @Override
-    public void addMuAvailableAreaTypes(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException {
-        areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
-        Validation validation = new Validation();
-        areaTypeCodes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation).stream()
-                .map(AreaType::getCode)
-                .collect(Collectors.toList());
-        // 1.
-        List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
-        // 2.
-        areaHelper.checkAreaTypesExistInMU(muId, moAvailableAreaTypes.stream()
-                .map(MoAvailableAreaTypes::getAreaType)
-                .collect(Collectors.toList()), validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        // 3.
-        moAvailableAreaTypes.forEach(a -> {
-            MuAvailableAreaTypes muAvailableAreaType = new MuAvailableAreaTypes();
-            muAvailableAreaType.setMuId(muId);
-            muAvailableAreaType.setAreaType(a.getAreaType());
-            muAvailableAreaType.setMoAvailableAreaType(a);
-            muAvailableAreaType.setCreateDate(LocalDateTime.now());
-            muAvailableAreaTypesCRUDRepository.save(muAvailableAreaType);
-        });
-    }
-
-    // (К_УУ_5)	Удаление типов участков из доступных для МУ
-    @Override
-    public void delMuAvailableAreaTypes(long muId, List<Long> areaTypeCodes) throws ContingentException {
-        areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
-        Validation validation = new Validation();
-        areaTypeCodes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation).stream()
-                .map(AreaType::getCode)
-                .collect(Collectors.toList());
-        // 1.
-        List<MuAvailableAreaTypes> areaTypes = areaHelper.checkAndGetAreaTypesNotExistInMU(muId, areaTypeCodes, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        // 2.
-        muAvailableAreaTypesCRUDRepository.deleteAll(areaTypes);
-    }
-
-    // (К_УУ_6)	Предоставление типов участков, доступных для МУ
-    @Override
-    public MuAreaTypesFull getMuAvailableAreaTypes(long moId, long muId, AreaTypeStateType areaTypeState) throws ContingentException {
-        // 1.
-        List<AreaType> usedAreaTypes = muAvailableAreaTypesRepository.findAreaTypes(muId).stream()
-                .map(MuAvailableAreaTypes::getAreaType)
-                .collect(Collectors.toList());
-        // 2.
-        List<AreaType> availableAreaTypes = new ArrayList<>();
-
-        if (!AreaTypeStateType.USED_IN_MU.equals(areaTypeState)) {
-            availableAreaTypes.addAll(moAvailableAreaTypesRepository.findAreaTypes(moId).stream()
-                    .filter(a -> usedAreaTypes.stream()
-                                    .noneMatch(b -> Objects.equals(b, a.getAreaType())))
-                    .map(MoAvailableAreaTypes::getAreaType)
-                    .collect(Collectors.toList()));
-        }
-        return new MuAreaTypesFull(AreaTypeStateType.AVAILABLE_TO_ADD.equals(areaTypeState) ? new ArrayList<>() : usedAreaTypes,
-                availableAreaTypes);
     }
 
     // (К_УУ_7)	Создание участка обслуживания первичного типа
@@ -925,28 +821,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return result;
     }
 
-    // (К_УУ_12) Получение подробной информации об участке
-    @Override
-    public AreaInfo getAreaById(Long id) throws ContingentException {
-
-        // 1.
-        Optional<Area> areaOptional = areaCRUDRepository.findById(id);
-        if (!areaOptional.isPresent()) {
-            throw new ContingentException(new Validation().error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", id)));
-        }
-        Area area = areaOptional.get();
-
-        // 2.
-        List<AreaMedicalEmployees> mainMedicalEmployees = areaMedicalEmployeeRepository.
-                getEmployeesMainActualByAreaId(area.getId());
-
-        // 3.
-        List<AreaMedicalEmployees> replacementMedicalEmployees = areaMedicalEmployeeRepository.
-                getEmployeesReplacementActualByAreaId(area.getId());
-
-        return new AreaInfo(area, mainMedicalEmployees, replacementMedicalEmployees);
-    }
-
     // (К_УУ_13) Добавление адресов на участок обслуживания
     @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public List<Long> addAreaAddress(Long areaId, List<AddressRegistryBaseType> addressesRegistry, boolean limitAddress) throws ContingentException {
@@ -1076,53 +950,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         // 7.
     }
 
-    // (К_УУ_15) Получение списка адресов участка обслуживания
-    @Override
-    public Page<AddressArea> getAreaAddress(Long moId, List<Long> areaIds, PageRequest paging) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 2.
-        areaHelper.checkMaxPage(paging, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        List<Area> areas = areaCRUDRepository.findAllById(areaIds);
-        // 3.
-        if (areaIds.size() != areas.size()) {
-            List<Long> foundAreasIds = areas.stream().map(Area::getId).collect(Collectors.toList());
-            areaIds.stream().filter(aIn -> !foundAreasIds.contains(aIn)).forEach(aIn ->
-                    validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", aIn)));
-
-            if (!validation.isSuccess()) { throw new ContingentException(validation); }
-        }
-
-        // 4.
-        List<Long> areaIdsNotInMo = areas.stream().filter(area -> !area.getMoId().equals(moId))
-                .map(Area::getId).collect(Collectors.toList());
-        if (!areaIdsNotInMo.isEmpty())  {
-            validation.error(AreaErrorReason.AREAS_NOT_IN_MO,
-                    new ValidationParameter("areaIds", areaIdsNotInMo.stream().map(Object::toString)
-                            .collect(Collectors.joining(","))),
-                    new ValidationParameter("moId", moId));
-        }
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        // 5.
-        Page<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesByAreaId(moId, areaIds, paging);
-
-        // 6.
-        List<AddressArea> addressAreas =
-                areaAddresses.stream().map(areaAddressMapper::entityToModelTransform).collect(Collectors.toList());
-
-        // 7.
-        return new PageImpl<>(new ArrayList<>(addressAreas),
-                areaAddresses.getPageable(), areaAddresses.getTotalElements());
-    }
-
     // (К_УУ_16) Архивирование участка обслуживания
     @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void archiveArea(long areaId) throws ContingentException {
@@ -1204,107 +1031,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return;
     }
 
-    // (К_УУ_18) Создание распоряжения
-    @Override
-    public Long createOrder(String number, LocalDate date, String ouz, String name) throws ContingentException {
-        Validation validation = new Validation();
-        areaHelper.checkDateTillToday(date, validation);
-
-        if (!addressAllocationOrderRepository.findAddressAllocationOrders(number, date, ouz, name, false).isEmpty()) {
-            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_EXISTS);
-        }
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-        AddressAllocationOrders order = new AddressAllocationOrders();
-        order.setCreateDate(LocalDateTime.now());
-        order.setUpdateDate(LocalDateTime.now());
-        order.setArchived(false);
-        order.setNumber(number);
-        order.setDate(date);
-        order.setOuz(ouz);
-        order.setName(name);
-
-        return addressAllocationOrderCRUDRepository.save(order).getId();
-    }
-
-    // (К_УУ_19) Изменение распоряжения
-    @Override
-    public void updateOrder(Long id, String number, LocalDate date,
-                            String ouz, String name) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 1.
-        AddressAllocationOrders order = addressAllocationOrderCRUDRepository.findById(id).orElse(null);
-
-        // 2.
-        if (order == null) {
-            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_NOT_EXISTS,
-                    new ValidationParameter("orderId", id));
-            throw new ContingentException(validation);
-        }
-        if (Boolean.TRUE.equals(order.getArchived())) {
-            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
-                    new ValidationParameter("orderId", id));
-        }
-        AddressAllocationOrders oldOrder = historyHelper.clone(order);
-
-        // 3.
-        if (number == null && date == null && ouz == null && name == null) {
-            throw new ContingentException(AreaErrorReason.NOTHING_TO_CHANGE);
-        }
-
-        // 4.
-        if (Objects.deepEquals(order.getNumber(), number) &&
-                Objects.deepEquals(order.getDate(), date) &&
-                Objects.deepEquals(order.getOuz(), ouz) &&
-                Objects.deepEquals(order.getName(), name)) {
-            throw new ContingentException(AreaErrorReason.NOTHING_TO_CHANGE);
-        }
-
-        //5
-        if (date != null) {
-            areaHelper.checkDateTillToday(date, validation);
-        }
-
-        //6
-        String numberNew = number == null ? order.getNumber() : number;
-        LocalDate dateNew = date == null ? order.getDate() : date;
-        String ouzNew = ouz == null ? order.getOuz() : ouz;
-        String nameNew = name == null ? order.getName() : name;
-
-        if (addressAllocationOrderRepository.findAddressAllocationOrders(numberNew, dateNew, ouzNew, nameNew, false).stream()
-                .anyMatch(o -> !Objects.equals(o.getId(), id))) {
-            validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_EXISTS);
-        }
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        //7
-        order.setUpdateDate(LocalDateTime.now());
-        order.setNumber(numberNew);
-        order.setDate(dateNew);
-        order.setOuz(ouzNew);
-        order.setName(nameNew);
-
-        addressAllocationOrderCRUDRepository.save(order);
-
-        historyHelper.sendHistory(oldOrder, order, AddressAllocationOrders.class);
-    }
-
-    // (К_УУ_20) Поиск распоряжений
-    @Override
-    public Page<AddressAllocationOrders> searchOrder(Long id, String number, LocalDate date, String name, PageRequest paging) throws ContingentException {
-        Validation validation = new Validation();
-
-        if (id == null && number == null && date == null && name == null) {
-            validation.error(AreaErrorReason.NO_SEARCH_PARAMETERS);
-            throw new ContingentException(validation);
-        }
-        return addressAllocationOrderRepository.findAddressAllocationOrdersOverlapped(id, number, date, name, paging);
-    }
-
     // (К_УУ_21) Распределение жилых домов к территории обслуживания МО
     @Override
     public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addressesRegistry, boolean limitAddress)
@@ -1375,74 +1101,6 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         });
 
         return moAddresses.stream().map(MoAddress::getId).collect(Collectors.toList());
-    }
-
-    // (К_УУ_22) Отмена распределения жилых домов к территории обслуживания МО
-    @Override
-    public void delMoAddress(List<Long> moAddressIds, long orderId) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 1.
-        if (moAddressIds.size() > settingService.getPar2()) {
-            validation.error(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", settingService.getPar2()));
-        }
-
-        moAddressIds = moAddressIds.stream().distinct().collect(Collectors.toList());
-        // 2.
-        List<MoAddress> moAddresses = areaHelper.getAndCheckMoAddressesExist(moAddressIds, validation);
-
-        // 3.
-        areaHelper.checkOrderExists(orderId, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        // 4.
-        List<Long> moAddressesIds = moAddresses.stream()
-                .map(MoAddress::getId)
-                .collect(Collectors.toList());
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(moAddressesIds);
-
-        if (!areaAddresses.isEmpty()) {
-            areaHelper.deleteAreaAddress(areaAddresses);
-        }
-
-        // 5.
-        areaHelper.delMoAddresses(moAddresses);
-
-        for (MoAddress moAddress: moAddresses) {
-            historyHelper.sendHistory(moAddress, null, MoAddress.class);
-        }
-
-    }
-
-    // (К_УУ_23) Получение списка территорий обслуживания МО
-    @Override
-    public Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException {
-        Validation validation = new Validation();
-
-        // 1.
-        areaHelper.checkMaxPage(paging, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        // 2.
-        areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation);
-
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
-
-        return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
-    }
-
-    // (К_УУ_24) Получение идентификатора для создания нового участка
-    @Override
-    public Long getNewAreaId() throws ContingentException {
-        return areaRepository.getNextAreaId();
     }
 
     // (К_УУ_25) Предоставление списка участков
@@ -1584,13 +1242,4 @@ public class AreaServiceInternalImpl implements AreaServiceInternal {
         return sysopId;
     }
 
-    // (К_УУ_29) Получение списка участков для ДН
-    @Override
-    public Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes,
-                                       List<Long> areaIds, PageRequest paging) throws ContingentException {
-        //2
-        areaHelper.checkSearchDnParameters(moId, muIds, areaTypeCodes, specializationCodes, areaIds);
-        //3, 4, 5
-        return areaRepository.findAreas(moId, muIds, areaTypeCodes, specializationCodes, areaIds, paging);
-    }
 }

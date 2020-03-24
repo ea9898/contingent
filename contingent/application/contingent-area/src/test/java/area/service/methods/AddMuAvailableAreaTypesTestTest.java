@@ -32,7 +32,7 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
         Mockito.doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(20L);
 
         try {
-            areaServiceInternal.addMuAvailableAreaTypes(2L, 3L, Arrays.asList(10L, 20L));
+            moMuService.addMuAvailableAreaTypes(2L, 3L, Arrays.asList(10L, 20L));
         } catch (ContingentException e) {
             Validation validation = e.getValidation();
             List<ValidationMessage> validationMessageList = e.getValidation().getMessages();
@@ -62,7 +62,7 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
 //        Mockito.doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(20L);
 
         try {
-            areaServiceInternal.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
+            moMuService.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
         } catch (ContingentException e) {
             List<ValidationMessage> validationMessageList = e.getValidation().getMessages();
             if (validationMessageList.size() != 1) {
@@ -104,7 +104,7 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(3L);
 
         try {
-            areaServiceInternal.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
+            moMuService.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
         } catch (ContingentException e) {
             Validation validation = e.getValidation();
             if (validation.getMessages().size() != 1) {
@@ -136,7 +136,7 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
         Mockito.doReturn(Collections.singletonList(moAvailableAreaTypes10)).when(moAvailableAreaTypesRepository).findAreaTypes(2L);
 
         try {
-            areaServiceInternal.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
+            moMuService.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
         } catch (ContingentException e) {
             Assertions.fail("Сценарий корректный, ошибки быть не должно.");
         }

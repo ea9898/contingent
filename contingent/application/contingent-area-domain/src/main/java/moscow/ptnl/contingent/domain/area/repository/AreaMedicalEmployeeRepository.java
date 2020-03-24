@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.repository.area;
+package moscow.ptnl.contingent.domain.area.repository;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;

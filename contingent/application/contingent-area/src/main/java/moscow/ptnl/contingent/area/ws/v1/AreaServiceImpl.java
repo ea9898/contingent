@@ -1,12 +1,14 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
-import moscow.ptnl.contingent.domain.area.MoService;
+import moscow.ptnl.contingent.domain.area.AreaService;
+import moscow.ptnl.contingent.domain.area.MoMuService;
+import moscow.ptnl.contingent.domain.area.OrderService;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.area.transform.AreaDnMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
-import moscow.ptnl.contingent.domain.area.model.area.AddressArea;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
@@ -142,7 +144,13 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private AreaDnMapper areaDnMapper;
 
     @Autowired
-    private MoService moService;
+    private MoMuService moMuMuServiceDomain;
+
+    @Autowired
+    private OrderService orderServiceDomain;
+
+    @Autowired
+    private AreaService areaServiceDomain;
 
     @Autowired
     private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
@@ -244,7 +252,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
         try {
             
-            Long id = areaService.createOrder(body.getNumber(), body.getDate(), body.getOuz(), body.getName());
+            Long id = orderServiceDomain.createOrder(body.getNumber(), body.getDate(), body.getOuz(), body.getName());
 
             CreateOrderResponse response = new CreateOrderResponse();
             response.setId(id);
@@ -259,7 +267,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws Fault {
         try {
-            areaService.updateOrder(body.getId(), body.getNumber(), body.getDate(), body.getOuz(), body.getName());
+            orderServiceDomain.updateOrder(body.getId(), body.getNumber(), body.getDate(), body.getOuz(), body.getName());
 
             return new UpdateOrderResponse();
         }
@@ -271,7 +279,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         try {
-            Page<AddressAllocationOrders> results = areaService.searchOrder(body.getId(), body.getNumber(), body.getDate(),
+            Page<AddressAllocationOrders> results = orderServiceDomain.searchOrder(body.getId(), body.getNumber(), body.getDate(),
                     body.getName(), pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             SearchOrderResponse response = new SearchOrderResponse();
             AddressAllocationOrderListResultPage resultPage = new AddressAllocationOrderListResultPage();
@@ -288,7 +296,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
-            AreaInfo area = areaService.getAreaById(body.getAreaId());
+            AreaInfo area = areaServiceDomain.getAreaById(body.getAreaId());
             GetAreaByIdResponse response = new GetAreaByIdResponse();
             response.setResult(areaMapper.entityToDtoTransform(area));
             return response;
@@ -380,7 +388,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetMoAddressResponse getMoAddress(GetMoAddressRequest body) throws Fault {
         try {
             GetMoAddressResponse response = new GetMoAddressResponse();
-            Page<MoAddress> addresses = areaService.getMoAddress(body.getMoId(), body.getAreaTypes(),
+            Page<MoAddress> addresses = moMuMuServiceDomain.getMoAddress(body.getMoId(), body.getAreaTypes(),
                     pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             response.setMoId(body.getMoId());
             response.getAreaTypes().addAll(addresses.getContent().stream()
@@ -409,7 +417,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public DelMoAddressResponse delMoAddress(DelMoAddressRequest body) throws Fault {
         try {
-            areaService.delMoAddress(body.getMoAddressIds(), body.getOrderId());
+            moMuMuServiceDomain.delMoAddress(body.getMoAddressIds(), body.getOrderId());
 
             return new DelMoAddressResponse();
         }
@@ -423,7 +431,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             GetAreaAddressResponse response = new GetAreaAddressResponse();
             
-            Page<AddressArea> areaAddresses = areaService.getAreaAddress(body.getMoId(),
+            Page<AreaAddress> areaAddresses = areaServiceDomain.getAreaAddress(body.getMoId(),
                     body.getAreas().getAreaIds(), pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
             response.getAreaAddresses().addAll(
                 areaAddresses.getContent().stream()
@@ -483,7 +491,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
         try {
             GetNewAreaIdResponse response = new GetNewAreaIdResponse();
-            response.setNewAreaId(areaService.getNewAreaId());
+            response.setNewAreaId(areaServiceDomain.getNewAreaId());
 
             return response;
         }
@@ -495,7 +503,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public AddMoAvailableAreaTypesResponse addMoAvailableAreaTypes(AddMoAvailableAreaTypesRequest body) throws Fault {
         try {
-            moService.addMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
+            moMuMuServiceDomain.addMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new AddMoAvailableAreaTypesResponse();
         }
@@ -507,7 +515,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public DelMoAvailableAreaTypesResponse delMoAvailableAreaTypes(DelMoAvailableAreaTypesRequest body) throws Fault {
         try {
-            moService.delMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
+            moMuMuServiceDomain.delMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new DelMoAvailableAreaTypesResponse();
         }
@@ -520,7 +528,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetMoAvailableAreaTypesResponse getMoAvailableAreaTypes(GetMoAvailableAreaTypesRequest body) throws Fault {
         try {
             GetMoAvailableAreaTypesResponse result = new GetMoAvailableAreaTypesResponse();
-            result.getMoAvailableAreaTypes().addAll(moService.getMoAvailableAreaTypes(body.getMoId()).stream()
+            result.getMoAvailableAreaTypes().addAll(moMuMuServiceDomain.getMoAvailableAreaTypes(body.getMoId()).stream()
                     .map(areaTypeShortMapper::entityToDtoTransform)
                     .collect(Collectors.toList())
             );
@@ -534,7 +542,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public AddMuAvailableAreaTypesResponse addMuAvailableAreaTypes(AddMuAvailableAreaTypesRequest body) throws Fault {
         try {
-            areaService.addMuAvailableAreaTypes(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
+            moMuMuServiceDomain.addMuAvailableAreaTypes(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new AddMuAvailableAreaTypesResponse();
         }
@@ -546,7 +554,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public SearchDnAreaResponse searchDnArea(SearchDnAreaRequest body) throws Fault {
         try {
-            Page<Area> areas = areaService.searchDnArea(body.getMoId(),
+            Page<Area> areas = areaServiceDomain.searchDnArea(body.getMoId(),
                     body.getMu() == null ? Collections.emptyList() : body.getMu().getMuIds(),
                     body.getAreaTypes() == null ? Collections.emptyList() : body.getAreaTypes().getAreaTypeCodes(),
                     body.getSpecializations() == null ? Collections.emptyList() : body.getSpecializations().getSpecializationCodes(),
@@ -566,7 +574,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public DelMuAvailableAreaTypesResponse delMuAvailableAreaTypes(DelMuAvailableAreaTypesRequest body) throws Fault {
         try {
-            areaService.delMuAvailableAreaTypes(body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
+            moMuMuServiceDomain.delMuAvailableAreaTypes(body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new DelMuAvailableAreaTypesResponse();
         }
@@ -578,7 +586,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public GetMuAvailableAreaTypesResponse getMuAvailableAreaTypes(GetMuAvailableAreaTypesRequest body) throws Fault {
         try {
-            return getMuAvailableAreaTypesResponseMapper.entityToDtoTransform(areaService.getMuAvailableAreaTypes(
+            return getMuAvailableAreaTypesResponseMapper.entityToDtoTransform(moMuMuServiceDomain.getMuAvailableAreaTypes(
                     body.getMoId(), body.getMuId(), AreaTypeStateType.getByValue(body.getAreaTypeState())));
         }
         catch (Exception ex) {

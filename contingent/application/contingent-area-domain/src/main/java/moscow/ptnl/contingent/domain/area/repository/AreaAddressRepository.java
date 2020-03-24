@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.repository.area;
+package moscow.ptnl.contingent.domain.area.repository;
 
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import org.springframework.data.domain.Page;
@@ -19,5 +19,7 @@ public interface AreaAddressRepository {
     Page<AreaAddress> findAreaAddressesByAreaId(Long moId, List<Long> areaIds, Pageable paging);
 
     List<AreaAddress> findAreaAddressByAddressIds(List<Long> addressIds);
+
+    void delete(AreaAddress areaAddress);
 
 }

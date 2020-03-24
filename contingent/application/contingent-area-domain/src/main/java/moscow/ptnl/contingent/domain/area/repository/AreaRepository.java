@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.repository.area;
+package moscow.ptnl.contingent.domain.area.repository;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import org.springframework.data.domain.Page;
@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 
 @NoRepositoryBean
@@ -13,19 +14,14 @@ public interface AreaRepository {
 
     List<Area> findAreas(Long moId, Long muId, Long areaTypeCode, Integer number, Boolean actual);
 
-    List<Area> findAreasWithNotAreaTypeKindCode(Long moId, Long muId, Long areaTypeCode, Long areaTypeKindCode, Integer number, Boolean actual);
-
     List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean actual);
+
     List<Area> findAreas(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes, Integer number,
                          String description, Boolean archived);
 
     List<Area> findAreas(Long areaTypeKindCode, Boolean archived, Long medicalEmployeeJobInfo);
 
-    List<Area> findAreasWithMuIdNullAndNotAreaTypeKindCode(Long moId, Long areaTypeCode, Long areaTypeKindCode, Integer number, Boolean actual);
-
     List<Area> findDependentAreasByMuMoIdAndType(Long muId, Long moId, Long areaTypeCode, Long areaTypeKindCode);
-
-    List<Area> findDependentAreasByAreaEqAreaType(Area area);
 
     List<Area> findPrimaryAreasByAreaEqAreaType(Area area);
 
@@ -34,4 +30,8 @@ public interface AreaRepository {
     Long getNextAreaId();
     
     EntityManager getEntityManager();
+
+    List<Area> findAllById(List<Long> areaIds);
+
+    Optional<Area> findById(Long areaId);
 }

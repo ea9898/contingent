@@ -6,7 +6,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClassEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent2.attachment.changeprimarea.event.AttachPrimaryPatientEvent;
 import moscow.ptnl.contingent2.attachment.deparea.event.AttachToDependentAreaEvent;
 import org.springframework.beans.factory.annotation.Autowired;

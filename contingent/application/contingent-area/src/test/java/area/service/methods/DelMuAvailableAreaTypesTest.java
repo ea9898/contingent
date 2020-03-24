@@ -40,7 +40,7 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
 
         try {
-            areaServiceInternal.delMuAvailableAreaTypes(3L, Arrays.asList(10L, 20L));
+            moMuService.delMuAvailableAreaTypes(3L, Arrays.asList(10L, 20L));
         } catch (ContingentException e) {
             List<ValidationMessage> validationMessages = e.getValidation().getMessages();
             if (validationMessages.size() != 1 || !validationMessages.get(0).getCode().equals("E028") ||
@@ -60,7 +60,7 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
         Mockito.doReturn(new ArrayList<>()).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
 
         try {
-            areaServiceInternal.delMuAvailableAreaTypes(muId, Arrays.asList(10L, 20L));
+            moMuService.delMuAvailableAreaTypes(muId, Arrays.asList(10L, 20L));
         } catch (ContingentException e) {
             List<ValidationMessage> validationMessages = e.getValidation().getMessages();
             if (validationMessages.size() != 2 || !validationMessages.stream().allMatch(vm -> vm.getCode().equals("E028"))){
@@ -84,7 +84,7 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
         Mockito.doReturn(muAvailableAreaTypes).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
 
         try {
-            areaServiceInternal.delMuAvailableAreaTypes(muId, Arrays.asList(10L, 20L));
+            moMuService.delMuAvailableAreaTypes(muId, Arrays.asList(10L, 20L));
         } catch (ContingentException e) {
             Assertions.fail("Должна быть не должно.");
         }
@@ -104,7 +104,7 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
         Mockito.doReturn(muAvailableAreaTypes).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
 
         try {
-            areaServiceInternal.delMuAvailableAreaTypes(3L, Arrays.asList(10L, 20L, 10L));
+            moMuService.delMuAvailableAreaTypes(3L, Arrays.asList(10L, 20L, 10L));
         } catch (ContingentException e) {
             Assertions.fail("Должна быть не должно.");
         }

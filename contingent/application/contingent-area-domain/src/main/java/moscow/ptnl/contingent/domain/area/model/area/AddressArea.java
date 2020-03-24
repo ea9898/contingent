@@ -56,4 +56,45 @@ public class AddressArea {
     public void setAddresses(Addresses addresses) {
         this.addresses = addresses;
     }
+
+    public static AddressArea.Builder builder() {
+        return new AddressArea.Builder();
+    }
+
+    public static class Builder {
+        private final AddressArea addressArea;
+
+        private Builder(){
+            this.addressArea = new AddressArea();
+        }
+
+        public Builder moId(Long moId) {
+            addressArea.setMoId(moId);
+            return this;
+        }
+
+        public Builder muId(Long muId) {
+            addressArea.setMuId(muId);
+            return this;
+        }
+
+        public Builder areaId(Long areaId) {
+            addressArea.setAreaId(areaId);
+            return this;
+        }
+
+        public Builder areaAddressId(Long areaAddressId) {
+            addressArea.setAreaAddressId(areaAddressId);
+            return this;
+        }
+
+        public Builder addresses(Addresses addresses) {
+            addressArea.setAddresses(addresses);
+            return this;
+        }
+
+        public AddressArea build() {
+            return addressArea;
+        }
+    }
 }

@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
 import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress_;
+import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -98,5 +99,10 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
                 );
 
         return areaAddressPagingAndSortingRepository.findAll(specification);
+    }
+
+    @Override
+    public void delete(AreaAddress areaAddress) {
+        areaAddressPagingAndSortingRepository.delete(areaAddress);
     }
 }
