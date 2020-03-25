@@ -80,4 +80,9 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
     public MoAddress save(MoAddress moAddress) {
         return moAddressPagingAndSortingRepository.save(moAddress);
     }
+
+    @Override
+    public List<MoAddress> saveAll(List<MoAddress> moAddress) {
+        return moAddressPagingAndSortingRepository.saveAll(moAddress);
+    }
 }

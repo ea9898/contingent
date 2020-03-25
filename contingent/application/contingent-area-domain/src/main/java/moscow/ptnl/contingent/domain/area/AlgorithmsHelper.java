@@ -1,9 +1,9 @@
-package moscow.ptnl.contingent.area.service;
+package moscow.ptnl.contingent.domain.area;
 
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import org.springframework.stereotype.Component;
-import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,38 +19,38 @@ public class AlgorithmsHelper {
 
     // REGION_TE_CODE  LIKE '%REGION_TE_CODE%'
     // AREACODE_OMK_TE  LIKE '%AREACODE_OMK_TE%'
-    public static BiPredicate<AddressRegistryBaseType, Addresses> regionTeAndAreaOmkTeFilter = (addressRegistry, addr) ->
+    public static BiPredicate<AddressRegistry, Addresses> regionTeAndAreaOmkTeFilter = (addressRegistry, addr) ->
             (addressRegistry.getRegionOMKTE() == null || (addr.getRegionTeCode() != null && addressRegistry.getRegionOMKTE().getCode().contains(addr.getRegionTeCode()))) &&
             (addressRegistry.getAreaOMKTE() == null || (addr.getAreaCodeOmkTe() != null && addressRegistry.getAreaOMKTE().getCode().contains(addr.getAreaCodeOmkTe())));
 
     // AREACODE = AREACODE
-    public static BiPredicate<AddressRegistryBaseType, Addresses> areaCodeFilter = (addressRegistry, addr) ->
+    public static BiPredicate<AddressRegistry, Addresses> areaCodeFilter = (addressRegistry, addr) ->
             regionTeAndAreaOmkTeFilter.test(addressRegistry, addr) &&
             (addressRegistry.getArea() == null || addressRegistry.getArea().getCode().equals(addr.getAreaCode()));
 
     // CITYCODE = CITYCODE
-    public static BiPredicate<AddressRegistryBaseType, Addresses> cityCodeFilter = (addressRegistry, addr) ->
+    public static BiPredicate<AddressRegistry, Addresses> cityCodeFilter = (addressRegistry, addr) ->
             areaCodeFilter.test(addressRegistry, addr) &&
             (addressRegistry.getCity() == null || addressRegistry.getCity().getCode().equals(addr.getCityCode()));
 
     // PLACECODE = PLACECODE
-    public static BiPredicate<AddressRegistryBaseType, Addresses> placeCodeFilter = (addressRegistry, addr) ->
+    public static BiPredicate<AddressRegistry, Addresses> placeCodeFilter = (addressRegistry, addr) ->
             cityCodeFilter.test(addressRegistry, addr) &&
             (addressRegistry.getPlace() == null || addressRegistry.getPlace().getCode().equals(addr.getPlaceCode()));
 
     // PLANCODE = PLANCODE
-    public static BiPredicate<AddressRegistryBaseType, Addresses> planCodeFilter = (addressRegistry, addr) ->
+    public static BiPredicate<AddressRegistry, Addresses> planCodeFilter = (addressRegistry, addr) ->
             placeCodeFilter.test(addressRegistry, addr) &&
             (addressRegistry.getPlan() == null || addressRegistry.getPlan().getCode().equals(addr.getPlanCode()));
 
     // STREETCODE = STREETCODE
-    public static BiPredicate<AddressRegistryBaseType, Addresses> streetCodeFilter = (addressRegistry, addr) ->
+    public static BiPredicate<AddressRegistry, Addresses> streetCodeFilter = (addressRegistry, addr) ->
             planCodeFilter.test(addressRegistry, addr) &&
             (addressRegistry.getStreet() == null || addr.getStreetCode().equals(addressRegistry.getStreet().getCode()));
 
 
     // А_УУ_3 2.1.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByStreetCode =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> searchByStreetCode =
             (addressRegistry, addresses) -> {
                 List<Addresses> outAddresses = addresses.stream().filter(addr ->
                         // AOLEVEL = 7
@@ -65,7 +65,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 2.2.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByPlanCode =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> searchByPlanCode =
             (addressRegistry, addresses) -> {
                 List<Addresses> outAddresses = addresses.stream().filter(addr ->
                         planCodeFilter.test(addressRegistry, addr)
@@ -80,7 +80,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 2.3.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByPlaceCode =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> searchByPlaceCode =
             (addressRegistry, addresses) -> {
                 List<Addresses> outAddresses = addresses.stream().filter(addr ->
                         placeCodeFilter.test(addressRegistry, addr)
@@ -95,7 +95,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 2.4.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByCityCode =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> searchByCityCode =
             (addressRegistry, addresses) -> {
                 List<Addresses> outAddresses = addresses.stream().filter(addr ->
                         cityCodeFilter.test(addressRegistry, addr)
@@ -110,7 +110,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 2.5.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByAreaCode =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> searchByAreaCode =
             (addressRegistry, addresses) -> {
                 List<Addresses> outAddresses = addresses.stream().filter(addr ->
                         areaCodeFilter.test(addressRegistry, addr)
@@ -125,7 +125,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 2.6.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> searchByAreaOmkTeCode =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> searchByAreaOmkTeCode =
             (addressRegistry, addresses) -> {
                 String[] codes = addressRegistry.getAreaOMKTE().getCode().split(ADDRESS_CODE_VALUES_SPLITTER);
                 List<Addresses> outAddresses = addresses.stream().filter(
@@ -148,7 +148,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 b.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> checkStreetCodeExist =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> checkStreetCodeExist =
             (addressRegistry, addresses) -> {
                 if (addressRegistry.getStreet() != null) {
                     return AlgorithmsHelper.searchByStreetCode.apply(addressRegistry, addresses);
@@ -158,7 +158,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 b.2.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> checkPlanCodeExist =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> checkPlanCodeExist =
             (addressRegistry, addresses) -> {
                 if (addressRegistry.getPlan() != null) {
                     return AlgorithmsHelper.searchByPlanCode.apply(addressRegistry, addresses);
@@ -168,7 +168,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 b.2.2.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> checkPlaceCodeExist =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> checkPlaceCodeExist =
             (addressRegistry, addresses) -> {
                 if (addressRegistry.getPlace() != null) {
                     return AlgorithmsHelper.searchByPlaceCode.apply(addressRegistry, addresses);
@@ -178,7 +178,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 b.2.2.2.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> checkCityCodeExist =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> checkCityCodeExist =
             (addressRegistry, addresses) -> {
                 if (addressRegistry.getCity() != null) {
                     return AlgorithmsHelper.searchByCityCode.apply(addressRegistry, addresses);
@@ -188,7 +188,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 b.2.2.2.2.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> checkAreaCodeExist =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> checkAreaCodeExist =
             (addressRegistry, addresses) -> {
                 if (addressRegistry.getArea() != null) {
                     return AlgorithmsHelper.searchByAreaCode.apply(addressRegistry, addresses);
@@ -198,7 +198,7 @@ public class AlgorithmsHelper {
             };
 
     // А_УУ_3 b.2.2.2.2.2.
-    public static BiFunction<AddressRegistryBaseType, List<Addresses>, List<Addresses>> checkAreaOmkTeCodeExist =
+    public static BiFunction<AddressRegistry, List<Addresses>, List<Addresses>> checkAreaOmkTeCodeExist =
             (addressRegistry, addresses) -> {
                 if (addressRegistry.getAreaOMKTE() != null) {
                     return AlgorithmsHelper.searchByAreaOmkTeCode.apply(addressRegistry, addresses);

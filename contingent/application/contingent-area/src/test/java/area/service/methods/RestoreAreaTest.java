@@ -11,6 +11,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 
 import area.service.MockRepositoriesConfiguration;
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
@@ -47,7 +48,7 @@ public class RestoreAreaTest {
     private AreaCRUDRepository areaCRUDRepository;
         
     @Autowired
-    private AreaServiceInternal areaServiceInternal;
+    private AreaService areaServiceDomain;
     
     @Autowired
     private AreaRepository areaRepository;
@@ -98,7 +99,7 @@ public class RestoreAreaTest {
             Mockito.when(areaRepository.getEntityManager()).thenReturn(Mockito.mock(EntityManager.class));
             
             //тестируемый метод в ктором есть интерцептор LogESU и внутренняя отправка сообщений в ЕСУ в самом методе
-            areaServiceInternal.restoreArea(area.getId());
+            areaServiceDomain.restoreArea(area.getId());
             
             //получаем сообщения
             MockEsuService reciveService = (MockEsuService) esuService;
@@ -157,7 +158,7 @@ public class RestoreAreaTest {
             Mockito.when(areaRepository.getEntityManager()).thenReturn(Mockito.mock(EntityManager.class));
             
             //тестируемый метод в ктором есть интерцептор LogESU и внутренняя отправка сообщений в ЕСУ в самом методе
-            areaServiceInternal.restoreArea(area.getId());
+            areaServiceDomain.restoreArea(area.getId());
             
             //получаем сообщения
             MockEsuService reciveService = (MockEsuService) esuService;

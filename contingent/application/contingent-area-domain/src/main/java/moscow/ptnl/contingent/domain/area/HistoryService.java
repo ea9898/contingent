@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.service.history;
+package moscow.ptnl.contingent.domain.area;
 
 import moscow.ptnl.contingent.security.Principal;
 

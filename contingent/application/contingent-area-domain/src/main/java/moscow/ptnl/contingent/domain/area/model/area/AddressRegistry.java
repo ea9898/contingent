@@ -2,36 +2,163 @@ package moscow.ptnl.contingent.domain.area.model.area;
 
 public class AddressRegistry {
 
-    protected String addressString;
+    private String addressString;
 
-    protected Region region;
+    private Region region;
 
-    protected RegionOMKTE regionOMKTE;
+    private RegionOMKTE regionOMKTE;
 
-    protected Area area;
+    private Area area;
 
-    protected AreaOMKTE areaOMKTE;
+    private AreaOMKTE areaOMKTE;
 
-    protected City city;
+    private City city;
 
-    protected Place place;
+    private Place place;
 
-    protected Plan plan;
+    private Plan plan;
 
-    protected Street street;
+    private Street street;
 
-    protected Building building;
+    private Building building;
 
-    protected Long globalIdNsi;
+    private Long globalIdNsi;
 
-    protected String aoLevel;
+    private String aoLevel;
 
-    protected String fiasGuid;
+    private String fiasGuid;
 
-    protected String codePostal;
+    private String codePostal;
 
-    protected String codeKLADR;
+    private String codeKLADR;
 
-    protected String nonActualAddress;
+    private String nonActualAddress;
 
+    public String getAddressString() {
+        return addressString;
+    }
+
+    public void setAddressString(String addressString) {
+        this.addressString = addressString;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
+    public RegionOMKTE getRegionOMKTE() {
+        return regionOMKTE;
+    }
+
+    public void setRegionOMKTE(RegionOMKTE regionOMKTE) {
+        this.regionOMKTE = regionOMKTE;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
+    public AreaOMKTE getAreaOMKTE() {
+        return areaOMKTE;
+    }
+
+    public void setAreaOMKTE(AreaOMKTE areaOMKTE) {
+        this.areaOMKTE = areaOMKTE;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
+    }
+
+    public Street getStreet() {
+        return street;
+    }
+
+    public void setStreet(Street street) {
+        this.street = street;
+    }
+
+    public Building getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
+    }
+
+    public Long getGlobalIdNsi() {
+        return globalIdNsi;
+    }
+
+    public void setGlobalIdNsi(Long globalIdNsi) {
+        this.globalIdNsi = globalIdNsi;
+    }
+
+    public String getAoLevel() {
+        return aoLevel;
+    }
+
+    public void setAoLevel(String aoLevel) {
+        this.aoLevel = aoLevel;
+    }
+
+    public String getFiasGuid() {
+        return fiasGuid;
+    }
+
+    public void setFiasGuid(String fiasGuid) {
+        this.fiasGuid = fiasGuid;
+    }
+
+    public String getCodePostal() {
+        return codePostal;
+    }
+
+    public void setCodePostal(String codePostal) {
+        this.codePostal = codePostal;
+    }
+
+    public String getCodeKLADR() {
+        return codeKLADR;
+    }
+
+    public void setCodeKLADR(String codeKLADR) {
+        this.codeKLADR = codeKLADR;
+    }
+
+    public String getNonActualAddress() {
+        return nonActualAddress;
+    }
+
+    public void setNonActualAddress(String nonActualAddress) {
+        this.nonActualAddress = nonActualAddress;
+    }
 }

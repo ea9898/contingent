@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.transform;
+package moscow.ptnl.contingent.domain.area.model.area;
 
 /*
 Выходной объекта метода searchArea из слоя Service
@@ -34,25 +34,6 @@ public class SearchAreaAddress {
         this.house = address.house;
         this.build = address.build;
         this.construction = address.construction;
-    }
-
-    public SearchAreaAddress(ru.mos.emias.contingent2.address.SearchAreaAddress address) {
-        this.aoLevel = address.getAoLevel();
-        this.globalIdNsi = address.getGlobalIdNsi();
-        this.regionOMKTEcode = address.getRegionOMKTEcode();
-        this.areaOMKTEcode = address.getAreaOMKTEcode();
-        this.areaCode = address.getAreaCode();
-        this.cityCode = address.getCityCode();
-        this.placeCode = address.getPlaceCode();
-        this.planCode = address.getPlanCode();
-        this.streetCode = address.getStreetCode();
-        this.house = address.getHouse();
-        this.build = address.getBuild();
-        this.construction = address.getConstruction();
-    }
-
-    public SearchAreaAddress copy() {
-        return new SearchAreaAddress(this);
     }
 
     public void setRegionOMKTEcode(String regionOMKTEcode) {

@@ -21,4 +21,6 @@ public interface MoAddressRepository {
 	void delete(MoAddress moAddress);
 
 	MoAddress save(MoAddress moAddress);
+
+	List<MoAddress> saveAll(List<MoAddress> moAddress);
 }

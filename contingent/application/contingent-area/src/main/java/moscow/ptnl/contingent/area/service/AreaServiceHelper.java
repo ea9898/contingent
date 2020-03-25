@@ -1,9 +1,11 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
+import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AddressesRepository;
+import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
@@ -20,8 +22,8 @@ import moscow.ptnl.contingent.domain.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.domain.area.model.area.NsiAddress;
 import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.area.transform.AreaMedicalEmployeesClone;
-import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
-import moscow.ptnl.contingent.area.util.Period;
+import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
+import moscow.ptnl.contingent.domain.util.Period;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
@@ -31,19 +33,19 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyTypeEnum;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AddressFormingElementRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.PositionNomRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
@@ -458,13 +460,13 @@ public class AreaServiceHelper {
         validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
     }
 
-    public void checkTooManyAddresses(List<AddressRegistryBaseType> addresses, Long maxAddresses) throws ContingentException {
+    public void checkTooManyAddresses(List<AddressRegistry> addresses, Long maxAddresses) throws ContingentException {
         if (addresses.size() > maxAddresses) {
             throw new ContingentException(AreaErrorReason.TOO_MANY_ADDRESSES, new ValidationParameter("maxAddresses", maxAddresses));
         }
     }
 
-    public List<AddressRegistryBaseType> filterDistinctAddressesByGlobalId(List<AddressRegistryBaseType> addresses) throws ContingentException {
+    public List<AddressRegistry> filterDistinctAddressesByGlobalId(List<AddressRegistry> addresses) throws ContingentException {
         Set<Long> exist = new HashSet<>();
         return addresses.stream()
                 .filter(a -> a.getGlobalIdNsi() == null || exist.add(a.getGlobalIdNsi()))
@@ -906,22 +908,6 @@ public class AreaServiceHelper {
         }
     }
 
-    public void checkSearchParameters(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
-                                      Integer number, String description, Boolean isArchived,
-                                      List<SearchAreaRequest.MedicalEmployee> medicalEmployees,
-                                      List<SearchAreaAddress> addresses) throws ContingentException {
-        if (areaTypeClassCode == null && moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && number == null
-                && description == null && isArchived == null && medicalEmployees.isEmpty() && addresses.isEmpty()) {
-            throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
-        }
-    }
-
-    public void checkSearchAreaInaccurateAddress(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
-        if (Boolean.FALSE.equals(exactAddressMatch) && addresses.size() > 1) {
-            throw new ContingentException(AreaErrorReason.SEARCH_AREA_INACCURATE_ADDRESS_ERROR);
-        }
-    }
-
     public void checkSearchAreaAddresses(List<SearchAreaAddress> addresses) throws ContingentException {
         if (addresses.stream().anyMatch(addr -> AddressLevelType.MOSCOW.getLevel().equals(addr.getAoLevel()))) {
             throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
@@ -956,7 +942,7 @@ public class AreaServiceHelper {
         }
     }
 
-    public List<Addresses> getMoAreaAddresses(List<AddressRegistryBaseType> addressesRegistry) {
+    public List<Addresses> getMoAreaAddresses(List<AddressRegistry> addressesRegistry) {
         List<Addresses> addressesInput = addressesRegistry.stream().map(addressMapper::dtoToEntityTransform)
                 .collect(Collectors.toList());
         List<Long> addressIds = addressesInput.stream().map(Addresses::getGlobalId).collect(Collectors.toList());

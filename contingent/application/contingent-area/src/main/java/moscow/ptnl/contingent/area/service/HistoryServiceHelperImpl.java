@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.domain.area.HistoryServiceHelper;
-import moscow.ptnl.contingent.service.history.HistoryService;
+import moscow.ptnl.contingent.domain.area.HistoryService;
 import moscow.ptnl.ws.security.UserContextHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.service.interceptor;
 
+import moscow.ptnl.contingent.domain.area.EsuHelperService;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import java.lang.reflect.Method;
@@ -11,7 +12,6 @@ import java.util.Optional;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
-import moscow.ptnl.contingent.area.service.EsuHelperService;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;

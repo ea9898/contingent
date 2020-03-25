@@ -2,50 +2,183 @@ package moscow.ptnl.contingent.domain.area.model.area;
 
 public class Building {
 
-    protected Building.House house;
+    private Building.House house;
 
-    protected Building.Build build;
+    private Building.Build build;
 
-    protected Building.Construction construction;
+    private Building.Construction construction;
 
-    protected String clazz;
+    private String clazz;
 
-    protected String geoData;
+    private String geoData;
 
-    protected Long numberOfStoreys;
+    private Long numberOfStoreys;
 
-    protected Long yearOfConstruction;
+    private Long yearOfConstruction;
 
-    protected Boolean emergency;
+    private Boolean emergency;
 
-    protected String cadastralNumber;
+    private String cadastralNumber;
 
-    protected String fiasGuid;
+    private String fiasGuid;
 
-    protected Long unom;
+    private Long unom;
+
+    public House getHouse() {
+        return house;
+    }
+
+    public void setHouse(House house) {
+        this.house = house;
+    }
+
+    public Build getBuild() {
+        return build;
+    }
+
+    public void setBuild(Build build) {
+        this.build = build;
+    }
+
+    public Construction getConstruction() {
+        return construction;
+    }
+
+    public void setConstruction(Construction construction) {
+        this.construction = construction;
+    }
+
+    public String getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
+    }
+
+    public String getGeoData() {
+        return geoData;
+    }
+
+    public void setGeoData(String geoData) {
+        this.geoData = geoData;
+    }
+
+    public Long getNumberOfStoreys() {
+        return numberOfStoreys;
+    }
+
+    public void setNumberOfStoreys(Long numberOfStoreys) {
+        this.numberOfStoreys = numberOfStoreys;
+    }
+
+    public Long getYearOfConstruction() {
+        return yearOfConstruction;
+    }
+
+    public void setYearOfConstruction(Long yearOfConstruction) {
+        this.yearOfConstruction = yearOfConstruction;
+    }
+
+    public Boolean getEmergency() {
+        return emergency;
+    }
+
+    public void setEmergency(Boolean emergency) {
+        this.emergency = emergency;
+    }
+
+    public String getCadastralNumber() {
+        return cadastralNumber;
+    }
+
+    public void setCadastralNumber(String cadastralNumber) {
+        this.cadastralNumber = cadastralNumber;
+    }
+
+    public String getFiasGuid() {
+        return fiasGuid;
+    }
+
+    public void setFiasGuid(String fiasGuid) {
+        this.fiasGuid = fiasGuid;
+    }
+
+    public Long getUnom() {
+        return unom;
+    }
+
+    public void setUnom(Long unom) {
+        this.unom = unom;
+    }
 
     public static class House {
 
-        protected String name;
+        private String name;
 
-        protected Names type;
+        private Names type;
 
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Names getType() {
+            return type;
+        }
+
+        public void setType(Names type) {
+            this.type = type;
+        }
     }
 
     public static class Build {
 
-        protected String name;
+        private String name;
 
-        protected Names type;
+        private Names type;
 
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Names getType() {
+            return type;
+        }
+
+        public void setType(Names type) {
+            this.type = type;
+        }
     }
 
     public static class Construction {
 
-        protected String name;
+        private String name;
 
-        protected Names type;
+        private Names type;
 
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Names getType() {
+            return type;
+        }
+
+        public void setType(Names type) {
+            this.type = type;
+        }
     }
 
 

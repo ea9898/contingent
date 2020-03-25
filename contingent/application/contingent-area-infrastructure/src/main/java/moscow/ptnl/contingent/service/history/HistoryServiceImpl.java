@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import javax.persistence.Transient;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME;
+
+import moscow.ptnl.contingent.domain.area.HistoryService;
 import moscow.ptnl.contingent.domain.history.EntityConverterHelper;
 import moscow.ptnl.contingent.domain.history.HistoryEventBuilder;
 import moscow.ptnl.contingent.domain.history.ServiceName;

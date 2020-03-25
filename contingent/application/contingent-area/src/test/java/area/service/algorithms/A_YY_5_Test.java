@@ -27,7 +27,8 @@ public class A_YY_5_Test extends BaseTest {
         area.setArchived(false);
         area.setNumber(101);
         area.setAutoAssignForAttach(true);
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(
+                algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getOperationType(), "createAttachment");
         assertEquals(areaInfoEvent.getAreaId(), area.getId());
@@ -53,7 +54,7 @@ public class A_YY_5_Test extends BaseTest {
         area.setArchived(false);
         area.setNumber(101);
         area.setAutoAssignForAttach(true);
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getOperationType(), "createAttachment");
         assertEquals(areaInfoEvent.getAreaId(), area.getId());
@@ -89,7 +90,7 @@ public class A_YY_5_Test extends BaseTest {
         area.setNumber(101);
         area.setAutoAssignForAttach(true);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAreaRestriction().getGender(), areaType.getGender());
         assertEquals(areaInfoEvent.getAreaRestriction().getMinAge(), areaType.getAgeMin());
@@ -126,7 +127,7 @@ public class A_YY_5_Test extends BaseTest {
         area.setAgeWMin(12);
         area.setAgeWMax(102);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAreaRestriction().getGender(), areaType.getGender());
         assertEquals(areaInfoEvent.getAreaRestriction().getMinAge(), area.getAgeMin());
@@ -180,7 +181,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode(), addresses.getStreetOmkUm());
@@ -231,7 +232,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode(), addresses.getStreetOmkUm());
@@ -280,7 +281,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode(), addresses.getStreetOmkUm());
@@ -328,7 +329,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode(), addresses.getStreetOmkUm());
@@ -375,7 +376,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode(), addresses.getStreetOmkUm());
@@ -427,7 +428,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode(), addresses.getStreetOmkUm());
@@ -472,7 +473,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().size(), 1);
     }
@@ -506,7 +507,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().size(), 1);
     }
@@ -540,7 +541,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().size(), 1);
     }
@@ -573,7 +574,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().size(), 0);
     }
@@ -615,7 +616,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertNull(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode());
@@ -666,7 +667,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().size(), 0);
     }
@@ -708,7 +709,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertNull(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode());
@@ -759,7 +760,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().size(), 0);
     }
@@ -801,7 +802,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertNull(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode());
@@ -852,7 +853,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().size(), 0);
     }
@@ -894,7 +895,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertNull(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode());
@@ -945,7 +946,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
         assertEquals(areaInfoEvent.getAddresses().getAddress().size(), 0);
     }
 
@@ -985,7 +986,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertNull(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode());
@@ -1036,7 +1037,7 @@ public class A_YY_5_Test extends BaseTest {
 
         area.getAreaAddresses().add(areaAddress);
 
-        AreaInfoEvent areaInfoEvent = algorithms.createTopicAreaInfo(area, "createAttachment");
+        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(algorithms.createTopicAreaInfo(area, "createAttachment"));
 
         assertEquals(areaInfoEvent.getAddresses().getAddress().get(0).getAolevel(), addresses.getAoLevel());
         assertNull(areaInfoEvent.getAddresses().getAddress().get(0).getOmkUmCode());

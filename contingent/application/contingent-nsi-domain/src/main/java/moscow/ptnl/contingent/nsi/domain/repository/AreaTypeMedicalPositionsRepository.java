@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.nsi.repository;
+package moscow.ptnl.contingent.nsi.domain.repository;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;

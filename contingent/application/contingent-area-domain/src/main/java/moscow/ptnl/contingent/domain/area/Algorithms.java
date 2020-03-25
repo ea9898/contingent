@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.service;
+package moscow.ptnl.contingent.domain.area;
 
 import static moscow.ptnl.contingent.domain.area.model.area.AddressLevelType.*;
 
@@ -6,33 +6,28 @@ import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
-import moscow.ptnl.contingent.repository.SysopCRUDRepository;
+import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
+import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
+import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.sysop.entity.Sysop;
 import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.domain.area.model.sysop.SysopMethodType;
-import moscow.ptnl.contingent.area.transform.SearchAreaAddress;
-import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
-import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
+import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.domain.esu.event.AttachOnAreaChangeEvent;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.CustomErrorReason;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.repository.area.AddressesRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
-import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
-import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
+import moscow.ptnl.contingent.sysop.repository.SysopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import ru.mos.emias.contingent2.address.AddressBaseType;
-import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,29 +48,15 @@ public class Algorithms {
     private MoAddressRepository moAddressRepository;
 
     @Autowired
-    private AddressFormingElementRepository addressFormingElementRepository;
-
-    @Autowired
-    private AlgorithmsHelper algorithmsHelper;
-
-    @Autowired
-    private AreaInfoEventMapper areaInfoEventMapper;
-
-    @Autowired
-    private AttachOnAreaChangeMapper attachOnAreaChangeMapper;
-
-    @Autowired
     private AreaAddressRepository areaAddressRepository;
 
     @Autowired
     private AddressesRepository addressesRepository;
 
     @Autowired
-    private SysopCRUDRepository sysopCRUDRepository;
+    private SysopRepository sysopRepository;
 
-    public Algorithms() {
-        super();
-    }
+    private AlgorithmsHelper algorithmsHelper;
 
     public Algorithms(AlgorithmsHelper algorithmsHelper) {
         this.algorithmsHelper = algorithmsHelper;
@@ -83,7 +64,7 @@ public class Algorithms {
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public MoAddress searchServiceDistrictMOByAddress(Long moId, AreaType areaType, Long orderId,
-                                                      List<AddressRegistryBaseType> addressRegistryTypes, Validation validation) {
+                                                      List<AddressRegistry> addressRegistryTypes, Validation validation) {
 
         // 1.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
@@ -109,7 +90,7 @@ public class Algorithms {
     }
 
     // Поиск участков по адресу (А_УУ_2)
-    public Long searchAreaByAddress(Long moId, AreaType areaTypeCode, List<AddressRegistryBaseType> addressRegistryTypes,
+    public Long searchAreaByAddress(Long moId, AreaType areaTypeCode, List<AddressRegistry> addressRegistryTypes,
                                     Validation validation) {
 
         // 1.
@@ -136,12 +117,12 @@ public class Algorithms {
 
 
     // Поиск пересекающихся адресов (А_УУ_3)
-    public List<Addresses> findIntersectingAddressesAdd(List<AddressRegistryBaseType> addressRegistryTypes,
+    public List<Addresses> findIntersectingAddressesAdd(List<AddressRegistry> addressRegistryTypes,
                                                         List<Addresses> addresses, Validation validation) {
 
         // 1.
         List<Addresses> crossAddresses = addresses.stream().filter(addr ->
-                addressRegistryTypes.stream().map(AddressBaseType::getGlobalIdNsi).collect(Collectors.toList()).contains(addr.getGlobalId()))
+                addressRegistryTypes.stream().map(AddressRegistry::getGlobalIdNsi).collect(Collectors.toList()).contains(addr.getGlobalId()))
                 .collect(Collectors.toList());
 
         if (!crossAddresses.isEmpty()) {
@@ -149,7 +130,7 @@ public class Algorithms {
         }
 
         // А_УУ_3 2. - 9.
-        for (AddressRegistryBaseType addressRegistry : addressRegistryTypes) {
+        for (AddressRegistry addressRegistry : addressRegistryTypes) {
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.ID.getLevel())) {
                 crossAddresses = AlgorithmsHelper.checkStreetCodeExist.apply(addressRegistry, addresses);
@@ -247,7 +228,7 @@ public class Algorithms {
     }
 
     //  Формирование топика «Создание или закрытие прикреплений при изменении участка» (А_УУ_4)
-    public AttachOnAreaChange createTopicCreateCloseAttachAreaChange(
+    public AttachOnAreaChangeEvent createTopicCreateCloseAttachAreaChange(
             List<Long> primaryAreasIdCreateAttachments,
             List<Long> primaryAreasIdCloseAttachments,
             Area dependentArea) {
@@ -255,12 +236,12 @@ public class Algorithms {
             if (primaryAreasIdCreateAttachments != null && !primaryAreasIdCreateAttachments.isEmpty()) {
                 throw new IllegalArgumentException("Нельзя одновременно передавать primaryAreasIdCreateAttachments и primaryAreasIdCloseAttachments");
             }
-            return attachOnAreaChangeMapper.entityToDtoTransform(new AttachOnAreaChangeEvent(
-                    AttachOnAreaChangeEvent.OperationType.CLOSE, dependentArea, new HashSet<>(primaryAreasIdCloseAttachments)));
+            return new AttachOnAreaChangeEvent(
+                    AttachOnAreaChangeEvent.OperationType.CLOSE, dependentArea, new HashSet<>(primaryAreasIdCloseAttachments));
         }
         if (primaryAreasIdCreateAttachments != null && !primaryAreasIdCreateAttachments.isEmpty()) {
-            return attachOnAreaChangeMapper.entityToDtoTransform(new AttachOnAreaChangeEvent(
-                    AttachOnAreaChangeEvent.OperationType.CREATE, dependentArea, new HashSet<>(primaryAreasIdCreateAttachments)));
+            return new AttachOnAreaChangeEvent(
+                    AttachOnAreaChangeEvent.OperationType.CREATE, dependentArea, new HashSet<>(primaryAreasIdCreateAttachments));
         }
 
         throw new IllegalArgumentException("недопустимые аргументы для создания топика");
@@ -268,12 +249,11 @@ public class Algorithms {
 
     // Формирование топика «Сведения об участке» (А_УУ_5)
     public AreaInfoEvent createTopicAreaInfo(Area area, String methodName) {
-        AreaInfoEvent areaInfoEvent = areaInfoEventMapper.entityToDtoTransform(new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area));
-        return areaInfoEvent;
+        return new moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent(methodName, area);
     }
 
     // Форматно-логический контроль адреса (А_УУ_6)
-    public void checkAddressFLK(List<AddressRegistryBaseType> addresses, Validation validation) {
+    public void checkAddressFLK(List<AddressRegistry> addresses, Validation validation) {
         addresses.forEach(address -> {
             String codesNotSetError = AreaErrorReason.CODES_NOT_SET.getDescription();
             //1
@@ -416,17 +396,17 @@ public class Algorithms {
         Sysop sysop = new Sysop(0, false);
         sysop.setMethodName(methodType.getValue());
 
-        return sysopCRUDRepository.save(sysop).getId();
+        return sysopRepository.save(sysop).getId();
     }
 
     public void sysOperationComplete(long sysopId, boolean successful, String message) {
-        Sysop sysop = sysopCRUDRepository.findById(sysopId).get();
+        Sysop sysop = sysopRepository.findById(sysopId).get();
         sysop.setProgress(100);
         sysop.setCompleted(true);
         sysop.setSuccessful(successful);
         sysop.setResult(message);
         sysop.setEndDate(LocalDateTime.now());
-        sysopCRUDRepository.save(sysop);
+        sysopRepository.save(sysop);
     }
 
 }

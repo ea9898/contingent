@@ -22,4 +22,7 @@ public interface AreaAddressRepository {
 
     void delete(AreaAddress areaAddress);
 
+    List<AreaAddress> saveAll(List<AreaAddress> addresses);
+
+    AreaAddress save(AreaAddress areaAddress);
 }

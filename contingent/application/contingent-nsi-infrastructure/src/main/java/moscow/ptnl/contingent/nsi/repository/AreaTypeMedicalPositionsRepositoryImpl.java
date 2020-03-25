@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.nsi.repository;
 
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;

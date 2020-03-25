@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import moscow.ptnl.contingent.domain.area.Algorithms;
+import moscow.ptnl.contingent.domain.area.AreaService;
+import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
+import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.repository.SysopCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopMsgCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopMsgParamCRUDRepository;
@@ -28,8 +32,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
-import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 
 /**
  * Реализация методов сервиса {@see AreaServiceInternalImpl} 
@@ -45,9 +47,6 @@ public class AreaServiceInternalImplAsync {
     private final static Logger LOG = LoggerFactory.getLogger(AreaServiceInternalImplAsync.class);
 
     @Autowired
-    private AreaServiceInternal areaService;
-    
-    @Autowired
     private Algorithms algorithms;
     
     @Autowired
@@ -62,17 +61,19 @@ public class AreaServiceInternalImplAsync {
     @Autowired
     private TransactionRunService transactionRunner;
 
+    @Autowired
+    private AreaService areaServiceDomain;
 
     // Асинхронная инициация процесса распределения жилых домов к территории обслуживания МО (К_УУ_27)
     @Async 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void asyncInitiateAddMoAddress(long sysopId, RequestContext requestContext, long moId, long areaTypeCode, long orderId, List<AddressRegistryBaseType> addresses) throws ContingentException {
+    public void asyncInitiateAddMoAddress(long sysopId, RequestContext requestContext, long moId, long areaTypeCode, long orderId, List<AddressRegistry> addresses) throws ContingentException {
         try {
             UserContextHolder.setContext(requestContext);
             //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
             List<Long> ids = transactionRunner.run(() -> {
                 UserContextHolder.setContext(requestContext);
-                return areaService.addMoAddress(moId, areaTypeCode, orderId, addresses, false);
+                return areaServiceDomain.addMoAddress(moId, areaTypeCode, orderId, addresses, false);
             }).get();
             String sysopResult = ids.stream().map(id -> id.toString()).collect(Collectors.joining(";"));
             algorithms.sysOperationComplete(sysopId, true, sysopResult);
@@ -89,16 +90,16 @@ public class AreaServiceInternalImplAsync {
                                        Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                        boolean autoAssignForAttachment, Boolean attachByMedicalReason,
                                        List<AddMedicalEmployee> addMedicalEmployees,
-                                       List<AddressRegistryBaseType> addresses) {
+                                       List<AddressRegistry> addresses) {
         try {
             UserContextHolder.setContext(requestContext);
             //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
             Long areaId = transactionRunner.run(() -> {
                 UserContextHolder.setContext(requestContext);
-                Long id = areaService.createPrimaryArea(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
+                Long id = areaServiceDomain.createPrimaryArea(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
                         ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
-                areaService.setMedicalEmployeeOnArea(id, addMedicalEmployees, Collections.emptyList());
-                areaService.addAreaAddress(id, addresses, false);
+                areaServiceDomain.setMedicalEmployeeOnArea(id, addMedicalEmployees, Collections.emptyList());
+                areaServiceDomain.addAreaAddress(id, addresses, false);
 
                 return id;
             }).get();
@@ -110,13 +111,13 @@ public class AreaServiceInternalImplAsync {
     
     @Async
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void asyncAddAreaAddress(RequestContext requestContext, long sysopId, Long areaId, List<AddressRegistryBaseType> addressesRegistry) {
+    public void asyncAddAreaAddress(RequestContext requestContext, long sysopId, Long areaId, List<AddressRegistry> addressesRegistry) {
         try {
             UserContextHolder.setContext(requestContext);
             //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
             List<Long> ids = transactionRunner.run(() -> {
                 UserContextHolder.setContext(requestContext);
-                return areaService.addAreaAddress(areaId, addressesRegistry, false);
+                return areaServiceDomain.addAreaAddress(areaId, addressesRegistry, false);
             }).get();
             String sysopResult = ids.stream().map(id -> id.toString()).collect(Collectors.joining(";"));
             algorithms.sysOperationComplete(sysopId, true, sysopResult);

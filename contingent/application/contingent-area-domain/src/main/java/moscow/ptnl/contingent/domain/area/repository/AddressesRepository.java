@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.repository.area;
+package moscow.ptnl.contingent.domain.area.repository;
 
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -19,4 +19,6 @@ public interface AddressesRepository {
 	default Addresses findAddressByGlobalId(Long globalId) {
 		return findAddresses(Collections.singletonList(globalId)).stream().findFirst().orElse(null);
 	}
+
+	List<Addresses> saveAll(List<Addresses> addresses);
 }

@@ -4,6 +4,7 @@ import area.service.ESUTestUtil;
 import area.service.MockConfiguration;
 import area.service.MockEsuService;
 import area.service.MockRepositoriesConfiguration;
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
@@ -18,9 +19,9 @@ import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,7 @@ public class UpdatePrimaryAreaTest {
     private AreaCRUDRepository areaCRUDRepository;
 
     @Autowired
-    private AreaServiceInternal areaServiceInternal;
+    private AreaService areaServiceDomain;
 
     @Autowired
     private AreaRepository areaRepository;
@@ -143,7 +144,7 @@ public class UpdatePrimaryAreaTest {
         doReturn(Collections.singletonList(areaPolicyType)).when(areaPolicyTypesRepository).findAll(areaPrimary1, policyType1);
         //create inOrder object passing any mocks that need to be verified in order
         InOrder order = Mockito.inOrder(areaServiceHelper);
-        assertDoesNotThrow(() -> areaServiceInternal.updatePrimaryArea(1L, number, Arrays.asList(), Arrays.asList(1L),
+        assertDoesNotThrow(() -> areaServiceDomain.updatePrimaryArea(1L, number, Arrays.asList(), Arrays.asList(1L),
                 2, 12, null, null, null, null, true, false, "description"));
         try {
             //Здесь проверяем только факт и порядок вызова функций areaServiceHelper

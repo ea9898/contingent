@@ -27,7 +27,7 @@ import java.util.Optional;
 @Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREA_MEDICAL_EMPLOYEES")
 @SequenceGenerator(name = "seq_area_medical_employee", sequenceName = "seq_area_medical_employee", allocationSize=1)
-public class AreaMedicalEmployees implements Serializable {
+public class AreaMedicalEmployees implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 4435222693561566689L;
 
@@ -203,5 +203,14 @@ public class AreaMedicalEmployees implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(this.id);
+    }
+
+    @Override
+    public AreaMedicalEmployees clone() {
+        try {
+            return (AreaMedicalEmployees) super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
 }

@@ -8,7 +8,7 @@ import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
-import moscow.ptnl.contingent.area.util.Period;
+import moscow.ptnl.contingent.domain.util.Period;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.repository.area;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 
 import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes_;
+import moscow.ptnl.contingent.domain.area.repository.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -54,5 +55,15 @@ public class AreaPolicyTypesRepositoryImpl extends BaseRepository implements Are
                                 root.get(AreaPolicyTypes_.policyType).in(areaPolicyTypesDel))
         );
          entityManager.createQuery(criteria).executeUpdate();
+    }
+
+    @Override
+    public List<AreaPolicyTypes> saveAll(List<AreaPolicyTypes> areaPolicyTypes) {
+        return areaPolicyTypesCRUDRepository.saveAll(areaPolicyTypes);
+    }
+
+    @Override
+    public AreaPolicyTypes save(AreaPolicyTypes areaPolicyTypes) {
+        return areaPolicyTypesCRUDRepository.save(areaPolicyTypes);
     }
 }

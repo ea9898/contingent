@@ -105,4 +105,14 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     public void delete(AreaAddress areaAddress) {
         areaAddressPagingAndSortingRepository.delete(areaAddress);
     }
+
+    @Override
+    public List<AreaAddress> saveAll(List<AreaAddress> addresses) {
+        return areaAddressPagingAndSortingRepository.saveAll(addresses);
+    }
+
+    @Override
+    public AreaAddress save(AreaAddress areaAddress) {
+        return areaAddressPagingAndSortingRepository.save(areaAddress);
+    }
 }

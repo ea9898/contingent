@@ -9,7 +9,7 @@ import ru.mos.emias.contingent2.core.AreaAddress;
 public class AreaAddressMapper implements Transform<AreaAddress, moscow.ptnl.contingent.domain.area.entity.AreaAddress> {
 
     @Autowired
-    private AddressMapper addressMapper;
+    private AddressBaseTypeMapper addressBaseTypeMapper;
 
     @Override
     public AreaAddress entityToDtoTransform(moscow.ptnl.contingent.domain.area.entity.AreaAddress entityObject) {
@@ -18,7 +18,7 @@ public class AreaAddressMapper implements Transform<AreaAddress, moscow.ptnl.con
         areaAddress.setMuId(entityObject.getArea().getMuId());
         areaAddress.setAreaId(entityObject.getArea().getId());
         areaAddress.setAreaAddressId(entityObject.getId());
-        areaAddress.setAddress(addressMapper.entityToDtoTransform(entityObject.getAddress()));
+        areaAddress.setAddress(addressBaseTypeMapper.entityToDtoTransform(entityObject.getAddress()));
         return areaAddress;
     }
 

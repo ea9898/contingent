@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.repository.area;
+package moscow.ptnl.contingent.domain.area.repository;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -14,4 +14,8 @@ public interface AreaPolicyTypesRepository {
     List<AreaPolicyTypes> findAll(Area area, List<PolicyType> policyTypes);
 
     void deleteAll(Area area, List<PolicyType> areaPolicyTypesAdd);
+
+    List<AreaPolicyTypes> saveAll(List<AreaPolicyTypes> areaPolicyTypes);
+
+    AreaPolicyTypes save(AreaPolicyTypes areaPolicyTypes);
 }

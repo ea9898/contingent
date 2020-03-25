@@ -14,11 +14,11 @@ public class Names {
         this.full = full;
     }
 
-    public String get_short() {
+    public String getShort() {
         return _short;
     }
 
-    public void set_short(String _short) {
+    public void setShort(String _short) {
         this._short = _short;
     }
 }

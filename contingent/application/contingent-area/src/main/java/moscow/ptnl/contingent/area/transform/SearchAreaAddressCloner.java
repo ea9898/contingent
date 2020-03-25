@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
+import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

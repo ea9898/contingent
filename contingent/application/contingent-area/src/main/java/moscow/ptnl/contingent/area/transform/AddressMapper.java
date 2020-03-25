@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.transform;
 
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
+import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -83,7 +84,7 @@ public abstract class AddressMapper {
 
             @Mapping(target = "createDate", expression = "java( java.time.LocalDateTime.now() )")
     })
-    public abstract Addresses dtoToEntityTransform(AddressRegistryBaseType addressRegistry);
+    public abstract Addresses dtoToEntityTransform(AddressRegistry addressRegistry);
 
     @Mappings({
             @Mapping(source="globalId", target="globalIdNsi"),
@@ -154,10 +155,10 @@ public abstract class AddressMapper {
             @Mapping(source = "planId", target = "plan.id"),
             @Mapping(source = "streetId", target = "street.id")
     })
-    public abstract AddressRegistryBaseType entityToDtoTransform(Addresses address);
+    public abstract AddressRegistry entityToDtoTransform(Addresses address);
 
     @AfterMapping
-    public AddressRegistryBaseType doAfterMapping(@MappingTarget AddressRegistryBaseType addressRegistryBaseType) {
+    public AddressRegistry doAfterMapping(@MappingTarget AddressRegistry addressRegistryBaseType) {
         if (addressRegistryBaseType.getRegion().getCode() == null && addressRegistryBaseType.getRegion().getName() == null) {
             addressRegistryBaseType.setRegion(null);
         }

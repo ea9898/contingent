@@ -1,7 +1,8 @@
 package service;
 
-import moscow.ptnl.contingent.area.service.Algorithms;
-import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
+import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapper;
+import moscow.ptnl.contingent.domain.area.Algorithms;
+import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
@@ -24,7 +25,7 @@ import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesReposit
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.service.history.HistoryServiceImpl;
@@ -114,6 +115,10 @@ public class BaseTest {
     @Spy
     @InjectMocks
     private AddressesMapper addressesMapper;
+
+    @Spy
+    @InjectMocks
+    private AddressRegistryToAddressRegistryBaseMapper addressRegistryToAddressRegistryBaseMapper;
 
     @Spy
     @InjectMocks

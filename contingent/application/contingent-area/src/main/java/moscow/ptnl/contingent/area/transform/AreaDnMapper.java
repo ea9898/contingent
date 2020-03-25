@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.transform;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
+import moscow.ptnl.contingent.nsi.domain.repository.SpecializationRepository;
 import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ public class AreaDnMapper implements Transform<AreaDn, Area> {
     private AreaTypeShortMapper areaTypeShortMapper;
 
     @Autowired
-    private SpecializationCRUDRepository specializationCRUDRepository;
+    private SpecializationRepository specializationRepository;
 
     @Autowired
     private AreaDnMedicalEmployeeMapper areaDnMedicalEmployeeMapper;
@@ -47,7 +48,7 @@ public class AreaDnMapper implements Transform<AreaDn, Area> {
     }
 
     private Specialization mapSpecialization(AreaTypeSpecializations entity) {
-        moscow.ptnl.contingent.nsi.domain.area.Specialization specializationEntity = specializationCRUDRepository.getByCode(entity.getSpecializationCode());
+        moscow.ptnl.contingent.nsi.domain.area.Specialization specializationEntity = specializationRepository.getByCode(entity.getSpecializationCode());
 
         if (specializationEntity == null) {
             return null;

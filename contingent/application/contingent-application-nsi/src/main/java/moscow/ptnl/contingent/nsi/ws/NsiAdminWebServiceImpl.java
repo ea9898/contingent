@@ -22,7 +22,7 @@ import moscow.ptnl.contingent.nsi.error.NsiEhdErrorReason;
 import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.repository.PolicyTypeCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomCRUDRepository;
 import moscow.ptnl.contingent.nsi.service.NsiAdminService;
@@ -61,7 +61,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.UpdateAddressByGlobalIdRequest;

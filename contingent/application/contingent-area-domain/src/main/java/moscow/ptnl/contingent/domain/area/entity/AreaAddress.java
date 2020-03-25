@@ -22,7 +22,7 @@ import moscow.ptnl.contingent.domain.history.meta.LogIt;
 @Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREA_ADDRESSES")
 @SequenceGenerator(name = "seq_area_address", sequenceName = "seq_area_address", allocationSize=1)
-public class AreaAddress implements Serializable {
+public class AreaAddress implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 5982770527711526102L;
 
@@ -139,5 +139,15 @@ public class AreaAddress implements Serializable {
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.id);
+    }
+
+
+    @Override
+    public AreaAddress clone() {
+        try {
+            return (AreaAddress) super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
     }
 }

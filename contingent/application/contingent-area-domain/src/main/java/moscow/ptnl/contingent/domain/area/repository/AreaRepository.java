@@ -34,4 +34,7 @@ public interface AreaRepository {
     List<Area> findAllById(List<Long> areaIds);
 
     Optional<Area> findById(Long areaId);
+
+    Area save(Area area);
+
 }

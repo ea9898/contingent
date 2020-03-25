@@ -5,6 +5,7 @@ import area.service.MockConfiguration;
 import area.service.MockEsuService;
 import area.service.MockRepositoriesConfiguration;
 
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
@@ -16,9 +17,9 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
@@ -79,6 +80,9 @@ public class CreateDependentAreaTest {
 
     @Autowired
     public PolicyTypeRepository policyTypeRepository;
+
+    @Autowired
+    private AreaService areaServiceDomain;
 
     private Long moId = 204L;
     private Integer number = 1234;
@@ -165,7 +169,7 @@ public class CreateDependentAreaTest {
         doReturn(Collections.singletonList(areaPrimary1)).when(areaRepository).findAreas(moId, null, Collections.singletonList(areaTypePrimCode), null, true);
         //create inOrder object passing any mocks that need to be verified in order
         InOrder order = Mockito.inOrder(areaServiceHelper);
-        Long id = assertDoesNotThrow(() -> areaServiceInternal.createDependentArea(moId, null, number, areaTypeDepCode, Collections.singletonList(areaTypePrimCode),
+        Long id = assertDoesNotThrow(() -> areaServiceDomain.createDependentArea(moId, null, number, areaTypeDepCode, Collections.singletonList(areaTypePrimCode),
                 Collections.singletonList(policyTypeCode), 2, 12, null, null, null, null, "description"));
         try {
             //Здесь проверяем только факт и порядок вызова функций areaServiceHelper

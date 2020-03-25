@@ -5,6 +5,7 @@ import area.service.MockConfiguration;
 import area.service.MockEsuService;
 import area.service.MockRepositoriesConfiguration;
 
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
@@ -17,12 +18,12 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
-import moscow.ptnl.contingent.repository.area.AreaToAreaTypeRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 
@@ -68,7 +69,7 @@ public class UpdateDependentAreaTest {
     private AreaCRUDRepository areaCRUDRepository;
 
     @Autowired
-    private AreaServiceInternal areaServiceInternal;
+    private AreaService areaServiceDomain;
 
     @Autowired
     private AreaRepository areaRepository;
@@ -199,7 +200,7 @@ public class UpdateDependentAreaTest {
         doReturn(Collections.singletonList(areaDep1.getPrimaryAreaTypes().iterator().next())).when(areaToAreaTypeRepository).findAreaTypesByAreaAndTypeCode(areaDep1, Collections.singletonList(areaTypePrimCode));
         //create inOrder object passing any mocks that need to be verified in order
         InOrder order = Mockito.inOrder(areaServiceHelper);
-        assertDoesNotThrow(() -> areaServiceInternal.updateDependentArea(1L, null, number, "description",
+        assertDoesNotThrow(() -> areaServiceDomain.updateDependentArea(1L, null, number, "description",
                 Arrays.asList(areaTypePrim2Code), Arrays.asList(areaTypePrimCode),
                 Arrays.asList(policyTypeCode), Arrays.asList(), 2, 12, null, null, null, null));
         try {

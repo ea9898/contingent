@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.nsi.repository;
+package moscow.ptnl.contingent.nsi.domain.repository;
 
 import org.springframework.data.repository.NoRepositoryBean;
 

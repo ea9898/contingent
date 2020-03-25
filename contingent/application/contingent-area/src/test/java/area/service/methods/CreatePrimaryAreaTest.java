@@ -5,6 +5,7 @@ import area.service.MockConfiguration;
 import area.service.MockEsuService;
 import area.service.MockRepositoriesConfiguration;
 
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
@@ -71,6 +72,9 @@ public class CreatePrimaryAreaTest {
     @Autowired
     public MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
 
+    @Autowired
+    private AreaService areaServiceDomain;
+
     private Long moId = 204L;
     private Long muId = 111L;
     private Integer number = 1234;
@@ -123,7 +127,7 @@ public class CreatePrimaryAreaTest {
         doAnswer(invocation -> Optional.of(createdArea[0])).when(areaCRUDRepository).findById(1L);
         //create inOrder object passing any mocks that need to be verified in order
         InOrder order = Mockito.inOrder(areaServiceHelper);
-        Long id = assertDoesNotThrow(() -> areaServiceInternal.createPrimaryArea(moId, null, number, areaType, Collections.singletonList(policyType),
+        Long id = assertDoesNotThrow(() -> areaServiceDomain.createPrimaryArea(moId, null, number, areaType, Collections.singletonList(policyType),
                 2, 12, null, null, null, null, true, false, "description"));
         try {
             //Здесь проверяем только факт и порядок вызова функций areaServiceHelper

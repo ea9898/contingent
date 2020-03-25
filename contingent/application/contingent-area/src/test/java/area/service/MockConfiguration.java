@@ -5,14 +5,14 @@
  */
 package area.service;
 
-import moscow.ptnl.contingent.area.service.Algorithms;
-import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
+import moscow.ptnl.contingent.domain.area.Algorithms;
+import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaAddressChecker;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.service.AreaServiceInternalImplAsync;
-import moscow.ptnl.contingent.area.service.EsuHelperService;
+import moscow.ptnl.contingent.area.service.EsuHelperServiceImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
@@ -33,7 +33,7 @@ import moscow.ptnl.contingent.area.transform.model.esu.ReplacementEmployeesMappe
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.area.endpoint.ESUEventEndpoint;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
-import moscow.ptnl.contingent.service.history.HistoryService;
+import moscow.ptnl.contingent.domain.area.HistoryService;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -54,8 +54,8 @@ import org.springframework.messaging.MessageChannel;
 public class MockConfiguration {
     
     @Bean
-    public EsuHelperService esuHelperService() {
-        return new EsuHelperService();
+    public EsuHelperServiceImpl esuHelperService() {
+        return new EsuHelperServiceImpl();
     }
     
     @Bean

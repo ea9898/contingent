@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.Addresses_;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
+import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -102,5 +103,10 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
         };
         return areaAddressPagingAndSortingRepository.findAll(specification)
                 .stream().map(AreaAddress::getAddress).collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<Addresses> saveAll(List<Addresses> addresses) {
+        return addressesCRUDRepository.saveAll(addresses);
     }
 }

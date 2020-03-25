@@ -20,4 +20,10 @@ public interface AreaMedicalEmployeeRepository {
     List<Area> findAreasByEmployee(long jobId);
 
     List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils);
+
+    List<AreaMedicalEmployees> findAllById(List<Long> ids);
+
+    List<AreaMedicalEmployees> saveAll(List<AreaMedicalEmployees> areaMedicalEmployees);
+
+    void delete(AreaMedicalEmployees areaMedicalEmployees);
 }

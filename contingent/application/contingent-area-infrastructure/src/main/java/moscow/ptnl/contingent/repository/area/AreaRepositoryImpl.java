@@ -262,4 +262,9 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
     @Override
     public Optional<Area> findById(Long areaId) { return areaCRUDRepository.findById(areaId); }
+
+    @Override
+    public Area save(Area area) {
+        return areaCRUDRepository.save(area);
+    }
 }

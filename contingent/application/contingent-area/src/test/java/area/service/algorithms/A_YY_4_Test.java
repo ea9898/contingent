@@ -80,8 +80,9 @@ public class A_YY_4_Test  extends BaseTest {
     public void topicMapCreateWithAreaRestrictionsTest() {
         List<Long> primaryAreaTypeCodesIds = Arrays.asList(areaPrimary1.getId());
 
-        AttachOnAreaChange result = algorithms.createTopicCreateCloseAttachAreaChange(primaryAreaTypeCodesIds,
-                null, areaDependent1);
+        AttachOnAreaChange result = attachOnAreaChangeMapper.entityToDtoTransform(
+                algorithms.createTopicCreateCloseAttachAreaChange(primaryAreaTypeCodesIds,
+                null, areaDependent1));
         assertNotNull(result.getOperationDate());
         topicCheckAreaMap(result.getDependendArea(), areaDependent1);
         assertEquals(result.getPrimaryAreaAdd(), primaryAreaTypeCodesIds);
@@ -92,8 +93,9 @@ public class A_YY_4_Test  extends BaseTest {
     public void topicMapCloseWithAreaTypeRestrictionsTest() {
         List<Long> primaryAreaTypeCodesIds = Arrays.asList(areaPrimary1.getId());
 
-        AttachOnAreaChange result = algorithms.createTopicCreateCloseAttachAreaChange(null,
-                primaryAreaTypeCodesIds, areaDependent2);
+        AttachOnAreaChange result = attachOnAreaChangeMapper.entityToDtoTransform(
+                algorithms.createTopicCreateCloseAttachAreaChange(null,
+                primaryAreaTypeCodesIds, areaDependent2));
         assertNotNull(result.getOperationDate());
         topicCheckAreaMap(result.getDependendArea(), areaDependent2);
         assertEquals(result.getPrimaryAreaDel(), primaryAreaTypeCodesIds);

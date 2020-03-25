@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.util;
+package moscow.ptnl.contingent.domain.util;
 
 import java.time.LocalDate;
 import java.util.Objects;
