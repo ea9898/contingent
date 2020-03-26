@@ -16,7 +16,6 @@ import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
-import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
 import moscow.ptnl.contingent.area.transform.AreaMapper;
 import moscow.ptnl.contingent.area.transform.AreaTypeShortMapper;
@@ -119,9 +118,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
     public static final String SERVICE_NAME = "V1";
-
-    @Autowired
-    private AreaServiceInternal areaService;
 
     @Autowired
     private SoapCustomMapper soapCustomMapper;
@@ -254,7 +250,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public InitiateAddAreaAddressResponse initiateAddAreaAddress(InitiateAddAreaAddressRequest body) throws Fault {
         try {
             InitiateAddAreaAddressResponse response = new InitiateAddAreaAddressResponse();
-            Long id = areaService.initiateAddAreaAddress(
+            Long id = areaServiceDomain.initiateAddAreaAddress(
                     body.getAreaId(),
                     body.getAddresses().stream().map(addressRegistryToAddressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()));
             response.setId(id);
@@ -467,7 +463,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public InitiateCreatePrimaryAreaResponse initiateCreatePrimaryArea(InitiateCreatePrimaryAreaRequest body) throws Fault {
         try {
             InitiateCreatePrimaryAreaResponse response = new InitiateCreatePrimaryAreaResponse();
-            Long id = areaService.initiateCreatePrimaryArea(
+            Long id = areaServiceDomain.initiateCreatePrimaryArea(
                     body.getMoId(),
                     body.getMuId(),
                     body.getNumber(),
@@ -616,7 +612,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
         try {
-            Long result = areaService.initiateAddMoAddress(
+            Long result = areaServiceDomain.initiateAddMoAddress(
                     body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
                     body.getAddresses().stream().map(addressRegistryToAddressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()));
             InitiateAddMoAddressResponse response = new InitiateAddMoAddressResponse();

@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.domain.area;
+package moscow.ptnl.contingent.domain.area.heplers;
 
 import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;

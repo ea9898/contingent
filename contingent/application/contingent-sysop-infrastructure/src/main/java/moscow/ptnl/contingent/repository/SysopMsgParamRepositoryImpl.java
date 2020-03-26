@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.repository;
 import moscow.ptnl.contingent.sysop.entity.SysopMsg;
 import moscow.ptnl.contingent.sysop.entity.SysopMsgParam;
 import moscow.ptnl.contingent.sysop.entity.SysopMsgParam_;
-import moscow.ptnl.contingent.repository.BaseRepository;
+import moscow.ptnl.contingent.sysop.repository.SysopMsgParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
@@ -28,5 +28,10 @@ public class SysopMsgParamRepositoryImpl extends BaseRepository implements Sysop
                         root.get(SysopMsgParam_.sysopMsg.getName()).in(sysop);
 
         return sysopMsgParamCRUDRepository.findAll(specification).stream().collect(Collectors.groupingBy(SysopMsgParam::getSysopMsg));
+    }
+
+    @Override
+    public List<SysopMsgParam> saveAll(List<SysopMsgParam> sysopMsgParams) {
+        return sysopMsgParamCRUDRepository.saveAll(sysopMsgParams);
     }
 }

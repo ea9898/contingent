@@ -10,5 +10,7 @@ public interface SysopRepository {
 
     Sysop save(Sysop sysop);
 
+    Sysop getOne(Long sysopId);
+
     Optional<Sysop> findById(long sysop);
 }

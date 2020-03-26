@@ -16,7 +16,7 @@ import ru.mos.emias.system.v1.faults.SecurityFault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import moscow.ptnl.ws.security.UserContextHolder;
+import moscow.ptnl.contingent.security.UserContextHolder;
 import ru.mos.emias.errors.domain.ErrorMessageType;
 import ru.mos.emias.errors.domain.Message;
 import ru.mos.emias.errors.domain.OtherSecurityException;

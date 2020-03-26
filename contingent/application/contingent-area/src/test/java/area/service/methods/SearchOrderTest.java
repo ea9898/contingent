@@ -11,8 +11,6 @@ import liquibase.resource.FileSystemResourceAccessor;
 import moscow.ptnl.contingent.domain.area.OrderService;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.area.service.AreaServiceInternal;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +35,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes= {PersistenceConfiguration.class, MockConfiguration.class})
 @Transactional
 public class SearchOrderTest {
-
-    @Autowired
-    private AreaServiceInternal areaServiceInternal;
 
     @Autowired
     private OrderService orderService;

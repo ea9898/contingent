@@ -1,4 +1,4 @@
-package moscow.ptnl.ws.security;
+package moscow.ptnl.contingent.security;
 
 public final class WebServiceConstants {
 

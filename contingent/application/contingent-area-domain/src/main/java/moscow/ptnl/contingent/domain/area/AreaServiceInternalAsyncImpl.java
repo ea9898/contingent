@@ -3,28 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package moscow.ptnl.contingent.area.service;
+package moscow.ptnl.contingent.domain.area;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import moscow.ptnl.contingent.domain.area.Algorithms;
-import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
-import moscow.ptnl.contingent.repository.SysopCRUDRepository;
-import moscow.ptnl.contingent.repository.SysopMsgCRUDRepository;
-import moscow.ptnl.contingent.repository.SysopMsgParamCRUDRepository;
+import moscow.ptnl.contingent.security.RequestContext;
+import moscow.ptnl.contingent.security.UserContextHolder;
 import moscow.ptnl.contingent.sysop.SysopErrorReason;
 import moscow.ptnl.contingent.sysop.entity.SysopMsg;
 import moscow.ptnl.contingent.sysop.entity.SysopMsgParam;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.ValidationMessage;
 import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
-import moscow.ptnl.ws.security.RequestContext;
-import moscow.ptnl.ws.security.UserContextHolder;
+import moscow.ptnl.contingent.sysop.repository.SysopMsgParamRepository;
+import moscow.ptnl.contingent.sysop.repository.SysopMsgRepository;
+import moscow.ptnl.contingent.sysop.repository.SysopRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,29 +40,30 @@ import org.springframework.transaction.annotation.Transactional;
  * @author mkachalov
  */
 @Service
-public class AreaServiceInternalImplAsync {
+public class AreaServiceInternalAsyncImpl implements AreaServiceInternalAsync {
 
-    private final static Logger LOG = LoggerFactory.getLogger(AreaServiceInternalImplAsync.class);
+    private final static Logger LOG = LoggerFactory.getLogger(AreaServiceInternalAsyncImpl.class);
 
     @Autowired
     private Algorithms algorithms;
     
     @Autowired
-    private SysopMsgCRUDRepository sysopMsgCRUDRepository;
-    
-    @Autowired
-    private SysopMsgParamCRUDRepository sysopMsgParamCRUDRepository;
-        
-    @Autowired
-    private SysopCRUDRepository sysopCRUDRepository;
+    private TransactionRunService transactionRunner;
 
     @Autowired
-    private TransactionRunService transactionRunner;
+    private SysopMsgRepository sysopMsgRepository;
+
+    @Autowired
+    private SysopRepository sysopRepository;
 
     @Autowired
     private AreaService areaServiceDomain;
 
+    @Autowired
+    private SysopMsgParamRepository sysopMsgParamRepository;
+
     // Асинхронная инициация процесса распределения жилых домов к территории обслуживания МО (К_УУ_27)
+    @Override
     @Async 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void asyncInitiateAddMoAddress(long sysopId, RequestContext requestContext, long moId, long areaTypeCode, long orderId, List<AddressRegistry> addresses) throws ContingentException {
@@ -83,6 +82,7 @@ public class AreaServiceInternalImplAsync {
     }
     
     // Асинхронное создание участка первичного класса (А_УУ_10)
+    @Override
     @Async 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void asyncCreatePrimaryArea(RequestContext requestContext, long sysopId, long moId, Long muId, Integer number, String description, Long areaTypeCode,
@@ -108,7 +108,8 @@ public class AreaServiceInternalImplAsync {
             processException(e, sysopId);
         }
     }
-    
+
+    @Override
     @Async
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void asyncAddAreaAddress(RequestContext requestContext, long sysopId, Long areaId, List<AddressRegistry> addressesRegistry) {
@@ -133,24 +134,24 @@ public class AreaServiceInternalImplAsync {
         }
         if (th instanceof ContingentException) {
             for (ValidationMessage error : ((ContingentException) th).getValidation().getMessages()) {
-                long sysopMsgId = sysopMsgCRUDRepository.save(new SysopMsg(
-                        sysopCRUDRepository.getOne(sysopId),
+                long sysopMsgId = sysopMsgRepository.save(new SysopMsg(
+                        sysopRepository.getOne(sysopId),
                         error.getType().value(),
                         error.getCode(),
                         error.getMessage())).getId();
                 List<SysopMsgParam> params = error.getParameters().stream().map(param -> new SysopMsgParam(
-                        sysopMsgCRUDRepository.getOne(sysopMsgId),
+                        sysopMsgRepository.getOne(sysopMsgId),
                         param.getCode(),
                         param.getValue()
                 )).collect(Collectors.toList());
-                sysopMsgParamCRUDRepository.saveAll(params);
+                sysopMsgParamRepository.saveAll(params);
             }
         }
         else {
             LOG.error("Системная ошибка при выполнении асинхронного метода", th);
             String error = String.format(SysopErrorReason.UNEXPECTED_ERROR.getDescription(), th.toString()
                     + (th.getStackTrace().length > 0 ? "; " + th.getStackTrace()[0].toString() : ""));
-            sysopMsgCRUDRepository.save(new SysopMsg(sysopCRUDRepository.getOne(sysopId),
+            sysopMsgRepository.save(new SysopMsg(sysopRepository.getOne(sysopId),
                     SysopErrorReason.UNEXPECTED_ERROR.getMessageType().value(),
                     SysopErrorReason.UNEXPECTED_ERROR.getCode(),
                     error.substring(0, Math.min(error.length(), 1000))));

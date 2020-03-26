@@ -9,7 +9,7 @@ import moscow.ptnl.contingent.security.setting.AuthMethod;
 import moscow.ptnl.contingent.security.setting.AuthService;
 
 import moscow.ptnl.contingent.service.security.SecuritySettingService;
-import moscow.ptnl.ws.security.UserContextHolder;
+import moscow.ptnl.contingent.security.UserContextHolder;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

@@ -10,13 +10,14 @@ import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
+import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
-import moscow.ptnl.contingent.domain.area.model.area.AddressArea;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
+import moscow.ptnl.contingent.domain.area.model.sysop.SysopMethodType;
 import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
@@ -45,6 +46,7 @@ import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionNomRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.SpecializationRepository;
+import moscow.ptnl.contingent.security.UserContextHolder;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -136,7 +138,10 @@ public class AreaServiceImpl implements AreaService {
 
     @Autowired
     @Lazy
-    private DomainService domainService;
+    private MappingDomainService mappingDomainService;
+
+    @Autowired
+    private AreaServiceInternalAsync areaServiceInternalAsync;
 
     @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds, Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW, boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
@@ -830,7 +835,7 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 9
-        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream().map(ar -> domainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
+        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream().map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
 
         // 10
         List<AreaAddress> areaAddresses = addresses.stream().map(addr -> {
@@ -1066,7 +1071,7 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 6.
-        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream().map(ar -> domainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
+        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream().map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
         // 7.
         List<MoAddress> moAddresses = new ArrayList<>();
         addresses.forEach(a -> {
@@ -1168,6 +1173,63 @@ public class AreaServiceImpl implements AreaService {
                 paging, totalSize);
     }
 
+    @Override
+    public Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode,
+                                          List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
+                                          Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                          boolean autoAssignForAttachment, Boolean attachByMedicalReason,
+                                          List<AddMedicalEmployee> addMedicalEmployees,
+                                          List<AddressRegistry> addresses) throws ContingentException {
+
+        // 2
+        long sysopId = algorithms.sysOperationRegistration(SysopMethodType.INITIATE_CREATE_PRIMARY_AREA);
+
+        // 3
+        areaServiceInternalAsync.asyncCreatePrimaryArea(UserContextHolder.getContext(), sysopId, moId, muId, number, description,
+                areaTypeCode, policyTypes, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW,
+                autoAssignForAttachment, attachByMedicalReason, addMedicalEmployees, addresses);
+
+        // 4 выполняется автоматически после выполнения createPrimaryArea, setMedicalEmployeeOnArea, addAreaAddress
+
+        // 5
+        return sysopId;
+    }
+
+    @Override
+    public Long initiateAddMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistry> addresses) throws ContingentException {
+        //1. Система выполняет проверку полномочий пользователя.
+        // Реализовано через аннотацию
+
+        //2. Система выполняет регистрацию новой асинхронной операции
+        long sysopId = algorithms.sysOperationRegistration(SysopMethodType.INITIATE_ADD_MO_ADDRESS);
+
+        //3. Система инициирует процесс (выполняется асинхронно) распределения жилых домов к территории обслуживания МО. (А_УУ_11)
+        areaServiceInternalAsync.asyncInitiateAddMoAddress(sysopId, UserContextHolder.getContext(), moId, areaTypeCode, orderId, addresses);
+
+        //4. Система инициирует процесс журналирования (выполняется асинхронно) по инициации распределения жилых домов к территории обслуживания МО. (А_УУ_8), п.1
+        // происходит в п 3 (не забываем добавлять имя метода в AreaServiceLogMethodsEnum)
+
+        //5. Система возвращает в качестве результата: ИД операции
+        return sysopId;
+    }
+
+    @Override
+    public Long initiateAddAreaAddress(Long areaId, List<AddressRegistry> addressesRegistry) throws ContingentException {
+        //1. Система выполняет проверку полномочий пользователя.
+        // Реализовано через аннотацию
+
+        // 2. Система выполняет регистрацию новой асинхронной операции
+        long sysopId = algorithms.sysOperationRegistration(SysopMethodType.INITIATE_ADD_AREA_ADDRESS);
+
+        // 3. Система инициирует процесс (выполняется асинхронно) добавления адресов на участок обслуживания.
+        areaServiceInternalAsync.asyncAddAreaAddress(UserContextHolder.getContext(), sysopId, areaId, addressesRegistry);
+
+        // 4. Система инициирует процесс журналирования (выполняется асинхронно) по инициации добавления адресов на участок обслуживания.
+        // выполняется в п 3 (не забываем добавлять имя метода в AreaServiceLogMethodsEnum)
+
+        // 5. Система возвращает в качестве результата: ИД операции
+        return sysopId;
+    }
     @Override
     public Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds, PageRequest paging) throws ContingentException {
         //2

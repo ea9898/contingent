@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.repository;
+package moscow.ptnl.contingent.sysop.repository;
 
 import moscow.ptnl.contingent.sysop.entity.Sysop;
 import moscow.ptnl.contingent.sysop.entity.SysopMsg;
@@ -10,6 +10,9 @@ import java.util.Map;
 @NoRepositoryBean
 public interface SysopMsgRepository {
 
+    SysopMsg save(SysopMsg sysopMsg);
+
+    SysopMsg getOne(Long sysopId);
 
     List<SysopMsg> getSysopMsgBySysop(Sysop sysop);
 

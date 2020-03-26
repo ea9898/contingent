@@ -228,6 +228,57 @@ public interface AreaService {
                               PageRequest paging) throws ContingentException;
 
     /**
+     * (К_УУ_26) Инициация процесса создания участка обслуживания первичного класса
+     * Метод регистрирует и инициирует асинхронную операцию создания участка первичного класса
+     * @param moId
+     * @param muId
+     * @param number
+     * @param description
+     * @param areaTypeCode
+     * @param policyTypes
+     * @param ageMin
+     * @param ageMax
+     * @param ageMinM
+     * @param ageMaxM
+     * @param ageMinW
+     * @param ageMaxW
+     * @param autoAssignForAttachment
+     * @param attachByMedicalReason
+     * @param addMedicalEmployees
+     * @param addresses
+     * @return
+     * @throws ContingentException
+     */
+    Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode,
+                                   List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
+                                   Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason,
+                                   List<AddMedicalEmployee> addMedicalEmployees,
+                                   List<AddressRegistry> addresses) throws ContingentException;
+
+    /**
+     * (К_УУ_27) Инициация процесса распределения жилых домов к территории обслуживания МО
+     * Метод регистрирует и инициирует асинхронную операцию распределения жилых домов к территории обслуживания МО
+     * @param moId
+     * @param areaTypeCode
+     * @param orderId
+     * @param addresses
+     * @return
+     * @throws ContingentException
+     */
+    Long initiateAddMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistry> addresses) throws ContingentException;
+
+    /**
+     * (К_УУ_28) Инициация процесса добавления адресов на участок обслуживания
+     * Метод регистрирует и инициирует асинхронную операцию добавления адресов на участок обслуживания
+     * @param areaId
+     * @param addressesRegistry
+     * @return
+     * @throws ContingentException
+     */
+    Long initiateAddAreaAddress(Long areaId, List<AddressRegistry> addressesRegistry) throws ContingentException;
+
+    /**
      * (К_УУ_29) Получение списка участков для ДН
      * @param moId
      * @param muIds

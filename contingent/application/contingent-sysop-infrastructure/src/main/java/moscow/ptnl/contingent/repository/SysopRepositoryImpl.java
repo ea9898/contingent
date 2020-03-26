@@ -22,6 +22,11 @@ public class SysopRepositoryImpl extends BaseRepository implements SysopReposito
     }
 
     @Override
+    public Sysop getOne(Long sysopId) {
+        return sysopCRUDRepository.getOne(sysopId);
+    }
+
+    @Override
     public Optional<Sysop> findById(long sysop) {
         return sysopCRUDRepository.findById(sysop);
     }

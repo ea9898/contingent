@@ -1,4 +1,4 @@
-package moscow.ptnl.ws.security;
+package moscow.ptnl.contingent.security;
 
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;

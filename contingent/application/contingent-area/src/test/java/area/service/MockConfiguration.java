@@ -9,9 +9,7 @@ import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaAddressChecker;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
-import moscow.ptnl.contingent.area.service.AreaServiceInternal;
-import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
-import moscow.ptnl.contingent.area.service.AreaServiceInternalImplAsync;
+import moscow.ptnl.contingent.domain.area.AreaServiceInternalAsyncImpl;
 import moscow.ptnl.contingent.area.service.EsuHelperServiceImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
@@ -115,12 +113,7 @@ public class MockConfiguration {
     public EsuService esuService() {
         return new MockEsuService();
     }
-    
-    @Bean
-    public AreaServiceInternal areaServiceInternal() {
-        return new AreaServiceInternalImpl();
-    }
-    
+
     @Bean
     public LogESUInterceptor logESUInterceptor() {
         return new LogESUInterceptor();
@@ -145,7 +138,7 @@ public class MockConfiguration {
     public AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
 
     @MockBean
-    public AreaServiceInternalImplAsync asyncService;
+    public AreaServiceInternalAsyncImpl asyncService;
 
     @MockBean
     public SearchAreaAddressCloner searchAreaAddressCloner;

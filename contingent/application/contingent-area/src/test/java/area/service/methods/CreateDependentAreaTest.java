@@ -9,7 +9,6 @@ import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
-import moscow.ptnl.contingent.area.service.AreaServiceInternal;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
@@ -62,9 +61,6 @@ public class CreateDependentAreaTest {
 
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
-
-    @Autowired
-    private AreaServiceInternal areaServiceInternal;
 
     @Autowired
     private AreaRepository areaRepository;

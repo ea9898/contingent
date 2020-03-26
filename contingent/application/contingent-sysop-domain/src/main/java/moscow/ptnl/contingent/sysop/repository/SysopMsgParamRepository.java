@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.repository;
+package moscow.ptnl.contingent.sysop.repository;
 
 import moscow.ptnl.contingent.sysop.entity.SysopMsg;
 import moscow.ptnl.contingent.sysop.entity.SysopMsgParam;
@@ -12,4 +12,5 @@ public interface SysopMsgParamRepository {
 
     Map<SysopMsg, List<SysopMsgParam>> getSysopMsgParamsBySysopMsgList(List<SysopMsg> sysop);
 
+    List<SysopMsgParam> saveAll(List<SysopMsgParam> sysopMsgParams);
 }

@@ -4,7 +4,6 @@ import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBas
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
-import moscow.ptnl.contingent.area.service.AreaServiceInternalImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.model.esu.AddressesMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaRestrictionMapper;
@@ -131,9 +130,6 @@ public class BaseTest {
     @Spy
     @InjectMocks
     private HistoryServiceHelperImpl historyServiceHelperImpl;
-
-    @InjectMocks
-    public AreaServiceInternalImpl areaServiceInternal;
 
     @Spy
     public MoMuService moMuService;

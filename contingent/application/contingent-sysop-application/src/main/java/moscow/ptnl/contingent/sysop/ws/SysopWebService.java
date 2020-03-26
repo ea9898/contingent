@@ -1,7 +1,7 @@
 package moscow.ptnl.contingent.sysop.ws;
 
-import moscow.ptnl.contingent.repository.SysopMsgParamRepository;
-import moscow.ptnl.contingent.repository.SysopMsgRepository;
+import moscow.ptnl.contingent.sysop.repository.SysopMsgParamRepository;
+import moscow.ptnl.contingent.sysop.repository.SysopMsgRepository;
 import moscow.ptnl.contingent.sysop.entity.Sysop;
 import moscow.ptnl.contingent.sysop.entity.SysopMsg;
 import moscow.ptnl.contingent.sysop.entity.SysopMsgParam;
