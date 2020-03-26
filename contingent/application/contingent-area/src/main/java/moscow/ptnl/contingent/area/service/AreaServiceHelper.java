@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.area.service;
 
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
-import moscow.ptnl.contingent.area.transform.AddressMapper;
+import moscow.ptnl.contingent.transform.AddressMapper;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
@@ -20,8 +20,8 @@ import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.domain.area.model.area.AddressWrapper;
 import moscow.ptnl.contingent.domain.area.model.area.NsiAddress;
-import moscow.ptnl.contingent.area.transform.AddressRegistryBaseTypeCloner;
-import moscow.ptnl.contingent.area.transform.AreaMedicalEmployeesClone;
+import moscow.ptnl.contingent.transform.AddressRegistryBaseTypeCloner;
+import moscow.ptnl.contingent.transform.AreaMedicalEmployeesClone;
 import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.domain.util.Period;
 import moscow.ptnl.contingent.error.ContingentException;
@@ -54,8 +54,6 @@ import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesReposit
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
-import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.core.AddMedicalEmployee;
 import ru.mos.emias.contingent2.core.ChangeMedicalEmployee;
 

@@ -1,14 +1,12 @@
-package moscow.ptnl.contingent.area.service;
+package moscow.ptnl.contingent.transform;
 
-import moscow.ptnl.contingent.transform.AddressMapper;
-import moscow.ptnl.contingent.domain.area.MappingDomainService;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MappingDomainServiceImpl implements MappingDomainService {
+public class MappingsImpl implements Mappings {
 
     @Autowired
     private AddressMapper addressMapper;

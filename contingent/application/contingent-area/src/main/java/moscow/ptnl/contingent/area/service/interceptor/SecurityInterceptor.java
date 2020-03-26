@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import moscow.ptnl.contingent.area.transform.SoapExceptionMapper;
+import moscow.ptnl.contingent.transform.SoapExceptionMapper;
 import moscow.ptnl.contingent.security.setting.AuthMethod;
 import moscow.ptnl.contingent.security.setting.AuthService;
 
