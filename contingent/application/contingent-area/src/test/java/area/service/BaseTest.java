@@ -1,17 +1,17 @@
 package service;
 
-import moscow.ptnl.contingent.transform.AddressRegistryToAddressRegistryBaseMapper;
+import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapper;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
-import moscow.ptnl.contingent.transform.model.esu.AddressesMapper;
-import moscow.ptnl.contingent.transform.model.esu.AreaRestrictionMapper;
+import moscow.ptnl.contingent.area.transform.model.esu.AddressesMapper;
+import moscow.ptnl.contingent.area.transform.model.esu.AreaRestrictionMapper;
 import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.OrderService;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
-import moscow.ptnl.contingent.transform.model.esu.AreaInfoEventMapper;
-import moscow.ptnl.contingent.transform.model.esu.AttachOnAreaChangeMapper;
+import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
+import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepository;
