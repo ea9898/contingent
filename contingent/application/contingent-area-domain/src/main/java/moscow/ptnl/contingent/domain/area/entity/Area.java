@@ -240,6 +240,9 @@ public class Area implements Serializable {
     }
 
     public Set<AreaMedicalEmployees> getMedicalEmployees() {
+        if (medicalEmployees == null) {
+            medicalEmployees = new HashSet<>();
+        }
         return medicalEmployees;
     }
 

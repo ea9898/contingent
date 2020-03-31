@@ -46,9 +46,9 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     private Area area;
 
     @LogIt
-    @Column(name = "IS_REPLACEMENT")
+    @Column(name = "IS_REPLACEMENT", nullable = false)
     @Convert(converter = BooleanIntegerConverter.class)
-    private Boolean replacement;
+    private Boolean replacement = Boolean.FALSE;
 
     @LogIt
     @Column(name = "START_DATE")
@@ -195,7 +195,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
         if (this == obj)
             return true;
         if (obj != null && obj instanceof AreaMedicalEmployees) {
-            return ((AreaMedicalEmployees) obj).getId().equals(this.id);
+            return Objects.equals(((AreaMedicalEmployees) obj).getId(), this.id);
         }
         return false;
     }
