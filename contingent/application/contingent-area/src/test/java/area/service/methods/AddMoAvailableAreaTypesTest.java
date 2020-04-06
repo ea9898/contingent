@@ -62,8 +62,8 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
     // Тест п.3 записи в БД типов участков доступный для МО
     @Test
     public void addMoAvailableAreaTypesTest() {
-        doReturn(Optional.of(areaType1)).when(areaTypesCRUDRepository).findById(areaType1.getCode());
-        doReturn(Optional.of(areaType2)).when(areaTypesCRUDRepository).findById(areaType2.getCode());
+        doReturn(Optional.of(areaType1)).when(areaTypesRepository).findById(areaType1.getCode());
+        doReturn(Optional.of(areaType2)).when(areaTypesRepository).findById(areaType2.getCode());
         doReturn(Arrays.asList(moAvailableAreaType3, moAvailableAreaType4))
                 .when(moAvailableAreaTypesRepository).findAreaTypes(moId);
         doReturn(moAvailableAreaType1).when(moAvailableAreaTypesCRUDRepository).save(moAvailableAreaType1);

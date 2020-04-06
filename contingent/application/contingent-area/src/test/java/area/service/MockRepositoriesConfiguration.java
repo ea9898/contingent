@@ -35,6 +35,7 @@ import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionNomRepository;
 
+import moscow.ptnl.contingent.sysop.repository.SysopRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 
@@ -142,6 +143,9 @@ public class MockRepositoriesConfiguration {
 
     @MockBean
     private SysopMsgCRUDRepository sysopMsgCRUDRepository;
+
+    @MockBean
+    private SysopRepository sysopRepository;
 
     @MockBean
     private SysopMsgParamCRUDRepository sysopMsgParamCRUDRepository;

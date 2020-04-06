@@ -5,14 +5,18 @@
  */
 package area.service;
 
+import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapper;
+import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapperImpl;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaAddressChecker;
 import moscow.ptnl.contingent.area.service.AreaServiceHelper;
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.AreaServiceInternalAsyncImpl;
 import moscow.ptnl.contingent.area.service.EsuHelperServiceImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
+import moscow.ptnl.contingent.domain.area.OrderService;
 import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
@@ -32,6 +36,7 @@ import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.area.endpoint.ESUEventEndpoint;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import moscow.ptnl.contingent.domain.area.HistoryService;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -129,10 +134,16 @@ public class MockConfiguration {
     public SettingService settingService;
 
     @MockBean
+    public OrderService orderService;
+
+    @MockBean
     public HistoryService historyService;
 
     @MockBean
     public AddressMapper addressMapper;
+
+    @MockBean
+    private AreaService areaService;
 
     @MockBean
     public AddressRegistryBaseTypeCloner addressRegistryBaseTypeCloner;
@@ -157,4 +168,5 @@ public class MockConfiguration {
 
     @MockBean
     private AreaAddressMapper areaAddressMapper;
+
 }
