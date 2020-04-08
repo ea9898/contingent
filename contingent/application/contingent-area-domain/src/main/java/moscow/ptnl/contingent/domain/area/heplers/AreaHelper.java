@@ -891,4 +891,33 @@ public class AreaHelper {
                 .filter(a -> a.getGlobalIdNsi() == null || exist.add(a.getGlobalIdNsi()))
                 .collect(Collectors.toList());
     }
+
+    public boolean isAreaPrimary(Area area) {
+        return isAreaTypePrimary(area.getAreaType());
+    }
+
+    public void checkReplacementWithoutMain(List<Period> periodsWithoutMainEmpl,
+                                            List<AreaMedicalEmployees> replacementEmployees,
+                                            Validation validation) throws ContingentException {
+        boolean foundError = false;
+        for (Period period : periodsWithoutMainEmpl) {
+            for (AreaMedicalEmployees empl : replacementEmployees) {
+                if (period.isInterceptWith(empl.getStartDate(), empl.getEndDate())) {
+                    foundError = true;
+                    break;
+                }
+            }
+            if (foundError) {
+                validation.error(AreaErrorReason.REPLACEMENT_WITHOUT_MAIN_EMPLOYEE,
+                        new ValidationParameter("startDate", period.getStartDate()),
+                        new ValidationParameter("endDate",period.getEndDate()));
+                foundError = false;
+            }
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+    }
+
+
 }

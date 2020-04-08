@@ -10,13 +10,13 @@ import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBas
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaAddressChecker;
-import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.AreaServiceInternalAsyncImpl;
 import moscow.ptnl.contingent.area.service.EsuHelperServiceImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 import moscow.ptnl.contingent.domain.area.OrderService;
+import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
@@ -73,6 +73,9 @@ public class MockConfiguration {
     public AreaInfoEventMapper areaInfoEventMapper() {
         return new AreaInfoEventMapper();
     }
+
+    @Bean
+    public AreaHelper areaHelper() { return new AreaHelper(); }
     
     @Bean
     public XMLGregorianCalendarMapper getXMLGregorianCalendarMapper() {
@@ -124,9 +127,6 @@ public class MockConfiguration {
         return new LogESUInterceptor();
     }
 
-    @SpyBean
-    public AreaServiceHelper areaServiceHelper;
-    
     @MockBean
     public AreaAddressChecker areaAddressChecker;
     

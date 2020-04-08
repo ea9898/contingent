@@ -2,12 +2,12 @@ package service.methods;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.domain.util.Period;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import java.util.Optional;
 public class SetMedicalEmployeeOnAreaTest extends BaseTest {
 
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(SetMedicalEmployeeOnAreaTest.class);
-    private static AreaServiceHelper areaServiceHelper = new AreaServiceHelper();
+    private static AreaHelper areaServiceHelper = new AreaHelper();
     private AreaType areaType;
     private Area area1, area2;
     private Optional<PositionCode> positionCode;

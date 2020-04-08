@@ -9,7 +9,7 @@ import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.area.service.AreaServiceHelper;
+import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
@@ -78,7 +78,7 @@ public class UpdateDependentAreaTest {
     private AreaTypeRelationsRepository areaTypeRelationsRepository;
 
     @Autowired
-    private AreaServiceHelper areaServiceHelper;
+    private AreaHelper areaHelper;
 
     @Autowired
     public MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
@@ -200,23 +200,23 @@ public class UpdateDependentAreaTest {
         doReturn(Collections.singletonList(areaPrimary1)).when(areaRepository).findAreas(areaPrimary1.getMoId(), areaPrimary1.getMuId(), Arrays.asList(areaTypePrimCode), null, true);
         doReturn(Collections.singletonList(areaDep1.getPrimaryAreaTypes().iterator().next())).when(areaToAreaTypeRepository).findAreaTypesByAreaAndTypeCode(areaDep1, Collections.singletonList(areaTypePrimCode));
         //create inOrder object passing any mocks that need to be verified in order
-        InOrder order = Mockito.inOrder(areaServiceHelper);
+        InOrder order = Mockito.inOrder(areaHelper);
         assertDoesNotThrow(() -> areaServiceDomain.updateDependentArea(1L, null, number, "description",
                 Arrays.asList(areaTypePrim2Code), Arrays.asList(areaTypePrimCode),
                 Arrays.asList(policyTypeCode), Arrays.asList(), 2, 12, null, null, null, null));
         try {
-            //Здесь проверяем только факт и порядок вызова функций areaServiceHelper
+            //Здесь проверяем только факт и порядок вызова функций areaHelper
             //Сами функции проверяются в AreaServiceHelperTest.java
-            order.verify(areaServiceHelper).checkAndGetArea(eq(1L), ArgumentMatchers.any(Validation.class));
-            order.verify(areaServiceHelper).checkParametersChanged(eq(areaDep1), isNull(), eq(number), any(), eq(Arrays.asList(areaTypePrim2Code)), eq(Arrays.asList(areaTypePrimCode)),
+            order.verify(areaHelper).checkAndGetArea(eq(1L), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkParametersChanged(eq(areaDep1), isNull(), eq(number), any(), eq(Arrays.asList(areaTypePrim2Code)), eq(Arrays.asList(areaTypePrimCode)),
                     eq(Arrays.asList(policyTypeCode)), eq(Arrays.asList()), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), ArgumentMatchers.any(Validation.class));
-            order.verify(areaServiceHelper).checkAreaDependsOnPrimaryAreaType(eq(areaDep1), eq(areaTypePrimary2), ArgumentMatchers.any(Validation.class));
-            order.verify(areaServiceHelper).checkAreaTypeIsPrimary(eq(areaTypePrimary2), ArgumentMatchers.any(Validation.class));
-            order.verify(areaServiceHelper).checkAreaTypeAvailable(eq(moId), isNull(), eq(areaTypePrimary2), ArgumentMatchers.any(Validation.class));
-            order.verify(areaServiceHelper).checkAreaTypeRelations(eq(areaTypeDependent), eq(areaTypePrimary2), ArgumentMatchers.any(Validation.class));
-            order.verify(areaServiceHelper).checkPolicyTypesIsOMS(eq(Collections.singletonList(policyTypeCode)), ArgumentMatchers.any(Validation.class));
-            order.verify(areaServiceHelper).checkAreaTypeAgeSetups(eq(areaTypeDependent), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), any(Validation.class));
-            order.verify(areaServiceHelper).saveAndDeleteAreaPolicyTypes(eq(areaDep1), eq(Arrays.asList(policyType1)), eq(Arrays.asList()));
+            order.verify(areaHelper).checkAreaDependsOnPrimaryAreaType(eq(areaDep1), eq(areaTypePrimary2), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkAreaTypeIsPrimary(eq(areaTypePrimary2), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkAreaTypeAvailable(eq(moId), isNull(), eq(areaTypePrimary2), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkAreaTypeRelations(eq(areaTypeDependent), eq(areaTypePrimary2), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkPolicyTypesIsOMS(eq(Collections.singletonList(policyTypeCode)), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkAreaTypeAgeSetups(eq(areaTypeDependent), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), any(Validation.class));
+            order.verify(areaHelper).saveAndDeleteAreaPolicyTypes(eq(areaDep1), eq(Arrays.asList(policyType1)), eq(Arrays.asList()));
             //получаем сообщения
             MockEsuService receiveService = (MockEsuService) esuService;
             MockEsuService.MockMessage msg = receiveService.getMessage();

@@ -4,12 +4,12 @@ import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBas
 import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapperImpl;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
-import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.model.esu.AddressesMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaRestrictionMapper;
 import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.OrderService;
+import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
@@ -130,7 +130,7 @@ public class BaseTest {
 
     @Spy
     @InjectMocks
-    public AreaServiceHelper areaHelper;
+    public AreaHelper areaHelper;
 
     @Spy
     @InjectMocks

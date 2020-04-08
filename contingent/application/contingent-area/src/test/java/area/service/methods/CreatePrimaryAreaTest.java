@@ -8,11 +8,11 @@ import area.service.MockRepositoriesConfiguration;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.area.service.AreaServiceHelper;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
@@ -64,7 +64,7 @@ public class CreatePrimaryAreaTest {
     private AreaRepository areaRepository;
 
     @Autowired
-    private AreaServiceHelper areaServiceHelper;
+    private AreaHelper areaHelper;
 
     @Autowired
     public MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
@@ -124,22 +124,22 @@ public class CreatePrimaryAreaTest {
         }).when(areaCRUDRepository).save(any());
         doAnswer(invocation -> Optional.of(createdArea[0])).when(areaCRUDRepository).findById(1L);
         //create inOrder object passing any mocks that need to be verified in order
-        InOrder order = Mockito.inOrder(areaServiceHelper);
+        InOrder order = Mockito.inOrder(areaHelper);
         Long id = assertDoesNotThrow(() -> areaServiceDomain.createPrimaryArea(moId, null, number, areaType, Collections.singletonList(policyType),
                 2, 12, null, null, null, null, true, false, "description"));
         try {
-            //Здесь проверяем только факт и порядок вызова функций areaServiceHelper
+            //Здесь проверяем только факт и порядок вызова функций areaHelper
             //Сами функции проверяются в AreaServiceHelperTest.java
-            order.verify(areaServiceHelper).checkAndGetAreaTypesExist(eq(Collections.singletonList(areaType)), ArgumentMatchers.any(Validation.class));
-            order.verify(areaServiceHelper).checkAreaTypeIsPrimary(eq(areaTypePrimary1), ArgumentMatchers.any(Validation.class));
-            order.verify(areaServiceHelper).checkEmptyMuId(null, areaTypePrimary1);
-            order.verify(areaServiceHelper).checkAreaTypeAvailable(eq(moId), isNull(), eq(areaTypePrimary1), any(Validation.class));
-            order.verify(areaServiceHelper).checkAreaTypeCountLimits(eq(moId), isNull(), eq(areaTypePrimary1), any(Validation.class));
-            order.verify(areaServiceHelper).checkAreaExistsInMU(isNull(), eq(moId), eq(areaTypePrimary1), eq(number), isNull(), any(Validation.class));
-            order.verify(areaServiceHelper).checkPolicyTypesIsOMS(eq(Collections.singletonList(policyType)), any(Validation.class));
-            order.verify(areaServiceHelper).checkAreaTypeAgeSetups(eq(areaTypePrimary1), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), any(Validation.class));
-            order.verify(areaServiceHelper).checkAutoAssignForAttachment(eq(areaTypePrimary1), eq(true), eq(false), any(Validation.class));
-            order.verify(areaServiceHelper).checkAttachByMedicalReason(eq(areaTypePrimary1), eq(false), any(Validation.class));
+            order.verify(areaHelper).checkAndGetAreaTypesExist(eq(Collections.singletonList(areaType)), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkAreaTypeIsPrimary(eq(areaTypePrimary1), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkEmptyMuId(null, areaTypePrimary1);
+            order.verify(areaHelper).checkAreaTypeAvailable(eq(moId), isNull(), eq(areaTypePrimary1), any(Validation.class));
+            order.verify(areaHelper).checkAreaTypeCountLimits(eq(moId), isNull(), eq(areaTypePrimary1), any(Validation.class));
+            order.verify(areaHelper).checkAreaExistsInMU(isNull(), eq(moId), eq(areaTypePrimary1), eq(number), isNull(), any(Validation.class));
+            order.verify(areaHelper).checkPolicyTypesIsOMS(eq(Collections.singletonList(policyType)), any(Validation.class));
+            order.verify(areaHelper).checkAreaTypeAgeSetups(eq(areaTypePrimary1), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), any(Validation.class));
+            order.verify(areaHelper).checkAutoAssignForAttachment(eq(areaTypePrimary1), eq(true), eq(false), any(Validation.class));
+            order.verify(areaHelper).checkAttachByMedicalReason(eq(areaTypePrimary1), eq(false), any(Validation.class));
 
             assertEquals(id, Long.valueOf(1L));
             //получаем сообщения
