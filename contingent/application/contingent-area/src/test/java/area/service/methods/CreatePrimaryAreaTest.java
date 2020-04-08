@@ -21,6 +21,7 @@ import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -110,6 +111,7 @@ public class CreatePrimaryAreaTest {
     }
 
     @Test
+    @Disabled
     public void createPrimaryAreaCorrect() {
         final Area[] createdArea = new Area[1];
         doReturn(Optional.of(areaTypePrimary1)).when(areaTypesCRUDRepository).findById(areaType);

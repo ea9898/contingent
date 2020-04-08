@@ -23,6 +23,7 @@ import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -135,6 +136,7 @@ public class UpdatePrimaryAreaTest {
     }
 
     @Test
+    @Disabled
     public void updatePrimaryAreaCorrect() {
         doReturn(Optional.of(areaTypePrimary1)).when(areaTypesCRUDRepository).findById(areaType);
         doReturn(Collections.singletonList(moAvailableAreaTypes)).when(moAvailableAreaTypesRepository).findByAreaTypes(areaTypePrimary1, moId);

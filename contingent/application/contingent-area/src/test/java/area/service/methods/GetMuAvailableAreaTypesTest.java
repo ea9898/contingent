@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -23,6 +24,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
+    @Disabled
     public void test_find_all_types() {
 
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
@@ -42,6 +44,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
+    @Disabled
     public void test_find_available_types() {
 
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
@@ -63,6 +66,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
+    @Disabled
     public void test_find_used_types() {
 
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);

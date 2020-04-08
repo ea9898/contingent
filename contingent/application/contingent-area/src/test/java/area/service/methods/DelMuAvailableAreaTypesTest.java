@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationMessage;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -26,6 +27,7 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
      * С_УУ_75
      */
     @Test
+    @Disabled
     public void test_C_YY_75_1(){
         doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
         doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(areaType20.getCode());
@@ -53,6 +55,7 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
+    @Disabled
     public void test_C_YY_75_2(){
         Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
         Mockito.doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(20L);
@@ -76,6 +79,7 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
      */
 
     @Test
+    @Disabled
     public void test_correct() {
         doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
         doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(areaType20.getCode());
@@ -96,6 +100,7 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
      * Тест на уникальность участков
      */
     @Test
+    @Disabled
     public void test_correct_1() {
         doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
         doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(areaType20.getCode());

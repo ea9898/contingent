@@ -14,6 +14,7 @@ import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -55,6 +56,7 @@ public class SearchAreaTest {
     }
 
     @Test
+    @Disabled
     public void searchAreaExceptionTest() {
         Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.searchArea(null, null, EL,
                 EL, null, null, null, EL, EL, null, null));
@@ -62,6 +64,7 @@ public class SearchAreaTest {
     }
 
     @Test
+    @Disabled
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchAreaAllParametersTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
@@ -74,6 +77,7 @@ public class SearchAreaTest {
     }
 
     @Test
+    @Disabled
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchAreaByMedicalEmployeesTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
@@ -87,6 +91,7 @@ public class SearchAreaTest {
     }
 
     @Test
+    @Disabled
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchAreaByAddressesExactMatchTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(

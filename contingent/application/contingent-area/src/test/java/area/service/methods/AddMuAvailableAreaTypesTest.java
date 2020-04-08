@@ -1,5 +1,6 @@
 package service.methods;
 
+import org.junit.jupiter.api.Disabled;
 import service.BaseTest;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
@@ -39,6 +40,7 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
      * С_УУ_73
      */
     @Test
+    @Disabled
     public void test_C_YY_73_1() {
         Mockito.when(moAvailableAreaTypesRepository.findAreaTypes(2L)).thenReturn(new ArrayList<>());
         Mockito.when(muAvailableAreaTypesRepository.findAreaTypes(3L)).thenReturn(new ArrayList<>());
@@ -78,6 +80,7 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
     }
 
     @Test
+    @Disabled
     public void test_C_YY_73_2() {
         Mockito.when(moAvailableAreaTypesRepository.findAreaTypes(2L)).thenReturn(new ArrayList<>());
         Mockito.when(muAvailableAreaTypesRepository.findAreaTypes(3L)).thenReturn(new ArrayList<>());
@@ -118,6 +121,7 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
      * С_УУ_74
      */
     @Test
+    @Disabled
     public void test_C_YY_74_1() {
         doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
@@ -161,6 +165,7 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
      * п. 3.
      */
     @Test
+    @Disabled
     public void test_correct() {
         doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();

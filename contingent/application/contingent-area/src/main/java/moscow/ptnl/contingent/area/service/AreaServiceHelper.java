@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.area.transform.AddressMapper;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
@@ -155,6 +156,9 @@ public class AreaServiceHelper {
     private AddressesRepository addressesRepository;
 
     @Autowired
+    private AreaTypesRepository areaTypesRepository;
+
+    @Autowired
     private AddressesCRUDRepository addressesCRUDRepository;
 
     /* Система проверяет, что в справочнике «Типы участков» (AREA_TYPES) существует каждый входной параметр
@@ -164,7 +168,7 @@ public class AreaServiceHelper {
         List<AreaType> result = new ArrayList<>();
 
         areaTypes.forEach(a -> {
-            Optional<AreaType> areaType = areaTypesCRUDRepository.findById(a);
+            Optional<AreaType> areaType = areaTypesRepository.findById(a);
 
             if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchived())) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaTypeCode", a));

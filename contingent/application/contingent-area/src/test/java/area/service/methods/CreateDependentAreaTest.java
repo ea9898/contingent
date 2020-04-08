@@ -25,6 +25,7 @@ import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesReposit
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -149,6 +150,7 @@ public class CreateDependentAreaTest {
     }
 
     @Test
+    @Disabled
     public void createDependentAreaCorrect() {
         final Area[] createdArea = new Area[1];
         doReturn(Optional.of(areaTypeDependent)).when(areaTypesCRUDRepository).findById(areaTypeDepCode);

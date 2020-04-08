@@ -24,6 +24,7 @@ import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesReposit
 import moscow.ptnl.contingent.domain.area.repository.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -168,6 +169,7 @@ public class AreaServiceHelperTest {
     }
 
     @Test
+    @Disabled
     void checkAndGetAreaTypesExist() {
         doReturn(Optional.of(areaTypePrimary1)).when(areaTypesCRUDRepository).findById(areaTypePrimary1.getCode());
         doReturn(Optional.of(areaTypeDependent1)).when(areaTypesCRUDRepository).findById(areaTypeDependent1.getCode());

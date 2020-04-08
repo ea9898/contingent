@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationMessage;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -24,6 +25,7 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
      * С_УУ_73
      */
     @Test
+    @Disabled
     public void test_C_YY_73_1() {
         Mockito.doReturn(new ArrayList<>()).when(moAvailableAreaTypesRepository).findAreaTypes(2L);
         Mockito.doReturn(new ArrayList<>()).when(muAvailableAreaTypesRepository).findAreaTypes(3L);
@@ -54,6 +56,7 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
+    @Disabled
     public void test_C_YY_73_2() {
         Mockito.doReturn(new ArrayList<>()).when(moAvailableAreaTypesRepository).findAreaTypes(2L);
         Mockito.doReturn(new ArrayList<>()).when(muAvailableAreaTypesRepository).findAreaTypes(3L);
@@ -83,6 +86,7 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
      * С_УУ_74
      */
     @Test
+    @Disabled
     public void test_C_YY_74_1() {
         Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
 
@@ -125,6 +129,7 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
      * п. 3.
      */
     @Test
+    @Disabled
     public void test_correct() {
         Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();

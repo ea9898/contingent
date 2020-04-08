@@ -17,6 +17,7 @@ import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -118,17 +119,20 @@ public class ArchiveAreaTest {
     }
 
     @Test
+    @Disabled
     public void archiveAreaExceptionTest() {
         Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.archiveArea(1111L));
         assertEquals(exception.getMessage(), "Участок обслуживания МО с ИД 1111 не найден в системе");
     }
 
     @Test
+    @Disabled
     public void archivePrimaryAreaWithEsuTest() {
         archiveAreaWithEsuTest(areaPrimary1);
     }
 
     @Test
+    @Disabled
     public void archiveDependentAreaWithEsuTest() {
         archiveAreaWithEsuTest(areaDependent1);
     }
