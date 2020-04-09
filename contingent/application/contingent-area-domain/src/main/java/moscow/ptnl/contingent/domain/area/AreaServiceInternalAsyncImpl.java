@@ -113,12 +113,13 @@ public class AreaServiceInternalAsyncImpl implements AreaServiceInternalAsync {
                 areaServiceDomain.setMedicalEmployeeOnAreaInternal(area.getId(), addMedicalEmployees, Collections.emptyList());
                 areaServiceDomain.addAreaAddressInternal(area.getId(), addresses, false);
 
-                if (Boolean.TRUE.equals(settingService.getPar4())) {
-                    esuHelperService.sendAreaInfoEvent(area, "initiateCreatePrimaryArea");
-                }
-
                 return area.getId();
             }).get();
+
+            if (Boolean.TRUE.equals(settingService.getPar4())) {
+                esuHelperService.sendAreaInfoEvent(areaServiceDomain.getAreaById(areaId).getArea(), "initiateCreatePrimaryArea");
+            }
+
             algorithms.sysOperationComplete(sysopId, true, areaId.toString());
         } catch (Throwable e) {
             processException(e, sysopId);
