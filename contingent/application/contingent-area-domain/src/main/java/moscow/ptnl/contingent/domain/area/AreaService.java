@@ -44,6 +44,10 @@ public interface AreaService {
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
+    Area createPrimaryAreaInternal(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
+                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
+
     /**
      * (К_УУ_8) Создание участка обслуживания зависимого класса
      * Создание участка зависимого класса
@@ -126,6 +130,9 @@ public interface AreaService {
     List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
                                         List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException;
 
+    List<Long> setMedicalEmployeeOnAreaInternal(long areaId, List<AddMedicalEmployee> addEmployeesInput,
+                                                List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException;
+
     /**
      * (К_УУ_12) Получение подробной информации об участке
      * Получение подробной информации об участке по ИД участка
@@ -145,6 +152,8 @@ public interface AreaService {
      * @throws ContingentException
      */
     List<Long> addAreaAddress(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException;
+
+    List<Long> addAreaAddressInternal(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException;
 
     /**
      * (К_УУ_14) Удаление адресов из участка обслуживания

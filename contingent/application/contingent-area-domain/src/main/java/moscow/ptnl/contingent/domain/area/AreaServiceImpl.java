@@ -144,7 +144,16 @@ public class AreaServiceImpl implements AreaService {
     private AreaServiceInternalAsync areaServiceInternalAsync;
 
     @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
-    public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds, Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW, boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
+    public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
+                                  Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                  boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
+        return createPrimaryAreaInternal(moId, muId, number, areaTypeCode, policyTypesIds, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description).getId();
+    }
+
+    @Override
+    public Area createPrimaryAreaInternal(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
+                                          Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                          boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
 
         // 1
@@ -223,7 +232,7 @@ public class AreaServiceImpl implements AreaService {
         // 15
         historyHelper.sendHistory(null, area, Area.class);
 
-        return area.getId();
+        return area;
     }
 
     @Override
@@ -567,7 +576,14 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
-    public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput, List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
+    public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
+                                               List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
+        return setMedicalEmployeeOnAreaInternal(areaId, addEmployeesInput, changeEmployeesInput);
+    }
+
+    @Override
+    public List<Long> setMedicalEmployeeOnAreaInternal(long areaId, List<AddMedicalEmployee> addEmployeesInput,
+                                                       List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
 
         Validation validation = new Validation();
 
@@ -780,6 +796,11 @@ public class AreaServiceImpl implements AreaService {
 
     @Override  @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public List<Long> addAreaAddress(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
+        return addAreaAddressInternal(areaId, addressesRegistry, limitAddress);
+    }
+
+    @Override
+    public List<Long> addAreaAddressInternal(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
         Validation validation = new Validation();
 
         // 2 и 3

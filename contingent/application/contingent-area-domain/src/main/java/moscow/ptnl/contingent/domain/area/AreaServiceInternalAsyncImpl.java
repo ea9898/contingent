@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.security.RequestContext;
 import moscow.ptnl.contingent.security.UserContextHolder;
 import moscow.ptnl.contingent.sysop.SysopErrorReason;
@@ -62,6 +64,14 @@ public class AreaServiceInternalAsyncImpl implements AreaServiceInternalAsync {
     private AreaService areaServiceDomain;
 
     @Autowired
+    @Lazy
+    private EsuHelperService esuHelperService;
+
+    @Autowired
+    @Lazy
+    private SettingService settingService;
+
+    @Autowired
     private SysopMsgParamRepository sysopMsgParamRepository;
 
     // Асинхронная инициация процесса распределения жилых домов к территории обслуживания МО (К_УУ_27)
@@ -98,12 +108,16 @@ public class AreaServiceInternalAsyncImpl implements AreaServiceInternalAsync {
             //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
             Long areaId = transactionRunner.run(() -> {
                 UserContextHolder.setContext(requestContext);
-                Long id = areaServiceDomain.createPrimaryArea(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
+                Area area = areaServiceDomain.createPrimaryAreaInternal(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
                         ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
-                areaServiceDomain.setMedicalEmployeeOnArea(id, addMedicalEmployees, Collections.emptyList());
-                areaServiceDomain.addAreaAddress(id, addresses, false);
+                areaServiceDomain.setMedicalEmployeeOnAreaInternal(area.getId(), addMedicalEmployees, Collections.emptyList());
+                areaServiceDomain.addAreaAddressInternal(area.getId(), addresses, false);
 
-                return id;
+                if (Boolean.TRUE.equals(settingService.getPar4())) {
+                    esuHelperService.sendAreaInfoEvent(area, "initiateCreatePrimaryArea");
+                }
+
+                return area.getId();
             }).get();
             algorithms.sysOperationComplete(sysopId, true, areaId.toString());
         } catch (Throwable e) {
