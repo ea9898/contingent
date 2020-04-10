@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.area.transform.AddMedicalEmployeeMapper;
 import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapper;
 import moscow.ptnl.contingent.area.transform.ChangeMedicalEmployeeMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddressMapper;
+import moscow.ptnl.contingent.area.transform.UserContextMapper;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.OrderService;
@@ -166,6 +167,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
+
+    @Autowired
+    private UserContextMapper userContextMapper;
     
     @Override @EMIASSecured @Metrics
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
@@ -627,6 +631,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         if (!(ex instanceof ContingentException)) {
             LOG.error(ex.getMessage(), ex);
         }
-        return SoapExceptionMapper.map(ex);
+        return SoapExceptionMapper.map(ex, userContextMapper);
     }
 }

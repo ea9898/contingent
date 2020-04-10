@@ -2,7 +2,6 @@ package moscow.ptnl.contingent.security;
 
 import java.util.UUID;
 import moscow.ptnl.contingent.security.Principal;
-import ru.mos.emias.system.v1.usercontext.UserContext;
 
 /**
  * Инкапсулирует данные о запросе.
@@ -45,7 +44,7 @@ public class RequestContext {
         principal.setIpAddress(userContext.getHostIp());
         principal.setUserRoleId((userContext.getUserRoleId() != 0) ? userContext.getUserRoleId() : null);
         if (userContext.getUserRights() != null) {
-            principal.getAccessRights().addAll(userContext.getUserRights().getUserRightId());
+            principal.getAccessRights().addAll(userContext.getUserRights());
         }
         principal.setJobInfoId(userContext.getJobExecutionId()); //FIXME - это правильно?
         //TODO не понятно как заполнять

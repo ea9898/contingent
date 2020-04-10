@@ -1,10 +1,15 @@
-package moscow.ptnl.contingent.security;
+package moscow.ptnl.contingent.area.service.interceptor;
 
+import moscow.ptnl.contingent.area.transform.UserContextMapper;
+import moscow.ptnl.contingent.security.RequestContext;
+import moscow.ptnl.contingent.security.UserContextHolder;
+import moscow.ptnl.contingent.security.WebServiceConstants;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Element;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
@@ -18,6 +23,9 @@ import org.slf4j.LoggerFactory;
 public class UserContextInterceptor extends AbstractSoapInterceptor {
     
     private final static Logger LOG = LoggerFactory.getLogger(UserContextInterceptor.class);
+
+    @Autowired
+    private UserContextMapper userContextMapper;
 
     public UserContextInterceptor() {
         super(Phase.PRE_INVOKE);
@@ -60,6 +68,6 @@ public class UserContextInterceptor extends AbstractSoapInterceptor {
             throw new RuntimeException("Не определен action");
         }
         
-        UserContextHolder.setContext(new RequestContext(methodName, userContext));
+        UserContextHolder.setContext(new RequestContext(methodName, userContextMapper.dtoToEntityTransform(userContext)));
     }
 }

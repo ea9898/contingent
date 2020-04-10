@@ -2,7 +2,6 @@ package moscow.ptnl.contingent.security;
 
 import moscow.ptnl.contingent.security.Principal;
 import moscow.ptnl.contingent.security.RequestContext;
-import ru.mos.emias.system.v1.usercontext.UserContext;
 
 
 public class UserContextHolder {
