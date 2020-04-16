@@ -10,11 +10,13 @@ import moscow.ptnl.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import ru.mos.emias.esu.lib.producer.EsuProducer;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -50,6 +52,9 @@ public class EsuServiceImpl implements EsuService {
     @Autowired
     private AsyncEsuExecutor asyncEsuExecutor;
 
+    @Autowired
+    private TransactionRunService transactionRunner;
+
     private String host;
 
     @PostConstruct
@@ -70,22 +75,24 @@ public class EsuServiceImpl implements EsuService {
         LOG.debug("create message for topic: {}", topicName);
         
         try {
-            EsuOutput esuOutput = new EsuOutput();
-            esuOutput.setTopic(topicName);
-            esuOutput.setSentTime(LocalDateTime.now());
-            esuOutput.setStatus(EsuStatusType.INPROGRESS);
-            esuOutput.setMessage(" ");
-            esuOutput.setCreateDate(LocalDateTime.now());
-            esuOutput = esuOutputCRUDRepository.save(esuOutput);
-            
-            String message = ESUEventHelper.toESUMessage(event, esuOutput.getId());
-            LOG.debug(message);
-            esuOutput.setMessage(message);
-            esuOutput.setMethod(ESUEventHelper.resolveMethodName(event));
-            esuOutputRepository.updateMessage(esuOutput.getId(), message);
-            
-            //здесь нужна асинхронность, чтобы не блокировать базу             
-            asyncEsuExecutor.publishToESU(this, esuOutput.getId(), esuOutput.getTopic(), esuOutput.getMessage());
+            //Запускаем в отдельной транзакции
+            Pair<Long, String> result = transactionRunner.run(() -> {
+                EsuOutput esuOutput = new EsuOutput();
+                esuOutput.setTopic(topicName);
+                esuOutput.setSentTime(LocalDateTime.now());
+                esuOutput.setStatus(EsuStatusType.INPROGRESS);
+                esuOutput.setMessage(" ");
+                esuOutput.setCreateDate(LocalDateTime.now());
+                esuOutput = esuOutputCRUDRepository.save(esuOutput);
+
+                String message = ESUEventHelper.toESUMessage(event, esuOutput.getId());
+                LOG.debug(message);
+                esuOutputRepository.updateMessage(esuOutput.getId(), message, ESUEventHelper.resolveMethodName(event));
+
+                return Pair.of(esuOutput.getId(), message);
+            }).get();
+            //здесь нужна асинхронность, чтобы не блокировать базу
+            asyncEsuExecutor.publishToESU(this, result.getFirst(), topicName, result.getSecond());
             
             return true;
         } catch (Exception e) {

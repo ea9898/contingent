@@ -111,7 +111,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
     }
     
     @Override
-    public void updateMessage(Long id, String message) {
+    public void updateMessage(Long id, String message, String method) {
         if (id == null)
             throw new IllegalArgumentException("идентификатор записи не может быть null");
         
@@ -121,8 +121,9 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
         Root<EsuOutput> template = updateCriteria.from(EsuOutput.class);
         
         updateCriteria
-            .set(template.get(EsuOutput_.message), message)
-            .where(criteriaBuilder.equal(template.get(EsuOutput_.id), id));
+                .set(template.get(EsuOutput_.message), message)
+                .set(template.get(EsuOutput_.method), method)
+                .where(criteriaBuilder.equal(template.get(EsuOutput_.id), id));
         
         entityManager
             .createQuery(updateCriteria)
