@@ -1,8 +1,7 @@
 package moscow.ptnl.contingent.sysop.ws.security;
 
-import moscow.ptnl.contingent.domain.security.Principal;
 import ru.mos.emias.system.v1.usercontext.UserContext;
-
+import moscow.ptnl.contingent.security.Principal;
 
 public class UserContextHolder {
 

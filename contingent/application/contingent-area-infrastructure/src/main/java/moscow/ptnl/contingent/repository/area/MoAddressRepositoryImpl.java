@@ -1,7 +1,8 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.MoAddress;
-import moscow.ptnl.contingent.area.entity.area.MoAddress_;
+import moscow.ptnl.contingent.domain.area.entity.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.MoAddress_;
+import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 
 import javax.persistence.criteria.JoinType;
@@ -61,5 +64,25 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                     ));
         };
         return moAddressPagingAndSortingRepository.findAll(moAddressSpecification);
+    }
+
+    @Override
+    public Optional<MoAddress> findById(Long id) {
+        return moAddressPagingAndSortingRepository.findById(id);
+    }
+
+    @Override
+    public void delete(MoAddress moAddress) {
+        moAddressPagingAndSortingRepository.delete(moAddress);
+    }
+
+    @Override
+    public MoAddress save(MoAddress moAddress) {
+        return moAddressPagingAndSortingRepository.save(moAddress);
+    }
+
+    @Override
+    public List<MoAddress> saveAll(List<MoAddress> moAddress) {
+        return moAddressPagingAndSortingRepository.saveAll(moAddress);
     }
 }

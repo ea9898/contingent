@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.repository;
 import moscow.ptnl.contingent.sysop.entity.Sysop;
 import moscow.ptnl.contingent.sysop.entity.SysopMsg;
 import moscow.ptnl.contingent.sysop.entity.SysopMsg_;
-import moscow.ptnl.contingent.repository.BaseRepository;
+import moscow.ptnl.contingent.sysop.repository.SysopMsgRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
@@ -20,6 +20,16 @@ public class SysopMsgRepositoryImpl extends BaseRepository implements SysopMsgRe
 
     @Autowired
     SysopMsgCRUDRepository sysopMsgCRUDRepository;
+
+    @Override
+    public SysopMsg save(SysopMsg sysopMsg) {
+        return sysopMsgCRUDRepository.save(sysopMsg);
+    }
+
+    @Override
+    public SysopMsg getOne(Long sysopId) {
+        return sysopMsgCRUDRepository.getOne(sysopId);
+    }
 
     @Override
     public List<SysopMsg> getSysopMsgBySysop(Sysop sysop) {

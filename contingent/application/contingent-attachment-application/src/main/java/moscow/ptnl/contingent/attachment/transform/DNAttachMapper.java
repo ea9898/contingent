@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.attachment.transform;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.rmr.event.dn.DnAttach;
 

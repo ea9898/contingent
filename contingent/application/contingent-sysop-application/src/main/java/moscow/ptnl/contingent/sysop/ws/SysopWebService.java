@@ -1,11 +1,11 @@
 package moscow.ptnl.contingent.sysop.ws;
 
-import moscow.ptnl.contingent.repository.SysopMsgParamRepository;
-import moscow.ptnl.contingent.repository.SysopMsgRepository;
+import moscow.ptnl.contingent.sysop.repository.SysopMsgParamRepository;
+import moscow.ptnl.contingent.sysop.repository.SysopMsgRepository;
 import moscow.ptnl.contingent.sysop.entity.Sysop;
 import moscow.ptnl.contingent.sysop.entity.SysopMsg;
 import moscow.ptnl.contingent.sysop.entity.SysopMsgParam;
-import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
+import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.sysop.service.SysopService;
 import moscow.ptnl.contingent.sysop.transform.SoapExceptionMapper;

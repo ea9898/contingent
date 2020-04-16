@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
+import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesResponse;
@@ -7,13 +8,13 @@ import ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesResponse;
 import java.util.stream.Collectors;
 
 @Component
-public class GetMuAvailableAreaTypesResponseMapper implements Transform<GetMuAvailableAreaTypesResponse, moscow.ptnl.contingent.area.model.area.MuAreaTypesFull> {
+public class GetMuAvailableAreaTypesResponseMapper implements Transform<GetMuAvailableAreaTypesResponse, MuAreaTypesFull> {
 
     @Autowired
     private AreaTypeShortMapper areaTypeShortMapper;
 
     @Override
-    public GetMuAvailableAreaTypesResponse entityToDtoTransform(moscow.ptnl.contingent.area.model.area.MuAreaTypesFull entity) {
+    public GetMuAvailableAreaTypesResponse entityToDtoTransform(MuAreaTypesFull entity) {
         GetMuAvailableAreaTypesResponse response = new GetMuAvailableAreaTypesResponse();
 
         if (!entity.getUsedAreaTypes().isEmpty()) {
@@ -32,7 +33,7 @@ public class GetMuAvailableAreaTypesResponseMapper implements Transform<GetMuAva
     }
 
     @Override
-    public moscow.ptnl.contingent.area.model.area.MuAreaTypesFull dtoToEntityTransform(GetMuAvailableAreaTypesResponse dto) {
+    public MuAreaTypesFull dtoToEntityTransform(GetMuAvailableAreaTypesResponse dto) {
         return null;
     }
 }

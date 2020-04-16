@@ -5,11 +5,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import moscow.ptnl.contingent.area.transform.SoapExceptionMapper;
-import moscow.ptnl.contingent.domain.security.setting.AuthMethod;
-import moscow.ptnl.contingent.domain.security.setting.AuthService;
+import moscow.ptnl.contingent.area.transform.UserContextMapper;
+import moscow.ptnl.contingent.security.setting.AuthMethod;
+import moscow.ptnl.contingent.security.setting.AuthService;
 
 import moscow.ptnl.contingent.service.security.SecuritySettingService;
-import moscow.ptnl.ws.security.UserContextHolder;
+import moscow.ptnl.contingent.security.UserContextHolder;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,12 +36,15 @@ public class SecurityInterceptor {
     
     @Autowired
     private SecuritySettingService securitySettings;
+
+    @Autowired
+    private UserContextMapper userContextMapper;
     
     @Around(
         value = "execution(public * *(..)) && @annotation(annotation)",
         argNames="annotation"
     )
-    public Object secured(ProceedingJoinPoint joinPoint, moscow.ptnl.contingent.domain.security.annotation.EMIASSecured annotation) throws Throwable {
+    public Object secured(ProceedingJoinPoint joinPoint, moscow.ptnl.contingent.security.annotation.EMIASSecured annotation) throws Throwable {
 
         String serviceName = getServiceName(joinPoint.getTarget().getClass());
         String methodName = joinPoint.getSignature().getName();
@@ -54,10 +58,10 @@ public class SecurityInterceptor {
                 Map<String, AuthMethod> methodSetting = serviceSetting.getAuthMethods();
                 if (!methodSetting.containsKey(methodName)) {
                     LOG.warn("В настройках ограничений доступа для сервиса: {}, метод: {} не перечислен", serviceName, methodName);
-                    throw SoapExceptionMapper.map(new UnauthorizedException((methodSetting.get(methodName) != null) ? methodSetting.get(methodName).getAccessPermissions() : new long[]{0}));
+                    throw SoapExceptionMapper.map(new UnauthorizedException((methodSetting.get(methodName) != null) ? methodSetting.get(methodName).getAccessPermissions() : new long[]{0}), userContextMapper);
                 } else if (methodSetting.get(methodName).isEnabled()) { //включена проверка авторизации для метода
                     if (!hasAcessRights(methodSetting.get(methodName).getPermissions(), UserContextHolder.getPrincipal().getAccessRights())) {
-                        throw SoapExceptionMapper.map(new UnauthorizedException(methodSetting.get(methodName).getAccessPermissions()));
+                        throw SoapExceptionMapper.map(new UnauthorizedException(methodSetting.get(methodName).getAccessPermissions()), userContextMapper);
                     }
                 }
             }            

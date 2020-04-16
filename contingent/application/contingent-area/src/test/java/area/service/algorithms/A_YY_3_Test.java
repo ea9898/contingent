@@ -1,26 +1,16 @@
 package area.service.algorithms;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import moscow.ptnl.contingent.area.entity.area.Addresses;
-import moscow.ptnl.contingent.area.service.AlgorithmsHelper;
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
+import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
+import moscow.ptnl.contingent.domain.area.model.area.Area;
+import moscow.ptnl.contingent.domain.area.model.area.AreaOMKTE;
+import moscow.ptnl.contingent.domain.area.model.area.City;
+import moscow.ptnl.contingent.domain.area.model.area.Place;
+import moscow.ptnl.contingent.domain.area.model.area.Plan;
+import moscow.ptnl.contingent.domain.area.model.area.RegionOMKTE;
+import moscow.ptnl.contingent.domain.area.model.area.Street;
 import moscow.ptnl.contingent.error.Validation;
-import moscow.ptnl.contingent.nsi.domain.area.NsiAddressFormingElement;
-import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.area.model.area.AddressWrapper;
-import moscow.ptnl.contingent.area.model.area.NsiAddress;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import ru.mos.emias.contingent2.address.AddressRegistryBaseType;
-import ru.mos.emias.contingent2.address.Area;
-import ru.mos.emias.contingent2.address.AreaOMKTE;
-import ru.mos.emias.contingent2.address.City;
-import ru.mos.emias.contingent2.address.Place;
-import ru.mos.emias.contingent2.address.Plan;
-import ru.mos.emias.contingent2.address.RegionOMKTE;
-import ru.mos.emias.contingent2.address.Street;
-import ru.mos.emias.contingent2.core.Address;
 import service.BaseTest;
 
 import java.util.ArrayList;
@@ -47,13 +37,13 @@ public class A_YY_3_Test extends BaseTest {
         addresses2.setGlobalId(1000002L);
         addressesList.add(addresses2);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setGlobalIdNsi(1000000L);
         addressRegistryBaseTypes.add(addressRegistryBaseType1);
 
-        AddressRegistryBaseType addressRegistryBaseType2 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType2 = new AddressRegistry();
         addressRegistryBaseType2.setGlobalIdNsi(1000009L);
         addressRegistryBaseTypes.add(addressRegistryBaseType2);
 
@@ -88,9 +78,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses2.setAoLevel("3");
         addressesList.add(addresses2);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -136,9 +126,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setPlanCode("PLAN_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -184,9 +174,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setPlanCode("PLAN_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -237,9 +227,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setPlanCode("PLAN_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -293,9 +283,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setPlanCode("PLAN_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -354,9 +344,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setAreaCode("AREA_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -415,9 +405,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setAreaCode("AREA_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -481,9 +471,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setAreaCodeOmkTe("AREA_OMKTE_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -548,9 +538,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setAreaCodeOmkTe("AREA_OMKTE_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -616,9 +606,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setAreaCodeOmkTe("AREA_OMKTE_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -682,9 +672,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setAreaCodeOmkTe("AREA_OMKTE_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -752,9 +742,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setAreaCodeOmkTe("AREA_OMKTE_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -823,9 +813,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -895,9 +885,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -971,9 +961,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Plan plan = new Plan();
         plan.setCode("PLAN_CODE_1");
@@ -1044,9 +1034,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Place place = new Place();
         place.setCode("PLACECODE_CODE_1");
@@ -1114,9 +1104,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         City city = new City();
         city.setCode("CITY_CODE_1");
@@ -1181,9 +1171,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         Area area = new Area();
         area.setCode("AREA_CODE_1");
@@ -1241,9 +1231,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         AreaOMKTE areaOMKTE = new AreaOMKTE();
         areaOMKTE.setCode("AREA_OMKTE_CODE_1;AREA_OMKTE_CODE_2");
@@ -1292,9 +1282,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_1");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         AreaOMKTE areaOMKTE = new AreaOMKTE();
         areaOMKTE.setCode("AREA_OMKTE_CODE_1;AREA_OMKTE_CODE_2");
@@ -1343,9 +1333,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_5");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("8");
         AreaOMKTE areaOMKTE = new AreaOMKTE();
         areaOMKTE.setCode("AREA_OMKTE_CODE_1;AREA_OMKTE_CODE_2");
@@ -1403,9 +1393,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("7");
         Street street = new Street();
         street.setCode("STREET_CODE_1");
@@ -1478,9 +1468,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("65");
         Street street = new Street();
         street.setCode("STREET_CODE_122");
@@ -1553,9 +1543,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("6");
         Street street = new Street();
         street.setCode("STREET_CODE_122");
@@ -1628,9 +1618,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("4");
         Street street = new Street();
         street.setCode("STREET_CODE_122");
@@ -1704,9 +1694,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses3.setRegionTeCode("REGION_OMKTE_CODE_3");
         addressesList.add(addresses3);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("3");
         Street street = new Street();
         street.setCode("STREET_CODE_122");
@@ -1791,9 +1781,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses4.setRegionTeCode("REGION_OMKTE_CODE_2");
         addressesList.add(addresses4);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("25");
         Street street = new Street();
         street.setCode("STREET_CODE_122");
@@ -1877,9 +1867,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses4.setRegionTeCode("REGION_OMKTE_CODE_2");
         addressesList.add(addresses4);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("25");
         Street street = new Street();
         street.setCode("STREET_CODE_122");
@@ -1965,9 +1955,9 @@ public class A_YY_3_Test extends BaseTest {
         addresses4.setRegionTeCode("REGION_OMKTE_CODE_2");
         addressesList.add(addresses4);
 
-        List<AddressRegistryBaseType> addressRegistryBaseTypes = new ArrayList<>();
+        List<AddressRegistry> addressRegistryBaseTypes = new ArrayList<>();
 
-        AddressRegistryBaseType addressRegistryBaseType1 = new AddressRegistryBaseType();
+        AddressRegistry addressRegistryBaseType1 = new AddressRegistry();
         addressRegistryBaseType1.setAoLevel("2");
         Street street = new Street();
         street.setCode("STREET_CODE_122");

@@ -1,7 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
 import moscow.ptnl.contingent.nsi.domain.area.CodeName;
-import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.CodeNameType;
 
 public class CodeNameTypeMapper<T extends CodeNameType, V extends CodeName> {

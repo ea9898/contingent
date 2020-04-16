@@ -1,9 +1,9 @@
 package service.algorithms;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import service.BaseTest;
 
-import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent2.attachment.changearea.event.AreaRestriction;
@@ -80,8 +80,9 @@ public class A_YY_4_Test  extends BaseTest {
     public void topicMapCreateWithAreaRestrictionsTest() {
         List<Long> primaryAreaTypeCodesIds = Arrays.asList(areaPrimary1.getId());
 
-        AttachOnAreaChange result = algorithms.createTopicCreateCloseAttachAreaChange(primaryAreaTypeCodesIds,
-                null, areaDependent1);
+        AttachOnAreaChange result = attachOnAreaChangeMapper.entityToDtoTransform(
+                algorithms.createTopicCreateCloseAttachAreaChange(primaryAreaTypeCodesIds,
+                null, areaDependent1));
         assertNotNull(result.getOperationDate());
         topicCheckAreaMap(result.getDependendArea(), areaDependent1);
         assertEquals(result.getPrimaryAreaAdd(), primaryAreaTypeCodesIds);
@@ -92,8 +93,9 @@ public class A_YY_4_Test  extends BaseTest {
     public void topicMapCloseWithAreaTypeRestrictionsTest() {
         List<Long> primaryAreaTypeCodesIds = Arrays.asList(areaPrimary1.getId());
 
-        AttachOnAreaChange result = algorithms.createTopicCreateCloseAttachAreaChange(null,
-                primaryAreaTypeCodesIds, areaDependent2);
+        AttachOnAreaChange result = attachOnAreaChangeMapper.entityToDtoTransform(
+                algorithms.createTopicCreateCloseAttachAreaChange(null,
+                primaryAreaTypeCodesIds, areaDependent2));
         assertNotNull(result.getOperationDate());
         topicCheckAreaMap(result.getDependendArea(), areaDependent2);
         assertEquals(result.getPrimaryAreaDel(), primaryAreaTypeCodesIds);

@@ -1,9 +1,8 @@
 package moscow.ptnl.contingent.attachment.helpers;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
-import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package service.methods;
+package area.service.methods;
 
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.error.ContingentException;
@@ -17,6 +17,7 @@ import static org.mockito.Mockito.doReturn;
  */
 public class GetMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
 
+/*
     @Test
     public void getMoAvailableAreaTypesExistsTest() {
         doReturn(Arrays.asList(moAvailableAreaType1, moAvailableAreaType2))
@@ -38,4 +39,5 @@ public class GetMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
             fail();
         }
     }
+*/
 }

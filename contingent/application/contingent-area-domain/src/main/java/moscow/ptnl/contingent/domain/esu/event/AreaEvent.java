@@ -3,8 +3,8 @@ package moscow.ptnl.contingent.domain.esu.event;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 
 public abstract class AreaEvent implements ESUEvent {
 

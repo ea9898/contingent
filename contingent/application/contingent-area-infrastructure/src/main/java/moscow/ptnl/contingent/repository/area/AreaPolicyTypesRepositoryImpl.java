@@ -1,6 +1,9 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+
+import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes_;
+import moscow.ptnl.contingent.domain.area.repository.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -12,8 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.Root;
 import java.util.List;
-import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes;
-import moscow.ptnl.contingent.area.entity.area.AreaPolicyTypes_;
+import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 
 @Repository
@@ -53,5 +55,15 @@ public class AreaPolicyTypesRepositoryImpl extends BaseRepository implements Are
                                 root.get(AreaPolicyTypes_.policyType).in(areaPolicyTypesDel))
         );
          entityManager.createQuery(criteria).executeUpdate();
+    }
+
+    @Override
+    public List<AreaPolicyTypes> saveAll(List<AreaPolicyTypes> areaPolicyTypes) {
+        return areaPolicyTypesCRUDRepository.saveAll(areaPolicyTypes);
+    }
+
+    @Override
+    public AreaPolicyTypes save(AreaPolicyTypes areaPolicyTypes) {
+        return areaPolicyTypesCRUDRepository.save(areaPolicyTypes);
     }
 }

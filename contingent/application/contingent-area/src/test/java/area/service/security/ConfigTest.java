@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl;
-import moscow.ptnl.contingent.domain.security.annotation.EMIASSecured;
-import moscow.ptnl.contingent.domain.security.setting.AuthMethod;
-import moscow.ptnl.contingent.domain.security.setting.AuthService;
+import moscow.ptnl.contingent.security.annotation.EMIASSecured;
+import moscow.ptnl.contingent.security.setting.AuthMethod;
+import moscow.ptnl.contingent.security.setting.AuthService;
 import moscow.ptnl.contingent.service.security.SecuritySettingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Disabled;
 
 /**
  *

@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
+
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;

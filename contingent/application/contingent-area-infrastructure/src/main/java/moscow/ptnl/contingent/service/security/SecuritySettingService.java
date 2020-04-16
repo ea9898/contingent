@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
-import moscow.ptnl.contingent.domain.security.setting.AuthService;
+import moscow.ptnl.contingent.security.setting.AuthService;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

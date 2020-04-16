@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.transform;
 
-import moscow.ptnl.contingent.area.entity.area.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.Area;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.model.area.AreaInfo> {
+public class AreaMapper implements Transform<Area, AreaInfo> {
 
     @Autowired
     private AreaTypeShortMapper areaTypeShortMapper;
@@ -23,10 +24,10 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
     private AreaMedicalEmployeeMapper areaMedicalEmployeeMapper;
 
     @Override
-    public Area entityToDtoTransform(moscow.ptnl.contingent.area.model.area.AreaInfo entityObject) {
+    public Area entityToDtoTransform(AreaInfo entityObject) {
         Area area = new Area();
 
-        moscow.ptnl.contingent.area.entity.area.Area areaObj = entityObject.getArea();
+        moscow.ptnl.contingent.domain.area.entity.Area areaObj = entityObject.getArea();
         area.setId(areaObj.getId());
         area.setMoId(areaObj.getMoId());
         area.setMuId(areaObj.getMuId());
@@ -86,7 +87,7 @@ public class AreaMapper implements Transform<Area, moscow.ptnl.contingent.area.m
     }
 
     @Override
-    public moscow.ptnl.contingent.area.model.area.AreaInfo dtoToEntityTransform(Area dtoObject) {
+    public AreaInfo dtoToEntityTransform(Area dtoObject) {
         return null;
     }
 }

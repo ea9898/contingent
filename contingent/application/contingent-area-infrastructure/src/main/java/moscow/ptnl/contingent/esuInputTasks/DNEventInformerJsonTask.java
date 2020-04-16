@@ -1,10 +1,10 @@
 package moscow.ptnl.contingent.esuInputTasks;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
 import moscow.ptnl.contingent.domain.esu.event.input.DnEventInformer;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.rmr.event.dn.DnAttach;
 import org.springframework.beans.factory.annotation.Autowired;

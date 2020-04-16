@@ -1,7 +1,8 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders;
-import moscow.ptnl.contingent.area.entity.area.AddressAllocationOrders_;
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders_;
+import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
@@ -62,5 +64,20 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
                                         criteriaBuilder.lower(root.get(AddressAllocationOrders_.name.getName())), "%" + name.toLowerCase() + "%"),
                         criteriaBuilder.equal(root.get(AddressAllocationOrders_.archived.getName()), false)
                 ), paging);
+    }
+
+    @Override
+    public AddressAllocationOrders save(AddressAllocationOrders addressAllocationOrders) {
+        return addressAllocationOrderPagingAndSortingRepository.save(addressAllocationOrders);
+    }
+
+    @Override
+    public void delete(AddressAllocationOrders addressAllocationOrders) {
+        addressAllocationOrderPagingAndSortingRepository.delete(addressAllocationOrders);
+    }
+
+    @Override
+    public Optional<AddressAllocationOrders> findById(Long id) {
+        return addressAllocationOrderPagingAndSortingRepository.findById(id);
     }
 }

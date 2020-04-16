@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.area.service.interceptor;
 
+import moscow.ptnl.contingent.domain.area.EsuHelperService;
+import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import java.lang.reflect.Method;
@@ -9,12 +11,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.service.AreaServiceHelper;
-import moscow.ptnl.contingent.area.service.EsuHelperService;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -38,7 +38,7 @@ public class LogESUInterceptor {
     private final static Logger LOG = LoggerFactory.getLogger(LogESUInterceptor.class);
     
     @Autowired
-    private AreaServiceHelper areaHelper;
+    private AreaHelper areaHelper;
     
     @Autowired
     private EsuHelperService esuHelperService;

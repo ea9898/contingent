@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.esuInputTasks;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyTypeEnum;
 import moscow.ptnl.contingent2.attachment.changeprimarea.event.AttachPrimaryPatientEvent;

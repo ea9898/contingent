@@ -1,17 +1,14 @@
 package area.service.methods;
 
-import moscow.ptnl.contingent.area.entity.area.MoAvailableAreaTypes;
-import moscow.ptnl.contingent.area.entity.area.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.error.ContingentException;
-import moscow.ptnl.contingent.area.model.area.AreaTypeStateType;
-import moscow.ptnl.contingent.area.model.area.MuAreaTypesFull;
+import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 
 /**
@@ -27,6 +24,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
+    @Disabled
     public void test_find_all_types() {
 
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
@@ -34,7 +32,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
 
         MuAreaTypesFull muAreaTypesFull = null;
         try {
-            muAreaTypesFull = areaServiceInternal.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.ALL);
+            muAreaTypesFull = moMuService.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.ALL);
         } catch (ContingentException e) {
             Assertions.fail("В этом методе ошибок не предусмотрено");
         }
@@ -46,6 +44,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
+    @Disabled
     public void test_find_available_types() {
 
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
@@ -53,7 +52,7 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
 
         MuAreaTypesFull muAreaTypesFull = null;
         try {
-            muAreaTypesFull = areaServiceInternal.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.AVAILABLE_TO_ADD);
+            muAreaTypesFull = moMuService.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.AVAILABLE_TO_ADD);
         } catch (ContingentException e) {
             Assertions.fail("В этом методе ошибок не предусмотрено");
         }
@@ -67,13 +66,14 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
+    @Disabled
     public void test_find_used_types() {
 
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
 
         MuAreaTypesFull muAreaTypesFull = null;
         try {
-            muAreaTypesFull = areaServiceInternal.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.USED_IN_MU);
+            muAreaTypesFull = moMuService.getMuAvailableAreaTypes(moId, muId, AreaTypeStateType.USED_IN_MU);
         } catch (ContingentException e) {
             Assertions.fail("В этом методе ошибок не предусмотрено");
         }

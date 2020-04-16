@@ -16,7 +16,7 @@ import ru.mos.emias.system.v1.faults.SecurityFault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import moscow.ptnl.ws.security.UserContextHolder;
+import moscow.ptnl.contingent.security.UserContextHolder;
 import ru.mos.emias.errors.domain.ErrorMessageType;
 import ru.mos.emias.errors.domain.Message;
 import ru.mos.emias.errors.domain.OtherSecurityException;
@@ -27,7 +27,7 @@ import ru.mos.emias.system.v1.faults.UnauthorizedRequestSecurityException;
 
 public class SoapExceptionMapper {
 
-    public static Fault map(Exception e) {
+    public static Fault map(Exception e, UserContextMapper userContextMapper) {
         if (e instanceof ContingentException) {
             BusinessFault fault = new BusinessFault();
             fault.setType(fault.getType());
@@ -45,7 +45,7 @@ public class SoapExceptionMapper {
             
             SecurityFault fault = new SecurityFault();
             fault.setType(FaultTypes.SECURITY);
-            fault.setUserContext(UserContextHolder.getUserContext());
+            fault.setUserContext(userContextMapper.entityToDtoTransform(UserContextHolder.getUserContext()));
             fault.setUnauthorizedRequestSecurityException(urse);
                         
             return new Fault(e.getMessage(), fault);
@@ -59,7 +59,7 @@ public class SoapExceptionMapper {
             
             SecurityFault fault = new SecurityFault();
             fault.setType(FaultTypes.SECURITY);
-            fault.setUserContext(UserContextHolder.getUserContext());
+            fault.setUserContext(userContextMapper.entityToDtoTransform(UserContextHolder.getUserContext()));
             fault.setOtherSecurityException(ose);
             
             return new Fault(e.getMessage(), fault);

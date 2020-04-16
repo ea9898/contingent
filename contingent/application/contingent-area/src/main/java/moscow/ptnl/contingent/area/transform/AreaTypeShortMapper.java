@@ -5,7 +5,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.AreaTypeShort;
 
 @Mapper(componentModel="spring")

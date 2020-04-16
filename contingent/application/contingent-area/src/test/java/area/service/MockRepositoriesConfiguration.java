@@ -1,40 +1,42 @@
 package area.service;
 
-import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopMsgCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopMsgParamCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AddressAllocationOrderCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AddressAllocationOrderRepository;
+import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.repository.area.AddressesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AddressesRepository;
+import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
 import moscow.ptnl.contingent.repository.area.AreaAddressPagingAndSortingRepository;
-import moscow.ptnl.contingent.repository.area.AreaAddressRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeRepository;
-import moscow.ptnl.contingent.repository.area.AreaRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.repository.area.AreaToAreaTypeCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaToAreaTypeRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.repository.area.MoAddressCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MoAddressRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MoAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAddlAreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementRepository;
+import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.repository.area.AreaPolicyTypesCRUDRepository;
-import moscow.ptnl.contingent.repository.area.AreaPolicyTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaPolicyTypesRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeMedicalPositionsRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryRepository;
-import moscow.ptnl.contingent.nsi.repository.PolicyTypeRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionCodeRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionNomRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.PositionNomRepository;
 
+import moscow.ptnl.contingent.sysop.repository.SysopRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 
@@ -132,6 +134,9 @@ public class MockRepositoriesConfiguration {
     public MuAddlAreaTypesRepository muAddlAreaTypesRepository;
 
     @MockBean
+    public AreaTypesRepository areaTypesRepository;
+
+    @MockBean
     private PositionCodeRepository positionCodeRepository;
 
     @MockBean
@@ -142,6 +147,9 @@ public class MockRepositoriesConfiguration {
 
     @MockBean
     private SysopMsgCRUDRepository sysopMsgCRUDRepository;
+
+    @MockBean
+    private SysopRepository sysopRepository;
 
     @MockBean
     private SysopMsgParamCRUDRepository sysopMsgParamCRUDRepository;

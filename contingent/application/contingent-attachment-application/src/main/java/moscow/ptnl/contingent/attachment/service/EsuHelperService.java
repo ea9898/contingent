@@ -1,18 +1,13 @@
 package moscow.ptnl.contingent.attachment.service;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
 import moscow.ptnl.contingent.domain.esu.ESUEventHelper;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
-import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
-import moscow.ptnl.contingent2.attachment.changearea.event.AttachOnAreaChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
 

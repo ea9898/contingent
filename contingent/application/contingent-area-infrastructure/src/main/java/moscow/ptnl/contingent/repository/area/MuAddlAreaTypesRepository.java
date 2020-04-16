@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.MuAddlAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.MuAddlAreaTypes;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;

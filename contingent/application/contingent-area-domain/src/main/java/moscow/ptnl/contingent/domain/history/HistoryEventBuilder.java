@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.domain.history;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import moscow.ptnl.contingent.domain.security.Principal;
+import moscow.ptnl.contingent.security.Principal;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 

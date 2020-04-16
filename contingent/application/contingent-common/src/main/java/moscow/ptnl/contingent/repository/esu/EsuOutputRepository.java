@@ -44,5 +44,5 @@ public interface EsuOutputRepository {
      * @param id
      * @param message 
      */
-    void updateMessage(Long id, String message);
+    void updateMessage(Long id, String message, String method);
 }

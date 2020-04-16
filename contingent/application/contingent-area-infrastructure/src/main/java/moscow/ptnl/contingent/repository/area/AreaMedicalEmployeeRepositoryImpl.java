@@ -1,8 +1,9 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.area.entity.area.Area;
-import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees;
-import moscow.ptnl.contingent.area.entity.area.AreaMedicalEmployees_;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees_;
+import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -108,5 +109,20 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
         );
         return entityManager.createQuery(criteria).getResultList().
                 stream().map(AreaMedicalEmployees::getArea).distinct().collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AreaMedicalEmployees> findAllById(List<Long> ids) {
+        return areaMedicalEmployeeCRUDRepository.findAllById(ids);
+    }
+
+    @Override
+    public List<AreaMedicalEmployees> saveAll(List<AreaMedicalEmployees> areaMedicalEmployees) {
+        return areaMedicalEmployeeCRUDRepository.saveAll(areaMedicalEmployees);
+    }
+
+    @Override
+    public void delete(AreaMedicalEmployees areaMedicalEmployees) {
+        areaMedicalEmployeeCRUDRepository.delete(areaMedicalEmployees);
     }
 }

@@ -5,13 +5,13 @@ import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.MoAddress;
 
 @Component
-public class MoAddressMapper implements Transform<MoAddress, moscow.ptnl.contingent.area.entity.area.MoAddress> {
+public class MoAddressMapper implements Transform<MoAddress, moscow.ptnl.contingent.domain.area.entity.MoAddress> {
 
     @Autowired
-    private AddressMapper addressMapper;
+    private AddressBaseTypeMapper addressBaseTypeMapper;
 
     @Override
-    public MoAddress entityToDtoTransform(moscow.ptnl.contingent.area.entity.area.MoAddress entityObject) {
+    public MoAddress entityToDtoTransform(moscow.ptnl.contingent.domain.area.entity.MoAddress entityObject) {
         MoAddress address = new MoAddress();
         address.setMoAddressId(entityObject.getId());
 
@@ -22,13 +22,13 @@ public class MoAddressMapper implements Transform<MoAddress, moscow.ptnl.conting
             address.setOrderId(entityObject.getAddressAllocationOrder().getId());
         }
         if (entityObject.getAddress() != null) {
-            address.setAddress(addressMapper.entityToDtoTransform(entityObject.getAddress()));
+            address.setAddress(addressBaseTypeMapper.entityToDtoTransform(entityObject.getAddress()));
         }
         return address;
     }
 
     @Override
-    public moscow.ptnl.contingent.area.entity.area.MoAddress dtoToEntityTransform(MoAddress dtoObject) {
+    public moscow.ptnl.contingent.domain.area.entity.MoAddress dtoToEntityTransform(MoAddress dtoObject) {
         return null;
     }
 }
