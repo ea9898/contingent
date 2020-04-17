@@ -64,6 +64,8 @@ import ru.mos.emias.contingent2.area.types.GetAreaAddressRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdResponse;
+import ru.mos.emias.contingent2.area.types.GetAreaListBriefRequest;
+import ru.mos.emias.contingent2.area.types.GetAreaListBriefResponse;
 import ru.mos.emias.contingent2.area.types.GetMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.GetMoAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesRequest;
@@ -404,7 +406,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @Metrics
     public SearchMuByAreaAddressResponse searchMuByAreaAddress(SearchMuByAreaAddressRequest body) throws Fault {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -511,6 +513,11 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         catch (Exception ex) {
             throw mapException(ex);
         }
+    }
+
+    @Override @EMIASSecured @Metrics
+    public GetAreaListBriefResponse getAreaListBrief(GetAreaListBriefRequest body) throws Fault {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override @Metrics

@@ -184,6 +184,31 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="AreaBrief">
+        <xs:sequence>
+            <xs:element name="id" type="ID" />
+            <xs:element name="moId" type="ID" />
+            <xs:element name="muId" type="ID" minOccurs="0" />
+            <xs:element name="number" type="restr:int5digits" minOccurs="0" />
+            <xs:element name="areaType" type="tns:AreaTypeShort" />
+            <xs:element name="archive" type="xs:boolean" />
+            <xs:element name="medicalEmployees" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="medicalEmployee" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="medicalEmployeeJobInfoId" type="xs:long" />
+                                    <xs:element name="isReplacement" type="xs:boolean" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="AddMedicalEmployees">
         <xs:annotation>
             <xs:documentation>Сведения медработников для добавления на участок</xs:documentation>

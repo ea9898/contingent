@@ -779,4 +779,32 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="getAreaListBriefRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areas">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="id" type="core:ID" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaListBriefResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="area" type="core:AreaBrief" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
