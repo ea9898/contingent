@@ -259,6 +259,14 @@
         <wsdl:part name="body" element="ns1:searchDnAreaResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="searchMuByAreaAddressInput">
+        <wsdl:part name="body" element="ns1:searchMuByAreaAddressRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="searchMuByAreaAddressOutput">
+        <wsdl:part name="body" element="ns1:searchMuByAreaAddressResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
             <wsdl:documentation>
@@ -490,6 +498,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:searchDnAreaInput"/>
             <wsdl:output message="tns:searchDnAreaOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="searchMuByAreaAddress">
+            <wsdl:documentation>
+                Поиск МУ по адресу обслуживания (К_УУ_30)
+            </wsdl:documentation>
+            <wsdl:input message="tns:searchMuByAreaAddressInput"/>
+            <wsdl:output message="tns:searchMuByAreaAddressOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -891,6 +907,20 @@
 
         <wsdl:operation name="searchDnArea">
             <soap:operation soapAction="searchDnArea"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="searchMuByAreaAddress">
+            <soap:operation soapAction="searchMuByAreaAddress"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

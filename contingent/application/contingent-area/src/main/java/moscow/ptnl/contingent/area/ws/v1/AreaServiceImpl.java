@@ -82,6 +82,8 @@ import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.area.types.SearchAreaResponse;
 import ru.mos.emias.contingent2.area.types.SearchDnAreaRequest;
 import ru.mos.emias.contingent2.area.types.SearchDnAreaResponse;
+import ru.mos.emias.contingent2.area.types.SearchMuByAreaAddressRequest;
+import ru.mos.emias.contingent2.area.types.SearchMuByAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.SearchOrderRequest;
 import ru.mos.emias.contingent2.area.types.SearchOrderResponse;
 import ru.mos.emias.contingent2.area.types.SetMedicalEmployeeOnAreaRequest;
@@ -400,6 +402,11 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         catch (Exception ex) {
             throw mapException(ex);
         }
+    }
+
+    @Override
+    public SearchMuByAreaAddressResponse searchMuByAreaAddress(SearchMuByAreaAddressRequest body) throws Fault {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override @EMIASSecured @Metrics
