@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="areaService" targetNamespace="http://emias.mos.ru/contingent2/area/v1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:uctx="http://emias.mos.ru/system/v1/userContext/" xmlns:tns="http://emias.mos.ru/contingent2/area/v1/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:nsf="http://emias.mos.ru/system/v1/faults/" xmlns:ns1="http://emias.mos.ru/contingent2/area/v1/types/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/">
+  <wsdl:types>
+    <xs:schema>
+      <xs:import namespace="http://emias.mos.ru/system/v1/userContext/" schemaLocation="emias.system.v1.userContext.xsd"/>
+      <xs:import namespace="http://emias.mos.ru/system/v1/faults/" schemaLocation="emias.system.v1.faults.xsd"/>
+      <xs:import namespace="http://emias.mos.ru/contingent2/area/v1/types/" schemaLocation="emias.contingent2.area.v1.types.xsd"/>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="addMuAvailableAreaTypesInput">
+    <wsdl:part element="ns1:addMuAvailableAreaTypesRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getMuAvailableAreaTypesOutput">
+    <wsdl:part element="ns1:getMuAvailableAreaTypesResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="delMoAddressOutput">
+    <wsdl:part element="ns1:delMoAddressResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="createPrimaryAreaInput">
+    <wsdl:part element="ns1:createPrimaryAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="delMuAvailableAreaTypesOutput">
+    <wsdl:part element="ns1:delMuAvailableAreaTypesResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="delAreaAddressInput">
+    <wsdl:part element="ns1:delAreaAddressRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="archiveAreaInput">
+    <wsdl:part element="ns1:archiveAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="initiateAddAreaAddressInput">
+    <wsdl:part element="ns1:initiateAddAreaAddressRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="createDependentAreaInput">
+    <wsdl:part element="ns1:createDependentAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="initiateCreatePrimaryAreaInput">
+    <wsdl:part element="ns1:initiateCreatePrimaryAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="fault">
+    <wsdl:documentation>Ошибка</wsdl:documentation>
+    <wsdl:part element="nsf:fault" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getMoAvailableAreaTypesInput">
+    <wsdl:part element="ns1:getMoAvailableAreaTypesRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getMoAddressOutput">
+    <wsdl:part element="ns1:getMoAddressResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="userContext">
+    <wsdl:documentation>Контекст пользователя</wsdl:documentation>
+    <wsdl:part element="uctx:userContext" name="userContext"/>
+  </wsdl:message>
+  <wsdl:message name="createOrderOutput">
+    <wsdl:part element="ns1:createOrderResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="updatePrimaryAreaInput">
+    <wsdl:part element="ns1:updatePrimaryAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="restoreAreaInput">
+    <wsdl:part element="ns1:restoreAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="createPrimaryAreaOutput">
+    <wsdl:part element="ns1:createPrimaryAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="delAreaAddressOutput">
+    <wsdl:part element="ns1:delAreaAddressResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getAreaByIdOutput">
+    <wsdl:part element="ns1:getAreaByIdResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getAreaListBriefInput">
+    <wsdl:part element="ns1:getAreaListBriefRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="searchOrderOutput">
+    <wsdl:part element="ns1:searchOrderResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getMoAddressInput">
+    <wsdl:part element="ns1:getMoAddressRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="delMuAvailableAreaTypesInput">
+    <wsdl:part element="ns1:delMuAvailableAreaTypesRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="searchDnAreaOutput">
+    <wsdl:part element="ns1:searchDnAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="updatePrimaryAreaOutput">
+    <wsdl:part element="ns1:updatePrimaryAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="addMoAvailableAreaTypesInput">
+    <wsdl:part element="ns1:addMoAvailableAreaTypesRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="addAreaAddressInput">
+    <wsdl:part element="ns1:addAreaAddressRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="setMedicalEmployeeOnAreaOutput">
+    <wsdl:part element="ns1:setMedicalEmployeeOnAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getNewAreaIdOutput">
+    <wsdl:part element="ns1:getNewAreaIdResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="initiateCreatePrimaryAreaOutput">
+    <wsdl:part element="ns1:initiateCreatePrimaryAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="delMoAddressInput">
+    <wsdl:part element="ns1:delMoAddressRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="addMuAvailableAreaTypesOutput">
+    <wsdl:part element="ns1:addMuAvailableAreaTypesResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="addMoAddressOutput">
+    <wsdl:part element="ns1:addMoAddressResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="addAreaAddressOutput">
+    <wsdl:part element="ns1:addAreaAddressResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="searchDnAreaInput">
+    <wsdl:part element="ns1:searchDnAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="setMedicalEmployeeOnAreaInput">
+    <wsdl:part element="ns1:setMedicalEmployeeOnAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getMuAvailableAreaTypesInput">
+    <wsdl:part element="ns1:getMuAvailableAreaTypesRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="searchAreaInput">
+    <wsdl:part element="ns1:searchAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="initiateAddAreaAddressOutput">
+    <wsdl:part element="ns1:initiateAddAreaAddressResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getAreaListBriefOutput">
+    <wsdl:part element="ns1:getAreaListBriefResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="searchOrderInput">
+    <wsdl:part element="ns1:searchOrderRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getMoAvailableAreaTypesOutput">
+    <wsdl:part element="ns1:getMoAvailableAreaTypesResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="addMoAddressInput">
+    <wsdl:part element="ns1:addMoAddressRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getNewAreaIdInput">
+    <wsdl:part element="ns1:getNewAreaIdRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="addMoAvailableAreaTypesOutput">
+    <wsdl:part element="ns1:addMoAvailableAreaTypesResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="createDependentAreaOutput">
+    <wsdl:part element="ns1:createDependentAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="updateOrderInput">
+    <wsdl:part element="ns1:updateOrderRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="updateOrderOutput">
+    <wsdl:part element="ns1:updateOrderResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="updateDependentAreaOutput">
+    <wsdl:part element="ns1:updateDependentAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="archiveAreaOutput">
+    <wsdl:part element="ns1:archiveAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getAreaAddressInput">
+    <wsdl:part element="ns1:getAreaAddressRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="delMoAvailableAreaTypesOutput">
+    <wsdl:part element="ns1:delMoAvailableAreaTypesResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="createOrderInput">
+    <wsdl:part element="ns1:createOrderRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="restoreAreaOutput">
+    <wsdl:part element="ns1:restoreAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="delMoAvailableAreaTypesInput">
+    <wsdl:part element="ns1:delMoAvailableAreaTypesRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="searchMuByAreaAddressOutput">
+    <wsdl:part element="ns1:searchMuByAreaAddressResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getAreaByIdInput">
+    <wsdl:part element="ns1:getAreaByIdRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="getAreaAddressOutput">
+    <wsdl:part element="ns1:getAreaAddressResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="searchAreaOutput">
+    <wsdl:part element="ns1:searchAreaResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="searchMuByAreaAddressInput">
+    <wsdl:part element="ns1:searchMuByAreaAddressRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="initiateAddMoAddressOutput">
+    <wsdl:part element="ns1:initiateAddMoAddressResponse" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="initiateAddMoAddressInput">
+    <wsdl:part element="ns1:initiateAddMoAddressRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:message name="updateDependentAreaInput">
+    <wsdl:part element="ns1:updateDependentAreaRequest" name="body"/>
+  </wsdl:message>
+  <wsdl:portType name="AreaPT">
+    <wsdl:operation name="createPrimaryArea">
+      <wsdl:documentation>Создание участка первичного типа (К_УУ_3)</wsdl:documentation>
+      <wsdl:input message="tns:createPrimaryAreaInput"/>
+      <wsdl:output message="tns:createPrimaryAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="createDependentArea">
+      <wsdl:documentation>Создание участка зависимого типа (К_УУ_4)</wsdl:documentation>
+      <wsdl:input message="tns:createDependentAreaInput"/>
+      <wsdl:output message="tns:createDependentAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="updatePrimaryArea">
+      <wsdl:documentation>Изменение участка первичного типа (К_УУ_5)</wsdl:documentation>
+      <wsdl:input message="tns:updatePrimaryAreaInput"/>
+      <wsdl:output message="tns:updatePrimaryAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="updateDependentArea">
+      <wsdl:documentation>Изменение участка зависимого типа (К_УУ_6)</wsdl:documentation>
+      <wsdl:input message="tns:updateDependentAreaInput"/>
+      <wsdl:output message="tns:updateDependentAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="createOrder">
+      <wsdl:documentation>Создание распоряжения (К_УУ_15)</wsdl:documentation>
+      <wsdl:input message="tns:createOrderInput"/>
+      <wsdl:output message="tns:createOrderOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="updateOrder">
+      <wsdl:documentation>Изменение распоряжения (К_УУ_16)</wsdl:documentation>
+      <wsdl:input message="tns:updateOrderInput"/>
+      <wsdl:output message="tns:updateOrderOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="searchOrder">
+      <wsdl:documentation>Поиск распоряжений (К_УУ_17)</wsdl:documentation>
+      <wsdl:input message="tns:searchOrderInput"/>
+      <wsdl:output message="tns:searchOrderOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getAreaById">
+      <wsdl:documentation>Получение подробной информации об участке (К_УУ_11)</wsdl:documentation>
+      <wsdl:input message="tns:getAreaByIdInput"/>
+      <wsdl:output message="tns:getAreaByIdOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="setMedicalEmployeeOnArea">
+      <wsdl:documentation>Изменение медицинских работников на участке обслуживания (К_УУ_8)</wsdl:documentation>
+      <wsdl:input message="tns:setMedicalEmployeeOnAreaInput"/>
+      <wsdl:output message="tns:setMedicalEmployeeOnAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="restoreArea">
+      <wsdl:documentation>Восстановление из архива участка обслуживания (К_УУ_14)</wsdl:documentation>
+      <wsdl:input message="tns:restoreAreaInput"/>
+      <wsdl:output message="tns:restoreAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getNewAreaId">
+      <wsdl:documentation>Предоставления значения сиквенса для ИД участка</wsdl:documentation>
+      <wsdl:input message="tns:getNewAreaIdInput"/>
+      <wsdl:output message="tns:getNewAreaIdOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="addMoAddress">
+      <wsdl:documentation>Распределение жилых домов к территории обслуживания МО (К_УУ_18)</wsdl:documentation>
+      <wsdl:input message="tns:addMoAddressInput"/>
+      <wsdl:output message="tns:addMoAddressOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="addAreaAddress">
+      <wsdl:documentation>Добавление адресов на участок обслуживания (К_УУ_10)</wsdl:documentation>
+      <wsdl:input message="tns:addAreaAddressInput"/>
+      <wsdl:output message="tns:addAreaAddressOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getMoAddress">
+      <wsdl:documentation>Получение списка территорий обслуживания МО (К_УУ_20)</wsdl:documentation>
+      <wsdl:input message="tns:getMoAddressInput"/>
+      <wsdl:output message="tns:getMoAddressOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="delMoAddress">
+      <wsdl:documentation>Отмена распределения жилых домов к территории обслуживания МО (К_УУ_19)</wsdl:documentation>
+      <wsdl:input message="tns:delMoAddressInput"/>
+      <wsdl:output message="tns:delMoAddressOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="archiveArea">
+      <wsdl:documentation>Архивирование участка обслуживания (К_УУ_13)</wsdl:documentation>
+      <wsdl:input message="tns:archiveAreaInput"/>
+      <wsdl:output message="tns:archiveAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="delAreaAddress">
+      <wsdl:documentation>Удаление адресов из участка обслуживания (К_УУ_11)</wsdl:documentation>
+      <wsdl:input message="tns:delAreaAddressInput"/>
+      <wsdl:output message="tns:delAreaAddressOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getAreaAddress">
+      <wsdl:documentation>(К_УУ_12)	Получение списка адресов участка обслуживания</wsdl:documentation>
+      <wsdl:input message="tns:getAreaAddressInput"/>
+      <wsdl:output message="tns:getAreaAddressOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="addMoAvailableAreaTypes">
+      <wsdl:documentation>Добавление типов участков, доступных для МО (К_УУ_1)</wsdl:documentation>
+      <wsdl:input message="tns:addMoAvailableAreaTypesInput"/>
+      <wsdl:output message="tns:addMoAvailableAreaTypesOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getMoAvailableAreaTypes">
+      <wsdl:documentation>Предоставление типов участков, доступных для МО (К_УУ_3)</wsdl:documentation>
+      <wsdl:input message="tns:getMoAvailableAreaTypesInput"/>
+      <wsdl:output message="tns:getMoAvailableAreaTypesOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="delMoAvailableAreaTypes">
+      <wsdl:documentation>Удаление типов участка из доступных для МО (К_УУ_2)</wsdl:documentation>
+      <wsdl:input message="tns:delMoAvailableAreaTypesInput"/>
+      <wsdl:output message="tns:delMoAvailableAreaTypesOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="addMuAvailableAreaTypes">
+      <wsdl:documentation>Добавление типов участков, доступных для МУ (К_УУ_4)</wsdl:documentation>
+      <wsdl:input message="tns:addMuAvailableAreaTypesInput"/>
+      <wsdl:output message="tns:addMuAvailableAreaTypesOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="delMuAvailableAreaTypes">
+      <wsdl:documentation>Удаление типов участков из доступных для МУ (К_УУ_5)</wsdl:documentation>
+      <wsdl:input message="tns:delMuAvailableAreaTypesInput"/>
+      <wsdl:output message="tns:delMuAvailableAreaTypesOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getMuAvailableAreaTypes">
+      <wsdl:documentation>Предоставление типов участков, доступных для МУ (К_УУ_6)</wsdl:documentation>
+      <wsdl:input message="tns:getMuAvailableAreaTypesInput"/>
+      <wsdl:output message="tns:getMuAvailableAreaTypesOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="searchArea">
+      <wsdl:documentation>Предоставление списка участков (К_УУ_25)</wsdl:documentation>
+      <wsdl:input message="tns:searchAreaInput"/>
+      <wsdl:output message="tns:searchAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="initiateCreatePrimaryArea">
+      <wsdl:documentation>Асинхронное создание участка первичного класса (К_УУ_26)</wsdl:documentation>
+      <wsdl:input message="tns:initiateCreatePrimaryAreaInput"/>
+      <wsdl:output message="tns:initiateCreatePrimaryAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="initiateAddMoAddress">
+      <wsdl:documentation>ÐÐ½Ð¸ÑÐ¸Ð°ÑÐ¸Ñ Ð¿ÑÐ¾ÑÐµÑÑÐ° ÑÐ°ÑÐ¿ÑÐµÐ´ÐµÐ»ÐµÐ½Ð¸Ñ Ð¶Ð¸Ð»ÑÑ Ð´Ð¾Ð¼Ð¾Ð² Ðº ÑÐµÑÑÐ¸ÑÐ¾ÑÐ¸Ð¸ Ð¾Ð±ÑÐ»ÑÐ¶Ð¸Ð²Ð°Ð½Ð¸Ñ ÐÐ (Ð_Ð£Ð£_27)</wsdl:documentation>
+      <wsdl:input message="tns:initiateAddMoAddressInput"/>
+      <wsdl:output message="tns:initiateAddMoAddressOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="initiateAddAreaAddress">
+      <wsdl:documentation>Инициация процесса добавления адресов на участок обслуживания (К_УУ_28)</wsdl:documentation>
+      <wsdl:input message="tns:initiateAddAreaAddressInput"/>
+      <wsdl:output message="tns:initiateAddAreaAddressOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="searchDnArea">
+      <wsdl:documentation>Получение списка участков для ДН (К_УУ_29)</wsdl:documentation>
+      <wsdl:input message="tns:searchDnAreaInput"/>
+      <wsdl:output message="tns:searchDnAreaOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="searchMuByAreaAddress">
+      <wsdl:documentation>Поиск МУ по адресу обслуживания (К_УУ_30)</wsdl:documentation>
+      <wsdl:input message="tns:searchMuByAreaAddressInput"/>
+      <wsdl:output message="tns:searchMuByAreaAddressOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+    <wsdl:operation name="getAreaListBrief">
+      <wsdl:documentation>Краткое предоставление списка участков (К_УУ_31)</wsdl:documentation>
+      <wsdl:input message="tns:getAreaListBriefInput"/>
+      <wsdl:output message="tns:getAreaListBriefOutput"/>
+      <wsdl:fault message="tns:fault" name="fault"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AreaPTB" type="tns:AreaPT">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="createPrimaryArea">
+      <soap:operation soapAction="createPrimaryArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createDependentArea">
+      <soap:operation soapAction="createDependentArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updatePrimaryArea">
+      <soap:operation soapAction="updatePrimaryArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateDependentArea">
+      <soap:operation soapAction="updateDependentArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="createOrder">
+      <soap:operation soapAction="createOrder"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateOrder">
+      <soap:operation soapAction="updateOrder"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="searchOrder">
+      <soap:operation soapAction="searchOrder"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getAreaById">
+      <soap:operation soapAction="getAreaById"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="setMedicalEmployeeOnArea">
+      <soap:operation soapAction="setMedicalEmployeeOnArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="restoreArea">
+      <soap:operation soapAction="restoreArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getNewAreaId">
+      <soap:operation soapAction="getNewAreaId"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addAreaAddress">
+      <soap:operation soapAction="addAreaAddress"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addMoAddress">
+      <soap:operation soapAction="addMoAddress"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMoAddress">
+      <soap:operation soapAction="getMoAddress"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="delMoAddress">
+      <soap:operation soapAction="delMoAddress"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="archiveArea">
+      <soap:operation soapAction="archiveArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="delAreaAddress">
+      <soap:operation soapAction="delAreaAddress"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getAreaAddress">
+      <soap:operation soapAction="getAreaAddress"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addMoAvailableAreaTypes">
+      <soap:operation soapAction="addMoAvailableAreaTypes"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMoAvailableAreaTypes">
+      <soap:operation soapAction="getMoAvailableAreaTypes"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="delMoAvailableAreaTypes">
+      <soap:operation soapAction="delMoAvailableAreaTypes"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="addMuAvailableAreaTypes">
+      <soap:operation soapAction="addMuAvailableAreaTypes"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="delMuAvailableAreaTypes">
+      <soap:operation soapAction="delMuAvailableAreaTypes"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getMuAvailableAreaTypes">
+      <soap:operation soapAction="getMuAvailableAreaTypes"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="searchArea">
+      <soap:operation soapAction="searchArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="initiateCreatePrimaryArea">
+      <soap:operation soapAction="initiateCreatePrimaryArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="initiateAddAreaAddress">
+      <soap:operation soapAction="initiateAddAreaAddress"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="initiateAddMoAddress">
+      <soap:operation soapAction="initiateAddMoAddress"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="searchDnArea">
+      <soap:operation soapAction="searchDnArea"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="searchMuByAreaAddress">
+      <soap:operation soapAction="searchMuByAreaAddress"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getAreaListBrief">
+      <soap:operation soapAction="getAreaListBrief"/>
+      <wsdl:input>
+        <soap:header message="tns:userContext" part="userContext" use="literal"/>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="fault">
+        <soap:fault name="fault" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AreaService">
+    <wsdl:port binding="tns:AreaPTB" name="Area">
+      <soap:address location="http://localhost:8080/area/v1/areaService"/>
+    </wsdl:port>
+  </wsdl:service>
+  <wsp:Policy wsu:Id="authPolicy">
+    <sp:SupportingTokens xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+      <wsp:Policy>
+        <sp:UsernameToken sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+          <wsp:Policy>
+            <sp:NoPassword/>
+          </wsp:Policy>
+        </sp:UsernameToken>
+      </wsp:Policy>
+    </sp:SupportingTokens>
+  </wsp:Policy>
+</wsdl:definitions>
