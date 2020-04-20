@@ -406,7 +406,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @Metrics
+    @Override @Metrics @EMIASSecured
     public SearchMuByAreaAddressResponse searchMuByAreaAddress(SearchMuByAreaAddressRequest body) throws Fault {
         throw new UnsupportedOperationException("Not implemented yet");
     }

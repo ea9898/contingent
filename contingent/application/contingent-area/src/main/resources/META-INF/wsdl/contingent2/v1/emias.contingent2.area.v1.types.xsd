@@ -738,22 +738,26 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="searchByCode" minOccurs="0">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="regionOMKTEcode" type="xs:string" minOccurs="0" />
-                            <xs:element name="areaOMKTEcode" type="xs:string" minOccurs="0" />
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="searchByNsiGlobalId" minOccurs="0">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="aoLevel" type="xs:string" />
-                            <xs:element name="globalIdNsi" type="xs:long" />
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
+                <xs:choice minOccurs="1" maxOccurs="1">
+                    <xs:element name="searchByCode" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:choice>
+                                    <xs:element name="regionOMKTEcode" type="xs:string" minOccurs="0" />
+                                    <xs:element name="areaOMKTEcode" type="xs:string" minOccurs="0" />
+                                </xs:choice>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="searchByNsiGlobalId" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="aoLevel" type="xs:string" />
+                                <xs:element name="globalIdNsi" type="xs:long" />
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
                 <xs:element ref="core:options" minOccurs="0" />
                 <xs:element ref="core:pagingOptions" minOccurs="0"/>
             </xs:sequence>

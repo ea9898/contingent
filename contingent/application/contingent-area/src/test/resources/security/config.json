@@ -114,6 +114,14 @@
                 "searchDnArea":{
                     "enabled":true,
                     "permissions":[320029]
+                },
+                "searchMuByAreaAddress":{
+                    "enabled":true,
+                    "permissions":[320029]
+                },
+                "getAreaListBrief":{
+                    "enabled":true,
+                    "permissions":[320029]
                 }
             }
 	}
