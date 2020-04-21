@@ -773,7 +773,7 @@
                             <xs:complexType>
                                 <xs:sequence>
                                     <xs:element name="muId" type="core:ID" minOccurs="0" />
-                                    <xs:element name="moId" type="core:ID" minOccurs="0" />
+                                    <xs:element name="moId" type="core:ID" />
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
