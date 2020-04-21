@@ -178,7 +178,8 @@
       <xs:element name="moId" type="ID"/>
       <xs:element minOccurs="0" name="muId" type="ID"/>
       <xs:element minOccurs="0" name="number" type="restr:int5digits"/>
-      <xs:element name="areaType" type="tns:AreaTypeShort"/>
+      <xs:element name="areaTypeCode" type="xs:long" />
+	  <xs:element name="areaTypeTitle" type="xs:string" />
       <xs:element name="archive" type="xs:boolean"/>
       <xs:element minOccurs="0" name="medicalEmployees">
         <xs:complexType>
