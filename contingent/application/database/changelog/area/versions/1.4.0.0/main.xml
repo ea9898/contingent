@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1.4.0.0" author="sorlov" labels ="1.4.0.0">
+        <tagDatabase tag="1.4.0.0"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-674-1" author="sorlov" labels="1.4.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where CODEDOC = 'PAR_19'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Максимально допустимое количество ИД участков для поиска во входных параметрах метода</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="CODE" value="max_areas_for_search"/>
+            <column name="CODEDOC" value="PAR_19"/>
+            <column name="DESCRIPTION" value="Максимально допустимое количество ИД участков для поиска во входных параметрах метода"/>
+            <column name="TYPE" value="1" />
+            <column name="VAL" value="100"/>
+            <column name="LAST_CHANGE" valueDate="now()"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>CODEDOC='PAR_19'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
