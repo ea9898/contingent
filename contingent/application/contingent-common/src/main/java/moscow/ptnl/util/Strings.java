@@ -1,9 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package moscow.ptnl.util;
+
+import org.springframework.util.StringUtils;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -12,7 +12,15 @@ package moscow.ptnl.util;
 public class Strings {
     
     private Strings(){}
-    
+
+    public static String toCamelCase(String value) {
+        String[] words = value.split("_");
+        return StringUtils.uncapitalize(Arrays.stream(words)
+                .map(String::toLowerCase)
+                .map(StringUtils::capitalize)
+                .collect(Collectors.joining("")));
+    }
+
     public static boolean isNullOrEmpty(String source) {
         return source == null || source.isEmpty();
     }

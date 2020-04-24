@@ -2,9 +2,13 @@ package moscow.ptnl.contingent.area.ws.v1;
 
 import moscow.ptnl.contingent.area.transform.AddMedicalEmployeeMapper;
 import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapper;
+import moscow.ptnl.contingent.area.transform.AreaBriefMapper;
 import moscow.ptnl.contingent.area.transform.ChangeMedicalEmployeeMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddressMapper;
 import moscow.ptnl.contingent.area.transform.UserContextMapper;
+import moscow.ptnl.contingent.area.transform.model.options.GetAreaListBriefOptions;
+import moscow.ptnl.contingent.area.transform.model.options.OptionEnum;
+import moscow.ptnl.contingent.area.transform.model.sorting.GetAreaListBriefSorting;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.OrderService;
@@ -31,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,7 +108,9 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
@@ -174,7 +181,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private UserContextMapper userContextMapper;
-    
+
+    @Autowired
+    private AreaBriefMapper areaBriefMapper;
+
     @Override @EMIASSecured @Metrics
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
@@ -517,7 +527,22 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Override @EMIASSecured @Metrics
     public GetAreaListBriefResponse getAreaListBrief(GetAreaListBriefRequest body) throws Fault {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try {
+            Map<GetAreaListBriefOptions, ? extends OptionEnum.OptionValuesEnum> options =
+                    soapCustomMapper.mapOptions(body.getOptions(), GetAreaListBriefOptions.class);
+            GetAreaListBriefResponse response = new GetAreaListBriefResponse();
+            PageRequest pageRequest = soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(GetAreaListBriefSorting.class));
+            Page<Area> areas = areaServiceDomain.getAreaListBrief(body.getAreas().getIds(), pageRequest);
+            soapCustomMapper.mapPagingResults(response, areas);
+            response.getAreas().addAll(areas.stream()
+                    .map(area -> areaBriefMapper.entityToDtoTransform(area, (GetAreaListBriefOptions.ShowMeValues) options.get(GetAreaListBriefOptions.SHOW_ME)))
+                    .collect(Collectors.toList()));
+
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override @Metrics

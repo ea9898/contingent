@@ -22,6 +22,11 @@ public enum AreaErrorReason implements ErrorReason {
     ADDRESS_ALLOCATION_ORDER_EXISTS("E031", "Распоряжение с указанными параметрами уже существует в системе"),
     ADDRESS_ALLOCATION_ORDER_NOT_EXISTS("E032", "Распоряжение с ИД %s не найдено в системе"),
     ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED("E033", "Распоряжение с ИД %s находится в архиве"),
+    MAX_AREA_IDS_EXCEEDED("E040", "Превышено максимальное допустимое количество запрашиваемых участков (не более %s)"),
+    OPTIONS_KEY_IS_NOT_UNIQUE("E041", "Необходимо указать только 1 параметр %s"),
+    INCORRECT_OPTIONS_KEY("E042", "Допустимые значения параметра key: %s"),
+    INCORRECT_OPTIONS_VALUE("E043", "Допустимые значения параметра value: %s"),
+    INCORRECT_SORTING_FIELD("E044", "Сортировка результатов возможна по полям: %s"),
 
     DATE_IN_INCORRECT_PERIOD("UE026", "Дата издания распоряжения не может быть меньше 01.01.1970 или больше текущей даты"),
     AREA_WITH_TYPE_AND_NUMBER_EXISTS_IN_MO("UE045", "Участок обслуживания с типом %s и номером %s уже существует в рамках филиала МО"),

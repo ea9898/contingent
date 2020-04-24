@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.PagingOptions;
 
 @Component
+@Deprecated //Использовать SoapCustomMapper.mapPagingOptions
 public class PagingOptionsMapper implements Transform<PagingOptions, PageRequest> {
 
     @Autowired
@@ -22,6 +23,9 @@ public class PagingOptionsMapper implements Transform<PagingOptions, PageRequest
         if (dtoObject == null) {
             return PageRequest.of(settingService.getPar5(), settingService.getPar6());
         }
-        return PageRequest.of(dtoObject.getPageNumber(), dtoObject.getPageSize());
+        int maxPageSize = settingService.getPar3().intValue();
+
+        return PageRequest.of(dtoObject.getPageNumber(),
+                Math.min(dtoObject.getPageSize(), maxPageSize));
     }
 }

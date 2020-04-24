@@ -16,6 +16,8 @@ public interface SettingService {
     String UPDATE_ADDRESS_BY_GLOBAL_ID_MAXCOUNT = "updateAddressByGlobalId.maxcount";
     /** Максимально допустимое количество адресных объектов для разового обновления из АР СУ НСИ */
     String UPDATE_ADDRESS_BY_GLOBAL_ID_THREADS = "updateAddressByGlobalId.threads";
+    /** Максимально допустимое количество ИД участков для поиска во входных параметрах метода */
+    String MAX_AREA_IDS_FOR_SEARCH = "max_areas_for_search";
 
     /**
      * Свойство извлекается из кэша.

@@ -256,6 +256,14 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     @Override
+    public Page<Area> getAreas(List<Long> areaIds, PageRequest paging) {
+        if (areaIds.isEmpty()) {
+            return Page.empty();
+        }
+        return areaCRUDRepository.findAll(searchByAreaIdsSpec(areaIds), paging);
+    }
+
+    @Override
     public List<Area> findAllById(List<Long> areaIds) {
         return areaCRUDRepository.findAllById(areaIds);
     }

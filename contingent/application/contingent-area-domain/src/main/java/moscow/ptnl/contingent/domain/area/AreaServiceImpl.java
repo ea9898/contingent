@@ -9,6 +9,7 @@ import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
+import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
@@ -53,6 +54,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -1258,5 +1260,23 @@ public class AreaServiceImpl implements AreaService {
         //3, 4, 5
         return areaRepository.findAreas(moId, muIds, areaTypeCodes, specializationCodes, areaIds, paging);
 
+    }
+
+    @Override
+    public Page<Area> getAreaListBrief(List<Long> areaIds, PageRequest paging) throws ContingentException {
+        Long maxIds = settingService.getSettingProperty(SettingService.MAX_AREA_IDS_FOR_SEARCH);
+        Validation validation = new Validation();
+
+        if (maxIds != null && areaIds.size() > maxIds) {
+            validation.error(AreaErrorReason.MAX_AREA_IDS_EXCEEDED, new ValidationParameter("areas", maxIds));
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        if (paging.getSort().isUnsorted()) {
+            //Если блок sortOrder не передан, сортировка результатов осуществляется по ИД участка (id) по возрастанию
+            paging = PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(Area_.id.getName()));
+        }
+        return areaRepository.getAreas(areaIds, paging);
     }
 }

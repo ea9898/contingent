@@ -300,4 +300,13 @@ public interface AreaService {
      */
     Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes,
                             List<Long> areaIds, PageRequest paging) throws ContingentException;
+
+    /**
+     * (К_УУ_31) Краткое предоставление списка участков
+     * @param areaIds
+     * @param paging
+     * @return
+     * @throws ContingentException
+     */
+    Page<Area> getAreaListBrief(List<Long> areaIds, PageRequest paging) throws ContingentException;
 }
