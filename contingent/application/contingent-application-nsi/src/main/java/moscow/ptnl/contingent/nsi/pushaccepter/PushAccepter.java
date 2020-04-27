@@ -28,10 +28,12 @@ public abstract class PushAccepter {
                 answer = getPushSpec(table);
             } else if ("FU".equals(changeElement.getIntype())) {
                 answer = getPushForm(changeElement.getIn());
-            } else {
+            } else if (changeElement.getIntype() == null || changeElement.getIntype().isEmpty()) {
                 XmlUnmarshaller xmlUnmarshaller = new XmlUnmarshaller();
                 Package pack = xmlUnmarshaller.getPackageIntoString(changeElement.getIn());
                 answer = getPush(pack, savedId);
+            } else {
+                answer = null;
             }
 
             if (answer != null && answer.isResult()) {
