@@ -129,7 +129,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    public static final String SERVICE_NAME = "V1";
+    public static final String SERVICE_NAME = "AREA";
 
     @Autowired
     private SoapCustomMapper soapCustomMapper;

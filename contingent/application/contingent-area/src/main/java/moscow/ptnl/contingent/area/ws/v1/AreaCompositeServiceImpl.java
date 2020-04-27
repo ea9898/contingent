@@ -21,7 +21,7 @@ public class AreaCompositeServiceImpl extends BaseService implements AreaComposi
 
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    public static final String SERVICE_NAME = "COMPOSIT_V1";
+    public static final String SERVICE_NAME = "COMPOSITE";
 
     @Override
     public ArchiveAreaCompositeResponse archiveAreaComposite(ArchiveAreaCompositeRequest body) throws Fault {

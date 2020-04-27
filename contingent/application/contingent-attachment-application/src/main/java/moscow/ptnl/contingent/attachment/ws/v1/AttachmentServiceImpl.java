@@ -27,7 +27,7 @@ public class AttachmentServiceImpl implements AttachmentPT {
 
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    public static final String SERVICE_NAME = "ATTACHMENT_V1";
+    public static final String SERVICE_NAME = "ATTACHMENT";
 
     @Autowired
     private AttachmentServiceInternal attachmentServiceInternal;
