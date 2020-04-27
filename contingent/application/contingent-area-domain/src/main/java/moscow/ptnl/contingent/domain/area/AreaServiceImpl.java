@@ -13,6 +13,7 @@ import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
+import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
@@ -57,6 +58,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1278,5 +1280,49 @@ public class AreaServiceImpl implements AreaService {
             paging = PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(Area_.id.getName()));
         }
         return areaRepository.getAreas(areaIds, paging);
+    }
+
+    @Override
+    public Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
+                                     PageRequest paging) throws ContingentException {
+        List<Addresses> addresses;
+
+        if (StringUtils.hasText(regionOMKTECode)) {
+            // 4.1.2 Система выполняет поиск адреса из входных параметров, а также адресов более низких уровней в таблице Адрес (ADDRESSES)
+            addresses = addressesRepository.findAddresses(null, regionOMKTECode, null);
+        }
+        else {
+            // 4.2.2 Система выполняет поиск адресов в таблице Адрес (ADDRESSES)
+            String regionTeCode = areaOMKTECode.substring(0, 2) + "00";
+            // поиск адреса из входных параметров, а также адресов более низких уровней, т.е. всех записей, у которых
+            addresses = addressesRepository.findAddresses(areaOMKTECode, null, null);
+            // поиск адреса округа, к которому относится данный район
+            addresses.addAll(addressesRepository.findAddresses(null, regionTeCode, AddressLevelType.REGION_TE.getLevel()));
+        }
+        if (addresses.isEmpty()) {
+            throw new ContingentException(new Validation().error(AreaErrorReason.ADDRESS_NOT_FOUND));
+        }
+        // 5. Система выполняет поиск актуальных участков заданного типа, обслуживающих адреса, полученные на предыдущем этапе сценария,
+        // и получает их ИД МУ (AREAS.MU_ID) и ИД МО (AREAS.MO_ID)
+        return areaRepository.findActualAreasByAddressIds(areaTypeCodes, addresses.stream().map(Addresses::getId).collect(Collectors.toList()), paging);
+    }
+
+    @Override
+    public Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String aoLevel, long globalIdNsi,
+                                     PageRequest paging) throws ContingentException {
+        // 3.1 Система выполняет поиск адреса из входных параметров в таблице Адрес
+        List<Addresses> addresses = addressesRepository.findAddresses(Collections.singletonList(globalIdNsi), aoLevel);
+
+        if (addresses.isEmpty()) {
+            throw new ContingentException(new Validation().error(AreaErrorReason.ADDRESS_NOT_FOUND));
+        }
+        if (addresses.size() > 1) {
+            throw new ContingentException(new Validation().error(AreaErrorReason.MULTIPLE_NSI_ADDRESSES_ERROR));
+        }
+        // 3.2 Система выполняет поиск адресов, пересекающихся с адресом, полученным на предыдущем шаге
+        addresses.addAll(algorithms.findIntersectingAddressesSearch(Collections.singletonList(new SearchAreaAddress(addresses.get(0)))));
+        // 5. Система выполняет поиск актуальных участков заданного типа, обслуживающих адреса, полученные на предыдущем этапе сценария,
+        // и получает их ИД МУ (AREAS.MU_ID) и ИД МО (AREAS.MO_ID)
+        return areaRepository.findActualAreasByAddressIds(areaTypeCodes, addresses.stream().map(Addresses::getId).collect(Collectors.toList()), paging);
     }
 }

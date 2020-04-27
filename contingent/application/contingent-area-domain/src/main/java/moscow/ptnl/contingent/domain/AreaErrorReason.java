@@ -22,6 +22,8 @@ public enum AreaErrorReason implements ErrorReason {
     ADDRESS_ALLOCATION_ORDER_EXISTS("E031", "Распоряжение с указанными параметрами уже существует в системе"),
     ADDRESS_ALLOCATION_ORDER_NOT_EXISTS("E032", "Распоряжение с ИД %s не найдено в системе"),
     ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED("E033", "Распоряжение с ИД %s находится в архиве"),
+    ADDRESS_NOT_FOUND("Е037", "Адрес не найден"),
+    MULTIPLE_NSI_ADDRESSES_ERROR("Е038", "По переданным параметрам найдено более одной записи. Ошибка НСИ."),
     MAX_AREA_IDS_EXCEEDED("E040", "Превышено максимальное допустимое количество запрашиваемых участков (не более %s)"),
     OPTIONS_KEY_IS_NOT_UNIQUE("E041", "Необходимо указать только 1 параметр %s"),
     INCORRECT_OPTIONS_KEY("E042", "Допустимые значения параметра key: %s"),

@@ -27,6 +27,8 @@ public interface AreaRepository {
 
     Page<Area> findAreas(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds, PageRequest paging);
 
+    Page<Area> findActualAreasByAddressIds(List<Long> areaTypeCodes, List<Long> addressIds, PageRequest paging);
+
     Page<Area> getAreas(List<Long> areaIds, PageRequest paging);
 
     Long getNextAreaId();

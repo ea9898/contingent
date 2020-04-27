@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.domain.area.entity.Addresses_;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
 import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
+import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -31,10 +32,26 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
     AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
 
     @Override
-    public List<Addresses> findAddresses(List<Long> nsiGlobalIds) {
+    public List<Addresses> findAddresses(List<Long> nsiGlobalIds, String aoLevel) {
         Specification<Addresses> specification = (Specification<Addresses>) (root, criteriaQuery, criteriaBuilder) ->
-                root.get(Addresses_.globalId).in(nsiGlobalIds);
+            criteriaBuilder.and(
+                    root.get(Addresses_.globalId).in(nsiGlobalIds),
+                    aoLevel == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(Addresses_.aoLevel), aoLevel)
+            );
+        return addressesCRUDRepository.findAll(specification);
+    }
 
+    @Override
+    public List<Addresses> findAddresses(String areaOMKTECode, String regionOMKTECode, String aoLevel) {
+        if (areaOMKTECode == null && regionOMKTECode == null) {
+            throw new IllegalArgumentException("areaOMKTECode == null && regionOMKTECode == null");
+        }
+        Specification<Addresses> specification = (Specification<Addresses>) (root, criteriaQuery, criteriaBuilder) ->
+            criteriaBuilder.and(
+                    areaOMKTECode == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(Addresses_.areaCodeOmkTe), areaOMKTECode),
+                    regionOMKTECode == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(Addresses_.regionTeCode), regionOMKTECode),
+                    aoLevel == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(Addresses_.aoLevel), aoLevel)
+            );
         return addressesCRUDRepository.findAll(specification);
     }
 

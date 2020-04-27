@@ -309,4 +309,28 @@ public interface AreaService {
      * @throws ContingentException
      */
     Page<Area> getAreaListBrief(List<Long> areaIds, PageRequest paging) throws ContingentException;
+
+    /**
+     * (К_УУ_30) Поиск МУ по адресу обслуживания (4. Передан блок searchByCode)
+     * @param areaTypeCodes
+     * @param areaOMKTECode
+     * @param regionOMKTECode
+     * @param paging
+     * @return
+     * @throws ContingentException
+     */
+    Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
+                                     PageRequest paging) throws ContingentException;
+
+    /**
+     * (К_УУ_30) Поиск МУ по адресу обслуживания (3. Передан блок searchByNsiGlobalId)
+     * @param areaTypeCodes
+     * @param aoLevel
+     * @param globalIdNsi
+     * @param paging
+     * @return
+     * @throws ContingentException
+     */
+    Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String aoLevel, long globalIdNsi,
+                                     PageRequest paging) throws ContingentException;
 }

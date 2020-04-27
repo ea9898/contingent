@@ -1,6 +1,9 @@
 package moscow.ptnl.contingent.repository.area;
 
+import moscow.ptnl.contingent.domain.area.entity.Addresses_;
 import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees_;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
@@ -252,6 +255,26 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         }
         specification = specification.and(searchActive());
 
+        return areaCRUDRepository.findAll(specification, paging);
+    }
+
+    @Override
+    public Page<Area> findActualAreasByAddressIds(List<Long> areaTypeCodes, List<Long> addressIds, PageRequest paging) {
+        Specification<Area> specification = searchActive();
+
+        if (!areaTypeCodes.isEmpty()) {
+            specification = specification.and(searchByAreaTypeCodesSpec(areaTypeCodes));
+        }
+        specification = specification.and((root, criteriaQuery, cb) -> {
+            Join<Area, AreaAddress> areaAddressJoin = root.join(Area_.areaAddresses, JoinType.LEFT);
+            return cb.and(
+                    areaAddressJoin.get(AreaAddress_.address.getName()).get(Addresses_.id.getName()).in(addressIds),
+                    cb.or(
+                            cb.isNull(areaAddressJoin.get(AreaAddress_.endDate.getName())),
+                            cb.greaterThan(areaAddressJoin.get(AreaAddress_.endDate.getName()), LocalDate.now())
+                    )
+            );
+        });
         return areaCRUDRepository.findAll(specification, paging);
     }
 

@@ -5,16 +5,19 @@ import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBas
 import moscow.ptnl.contingent.area.transform.AreaBriefMapper;
 import moscow.ptnl.contingent.area.transform.ChangeMedicalEmployeeMapper;
 import moscow.ptnl.contingent.area.transform.SearchAreaAddressMapper;
+import moscow.ptnl.contingent.area.transform.SearchMuByAreaAddressMapper;
 import moscow.ptnl.contingent.area.transform.UserContextMapper;
 import moscow.ptnl.contingent.area.transform.model.options.GetAreaListBriefOptions;
 import moscow.ptnl.contingent.area.transform.model.options.OptionEnum;
 import moscow.ptnl.contingent.area.transform.model.sorting.GetAreaListBriefSorting;
+import moscow.ptnl.contingent.area.transform.model.sorting.SearchMuByAreaAddressSorting;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.OrderService;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.area.transform.AreaDnMapper;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
@@ -36,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -184,6 +188,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AreaBriefMapper areaBriefMapper;
+
+    @Autowired
+    private SearchMuByAreaAddressMapper searchMuByAreaAddressMapper;
 
     @Override @EMIASSecured @Metrics
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
@@ -416,9 +423,41 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @Metrics @EMIASSecured
+    @Override @Metrics
+    @EMIASSecured
     public SearchMuByAreaAddressResponse searchMuByAreaAddress(SearchMuByAreaAddressRequest body) throws Fault {
-        throw new UnsupportedOperationException("Not implemented yet");
+        try {
+            Map<GetAreaListBriefOptions, ? extends OptionEnum.OptionValuesEnum> options =
+                    soapCustomMapper.mapOptions(body.getOptions(), GetAreaListBriefOptions.class);
+            SearchMuByAreaAddressResponse response = new SearchMuByAreaAddressResponse();
+            PageRequest pageRequest = soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(SearchMuByAreaAddressSorting.class));
+            //Сортировка всегда по обоим полям. Дополняем, если не переданы оба
+            for (SearchMuByAreaAddressSorting sorting : SearchMuByAreaAddressSorting.values()) {
+                if (pageRequest.getSort().getOrderFor(sorting.getFieldName()) == null) {
+                    pageRequest = PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize(),
+                            pageRequest.getSort().and(Sort.by(sorting.getFieldName())));
+                }
+            }
+            Page<Area> areas;
+
+            if (body.getSearchByNsiGlobalId() != null) {
+                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes().getAreaTypeCodes(),
+                        body.getSearchByNsiGlobalId().getAoLevel(), body.getSearchByNsiGlobalId().getGlobalIdNsi(), pageRequest);
+            }
+            else {
+                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes().getAreaTypeCodes(),
+                        body.getSearchByCode().getAreaOMKTEcode(), body.getSearchByCode().getRegionOMKTEcode(), pageRequest);
+            }
+            soapCustomMapper.mapPagingResults(response, areas);
+            response.getResults().addAll(areas.stream()
+                    .map(searchMuByAreaAddressMapper::entityToDtoTransform)
+                    .collect(Collectors.toList()));
+
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override @EMIASSecured @Metrics

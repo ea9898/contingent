@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.domain.area.model.area;
 
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
+
 /*
 Выходной объекта метода searchArea из слоя Service
  */
@@ -19,6 +21,18 @@ public class SearchAreaAddress {
     private String construction;
 
     public SearchAreaAddress() {
+    }
+
+    public SearchAreaAddress(Addresses address) {
+        this.aoLevel = address.getAoLevel();
+        this.globalIdNsi = address.getGlobalId();
+        this.regionOMKTEcode = address.getRegionTeCode();
+        this.areaOMKTEcode = address.getAreaCodeOmkTe();
+        this.areaCode = address.getAreaCode();
+        this.cityCode = address.getCityCode();
+        this.placeCode = address.getPlaceCode();
+        this.planCode = address.getPlanCode();
+        this.streetCode = address.getStreetCode();
     }
 
     public SearchAreaAddress(SearchAreaAddress address) {

@@ -10,8 +10,16 @@ import java.util.Set;
 @NoRepositoryBean
 public interface AddressesRepository {
 
-	List<Addresses> findAddresses(List<Long> nsiGlobalIds);
+	default List<Addresses> findAddresses(List<Long> nsiGlobalIds) {
+		return findAddresses(nsiGlobalIds, null);
+	}
+
+	List<Addresses> findAddresses(List<Long> nsiGlobalIds, String aoLevel);
+
+	List<Addresses> findAddresses(String areaOmkTeCodes, String regionTeCodes, String aoLevel);
+
 	List<Addresses> findActualAddresses(List<Long> nsiGlobalIds);
+
 	Set<Addresses> findActualAddresses(String streetCode, String planCode,
 									   String placeCode, String cityCode, String areaCode, List<String> areaOmkTeCodes,
 									   List<String> regionTeCodes, String aoLevel);
