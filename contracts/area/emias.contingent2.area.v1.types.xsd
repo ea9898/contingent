@@ -671,8 +671,20 @@
                         <xs:complexType>
                             <xs:sequence>
                                 <xs:choice>
-                                    <xs:element name="regionOMKTEcode" type="xs:string" minOccurs="0" />
-                                    <xs:element name="areaOMKTEcode" type="xs:string" minOccurs="0" />
+                                    <xs:element name="regionOMKTEcode" minOccurs="0">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:pattern value="[0-9]{2}00" />
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:element>
+                                    <xs:element name="areaOMKTEcode" minOccurs="0">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:pattern value="([\d]{2})([1-9]0|0[1-9]|[1-9]{2})" />
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:element>
                                 </xs:choice>
                             </xs:sequence>
                         </xs:complexType>
