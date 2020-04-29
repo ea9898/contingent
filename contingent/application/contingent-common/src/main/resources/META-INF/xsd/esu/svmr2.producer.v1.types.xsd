@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2011 rel. 2 (http://www.altova.com) by DIT (DIT) -->
-<xs:schema xmlns="http://emias.mos.ru/svmr2/producer/v1/types" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-		   targetNamespace="http://emias.mos.ru/svmr2/producer/v1/types" elementFormDefault="qualified"
-		   attributeFormDefault="unqualified">
+<!-- edited with XMLSpy v2020 (x64) (http://www.altova.com) by gg (gg) -->
+<xs:schema xmlns="http://emias.mos.ru/svmr2/producer/v1/types" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://emias.mos.ru/svmr2/producer/v1/types" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:include schemaLocation="emias.core.v1.xsd"/>
 	<!--Basic types-->
 	<xs:complexType name="Base" abstract="true">
@@ -118,6 +116,58 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="DepartmentDictInfo">
+		<xs:annotation>
+			<xs:documentation>Тип для описания сведений о подразделении из справочников</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="departmentNom">
+				<xs:annotation>
+					<xs:documentation>Подразделение из номенклатуры</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="DictionaryTypeShort"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="title" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Наименование (неноменклатурное)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="PositionDictInfo">
+		<xs:annotation>
+			<xs:documentation>Тип для описания сведений о должности из справочников</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="positionNom">
+				<xs:annotation>
+					<xs:documentation>Должность из номенклатуры</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="DictionaryTypeShort">
+							<xs:sequence minOccurs="0">
+								<xs:element name="specialization" type="DictionaryTypeShort" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Медицинская специализация</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="title" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Наименование (неноменклатурное)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
 	<xs:complexType name="DictionaryTypeShort">
 		<xs:annotation>
 			<xs:documentation>Тип для описания кратких сведений справочника</xs:documentation>
@@ -168,6 +218,9 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="OrganizationUpdatableAttributes">
+		<xs:annotation>
+			<xs:documentation>Обновляемые атрибуты Организации</xs:documentation>
+		</xs:annotation>
 		<xs:sequence minOccurs="0">
 			<xs:element name="name" type="xs:string" minOccurs="0">
 				<xs:annotation>
@@ -212,6 +265,9 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="MedicalOrganizationUpdatableAttributes">
+		<xs:annotation>
+			<xs:documentation>Обновляемые атрибуты Медицинской организации</xs:documentation>
+		</xs:annotation>
 		<xs:sequence minOccurs="0">
 			<xs:element name="medicalActivity" type="MedicalActivity" minOccurs="0">
 				<xs:annotation>
@@ -226,6 +282,9 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="MedicalFacilityUpdatableAttributes">
+		<xs:annotation>
+			<xs:documentation>Обновляемые атрибуты Медицинского учреждения</xs:documentation>
+		</xs:annotation>
 		<xs:sequence minOccurs="0">
 			<xs:element name="medicalOrganization" type="MedicalOrganizationShort" minOccurs="0">
 				<xs:annotation>
@@ -340,7 +399,7 @@
 						</xs:annotation>
 						<xs:complexType>
 							<xs:complexContent>
-								<xs:extension base="DictionaryTypeShort"/>
+								<xs:extension base="DepartmentDictInfo"/>
 							</xs:complexContent>
 						</xs:complexType>
 					</xs:element>
@@ -413,9 +472,9 @@
 							<xs:documentation>Работник организации</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:element name="positionNom" type="DictionaryTypeShort">
+					<xs:element name="positionNom" type="PositionDictInfo">
 						<xs:annotation>
-							<xs:documentation>Должность из номенклатуры</xs:documentation>
+							<xs:documentation>Свеления о должности из справочников</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 					<xs:element name="period" type="RequredStartPeriod">
@@ -478,6 +537,9 @@
 			<xs:extension base="OrganizationExtension">
 				<xs:sequence>
 					<xs:element name="medicalOrganizationAttributes">
+						<xs:annotation>
+							<xs:documentation>Сведения Медицинской организации</xs:documentation>
+						</xs:annotation>
 						<xs:complexType>
 							<xs:complexContent>
 								<xs:restriction base="MedicalOrganizationUpdatableAttributes">

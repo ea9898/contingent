@@ -144,15 +144,30 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         }
         if (jeCreate.getPositionNom() == null) {
             errorParameters.append("jeCreate.positionNom;");
-        } else if (jeCreate.getPositionNom().getCode() == null) {
-            errorParameters.append("jeCreate.positionNom.code;");
+        } else if (jeCreate.getPositionNom().getPositionNom() == null) {
+            errorParameters.append("jeCreate.positionNom.positionNom;");
+        } else {
+            if (jeCreate.getPositionNom().getPositionNom().getCode() == null) {
+                errorParameters.append("jeCreate.positionNom.positionNom.code;");
+            }
+            if (jeCreate.getPositionNom().getPositionNom().getTitle() == null) {
+                errorParameters.append("jeCreate.positionNom.positionNom.title;");
+            }
+            if (jeCreate.getPositionNom().getPositionNom().getSpecialization() != null) {
+                if (jeCreate.getPositionNom().getPositionNom().getSpecialization().getCode() == null) {
+                    errorParameters.append("jeCreate.positionNom.positionNom.specialization.code;");
+                }
+                if (jeCreate.getPositionNom().getPositionNom().getSpecialization().getTitle() == null) {
+                    errorParameters.append("jeCreate.positionNom.positionNom.specialization.title;");
+                }
+            }
         }
         if (errorParameters.length() != 0) {
             throw new RuntimeException("Отсутствуют параметры: " + errorParameters.toString());
         }
 
         //2.2.1
-        Optional<PositionCode> positionCode = positionCodeRepository.getByCode(jeCreate.getPositionNom().getCode());
+        Optional<PositionCode> positionCode = positionCodeRepository.getByCode(jeCreate.getPositionNom().getPositionNom().getCode());
         if (!positionCode.isPresent()) {
             throw new RuntimeException("Не найден ИД кода должности");
         }
@@ -220,7 +235,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         //2.6
         List<AreaTypeMedicalPositions> areaTypeMedicalPositions =
                 areaTypeMedicalPositionsRepository.getPositionsByAreaType(areaType.getCode());
-        if (areaTypeMedicalPositions != null && areaTypeMedicalPositions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(jeCreate.getPositionNom().getCode()))) {
+        if (areaTypeMedicalPositions != null && areaTypeMedicalPositions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(jeCreate.getPositionNom().getPositionNom().getCode()))) {
             throw new RuntimeException(String.format("Должность ИДМР не разрешена для типа участка %s", areaType.getTitle()));
         }
 
