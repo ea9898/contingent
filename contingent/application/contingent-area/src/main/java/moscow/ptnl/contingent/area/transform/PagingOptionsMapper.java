@@ -23,9 +23,7 @@ public class PagingOptionsMapper implements Transform<PagingOptions, PageRequest
         if (dtoObject == null) {
             return PageRequest.of(settingService.getPar5(), settingService.getPar6());
         }
-        int maxPageSize = settingService.getPar3().intValue();
 
-        return PageRequest.of(dtoObject.getPageNumber(),
-                Math.min(dtoObject.getPageSize(), maxPageSize));
+        return PageRequest.of(dtoObject.getPageNumber(), dtoObject.getPageSize());
     }
 }

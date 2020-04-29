@@ -1267,6 +1267,8 @@ public class AreaServiceImpl implements AreaService {
     @Override
     public Page<Area> getAreaListBrief(List<Long> areaIds, PageRequest paging) throws ContingentException {
         Long maxIds = settingService.getSettingProperty(SettingService.MAX_AREA_IDS_FOR_SEARCH);
+        int maxPageSize = settingService.getPar3().intValue();
+
         Validation validation = new Validation();
 
         if (maxIds != null && areaIds.size() > maxIds) {
@@ -1277,7 +1279,7 @@ public class AreaServiceImpl implements AreaService {
         }
         if (paging.getSort().isUnsorted()) {
             //Если блок sortOrder не передан, сортировка результатов осуществляется по ИД участка (id) по возрастанию
-            paging = PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(Area_.id.getName()));
+            paging = PageRequest.of(paging.getPageNumber(), Math.min(paging.getPageSize(), maxPageSize), Sort.by(Area_.id.getName()));
         }
         return areaRepository.getAreas(areaIds, paging);
     }
