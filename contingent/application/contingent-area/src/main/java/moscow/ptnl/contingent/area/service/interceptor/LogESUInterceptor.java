@@ -160,7 +160,7 @@ public class LogESUInterceptor {
                 return Optional.of(args[i]);
             }
         }
-        return Optional.empty();
+        return Optional.of(args[0]);
     }
     
 }
