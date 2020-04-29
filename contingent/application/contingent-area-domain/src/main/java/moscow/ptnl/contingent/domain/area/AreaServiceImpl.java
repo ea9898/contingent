@@ -1267,9 +1267,14 @@ public class AreaServiceImpl implements AreaService {
     @Override
     public Page<Area> getAreaListBrief(List<Long> areaIds, PageRequest paging) throws ContingentException {
         Long maxIds = settingService.getSettingProperty(SettingService.MAX_AREA_IDS_FOR_SEARCH);
-        int maxPageSize = settingService.getPar3().intValue();
 
         Validation validation = new Validation();
+
+        areaHelper.checkMaxPage(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         if (maxIds != null && areaIds.size() > maxIds) {
             validation.error(AreaErrorReason.MAX_AREA_IDS_EXCEEDED, new ValidationParameter("areas", maxIds));
@@ -1279,7 +1284,7 @@ public class AreaServiceImpl implements AreaService {
         }
         if (paging.getSort().isUnsorted()) {
             //Если блок sortOrder не передан, сортировка результатов осуществляется по ИД участка (id) по возрастанию
-            paging = PageRequest.of(paging.getPageNumber(), Math.min(paging.getPageSize(), maxPageSize), Sort.by(Area_.id.getName()));
+            paging = PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(Area_.id.getName()));
         }
         return areaRepository.getAreas(areaIds, paging);
     }
@@ -1287,6 +1292,15 @@ public class AreaServiceImpl implements AreaService {
     @Override
     public Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
                                      PageRequest paging) throws ContingentException {
+
+        Validation validation = new Validation();
+
+        areaHelper.checkMaxPage(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
         List<Addresses> addresses;
 
         if (StringUtils.hasText(regionOMKTECode)) {

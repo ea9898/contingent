@@ -105,9 +105,8 @@ public class SoapCustomMapper {
         if (options == null) {
             return PageRequest.of(settingService.getPar5(), settingService.getPar6());
         }
-        int maxPageSize = settingService.getPar3().intValue();
         Sort sort = mapSorting(options.getSortingOptions(), fields);
 
-        return PageRequest.of(options.getPageNumber(), Math.min(options.getPageSize(), maxPageSize), sort);
+        return PageRequest.of(options.getPageNumber(), options.getPageSize(), sort);
     }
 }
