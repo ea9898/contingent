@@ -2,13 +2,20 @@ package moscow.ptnl.contingent.infrastructure.service.setting;
 
 import moscow.ptnl.contingent.domain.settings.Setting;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import moscow.ptnl.contingent.repository.settings.SettingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import sun.rmi.runtime.Log;
 
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
@@ -53,6 +60,12 @@ public class SettingServiceImpl implements SettingService {
     @Override
     public Long getPar3() {
         return getSettingProperty(Par3);
+    }
+
+    @Override
+    public List<Long> getPar20() {
+        String par20 = getSettingProperty(Par20);
+        return Arrays.stream(par20.split(";")).map(Long::parseLong).collect(Collectors.toList());
     }
 
     @Override

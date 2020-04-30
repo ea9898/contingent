@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.esuInputTasks;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
@@ -78,6 +79,8 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     @Autowired
     private AreaTypeMedicalPositionsRepository areaTypeMedicalPositionsRepository;
 
+    @Autowired
+    private SettingService settingService;
 
     public JobExecutionInfoMsgTopicTask() {
         super(XSD_PATH, JobExecutionInfoMsg.class);
@@ -192,10 +195,9 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
             throw new RuntimeException("Специализация ИДМР не соответствует именному виду участка");
         }
         Long moId = jeCreate.getDepartment().getOrganization().getId();
-        //2.4
-        if (SpecializationEnum.CHILD_ONCOLOGY.getCode() != specialization.get().getCode()
-                && SpecializationEnum.ONCOLOGY.getCode() != specialization.get().getCode()) {
 
+        //2.4
+        if (!settingService.getPar20().contains(specialization.get().getCode())) {
             //2.4.1
             List<MoAvailableAreaTypes> moAvailableAreaTypes = moAvailableAreaTypesRepository.findAreaTypes(moId);
 

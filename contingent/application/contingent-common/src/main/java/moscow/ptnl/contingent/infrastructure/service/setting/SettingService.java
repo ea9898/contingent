@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.infrastructure.service.setting;
 
+import java.util.List;
+
 public interface SettingService {
     
     String Par1 = "max_addresses_for_allocation";
@@ -8,6 +10,7 @@ public interface SettingService {
     String Par4 = "synchronize_k2_and_k1";
     String Par5 = "paging_default_page_number";
     String Par6 = "paging_default_page_size";
+    String Par20 = "exception_specialization_codes";
     /** Глобальная настройка для отключения слушателей всех топиков ЕСУ. */
     String TOPICS_CONSUMERS_RUN_MODE = "topics.consumers.run.mode";
     /** Настройки ограничения доступа к методам web-сервиса. */
@@ -35,6 +38,8 @@ public interface SettingService {
     Long getPar2();
 
     Long getPar3();
+
+    List<Long> getPar20();
 
     Boolean getPar4();
 

@@ -70,4 +70,27 @@
         </loadUpdateData>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-680" author="ddryuchin" labels="1.4.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where CODEDOC = 'PAR_20'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Максимально допустимое количество ИД участков для поиска во входных параметрах метода</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="CODE" value="exception_specialization_codes"/>
+            <column name="CODEDOC" value="PAR_20"/>
+            <column name="DESCRIPTION" value="Коды специализаций исполнения должности, для которых не создаются именные участки"/>
+            <column name="TYPE" value="3" />
+            <column name="VAL" value="19;41"/>
+            <column name="LAST_CHANGE" valueDate="now()"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>CODEDOC='PAR_20'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
