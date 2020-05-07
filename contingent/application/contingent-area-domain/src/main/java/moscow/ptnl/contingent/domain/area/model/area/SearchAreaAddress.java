@@ -109,4 +109,22 @@ public class SearchAreaAddress {
     public String getConstruction() {
         return construction;
     }
+
+    public void setAoLevel(String aoLevel) { this.aoLevel = aoLevel; }
+
+    public void setAreaCode(String areaCode) { this.areaCode = areaCode; }
+
+    public void setCityCode(String cityCode) { this.cityCode = cityCode; }
+
+    public void setPlaceCode(String placeCode) { this.placeCode = placeCode; }
+
+    public void setPlanCode(String planCode) { this.planCode = planCode; }
+
+    public void setStreetCode(String streetCode) { this.streetCode = streetCode; }
+
+    public void setHouse(String house) { this.house = house; }
+
+    public void setBuild(String build) { this.build = build; }
+
+    public void setConstruction(String construction) { this.construction = construction; }
 }
