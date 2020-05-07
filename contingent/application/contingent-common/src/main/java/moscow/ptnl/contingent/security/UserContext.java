@@ -46,13 +46,9 @@ public class UserContext {
         this.userRoleId = userRoleId;
     }
 
-    public Boolean getUserRoleSystemWide() {
-        return isUserRoleSystemWide;
-    }
+    public Boolean getUserRoleSystemWide() { return isUserRoleSystemWide; }
 
-    public void setUserRoleSystemWide(Boolean userRoleSystemWide) {
-        isUserRoleSystemWide = userRoleSystemWide;
-    }
+    public void setUserRoleSystemWide(Boolean userRoleSystemWide) { isUserRoleSystemWide = userRoleSystemWide; }
 
     public List<Long> getUserRights() {
         return userRights;

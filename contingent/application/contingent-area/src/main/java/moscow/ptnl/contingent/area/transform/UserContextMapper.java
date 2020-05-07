@@ -9,12 +9,14 @@ import org.mapstruct.Mappings;
 public abstract class UserContextMapper {
 
     @Mappings({
-            @Mapping(target="userRights", source="userRights.userRightIds")
+            @Mapping(target="userRights", source="userRights.userRightIds"),
+            @Mapping(target="userRoleSystemWide", source="isUserRoleSystemWide")
     })
     public abstract UserContext dtoToEntityTransform(ru.mos.emias.system.v1.usercontext.UserContext userContext);
 
     @Mappings({
-            @Mapping(target="userRights.userRightIds", source="userRights")
+            @Mapping(target="userRights.userRightIds", source="userRights"),
+            @Mapping(target="isUserRoleSystemWide", source="userRoleSystemWide")
     })
     public abstract ru.mos.emias.system.v1.usercontext.UserContext entityToDtoTransform(UserContext userContext);
 
