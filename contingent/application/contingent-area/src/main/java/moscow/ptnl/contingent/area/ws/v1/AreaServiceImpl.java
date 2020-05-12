@@ -441,7 +441,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             Page<Area> areas;
 
             if (body.getSearchByNsiGlobalId() != null) {
-                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes().getAreaTypeCodes(),
+                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
                         body.getSearchByNsiGlobalId().getAoLevel(), body.getSearchByNsiGlobalId().getGlobalIdNsi(), pageRequest);
             }
             else {
