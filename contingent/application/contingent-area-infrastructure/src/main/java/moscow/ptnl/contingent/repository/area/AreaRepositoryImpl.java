@@ -262,7 +262,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     public Page<Area> findActualAreasByAddressIds(List<Long> areaTypeCodes, List<Long> addressIds, PageRequest paging) {
         Specification<Area> specification = searchActive();
 
-        if (!areaTypeCodes.isEmpty()) {
+        if (areaTypeCodes != null && !areaTypeCodes.isEmpty()) {
             specification = specification.and(searchByAreaTypeCodesSpec(areaTypeCodes));
         }
         specification = specification.and((root, criteriaQuery, cb) -> {

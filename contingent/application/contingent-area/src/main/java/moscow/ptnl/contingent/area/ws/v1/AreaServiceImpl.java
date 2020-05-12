@@ -445,7 +445,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                         body.getSearchByNsiGlobalId().getAoLevel(), body.getSearchByNsiGlobalId().getGlobalIdNsi(), pageRequest);
             }
             else {
-                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes().getAreaTypeCodes(),
+                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
                         body.getSearchByCode().getAreaOMKTEcode(), body.getSearchByCode().getRegionOMKTEcode(), pageRequest);
             }
             soapCustomMapper.mapPagingResults(response, areas);
