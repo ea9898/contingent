@@ -10,6 +10,8 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
@@ -19,7 +21,7 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 @Table(name = "SPECIALIZATION")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.SPECIALIZATION)
-public class Specialization implements Serializable, NsiExternalEntity {
+public class Specialization implements Serializable, Keyable, NsiExternalEntity {
 
     private static final long serialVersionUID = -3935499028862334002L;
 
@@ -119,5 +121,9 @@ public class Specialization implements Serializable, NsiExternalEntity {
     @Override
     public int hashCode() {        
         return Objects.hashCode(this.globalId);
+    }
+
+    public Serializable getKey() {
+        return getGlobalId();
     }
 }

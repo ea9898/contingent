@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
@@ -18,7 +19,7 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 @Table(name = "POSITION_CODE")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.POSITION_CODE)
-public class PositionCode implements Serializable, NsiExternalEntity {
+public class PositionCode implements Serializable, Keyable, NsiExternalEntity {
 
     private static final long serialVersionUID = 3663299049984440497L;
 
@@ -142,5 +143,9 @@ public class PositionCode implements Serializable, NsiExternalEntity {
     @Override
     public int hashCode() {
         return Objects.hash(globalId, nomType, serialNum, code, constantTitle);
+    }
+
+    public Serializable getKey() {
+        return getGlobalId();
     }
 }

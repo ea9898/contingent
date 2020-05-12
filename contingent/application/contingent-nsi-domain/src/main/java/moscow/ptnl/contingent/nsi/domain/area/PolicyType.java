@@ -10,6 +10,8 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
@@ -19,7 +21,7 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 @Table(name = "POLICY_TYPE")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.POLICY_TYPE)
-public class PolicyType implements Serializable, NsiExternalEntity {
+public class PolicyType implements Serializable, Keyable, NsiExternalEntity {
 
     private static final long serialVersionUID = -1047920444396677745L;
 
@@ -113,4 +115,9 @@ public class PolicyType implements Serializable, NsiExternalEntity {
     public int hashCode() {
         return Objects.hash(code);
     }
+
+    public Serializable getKey() {
+        return getGlobalId();
+    }
+
 }

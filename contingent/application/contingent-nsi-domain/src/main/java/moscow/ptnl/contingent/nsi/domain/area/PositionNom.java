@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.nsi.domain.area;
 
+import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
@@ -22,7 +23,7 @@ import java.util.Objects;
 @Table(name = "POSITION_NOM")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.D_POSITION_NOM)
-public class PositionNom implements Serializable, NsiExternalEntity {
+public class PositionNom implements Serializable, Keyable, NsiExternalEntity {
 
     private static final long serialVersionUID = 3663299049984020497L;
 
@@ -154,5 +155,9 @@ public class PositionNom implements Serializable, NsiExternalEntity {
     @Override
     public int hashCode() {
         return Objects.hashCode(this.globalId);
+    }
+
+    public Serializable getKey() {
+        return getGlobalId();
     }
 }
