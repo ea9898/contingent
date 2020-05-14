@@ -143,6 +143,17 @@ public class PositionNom implements Serializable, Keyable, NsiExternalEntity {
     }
 
     @Override
+    public Boolean getArchived() {
+        return endDate != null && !endDate.isAfter(LocalDate.now());
+    }
+
+    @Override
+    public void setArchived(Boolean archived) {
+        LocalDate archiveDate = !getArchived() ? LocalDate.now() : endDate;
+        endDate = Boolean.TRUE.equals(archived) ? archiveDate : null;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;

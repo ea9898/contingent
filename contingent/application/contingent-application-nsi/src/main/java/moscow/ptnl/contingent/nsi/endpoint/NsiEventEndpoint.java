@@ -52,7 +52,7 @@ public class NsiEventEndpoint {
             return;
         }
         try {
-            Future<Void> result = eventProcessor.processMesage(entity, action);        
+            Future<Void> result = eventProcessor.processMessage(entity, action);
             result.get(); //асинхронный вызов для создания разных транзакций
             event.setError(false);
         } catch (Throwable error) {

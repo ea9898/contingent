@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package moscow.ptnl.contingent.nsi.endpoint;
 
 import java.io.Serializable;
@@ -86,7 +81,7 @@ public class NsiEventProcessor {
 
     @Async
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-    public Future<Void> processMesage(Keyable entity, String action) {
+    public Future<Void> processMessage(Keyable entity, String action) {
         if (entity instanceof AreaType) {
             saveOrModifyOrArchive(areaTypesCRUDRepository, (AreaType) entity, action);
         } else if (entity instanceof AreaTypeClass) {
@@ -115,15 +110,13 @@ public class NsiEventProcessor {
     
     private <T extends Keyable, K extends Serializable> void saveOrModifyOrArchive(CommonRepository<T, K> repository, T entity, String action) {
         if (NsiActionsEnum.DELETED.name().equalsIgnoreCase(action)) {
-            LOG.info("delete action");
-            repository.deleteById(entity.getKey());
         } else if (NsiActionsEnum.ADDED.name().equalsIgnoreCase(action)){
-            LOG.info("save action");
-            repository.save(entity);
         } else if (NsiActionsEnum.MODIFIED.name().equalsIgnoreCase(action)) {
-            LOG.info("modify action");
-
         }
-        throw new RuntimeException("Неизвестное действие " + action);
+        else {
+            throw new RuntimeException("Неизвестное действие " + action);
+        }
+        LOG.info(action + " action");
+        repository.save(entity);
     }
 }

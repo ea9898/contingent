@@ -14,4 +14,8 @@ public interface NsiExternalEntity {
     void setUpdateDate(LocalDateTime updateDate);
 
     void setSource(String source);
+
+    Boolean getArchived();
+
+    void setArchived(Boolean archived);
 }

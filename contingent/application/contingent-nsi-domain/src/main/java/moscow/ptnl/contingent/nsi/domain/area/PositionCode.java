@@ -129,6 +129,15 @@ public class PositionCode implements Serializable, Keyable, NsiExternalEntity {
     }
 
     @Override
+    public Boolean getArchived() {
+        return false;
+    }
+
+    @Override
+    public void setArchived(Boolean archived) {
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

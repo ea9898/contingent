@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.nsi.pushaccepter;
 
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.NSI_EVENT_CHANNEL_NAME;
 
+import moscow.ptnl.contingent.nsi.domain.NsiActionsEnum;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiPushEventConstraint;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
@@ -89,6 +90,10 @@ public class PushAccepterImpl extends PushAccepter {
         if (pushEventEntity instanceof NsiExternalEntity) {
             ((NsiExternalEntity) pushEventEntity).setUpdateDate(LocalDateTime.now());
             ((NsiExternalEntity) pushEventEntity).setSource(NSI_ENTITY_SOURCE);
+
+            if (NsiActionsEnum.DELETED.name().equalsIgnoreCase(pack.catalog.data.action)) {
+                ((NsiExternalEntity) pushEventEntity).setArchived(true);
+            }
         }
         nsiChannel.send(MessageBuilder
                 .withPayload(pushEventEntity)
