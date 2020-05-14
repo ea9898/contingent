@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -66,9 +67,22 @@ abstract class BaseTopicTask<T> implements Tasklet {
         LOG.info(typeClass.getSimpleName() + " task start");
 
         String personalTopic = getTopicName() + "." + consumerGroupId;
-        List<EsuInput> messages = esuInputRepository.findByTopic(getTopicName(), personalTopic);
+        List<EsuInput> messages = esuInputRepository.findByTopic(getTopicName(), personalTopic).getContent();
+
+        try {
+            Future futureUpdate = transactionRunner.run(() -> {
+                messages.forEach(msg -> msg.setStatus(EsuStatusType.INPROGRESS));
+                esuInputRepository.saveAll(messages);
+                return true;
+            });
+
+            futureUpdate.get(10, TimeUnit.SECONDS);
+        } catch (Throwable th) {
+            LOG.warn("Ошибка перевода сообщений в статус \"В обработке\". Topic - {}", getTopicName(), th);
+        }
 
         for (EsuInput message : messages) {
+
             String eventId = null;
 
             try {
@@ -85,12 +99,10 @@ abstract class BaseTopicTask<T> implements Tasklet {
                     // Если за 5 секунд не закомителось, то что то идет не так...
                     future.get(5, TimeUnit.SECONDS);
                 }
-                catch (InterruptedException ex) {
-                    break;
-                }
                 catch (ExecutionException ex) {
                     throw ex.getCause();
                 }
+
                 updateStatus(message, EsuStatusType.SUCCESS, eventId, null);
             }
             catch (Throwable ex) {
@@ -99,7 +111,8 @@ abstract class BaseTopicTask<T> implements Tasklet {
                 updateStatus(message, EsuStatusType.UNSUCCESS, eventId, ex.getMessage());
             }
         }
-        LOG.info(typeClass.getSimpleName() + " task done");
+
+         LOG.info(typeClass.getSimpleName() + " task done");
 
         return RepeatStatus.FINISHED;
     }
