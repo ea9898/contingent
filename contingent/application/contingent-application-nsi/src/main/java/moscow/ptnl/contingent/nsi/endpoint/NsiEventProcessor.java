@@ -7,6 +7,7 @@ package moscow.ptnl.contingent.nsi.endpoint;
 
 import java.io.Serializable;
 import java.util.concurrent.Future;
+
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
@@ -32,7 +33,6 @@ import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsCRUDReposito
 import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesClassCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypesKindCRUDRepository;
-import moscow.ptnl.contingent.repository.PagingAndSortingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,38 +88,42 @@ public class NsiEventProcessor {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     public Future<Void> processMesage(Keyable entity, String action) {
         if (entity instanceof AreaType) {
-            saveOrDelete(areaTypesCRUDRepository, (AreaType) entity, action);
+            saveOrModifyOrArchive(areaTypesCRUDRepository, (AreaType) entity, action);
         } else if (entity instanceof AreaTypeClass) {
-            saveOrDelete(areaTypesClassCRUDRepository, (AreaTypeClass) entity, action);
+            saveOrModifyOrArchive(areaTypesClassCRUDRepository, (AreaTypeClass) entity, action);
         } else if (entity instanceof AreaTypeKind) {
-            saveOrDelete(areaTypesKindCRUDRepository, (AreaTypeKind) entity, action);
+            saveOrModifyOrArchive(areaTypesKindCRUDRepository, (AreaTypeKind) entity, action);
         } else if (entity instanceof AreaTypeMedicalPositions) {
-            saveOrDelete(areaTypeMedicalPositionsCRUDRepository, (AreaTypeMedicalPositions) entity, action);
+            saveOrModifyOrArchive(areaTypeMedicalPositionsCRUDRepository, (AreaTypeMedicalPositions) entity, action);
         } else if (entity instanceof AreaTypeRelations) {
-            saveOrDelete(areaTypeRelationsCRUDRepository, (AreaTypeRelations) entity, action);
+            saveOrModifyOrArchive(areaTypeRelationsCRUDRepository, (AreaTypeRelations) entity, action);
         } else if (entity instanceof AreaTypeSpecializations) {
-            saveOrDelete(areaTypeSpecializationsCRUDRepository, (AreaTypeSpecializations) entity, action);
+            saveOrModifyOrArchive(areaTypeSpecializationsCRUDRepository, (AreaTypeSpecializations) entity, action);
         } else if (entity instanceof Specialization) {
-            saveOrDelete(specializationCRUDRepository, (Specialization) entity, action);
+            saveOrModifyOrArchive(specializationCRUDRepository, (Specialization) entity, action);
         } else if (entity instanceof PositionCode) {
-            saveOrDelete(positionCodeCRUDRepository, (PositionCode) entity, action);
+            saveOrModifyOrArchive(positionCodeCRUDRepository, (PositionCode) entity, action);
         } else if (entity instanceof Gender) {
-            saveOrDelete(genderCRUDRepository, (Gender) entity, action);
+            saveOrModifyOrArchive(genderCRUDRepository, (Gender) entity, action);
         } else if (entity instanceof PolicyType) {
-            saveOrDelete(policyTypeCRUDRepository, (PolicyType) entity, action);
+            saveOrModifyOrArchive(policyTypeCRUDRepository, (PolicyType) entity, action);
         } else if (entity instanceof PositionNom) {
-            saveOrDelete(positionNomCRUDRepository, (PositionNom) entity, action);
+            saveOrModifyOrArchive(positionNomCRUDRepository, (PositionNom) entity, action);
         }
         return new AsyncResult(null);
     }
     
-    private <T extends Keyable, K extends Serializable> void saveOrDelete(CommonRepository<T, K> repository, T entity, String action) {
+    private <T extends Keyable, K extends Serializable> void saveOrModifyOrArchive(CommonRepository<T, K> repository, T entity, String action) {
         if (NsiActionsEnum.DELETED.name().equalsIgnoreCase(action)) {
             LOG.info("delete action");
             repository.deleteById(entity.getKey());
-        } else {
+        } else if (NsiActionsEnum.ADDED.name().equalsIgnoreCase(action)){
             LOG.info("save action");
             repository.save(entity);
+        } else if (NsiActionsEnum.MODIFIED.name().equalsIgnoreCase(action)) {
+            LOG.info("modify action");
+
         }
+        throw new RuntimeException("Неизвестное действие " + action);
     }
 }
