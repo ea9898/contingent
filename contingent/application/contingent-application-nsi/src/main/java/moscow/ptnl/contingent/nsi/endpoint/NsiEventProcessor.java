@@ -1,8 +1,10 @@
 package moscow.ptnl.contingent.nsi.endpoint;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.concurrent.Future;
 
+import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
@@ -45,7 +47,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class NsiEventProcessor {
     
     private static final Logger LOG = LoggerFactory.getLogger(NsiEventProcessor.class);
-    
+
+    private static final String NSI_ENTITY_SOURCE = "push";
+
     @Autowired
     private AreaTypesCRUDRepository areaTypesCRUDRepository;
 
@@ -81,7 +85,7 @@ public class NsiEventProcessor {
 
     @Async
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
-    public Future<Void> processMessage(Keyable entity, String action) {
+    public Future<Void> processMessage(NsiExternalEntity entity, String action) {
         if (entity instanceof AreaType) {
             saveOrModifyOrArchive(areaTypesCRUDRepository, (AreaType) entity, action);
         } else if (entity instanceof AreaTypeClass) {
@@ -108,9 +112,14 @@ public class NsiEventProcessor {
         return new AsyncResult(null);
     }
     
-    private <T extends Keyable, K extends Serializable> void saveOrModifyOrArchive(CommonRepository<T, K> repository, T entity, String action) {
+    private <T extends NsiExternalEntity, K extends Serializable> void saveOrModifyOrArchive(CommonRepository<T, K> repository, T entity, String action) {
+        entity.setSource(NSI_ENTITY_SOURCE);
+        entity.setUpdateDate(LocalDateTime.now());
+
         if (NsiActionsEnum.DELETED.name().equalsIgnoreCase(action)) {
+            entity.setArchived(true);
         } else if (NsiActionsEnum.ADDED.name().equalsIgnoreCase(action)){
+
         } else if (NsiActionsEnum.MODIFIED.name().equalsIgnoreCase(action)) {
         }
         else {

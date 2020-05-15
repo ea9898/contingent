@@ -19,7 +19,7 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 @Table(name = "POSITION_CODE")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.POSITION_CODE)
-public class PositionCode implements Serializable, Keyable, NsiExternalEntity {
+public class PositionCode implements Serializable, NsiExternalEntity {
 
     private static final long serialVersionUID = 3663299049984440497L;
 

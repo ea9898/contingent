@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.nsi.endpoint;
 
+import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.entity.NsiPushEvent;
 import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class NsiEventEndpoint {
     @ServiceActivator(inputChannel = NSI_EVENT_CHANNEL_NAME)
     public void nsiPushConsumer(Message<Object> msg) {
         LOG.info("получено сообщение: " + msg);
-        Keyable entity = (Keyable) msg.getPayload();
+        NsiExternalEntity entity = (NsiExternalEntity) msg.getPayload();
         String action = (String) msg.getHeaders().get(NsiPushEventConstraint.PUSH_EVENT_ACTION_HEADER);
         Long eventId = (Long) msg.getHeaders().get(NsiPushEventConstraint.PUSH_EVENT_ID_HEADER);
         NsiPushEvent event;

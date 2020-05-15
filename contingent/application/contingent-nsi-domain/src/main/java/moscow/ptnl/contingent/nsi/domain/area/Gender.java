@@ -20,7 +20,7 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 @Table(name = "Gender")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.GENDER)
-public class Gender implements Serializable, Keyable, NsiExternalEntity {
+public class Gender implements Serializable, NsiExternalEntity {
 
     private static final long serialVersionUID = 7174737671670446575L;
 

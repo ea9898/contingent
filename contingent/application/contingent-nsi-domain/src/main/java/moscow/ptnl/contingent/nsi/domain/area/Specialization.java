@@ -21,7 +21,7 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 @Table(name = "SPECIALIZATION")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.SPECIALIZATION)
-public class Specialization implements Serializable, Keyable, NsiExternalEntity {
+public class Specialization implements Serializable, NsiExternalEntity {
 
     private static final long serialVersionUID = -3935499028862334002L;
 

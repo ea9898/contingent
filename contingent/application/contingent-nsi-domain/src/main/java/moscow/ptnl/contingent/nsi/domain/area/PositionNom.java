@@ -23,7 +23,7 @@ import java.util.Objects;
 @Table(name = "POSITION_NOM")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.D_POSITION_NOM)
-public class PositionNom implements Serializable, Keyable, NsiExternalEntity {
+public class PositionNom implements Serializable, NsiExternalEntity {
 
     private static final long serialVersionUID = 3663299049984020497L;
 

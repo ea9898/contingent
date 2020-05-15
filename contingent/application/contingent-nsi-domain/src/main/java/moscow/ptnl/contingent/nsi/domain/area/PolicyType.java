@@ -21,7 +21,7 @@ import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 @Table(name = "POLICY_TYPE")
 @Cacheable
 @MapToNsi(table = NsiTablesEnum.POLICY_TYPE)
-public class PolicyType implements Serializable, Keyable, NsiExternalEntity {
+public class PolicyType implements Serializable, NsiExternalEntity {
 
     private static final long serialVersionUID = -1047920444396677745L;
 

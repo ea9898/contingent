@@ -1,11 +1,13 @@
 package moscow.ptnl.contingent.nsi.domain;
 
+import moscow.ptnl.contingent.domain.Keyable;
+
 import java.time.LocalDateTime;
 
 /**
  * Вещаем на сущности, которые обновляются из НСИ и имеют соответствующие поля
 */
-public interface NsiExternalEntity {
+public interface NsiExternalEntity extends Keyable {
 
     LocalDateTime getUpdateDate();
 

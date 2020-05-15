@@ -30,8 +30,6 @@ import java.time.LocalDateTime;
 @Component
 public class PushAccepterImpl extends PushAccepter {
 
-    private static final String NSI_ENTITY_SOURCE = "push";
-
     @Autowired
     private NsiEntityMapper entityMapper;
 
@@ -87,13 +85,8 @@ public class PushAccepterImpl extends PushAccepter {
                 pushEventEntity = entityMapper.mapTyped(pack, PositionNom.class);
                 break;
         }
-        if (pushEventEntity instanceof NsiExternalEntity) {
-            ((NsiExternalEntity) pushEventEntity).setUpdateDate(LocalDateTime.now());
-            ((NsiExternalEntity) pushEventEntity).setSource(NSI_ENTITY_SOURCE);
-
-            if (NsiActionsEnum.DELETED.name().equalsIgnoreCase(pack.catalog.data.action)) {
-                ((NsiExternalEntity) pushEventEntity).setArchived(true);
-            }
+        if (pushEventEntity == null) {
+            throw new RuntimeException("Объект push НСИ не определен");
         }
         nsiChannel.send(MessageBuilder
                 .withPayload(pushEventEntity)
