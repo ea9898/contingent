@@ -121,6 +121,9 @@ public class NsiEventProcessor {
         } else if (NsiActionsEnum.ADDED.name().equalsIgnoreCase(action)){
 
         } else if (NsiActionsEnum.MODIFIED.name().equalsIgnoreCase(action)) {
+            if (!repository.existsById(entity.getKey())) {
+                throw new RuntimeException("Объект не найден " + entity.getKey().toString());
+            }
         }
         else {
             throw new RuntimeException("Неизвестное действие " + action);
