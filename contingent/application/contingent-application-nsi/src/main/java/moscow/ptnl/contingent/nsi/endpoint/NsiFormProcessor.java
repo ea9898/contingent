@@ -65,6 +65,7 @@ public class NsiFormProcessor {
             nsiFormResponseMapper.cleanEntityFields(entity);
         }
         nsiFormResponseMapper.transformAndMergeEntity(response, entity);
+        nsiFormResponseMapper.cleanNullFields(entity);
 
         if (notFound) {
             if (NsiFormTablesEnum.ADDRESSES.equals(entityType)) {

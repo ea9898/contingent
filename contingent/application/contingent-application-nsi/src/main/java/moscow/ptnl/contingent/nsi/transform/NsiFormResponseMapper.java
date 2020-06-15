@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,8 @@ public class NsiFormResponseMapper {
 
     private final static Map<String, String> FIELDS_MAPPING;
 
+    private final static Map<String, String> FIELDS_FOR_NULL_CHECK;
+
     private final static Set<String> PERMANENT_FIELDS;
 
     static {
@@ -41,6 +44,11 @@ public class NsiFormResponseMapper {
         FIELDS_MAPPING.put("REGION_TE_CODE", "REGION_TE_TE_CODE");
         FIELDS_MAPPING.put("REGION_CODE", "REGIONCODE");
         FIELDS_MAPPING.put("AREACODE_OMK_TE", "AREA_TE_TE_CODE");
+        FIELDS_FOR_NULL_CHECK = new HashMap<>();
+        FIELDS_FOR_NULL_CHECK.put("AREACODE", "areaName");
+        FIELDS_FOR_NULL_CHECK.put("PLACECODE", "placeName");
+        FIELDS_FOR_NULL_CHECK.put("PLANCODE", "planName");
+        FIELDS_FOR_NULL_CHECK.put("CITYCODE", "cityName");
         PERMANENT_FIELDS = new HashSet<>();
         PERMANENT_FIELDS.add("GLOBAL_ID");
         PERMANENT_FIELDS.add("CREATE_DATE");
@@ -56,6 +64,33 @@ public class NsiFormResponseMapper {
             if (ann != null && ann.nullable() && !PERMANENT_FIELDS.contains(ann.name())) {
                 field.setAccessible(true);
                 field.set(entityObj, null);
+            }
+        }
+    }
+
+    public void cleanNullFields(Object entityObj) throws IllegalAccessException {
+        List<Field> fields = Arrays.asList(entityObj.getClass().getDeclaredFields());
+
+        for (Field field : fields) {
+            Column ann = field.getAnnotation(Column.class);
+
+            if (ann != null && FIELDS_FOR_NULL_CHECK.containsKey(ann.name())) {
+                //Нашли поле кода (CODE)
+                field.setAccessible(true);
+                String code = (String) field.get(entityObj);
+
+                if (code != null && code.matches("^[0]+$")) {
+                    //Ищем поле с именем (_NAME)
+                    Field nameField = fields.stream()
+                            .filter(f -> Objects.equals(f.getName(), FIELDS_FOR_NULL_CHECK.get(ann.name())))
+                            .findAny()
+                            .orElse(null);
+                    nameField.setAccessible(true);
+
+                    if (nameField.get(entityObj) == null) {
+                        field.set(entityObj, null);
+                    }
+                }
             }
         }
     }
