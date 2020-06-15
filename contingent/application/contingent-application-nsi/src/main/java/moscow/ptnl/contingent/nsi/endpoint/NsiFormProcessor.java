@@ -60,6 +60,10 @@ public class NsiFormProcessor {
         else {
             return;
         }
+        if (!notFound) {
+            //Перед непосредственным обновлением осуществляется очистка всех полей целевой таблицы в NULL (кроме global_id)
+            nsiFormResponseMapper.cleanEntityFields(entity);
+        }
         nsiFormResponseMapper.transformAndMergeEntity(response, entity);
 
         if (notFound) {

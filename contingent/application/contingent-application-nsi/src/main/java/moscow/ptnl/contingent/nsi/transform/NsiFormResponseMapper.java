@@ -20,9 +20,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,11 +34,30 @@ public class NsiFormResponseMapper {
 
     private final static Map<String, String> FIELDS_MAPPING;
 
+    private final static Set<String> PERMANENT_FIELDS;
+
     static {
         FIELDS_MAPPING = new HashMap<>();
         FIELDS_MAPPING.put("REGION_TE_CODE", "REGION_TE_TE_CODE");
         FIELDS_MAPPING.put("REGION_CODE", "REGIONCODE");
         FIELDS_MAPPING.put("AREACODE_OMK_TE", "AREA_TE_TE_CODE");
+        PERMANENT_FIELDS = new HashSet<>();
+        PERMANENT_FIELDS.add("GLOBAL_ID");
+        PERMANENT_FIELDS.add("CREATE_DATE");
+        PERMANENT_FIELDS.add("UPDATE_DATE");
+    }
+
+    public void cleanEntityFields(Object entityObj) throws IllegalAccessException {
+        Field[] fields = entityObj.getClass().getDeclaredFields();
+
+        for (Field field : fields) {
+            Column ann = field.getAnnotation(Column.class);
+
+            if (ann != null && ann.nullable() && !PERMANENT_FIELDS.contains(ann.name())) {
+                field.setAccessible(true);
+                field.set(entityObj, null);
+            }
+        }
     }
 
     public void transformAndMergeEntity(Document document, Object entityObj) throws IllegalAccessException {
