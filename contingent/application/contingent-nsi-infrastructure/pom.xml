@@ -21,8 +21,6 @@
 
     <properties>
         <spring.batch.version>3.0.5.RELEASE</spring.batch.version>
-        <esu.producer.version>1.1.1</esu.producer.version>
-        <esu.consumer.version>2.1.6</esu.consumer.version>
     </properties>
 
     <dependencies>
@@ -65,18 +63,6 @@
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-core</artifactId>
             <version>${spring.integration.version}</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-producer-lib</artifactId>
-            <version>${esu.producer.version}</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-consumer-lib</artifactId>
-            <version>${esu.consumer.version}</version>
             <scope>${artefact.scope}</scope>
         </dependency>
         <dependency>

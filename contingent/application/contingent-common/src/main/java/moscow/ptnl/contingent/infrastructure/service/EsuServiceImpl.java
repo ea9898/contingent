@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import ru.mos.emias.esu.lib.producer.MessageMetadata;
 
 import javax.annotation.PostConstruct;
 
@@ -124,7 +125,7 @@ public class EsuServiceImpl implements EsuService {
     @Override
     public void publishToESU(final Long recordId, final String publishTopic, final String message) {
 
-        EsuProducer.MessageMetadata esuAnswer = null;
+        MessageMetadata esuAnswer = null;
         //запускаем в потоке чтобы иметь возможность прервать по таймауту
         try {
             esuAnswer = CompletableFuture.supplyAsync(() -> {

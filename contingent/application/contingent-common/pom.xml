@@ -43,14 +43,8 @@
         </dependency>
         <dependency>
             <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-producer-lib</artifactId>
-            <version>1.1.1</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-consumer-lib</artifactId>
-            <version>2.1.6</version>
+            <artifactId>client-libs</artifactId>
+            <version>3.4.1</version>
             <scope>${artefact.scope}</scope>
         </dependency>
         <dependency>
