@@ -60,6 +60,7 @@ public abstract class AddressMapper {
             @Mapping(target = "streetName", source = "street.name"),
             @Mapping(target = "streetTypeName", source = "street.type.full"),
             @Mapping(target = "streetTypeNameShort", source = "street.type.short"),
+            @Mapping(target = "streetOmkUm", source = "street.codeOMKUM"),
 
             @Mapping(target = "l1Type", source = "building.house.type.full"),
             @Mapping(target = "l1TypeShort", source = "building.house.type.short"),
@@ -134,6 +135,7 @@ public abstract class AddressMapper {
             @Mapping(source = "streetName", target = "street.name"),
             @Mapping(source = "streetTypeName", target = "street.type.full"),
             @Mapping(source = "streetTypeNameShort", target = "street.type.short"),
+            @Mapping(source = "streetOmkUm", target = "street.codeOMKUM"),
 
             @Mapping(source = "l1Type", target = "building.house.type.full"),
             @Mapping(source = "l1TypeShort", target = "building.house.type.short"),
