@@ -147,14 +147,20 @@ abstract class BaseTopicTask<T> implements Tasklet {
     }
 
     private void updateStatus(EsuInput message, EsuStatusType status, String eventId, String errorMessage) {
-        if (status.equals(EsuStatusType.UNSUCCESS)) {
-            message.setErrorMessage(errorMessage);
+        try {
+            if (EsuStatusType.UNSUCCESS.equals(status)) {
+                message.setErrorMessage(errorMessage);
+            }
+            if (eventId != null) {
+                message.setEventId(eventId);
+            }
+            message.setStatus(status);
+            message.setUpdateTime(LocalDateTime.now());
+            message.setHost(host);
+            
+            esuInputRepository.save(message);
+        } catch (Throwable er) {
+            LOG.error("Ошибка сохранения статуса сообщения ЕСУ с ID={}", message.getEsuId(), er);
         }
-        if (eventId != null) {
-            message.setEventId(eventId);
-        }
-        message.setStatus(status);
-        message.setUpdateTime(LocalDateTime.now());
-        message.setHost(host);
     }
 }

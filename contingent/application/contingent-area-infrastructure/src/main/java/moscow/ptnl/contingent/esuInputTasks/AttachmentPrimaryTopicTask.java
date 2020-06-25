@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * К_УУ_ЕСУ_4
@@ -60,6 +62,7 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
     }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public void processMessage(AttachPrimaryPatientEvent event) {
         // 3.1
         Area area = areaCRUDRepository.findById(event.getPrimaryAreaId()).orElse(null);
