@@ -56,6 +56,10 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "REGION_TE_TYPENAME")
     private String regionTeTypeName;
 
+    @Size(max = 256)
+    @Column(name = "REGION_TE_TYPENAME_SHORT")
+    private String regionTeTypeNameShort;
+
     @Size(max = 50)
     @Column(name = "AREACODE_OMK_TE")
     private String areaCodeOmkTe;
@@ -67,6 +71,10 @@ public class NsiAddressFormingElement implements Serializable {
     @Size(max = 128)
     @Column(name = "AREA_TE_TYPENAME")
     private String areaTeTypeName;
+
+    @Size(max = 128)
+    @Column(name = "AREA_TE_TYPENAME_SHORT")
+    private String areaTeTypeNameShort;
 
     @Size(max = 3)
     @Column(name = "AREACODE")
@@ -84,6 +92,10 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "AREA_TYPENAME")
     private String areaTypeName;
 
+    @Size(max = 128)
+    @Column(name = "AREA_TYPENAME_SHORT")
+    private String areaTypeNameShort;
+
     @Size(max = 3)
     @Column(name = "CITYCODE")
     private String cityCode;
@@ -99,6 +111,10 @@ public class NsiAddressFormingElement implements Serializable {
     @Size(max = 128)
     @Column(name = "CITY_TYPENAME")
     private String cityTypeName;
+
+    @Size(max = 128)
+    @Column(name = "CITY_TYPENAME_SHORT")
+    private String cityTypeNameShort;
 
     @Size(max = 3)
     @Column(name = "PLACECODE")
@@ -116,6 +132,10 @@ public class NsiAddressFormingElement implements Serializable {
     @Column(name = "PLACE_TYPENAME")
     private String placeTypeName;
 
+    @Size(max = 128)
+    @Column(name = "PLACE_TYPENAME_SHORT")
+    private String placeTypeNameShort;
+
     @Size(max = 3)
     @Column(name = "PLANCODE")
     private String planCode;
@@ -131,6 +151,10 @@ public class NsiAddressFormingElement implements Serializable {
     @Size(max = 128)
     @Column(name = "PLAN_TYPENAME")
     private String planTypeName;
+
+    @Size(max = 128)
+    @Column(name = "PLAN_TYPENAME_SHORT")
+    private String planTypeNameShort;
 
     @Size(max = 4)
     @Column(name = "STREETCODE")
@@ -151,6 +175,10 @@ public class NsiAddressFormingElement implements Serializable {
     @Size(max = 128)
     @Column(name = "STREET_TYPENAME")
     private String streetTypeName;
+
+    @Size(max = 128)
+    @Column(name = "STREET_TYPENAME_SHORT")
+    private String streetTypeNameShort;
 
     @Size(max = 4000)
     @Column(name = "ADDRESS", nullable = false)
@@ -525,6 +553,94 @@ public class NsiAddressFormingElement implements Serializable {
 
     public void setUpdateDate(LocalDateTime updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Long getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(Long regionId) {
+        this.regionId = regionId;
+    }
+
+    public String getRegionCode() {
+        return regionCode;
+    }
+
+    public void setRegionCode(String regionCode) {
+        this.regionCode = regionCode;
+    }
+
+    public String getRegionName() {
+        return regionName;
+    }
+
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
+    }
+
+    public String getRegionTeId() {
+        return regionTeId;
+    }
+
+    public void setRegionTeId(String regionTeId) {
+        this.regionTeId = regionTeId;
+    }
+
+    public String getRegionTeTypeNameShort() {
+        return regionTeTypeNameShort;
+    }
+
+    public void setRegionTeTypeNameShort(String regionTeTypeNameShort) {
+        this.regionTeTypeNameShort = regionTeTypeNameShort;
+    }
+
+    public String getAreaTeTypeNameShort() {
+        return areaTeTypeNameShort;
+    }
+
+    public void setAreaTeTypeNameShort(String areaTeTypeNameShort) {
+        this.areaTeTypeNameShort = areaTeTypeNameShort;
+    }
+
+    public String getAreaTypeNameShort() {
+        return areaTypeNameShort;
+    }
+
+    public void setAreaTypeNameShort(String areaTypeNameShort) {
+        this.areaTypeNameShort = areaTypeNameShort;
+    }
+
+    public String getCityTypeNameShort() {
+        return cityTypeNameShort;
+    }
+
+    public void setCityTypeNameShort(String cityTypeNameShort) {
+        this.cityTypeNameShort = cityTypeNameShort;
+    }
+
+    public String getPlaceTypeNameShort() {
+        return placeTypeNameShort;
+    }
+
+    public void setPlaceTypeNameShort(String placeTypeNameShort) {
+        this.placeTypeNameShort = placeTypeNameShort;
+    }
+
+    public String getPlanTypeNameShort() {
+        return planTypeNameShort;
+    }
+
+    public void setPlanTypeNameShort(String planTypeNameShort) {
+        this.planTypeNameShort = planTypeNameShort;
+    }
+
+    public String getStreetTypeNameShort() {
+        return streetTypeNameShort;
+    }
+
+    public void setStreetTypeNameShort(String streetTypeNameShort) {
+        this.streetTypeNameShort = streetTypeNameShort;
     }
 
     @Override
