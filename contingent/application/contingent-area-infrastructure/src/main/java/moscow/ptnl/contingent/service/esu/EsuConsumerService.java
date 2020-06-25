@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import ru.mos.emias.esu.consumer.EsuConsumer;
-import ru.mos.emias.esu.consumer.EsuConsumerMessageProcessor;
-import ru.mos.emias.esu.consumer.EsuTopicConsumer;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -27,6 +24,9 @@ import java.util.Map;
 import java.util.Optional;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import org.springframework.scheduling.annotation.Scheduled;
+import ru.mos.emias.esu.lib.consumer.EsuConsumer;
+import ru.mos.emias.esu.lib.consumer.EsuConsumerMessageProcessor;
+import ru.mos.emias.esu.lib.consumer.EsuTopicConsumer;
 
 /**
  * Сервис подписки на топики и сохранения в БД сообщений от ЕСУ.
@@ -231,9 +231,7 @@ public class EsuConsumerService {
                 // Кол-во потоков
                 topicThreadsNumber,
                 // Объект класса, унаследованного от EsuConsumerMessageProcessor. NOT THREAD SAFE
-                processor,
-                // Важность очерёдности обработки сообщений (в случае если очерёдность важна, обработка будет выполняться в один поток и при наличии ошибок обработка сообщений будет останавливаться
-                false);
+                processor);
         consumerConfig
                 // Интервал между запросами в Kafka в мс (по-умолчанию 300)
                 .setPollingInterval(pollingInterval)
