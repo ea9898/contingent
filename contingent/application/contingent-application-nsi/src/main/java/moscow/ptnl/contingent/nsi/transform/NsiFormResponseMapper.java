@@ -49,6 +49,7 @@ public class NsiFormResponseMapper {
         FIELDS_FOR_NULL_CHECK.put("PLACECODE", "placeName");
         FIELDS_FOR_NULL_CHECK.put("PLANCODE", "planName");
         FIELDS_FOR_NULL_CHECK.put("CITYCODE", "cityName");
+        FIELDS_FOR_NULL_CHECK.put("STREETCODE", "streetName");
         PERMANENT_FIELDS = new HashSet<>();
         PERMANENT_FIELDS.add("GLOBAL_ID");
         PERMANENT_FIELDS.add("CREATE_DATE");
