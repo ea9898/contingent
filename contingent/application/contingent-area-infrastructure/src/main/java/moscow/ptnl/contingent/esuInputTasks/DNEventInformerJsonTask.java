@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * К_УУ_ЕСУ_6
@@ -58,6 +60,7 @@ public class DNEventInformerJsonTask extends BaseTopicTask<DnEventInformer> {
     }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public void processMessage(DnEventInformer event) {
 
         if ("create".equals(event.getOperationType()) && event.getNewResults() != null) {

@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * К_УУ_ЕСУ_2
@@ -97,6 +99,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public void processMessage(JobExecutionInfoMsg event) {
         //2
         if (event.getJeCreate() != null) {
