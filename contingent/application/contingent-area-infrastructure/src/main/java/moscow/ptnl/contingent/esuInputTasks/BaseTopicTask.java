@@ -84,31 +84,34 @@ abstract class BaseTopicTask<T> implements Tasklet {
         for (EsuInput message : messages) {
 
             String eventId = null;
-
+            EsuStatusType status = EsuStatusType.UNSUCCESS;;
+            String errorMessage = null;
+                    
             try {
                 T event = isMessageTypeJson() ? convertEventJson(message.getMessage()) : convertEventXml(message.getMessage());
                 eventId = getEventId(event);
 
-                //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
-                Future future = transactionRunner.run(() -> {
-                    processMessage(event);
-                    return true;
-                });
-
                 try {
+                    //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
+                    Future future = transactionRunner.run(() -> {
+                        processMessage(event);
+                        return true;
+                    });
                     // Если за 5 секунд не закомителось, то что то идет не так...
                     future.get(5, TimeUnit.SECONDS);
                 }
-                catch (ExecutionException ex) {
+                catch (Throwable ex) {
+                    LOG.error("Ошибка выполнения в асинхронной транзакции сообщения ЕСУ с ID={}", message.getEsuId(), ex);
                     throw ex.getCause();
                 }
 
-                updateStatus(message, EsuStatusType.SUCCESS, eventId, null);
-            }
-            catch (Throwable ex) {
+                status = EsuStatusType.SUCCESS;
+            } catch (Throwable ex) {
                 LOG.warn("Ошибка обработки входящего сообщения ЕСУ с ID={}", message.getEsuId(), ex);
                 ex = Objects.equals(ex.getMessage(), "Transaction has thrown an Exception") ? ex.getCause() : ex;
-                updateStatus(message, EsuStatusType.UNSUCCESS, eventId, ex.getMessage());
+                errorMessage = ex.getMessage(); 
+            } finally {
+                updateStatus(message, status, eventId, errorMessage);
             }
         }
 
