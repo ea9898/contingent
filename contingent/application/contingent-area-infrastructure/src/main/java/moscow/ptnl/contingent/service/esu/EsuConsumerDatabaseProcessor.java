@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.mos.emias.esu.consumer.EsuConsumerMessageProcessor;
-import ru.mos.emias.esu.consumer.EsuMessage;
+import ru.mos.emias.esu.lib.consumer.EsuConsumerMessageProcessor;
+import ru.mos.emias.esu.lib.consumer.EsuMessage;
 
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;

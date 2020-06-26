@@ -13,11 +13,6 @@
     <groupId>moscow.ptnl.contingent</groupId>
     <artifactId>sysop-infrastructure</artifactId>
 
-    <properties>
-        <esu.producer.version>1.1.1</esu.producer.version>
-        <esu.consumer.version>2.1.6</esu.consumer.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
@@ -34,18 +29,6 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
             <version>${spring.data}</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-producer-lib</artifactId>
-            <version>${esu.producer.version}</version>
-            <scope>${artefact.scope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.mos.emias.esu</groupId>
-            <artifactId>esu-consumer-lib</artifactId>
-            <version>${esu.consumer.version}</version>
             <scope>${artefact.scope}</scope>
         </dependency>
         <dependency>
