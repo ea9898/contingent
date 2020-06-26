@@ -20,10 +20,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import moscow.ptnl.util.XMLUtil;
@@ -97,11 +95,11 @@ abstract class BaseTopicTask<T> implements Tasklet {
                         processMessage(event);
                         return true;
                     });
-                    // Если за 5 секунд не закомителось, то что то идет не так...
-                    future.get(5, TimeUnit.SECONDS);
+                    // Если за 10 секунд не закомителось, то что то идет не так...
+                    future.get(10, TimeUnit.SECONDS);
                 }
                 catch (Throwable ex) {
-                    LOG.error("Ошибка выполнения в асинхронной транзакции сообщения ЕСУ с ID={}", message.getEsuId(), ex);
+                    LOG.error("Ошибка выполнения в асинхронной транзакции сообщения ЕСУ с ID={} в обработчике {}", message.getEsuId(), this.getClass().getName(), ex);
                     throw ex.getCause();
                 }
 
