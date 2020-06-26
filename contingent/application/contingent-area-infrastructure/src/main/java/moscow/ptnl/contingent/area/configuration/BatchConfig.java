@@ -72,7 +72,7 @@ public class BatchConfig extends DefaultBatchConfigurer {
                 .build();
     }
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 60000)
     public void schedule1() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
@@ -80,7 +80,7 @@ public class BatchConfig extends DefaultBatchConfigurer {
         jobLauncher.run(buildJobAttachmentPrimaryTopicTask(), params);
     }
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 60000)
     public void schedule2() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
@@ -88,7 +88,7 @@ public class BatchConfig extends DefaultBatchConfigurer {
         jobLauncher.run(buildJobJobExecutionInfoMsg(), params);
     }
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 60000)
     public void schedule3() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))

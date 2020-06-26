@@ -30,7 +30,7 @@ public class EsuInputRepositoryImpl extends BaseRepository implements EsuInputRe
                                                 criteriaBuilder.equal(root.get(EsuInput_.topic), personalTopic)),
                                         criteriaBuilder.isNull(root.get(EsuInput_.status)));
 
-        return esuInputCRUDRepository.findAll(specification, PageRequest.of(0, 20));
+        return esuInputCRUDRepository.findAll(specification, PageRequest.of(0, 30));
     }
 
     @Override
