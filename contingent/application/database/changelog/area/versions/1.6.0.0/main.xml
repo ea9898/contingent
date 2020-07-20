@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1.6.0.0" author="ddryuchin" labels ="1.6.0.0">
+        <tagDatabase tag="1.6.0.0"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-746" author="ddryuchin" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_mo_id_areas"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки MO_ID таблицы AREAS</comment>
+        <createIndex indexName="idx_mo_id_areas"
+                     tableName="AREAS"
+                     unique="false">
+            <column name="MO_ID" type="number"/>
+        </createIndex>
+    </changeSet>
+
+
+</databaseChangeLog>
