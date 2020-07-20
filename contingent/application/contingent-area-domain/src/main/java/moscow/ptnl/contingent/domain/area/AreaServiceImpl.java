@@ -707,7 +707,7 @@ public class AreaServiceImpl implements AreaService {
             // 5.6.
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
 
-            if (positions != null && positions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(empl.getPositionCode()))) {
+            if (positions != null && !positions.isEmpty() && positions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(empl.getPositionCode()))) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionNom.getTitle()),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
