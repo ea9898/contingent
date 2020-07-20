@@ -175,7 +175,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         criteria.select(areaJoin);
         criteria.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(areaTypeJoin.get(AreaType_.areaTypeClass), areaTypeKindCode),
+                        criteriaBuilder.equal(areaTypeJoin.get(AreaType_.areaTypeKind), areaTypeKindCode),
                         criteriaBuilder.equal(areaJoin.get(Area_.archived), archived),
                         criteriaBuilder.equal(root.get(AreaMedicalEmployees_.medicalEmployeeJobId), medicalEmployeeJobInfo))
         );
