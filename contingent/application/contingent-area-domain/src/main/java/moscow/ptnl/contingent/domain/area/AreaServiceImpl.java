@@ -978,11 +978,11 @@ public class AreaServiceImpl implements AreaService {
         // 1. 2.
         Area area = areaHelper.checkAndGetArea(areaId, validation);
 
-        Area oldArea = historyHelper.clone(area);
-
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+
+        Area oldArea = historyHelper.clone(area);
 
         // 3.
         if (area != null && Boolean.TRUE.equals(area.getAutoAssignForAttach())) {
@@ -1019,8 +1019,6 @@ public class AreaServiceImpl implements AreaService {
         // 1. 2.
         Area area = areaHelper.checkAndGetArchivedArea(areaId, validation);
 
-        Area oldArea = historyHelper.clone(area);
-
         if (area != null) {
             // 3.
             areaHelper.checkAreaTypeIsNotPersonal(area.getAreaType(), validation);
@@ -1031,6 +1029,8 @@ public class AreaServiceImpl implements AreaService {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+
+        Area oldArea = historyHelper.clone(area);
 
         // 5.
         area.setAutoAssignForAttach(false);
