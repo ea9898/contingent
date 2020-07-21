@@ -978,6 +978,8 @@ public class AreaServiceImpl implements AreaService {
         // 1. 2.
         Area area = areaHelper.checkAndGetArea(areaId, validation);
 
+        Area oldArea = historyHelper.clone(area);
+
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
@@ -1004,6 +1006,10 @@ public class AreaServiceImpl implements AreaService {
         //if (areaHelper.isAreaPrimary(area)) {
         //    esuHelperService.sendAreaInfoEvent(area, "archiveArea");
         //}
+
+        // 9
+        historyHelper.sendHistory(oldArea, area, Area.class);
+
     }
 
     @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
@@ -1012,6 +1018,8 @@ public class AreaServiceImpl implements AreaService {
 
         // 1. 2.
         Area area = areaHelper.checkAndGetArchivedArea(areaId, validation);
+
+        Area oldArea = historyHelper.clone(area);
 
         if (area != null) {
             // 3.
@@ -1047,6 +1055,9 @@ public class AreaServiceImpl implements AreaService {
         // 9. @LogESU
 
         // 10.
+        historyHelper.sendHistory(oldArea, area, Area.class);
+
+        // 11
         return;
     }
 
