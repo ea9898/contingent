@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
@@ -28,6 +29,11 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdSpec(long areaId) {
         return (root, criteriaQuery, criteriaBuilder) ->
             criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area), areaId);
+    }
+
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdsSpec(List<Area> areas) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                root.get(AreaMedicalEmployees_.area).in(areas);
     }
 
     private Specification<AreaMedicalEmployees> actualEmployeesSpec() {
@@ -70,6 +76,14 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
         return areaMedicalEmployeeCRUDRepository.findAll(
                 findAreasMedicalEmplyeesByAreaIdSpec(areaId)
                         .and(replacementEmployeesSpec()).and(actualEmployeesSpec()));
+    }
+
+    @Override
+    public Map<Area, List<AreaMedicalEmployees>> getEmployeesByAreaIds(List<Area> areas) {
+        return areaMedicalEmployeeCRUDRepository.findAll(
+                findAreasMedicalEmplyeesByAreaIdsSpec(areas)
+                .and(actualEmployeesSpec()))
+                .stream().collect(Collectors.groupingBy(AreaMedicalEmployees::getArea, Collectors.toList()));
     }
 
     @Override

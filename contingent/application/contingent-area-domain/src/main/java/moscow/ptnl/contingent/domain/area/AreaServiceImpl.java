@@ -1191,18 +1191,24 @@ public class AreaServiceImpl implements AreaService {
                 .skip(paging.getPageNumber() * paging.getPageSize()).limit(paging.getPageSize())
                 .map(AreaInfo::new).collect(Collectors.toList());
 
+        Map<Area, List<AreaMedicalEmployees>> mapMedicalEmployees = areaMedicalEmployeeRepository.getEmployeesByAreaIds(areaInfos.stream().map(AreaInfo::getArea).collect(Collectors.toList()));
+
         areaInfos.forEach(ai -> {
             // Добавление работников
-            // TODO в случаях тормозов, по всем выбранным участкам выбрать работников в мапу Map<areaId, Employee>, и распределить по участкам
-            List<AreaMedicalEmployees> mainMedicalEmployees = areaMedicalEmployeeRepository.
-                    getEmployeesMainActualByAreaId(ai.getArea().getId());
+            if (mapMedicalEmployees.get(ai.getArea()) != null) {
+                List<AreaMedicalEmployees> mainMedicalEmployees = mapMedicalEmployees.get(ai.getArea()).stream()
+                        .filter(me -> Boolean.valueOf(false).equals(me.getReplacement()))
+                        .collect(Collectors.toList());
+                ai.setMainAreaMedicalEmployees(mainMedicalEmployees);
 
-            // 3.
-            List<AreaMedicalEmployees> replacementMedicalEmployees = areaMedicalEmployeeRepository.
-                    getEmployeesReplacementActualByAreaId(ai.getArea().getId());
+                // 3.
+                List<AreaMedicalEmployees> replacementMedicalEmployees = mapMedicalEmployees.get(ai.getArea()).stream()
+                        .filter(me -> Boolean.valueOf(true).equals(me.getReplacement()))
+                        .collect(Collectors.toList());
 
-            ai.setMainAreaMedicalEmployees(mainMedicalEmployees);
-            ai.setReplacementAreaMedicalEmployees(replacementMedicalEmployees);
+                ai.setReplacementAreaMedicalEmployees(replacementMedicalEmployees);
+            }
+
         });
 
         return new PageImpl<>(new ArrayList<>(areaInfos),
