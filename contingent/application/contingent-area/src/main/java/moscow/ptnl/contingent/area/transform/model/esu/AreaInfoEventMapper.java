@@ -2,11 +2,14 @@ package moscow.ptnl.contingent.area.transform.model.esu;
 
 import moscow.ptnl.contingent.area.transform.Transform;
 import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import moscow.ptnl.util.CollectionsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Component
 public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent> {
@@ -47,7 +50,10 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
             event.setReplacementEmployees(replacementEmployeesMapper.entityToDtoTransform(area.getActualReplacementMedicalEmployees()));
         }
         //3
-        event.setAddresses(addressesMapper.entityToDtoTransform(area.getActualAreaAddresses()));
+        Set<AreaAddress> areaAddressSet = area.getActualAreaAddresses();
+        if (!CollectionsUtil.isNullOrEmpty(areaAddressSet)) {
+            event.setAddresses(addressesMapper.entityToDtoTransform(areaAddressSet));
+        }
 
         return event;
     }

@@ -285,6 +285,7 @@ public class AreaHelper {
     public void delAreaAddresses(List<AreaAddress> addresses) {
         addresses.forEach(a -> {
             if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
+                a.setEndDate(LocalDate.now().minusDays(1)); // чтоб адреса не попадали в актуальные в отправке в ЕСУ
                 areaAddressRepository.delete(a);
             }
             else {
@@ -866,6 +867,7 @@ public class AreaHelper {
     public void delAreaMedicalEmployees(List<AreaMedicalEmployees> employees) {
         employees.forEach(a -> {
             if (a.getStartDate().equals(LocalDate.now())) {
+                a.setEndDate(LocalDate.now().minusDays(1)); // что б МР не попадали в актуальные при отправке в ЕСУ
                 areaMedicalEmployeeRepository.delete(a);
             }
             else {
