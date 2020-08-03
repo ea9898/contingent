@@ -155,6 +155,6 @@ public class PositionCode implements Serializable, NsiExternalEntity {
     }
 
     public Serializable getKey() {
-        return getGlobalId();
+        return getCode();
     }
 }

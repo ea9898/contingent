@@ -74,7 +74,7 @@ public class MapToNsiHelper {
     
     public void setFieldValue(Field field, Object target, Object value, MapToNsi mapToNsi) {   
         try {
-            if (value == null) {
+            if (value == null || (value instanceof String && String.valueOf(value).length() == 0)) {
                 return;
             }
 
