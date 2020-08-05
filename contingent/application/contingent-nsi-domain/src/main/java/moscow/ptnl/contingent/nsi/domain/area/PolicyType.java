@@ -117,7 +117,7 @@ public class PolicyType implements Serializable, NsiExternalEntity {
     }
 
     public Serializable getKey() {
-        return getGlobalId();
+        return getCode();
     }
 
 }
