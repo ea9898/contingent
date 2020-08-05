@@ -38,7 +38,7 @@ public class PositionNom implements Serializable, NsiExternalEntity {
     private String title;
 
     @JoinColumn(name = "POSITION_CODE_ID", nullable = false, referencedColumnName = "GLOBAL_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapToNsi(value = "POSITION_CODE_ID", findEntityByField = "globalId")
     private PositionCode positionCode;
 
