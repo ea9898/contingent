@@ -37,7 +37,7 @@ public class LogSoapEventEndpoint {
      */
     @ServiceActivator(inputChannel = SOAP_LOG_EVENT_CHANNEL_NAME)
     public void logSoapEventConsumer(Message<SoapContextData> msg) {
-        LOG.debug("Received SOAP event: {}", msg.getPayload().getMethod());
+        LOG.trace("Received SOAP event: {}", msg.getPayload().getMethod());
 
         try {
             String[] nameParts = msg.getPayload().getMethod().split("/");
