@@ -31,6 +31,14 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
             criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area), areaId);
     }
 
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesNotError() {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.or(
+                        criteriaBuilder.isNull(root.get(AreaMedicalEmployees_.isError)),
+                        criteriaBuilder.equal(root.get(AreaMedicalEmployees_.isError), false)
+                );
+    }
+
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdsSpec(List<Area> areas) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 root.get(AreaMedicalEmployees_.area).in(areas);
@@ -68,6 +76,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     public List<AreaMedicalEmployees> getEmployeesMainActualByAreaId(long areaId) {
         return areaMedicalEmployeeCRUDRepository.findAll(
                 findAreasMedicalEmplyeesByAreaIdSpec(areaId)
+                        .and(findAreasMedicalEmplyeesNotError())
                         .and(mainEmployeesSpec()).and(actualEmployeesSpec()));
     }
 
@@ -75,6 +84,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     public List<AreaMedicalEmployees> getEmployeesReplacementActualByAreaId(long areaId) {
         return areaMedicalEmployeeCRUDRepository.findAll(
                 findAreasMedicalEmplyeesByAreaIdSpec(areaId)
+                        .and(findAreasMedicalEmplyeesNotError())
                         .and(replacementEmployeesSpec()).and(actualEmployeesSpec()));
     }
 
