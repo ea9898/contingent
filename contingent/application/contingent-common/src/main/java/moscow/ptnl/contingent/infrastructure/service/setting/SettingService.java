@@ -21,6 +21,8 @@ public interface SettingService {
     String UPDATE_ADDRESS_BY_GLOBAL_ID_THREADS = "updateAddressByGlobalId.threads";
     /** Максимально допустимое количество ИД участков для поиска во входных параметрах метода */
     String MAX_AREA_IDS_FOR_SEARCH = "max_areas_for_search";
+    /** Включение/отключение режима отправки сообщений в ЕСУ из ESU_OUTPUT */
+    String PAR_30 = "esu_output_sending_enabled";
 
     /**
      * Свойство извлекается из кэша.

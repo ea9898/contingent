@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import ru.mos.emias.esu.lib.producer.MessageMetadata;
 
 import javax.annotation.PostConstruct;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 
 @Service
 @PropertySource("classpath:application-esu.properties")
@@ -55,6 +56,9 @@ public class EsuServiceImpl implements EsuService {
 
     @Autowired
     private TransactionRunService transactionRunner;
+    
+    @Autowired
+    private SettingService settingService;
 
     private String host;
 
@@ -92,8 +96,11 @@ public class EsuServiceImpl implements EsuService {
 
                 return Pair.of(esuOutput.getId(), message);
             }).get();
-            //здесь нужна асинхронность, чтобы не блокировать базу
-            asyncEsuExecutor.publishToESU(this, result.getFirst(), topicName, result.getSecond());
+            
+            if (isProducerOn()) {
+                //здесь нужна асинхронность, чтобы не блокировать базу
+                asyncEsuExecutor.publishToESU(this, result.getFirst(), topicName, result.getSecond());
+            }
             
             return true;
         } catch (Exception e) {
@@ -105,14 +112,15 @@ public class EsuServiceImpl implements EsuService {
 
     @Override
     public void periodicalPublishUnsuccessMessagesToESU(LocalDateTime olderThen) {
-        
-        List<EsuOutput> records = esuOutputRepository.findEsuOutputsToResend(olderThen);
+        if (isProducerOn()) {
+            List<EsuOutput> records = esuOutputRepository.findEsuOutputsToResend(olderThen);
 
-        records.forEach((record) -> {
-            LOG.debug("TRY RESEND TO ESU: {}", record.getId());
-            //здесь нужна асинхронность, чтобы не блокировать базу
-            asyncEsuExecutor.publishToESU(this, record.getId(), record.getTopic(), record.getMessage());
-        });
+            records.forEach((record) -> {
+                LOG.debug("TRY RESEND TO ESU: {}", record.getId());
+                //здесь нужна асинхронность, чтобы не блокировать базу
+                asyncEsuExecutor.publishToESU(this, record.getId(), record.getTopic(), record.getMessage());
+            });
+        }
     }
 
     /**
@@ -181,5 +189,16 @@ public class EsuServiceImpl implements EsuService {
             return t;
         };
         return Executors.newFixedThreadPool(1, threadFactory);
+    }
+    
+    private boolean isProducerOn() {
+        //глобальная настройка отправки во все топиков
+        Boolean runMode = Boolean.TRUE.equals((Boolean) settingService.getSettingProperty(SettingService.PAR_30, true));
+        if (!runMode) {
+            LOG.warn("Отправка в топики отключена в настройке {}", SettingService.PAR_30);
+            return false; 
+        }
+        
+        return true;
     }
 }
