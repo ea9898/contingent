@@ -31,7 +31,30 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
             criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area), areaId);
     }
 
-    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdsSpec(List<Area> areas) {
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdsSpec(List<Long> areaIds) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                root.get(AreaMedicalEmployees_.area).in(areaIds);
+    }
+
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByJobsIdsSpec(List<Long> jobIds) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                root.get(AreaMedicalEmployees_.medicalEmployeeJobId).in(jobIds);
+    }
+
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesBySnilsSpec(List<String> snils) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                root.get(AreaMedicalEmployees_.snils).in(snils);
+    }
+
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesNotError() {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.or(
+                        criteriaBuilder.isNull(root.get(AreaMedicalEmployees_.isError)),
+                        criteriaBuilder.equal(root.get(AreaMedicalEmployees_.isError), false)
+                );
+    }
+
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreasSpec(List<Area> areas) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 root.get(AreaMedicalEmployees_.area).in(areas);
     }
@@ -68,6 +91,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     public List<AreaMedicalEmployees> getEmployeesMainActualByAreaId(long areaId) {
         return areaMedicalEmployeeCRUDRepository.findAll(
                 findAreasMedicalEmplyeesByAreaIdSpec(areaId)
+                        .and(findAreasMedicalEmplyeesNotError())
                         .and(mainEmployeesSpec()).and(actualEmployeesSpec()));
     }
 
@@ -75,14 +99,16 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     public List<AreaMedicalEmployees> getEmployeesReplacementActualByAreaId(long areaId) {
         return areaMedicalEmployeeCRUDRepository.findAll(
                 findAreasMedicalEmplyeesByAreaIdSpec(areaId)
+                        .and(findAreasMedicalEmplyeesNotError())
                         .and(replacementEmployeesSpec()).and(actualEmployeesSpec()));
     }
 
     @Override
     public Map<Area, List<AreaMedicalEmployees>> getEmployeesByAreaIds(List<Area> areas) {
         return areaMedicalEmployeeCRUDRepository.findAll(
-                findAreasMedicalEmplyeesByAreaIdsSpec(areas)
-                .and(actualEmployeesSpec()))
+                findAreasMedicalEmplyeesByAreasSpec(areas)
+                .and(actualEmployeesSpec())
+                .and(findAreasMedicalEmplyeesNotError()))
                 .stream().collect(Collectors.groupingBy(AreaMedicalEmployees::getArea, Collectors.toList()));
     }
 
@@ -108,21 +134,18 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
 
     @Override
     public List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<AreaMedicalEmployees> criteria = criteriaBuilder.createQuery(AreaMedicalEmployees.class);
-        Root<AreaMedicalEmployees> root = criteria.from(AreaMedicalEmployees.class);
-        criteria.select(root);
-        criteria.where(
-                criteriaBuilder.and(
-                        areaIds == null || areaIds.isEmpty() ? criteriaBuilder.conjunction() :
-                                root.get(AreaMedicalEmployees_.area).in(areaIds),
-                        jobIds == null || jobIds.isEmpty() ? criteriaBuilder.conjunction() :
-                                root.get(AreaMedicalEmployees_.medicalEmployeeJobId).in(jobIds),
-                        snils == null || snils.isEmpty() ? criteriaBuilder.conjunction() :
-                                root.get(AreaMedicalEmployees_.snils).in(snils))
-        );
-        return entityManager.createQuery(criteria).getResultList().
-                stream().map(AreaMedicalEmployees::getArea).distinct().collect(Collectors.toList());
+        Specification<AreaMedicalEmployees> specification = findAreasMedicalEmplyeesNotError();
+        if (areaIds != null && !areaIds.isEmpty()) {
+            specification = specification.and(findAreasMedicalEmplyeesByAreaIdsSpec(areaIds));
+        }
+        if (jobIds != null && !jobIds.isEmpty()) {
+            specification = specification.and(findAreasMedicalEmplyeesByJobsIdsSpec(jobIds));
+        }
+        if (snils != null && !snils.isEmpty()) {
+            specification = specification.and(findAreasMedicalEmplyeesBySnilsSpec(snils));
+        }
+        return areaMedicalEmployeeCRUDRepository.findAll(specification)
+            .stream().map(AreaMedicalEmployees::getArea).distinct().collect(Collectors.toList());
     }
 
     @Override

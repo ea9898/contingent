@@ -251,6 +251,7 @@
             <xs:element name="assignmentId" type="xs:long"/>
             <xs:element name="startDate" type="xs:date" minOccurs="0"/>
             <xs:element name="endDate" type="xs:date" minOccurs="0"/>
+            <xs:element name="is_error" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     

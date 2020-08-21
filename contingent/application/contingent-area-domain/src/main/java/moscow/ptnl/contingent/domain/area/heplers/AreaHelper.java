@@ -528,6 +528,7 @@ public class AreaHelper {
             }
 
             empl.setUpdateDate(LocalDateTime.now());
+            empl.setError(changeEmpl.isIsError());
 
             historyMap.put(medicalEmployeeOld, empl);
         }
@@ -865,7 +866,7 @@ public class AreaHelper {
 
 
     public void delAreaMedicalEmployees(List<AreaMedicalEmployees> employees) {
-        employees.forEach(a -> {
+        employees.stream().filter(me -> me == null || !me.getError()).forEach(a -> {
             if (a.getStartDate().equals(LocalDate.now())) {
                 a.setEndDate(LocalDate.now().minusDays(1)); // что б МР не попадали в актуальные при отправке в ЕСУ
                 areaMedicalEmployeeRepository.delete(a);

@@ -44,5 +44,20 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-811" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+            <not>
+                <columnExists tableName="AREA_MEDICAL_EMPLOYEES" columnName="is_error"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки is_error в таблицу AREA_MEDICAL_EMPLOYEES</comment>
+        <addColumn tableName="AREA_MEDICAL_EMPLOYEES">
+            <column name="is_error" type="NUMBER(1)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="is_error" tableName="AREA_MEDICAL_EMPLOYEES"/>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

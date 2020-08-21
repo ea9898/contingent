@@ -639,20 +639,22 @@ public class AreaServiceImpl implements AreaService {
                 }
             }
 
-            //4.2
-            if (inputEmpl.getEndDate() == null && inputEmpl.getStartDate() == null) {
-                validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
-            }
+            if(inputEmpl.isIsError() == null || !inputEmpl.isIsError()) {
+                //5.2.2.1
+                if (inputEmpl.getEndDate() == null && inputEmpl.getStartDate() == null) {
+                    validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
+                }
 
-            //4.3
-            LocalDate startDate = inputEmpl.getStartDate() != null ? inputEmpl.getStartDate()
-                    : emplDb != null ? emplDb.getStartDate() : null;
-            LocalDate endDate = inputEmpl.getEndDate() != null ? inputEmpl.getEndDate()
-                    : emplDb != null ? emplDb.getStartDate() : null;
-            if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
-                validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
-                        new ValidationParameter("endDate", endDate),
-                        new ValidationParameter("startDate", startDate));
+                //5.2.2.2
+                LocalDate startDate = inputEmpl.getStartDate() != null ? inputEmpl.getStartDate()
+                        : emplDb != null ? emplDb.getStartDate() : null;
+                LocalDate endDate = inputEmpl.getEndDate() != null ? inputEmpl.getEndDate()
+                        : emplDb != null ? emplDb.getStartDate() : null;
+                if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+                    validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
+                            new ValidationParameter("endDate", endDate),
+                            new ValidationParameter("startDate", startDate));
+                }
             }
         }
         if (!validation.isSuccess()) {
@@ -722,7 +724,8 @@ public class AreaServiceImpl implements AreaService {
         List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
         Map<AreaMedicalEmployees, AreaMedicalEmployees> changesAme =  areaHelper.applyChanges(allEmployees, changeEmployeesInput);
         areaHelper.addNew(allEmployees, addEmployeesInput, area);
-        areaHelper.checkDatesNotInterceptWithSamePosition(allEmployees, validation);
+        areaHelper.checkDatesNotInterceptWithSamePosition(
+                allEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation); // отфитровываем ошибочно назначенные работников из проверки
 
         //6.2
         List<AreaMedicalEmployees> mainEmployees =
@@ -732,7 +735,8 @@ public class AreaServiceImpl implements AreaService {
                 .filter(empl -> !empl.isReplacement()).collect(Collectors.toList()), area);
         if (area.getAreaType() != null && area.getAreaType().getAreaTypeKind() != null &&
                 area.getAreaType().getAreaTypeKind().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) {
-            areaHelper.checkMainEmployeesOverlappingDates(mainEmployees, validation);
+            areaHelper.checkMainEmployeesOverlappingDates(
+                    mainEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation);  // отфитровываем ошибочно назначенные работников из проверки
         }
 
         //6.3
