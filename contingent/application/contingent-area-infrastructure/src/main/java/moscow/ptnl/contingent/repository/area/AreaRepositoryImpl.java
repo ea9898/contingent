@@ -87,6 +87,10 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                     cb.or(
                         cb.isNull(subRoot.get(AreaMedicalEmployees_.endDate)),
                         cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate.getName()), LocalDate.now())
+                    ),
+                    cb.or(
+                        cb.isNull(subRoot.get(AreaMedicalEmployees_.isError)),
+                        cb.equal(subRoot.get(AreaMedicalEmployees_.isError), false)
                     )
             )).select(subRoot));
         };

@@ -39,6 +39,7 @@ public class AreaDnMapper implements Transform<AreaDn, Area> {
         );
         if (entityObject.getActualMainMedicalEmployees() != null) {
             entityObject.getActualMainMedicalEmployees().stream()
+                    .filter(me -> me.getError() == null || !me.getError())
                     .min((o1, o2) -> Objects.compare(o1.getMedicalEmployeeJobId(), o2.getMedicalEmployeeJobId(), Long::compare))
                     .map(areaDnMedicalEmployeeMapper::entityToDtoTransform)
                     .ifPresent(area::setMedicalEmployee);
