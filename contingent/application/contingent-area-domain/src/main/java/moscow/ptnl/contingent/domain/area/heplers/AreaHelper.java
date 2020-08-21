@@ -528,6 +528,7 @@ public class AreaHelper {
             }
 
             empl.setUpdateDate(LocalDateTime.now());
+            empl.setError(changeEmpl.isIsError());
 
             historyMap.put(medicalEmployeeOld, empl);
         }

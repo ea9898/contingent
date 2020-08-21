@@ -13,6 +13,8 @@ public class ChangeMedicalEmployee {
 
     protected LocalDate endDate;
 
+    protected Boolean isError;
+
     public long getAssignmentId() {
         return assignmentId;
     }
@@ -36,4 +38,8 @@ public class ChangeMedicalEmployee {
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
+
+    public Boolean isIsError() { return isError; }
+
+    public void setIsError(Boolean error) { isError = error; }
 }

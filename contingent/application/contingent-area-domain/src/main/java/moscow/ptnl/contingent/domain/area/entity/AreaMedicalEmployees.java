@@ -79,6 +79,10 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     @Column(name = "SUBDIVISION_ID")
     private Long subdivisionId;
 
+    @Column(name = "IS_ERROR")
+    @Convert(converter = BooleanIntegerConverter.class)
+    private Boolean isError;
+
     public AreaMedicalEmployees() {
     }
 
@@ -189,6 +193,10 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     public Long getSubdivisionId() {
         return subdivisionId;
     }
+
+    public Boolean getError() { return isError; }
+
+    public void setError(Boolean error) { isError = error; }
 
     @Override
     public boolean equals(Object obj) {
