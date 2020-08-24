@@ -780,7 +780,8 @@ public class AreaServiceImpl implements AreaService {
         //    esuHelperService.sendAreaInfoEvent(area, "setMedicalEmployeeOnArea");
         //}
 
-        return result;    }
+        return result;
+    }
 
     @Override
     public AreaInfo getAreaById(Long areaId) throws ContingentException {
