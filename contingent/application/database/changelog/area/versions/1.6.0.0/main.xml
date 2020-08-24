@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8' ?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -20,6 +20,28 @@
                      unique="false">
             <column name="MO_ID" type="number"/>
         </createIndex>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-825" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'esu_output_sending_enabled'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Включение/отключение режима отправки сообщений в ЕСУ из ESU_OUTPUT</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="esu_output_sending_enabled"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Включение/отключение режима отправки сообщений в ЕСУ из ESU_OUTPUT (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='esu_output_sending_enabled'</where>
+            </delete>
+        </rollback>
     </changeSet>
 
     <changeSet id="CONTINGENT2-811" author="ddryuchin">

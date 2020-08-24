@@ -2,7 +2,6 @@ package moscow.ptnl.contingent.area.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import javax.annotation.PreDestroy;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

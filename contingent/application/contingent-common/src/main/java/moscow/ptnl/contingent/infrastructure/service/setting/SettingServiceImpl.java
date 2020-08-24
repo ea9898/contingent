@@ -3,7 +3,6 @@ package moscow.ptnl.contingent.infrastructure.service.setting;
 import moscow.ptnl.contingent.domain.settings.Setting;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sun.rmi.runtime.Log;
 
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
