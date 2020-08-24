@@ -15,14 +15,32 @@ public interface SettingService {
     String TOPICS_CONSUMERS_RUN_MODE = "topics.consumers.run.mode";
     /** Настройки ограничения доступа к методам web-сервиса. */
     String SERVICES_SECURITY_SETTINGS = "services.security.settings";
-    /** Максимально допустимое количество адресных объектов для разового обновления из АР СУ НСИ */
+    /** Максимально допустимое количество адресных объектов для разового обновления из АР СУ НСИ. */
     String UPDATE_ADDRESS_BY_GLOBAL_ID_MAXCOUNT = "updateAddressByGlobalId.maxcount";
-    /** Максимально допустимое количество адресных объектов для разового обновления из АР СУ НСИ */
+    /** Максимально допустимое количество адресных объектов для разового обновления из АР СУ НСИ. */
     String UPDATE_ADDRESS_BY_GLOBAL_ID_THREADS = "updateAddressByGlobalId.threads";
-    /** Максимально допустимое количество ИД участков для поиска во входных параметрах метода */
+    /** Максимально допустимое количество ИД участков для поиска во входных параметрах метода. */
     String MAX_AREA_IDS_FOR_SEARCH = "max_areas_for_search";
-    /** Включение/отключение режима отправки сообщений в ЕСУ из ESU_OUTPUT */
+    /** Включение/отключение режима отправки сообщений в ЕСУ из ESU_OUTPUT. */
     String PAR_30 = "esu_output_sending_enabled";
+    /** Количество календарных дней хранения записей в ESU_INPUT. */
+    String PAR_21 = "esu_input_period_keeping";
+    /** Количество календарных дней хранения записей в ESU_OUTPUT. */
+    String PAR_22 = "esu_output_period_keeping";
+    /** Удалять из ESU_INPUT только успешно обработанные сообщения (0-отключен, 1-включен). */
+    String PAR_23 = "esu_input_delete_success";
+    /** Удалять из ESU_OUTPUT только успешно обработанные сообщения (0-отключен, 1-включен). */
+    String PAR_24 = "esu_output_delete_success";	
+    /** Временной интервал запуска триггера очистки ESU_INPUT (HH:mm-HH:mm, например 00:30-04:00). */        
+    String PAR_25 = "esu_input_trigger_clean_start_interval";	
+    /** Частота запуска триггера очистки ESU_INPUT (минуты), например: 1440. */
+    String PAR_26 = "esu_input_trigger_clean_start_period";
+    /** Временной интервал запуска триггера очистки ESU_OUTPUT (HH:mm-HH:mm, например 00:30-04:00). */        
+    String PAR_27 = "esu_output_trigger_clean_start_interval";	
+    /** Частота запуска триггера очистки ESU_OUTPUT (минуты). */
+    String PAR_28 = "esu_output_trigger_clean_start_period";
+    /** Не запускать триггеры. */
+    String PAR_29 = "do_not_run_triggers";
 
     /**
      * Свойство извлекается из кэша.
