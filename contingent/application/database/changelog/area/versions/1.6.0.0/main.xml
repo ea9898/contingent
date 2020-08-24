@@ -59,5 +59,203 @@
             <dropColumn columnName="is_error" tableName="AREA_MEDICAL_EMPLOYEES"/>
         </rollback>
     </changeSet>
+    
+    <changeSet id="CONTINGENT2-794-1" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'esu_input_period_keeping'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Количество календарных дней хранения записей в ESU_INPUT</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="esu_input_period_keeping"/>
+            <column name="type" value="1"/>
+            <column name="val" value="90"/>
+            <column name="description" value="Количество календарных дней хранения записей в ESU_INPUT"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='esu_input_period_keeping'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-794-2" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'esu_output_period_keeping'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Количество календарных дней хранения записей в ESU_OUTPUT</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="esu_output_period_keeping"/>
+            <column name="type" value="1"/>
+            <column name="val" value="90"/>
+            <column name="description" value="Количество календарных дней хранения записей в ESU_OUTPUT"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='esu_output_period_keeping'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-794-3" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'esu_input_delete_success'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Удалять из ESU_INPUT только успешно обработанные сообщения</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="esu_input_delete_success"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Удалять из ESU_INPUT только успешно обработанные сообщения (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='esu_input_delete_success'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-794-4" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'esu_output_delete_success'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Удалять из ESU_OUTPUT только успешно обработанные сообщения</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="esu_output_delete_success"/>
+            <column name="type" value="5"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Удалять из ESU_OUTPUT только успешно обработанные сообщения (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='esu_output_delete_success'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-794-5" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'esu_input_trigger_clean_start_interval'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Временной интервал запуска триггера очистки ESU_INPUT</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="esu_input_trigger_clean_start_interval"/>
+            <column name="type" value="3"/>
+            <column name="val" value="00:30-04:00"/>
+            <column name="description" value="Временной интервал запуска триггера очистки ESU_INPUT (HH:mm-HH:mm)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='esu_input_trigger_clean_start_interval'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-794-6" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'esu_input_trigger_clean_start_period'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Частота запуска триггера очистки ESU_INPUT (минуты)</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="esu_input_trigger_clean_start_period"/>
+            <column name="type" value="1"/>
+            <column name="val" value="1440"/>
+            <column name="description" value="Частота запуска триггера очистки ESU_INPUT (минуты)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='esu_input_trigger_clean_start_period'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-794-7" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'esu_output_trigger_clean_start_interval'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Временной интервал запуска триггера очистки ESU_OUTPUT</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="esu_output_trigger_clean_start_interval"/>
+            <column name="type" value="3"/>
+            <column name="val" value="00:30-04:00"/>
+            <column name="description" value="Временной интервал запуска триггера очистки ESU_OUTPUT (HH:mm-HH:mm)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='esu_output_trigger_clean_start_interval'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-794-8" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'esu_output_trigger_clean_start_period'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Частота запуска триггера очистки ESU_OUTPUT (минуты)</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="esu_output_trigger_clean_start_period"/>
+            <column name="type" value="1"/>
+            <column name="val" value="1440"/>
+            <column name="description" value="Частота запуска триггера очистки ESU_OUTPUT (минуты)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='esu_output_trigger_clean_start_period'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-794-9" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'do_not_run_triggers'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Не запускать триггеры</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="do_not_run_triggers"/>
+            <column name="type" value="3"/>
+            <column name="val" value=""/>
+            <column name="description" value="Не запускать триггеры (Значение1;...;ЗначениеN)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='do_not_run_triggers'</where>
+            </delete>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>
