@@ -32,6 +32,7 @@
         <comment>Включение/отключение режима отправки сообщений в ЕСУ из ESU_OUTPUT</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="esu_output_sending_enabled"/>
+            <column name="codedoc" value="PAR_30"/>
             <column name="type" value="5"/>
             <column name="val" value="1"/>
             <column name="description" value="Включение/отключение режима отправки сообщений в ЕСУ из ESU_OUTPUT (0-отключен, 1-включен)"/>
@@ -70,6 +71,7 @@
         <comment>Количество календарных дней хранения записей в ESU_INPUT</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="esu_input_period_keeping"/>
+            <column name="codedoc" value="PAR_21"/>
             <column name="type" value="1"/>
             <column name="val" value="90"/>
             <column name="description" value="Количество календарных дней хранения записей в ESU_INPUT"/>
@@ -92,6 +94,7 @@
         <comment>Количество календарных дней хранения записей в ESU_OUTPUT</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="esu_output_period_keeping"/>
+            <column name="codedoc" value="PAR_22"/>
             <column name="type" value="1"/>
             <column name="val" value="90"/>
             <column name="description" value="Количество календарных дней хранения записей в ESU_OUTPUT"/>
@@ -114,6 +117,7 @@
         <comment>Удалять из ESU_INPUT только успешно обработанные сообщения</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="esu_input_delete_success"/>
+            <column name="codedoc" value="PAR_23"/>
             <column name="type" value="5"/>
             <column name="val" value="1"/>
             <column name="description" value="Удалять из ESU_INPUT только успешно обработанные сообщения (0-отключен, 1-включен)"/>
@@ -136,6 +140,7 @@
         <comment>Удалять из ESU_OUTPUT только успешно обработанные сообщения</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="esu_output_delete_success"/>
+            <column name="codedoc" value="PAR_24"/>
             <column name="type" value="5"/>
             <column name="val" value="1"/>
             <column name="description" value="Удалять из ESU_OUTPUT только успешно обработанные сообщения (0-отключен, 1-включен)"/>
@@ -158,6 +163,7 @@
         <comment>Временной интервал запуска триггера очистки ESU_INPUT</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="esu_input_trigger_clean_start_interval"/>
+            <column name="codedoc" value="PAR_25"/>
             <column name="type" value="3"/>
             <column name="val" value="00:30-04:00"/>
             <column name="description" value="Временной интервал запуска триггера очистки ESU_INPUT (HH:mm-HH:mm)"/>
@@ -180,6 +186,7 @@
         <comment>Частота запуска триггера очистки ESU_INPUT (минуты)</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="esu_input_trigger_clean_start_period"/>
+            <column name="codedoc" value="PAR_26"/>
             <column name="type" value="1"/>
             <column name="val" value="1440"/>
             <column name="description" value="Частота запуска триггера очистки ESU_INPUT (минуты)"/>
@@ -202,6 +209,7 @@
         <comment>Временной интервал запуска триггера очистки ESU_OUTPUT</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="esu_output_trigger_clean_start_interval"/>
+            <column name="codedoc" value="PAR_27"/>
             <column name="type" value="3"/>
             <column name="val" value="00:30-04:00"/>
             <column name="description" value="Временной интервал запуска триггера очистки ESU_OUTPUT (HH:mm-HH:mm)"/>
@@ -224,6 +232,7 @@
         <comment>Частота запуска триггера очистки ESU_OUTPUT (минуты)</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="esu_output_trigger_clean_start_period"/>
+            <column name="codedoc" value="PAR_28"/>
             <column name="type" value="1"/>
             <column name="val" value="1440"/>
             <column name="description" value="Частота запуска триггера очистки ESU_OUTPUT (минуты)"/>
@@ -246,6 +255,7 @@
         <comment>Не запускать триггеры</comment>
         <insert tableName="AD_CONFIG">
             <column name="code" value="do_not_run_triggers"/>
+            <column name="codedoc" value="PAR_29"/>
             <column name="type" value="3"/>
             <column name="val" value=""/>
             <column name="description" value="Не запускать триггеры (Значение1;...;ЗначениеN)"/>
@@ -255,6 +265,66 @@
             <delete tableName="AD_CONFIG">
                 <where>code='do_not_run_triggers'</where>
             </delete>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-793-1" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="TRG_STATUS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы TRG_STATUS</comment>
+        <createTable tableName="TRG_STATUS" remarks="Статусы триггеров">
+            <column name="TRG_NAME" type="VARCHAR2(255)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="LAST_START_DATE" type="TIMESTAMP(6)"/>
+            <column name="LAST_END_DATE" type="TIMESTAMP(6)"/>
+            <column name="IS_RUN" type="NUMBER(1)" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="TRG_STATUS"/>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-793-2" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="TRG_HISTORY"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы TRG_HISTORY</comment>
+        <createTable tableName="TRG_HISTORY" remarks="История запуска триггеров">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TRG_NAME" type="VARCHAR2(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="START_DATE" type="TIMESTAMP(6)">
+                <constraints nullable="false" />
+            </column>
+            <column name="END_DATE" type="TIMESTAMP(6)"/>            
+            <column name="RESULT" type="BIGINT"/>            
+        </createTable>
+        <rollback>
+            <dropTable tableName="TRG_HISTORY"/>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="CONTINGENT2-793-3" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_TRG_HISTORY_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы TRG_HISTORY</comment>
+        <createSequence sequenceName="SEQ_TRG_HISTORY_ID"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_TRG_HISTORY_ID"/>
         </rollback>
     </changeSet>
 
