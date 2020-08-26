@@ -834,8 +834,7 @@ public class AreaServiceImpl implements AreaService {
 
         // 7
         List<MoAddress> findMoAddress = new ArrayList<>();
-        MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getMoId(), area.getAreaType(), null,
-                addressesRegistry, validation);
+        MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(), addressesRegistry, validation);
         addressesRegistry.forEach(ar -> {
             if (moAddressIntersect == null || !moAddressIntersect.getMoId().equals(area.getMoId())) {
                 validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
@@ -1099,8 +1098,7 @@ public class AreaServiceImpl implements AreaService {
 
         // 5.
         addressesRegistry.forEach(addr -> {
-            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(moId, areaType, orderId,
-                    Collections.singletonList(addr), validation);
+            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(areaType, Collections.singletonList(addr), validation);
             if (moAddress != null) {
                 validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
                         new ValidationParameter("address", addr.getAddressString()),
