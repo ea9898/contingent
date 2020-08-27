@@ -1000,7 +1000,9 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
 
         // 5. Система исключает МР из участка, если указаны
-        areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
+        if (area.getActualMedicalEmployees() != null && !area.getActualMedicalEmployees().isEmpty()) {
+            areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
+        }
 
         // 6. Система для данного участка меняет статус на «Архивный»
         area.setArchived(true);
