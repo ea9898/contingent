@@ -40,12 +40,12 @@ public interface AreaBriefMapper {
     AreaBrief.MedicalEmployees.MedicalEmployee entityToDtoTransform(AreaMedicalEmployees entity);
 
     default AreaBrief.MedicalEmployees map(java.util.Set<AreaMedicalEmployees> value) {
-        if (value == null || value.isEmpty()) {
+        java.util.Set<AreaMedicalEmployees> actualMe = value.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toSet());
+        if (actualMe.isEmpty()) {
             return null;
         }
         AreaBrief.MedicalEmployees employees = new AreaBrief.MedicalEmployees();
-        employees.getMedicalEmployees().addAll(value.stream()
-                .filter(me -> me.getError() == null || !me.getError())
+        employees.getMedicalEmployees().addAll(actualMe.stream()
                 .map(this::entityToDtoTransform)
                 .sorted(Comparator.comparing(AreaBrief.MedicalEmployees.MedicalEmployee::isIsReplacement))
                 .collect(Collectors.toList()));
