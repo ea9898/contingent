@@ -36,17 +36,21 @@ public interface SettingService {
     /** Удалять из ESU_INPUT только успешно обработанные сообщения (0-отключен, 1-включен). */
     String PAR_23 = "esu_input_delete_success";
     /** Удалять из ESU_OUTPUT только успешно обработанные сообщения (0-отключен, 1-включен). */
-    String PAR_24 = "esu_output_delete_success";	
-    /** Временной интервал запуска триггера очистки ESU_INPUT (HH:mm-HH:mm, например 00:30-04:00). */        
-    String PAR_25 = "esu_input_trigger_clean_start_interval";	
+    String PAR_24 = "esu_output_delete_success";
+    /** Временной интервал запуска триггера очистки ESU_INPUT (HH:mm-HH:mm, например 00:30-04:00). */
+    String PAR_25 = "esu_input_trigger_clean_start_interval";
     /** Частота запуска триггера очистки ESU_INPUT (минуты), например: 1440. */
     String PAR_26 = "esu_input_trigger_clean_start_period";
-    /** Временной интервал запуска триггера очистки ESU_OUTPUT (HH:mm-HH:mm, например 00:30-04:00). */        
-    String PAR_27 = "esu_output_trigger_clean_start_interval";	
+    /** Временной интервал запуска триггера очистки ESU_OUTPUT (HH:mm-HH:mm, например 00:30-04:00). */
+    String PAR_27 = "esu_output_trigger_clean_start_interval";
     /** Частота запуска триггера очистки ESU_OUTPUT (минуты). */
     String PAR_28 = "esu_output_trigger_clean_start_period";
     /** Не запускать триггеры. */
     String PAR_29 = "do_not_run_triggers";
+    /** Типы участков, для которых включен поиск адресов по точному совпадению адреса. */
+    String PAR_31 = "exact_match_address_area_types";
+    /** Включение поиска адресов по точному совпадению адреса для типов участков в exact_match_address_area_types. */
+    String PAR_32 = "exact_match_address_enabled";
     /** Тайм-аут триггера очистки ESU_OUTPUT (минуты). */
     String PAR_33 = "esu_output_trigger_timeout";
     /** Тайм-аут триггера очистки ESU_INPUT (минуты). */
@@ -76,6 +80,8 @@ public interface SettingService {
     Integer getPar5();
 
     Integer getPar6();
+
+    List<Long> par31();
     
     /**
      * Разбор параметра вида HH:mm-HH:mm, например 00:30-04:00

@@ -106,7 +106,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subdivisionId = subdivisionId;
-
+        this.isError = false;
     }
 
 

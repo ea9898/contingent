@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -105,6 +106,9 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
 
     @Override
     public Map<Area, List<AreaMedicalEmployees>> getEmployeesByAreaIds(List<Area> areas) {
+        if (areas.isEmpty()) {
+            return new HashMap<>();
+        }
         return areaMedicalEmployeeCRUDRepository.findAll(
                 findAreasMedicalEmplyeesByAreasSpec(areas)
                 .and(actualEmployeesSpec())

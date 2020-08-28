@@ -374,4 +374,51 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-828-1" author="ddryuchin" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'exact_match_address_area_types'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Типы участков, для которых включен поиск адресов по точному совпадению адреса</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="exact_match_address_area_types"/>
+            <column name="type" value="3"/>
+            <column name="val" value="10;20"/>
+            <column name="codedoc" value="PAR_31"/>
+            <column name="description" value="Типы участков, для которых включен поиск адресов по точному совпадению адреса "/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='exact_match_address_area_types'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-828-2" author="ddryuchin" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'exact_match_address_enabled'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Включение поиска адресов по точному совпадению адреса для типов участков в exact_match_address_area_types</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="exact_match_address_enabled"/>
+            <column name="type" value="5"/>
+            <column name="val" value="0"/>
+            <column name="codedoc" value="PAR_32"/>
+            <column name="description" value="Включение поиска адресов по точному совпадению адреса для типов участков в exact_match_address_area_types (0-отключен, 1-включен)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='exact_match_address_enabled'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+
 </databaseChangeLog>

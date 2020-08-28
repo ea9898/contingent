@@ -84,5 +84,10 @@ public class SettingServiceImpl implements SettingService {
         return param == null ? 20 : param.intValue();
     }
 
+    @Override
+    public List<Long> par31() {
+        String par31 = getSettingProperty(PAR_31);
+        return Arrays.stream(par31.split(";")).map(Long::parseLong).collect(Collectors.toList());
+    }
     
 }
