@@ -1,7 +1,13 @@
 package moscow.ptnl.contingent.infrastructure.service.setting;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * https://wiki.emias.mos.ru/pages/viewpage.action?pageId=118320411
+ * @author m.kachalov
+ */
 public interface SettingService {
     
     String Par1 = "max_addresses_for_allocation";
@@ -41,6 +47,10 @@ public interface SettingService {
     String PAR_28 = "esu_output_trigger_clean_start_period";
     /** Не запускать триггеры. */
     String PAR_29 = "do_not_run_triggers";
+    /** Тайм-аут триггера очистки ESU_OUTPUT (минуты). */
+    String PAR_33 = "esu_output_trigger_timeout";
+    /** Тайм-аут триггера очистки ESU_INPUT (минуты). */
+    String PAR_34 = "esu_input_trigger_timeout";
 
     /**
      * Свойство извлекается из кэша.
@@ -66,4 +76,20 @@ public interface SettingService {
     Integer getPar5();
 
     Integer getPar6();
+    
+    /**
+     * Разбор параметра вида HH:mm-HH:mm, например 00:30-04:00
+     * и проверка входит ли время в этот интервал.
+     * 
+     * @param value
+     * @param time
+     * @return 
+     */
+    static boolean timeInInterval(String value, LocalTime time) {
+        String[] times = value.split("-", 2);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime start = LocalTime.parse(times[0], formatter);
+        LocalTime stop  = LocalTime.parse(times[1], formatter);
+        return time.isAfter(start) && time.isBefore(stop);
+    }
 }

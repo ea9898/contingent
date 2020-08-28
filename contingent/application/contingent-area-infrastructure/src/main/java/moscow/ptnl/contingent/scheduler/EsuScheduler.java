@@ -19,17 +19,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.concurrent.Executor;
+import moscow.ptnl.contingent.domain.trigger.TriggerName;
+import moscow.ptnl.contingent.infrastructure.service.trigger.TriggerService;
 import org.springframework.context.annotation.Lazy;
 
 @Configuration
 @EnableScheduling
 @PropertySource("classpath:application-esu.properties")
-public class EsuPublishScheduler {
+public class EsuScheduler {
 
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
     @Autowired @Lazy
     private EsuService esuService;
+    
+    @Autowired
+    private TriggerService triggerService;
 
     @Value("${esu.resend.timeout}")
     private String esuResendTimeoutValue; //время сек, после которого можно повторно отправлять не отправленное сообщение
@@ -60,5 +65,15 @@ public class EsuPublishScheduler {
         } catch (Exception e) {
             LOG.error("Ошибка выполнения периодического задания по переотправке сообщений в ЕСУ", e);
         }
+    }
+    
+    /**
+     * Периодическая очистка таблиц ESU_INPUT, ESU_OUTPUT.
+     */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    @Scheduled(cron = "${esu.db.clean.cron.rule}")
+    public void esuInputOutputTablesCleaner() {
+        triggerService.startTrigger(TriggerName.trigger_cleanup_esu_input);
+        triggerService.startTrigger(TriggerName.trigger_cleanup_esu_output);
     }
 }

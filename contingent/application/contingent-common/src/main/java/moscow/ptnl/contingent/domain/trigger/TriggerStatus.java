@@ -18,7 +18,7 @@ public class TriggerStatus implements Serializable {
     
     @Id
     @Column(name = "TRG_NAME", unique = true, nullable = false)
-    private String name;
+    private TriggerName trigger;
     
     @Column(name = "LAST_START_DATE")
     private LocalDateTime lastStartDate;
@@ -27,14 +27,20 @@ public class TriggerStatus implements Serializable {
     private LocalDateTime lastEndDate;
     
     @Column(name = "IS_RUN", nullable = false)
-    private Boolean run;
-
-    public String getName() {
-        return name;
+    private Boolean run = Boolean.FALSE;
+    
+    public TriggerStatus(){}
+    
+    public TriggerStatus(TriggerName trigger){
+        this.trigger = trigger;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public TriggerName getTrigger() {
+        return trigger;
+    }
+
+    public void setTrigger(TriggerName trigger) {
+        this.trigger = trigger;
     }
 
     public LocalDateTime getLastStartDate() {
@@ -73,12 +79,12 @@ public class TriggerStatus implements Serializable {
             return false;
         }
         
-        return Objects.equals(name, ((TriggerStatus) o).getName());
+        return Objects.equals(trigger, ((TriggerStatus) o).getTrigger());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(trigger);
     }
     
 }

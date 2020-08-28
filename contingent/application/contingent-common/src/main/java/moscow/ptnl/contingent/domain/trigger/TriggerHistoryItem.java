@@ -26,7 +26,7 @@ public class TriggerHistoryItem implements Serializable {
     private Long id;
     
     @Column(name = "TRG_NAME")
-    private String triggerName;
+    private TriggerName trigger;
     
     @Column(name = "START_DATE", nullable = false)
     private LocalDateTime startTime;
@@ -45,12 +45,12 @@ public class TriggerHistoryItem implements Serializable {
         this.id = id;
     }
 
-    public String getTriggerName() {
-        return triggerName;
+    public TriggerName getTrigger() {
+        return trigger;
     }
 
-    public void setTriggerName(String triggerName) {
-        this.triggerName = triggerName;
+    public void setTrigger(TriggerName trigger) {
+        this.trigger = trigger;
     }
 
     public LocalDateTime getStartTime() {
