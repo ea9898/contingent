@@ -69,8 +69,8 @@ public class TriggerAction {
     private boolean triggerEsuOutputCleanAction() {
         LOG.debug("Триггер удаления записей из ESU_OUTPUT");
         Boolean removeOnlySuccessRecords = settingService.getSettingProperty(SettingService.PAR_24, true);
-        Long esuInputPeriodKeeping = settingService.getSettingProperty(SettingService.PAR_22, true);
-        LocalDateTime beforeDate = LocalDateTime.now().minusDays(esuInputPeriodKeeping);
+        Long esuOutputPeriodKeeping = settingService.getSettingProperty(SettingService.PAR_22, true);
+        LocalDateTime beforeDate = LocalDateTime.now().minusDays(esuOutputPeriodKeeping);
         Long deleted = 0L;
         if (Boolean.TRUE.equals(removeOnlySuccessRecords)) {
             //3.1 Если триггер должен удалять только успешно обработанные записи 
