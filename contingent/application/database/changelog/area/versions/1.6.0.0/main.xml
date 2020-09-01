@@ -420,5 +420,96 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-831-1" author="sorlov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'synch_areainfo_k1_trigger_start_interval'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Временной интервал запуска триггера формирования топика AreaInfo</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="synch_areainfo_k1_trigger_start_interval"/>
+            <column name="codedoc" value="PAR_35"/>
+            <column name="type" value="3"/>
+            <column name="val" value="00:30-04:00"/>
+            <column name="description" value="Временной интервал запуска триггера формирования топика AreaInfo (HH:mm-HH:mm)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='synch_areainfo_k1_trigger_start_interval'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-831-2" author="sorlov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'synch_areainfo_k1_trigger_start_period'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Частота запуска триггера формирования топика AreaInfo (минуты)</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="synch_areainfo_k1_trigger_start_period"/>
+            <column name="codedoc" value="PAR_36"/>
+            <column name="type" value="1"/>
+            <column name="val" value="1440"/>
+            <column name="description" value="Частота запуска триггера формирования топика AreaInfo (минуты)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='synch_areainfo_k1_trigger_start_period'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-831-3" author="sorlov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'synch_areainfo_k1_trigger_timeout'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Тайм-аут триггера формирования топика AreaInfo (минуты)</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="synch_areainfo_k1_trigger_timeout"/>
+            <column name="codedoc" value="PAR_37"/>
+            <column name="type" value="1"/>
+            <column name="val" value="900"/>
+            <column name="description" value="Тайм-аут триггера формирования топика AreaInfo (минуты)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='synch_areainfo_k1_trigger_timeout'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-831-4" author="sorlov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'synch_areainfo_k1_trigger_check_period'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Период обработки данных триггером формирования топика AreaInfo (календарные дни)</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="synch_areainfo_k1_trigger_check_period"/>
+            <column name="codedoc" value="PAR_38"/>
+            <column name="type" value="1"/>
+            <column name="val" value="1"/>
+            <column name="description" value="Период обработки данных триггером формирования топика AreaInfo (календарные дни)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='synch_areainfo_k1_trigger_check_period'</where>
+            </delete>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>
