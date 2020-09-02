@@ -57,11 +57,10 @@ public class TriggerService {
         
         //1. Система проверяет, что триггер должен и может запуститься
         if (
-//                isDoNotRunStatus(trigger)
-//                || !isInTimeInterval(trigger)
-//                || !isAfterLastStartPlusInterval(trigger)
-//                ||
-        isTriggerRunned(trigger)
+                isDoNotRunStatus(trigger)
+                || !isInTimeInterval(trigger)
+                || !isAfterLastStartPlusInterval(trigger)
+                || isTriggerRunned(trigger)
            ) {
             return;
         }
