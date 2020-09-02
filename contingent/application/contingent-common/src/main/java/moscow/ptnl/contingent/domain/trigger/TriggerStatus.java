@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "TRG_STATUS")
 public class TriggerStatus implements Serializable {
-    
+
     @Id
     @Column(name = "TRG_NAME", unique = true, nullable = false)
     private TriggerName trigger;
@@ -28,9 +28,9 @@ public class TriggerStatus implements Serializable {
     
     @Column(name = "IS_RUN", nullable = false)
     private Boolean run = Boolean.FALSE;
-    
+
     public TriggerStatus(){}
-    
+
     public TriggerStatus(TriggerName trigger){
         this.trigger = trigger;
     }

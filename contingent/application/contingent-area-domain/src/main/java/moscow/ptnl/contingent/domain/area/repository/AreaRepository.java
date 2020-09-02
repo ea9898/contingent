@@ -41,4 +41,5 @@ public interface AreaRepository {
 
     Area save(Area area);
 
+    List<Area> findAreasForSyncToK1(int daysForSelect);
 }

@@ -1,6 +1,9 @@
 package moscow.ptnl.contingent.infrastructure.service.trigger;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.domain.trigger.TriggerName;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
@@ -28,25 +31,41 @@ public class TriggerAction {
     
     @Autowired
     private EsuOutputCRUDRepository esuOutputCRUDRepository;
-    
+
+    private Map<TriggerName, Runnable> registeredActions;
+
+    public TriggerAction() {
+        registeredActions = new HashMap<>();
+    }
+
     public Boolean action(TriggerName trigger){
         Boolean result = false;
         LOG.info("Попытка запуска триггера {}", trigger);
         try {
             switch (trigger) {
-                case trigger_cleanup_esu_input:
+                case TRIGGER_CLEANUP_ESU_INPUT:
                     result = triggerEsuInputCleanAction();
                 break;
-                case trigger_cleanup_esu_output:
+                case TRIGGER_CLEANUP_ESU_OUTPUT:
                     result = triggerEsuOutputCleanAction();
                 break;
-            } 
+                default:
+                    result = runRegisteredAction(trigger);
+                break;
+            }
         } catch (Throwable e) {
             LOG.error("Ошибка выполнения триггера " + trigger, e);            
         }
         return result;
     }
-    
+
+    public void registerAction(TriggerName trigger, Runnable action, boolean replace) {
+        if (!replace && registeredActions.containsKey(trigger)) {
+            throw new IllegalStateException("Действие для триггера " + trigger + " уже зарегистрировано");
+        }
+        registeredActions.put(trigger, action);
+    }
+
     //3. Система удаляет записи из ESU_INPUT
     private boolean triggerEsuInputCleanAction() {
         LOG.debug("Триггер удаления записей из ESU_INPUT");
@@ -82,5 +101,16 @@ public class TriggerAction {
         LOG.info("Триггер удалил {} записей из ESU_OUTPUT", deleted);
         return true;
     }
-    
+
+    private boolean runRegisteredAction(TriggerName triggerName) {
+        Runnable action = registeredActions.get(triggerName);
+
+        if (action == null) {
+            LOG.error("Для триггера {} нет зарегистрированного действия", triggerName);
+            return false;
+        }
+        action.run();
+
+        return true;
+    }
 }

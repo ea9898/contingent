@@ -4,8 +4,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import moscow.ptnl.contingent.domain.trigger.TriggerName;
 import moscow.ptnl.contingent.domain.trigger.TriggerStatus;
 import moscow.ptnl.contingent.domain.trigger.TriggerHistoryItem;
@@ -44,17 +47,21 @@ public class TriggerService {
     
     @Autowired
     private TransactionRunService asyncRunService;
-    
-    
+
+    public void registerAction(TriggerName trigger, Runnable action) {
+        triggerAction.registerAction(trigger, action, false);
+    }
+
     public void startTrigger(TriggerName trigger) {
         Objects.requireNonNull(trigger);
         
         //1. Система проверяет, что триггер должен и может запуститься
         if (
-                isDoNotRunStatus(trigger) 
-                || !isInTimeInterval(trigger) 
-                || !isAfterLastStartPlusInterval(trigger) 
-                || isTriggerRunned(trigger)
+//                isDoNotRunStatus(trigger)
+//                || !isInTimeInterval(trigger)
+//                || !isAfterLastStartPlusInterval(trigger)
+//                ||
+        isTriggerRunned(trigger)
            ) {
             return;
         }
@@ -74,10 +81,15 @@ public class TriggerService {
         Boolean result = Boolean.FALSE;
         try {
             result = task.get(executionTimeLimit, TimeUnit.MINUTES);
-        } catch (Throwable e) {
+        } catch (TimeoutException e) {
             LOG.error("Выполнение триггера " + trigger + " прервано по таймауту", e);
-        }        
-        
+            //Завершаем выполнение потока триггера
+            task.cancel(true);
+        } catch (InterruptedException e) {
+            LOG.error("Выполнение триггера " + trigger + " прервано", e);
+        } catch (ExecutionException e) {
+            LOG.error("Выполнение триггера " + trigger + " завершилось ошибкой", e.getCause());
+        }
         //Меняем статус триггера
         status.setRun(Boolean.FALSE);
         status.setLastEndDate(LocalDateTime.now());
@@ -107,10 +119,12 @@ public class TriggerService {
      */
     private long getTriggerMaxExecutionTime(TriggerName trigger) {
         switch (trigger) {
-            case trigger_cleanup_esu_input:
+            case TRIGGER_CLEANUP_ESU_INPUT:
                 return settingService.getSettingProperty(SettingService.PAR_34, true);            
-            case trigger_cleanup_esu_output: 
+            case TRIGGER_CLEANUP_ESU_OUTPUT:
                 return settingService.getSettingProperty(SettingService.PAR_33, true);           
+            case TRIGGER_SYNCH_AREAINFO_K_1:
+                return settingService.getSettingProperty(SettingService.PAR_37, true);
         }
         return 0;
     }
@@ -140,11 +154,14 @@ public class TriggerService {
     private boolean isInTimeInterval(TriggerName trigger) {
         String rawString = null;
         switch (trigger) {
-            case trigger_cleanup_esu_input: 
+            case TRIGGER_CLEANUP_ESU_INPUT:
                 rawString = settingService.getSettingProperty(SettingService.PAR_25, true);
             break;
-            case trigger_cleanup_esu_output: 
+            case TRIGGER_CLEANUP_ESU_OUTPUT:
                 rawString = settingService.getSettingProperty(SettingService.PAR_27, true);
+            break;
+            case TRIGGER_SYNCH_AREAINFO_K_1:
+                rawString = settingService.getSettingProperty(SettingService.PAR_35, true);
             break;
         }
         if (rawString != null && rawString.trim().length() > 0) {
@@ -165,11 +182,14 @@ public class TriggerService {
         if (status.isPresent()) {
             Long interval = null;
             switch (trigger) {
-                case trigger_cleanup_esu_input:
+                case TRIGGER_CLEANUP_ESU_INPUT:
                     interval = settingService.getSettingProperty(SettingService.PAR_26, true);
                 break;
-                case trigger_cleanup_esu_output: 
+                case TRIGGER_CLEANUP_ESU_OUTPUT:
                     interval = settingService.getSettingProperty(SettingService.PAR_28, true);
+                break;
+                case TRIGGER_SYNCH_AREAINFO_K_1:
+                    interval = settingService.getSettingProperty(SettingService.PAR_36, true);
                 break;
             }
             if (interval != null && interval > 0) {

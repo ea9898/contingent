@@ -123,6 +123,26 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     @Override
+    public List<Area> findAreasForSyncToK1(int daysForSelect) {
+        Specification<Area> specification = (root, criteriaQuery, cb) -> {
+            Subquery<AreaMedicalEmployees> sub = criteriaQuery.subquery(AreaMedicalEmployees.class);
+            Root<AreaMedicalEmployees> subRoot = sub.from(AreaMedicalEmployees.class);
+            sub.where(cb.and(
+                    cb.equal(subRoot.get(AreaMedicalEmployees_.area), root.get(Area_.id)),
+                    cb.lessThan(subRoot.get(AreaMedicalEmployees_.endDate), LocalDate.now()),
+                    cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate), LocalDate.now().minusDays(daysForSelect)),
+                    cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate), root.get(Area_.updateDate.getName())),
+                    cb.or(
+                            cb.isNull(subRoot.get(AreaMedicalEmployees_.isError)),
+                            cb.equal(subRoot.get(AreaMedicalEmployees_.isError), false)
+                    )
+            ));
+            return cb.exists(sub.select(subRoot));
+        };
+        return areaCRUDRepository.findAll(specification);
+    }
+
+    @Override
     public List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean actual) {
         Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.and(
