@@ -39,7 +39,7 @@ public class AreaInfoSendTrigger implements Runnable {
     @PostConstruct
     public void setup() {
         //Регистрируем действие для триггера
-        triggerService.registerAction(TriggerName.TRIGGER_SYNCH_AREAINFO_K_1, this);
+        triggerService.registerAction(TriggerName.trigger_synch_areainfo_k1, this);
     }
 
     /**
@@ -47,7 +47,7 @@ public class AreaInfoSendTrigger implements Runnable {
      */
     @Scheduled(cron = "${area-info.sync.k1.cron.rule}")
     public void triggerScheduler() {
-        triggerService.startTrigger(TriggerName.TRIGGER_SYNCH_AREAINFO_K_1);
+        triggerService.startTrigger(TriggerName.trigger_synch_areainfo_k1);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class AreaInfoSendTrigger implements Runnable {
         List<Area> areas = areaRepository.findAreasForSyncToK1(settingService.getSettingProperty(SettingService.PAR_38));
         //4. Для каждого участка, найденного на предыдущем шаге, Система формирует топик AreaInfo
         for (Area area : areas) {
-            esuHelperService.sendAreaInfoEvent(area, TriggerName.TRIGGER_SYNCH_AREAINFO_K_1.getName());
+            esuHelperService.sendAreaInfoEvent(area, TriggerName.trigger_synch_areainfo_k1.getName());
         }
     }
 }

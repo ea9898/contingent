@@ -118,11 +118,11 @@ public class TriggerService {
      */
     private long getTriggerMaxExecutionTime(TriggerName trigger) {
         switch (trigger) {
-            case TRIGGER_CLEANUP_ESU_INPUT:
+            case trigger_cleanup_esu_input:
                 return settingService.getSettingProperty(SettingService.PAR_34, true);            
-            case TRIGGER_CLEANUP_ESU_OUTPUT:
+            case trigger_cleanup_esu_output:
                 return settingService.getSettingProperty(SettingService.PAR_33, true);           
-            case TRIGGER_SYNCH_AREAINFO_K_1:
+            case trigger_synch_areainfo_k1:
                 return settingService.getSettingProperty(SettingService.PAR_37, true);
         }
         return 0;
@@ -153,13 +153,13 @@ public class TriggerService {
     private boolean isInTimeInterval(TriggerName trigger) {
         String rawString = null;
         switch (trigger) {
-            case TRIGGER_CLEANUP_ESU_INPUT:
+            case trigger_cleanup_esu_input:
                 rawString = settingService.getSettingProperty(SettingService.PAR_25, true);
             break;
-            case TRIGGER_CLEANUP_ESU_OUTPUT:
+            case trigger_cleanup_esu_output:
                 rawString = settingService.getSettingProperty(SettingService.PAR_27, true);
             break;
-            case TRIGGER_SYNCH_AREAINFO_K_1:
+            case trigger_synch_areainfo_k1:
                 rawString = settingService.getSettingProperty(SettingService.PAR_35, true);
             break;
         }
@@ -181,13 +181,13 @@ public class TriggerService {
         if (status.isPresent()) {
             Long interval = null;
             switch (trigger) {
-                case TRIGGER_CLEANUP_ESU_INPUT:
+                case trigger_cleanup_esu_input:
                     interval = settingService.getSettingProperty(SettingService.PAR_26, true);
                 break;
-                case TRIGGER_CLEANUP_ESU_OUTPUT:
+                case trigger_cleanup_esu_output:
                     interval = settingService.getSettingProperty(SettingService.PAR_28, true);
                 break;
-                case TRIGGER_SYNCH_AREAINFO_K_1:
+                case trigger_synch_areainfo_k1:
                     interval = settingService.getSettingProperty(SettingService.PAR_36, true);
                 break;
             }

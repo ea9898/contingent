@@ -43,10 +43,10 @@ public class TriggerAction {
         LOG.info("Попытка запуска триггера {}", trigger);
         try {
             switch (trigger) {
-                case TRIGGER_CLEANUP_ESU_INPUT:
+                case trigger_cleanup_esu_input:
                     result = triggerEsuInputCleanAction();
                 break;
-                case TRIGGER_CLEANUP_ESU_OUTPUT:
+                case trigger_cleanup_esu_output:
                     result = triggerEsuOutputCleanAction();
                 break;
                 default:

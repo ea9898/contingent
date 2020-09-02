@@ -73,7 +73,7 @@ public class EsuScheduler {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Scheduled(cron = "${esu.db.clean.cron.rule}")
     public void esuInputOutputTablesCleaner() {
-        triggerService.startTrigger(TriggerName.TRIGGER_CLEANUP_ESU_INPUT);
-        triggerService.startTrigger(TriggerName.TRIGGER_CLEANUP_ESU_OUTPUT);
+        triggerService.startTrigger(TriggerName.trigger_cleanup_esu_input);
+        triggerService.startTrigger(TriggerName.trigger_cleanup_esu_output);
     }
 }

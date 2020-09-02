@@ -123,7 +123,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     @Override
-    public List<Area> findAreasForSyncToK1(int daysForSelect) {
+    public List<Area> findAreasForSyncToK1(long daysForSelect) {
         Specification<Area> specification = (root, criteriaQuery, cb) -> {
             Subquery<AreaMedicalEmployees> sub = criteriaQuery.subquery(AreaMedicalEmployees.class);
             Root<AreaMedicalEmployees> subRoot = sub.from(AreaMedicalEmployees.class);

@@ -1,10 +1,15 @@
 package moscow.ptnl.contingent.domain.trigger;
 
+import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,6 +22,7 @@ import javax.persistence.Table;
 public class TriggerStatus implements Serializable {
 
     @Id
+    @Enumerated(EnumType.STRING)
     @Column(name = "TRG_NAME", unique = true, nullable = false)
     private TriggerName trigger;
     
@@ -27,6 +33,7 @@ public class TriggerStatus implements Serializable {
     private LocalDateTime lastEndDate;
     
     @Column(name = "IS_RUN", nullable = false)
+    @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean run = Boolean.FALSE;
 
     public TriggerStatus(){}

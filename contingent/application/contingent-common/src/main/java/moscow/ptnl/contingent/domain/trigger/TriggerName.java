@@ -9,13 +9,13 @@ import java.util.Optional;
 public enum TriggerName {
     
     /** Триггер очистки журнала ESU_INPUT (Т_К_1). */
-    TRIGGER_CLEANUP_ESU_INPUT("trigger_cleanup_esu_input"),
+    trigger_cleanup_esu_input("trigger_cleanup_esu_input"),
     
     /** Триггер очистки журнала ESU_OUTPUT (Т_К_2). */
-    TRIGGER_CLEANUP_ESU_OUTPUT("trigger_cleanup_esu_output"),
+    trigger_cleanup_esu_output("trigger_cleanup_esu_output"),
 
     /** Триггер формирования топика AreaInfo для участков с МР с окончившимся сроком действия (Т_К2_1). */
-    TRIGGER_SYNCH_AREAINFO_K_1("trigger_synch_areainfo_k1");
+    trigger_synch_areainfo_k1("trigger_synch_areainfo_k1");
 
     private final String name;
     
