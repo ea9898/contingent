@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.attachment.service;
 
+import moscow.ptnl.contingent.domain.area.EsuHelperService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.attachment.AttachmentErrorReason;
 import moscow.ptnl.contingent.attachment.helpers.AttachmentAlgoritms;
@@ -7,6 +8,7 @@ import moscow.ptnl.contingent.attachment.transform.DNAttachMapper;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +21,10 @@ import java.util.List;
 public class AttachmentServiceInternalImpl implements AttachmentServiceInternal {
 
     @Autowired
-    AttachmentAlgoritms attachmentAlgoritms;
+    private AttachmentAlgoritms attachmentAlgoritms;
 
     @Autowired
-    EsuHelperService esuHelperService;
+    private EsuHelperService esuHelperService;
 
     @Override
     public void initiatePersonalAreaAttachment(Long patientEmiasId, LocalDateTime operationDate, Long createAttachmentJobId, Long closeAttachmentJobId) throws ContingentException {

@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.transform;
 
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
+import moscow.ptnl.contingent.transform.Transform;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;

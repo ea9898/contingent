@@ -1,8 +1,8 @@
-package moscow.ptnl.contingent.area.transform.model.esu;
+package moscow.ptnl.contingent.transform;
 
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
-import moscow.ptnl.contingent.area.transform.Transform;
+import moscow.ptnl.contingent.transform.Transform;
 import moscow.ptnl.contingent2.area.info.Address;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
 import org.springframework.stereotype.Component;

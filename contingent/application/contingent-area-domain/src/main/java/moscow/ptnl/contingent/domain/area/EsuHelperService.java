@@ -12,4 +12,6 @@ public interface EsuHelperService {
             List<Long> primaryAreasIdCreateAttachments,
             List<Long> primaryAreasIdCloseAttachments,
             Area dependentArea);
+
+    void sendEventToESU(Object event) throws RuntimeException;
 }

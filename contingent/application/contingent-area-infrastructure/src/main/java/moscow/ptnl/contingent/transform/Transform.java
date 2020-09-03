@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.transform;
+package moscow.ptnl.contingent.transform;
 
 public interface Transform<DTO, ENTITY> {
 

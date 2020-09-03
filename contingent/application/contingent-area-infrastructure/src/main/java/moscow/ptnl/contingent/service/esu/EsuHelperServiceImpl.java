@@ -1,10 +1,10 @@
-package moscow.ptnl.contingent.area.service;
+package moscow.ptnl.contingent.service.esu;
 
 import java.util.List;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
 
-import moscow.ptnl.contingent.area.transform.model.esu.AreaInfoEventMapper;
-import moscow.ptnl.contingent.area.transform.model.esu.AttachOnAreaChangeMapper;
+import moscow.ptnl.contingent.transform.AreaInfoEventMapper;
+import moscow.ptnl.contingent.transform.AttachOnAreaChangeMapper;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.EsuHelperService;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
@@ -76,7 +76,8 @@ public class EsuHelperServiceImpl implements EsuHelperService {
      * @param event не может быть null
      * @throws RuntimeException при невозможности определить имя топика на основе типа события
      */
-    private void sendEventToESU(Object event) throws RuntimeException {
+    @Override
+    public void sendEventToESU(Object event) throws RuntimeException {
         
         LOG.debug("TRY SEND EVENT: {}", event);
         

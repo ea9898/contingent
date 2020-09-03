@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.area.transform;
 
+import moscow.ptnl.contingent.transform.Transform;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.MoAddress;
