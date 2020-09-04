@@ -59,36 +59,47 @@ public class TriggerService {
         if (
                 isDoNotRunStatus(trigger)
                 || !isInTimeInterval(trigger)
-                || !isAfterLastStartPlusInterval(trigger)
-                || isTriggerRunned(trigger)
            ) {
             return;
         }
-        
         //2. Система записывает статус работы триггера, обновляя запись в таблице TRG_STATUS
-        TriggerStatus status = triggerStatusRepository.findById(trigger).orElse(new TriggerStatus(trigger));
-        status.setLastStartDate(LocalDateTime.now());
-        status.setLastEndDate(null);
-        status.setRun(Boolean.TRUE);
-        triggerStatusRepository.saveAndFlush(status);
-        
-        //3. Выполняем триггер (в отдельной транзакции с прерыванием по таймауту)
-        long executionTimeLimit = getTriggerMaxExecutionTime(trigger);
-        Future<Boolean> task = asyncRunService.run(() -> {
-            return triggerAction.action(trigger);
+        Future<Boolean> taskSetStatus = asyncRunService.run(() -> {
+            //Нужно завершить транзакцию, чтобы сразу сохранить в БД. Использование saveAndFlush не работает
+            //Также выполняем SELECT .. FOR UPDATE чтобы избежать параллельного запуска
+            TriggerStatus status = triggerStatusRepository.findWithLock(trigger).orElse(new TriggerStatus(trigger));
+
+            if (Boolean.TRUE.equals(status.getRun())
+                    || !isAfterLastStartPlusInterval(status)) {
+                return false;
+            }
+            status.setLastStartDate(LocalDateTime.now());
+            status.setLastEndDate(null);
+            status.setRun(Boolean.TRUE);
+            triggerStatusRepository.save(status);
+            return true;
         });
         Boolean result = Boolean.FALSE;
+        long executionTimeLimit = getTriggerMaxExecutionTime(trigger);
+        Future<Boolean> taskAction = asyncRunService.run(() -> triggerAction.action(trigger));
+
         try {
-            result = task.get(executionTimeLimit, TimeUnit.MINUTES);
+            if (!taskSetStatus.get(30, TimeUnit.SECONDS)) {
+                //Триггер уже запущен
+                return;
+            }
+            //3. Выполняем триггер (в отдельной транзакции с прерыванием по таймауту)
+            result = taskAction.get(executionTimeLimit, TimeUnit.MINUTES);
         } catch (TimeoutException e) {
             LOG.error("Выполнение триггера " + trigger + " прервано по таймауту", e);
             //Завершаем выполнение потока триггера
-            task.cancel(true);
+            taskSetStatus.cancel(true);
+            taskAction.cancel(true);
         } catch (InterruptedException e) {
             LOG.error("Выполнение триггера " + trigger + " прервано", e);
         } catch (ExecutionException e) {
             LOG.error("Выполнение триггера " + trigger + " завершилось ошибкой", e.getCause());
         }
+        TriggerStatus status = triggerStatusRepository.findById(trigger).get();
         //Меняем статус триггера
         status.setRun(Boolean.FALSE);
         status.setLastEndDate(LocalDateTime.now());
@@ -173,14 +184,13 @@ public class TriggerService {
     /**
      * Проверка, что с прошлого запуска триггера прошло достаточно времени.
      * 
-     * @param trigger
+     * @param status
      * @return 
      */
-    private boolean isAfterLastStartPlusInterval(TriggerName trigger) {
-        Optional<TriggerStatus> status = triggerStatusRepository.findById(trigger);
-        if (status.isPresent()) {
+    private boolean isAfterLastStartPlusInterval(TriggerStatus status) {
+        if (status.getLastStartDate() != null) {
             Long interval = null;
-            switch (trigger) {
+            switch (status.getTrigger()) {
                 case trigger_cleanup_esu_input:
                     interval = settingService.getSettingProperty(SettingService.PAR_26, true);
                 break;
@@ -192,24 +202,9 @@ public class TriggerService {
                 break;
             }
             if (interval != null && interval > 0) {
-                return status.get().getLastStartDate().plusMinutes(interval).isBefore(LocalDateTime.now());
+                return status.getLastStartDate().plusMinutes(interval).isBefore(LocalDateTime.now());
             }
         }        
         return true;
     }
-    
-    /**
-     * Проверяет не запущен ли уже (еще) триггер.
-     * 
-     * @param trigger
-     * @return 
-     */
-    private boolean isTriggerRunned(TriggerName trigger) {
-        Optional<TriggerStatus> status = triggerStatusRepository.findById(trigger);
-        if (status.isPresent()) {
-            return status.get().getRun();
-        }
-        return false;
-    }
-    
 }
