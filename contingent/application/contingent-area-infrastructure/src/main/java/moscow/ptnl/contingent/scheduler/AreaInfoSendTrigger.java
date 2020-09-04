@@ -21,7 +21,7 @@ import java.util.List;
  * Триггер формирования топика AreaInfo для участков с МР с окончившимся сроком действия
  */
 @Component
-@PropertySource("classpath:application-esu.properties")
+@PropertySource("classpath:application-esu-trigger.properties")
 public class AreaInfoSendTrigger implements Runnable {
 
     @Autowired
