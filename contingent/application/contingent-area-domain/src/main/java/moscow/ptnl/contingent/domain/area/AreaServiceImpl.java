@@ -628,14 +628,14 @@ public class AreaServiceImpl implements AreaService {
             AreaMedicalEmployees emplDb = null;
             if (!employee.isPresent()) {
                 validation.error(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
-                        new ValidationParameter("jobInfoId", inputEmpl.getAssignmentId()));
+                        new ValidationParameter("assignmentId", inputEmpl.getAssignmentId()));
             } else {
                 emplDb = employee.get();
                 //4.1
                 if (inputEmpl.getEndDate() != null && inputEmpl.getEndDate().isBefore(LocalDate.now())
                         || employee.get().getArea().getId() != areaId) {
                     validation.error(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
-                            new ValidationParameter("jobInfoId", inputEmpl.getAssignmentId()));
+                            new ValidationParameter("assignmentId", inputEmpl.getAssignmentId()));
                 }
             }
 
