@@ -55,13 +55,13 @@ public interface SettingService {
     String PAR_33 = "esu_output_trigger_timeout";
     /** Тайм-аут триггера очистки ESU_INPUT (минуты). */
     String PAR_34 = "esu_input_trigger_timeout";
-    /** Временной интервал запуска триггера формирования топика AreaInfo */
+    /** Временной интервал запуска триггера формирования топика AreaInfo. */
     String PAR_35 = "synch_areainfo_k1_trigger_start_interval";
-    /** Частота запуска триггера формирования топика AreaInfo (минуты) */
+    /** Частота запуска триггера формирования топика AreaInfo (минуты). */
     String PAR_36 = "synch_areainfo_k1_trigger_start_period";
-    /** Тайм-аут триггера формирования топика AreaInfo (минуты) */
+    /** Тайм-аут триггера формирования топика AreaInfo (минуты). */
     String PAR_37 = "synch_areainfo_k1_trigger_timeout";
-    /** Период обработки данных триггером формирования топика AreaInfo (календарные дни) */
+    /** Период обработки данных триггером формирования топика AreaInfo (календарные дни). */
     String PAR_38 = "synch_areainfo_k1_trigger_check_period";
 
     /**

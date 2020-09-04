@@ -27,7 +27,8 @@ import java.util.concurrent.TimeUnit;
 import moscow.ptnl.util.XMLUtil;
 
 /**
- * Базовый класс обработчика входящих сообщений ЕСУ
+ * Базовый класс обработчика входящих сообщений ЕСУ.
+ * 
  */
 @PropertySource("classpath:application-esu.properties")
 abstract class BaseTopicTask<T> implements Tasklet {

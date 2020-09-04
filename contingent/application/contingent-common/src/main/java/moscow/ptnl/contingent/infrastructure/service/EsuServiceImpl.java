@@ -16,7 +16,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -85,7 +84,7 @@ public class EsuServiceImpl implements EsuService {
                 EsuOutput esuOutput = new EsuOutput();
                 esuOutput.setTopic(topicName);
                 esuOutput.setSentTime(LocalDateTime.now());
-                esuOutput.setStatus(EsuStatusType.INPROGRESS);
+                esuOutput.setStatus((isProducerOn()) ? EsuStatusType.INPROGRESS : EsuStatusType.ТО_STATUS);
                 esuOutput.setMessage(" ");
                 esuOutput.setCreateDate(LocalDateTime.now());
                 esuOutput = esuOutputCRUDRepository.save(esuOutput);
@@ -125,6 +124,7 @@ public class EsuServiceImpl implements EsuService {
 
     /**
      * Блокирующий метод публикации в ЕСУ.
+     * Этот метод нужно вызывать только с учетом статуса {@value SettingService.PAR_30}.
      * 
      * @param recordId
      * @param publishTopic
@@ -193,7 +193,7 @@ public class EsuServiceImpl implements EsuService {
     
     private boolean isProducerOn() {
         //глобальная настройка отправки во все топиков
-        Boolean runMode = Boolean.TRUE.equals((Boolean) settingService.getSettingProperty(SettingService.PAR_30, true));
+        boolean runMode = Boolean.TRUE.equals((Boolean) settingService.getSettingProperty(SettingService.PAR_30, true));
         if (!runMode) {
             LOG.warn("Отправка в топики отключена в настройке {}", SettingService.PAR_30);
             return false; 
