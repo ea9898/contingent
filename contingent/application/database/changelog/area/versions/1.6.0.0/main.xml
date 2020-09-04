@@ -510,6 +510,20 @@
                 <where>code='synch_areainfo_k1_trigger_check_period'</where>
             </delete>
         </rollback>
+    </changeSet>    
+    
+    <changeSet id="CONTINGENT2-825-1" author="mkachalov" labels="1.6.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ESU_OUTPUT" columnName="STATUS"/>
+        </preConditions>
+        <comment>Изменение ограничения столбца STATUS таблицы ESU_OUTPUT</comment>
+        <sql>
+            alter table ESU_OUTPUT drop constraint if exists "ESU_OUTPUT_CK1";
+            alter table ESU_OUTPUT add constraint "ESU_OUTPUT_CK1" check (STATUS in ('0','1','2','3'));
+        </sql>
+        <rollback>
+            <dropUniqueConstraint constraintName="ESU_OUTPUT_CK1" tableName="ESU_OUTPUT"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
