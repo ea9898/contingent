@@ -80,20 +80,26 @@ public class TriggerService {
         });
         Boolean result = Boolean.FALSE;
         long executionTimeLimit = getTriggerMaxExecutionTime(trigger);
-        Future<Boolean> taskAction = asyncRunService.run(() -> triggerAction.action(trigger));
+        Future<Boolean> taskAction = null;
 
         try {
             if (!taskSetStatus.get(30, TimeUnit.SECONDS)) {
                 //Триггер уже запущен
                 return;
             }
+            taskSetStatus = null;
             //3. Выполняем триггер (в отдельной транзакции с прерыванием по таймауту)
+            taskAction = asyncRunService.run(() -> triggerAction.action(trigger));
             result = taskAction.get(executionTimeLimit, TimeUnit.MINUTES);
         } catch (TimeoutException e) {
             LOG.error("Выполнение триггера " + trigger + " прервано по таймауту", e);
             //Завершаем выполнение потока триггера
-            taskSetStatus.cancel(true);
-            taskAction.cancel(true);
+            if (taskSetStatus != null) {
+                taskSetStatus.cancel(true);
+            }
+            if (taskAction != null) {
+                taskAction.cancel(true);
+            }
         } catch (InterruptedException e) {
             LOG.error("Выполнение триггера " + trigger + " прервано", e);
         } catch (ExecutionException e) {
