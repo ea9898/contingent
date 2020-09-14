@@ -1006,6 +1006,7 @@ public class AreaServiceImpl implements AreaService {
 
         // 6. Система для данного участка меняет статус на «Архивный»
         area.setArchived(true);
+        area.setUpdateDate(LocalDateTime.now());
         areaRepository.save(area);
 
         // 7.
