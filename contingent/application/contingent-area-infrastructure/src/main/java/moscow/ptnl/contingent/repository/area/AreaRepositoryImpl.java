@@ -131,7 +131,8 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                     cb.equal(subRoot.get(AreaMedicalEmployees_.area), root.get(Area_.id)),
                     cb.lessThan(subRoot.get(AreaMedicalEmployees_.endDate), LocalDate.now()),
                     cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate), LocalDate.now().minusDays(daysForSelect)),
-                    cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate), root.get(Area_.updateDate.getName())),
+                    cb.greaterThanOrEqualTo(cb.function("DATE", LocalDate.class, subRoot.get(AreaMedicalEmployees_.endDate)),
+                            cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName()))),
                     cb.or(
                             cb.isNull(subRoot.get(AreaMedicalEmployees_.isError)),
                             cb.equal(subRoot.get(AreaMedicalEmployees_.isError), false)
