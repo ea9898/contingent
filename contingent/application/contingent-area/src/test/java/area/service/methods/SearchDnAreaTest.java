@@ -52,14 +52,12 @@ public class SearchDnAreaTest {
     }
 
     @Test
-    @Disabled
     public void searchDnAreaExceptionTest() {
         Throwable exception = assertThrows(ContingentException.class, () -> areaService.searchDnArea(null, EL, EL, EL, EL, PR));
         assertEquals(exception.getMessage(), "Не заданы критерии поиска");
     }
 
     @Test
-    @Disabled
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchDnAreaAllParametersTest() {
         Page<Area> areas = assertDoesNotThrow(() -> areaService.searchDnArea(
@@ -71,7 +69,6 @@ public class SearchDnAreaTest {
     }
 
     @Test
-    @Disabled
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchDnAreaByAreaIdsTest() {
         Page<Area> areas = assertDoesNotThrow(() -> areaService.searchDnArea(null, EL, EL, EL, Collections.singletonList(8L), PR));
@@ -82,7 +79,6 @@ public class SearchDnAreaTest {
     }
 
     @Test
-    @Disabled
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchDnArea_CONTINGENT2_638_Test() {
         Page<Area> areas = assertDoesNotThrow(() -> areaService.searchDnArea(136L, EL, EL, EL, EL, PR));

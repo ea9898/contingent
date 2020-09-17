@@ -14,6 +14,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
@@ -55,10 +56,7 @@ public class CreatePrimaryAreaTest {
     private SettingService settingService;
 
     @Autowired
-    public AreaTypesCRUDRepository areaTypesCRUDRepository;
-
-    @Autowired
-    private AreaCRUDRepository areaCRUDRepository;
+    public AreaTypesRepository areaTypesRepository;
 
     @Autowired
     private AreaRepository areaRepository;
@@ -114,15 +112,15 @@ public class CreatePrimaryAreaTest {
     @Disabled
     public void createPrimaryAreaCorrect() {
         final Area[] createdArea = new Area[1];
-        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesCRUDRepository).findById(areaType);
+        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesRepository).findById(areaType);
         doReturn(Collections.singletonList(moAvailableAreaTypes)).when(moAvailableAreaTypesRepository).findByAreaTypes(areaTypePrimary1, moId);
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             createdArea[0] = (Area) args[0];
             createdArea[0].setId(1L);
             return args[0];
-        }).when(areaCRUDRepository).save(any());
-        doAnswer(invocation -> Optional.of(createdArea[0])).when(areaCRUDRepository).findById(1L);
+        }).when(areaRepository).save(any());
+        doAnswer(invocation -> Optional.of(createdArea[0])).when(areaRepository).findById(1L);
         //create inOrder object passing any mocks that need to be verified in order
         InOrder order = Mockito.inOrder(areaHelper);
         Long id = assertDoesNotThrow(() -> areaServiceDomain.createPrimaryArea(moId, null, number, areaType, Collections.singletonList(policyType),

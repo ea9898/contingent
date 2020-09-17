@@ -18,7 +18,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
@@ -63,10 +63,7 @@ public class UpdateDependentAreaTest {
     private SettingService settingService;
 
     @Autowired
-    public AreaTypesCRUDRepository areaTypesCRUDRepository;
-
-    @Autowired
-    private AreaCRUDRepository areaCRUDRepository;
+    public AreaTypesRepository areaTypesRepository;
 
     @Autowired
     private AreaService areaServiceDomain;
@@ -189,14 +186,14 @@ public class UpdateDependentAreaTest {
     @Test
     @Disabled
     public void updateDependentAreaCorrect() {
-        doReturn(Optional.of(areaTypeDependent)).when(areaTypesCRUDRepository).findById(areaTypeDepCode);
-        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesCRUDRepository).findById(areaTypePrimCode);
-        doReturn(Optional.of(areaTypePrimary2)).when(areaTypesCRUDRepository).findById(areaTypePrim2Code);
+        doReturn(Optional.of(areaTypeDependent)).when(areaTypesRepository).findById(areaTypeDepCode);
+        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesRepository).findById(areaTypePrimCode);
+        doReturn(Optional.of(areaTypePrimary2)).when(areaTypesRepository).findById(areaTypePrim2Code);
         doReturn(Collections.singletonList(moAvailableAreaTypes)).when(moAvailableAreaTypesRepository).findByAreaTypes(areaTypePrimary1, moId);
         doReturn(Collections.singletonList(moAvailableAreaTypes2)).when(moAvailableAreaTypesRepository).findByAreaTypes(areaTypePrimary2, moId);
         doReturn(Optional.of(areaTypeRelations)).when(areaTypeRelationsRepository).getByDependentAndPrimaryAreaTypes(areaTypeDependent, areaTypePrimary2);
         doReturn(Collections.singletonList(policyType1)).when(policyTypeRepository).findByIds(Collections.singletonList(policyTypeCode));
-        doReturn(Optional.of(areaDep1)).when(areaCRUDRepository).findById(areaDep1.getId());
+        doReturn(Optional.of(areaDep1)).when(areaRepository).findById(areaDep1.getId());
         doReturn(Collections.singletonList(areaPrimary1)).when(areaRepository).findAreas(areaPrimary1.getMoId(), areaPrimary1.getMuId(), Arrays.asList(areaTypePrimCode), null, true);
         doReturn(Collections.singletonList(areaDep1.getPrimaryAreaTypes().iterator().next())).when(areaToAreaTypeRepository).findAreaTypesByAreaAndTypeCode(areaDep1, Collections.singletonList(areaTypePrimCode));
         //create inOrder object passing any mocks that need to be verified in order

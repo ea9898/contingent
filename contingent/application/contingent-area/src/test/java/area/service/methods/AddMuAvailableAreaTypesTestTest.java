@@ -25,13 +25,12 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
      * С_УУ_73
      */
     @Test
-    @Disabled
     public void test_C_YY_73_1() {
         Mockito.doReturn(new ArrayList<>()).when(moAvailableAreaTypesRepository).findAreaTypes(2L);
         Mockito.doReturn(new ArrayList<>()).when(muAvailableAreaTypesRepository).findAreaTypes(3L);
 
-        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
-        Mockito.doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(20L);
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
+        Mockito.doReturn(Optional.of(areaType20)).when(areaTypesRepository).findById(20L);
 
         try {
             moMuService.addMuAvailableAreaTypes(2L, 3L, Arrays.asList(10L, 20L));
@@ -56,13 +55,11 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
-    @Disabled
     public void test_C_YY_73_2() {
         Mockito.doReturn(new ArrayList<>()).when(moAvailableAreaTypesRepository).findAreaTypes(2L);
         Mockito.doReturn(new ArrayList<>()).when(muAvailableAreaTypesRepository).findAreaTypes(3L);
 
-        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
-//        Mockito.doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(20L);
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
 
         try {
             moMuService.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
@@ -86,9 +83,8 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
      * С_УУ_74
      */
     @Test
-    @Disabled
     public void test_C_YY_74_1() {
-        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
 
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
@@ -129,9 +125,8 @@ public class AddMuAvailableAreaTypesTestTest extends MuAvailableAreaTypesTest {
      * п. 3.
      */
     @Test
-    @Disabled
     public void test_correct() {
-        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
         moAvailableAreaTypes10.setId(1L);

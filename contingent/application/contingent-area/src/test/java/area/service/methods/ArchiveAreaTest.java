@@ -44,10 +44,7 @@ import static org.xmlunit.assertj.XmlAssert.assertThat;
 public class ArchiveAreaTest {
 
     @Autowired
-    private AreaCRUDRepository areaCRUDRepository;
-
-    @Autowired
-    private AreaService areaServiceDomain;
+    private AreaService areaService;
 
     @Autowired
     private AreaRepository areaRepository;
@@ -119,9 +116,8 @@ public class ArchiveAreaTest {
     }
 
     @Test
-    @Disabled
     public void archiveAreaExceptionTest() {
-        Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.archiveArea(1111L));
+        Throwable exception = assertThrows(ContingentException.class, () -> areaService.archiveArea(1111L));
         assertEquals(exception.getMessage(), "Участок обслуживания МО с ИД 1111 не найден в системе");
     }
 
@@ -138,10 +134,10 @@ public class ArchiveAreaTest {
     }
 
     private void archiveAreaWithEsuTest(Area areaTest) {
-        doReturn(Optional.of(areaTest)).when(areaCRUDRepository).findById(areaTest.getId());
+        doReturn(Optional.of(areaTest)).when(areaRepository).findById(areaTest.getId());
 
         try {
-            areaServiceDomain.archiveArea(areaTest.getId());
+            areaService.archiveArea(areaTest.getId());
 
             assertEquals(areaTest.getArchived(), Boolean.TRUE);
             assertEquals(areaTest.getActualAreaAddresses().size(), 0);

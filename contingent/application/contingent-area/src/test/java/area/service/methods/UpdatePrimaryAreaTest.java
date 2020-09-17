@@ -15,11 +15,11 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaPolicyTypesRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,10 +57,7 @@ public class UpdatePrimaryAreaTest {
     private SettingService settingService;
 
     @Autowired
-    public AreaTypesCRUDRepository areaTypesCRUDRepository;
-
-    @Autowired
-    private AreaCRUDRepository areaCRUDRepository;
+    public AreaTypesRepository areaTypesRepository;
 
     @Autowired
     private AreaService areaServiceDomain;
@@ -138,9 +135,9 @@ public class UpdatePrimaryAreaTest {
     @Test
     @Disabled
     public void updatePrimaryAreaCorrect() {
-        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesCRUDRepository).findById(areaType);
+        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesRepository).findById(areaType);
         doReturn(Collections.singletonList(moAvailableAreaTypes)).when(moAvailableAreaTypesRepository).findByAreaTypes(areaTypePrimary1, moId);
-        doAnswer(invocation -> Optional.of(areaPrimary1)).when(areaCRUDRepository).findById(1L);
+        doAnswer(invocation -> Optional.of(areaPrimary1)).when(areaRepository).findById(1L);
         doReturn(Collections.singletonList(policyType1)).when(policyTypeRepository).findByIds(Collections.singletonList(policyType1.getCode()));
         doReturn(Collections.singletonList(areaPolicyType)).when(areaPolicyTypesRepository).findAll(areaPrimary1, policyType1);
         //create inOrder object passing any mocks that need to be verified in order

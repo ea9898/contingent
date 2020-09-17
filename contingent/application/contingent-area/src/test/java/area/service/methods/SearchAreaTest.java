@@ -56,7 +56,6 @@ public class SearchAreaTest {
     }
 
     @Test
-    @Disabled
     public void searchAreaExceptionTest() {
         Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.searchArea(null, null, EL,
                 EL, null, null, null, EL, EL, null, null));
@@ -64,7 +63,6 @@ public class SearchAreaTest {
     }
 
     @Test
-    @Disabled
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchAreaAllParametersTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
@@ -77,7 +75,6 @@ public class SearchAreaTest {
     }
 
     @Test
-    @Disabled
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchAreaByMedicalEmployeesTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
@@ -91,7 +88,6 @@ public class SearchAreaTest {
     }
 
     @Test
-    @Disabled
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchAreaByAddressesExactMatchTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(

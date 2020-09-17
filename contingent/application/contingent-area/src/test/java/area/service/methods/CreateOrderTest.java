@@ -33,7 +33,6 @@ public class CreateOrderTest extends BaseTest {
      * С_УУ_47
      */
     @Test
-    @Disabled
     public void createOrderSUU47Test() {
         doReturn(Collections.emptyList()).when(addressAllocationOrderRepository).findAddressAllocationOrders("2", now.plusDays(4), "ouz", "name", false);
         Throwable exception = assertThrows(ContingentException.class, () -> orderService.createOrder("2", now.plusDays(4), "ouz", "name"));
@@ -44,7 +43,6 @@ public class CreateOrderTest extends BaseTest {
      * С_УУ_98
      */
     @Test
-    @Disabled
     public void createOrderSUU98Test() {
         doReturn(orders).when(addressAllocationOrderRepository).findAddressAllocationOrders("3", now, "ouz", "name", false);
         Throwable exception = assertThrows(ContingentException.class, () -> orderService.createOrder("3", now, "ouz", "name"));
@@ -55,13 +53,12 @@ public class CreateOrderTest extends BaseTest {
      * п.3.
      */
     @Test
-    @Disabled
     public void createOrder3Test() {
-        doAnswer(AdditionalAnswers.returnsFirstArg()).when(addressAllocationOrderCRUDRepository).save(any());
+        doAnswer(AdditionalAnswers.returnsFirstArg()).when(addressAllocationOrderRepository).save(any());
         doReturn(Collections.emptyList()).when(addressAllocationOrderRepository).findAddressAllocationOrders("2", now, "ouz", "name", false);
         ArgumentCaptor<AddressAllocationOrders> argument = ArgumentCaptor.forClass(AddressAllocationOrders.class);
         assertDoesNotThrow(() -> orderService.createOrder("2", now, "ouz", "name"));
-        verify(addressAllocationOrderCRUDRepository).save(argument.capture());
+        verify(addressAllocationOrderRepository).save(argument.capture());
         assertEquals("name", argument.getValue().getName());
         assertEquals("ouz", argument.getValue().getOuz());
         assertEquals("2", argument.getValue().getNumber());

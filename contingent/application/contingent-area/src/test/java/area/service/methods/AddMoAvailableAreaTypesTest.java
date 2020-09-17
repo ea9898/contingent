@@ -62,14 +62,13 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
 
     // Тест п.3 записи в БД типов участков доступный для МО
     @Test
-    @Disabled
     public void addMoAvailableAreaTypesTest() {
         doReturn(Optional.of(areaType1)).when(areaTypesRepository).findById(areaType1.getCode());
         doReturn(Optional.of(areaType2)).when(areaTypesRepository).findById(areaType2.getCode());
         doReturn(Arrays.asList(moAvailableAreaType3, moAvailableAreaType4))
                 .when(moAvailableAreaTypesRepository).findAreaTypes(moId);
-        doReturn(moAvailableAreaType1).when(moAvailableAreaTypesCRUDRepository).save(moAvailableAreaType1);
-        doReturn(moAvailableAreaType2).when(moAvailableAreaTypesCRUDRepository).save(moAvailableAreaType2);
+        doReturn(moAvailableAreaType1).when(moAvailableAreaTypesRepository).save(moAvailableAreaType1);
+        doReturn(moAvailableAreaType2).when(moAvailableAreaTypesRepository).save(moAvailableAreaType2);
         try {
             moMuService.addMoAvailableAreaTypes(moId, Arrays.asList(areaType1.getCode(),areaType2.getCode()));
         } catch (ContingentException e) {
@@ -78,9 +77,8 @@ public class AddMoAvailableAreaTypesTest extends MoAvailableAreaTypesTest {
     }
 
     @Test
-    @Disabled
     public void addMoAvailableAreaTypesThrowTest() {
-        doReturn(Optional.of(areaType1)).when(areaTypesCRUDRepository).findById(areaType1.getCode());
+        doReturn(Optional.of(areaType1)).when(areaTypesRepository).findById(areaType1.getCode());
         doReturn(Arrays.asList(moAvailableAreaType1, moAvailableAreaType2))
                 .when(moAvailableAreaTypesRepository).findAreaTypes(moId);
         try {

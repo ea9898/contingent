@@ -16,6 +16,7 @@ import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
@@ -49,13 +50,10 @@ public class AreaServiceHelperTest {
     private AreaHelper areaHelper;
 
     @Autowired
-    public AreaTypesCRUDRepository areaTypesCRUDRepository;
+    public AreaTypesRepository areaTypesRepository;
 
     @Autowired
     public AreaRepository areaRepository;
-
-    @Autowired
-    public AreaCRUDRepository areaCRUDRepository;
 
     @Autowired
     public MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
@@ -168,10 +166,9 @@ public class AreaServiceHelperTest {
     }
 
     @Test
-    @Disabled
     void checkAndGetAreaTypesExist() {
-        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesCRUDRepository).findById(areaTypePrimary1.getCode());
-        doReturn(Optional.of(areaTypeDependent1)).when(areaTypesCRUDRepository).findById(areaTypeDependent1.getCode());
+        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesRepository).findById(areaTypePrimary1.getCode());
+        doReturn(Optional.of(areaTypeDependent1)).when(areaTypesRepository).findById(areaTypeDependent1.getCode());
         Validation validation = new Validation();
         List<AreaType> areaTypeList = areaHelper.checkAndGetAreaTypesExist(Arrays.asList(3L, 5L), validation);
         assertTrue(validation.isSuccess());
@@ -215,9 +212,8 @@ public class AreaServiceHelperTest {
     }
 
     @Test
-    @Disabled
     void checkAndGetArea() {
-        doReturn(Optional.of(areaPrimary1)).when(areaCRUDRepository).findById(areaPrimary1.getId());
+        doReturn(Optional.of(areaPrimary1)).when(areaRepository).findById(areaPrimary1.getId());
         Validation validation = new Validation();
         areaHelper.checkAndGetArea(areaPrimary1.getId(), validation);
         assertTrue(validation.isSuccess());

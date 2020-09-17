@@ -24,7 +24,6 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
-    @Disabled
     public void test_find_all_types() {
 
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
@@ -44,7 +43,6 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
-    @Disabled
     public void test_find_available_types() {
 
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
@@ -66,7 +64,6 @@ public class GetMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
-    @Disabled
     public void test_find_used_types() {
 
         Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(muId);

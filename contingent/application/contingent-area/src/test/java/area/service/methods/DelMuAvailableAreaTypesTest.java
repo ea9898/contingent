@@ -27,10 +27,9 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
      * С_УУ_75
      */
     @Test
-    @Disabled
     public void test_C_YY_75_1(){
-        doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
-        doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(areaType20.getCode());
+        doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(areaType10.getCode());
+        doReturn(Optional.of(areaType20)).when(areaTypesRepository).findById(areaType20.getCode());
 
         MuAvailableAreaTypes muAvailableAreaTypes = new MuAvailableAreaTypes();
         muAvailableAreaTypes.setId(1L);
@@ -55,10 +54,9 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
-    @Disabled
     public void test_C_YY_75_2(){
-        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(10L);
-        Mockito.doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(20L);
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
+        Mockito.doReturn(Optional.of(areaType20)).when(areaTypesRepository).findById(20L);
 
         Mockito.doReturn(new ArrayList<>()).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
 
@@ -79,10 +77,9 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
      */
 
     @Test
-    @Disabled
     public void test_correct() {
-        doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
-        doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(areaType20.getCode());
+        doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(areaType10.getCode());
+        doReturn(Optional.of(areaType20)).when(areaTypesRepository).findById(areaType20.getCode());
         List<MuAvailableAreaTypes> muAvailableAreaTypes = Arrays.asList(muAvailableAreaTypes10, muAvailableAreaTypes20);
 
         Mockito.doReturn(muAvailableAreaTypes).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
@@ -93,17 +90,16 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
             Assertions.fail("Должна быть не должно.");
         }
 
-        Mockito.verify(muAvailableAreaTypesCRUDRepository).deleteAll(muAvailableAreaTypes);
+        Mockito.verify(muAvailableAreaTypesRepository).deleteAll(muAvailableAreaTypes);
     }
 
     /**
      * Тест на уникальность участков
      */
     @Test
-    @Disabled
     public void test_correct_1() {
-        doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
-        doReturn(Optional.of(areaType20)).when(areaTypesCRUDRepository).findById(areaType20.getCode());
+        doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(areaType10.getCode());
+        doReturn(Optional.of(areaType20)).when(areaTypesRepository).findById(areaType20.getCode());
         List<MuAvailableAreaTypes> muAvailableAreaTypes = Arrays.asList(muAvailableAreaTypes10, muAvailableAreaTypes20);
 
         Mockito.doReturn(muAvailableAreaTypes).when(muAvailableAreaTypesRepository).findAreaTypes(muId);
@@ -114,7 +110,7 @@ public class DelMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
             Assertions.fail("Должна быть не должно.");
         }
 
-        Mockito.verify(muAvailableAreaTypesCRUDRepository).deleteAll(muAvailableAreaTypes);
+        Mockito.verify(muAvailableAreaTypesRepository).deleteAll(muAvailableAreaTypes);
         Mockito.verify(areaHelper).checkAndGetAreaTypesNotExistInMU(Mockito.eq(3L), Mockito.eq(Arrays.asList(10L, 20L)), Mockito.any(Validation.class));
     }
 }

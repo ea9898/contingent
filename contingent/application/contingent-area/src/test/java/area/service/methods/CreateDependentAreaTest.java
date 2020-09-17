@@ -30,9 +30,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -58,10 +60,7 @@ public class CreateDependentAreaTest {
     private SettingService settingService;
 
     @Autowired
-    public AreaTypesCRUDRepository areaTypesCRUDRepository;
-
-    @Autowired
-    private AreaCRUDRepository areaCRUDRepository;
+    public AreaTypesCRUDRepository areaTypesRepository;
 
     @Autowired
     private AreaRepository areaRepository;
@@ -69,7 +68,7 @@ public class CreateDependentAreaTest {
     @Autowired
     private AreaTypeRelationsRepository areaTypeRelationsRepository;
 
-    @Autowired
+    @MockBean
     private AreaHelper areaHelper;
 
     @Autowired
@@ -153,8 +152,8 @@ public class CreateDependentAreaTest {
     @Disabled
     public void createDependentAreaCorrect() {
         final Area[] createdArea = new Area[1];
-        doReturn(Optional.of(areaTypeDependent)).when(areaTypesCRUDRepository).findById(areaTypeDepCode);
-        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesCRUDRepository).findById(areaTypePrimCode);
+        doReturn(Optional.of(areaTypeDependent)).when(areaTypesRepository).findById(areaTypeDepCode);
+        doReturn(Optional.of(areaTypePrimary1)).when(areaTypesRepository).findById(areaTypePrimCode);
         doReturn(Collections.singletonList(moAvailableAreaTypes)).when(moAvailableAreaTypesRepository).findByAreaTypes(areaTypePrimary1, moId);
         doReturn(Optional.of(areaTypeRelations)).when(areaTypeRelationsRepository).getByDependentAndPrimaryAreaTypes(areaTypeDependent, areaTypePrimary1);
         doReturn(Collections.singletonList(policyType)).when(policyTypeRepository).findByIds(Collections.singletonList(policyTypeCode));
@@ -163,7 +162,7 @@ public class CreateDependentAreaTest {
             createdArea[0] = (Area) args[0];
             createdArea[0].setId(1L);
             return args[0];
-        }).when(areaCRUDRepository).save(any());
+        }).when(areaRepository).save(any());
         doReturn(Collections.singletonList(areaPrimary1)).when(areaRepository).findAreas(moId, null, Collections.singletonList(areaTypePrimCode), null, true);
         //create inOrder object passing any mocks that need to be verified in order
         InOrder order = Mockito.inOrder(areaHelper);

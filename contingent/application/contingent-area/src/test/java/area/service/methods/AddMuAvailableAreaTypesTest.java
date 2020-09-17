@@ -40,12 +40,11 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
      * С_УУ_73
      */
     @Test
-    @Disabled
     public void test_C_YY_73_1() {
         Mockito.when(moAvailableAreaTypesRepository.findAreaTypes(2L)).thenReturn(new ArrayList<>());
         Mockito.when(muAvailableAreaTypesRepository.findAreaTypes(3L)).thenReturn(new ArrayList<>());
 
-        Mockito.when(areaTypesCRUDRepository.findById(Mockito.anyLong()))
+        Mockito.when(areaTypesRepository.findById(Mockito.anyLong()))
                 .then(invocation -> {
                     Long invocationId = invocation.getArgument(0);
                     if (invocationId.equals(10L)) {
@@ -80,12 +79,11 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
     }
 
     @Test
-    @Disabled
     public void test_C_YY_73_2() {
         Mockito.when(moAvailableAreaTypesRepository.findAreaTypes(2L)).thenReturn(new ArrayList<>());
         Mockito.when(muAvailableAreaTypesRepository.findAreaTypes(3L)).thenReturn(new ArrayList<>());
 
-        Mockito.when(areaTypesCRUDRepository.findById(Mockito.anyLong()))
+        Mockito.when(areaTypesRepository.findById(Mockito.anyLong()))
                 .then(invocation -> {
                     Long invocationId = invocation.getArgument(0);
                     if (invocationId.equals(10L)) {
@@ -121,9 +119,8 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
      * С_УУ_74
      */
     @Test
-    @Disabled
     public void test_C_YY_74_1() {
-        doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
+        doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(areaType10.getCode());
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
         moAvailableAreaTypes10.setId(1L);
@@ -165,9 +162,8 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
      * п. 3.
      */
     @Test
-    @Disabled
     public void test_correct() {
-        doReturn(Optional.of(areaType10)).when(areaTypesCRUDRepository).findById(areaType10.getCode());
+        doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(areaType10.getCode());
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
         moAvailableAreaTypes10.setId(1L);

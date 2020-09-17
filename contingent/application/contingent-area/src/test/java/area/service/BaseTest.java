@@ -5,6 +5,8 @@ import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBas
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
+import moscow.ptnl.contingent.domain.area.MoMuServiceImpl;
+import moscow.ptnl.contingent.domain.area.OrderServiceImpl;
 import moscow.ptnl.contingent.transform.AddressesMapper;
 import moscow.ptnl.contingent.transform.AreaRestrictionMapper;
 import moscow.ptnl.contingent.domain.area.MoMuService;
@@ -66,9 +68,6 @@ public class BaseTest {
 
     @Mock
     public AreaRepository areaRepository;
-
-    @Mock
-    public AreaTypesCRUDRepository areaTypesCRUDRepository;
 
     @Mock
     public MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
@@ -137,10 +136,12 @@ public class BaseTest {
     private HistoryServiceHelperImpl historyServiceHelperImpl;
 
     @Spy
-    public MoMuService moMuService;
+    @InjectMocks
+    public MoMuService moMuService = new MoMuServiceImpl();
 
     @Spy
-    public OrderService orderService;
+    @InjectMocks
+    public OrderService orderService = new OrderServiceImpl();
 
     @BeforeEach
     public void init() {

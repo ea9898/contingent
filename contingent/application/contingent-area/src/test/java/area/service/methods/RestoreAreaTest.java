@@ -45,9 +45,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class RestoreAreaTest {
         
     @Autowired
-    private AreaCRUDRepository areaCRUDRepository;
-        
-    @Autowired
     private AreaService areaServiceDomain;
     
     @Autowired
@@ -90,8 +87,8 @@ public class RestoreAreaTest {
         try {
             
             //нужно для прохождения метода restoreArea
-            Mockito.when(areaCRUDRepository.findById(area.getId())).thenReturn(Optional.of(area)); 
-            Mockito.when(areaCRUDRepository.save(area)).thenReturn(area);
+            Mockito.when(areaRepository.findById(area.getId())).thenReturn(Optional.of(area));
+            Mockito.when(areaRepository.save(area)).thenReturn(area);
             Mockito.when(areaRepository.findAreas(null, area.getMoId(), areaType.getCode(), area.getNumber(), true)).thenReturn(new ArrayList<>());           
             Mockito.when(areaRepository.findPrimaryAreasByAreaEqAreaType(area)).thenReturn(findedPrimaryAreas);
             
@@ -150,8 +147,8 @@ public class RestoreAreaTest {
         try {
             
             //нужно для прохождения метода restoreArea
-            Mockito.when(areaCRUDRepository.findById(area.getId())).thenReturn(Optional.of(area)); 
-            Mockito.when(areaCRUDRepository.save(area)).thenReturn(area);
+            Mockito.when(areaRepository.findById(area.getId())).thenReturn(Optional.of(area));
+            Mockito.when(areaRepository.save(area)).thenReturn(area);
             Mockito.when(areaRepository.findAreas(null, area.getMoId(), areaType.getCode(), area.getNumber(), true)).thenReturn(new ArrayList<>());           
             Mockito.when(areaRepository.findPrimaryAreasByAreaEqAreaType(area)).thenReturn(findedPrimaryAreas);
             
@@ -184,8 +181,4 @@ public class RestoreAreaTest {
             e.printStackTrace();
         }
     }
-    
-    
-    
-    
 }
