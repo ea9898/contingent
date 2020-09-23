@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType_;
 import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClassEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations_;
 import moscow.ptnl.contingent.repository.BaseRepository;
@@ -125,6 +126,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     @Override
     public List<Area> findAreasForSyncToK1(long daysForSelect) {
         Specification<Area> specification = (root, criteriaQuery, cb) -> {
+            Join<Area, AreaType> areaTypeJoin = root.join(Area_.areaType, JoinType.LEFT);
             Subquery<AreaMedicalEmployees> sub = criteriaQuery.subquery(AreaMedicalEmployees.class);
             Root<AreaMedicalEmployees> subRoot = sub.from(AreaMedicalEmployees.class);
             sub.where(cb.and(
@@ -138,7 +140,10 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                             cb.equal(subRoot.get(AreaMedicalEmployees_.isError), false)
                     )
             ));
-            return cb.exists(sub.select(subRoot));
+            return cb.and(
+                    cb.exists(sub.select(subRoot)),
+                    cb.equal(areaTypeJoin.get(AreaType_.areaTypeClass), AreaTypeClassEnum.PRIMARY.getClazz())
+            );
         };
         return areaCRUDRepository.findAll(specification);
     }
