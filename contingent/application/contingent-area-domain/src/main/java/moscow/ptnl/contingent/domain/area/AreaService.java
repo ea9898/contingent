@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Интерфейс доменного сервиса для методов работы с участками.
@@ -333,4 +334,13 @@ public interface AreaService {
      */
     Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String aoLevel, long globalIdNsi,
                                      PageRequest paging) throws ContingentException;
+
+    /**
+     * (К_УУ_НСИ_3) Редактирование параметров адреса
+     * @param arGlobalId
+     * @param fields
+     * @return
+     * @throws ContingentException
+     */
+    void editAddress(Long arGlobalId, Map<String, String> fields) throws ContingentException;
 }

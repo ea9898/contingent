@@ -11,6 +11,11 @@ public enum AreaErrorReason implements ErrorReason {
     UNEXPECTED_ERROR("E000", "Непредвиденная ошибка. %s"),
     AREA_TYPE_NOT_FOUND("Е002", "Тип участка с ИД: %s не найден в системе"),
     AREA_NOT_FOUND("E006", "Участок обслуживания МО с ИД %s не найден в системе"),
+
+    FORBIDDEN_ADDRESS_UPDATE_FIELDS("E007", "Редактирование следующих параметров запрещено: %s"), //С_УУ_НСИ_7
+    NSI_ADDRESS_NOT_FOUND("E008", "Адрес с переданным globalId %s не найден"), //С_УУ_НСИ_8
+    WRONG_ADDRESS_UPDATE_FIELDS("E009", "Атрибуты %s не найдены"), //С_УУ_НСИ_9
+
     AREA_IS_ARCHIVED("E012", "Участок с ИД %s находится в статусе «Архивный»"),
     AREA_IS_NOT_ARCHIVED("E014", "Участок с ИД %s находится в статусе «Активный»"),
     ADDRESS_ALREADY_SERVICED_ANOTHER_AREA("E018", "Адрес, включенный в территорию обслуживания участка, не должен входить в территорию обслуживания другого участка с ИД типа участка %s"),

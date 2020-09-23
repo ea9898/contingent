@@ -127,7 +127,28 @@ public final class EntityConverterHelper {
         
         return null;
     }
-    
+
+    public static <T> T parseValue(String value, Class<T> type) {
+        if (value == null || type == null) {
+            return null;
+        }
+        if (type.equals(String.class)) {
+            return (T) value;
+        }
+        else if (type.equals(Long.class)) {
+            return (T) (Long) Long.parseLong(value);
+        }
+        else if (type.equals(Integer.class)) {
+            return (T) (Integer) Integer.parseInt(value);
+        }
+        else if (type.equals(Boolean.class)) {
+            return (T) (Boolean) Boolean.parseBoolean(value);
+        }
+        else {
+            throw new IllegalArgumentException("Incorrect field type " + type);
+        }
+    }
+
     /**
      * Текстовое представление коллекции.
      * [значение1,значение2]
@@ -225,7 +246,18 @@ public final class EntityConverterHelper {
         
         return col1.containsAll(col2);
     }
-    
+
+    public static Method getSetterMethod(Class objectType, Field f) {
+        String methodName = null;
+        try {
+            methodName = "set" + f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
+            return objectType.getMethod(methodName, f.getType());
+        } catch (Exception e) {
+            LOG.error("Отсутствует метод: " + methodName + " в классе: " + objectType.getName(), e);
+            throw new RuntimeException(e);
+        }
+    }
+
     public static enum KNOWN_TYPE {
         STRING,
         INTEGER,
@@ -276,5 +308,4 @@ public final class EntityConverterHelper {
             }
         }
     }
-    
 }

@@ -823,4 +823,20 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="editAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="arGlobalId" type="xs:long" />
+                <xs:element name="options" type="core:Options" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="editAddressResponse">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

@@ -30,6 +30,7 @@ import moscow.ptnl.contingent.domain.area.repository.AreaToAreaTypeRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
+import moscow.ptnl.contingent.domain.history.EntityConverterHelper;
 import moscow.ptnl.contingent.domain.util.Period;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
@@ -60,11 +61,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -1363,5 +1369,51 @@ public class AreaServiceImpl implements AreaService {
         // 5. Система выполняет поиск актуальных участков заданного типа, обслуживающих адреса, полученные на предыдущем этапе сценария,
         // и получает их ИД МУ (AREAS.MU_ID) и ИД МО (AREAS.MO_ID)
         return areaRepository.findActualAreasByAddressIds(areaTypeCodes, addresses.stream().map(Addresses::getId).collect(Collectors.toList()), paging);
+    }
+
+    @Override
+    public void editAddress(Long arGlobalId, Map<String, String> fields) throws ContingentException {
+        List<String> doNotUpdateFields = Arrays.asList("ID", "CREATE_DATE", "UPDATE_DATE", "GLOBAL_ID");
+        //1.
+        if (fields.keySet().stream().anyMatch(doNotUpdateFields::contains)) {
+            throw new ContingentException(new Validation().error(AreaErrorReason.FORBIDDEN_ADDRESS_UPDATE_FIELDS,
+                    new ValidationParameter("options", String.join("; ", doNotUpdateFields))));
+        }
+        //2.
+        Addresses address = addressesRepository.findAddressByGlobalId(arGlobalId);
+
+        if (address == null) {
+            throw new ContingentException(new Validation().error(AreaErrorReason.NSI_ADDRESS_NOT_FOUND,
+                    new ValidationParameter("arGlobalId", String.valueOf(arGlobalId))));
+        }
+        List<String> notFoundFields = new ArrayList<>();
+        Map<Field, String> fieldValues = new HashMap<>();
+        //3.
+        for (Map.Entry<String, String> entry : fields.entrySet()) {
+            Field field = areaHelper.findTableField(entry.getKey(), address);
+
+            if (field == null) {
+                notFoundFields.add(entry.getKey());
+            }
+            else {
+                fieldValues.put(field, entry.getValue());
+            }
+        }
+        if (!notFoundFields.isEmpty()) {
+            throw new ContingentException(new Validation().error(AreaErrorReason.WRONG_ADDRESS_UPDATE_FIELDS,
+                    new ValidationParameter("options", String.join("; ", notFoundFields))));
+        }
+        //4.
+        for (Map.Entry<Field, String> entry : fieldValues.entrySet()) {
+            try {
+                Object value = EntityConverterHelper.parseValue(entry.getValue(), entry.getKey().getType());
+                Method fieldSetter = EntityConverterHelper.getSetterMethod(Addresses.class, entry.getKey());
+                fieldSetter.invoke(address, value);
+            }
+            catch (IllegalAccessException | InvocationTargetException ex) {
+                throw new RuntimeException("Не удалось применить значение поля " + entry.getKey().getName(), ex);
+            }
+        }
+        address.setUpdateDate(LocalDateTime.now());
     }
 }

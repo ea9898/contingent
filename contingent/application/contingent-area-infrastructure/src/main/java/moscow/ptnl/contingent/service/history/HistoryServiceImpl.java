@@ -123,7 +123,7 @@ public class HistoryServiceImpl implements HistoryService {
                 if (Modifier.isFinal(f.getModifiers()) || Modifier.isStatic(f.getModifiers()) || Modifier.isTransient(f.getModifiers()))
                     continue; 
                 Object value = f.get(object);
-                Method fieldSetter = getSetterMethod(objectType, f);
+                Method fieldSetter = EntityConverterHelper.getSetterMethod(objectType, f);
                 fieldSetter.invoke(clone, value);
             }
             return clone;
@@ -132,16 +132,4 @@ public class HistoryServiceImpl implements HistoryService {
             throw new RuntimeException(e);
         }
     }
-    
-    private static Method getSetterMethod(Class objectType, Field f) {
-        String methodName = null;
-        try {
-            methodName = "set" + f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
-            return objectType.getMethod(methodName, f.getType());
-        } catch (Exception e) {
-            LOG.error("отсутствует метод: " + methodName + " в классе: " + objectType.getName(), e);
-            throw new RuntimeException(e);
-        }
-    }
-    
 }

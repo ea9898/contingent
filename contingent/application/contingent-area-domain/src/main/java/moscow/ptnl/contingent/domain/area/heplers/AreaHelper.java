@@ -47,7 +47,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
 import javax.transaction.Transactional;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -922,5 +925,19 @@ public class AreaHelper {
         }
     }
 
+    public Field findTableField(String fieldName, Object object) {
+        for (Field field : object.getClass().getDeclaredFields()) {
+            Column column = field.getAnnotation(Column.class);
 
+            if (column != null && Objects.equals(fieldName, column.name())) {
+                return field;
+            }
+            JoinColumn joinColumn = field.getAnnotation(JoinColumn.class);
+
+            if (joinColumn != null && Objects.equals(fieldName, joinColumn.name())) {
+                return field;
+            }
+        }
+        return null;
+    }
 }
