@@ -23,8 +23,11 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import moscow.ptnl.util.XMLUtil;
 
 /**
@@ -94,29 +97,32 @@ abstract class BaseTopicTask<T> implements Tasklet {
             String eventId = null;
             EsuStatusType status = EsuStatusType.UNSUCCESS;;
             String errorMessage = null;
+            Future<?> future = null;
                     
             try {
                 T event = isMessageTypeJson() ? convertEventJson(message.getMessage()) : convertEventXml(message.getMessage());
                 eventId = getEventId(event);
 
-                try {
-                    //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
-                    Future future = transactionRunner.run(() -> {
-                        processMessage(event);
-                        return true;
-                    });
-                    // Если за 10 секунд не закомителось, то что то идет не так...
-                    future.get(10, TimeUnit.SECONDS);
-                }
-                catch (Throwable ex) {
-                    LOG.error("Ошибка выполнения в асинхронной транзакции сообщения ЕСУ с ID={} в обработчике {}", message.getEsuId(), this.getClass().getName(), ex);
-                    throw ex.getCause();
-                }
+                //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
+                future = transactionRunner.run(() -> {
+                    processMessage(event);
+                    return true;
+                });
+                // Если за 10 секунд не закомителось, то что то идет не так...
+                future.get(10, TimeUnit.SECONDS);
 
                 status = EsuStatusType.SUCCESS;
+            } catch (TimeoutException e) {
+                LOG.warn("Обработка входящего сообщения ЕСУ с ID={} прервана по таймауту", message.getEsuId(), e);
+                //Завершаем выполнение потока
+                if (future != null) {
+                    future.cancel(true);
+                }
+                errorMessage = "Обработка прервана по таймауту";
             } catch (Throwable ex) {
-                LOG.warn("Ошибка обработки входящего сообщения ЕСУ с ID={}", message.getEsuId(), ex);
-                ex = Objects.equals(ex.getMessage(), "Transaction has thrown an Exception") ? ex.getCause() : ex;
+                ex = ex instanceof ExecutionException ? ex.getCause() : ex;
+                LOG.error("Ошибка обработки входящего сообщения ЕСУ с ID={}", message.getEsuId(), ex);
+                ex = Objects.equals(ex.getMessage(), "Transaction has thrown an Exception") && ex.getCause() != null ? ex.getCause() : ex;
                 errorMessage = ex.getMessage(); 
             } finally {
                 updateStatus(message, status, eventId, errorMessage);
