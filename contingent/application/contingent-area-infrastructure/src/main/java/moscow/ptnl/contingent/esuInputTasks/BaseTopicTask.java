@@ -19,6 +19,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -63,25 +64,33 @@ abstract class BaseTopicTask<T> implements Tasklet {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     final public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+        LocalDateTime time = LocalDateTime.now();
         LOG.info(typeClass.getSimpleName() + " task start");
 
         String personalTopic = getTopicName() + "." + consumerGroupId;
         List<EsuInput> messages = esuInputRepository.findByTopic(getTopicName(), personalTopic).getContent();
 
-        try {
-            Future futureUpdate = transactionRunner.run(() -> {
-                messages.forEach(msg -> msg.setStatus(EsuStatusType.INPROGRESS));
-                esuInputRepository.saveAll(messages);
-                return true;
-            });
+        if (!messages.isEmpty()) {
+            Future<?> futureUpdate = null;
 
-            futureUpdate.get(10, TimeUnit.SECONDS);
-        } catch (Throwable th) {
-            LOG.warn("Ошибка перевода сообщений в статус \"В обработке\". Topic - {}", getTopicName(), th);
+            try {
+                 futureUpdate = transactionRunner.run(() -> {
+                    messages.forEach(msg -> msg.setStatus(EsuStatusType.INPROGRESS));
+                    esuInputRepository.saveAll(messages);
+                    return true;
+                });
+                futureUpdate.get(10, TimeUnit.SECONDS);
+            } catch (Throwable th) {
+                LOG.warn("Ошибка перевода сообщений в статус \"В обработке\". Topic - {}", getTopicName(), th);
+
+                if (th instanceof TimeoutException) {
+                    //Завершаем выполнение потока
+                    futureUpdate.cancel(true);
+                }
+                return RepeatStatus.FINISHED;
+            }
         }
-
         for (EsuInput message : messages) {
-
             String eventId = null;
             EsuStatusType status = EsuStatusType.UNSUCCESS;;
             String errorMessage = null;
@@ -114,7 +123,7 @@ abstract class BaseTopicTask<T> implements Tasklet {
             }
         }
 
-         LOG.info(typeClass.getSimpleName() + " task done");
+        LOG.info(typeClass.getSimpleName() + " task done in " + Duration.between(time, LocalDateTime.now()));
 
         return RepeatStatus.FINISHED;
     }

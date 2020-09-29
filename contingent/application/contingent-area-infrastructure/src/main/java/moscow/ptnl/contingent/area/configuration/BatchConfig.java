@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.configuration;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -8,8 +9,10 @@ import org.springframework.batch.core.configuration.annotation.DefaultBatchConfi
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
@@ -17,8 +20,10 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 import javax.sql.DataSource;
+import java.util.Set;
 
 @Configuration
 @EnableBatchProcessing
@@ -34,6 +39,9 @@ public class BatchConfig extends DefaultBatchConfigurer {
     private JobLauncher jobLauncher;
 
     @Autowired
+    private JobExplorer jobExplorer;
+
+    @Autowired
     @Qualifier("attachmentPrimaryTopicTask")
     private Tasklet attachmentPrimaryTopicTask;
 
@@ -45,7 +53,21 @@ public class BatchConfig extends DefaultBatchConfigurer {
     @Qualifier("dnEventInformerTask")
     private Tasklet dnEventInformerTask;
 
+    @Override
+    protected JobLauncher createJobLauncher() throws Exception {
+        SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("batch-task-thread-");
+        executor.setConcurrencyLimit(10);
+        SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
+        jobLauncher.setJobRepository(getJobRepository());
+        jobLauncher.setTaskExecutor(executor);
+        jobLauncher.afterPropertiesSet();
+        return jobLauncher;
+    }
+
     private Job buildJobAttachmentPrimaryTopicTask() {
+        if (isJobRunning("jobAttachmentPrimaryTopicTask")) {
+            return null;
+        }
         return jobs.get("jobAttachmentPrimaryTopicTask")
                 .incrementer(new RunIdIncrementer())
                 .start(steps.get("stepAttachmentPrimaryTopicTask")
@@ -55,6 +77,9 @@ public class BatchConfig extends DefaultBatchConfigurer {
     }
 
     private Job buildJobJobExecutionInfoMsg() {
+        if (isJobRunning("jobJobExecutionInfoMsg")) {
+            return null;
+        }
         return jobs.get("jobJobExecutionInfoMsg")
                 .incrementer(new RunIdIncrementer())
                 .start(steps.get("stepJobExecutionInfoMsg")
@@ -64,6 +89,9 @@ public class BatchConfig extends DefaultBatchConfigurer {
     }
 
     private Job buildJobDnEventInformer() {
+        if (isJobRunning("jobDnEventInformer")) {
+            return null;
+        }
         return jobs.get("jobDnEventInformer")
                 .incrementer(new RunIdIncrementer())
                 .start(steps.get("stepJobDnEventInformer")
@@ -72,33 +100,39 @@ public class BatchConfig extends DefaultBatchConfigurer {
                 .build();
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedDelay = 60000, initialDelay = 10000)
     public void schedule1() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        JobParameters params = new JobParametersBuilder()
-                .addString("JobID", String.valueOf(System.currentTimeMillis()))
-                .toJobParameters();
-        jobLauncher.run(buildJobAttachmentPrimaryTopicTask(), params);
+        runJob(buildJobAttachmentPrimaryTopicTask());
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedDelay = 60000, initialDelay = 20000)
     public void schedule2() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        JobParameters params = new JobParametersBuilder()
-                .addString("JobID", String.valueOf(System.currentTimeMillis()))
-                .toJobParameters();
-        jobLauncher.run(buildJobJobExecutionInfoMsg(), params);
+        runJob(buildJobJobExecutionInfoMsg());
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedDelay = 60000, initialDelay = 30000)
     public void schedule3() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        JobParameters params = new JobParametersBuilder()
-                .addString("JobID", String.valueOf(System.currentTimeMillis()))
-                .toJobParameters();
-        jobLauncher.run(buildJobDnEventInformer(), params);
+        runJob(buildJobDnEventInformer());
     }
 
     @Override
     public void setDataSource(DataSource dataSource) {
         // override to do not set datasource even if a datasource exist.
         // initialize will use a Map based JobRepository (instead of database)
+    }
+
+    private void runJob(Job job) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+        if (job == null) {
+            return;
+        }
+        JobParameters params = new JobParametersBuilder()
+                .addString("JobID", String.valueOf(System.currentTimeMillis()))
+                .toJobParameters();
+        jobLauncher.run(job, params);
+    }
+
+    private boolean isJobRunning(String jobName) {
+        Set<JobExecution> jobExecutions = jobExplorer.findRunningJobExecutions(jobName);
+        return !jobExecutions.isEmpty();
     }
 }
