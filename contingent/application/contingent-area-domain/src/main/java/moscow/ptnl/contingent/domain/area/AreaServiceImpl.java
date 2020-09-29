@@ -859,7 +859,8 @@ public class AreaServiceImpl implements AreaService {
         addressesRegistry.forEach(ar -> {
             if (areaIdIntersect != null) {
                 if (!areaIdIntersect.equals(area.getId())) {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA, new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
+                            new ValidationParameter("areaId", area.getId()), new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
                 } else {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", ar.getAddressString()));
                 }
