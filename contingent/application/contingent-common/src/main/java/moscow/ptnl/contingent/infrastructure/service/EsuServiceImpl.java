@@ -18,11 +18,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.PropertySource;
@@ -134,18 +136,24 @@ public class EsuServiceImpl implements EsuService {
     public void publishToESU(final Long recordId, final String publishTopic, final String message) {
 
         MessageMetadata esuAnswer = null;
+        Future<MessageMetadata> future = null;
         //запускаем в потоке чтобы иметь возможность прервать по таймауту
         try {
-            esuAnswer = CompletableFuture.supplyAsync(() -> {
+            future = transactionRunner.run(() -> {
                 try {
                     return esuProducer.publish(publishTopic, message);
                 } catch (Exception e){
                     LOG.error("ошибка при публикации данных в ЕСУ", e);
                 }
                 return null;
-            } /*,getPublishThreadExecutor()*/).get(producerRequestTimeout, TimeUnit.MILLISECONDS);
+            });
+            esuAnswer = future.get(producerRequestTimeout, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            LOG.warn("Публикация данных в ЕСУ прервана по таймауту", e);
+            //Завершаем выполнение потока
+            future.cancel(true);
         } catch (Throwable e) {
-            LOG.error("публикации данных в ЕСУ прервана", e);
+            LOG.error("Публикация данных в ЕСУ прервана", e);
         }
         
         try {
