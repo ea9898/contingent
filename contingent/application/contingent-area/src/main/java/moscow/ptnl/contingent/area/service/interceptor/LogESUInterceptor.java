@@ -44,9 +44,6 @@ public class LogESUInterceptor {
     private EsuHelperService esuHelperService;
     
     @Autowired
-    private AreaCRUDRepository areaCRUDRepository;
-    
-    @Autowired
     private AreaRepository areaRepository;
 
     @Autowired
@@ -78,7 +75,7 @@ public class LogESUInterceptor {
                 areaRepository.getEntityManager().flush(); //актуализируем данные при не завершенной транзакции
                 
                 for (Long areaId : areaIds) {
-                    Optional<Area> area = areaCRUDRepository.findById(areaId);
+                    Optional<Area> area = areaRepository.findById(areaId);
 
                     if (!area.isPresent()) {
                         throw new IllegalArgumentException("сущность с идентификатором " + areaId + " не найдена");

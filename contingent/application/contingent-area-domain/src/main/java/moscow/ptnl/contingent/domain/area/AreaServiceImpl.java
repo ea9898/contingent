@@ -1051,6 +1051,7 @@ public class AreaServiceImpl implements AreaService {
 
         // 6.
         area.setArchived(false);
+        area.setUpdateDate(LocalDateTime.now());
         areaRepository.save(area);
 
         // 8.

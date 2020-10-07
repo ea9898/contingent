@@ -64,7 +64,6 @@ public class RestoreAreaTest {
     }   
     
     @Test
-    @Disabled
     public void restoreAreaTestMainAreaType() {
         
         //TODO нужны какие то вменяемые данные
@@ -124,7 +123,6 @@ public class RestoreAreaTest {
     }
     
     @Test
-    @Disabled
     public void restoreAreaTestDependentAreaType() {
         
         //TODO нужны какие то вменяемые данные
