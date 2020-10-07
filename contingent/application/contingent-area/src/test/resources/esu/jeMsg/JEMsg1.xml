@@ -1,0 +1,37 @@
+<ns5:JobExecutionInfoMsg action="CREATE" actionId="B0D75F82-2D74-543E-E053-3052F000AE28" code="0300" title="Принять" operation="APPROVE" xmlns="http://emias.mos.ru/svmr2/core/v1/types" xmlns:ns5="http://emias.mos.ru/svmr2/systemInformerService/v1" xmlns:ns2="http://emias.mos.ru/skuu/svmr/systemInformerService/v1/types/" xmlns:ns4="http://emias.mos.ru/svmr2/producer/v1/types" xmlns:ns3="http://emias.mos.ru/skuu/svmr/core/v1/">
+    <ns5:jeCreate archived="false" id="324691500530">
+        <ns4:department archived="false" id="321994469534">
+            <ns4:organization type="MEDICAL_ORGANIZATION" archived="false" id="11076478">
+                <ns4:shortName>ГБУЗ "ГКБ имени братьев Бахрушиных ДЗМ"</ns4:shortName>
+            </ns4:organization>
+            <ns4:departmentNom>
+                <ns4:departmentNom id="125693225">
+                    <ns4:code>HOSP_MED_299</ns4:code>
+                    <ns4:title>Терапевтическое отделение</ns4:title>
+                </ns4:departmentNom>
+            </ns4:departmentNom>
+            <ns4:parentDepartment id="310331836568"/>
+        </ns4:department>
+        <ns4:employee archived="false" id="324690767793">
+            <ns4:fio>
+                <ns4:lastName>Малова</ns4:lastName>
+                <ns4:firstName>Анжелика</ns4:firstName>
+                <ns4:middleName>Александровна</ns4:middleName>
+            </ns4:fio>
+            <ns4:snils>16391483688</ns4:snils>
+        </ns4:employee>
+        <ns4:positionNom>
+            <ns4:title>Медицинская сестра палатная (постовая)</ns4:title>
+        </ns4:positionNom>
+        <ns4:period>
+            <ns4:start>2020-10-03</ns4:start>
+        </ns4:period>
+        <ns4:attributes>
+            <ns4:positionType id="125677601">
+                <ns4:code>MAIN_JOB</ns4:code>
+                <ns4:title>Основная должность </ns4:title>
+            </ns4:positionType>
+            <ns4:rate>1.0</ns4:rate>
+        </ns4:attributes>
+    </ns5:jeCreate>
+</ns5:JobExecutionInfoMsg>

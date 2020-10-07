@@ -1,0 +1,37 @@
+<ns5:JobExecutionInfoMsg action="CREATE" actionId="B0E7434F-1C38-2404-E053-3052F000A143" code="0302" title="Перевести" operation="APPROVE" xmlns="http://emias.mos.ru/svmr2/core/v1/types" xmlns:ns5="http://emias.mos.ru/svmr2/systemInformerService/v1" xmlns:ns2="http://emias.mos.ru/skuu/svmr/systemInformerService/v1/types/" xmlns:ns4="http://emias.mos.ru/svmr2/producer/v1/types" xmlns:ns3="http://emias.mos.ru/skuu/svmr/core/v1/">
+    <ns5:jeCreate archived="false" id="324706888268">
+        <ns4:department archived="false" id="312534713511">
+            <ns4:organization type="MEDICAL_ORGANIZATION" archived="false" id="10465578">
+                <ns4:shortName>ГБУЗ "ГКБ № 29 ДЗМ"</ns4:shortName>
+            </ns4:organization>
+            <ns4:departmentNom>
+                <ns4:departmentNom id="125693912">
+                    <ns4:code>HOSP_79</ns4:code>
+                    <ns4:title>Хозяйственно-обслуживающий персонал</ns4:title>
+                </ns4:departmentNom>
+            </ns4:departmentNom>
+            <ns4:parentDepartment id="303785530813"/>
+        </ns4:department>
+        <ns4:employee archived="false" id="324044969792">
+            <ns4:fio>
+                <ns4:lastName>Ломкова</ns4:lastName>
+                <ns4:firstName>Ирина</ns4:firstName>
+                <ns4:middleName>Леонидовна</ns4:middleName>
+            </ns4:fio>
+            <ns4:snils>20108518104</ns4:snils>
+        </ns4:employee>
+        <ns4:positionNom>
+            <ns4:title>Буфетчик</ns4:title>
+        </ns4:positionNom>
+        <ns4:period>
+            <ns4:start>2020-10-05</ns4:start>
+        </ns4:period>
+        <ns4:attributes>
+            <ns4:positionType id="125677601">
+                <ns4:code>MAIN_JOB</ns4:code>
+                <ns4:title>Основная должность </ns4:title>
+            </ns4:positionType>
+            <ns4:rate>1.0</ns4:rate>
+        </ns4:attributes>
+    </ns5:jeCreate>
+</ns5:JobExecutionInfoMsg>
