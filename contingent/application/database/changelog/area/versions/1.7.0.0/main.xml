@@ -104,4 +104,18 @@
         <modifyDataType tableName="nsi_address_forming_element" columnName="STREET_BTI_CODE" newDataType="VARCHAR2(4000)"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-884" author="ddryuchin" labels="1.7.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_address_id_mo_addresses"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки address_id таблицы mo_addresses</comment>
+        <createIndex indexName="idx_address_id_mo_addresses"
+                     tableName="mo_addresses"
+                     unique="false">
+            <column name="address_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
