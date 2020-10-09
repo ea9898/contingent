@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.nsi.ws;
 
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiFormTablesEnum;
@@ -48,19 +49,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mos.emias.nsiproduct.core.v1.KeyValuePair;
 import ru.mos.emias.nsiproduct.core.v1.PagingOptions;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsRequest;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsResponse;
 import ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.NsiServiceAsyncFasadPortType;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.AdminServicePortType;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.Fault;
+import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.EditAddressRequest;
+import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.EditAddressResponse;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.SyncNsiRequest;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.SyncNsiResponse;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.UpdateAddressByGlobalIdRequest;
@@ -126,16 +134,7 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     private PositionNomCRUDRepository positionNomCRUDRepository;
 
     @Autowired
-    private AddressFormingElementRepository addressFormingElementRepository;
-
-    @Autowired
-    private AddressFormingElementCRUDRepository addressFormingElementCRUDRepository;
-
-    @Autowired
-    private NsiFormServiceHelper nsiFormServiceHelper;
-
-    @Autowired
-    private NsiFormResponseMapper nsiFormResponseMapper;
+    private AreaService areaServiceDomain;
 
     @Autowired
     private NsiAdminService nsiAdminService;
@@ -281,6 +280,18 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
         return updateAddressByGlobalIdResponseMapper.transform(unrecognizedAddresses);
     }
 
+    @Override
+    public EditAddressResponse editAddress(EditAddressRequest body) throws Fault {
+        try {
+            Map<String, String> mapOpts = new HashMap<>();
+            body.getOptions().getEntry().forEach( opt -> mapOpts.put(opt.getKey(), opt.getValue()));
+            areaServiceDomain.editAddress(body.getArGlobalId(), mapOpts);
+            return new EditAddressResponse();
+        } catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
     private <T extends Serializable, K extends Serializable> void saveAll(CommonRepository<T, K> repository, List<T> entities) {
         entities.forEach(e -> {
             if (e instanceof NsiExternalEntity) {
@@ -290,4 +301,13 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
         });
         repository.saveAll(entities);
     }
+
+
+    private Fault mapException(Exception ex) {
+        if (!(ex instanceof ContingentException)) {
+            LOG.error(ex.getMessage(), ex);
+        }
+        return SoapExceptionMapper.map(ex);
+    }
+
 }

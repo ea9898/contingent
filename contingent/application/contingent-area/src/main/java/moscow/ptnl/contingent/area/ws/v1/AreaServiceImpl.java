@@ -69,8 +69,6 @@ import ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.types.DelMuAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.types.DelMuAvailableAreaTypesResponse;
-import ru.mos.emias.contingent2.area.types.EditAddressRequest;
-import ru.mos.emias.contingent2.area.types.EditAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaAddressRequest;
 import ru.mos.emias.contingent2.area.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.types.GetAreaByIdRequest;
@@ -123,7 +121,6 @@ import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import ru.mos.emias.contingent2.area.types.InitiateAddMoAddressRequest;
 import ru.mos.emias.contingent2.area.types.InitiateAddMoAddressResponse;
-import ru.mos.emias.contingent2.core.KeyValuePair;
 
 /**
  *
@@ -703,18 +700,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             InitiateAddMoAddressResponse response = new InitiateAddMoAddressResponse();
             response.setId(result);
             return response;            
-        } catch (Exception ex) {
-            throw mapException(ex);
-        }
-    }
-
-    @Override @Metrics
-    public EditAddressResponse editAddress(EditAddressRequest body) throws Fault {
-        try {
-            areaServiceDomain.editAddress(body.getArGlobalId(), body.getOptions().getEntries().stream()
-                    .collect(Collectors.toMap(KeyValuePair::getKey, KeyValuePair::getValue))
-            );
-            return new EditAddressResponse();
         } catch (Exception ex) {
             throw mapException(ex);
         }
