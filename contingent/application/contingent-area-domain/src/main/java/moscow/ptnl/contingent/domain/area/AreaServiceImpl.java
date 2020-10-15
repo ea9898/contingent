@@ -925,6 +925,7 @@ public class AreaServiceImpl implements AreaService {
                 AreaAddress areaAddressOld = areaAddress.clone();
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
+                areaAddress.setUpdateDate(LocalDateTime.now());
                 areaAddressRepository.save(areaAddress);
                 historyHelper.sendHistory(areaAddressOld, areaAddress, AreaAddress.class);
             } else {
