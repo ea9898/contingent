@@ -925,6 +925,7 @@ public class AreaServiceImpl implements AreaService {
                 AreaAddress areaAddressOld = areaAddress.clone();
                 // 5.1.
                 areaAddress.setEndDate(localDate.minusDays(1L));
+                areaAddress.setUpdateDate(LocalDateTime.now());
                 areaAddressRepository.save(areaAddress);
                 historyHelper.sendHistory(areaAddressOld, areaAddress, AreaAddress.class);
             } else {
@@ -1408,7 +1409,8 @@ public class AreaServiceImpl implements AreaService {
         //4.
         for (Map.Entry<Field, String> entry : fieldValues.entrySet()) {
             try {
-                Object value = EntityConverterHelper.parseValue(entry.getValue(), entry.getKey().getType());
+                //Если "input value" = "null" (во входных параметрах значение передается без кавычек), то Система обнуляет значение соответствующего атрибута в таблице ADDRESSES
+                Object value = "null".equals(entry.getValue()) ? null : EntityConverterHelper.parseValue(entry.getValue(), entry.getKey().getType());
                 Method fieldSetter = EntityConverterHelper.getSetterMethod(Addresses.class, entry.getKey());
                 fieldSetter.invoke(address, value);
             }

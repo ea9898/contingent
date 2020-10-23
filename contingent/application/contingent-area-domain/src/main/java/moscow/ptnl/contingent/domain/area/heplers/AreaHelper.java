@@ -275,6 +275,7 @@ public class AreaHelper {
             }
             else {
                 a.setEndDate(LocalDate.now().minusDays(1));
+                a.setUpdateDate(LocalDateTime.now());
                 moAddressRepository.save(a);
             }
         });
@@ -289,6 +290,7 @@ public class AreaHelper {
         addresses.forEach(a -> {
             if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
                 a.setEndDate(LocalDate.now().minusDays(1)); // чтоб адреса не попадали в актуальные в отправке в ЕСУ
+                a.setUpdateDate(LocalDateTime.now());
                 areaAddressRepository.delete(a);
             }
             else {
