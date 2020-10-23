@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
@@ -39,9 +40,8 @@ public class AreaToAreaTypeRepositoryImpl extends BaseRepository implements Area
         Specification<AreaToAreaType> specification = (root, criteriaQuery, criteriaBuilder) ->
             criteriaBuilder.and(
                 criteriaBuilder.equal(root.get(AreaToAreaType_.area), area),
-                root.get(AreaToAreaType_.areaType).in(areaTypes)
+                criteriaBuilder.in(root.get(AreaToAreaType_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypes) //root.get(AreaToAreaType_.areaType).in(areaTypes)
             );
-
         return areaToAreaTypeCRUDRepository.findAll(specification);
     }
 

@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
@@ -75,10 +74,12 @@ public class PolicyType implements Serializable, NsiExternalEntity {
         this.title = title;
     }
 
+    @Override
     public Boolean getArchived() {
         return archived;
     }
 
+    @Override
     public void setArchived(Boolean archived) {
         this.archived = archived;
     }
@@ -116,6 +117,7 @@ public class PolicyType implements Serializable, NsiExternalEntity {
         return Objects.hash(code);
     }
 
+    @Override
     public Serializable getKey() {
         return getCode();
     }

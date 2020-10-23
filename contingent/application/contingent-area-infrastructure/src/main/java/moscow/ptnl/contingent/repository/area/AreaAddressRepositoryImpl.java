@@ -19,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import moscow.ptnl.contingent.domain.area.entity.Addresses_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
+import moscow.ptnl.contingent.repository.CommonSpecification;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
@@ -40,12 +42,13 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     // Спека поиска территорий обслуживания по ID
     private Specification<AreaAddress> findMoAddressesByIdsSpec(List<Long> moAddressIds) {
         return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
-                root.get(AreaAddress_.moAddress.getName()).get(MoAddress_.id.getName()).in(moAddressIds);
+                criteriaBuilder.in(root.get(AreaAddress_.moAddress.getName()).get(MoAddress_.id.getName())).in(moAddressIds);
     }
 
     private Specification<AreaAddress> findAreaAddressesByIdsSpec(List<Long> areaAddressIds) {
-        return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
-                root.get(AreaAddress_.id.getName()).in(areaAddressIds);
+        return CommonSpecification.in(AreaAddress_.id, areaAddressIds);
+        //return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
+        //        root.get(AreaAddress_.id.getName()).in(areaAddressIds);                
     }
 
     @Override
@@ -74,8 +77,8 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     public Page<AreaAddress> findAreaAddressesByAreaId(Long moId, List<Long> areaIds, Pageable paging) {
         Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.and(
-                        root.get(AreaAddress_.area.getName()).get(Area_.moId.getName()).in(moId),
-                        root.get(AreaAddress_.area.getName()).get(Area_.id.getName()).in(areaIds)
+                        criteriaBuilder.in(root.get(AreaAddress_.area.getName()).get(Area_.moId.getName())).value(moId), //root.get(AreaAddress_.area.getName()).get(Area_.moId.getName()).in(moId),
+                        criteriaBuilder.in(root.get(AreaAddress_.area.getName()).get(Area_.id.getName())).value(areaIds) //root.get(AreaAddress_.area.getName()).get(Area_.id.getName()).in(areaIds)
                 );
         specification = specification.and(activeAreaAddressesSpec());
 
@@ -91,7 +94,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     public List<AreaAddress> findAreaAddressByAddressIds(List<Long> addressIds) {
         Specification<AreaAddress> specification = (root, criteriaQuery, cb) ->
                 cb.and(
-                        root.get(AreaAddress_.address).in(addressIds),
+                        cb.in(root.get(AreaAddress_.address.getName()).get(Addresses_.id.getName())).value(addressIds),
                         cb.or(
                                 cb.greaterThanOrEqualTo(root.get(AreaAddress_.endDate), LocalDate.now()),
                                 cb.isNull(root.get(AreaAddress_.endDate))

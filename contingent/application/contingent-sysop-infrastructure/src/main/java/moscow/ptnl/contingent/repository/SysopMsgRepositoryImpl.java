@@ -44,9 +44,10 @@ public class SysopMsgRepositoryImpl extends BaseRepository implements SysopMsgRe
 
     @Override
     public Map<SysopMsg, List<SysopMsg>> getSysopMsgChildsMap(List<SysopMsg> sysopMsgs) {
+        List<Long> sysopMsgsIds = sysopMsgs.stream().map(s -> s.getId()).collect(Collectors.toList());
         Specification<SysopMsg> specification =
                 (root, criteriaQuery, criteriaBuilder) ->
-                        root.get(SysopMsg_.parentMessage.getName()).in(sysopMsgs);
+                    criteriaBuilder.in(root.get(SysopMsg_.parentMessage.getName()).get(SysopMsg_.id.getName())).value(sysopMsgsIds); //root.get(SysopMsg_.parentMessage.getName()).in(sysopMsgs);
 
         return sysopMsgCRUDRepository.findAll(specification).stream().collect(Collectors.groupingBy(SysopMsg::getParentMessage));
     }

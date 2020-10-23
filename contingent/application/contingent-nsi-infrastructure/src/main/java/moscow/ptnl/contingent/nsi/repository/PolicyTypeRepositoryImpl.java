@@ -26,7 +26,7 @@ public class PolicyTypeRepositoryImpl extends BaseRepository implements PolicyTy
             return new ArrayList<>();
         }
         Specification<PolicyType> specification = (root, criteriaQuery, criteriaBuilder) ->
-                root.get(PolicyType_.code).in(codes);
+            criteriaBuilder.in(root.get(PolicyType_.code.getName())).value(codes); //root.get(PolicyType_.code).in(codes);
 
         return policyTypeCRUDRepository.findAll(specification);
     }

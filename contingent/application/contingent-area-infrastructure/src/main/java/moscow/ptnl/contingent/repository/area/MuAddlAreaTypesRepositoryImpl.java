@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
@@ -34,9 +35,10 @@ public class MuAddlAreaTypesRepositoryImpl extends BaseRepository implements MuA
         Root<MuAddlAreaTypes> profile = criteria.from(MuAddlAreaTypes.class);
         criteria.where(
             criteriaBuilder.and(
-                    muIds == null || muIds.isEmpty() ? criteriaBuilder.conjunction() :
-                            profile.get(MuAddlAreaTypes_.muId.getName()).in(muIds),
-                    profile.get(MuAddlAreaTypes_.areaType.getName()).in(areaTypes)
+                    muIds == null || muIds.isEmpty() 
+                            ? criteriaBuilder.conjunction() 
+                            : criteriaBuilder.in(profile.get(MuAddlAreaTypes_.muId.getName())).value(muIds), //profile.get(MuAddlAreaTypes_.muId.getName()).in(muIds),
+                    criteriaBuilder.in(profile.get(MuAddlAreaTypes_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypes) //profile.get(MuAddlAreaTypes_.areaType.getName()).in(areaTypes)
             )
         );
 

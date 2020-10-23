@@ -37,10 +37,10 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                 criteriaBuilder.and(
                         criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
                         areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
-                                root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
+                            criteriaBuilder.in(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes), //root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
                         criteriaBuilder.or(
-                                criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
-                                root.get(MoAddress_.endDate.getName()).isNull()
+                            criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
+                            root.get(MoAddress_.endDate.getName()).isNull()
                         )
                 );
         if (paging == null) {

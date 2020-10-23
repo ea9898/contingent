@@ -8,9 +8,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations_;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 
 @Repository
 @Transactional(propagation= Propagation.MANDATORY)
@@ -35,8 +37,9 @@ public class AreaTypeSpecializationsRepositoryImpl implements AreaTypeSpecializa
 
     @Override
     public List<AreaTypeSpecializations> findByAreaTypeCode(List<AreaType> areaTypes) {
+        List<Long> areaTypesIds = areaTypes.stream().map(a -> a.getCode()).collect(Collectors.toList());
         Specification<AreaTypeSpecializations> specification = (root, criteriaQuery, criteriaBuilder) ->
-                root.get(AreaTypeSpecializations_.areaType.getName()).in(areaTypes);
+                criteriaBuilder.in(root.get(AreaTypeSpecializations_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypesIds); //root.get(AreaTypeSpecializations_.areaType.getName()).in(areaTypes);
         return areaTypeSpecializationsCRUDRepository.findAll(specification);
     }
 }

@@ -11,14 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.domain.area.entity.Area_;
+import moscow.ptnl.contingent.repository.CommonSpecification;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
@@ -34,17 +33,20 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdsSpec(List<Long> areaIds) {
         return (root, criteriaQuery, criteriaBuilder) ->
-                root.get(AreaMedicalEmployees_.area).in(areaIds);
+                criteriaBuilder.in(root.get(AreaMedicalEmployees_.area.getName()).get(Area_.id.getName())).value(areaIds); //root.get(AreaMedicalEmployees_.area).in(areaIds);
+                
     }
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByJobsIdsSpec(List<Long> jobIds) {
-        return (root, criteriaQuery, criteriaBuilder) ->
-                root.get(AreaMedicalEmployees_.medicalEmployeeJobId).in(jobIds);
+        return CommonSpecification.in(AreaMedicalEmployees_.medicalEmployeeJobId, jobIds);
+        //return (root, criteriaQuery, criteriaBuilder) ->
+        //        root.get(AreaMedicalEmployees_.medicalEmployeeJobId).in(jobIds);
     }
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesBySnilsSpec(List<String> snils) {
-        return (root, criteriaQuery, criteriaBuilder) ->
-                root.get(AreaMedicalEmployees_.snils).in(snils);
+        return CommonSpecification.in(AreaMedicalEmployees_.snils, snils);
+        //return (root, criteriaQuery, criteriaBuilder) ->
+        //        root.get(AreaMedicalEmployees_.snils).in(snils);
     }
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesNotError() {
@@ -56,8 +58,10 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     }
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreasSpec(List<Area> areas) {
+        List<Long> areasIds = areas.stream().map(a -> a.getId()).collect(Collectors.toList());
         return (root, criteriaQuery, criteriaBuilder) ->
-                root.get(AreaMedicalEmployees_.area).in(areas);
+                criteriaBuilder.in(root.get(AreaMedicalEmployees_.area.getName()).get(Area_.id.getName())).value(areasIds);
+                //root.get(AreaMedicalEmployees_.area).in(areas);
     }
 
     private Specification<AreaMedicalEmployees> actualEmployeesSpec() {

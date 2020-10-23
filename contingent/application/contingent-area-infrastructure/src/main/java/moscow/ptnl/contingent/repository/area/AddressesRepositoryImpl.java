@@ -5,7 +5,6 @@ import moscow.ptnl.contingent.domain.area.entity.Addresses_;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
 import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
-import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,23 +19,26 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.repository.CommonSpecification;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
 public class AddressesRepositoryImpl extends BaseRepository implements AddressesRepository {
 
     @Autowired
-    AddressesCRUDRepository addressesCRUDRepository;
+    private AddressesCRUDRepository addressesCRUDRepository;
 
     @Autowired
-    AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
+    private AreaAddressPagingAndSortingRepository areaAddressPagingAndSortingRepository;
 
     @Override
     public List<Addresses> findAddresses(List<Long> nsiGlobalIds, String aoLevel) {
         Specification<Addresses> specification = (Specification<Addresses>) (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.and(
-                    root.get(Addresses_.globalId).in(nsiGlobalIds),
-                    aoLevel == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(Addresses_.aoLevel), aoLevel)
+            criteriaBuilder.and(   
+                    criteriaBuilder.in(root.get(Addresses_.globalId.getName())).value(nsiGlobalIds),//root.get(Addresses_.globalId).in(nsiGlobalIds),                     
+                    aoLevel == null 
+                            ? criteriaBuilder.conjunction() 
+                            : criteriaBuilder.equal(root.get(Addresses_.aoLevel), aoLevel)
             );
         return addressesCRUDRepository.findAll(specification);
     }

@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
+import moscow.ptnl.contingent.repository.CommonSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,15 +68,17 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     private Specification<Area> searchByMuIdsSpec(List<Long> muIds) {
-        return (root, criteriaQuery, cb) -> root.get(Area_.muId.getName()).in(muIds);
+        return CommonSpecification.in(Area_.muId, muIds);
+        //return (root, criteriaQuery, cb) -> root.get(Area_.muId.getName()).in(muIds);
     }
 
     private Specification<Area> searchByAreaTypeCodesSpec(List<Long> areaTypeCodes) {
-        return (root, criteriaQuery, cb) -> root.get(Area_.areaType.getName()).in(areaTypeCodes);
+        return  (root, criteriaQuery, cb) -> cb.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes);
+        //return (root, criteriaQuery, cb) -> root.get(Area_.areaType.getName()).in(areaTypeCodes);
     }
 
     private Specification<Area> searchByAreaIdsSpec(List<Long> areaIds) {
-        return (root, criteriaQuery, cb) -> root.get(Area_.id.getName()).in(areaIds);
+        return CommonSpecification.in(Area_.id, areaIds);
     }
 
     private Specification<Area> searchWithActualMainEmployeesSpec() {
@@ -103,7 +106,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
             Root<AreaTypeSpecializations> subRoot = sub.from(AreaTypeSpecializations.class);
             return cb.exists(sub.where(cb.and(
                     cb.equal(subRoot.get(AreaTypeSpecializations_.areaType.getName()), root.get(Area_.areaType.getName())),
-                    subRoot.get(AreaTypeSpecializations_.specializationCode.getName()).in(specializationCodes)
+                    cb.in(subRoot.get(AreaTypeSpecializations_.specializationCode.getName())).value(specializationCodes) //subRoot.get(AreaTypeSpecializations_.specializationCode.getName()).in(specializationCodes)
             )).select(subRoot));
         };
     }
@@ -158,8 +161,8 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                                 criteriaBuilder.equal(root.get(Area_.muId.getName()), muId),
                         number == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.number.getName()), number),
-                        areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
-                                root.get(Area_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
+                        areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :                                
+                                criteriaBuilder.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes), //root.get(Area_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
                         actual == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.archived.getName()), !actual));
         return areaCRUDRepository.findAll(specification);
@@ -180,9 +183,9 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                         moId == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.moId), moId),
                         muIds == null || muIds.isEmpty() ? criteriaBuilder.conjunction() :
-                                root.get(Area_.muId).in(muIds),
-                        areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
-                                root.get(Area_.areaType).get(AreaType_.code).in(areaTypeCodes),
+                                criteriaBuilder.in(root.get(Area_.muId)).in(muIds),//root.get(Area_.muId).in(muIds),
+                        areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :                                
+                                criteriaBuilder.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes), //root.get(Area_.areaType).get(AreaType_.code).in(areaTypeCodes),
                         number == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.number), number),
                         description == null ? criteriaBuilder.conjunction() :
@@ -298,7 +301,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         specification = specification.and((root, criteriaQuery, cb) -> {
             Join<Area, AreaAddress> areaAddressJoin = root.join(Area_.areaAddresses, JoinType.LEFT);
             return cb.and(
-                    areaAddressJoin.get(AreaAddress_.address.getName()).get(Addresses_.id.getName()).in(addressIds),
+                    cb.in(areaAddressJoin.get(AreaAddress_.address.getName()).get(Addresses_.id.getName())).value(addressIds), //areaAddressJoin.get(AreaAddress_.address.getName()).get(Addresses_.id.getName()).in(addressIds),
                     cb.or(
                             cb.isNull(areaAddressJoin.get(AreaAddress_.endDate.getName())),
                             cb.greaterThan(areaAddressJoin.get(AreaAddress_.endDate.getName()), LocalDate.now())

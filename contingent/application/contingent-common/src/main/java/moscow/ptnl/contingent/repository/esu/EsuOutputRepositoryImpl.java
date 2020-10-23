@@ -15,13 +15,11 @@ import java.util.stream.Collectors;
 import javax.persistence.criteria.CriteriaUpdate;
 import moscow.ptnl.contingent.domain.esu.EsuOutput;
 import moscow.ptnl.contingent.domain.esu.EsuOutput_;
+import moscow.ptnl.contingent.repository.CommonSpecification;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
 public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutputRepository {
-    
-    /** Максимальное количество записей в IN запросе */
-    private static final int MAX_RECORDS_IN_CLAUSE = 1000; 
     
     @Override
     public List<EsuOutput> findEsuOutputsToResend(LocalDateTime olderThan) {
@@ -41,16 +39,17 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
         );
         List<EsuOutput> results = entityManager
                 .createQuery(selectCriteria)
-                .setMaxResults(MAX_RECORDS_IN_CLAUSE)
+                .setMaxResults(CommonSpecification.MAX_RECORDS_IN_CLAUSE)
                 .getResultList();
         
         if (!results.isEmpty()) {
             CriteriaUpdate<EsuOutput> updateCriteria = criteriaBuilder.createCriteriaUpdate(EsuOutput.class);
             template = updateCriteria.from(EsuOutput.class);
 
+            List<Long> resultsIds = results.stream().map(r -> r.getId()).collect(Collectors.toList());
             updateCriteria
                     .set(template.get(EsuOutput_.status.getName()), EsuStatusType.INPROGRESS)
-                    .where(template.get(EsuOutput_.id).in(results.stream().map(r -> r.getId()).collect(Collectors.toList())));
+                    .where(criteriaBuilder.in(template.get(EsuOutput_.id.getName())).value(resultsIds)); //template.get(EsuOutput_.id).in(resultsIds)
 
             entityManager
                 .createQuery(updateCriteria)
@@ -76,7 +75,7 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
                 .where(
                     criteriaBuilder.and(
                         criteriaBuilder.equal(template.get(EsuOutput_.status.getName()), fromStatus),
-                        template.get(EsuOutput_.id).in(ids)
+                        criteriaBuilder.in(template.get(EsuOutput_.id.getName())).value(ids) //template.get(EsuOutput_.id).in(ids)
                     )
                 );
         
