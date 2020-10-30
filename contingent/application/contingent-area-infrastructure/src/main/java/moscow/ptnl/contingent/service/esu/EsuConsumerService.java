@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import org.springframework.scheduling.annotation.Scheduled;
 import ru.mos.emias.esu.lib.consumer.EsuConsumer;
@@ -232,13 +233,27 @@ public class EsuConsumerService {
                 topicThreadsNumber,
                 // Объект класса, унаследованного от EsuConsumerMessageProcessor. NOT THREAD SAFE
                 processor);
+        /* 
+            Боремся с ошибкой: 
+            Commit cannot be completed since the group has already rebalanced and assigned the partitions to another member
+            ребаланс по таймауту
+        */
+        //https://coderoad.ru/43991845/Kafka10-1-heartbeat-interval-ms-session-timeout-ms-%D0%B8-max-poll-interval-ms
+        Properties kafkaClientCustomProperties = new Properties();
+        kafkaClientCustomProperties.put("session.timeout.ms", 30000); //default 3 seconds, но в разных примерах в Интернет ставят около 30 сек
+        kafkaClientCustomProperties.put("heartbeat.interval.ms", 10000); //рекомендуют треть от session.timeout.ms
+        kafkaClientCustomProperties.put("max.poll.interval.ms", 270000); //default 30 seconds, увеличим до 270 сек (возможно у нас что-то с транзакциями и вставка в залоченную таблицу подвисает)
+        
         consumerConfig
-                // Интервал между запросами в Kafka в мс (по-умолчанию 300)
-                .setPollingInterval(pollingInterval)
-                // Таймаут чтения сообщений из Kafka в мс (по-умолчанию 300)
-                .setPollingTimeout(pollingTimeout)
-                // Таймаут продюсера, при отправке сообщений в топик ConsumerErrors
-                .setProducerTimeout(producerTimeout);
+            // Интервал между запросами в Kafka в мс (по-умолчанию 300)
+            .setPollingInterval(pollingInterval)
+            // Таймаут чтения сообщений из Kafka в мс (по-умолчанию 300)
+            .setPollingTimeout(pollingTimeout)
+            // Таймаут продюсера, при отправке сообщений в топик ConsumerErrors
+            .setProducerTimeout(producerTimeout)
+            // дополнительные настройки Kafka-Client
+            .setCustomProperties(kafkaClientCustomProperties); 
+        
         return consumerConfig.build();
     }
     

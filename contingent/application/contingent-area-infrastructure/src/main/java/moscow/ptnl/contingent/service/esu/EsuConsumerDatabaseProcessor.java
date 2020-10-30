@@ -26,8 +26,14 @@ public class EsuConsumerDatabaseProcessor extends EsuConsumerMessageProcessor {
     @Override
     public void process(EsuMessage esuMessage) {
         LOG.info(String.format("Получено сообщение ИД=%s, топик=%s", esuMessage.getKey(), esuMessage.getTopic()));
-        EsuInput input = new EsuInput(esuMessage.getKey(), esuMessage.getOffset(), esuMessage.getPartition(),
+        try {
+            EsuInput input = new EsuInput(esuMessage.getKey(), esuMessage.getOffset(), esuMessage.getPartition(),
                 esuMessage.getTopic(), esuMessage.getBody(), LocalDateTime.now(), LocalDateTime.now());
-        esuInputCRUDRepository.save(input);
+            esuInputCRUDRepository.save(input);
+        } catch (Throwable e) {
+            String msg = String.format("Ошибка сохранения сообщения от ЕСУ ИД=%s, топик=%s", esuMessage.getKey(), esuMessage.getTopic());
+            LOG.error(msg, e);
+            throw e;
+        }
     }
 }
