@@ -24,10 +24,14 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 import javax.sql.DataSource;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfig extends DefaultBatchConfigurer {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(BatchConfig.class);
 
     @Autowired
     private JobBuilderFactory jobs;
@@ -57,62 +61,48 @@ public class BatchConfig extends DefaultBatchConfigurer {
     protected JobLauncher createJobLauncher() throws Exception {
         SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("batch-task-thread-");
         executor.setConcurrencyLimit(10);
-        SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
-        jobLauncher.setJobRepository(getJobRepository());
-        jobLauncher.setTaskExecutor(executor);
-        jobLauncher.afterPropertiesSet();
-        return jobLauncher;
+        SimpleJobLauncher launcher = new SimpleJobLauncher();
+        launcher.setJobRepository(getJobRepository());
+        launcher.setTaskExecutor(executor);
+        launcher.afterPropertiesSet();
+        return launcher;
     }
-
-    private Job buildJobAttachmentPrimaryTopicTask() {
-        if (isJobRunning("jobAttachmentPrimaryTopicTask")) {
-            return null;
-        }
-        return jobs.get("jobAttachmentPrimaryTopicTask")
+    
+    private Job buildJob(Tasklet tasklet, String taskName) {
+        return jobs.get(taskName)
                 .incrementer(new RunIdIncrementer())
-                .start(steps.get("stepAttachmentPrimaryTopicTask")
-                        .tasklet(attachmentPrimaryTopicTask)
-                        .build())
-                .build();
-    }
-
-    private Job buildJobJobExecutionInfoMsg() {
-        if (isJobRunning("jobJobExecutionInfoMsg")) {
-            return null;
-        }
-        return jobs.get("jobJobExecutionInfoMsg")
-                .incrementer(new RunIdIncrementer())
-                .start(steps.get("stepJobExecutionInfoMsg")
-                        .tasklet(jobExecutionInfoMsgTopicTask)
-                        .build())
-                .build();
-    }
-
-    private Job buildJobDnEventInformer() {
-        if (isJobRunning("jobDnEventInformer")) {
-            return null;
-        }
-        return jobs.get("jobDnEventInformer")
-                .incrementer(new RunIdIncrementer())
-                .start(steps.get("stepJobDnEventInformer")
-                        .tasklet(dnEventInformerTask)
-                        .build())
-                .build();
+                .start(
+                    steps.get(taskName + "Step")
+                    .tasklet(tasklet)
+                    .build()
+                ).build();
     }
 
     @Scheduled(fixedDelay = 60000, initialDelay = 10000)
-    public void schedule1() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        runJob(buildJobAttachmentPrimaryTopicTask());
+    public void schedule1() {
+        try {
+            runJob(buildJob(attachmentPrimaryTopicTask, "jobAttachmentPrimaryTopicTask"));
+        } catch (Exception e) {
+            LOG.error("Ошибка в jobAttachmentPrimaryTopicTask", e);
+        }
     }
 
     @Scheduled(fixedDelay = 60000, initialDelay = 20000)
-    public void schedule2() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        runJob(buildJobJobExecutionInfoMsg());
+    public void schedule2() {
+        try {
+            runJob(buildJob(jobExecutionInfoMsgTopicTask, "jobJobExecutionInfoMsg"));
+        } catch (Exception e) {
+            LOG.error("Ошибка в jobJobExecutionInfoMsg", e);
+        }
     }
 
     @Scheduled(fixedDelay = 60000, initialDelay = 30000)
-    public void schedule3() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        runJob(buildJobDnEventInformer());
+    public void schedule3() {
+        try {
+            runJob(buildJob(dnEventInformerTask, "jobDnEventInformer"));
+        } catch (Exception e) {
+            LOG.error("Ошибка в jobDnEventInformer", e);
+        }
     }
 
     @Override
@@ -122,13 +112,14 @@ public class BatchConfig extends DefaultBatchConfigurer {
     }
 
     private void runJob(Job job) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        if (job == null) {
+        if (job == null || isJobRunning(job.getName())) {
             return;
         }
-        JobParameters params = new JobParametersBuilder()
-                .addString("JobID", String.valueOf(System.currentTimeMillis()))
-                .toJobParameters();
-        jobLauncher.run(job, params);
+        //С этим течет память!
+        //JobParameters params = new JobParametersBuilder()
+        //        .addString("JobID", String.valueOf(System.currentTimeMillis()))
+        //        .toJobParameters();
+        jobLauncher.run(job, new JobParameters());
     }
 
     private boolean isJobRunning(String jobName) {
