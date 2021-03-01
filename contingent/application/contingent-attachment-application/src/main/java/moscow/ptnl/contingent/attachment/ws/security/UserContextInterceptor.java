@@ -16,7 +16,7 @@ import javax.xml.namespace.QName;
 public class UserContextInterceptor extends AbstractSoapInterceptor {
 
     public UserContextInterceptor() {
-        super(Phase.PRE_PROTOCOL);
+        super(Phase.PRE_INVOKE);
     }
 
     @Override
@@ -48,8 +48,8 @@ public class UserContextInterceptor extends AbstractSoapInterceptor {
                 .getBindingOperationInfo()
                 .getOperationInfo()
                 .getName()
-                .getLocalPart();
-        
+                .getLocalPart();        
+
         UserContextHolder.setContext(new RequestContext(methodName, userContext));
     }
 }
