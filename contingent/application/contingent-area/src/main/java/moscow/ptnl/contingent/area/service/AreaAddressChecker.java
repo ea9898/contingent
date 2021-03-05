@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@Deprecated
 public class AreaAddressChecker {
 
     @Autowired

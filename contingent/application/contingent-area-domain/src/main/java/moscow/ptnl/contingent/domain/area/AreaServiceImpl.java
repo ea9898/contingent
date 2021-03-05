@@ -839,14 +839,15 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 7
-        List<MoAddress> findMoAddress = new ArrayList<>();
-        MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(), addressesRegistry, validation);
+        Map<Long, MoAddress> findMoAddress = new HashMap<>();
         addressesRegistry.forEach(ar -> {
+            MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(),
+                    Collections.singletonList(ar), validation);
             if (moAddressIntersect == null || !moAddressIntersect.getMoId().equals(area.getMoId())) {
                 validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
                         new ValidationParameter("moId", area.getMoId()));
             } else if (moAddressIntersect.getMoId().equals(area.getMoId())) {
-                findMoAddress.add(moAddressIntersect);
+                findMoAddress.put(ar.getGlobalIdNsi(), moAddressIntersect);
             }
         });
 
@@ -877,7 +878,7 @@ public class AreaServiceImpl implements AreaService {
         List<AreaAddress> areaAddresses = addresses.stream().map(addr -> {
             AreaAddress areaAddress = new AreaAddress();
             areaAddress.setArea(area);
-            areaAddress.setMoAddress(findMoAddress.get(0));
+            areaAddress.setMoAddress(findMoAddress.get(addr.getGlobalId()));
             areaAddress.setAddress(addr);
             areaAddress.setCreateDate(LocalDateTime.now());
             areaAddress.setUpdateDate(LocalDateTime.now());
