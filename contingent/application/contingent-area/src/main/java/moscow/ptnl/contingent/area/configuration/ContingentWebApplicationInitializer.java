@@ -6,6 +6,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
+
+import moscow.ptnl.contingent.infrastructure.health_check.HealthCheckService;
+import moscow.ptnl.contingent.infrastructure.health_check.HealthCheckServlet;
 import moscow.ptnl.metrics.servlet.MetricsServlet;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.slf4j.Logger;
@@ -28,6 +31,7 @@ public class ContingentWebApplicationInitializer implements WebApplicationInitia
         AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
         
         MetricsServlet metricsServlet = new MetricsServlet();
+        HealthCheckServlet healthCheckServlet = new HealthCheckServlet();
         
         container.addListener(new ContextLoaderListener(dispatcherContext){
             @Override
@@ -36,6 +40,7 @@ public class ContingentWebApplicationInitializer implements WebApplicationInitia
                 try {
                     //Регистрация метрик в сервлете
                     metricsServlet.setMeterRegistry(dispatcherContext.getBean(PrometheusMeterRegistry.class));
+                    healthCheckServlet.setService(dispatcherContext.getBean(HealthCheckService.class));
                 } catch (Exception e) {
                     LOG.error("ошибка инициализации", e);
                     throw new IllegalStateException(e);
@@ -59,6 +64,10 @@ public class ContingentWebApplicationInitializer implements WebApplicationInitia
         ServletRegistration.Dynamic metrics = container.addServlet("metrics", metricsServlet);
         metrics.setLoadOnStartup(2);
         metrics.addMapping("/metrics");
+
+        ServletRegistration.Dynamic healthServlet = container.addServlet("healthCheck", healthCheckServlet);
+        healthServlet.setLoadOnStartup(3);
+        healthServlet.addMapping("/health");
     }
     
 }
