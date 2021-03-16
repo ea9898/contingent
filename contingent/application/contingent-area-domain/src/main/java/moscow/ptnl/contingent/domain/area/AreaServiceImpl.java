@@ -856,15 +856,18 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 8
-        Long areaIdIntersect = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
-        addressesRegistry.forEach(ar -> {
-            if (areaIdIntersect != null) {
-                if (!areaIdIntersect.equals(area.getId())) {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
-                            new ValidationParameter("areaId", areaIdIntersect), new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
-                } else {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", ar.getAddressString()));
-                }
+        List<AreaAddress> intersectingAddresses = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
+        intersectingAddresses.forEach(a -> {
+            if (!a.getArea().equals(area)) {
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
+                        new ValidationParameter("areaId", a.getArea().getId()), new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+            } else {
+                String addressString = addressesRegistry.stream()
+                        .filter(r -> Objects.equals(r.getGlobalIdNsi(), a.getAddress().getGlobalId()))
+                        .map(AddressRegistry::getAddressString)
+                        .findFirst()
+                        .orElse(a.getAddress().getAddress());
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", addressString));
             }
         });
         if (!validation.isSuccess()) {

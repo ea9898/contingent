@@ -33,8 +33,10 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -108,7 +110,7 @@ public class Algorithms {
     }
 
     // Поиск участков по адресу (А_УУ_2)
-    public Long searchAreaByAddress(Long moId, AreaType areaTypeCode, List<AddressRegistry> addressRegistryTypes,
+    public List<AreaAddress> searchAreaByAddress(Long moId, AreaType areaTypeCode, List<AddressRegistry> addressRegistryTypes,
                                     Validation validation) {
 
         // 1.
@@ -126,13 +128,13 @@ public class Algorithms {
 
         // 4. //5.
         if (!intersectingAddresses.isEmpty()) {
-            AreaAddress address = areaAddresses.stream().filter(areaAddress -> areaAddress.getAddress().equals(intersectingAddresses.get(0)))
-                    .findFirst().orElse(null);
-            return address == null || address.getArea() == null ? null : address.getArea().getId();
+            return intersectingAddresses.stream()
+                    .map(a -> areaAddresses.stream().filter(r -> r.getAddress().equals(a)).findFirst().orElse(null))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
         }
-        return null;
+        return Collections.emptyList();
     }
-
 
     // Поиск пересекающихся адресов (А_УУ_3)
     public List<Addresses> findIntersectingAddressesAdd(List<AddressRegistry> addressRegistryTypes,
