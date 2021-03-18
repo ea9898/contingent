@@ -861,9 +861,12 @@ public class AreaServiceImpl implements AreaService {
             if (areaIdIntersect != null) {
                 if (!areaIdIntersect.equals(area.getId())) {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
-                            new ValidationParameter("areaId", areaIdIntersect), new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+                            new ValidationParameter("globalIdNsi", ar.getGlobalIdNsi()),
+                            new ValidationParameter("areaId", areaIdIntersect),
+                            new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
                 } else {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", ar.getAddressString()));
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI,
+                            new ValidationParameter("addressString", ar.getAddressString()));
                 }
             }
         });
