@@ -1,20 +1,43 @@
 package moscow.ptnl.contingent.nsi.configuration;
 
+import moscow.ptnl.contingent.infrastructure.health_check.HealthCheckService;
+import moscow.ptnl.contingent.infrastructure.health_check.HealthCheckServlet;
+
 import org.apache.cxf.transport.servlet.CXFServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
-import java.util.concurrent.TimeUnit;
+import java.lang.invoke.MethodHandles;
 
 public class ContingentNsiApplicationInitializer implements WebApplicationInitializer {
+
+    private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
     @Override
     public void onStartup(javax.servlet.ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext dispatcherContext = new AnnotationConfigWebApplicationContext();
-        servletContext.addListener(new ContextLoaderListener(dispatcherContext));
+
+        HealthCheckServlet healthCheckServlet = new HealthCheckServlet();
+
+        servletContext.addListener(new ContextLoaderListener(dispatcherContext){
+            @Override
+            public void contextInitialized(ServletContextEvent event) {
+                super.contextInitialized(event);
+                try {
+                    //Регистрация метрик в сервлете
+                    healthCheckServlet.setService(dispatcherContext.getBean(HealthCheckService.class));
+                } catch (Exception e) {
+                    LOG.error("ошибка инициализации", e);
+                    throw new IllegalStateException(e);
+                }
+            }
+        });
         dispatcherContext.register(new Class[]{
                 WebServiceConfiguration.class
         });
@@ -36,5 +59,9 @@ public class ContingentNsiApplicationInitializer implements WebApplicationInitia
 //        }}));
 //        health.setLoadOnStartup(3);
 //        health.addMapping("/health");
+
+        ServletRegistration.Dynamic healthServlet = servletContext.addServlet("healthCheck", healthCheckServlet);
+        healthServlet.setLoadOnStartup(3);
+        healthServlet.addMapping("/health");
     }
 }
