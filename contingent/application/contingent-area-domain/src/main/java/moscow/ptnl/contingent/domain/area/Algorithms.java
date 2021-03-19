@@ -117,7 +117,7 @@ public class Algorithms {
         List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddresses(moId, areaTypeCode.getCode());
 
         if (areaAddresses.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
 
         // 2.
