@@ -171,29 +171,26 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     @Override
     public List<Area> findAreas(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
                                 Integer number, String description, Boolean archived) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Area> criteria = criteriaBuilder.createQuery(Area.class);
-        Root<Area> root = criteria.from(Area.class);
-        Join<Area, AreaType> areaTypeJoin = root.join(Area_.areaType, JoinType.LEFT);
-        criteria.select(root);
-        criteria.where(
-                criteriaBuilder.and(
-                        areaTypeClassCode == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(areaTypeJoin.get(AreaType_.areaTypeClass), areaTypeClassCode),
-                        moId == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.moId), moId),
-                        muIds == null || muIds.isEmpty() ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.in(root.get(Area_.muId)).in(muIds),//root.get(Area_.muId).in(muIds),
-                        areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :                                
-                                criteriaBuilder.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes), //root.get(Area_.areaType).get(AreaType_.code).in(areaTypeCodes),
-                        number == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.number), number),
-                        description == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.like(root.get(Area_.description), "%"+description+"%"),
-                        archived == null ? criteriaBuilder.conjunction() :
-                                criteriaBuilder.equal(root.get(Area_.archived), archived))
-        );
-        return entityManager.createQuery(criteria).getResultList();
+        Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<Area, AreaType> areaTypeJoin = root.join(Area_.areaType, JoinType.LEFT);
+            return criteriaBuilder.and(
+                    areaTypeClassCode == null ? criteriaBuilder.conjunction() :
+                            criteriaBuilder.equal(areaTypeJoin.get(AreaType_.areaTypeClass), areaTypeClassCode),
+                    moId == null ? criteriaBuilder.conjunction() :
+                            criteriaBuilder.equal(root.get(Area_.moId), moId),
+                    muIds == null || muIds.isEmpty() ? criteriaBuilder.conjunction() :
+                            criteriaBuilder.in(root.get(Area_.muId.getName())).value(muIds),
+                    areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
+                            criteriaBuilder.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes),
+                    number == null ? criteriaBuilder.conjunction() :
+                            criteriaBuilder.equal(root.get(Area_.number), number),
+                    description == null ? criteriaBuilder.conjunction() :
+                            criteriaBuilder.like(root.get(Area_.description), "%" + description + "%"),
+                    archived == null ? criteriaBuilder.conjunction() :
+                            criteriaBuilder.equal(root.get(Area_.archived), archived)
+            );
+        };
+        return areaCRUDRepository.findAll(specification);
     }
 
     @Override
