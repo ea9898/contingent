@@ -42,7 +42,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     // Спека поиска территорий обслуживания по ID
     private Specification<AreaAddress> findMoAddressesByIdsSpec(List<Long> moAddressIds) {
         return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.in(root.get(AreaAddress_.moAddress.getName()).get(MoAddress_.id.getName())).in(moAddressIds);
+                criteriaBuilder.in(root.get(AreaAddress_.moAddress.getName()).get(MoAddress_.id.getName())).value(moAddressIds);
     }
 
     private Specification<AreaAddress> findAreaAddressesByIdsSpec(List<Long> areaAddressIds) {
