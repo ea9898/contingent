@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1.8.0.0" author="ddryuchin" labels ="1.8.0.0">
+        <tagDatabase tag="1.8.0.0"/>
+    </changeSet>
+
+    <changeSet runInTransaction="false" id="CONTINGENT2-1290" author="ddryuchin" labels="1.8.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_addresses_globalid"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки global_id таблицы addresses</comment>
+        <sql dbms="postgresql">
+            CREATE UNIQUE INDEX CONCURRENTLY idx_addresses_globalid ON addresses(global_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
