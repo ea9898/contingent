@@ -24,6 +24,8 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 import javax.sql.DataSource;
 import java.util.Set;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,11 +117,11 @@ public class BatchConfig extends DefaultBatchConfigurer {
         if (job == null || isJobRunning(job.getName())) {
             return;
         }
-        //С этим течет память!
-        //JobParameters params = new JobParametersBuilder()
-        //        .addString("JobID", String.valueOf(System.currentTimeMillis()))
-        //        .toJobParameters();
-        jobLauncher.run(job, new JobParameters());
+
+        JobParameters params = new JobParametersBuilder()
+                .addString("JobID", UUID.randomUUID().toString())
+                .toJobParameters();
+        jobLauncher.run(job, params);
     }
 
     private boolean isJobRunning(String jobName) {
