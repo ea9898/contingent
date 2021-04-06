@@ -45,6 +45,10 @@ class AlgorithmsTest{
     @Test
     void searchServiceDistrictMOByAddressNoMoAddresses() {
 
+        AddressRegistry addressRegistry = new AddressRegistry();
+        addressRegistry.setGlobalIdNsi(99999L);
+        addressRegistry.setAoLevel("8");
+
         AreaType areaType = new AreaType();
         areaType.setCode(10L);
 
@@ -57,7 +61,7 @@ class AlgorithmsTest{
 
         Validation validation = new Validation();
 
-        algorithms.searchServiceDistrictMOByAddress(areaType, null, validation);
+        algorithms.searchServiceDistrictMOByAddress(areaType, addressRegistry, validation);
     }
 
     @Test
@@ -77,7 +81,7 @@ class AlgorithmsTest{
         MoAddress moAddress = new MoAddress();
         moAddress.setAddress(addresses);
 
-        doReturn(Collections.singletonList(moAddress)).when(moAddressRepository).getActiveMoAddresses(areaType);
+        doReturn(Collections.singletonList(moAddress)).when(moAddressRepository).getActiveMoAddressByGlobalId(99999L, areaType);
 
         doReturn(Arrays.asList(10L, 20L)).when(settingService).par31();
         doReturn(Boolean.TRUE).when(settingService).getSettingProperty(SettingService.PAR_32);
@@ -105,7 +109,7 @@ class AlgorithmsTest{
         MoAddress moAddress = new MoAddress();
         moAddress.setAddress(addresses);
 
-        doReturn(Collections.singletonList(moAddress)).when(moAddressRepository).getActiveMoAddresses(areaType);
+        doReturn(Collections.singletonList(moAddress)).when(moAddressRepository).getActiveMoAddressByGlobalIdAndLevel(99999L, "8", areaType);
 
         doReturn(Arrays.asList(10L, 20L)).when(settingService).getSettingProperty(SettingService.PAR_31);
         doReturn(Boolean.FALSE).when(settingService).getSettingProperty(SettingService.PAR_32);
