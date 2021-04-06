@@ -12,7 +12,7 @@
     <parent>
         <artifactId>contingent</artifactId>
         <groupId>moscow.ptnl.contingent</groupId>
-        <version>1.8.0</version>
+        <version>1.9.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
