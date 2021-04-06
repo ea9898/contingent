@@ -16,7 +16,11 @@ public interface MoAddressRepository {
 
 	List<MoAddress> getActiveMoAddresses(AreaType areaType);
 
-	Optional<MoAddress> findById(Long id);
+    List<MoAddress> getActiveMoAddressByGlobalId(Long globalId, AreaType areaType);
+
+    List<MoAddress> getActiveMoAddressByGlobalIdAndLevel(Long globalId, String aoLevel, AreaType areaType);
+
+    Optional<MoAddress> findById(Long id);
 
 	void delete(MoAddress moAddress);
 

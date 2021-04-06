@@ -70,37 +70,40 @@ public class Algorithms {
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
     public MoAddress searchServiceDistrictMOByAddress(AreaType areaType,
-                                                      List<AddressRegistry> addressRegistryTypes, Validation validation) {
+                                                      AddressRegistry addressRegistryTypes, Validation validation) {
 
-        // 1.
-        List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddresses(areaType);
-        if (moAddresses.isEmpty()) {
-            return null;
+        // 1
+        if (Boolean.TRUE.equals(settingService.getSettingProperty(SettingService.PAR_32))
+                && (settingService.par31()).contains(areaType.getCode())
+                && AddressLevelType.ID.getLevel().equals(addressRegistryTypes.getAoLevel())) {
+            List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddressByGlobalId(addressRegistryTypes.getGlobalIdNsi(), areaType);
+
+            if (moAddresses != null && !moAddresses.isEmpty()) {
+                return moAddresses.get(0);
+            }
         }
 
         // 2.
+        List<MoAddress> moAddresses = new ArrayList<>();
+
+        if (!AddressLevelType.ID.getLevel().equals(addressRegistryTypes.getAoLevel())) {
+            moAddresses.addAll(moAddressRepository.getActiveMoAddresses(areaType));
+        } else {
+            moAddresses.addAll(moAddressRepository.getActiveMoAddressByGlobalIdAndLevel(
+                    addressRegistryTypes.getGlobalIdNsi(), addressRegistryTypes.getAoLevel(), areaType));
+        }
+        if (moAddresses.isEmpty()) { return null; }
+
+        // 3.
         List<Addresses> moAddressesObj = moAddresses.stream().map(MoAddress::getAddress)
                 .collect(Collectors.toList());
 
 
-        // 3.
-        List<Addresses> intersectingAddresses = new ArrayList<>();
-        if (Boolean.TRUE.equals(settingService.getSettingProperty(SettingService.PAR_32))
-            && (settingService.par31()).contains(areaType.getCode())) {
-            // 3.1
-            List<Long> addressRegistriesIds = addressRegistryTypes.stream().filter(art -> AddressLevelType.ID.getLevel().equals(art.getAoLevel()))
-                    .map(AddressRegistry::getGlobalIdNsi).collect(Collectors.toList());
-            intersectingAddresses.addAll(moAddressesObj.stream().filter(mao -> addressRegistriesIds.contains(mao.getGlobalId())).collect(Collectors.toList()));
-            // 3.2.
-            intersectingAddresses.addAll(findIntersectingAddressesAdd(addressRegistryTypes.stream()
-                    .filter(art -> !AddressLevelType.ID.getLevel().equals(art.getAoLevel())).collect(Collectors.toList()),
-                    moAddressesObj, validation));
-        } else {
-            // 3.2.
-            intersectingAddresses.addAll(findIntersectingAddressesAdd(addressRegistryTypes, moAddressesObj, validation));
-        }
+        // 4.
+        List<Addresses> intersectingAddresses = findIntersectingAddressesAdd(
+                Collections.singletonList(addressRegistryTypes), moAddressesObj, validation);
 
-        // 4. // 5.
+        // 5.
         if (!intersectingAddresses.isEmpty()) {
             return moAddresses.stream().filter(moAddress -> intersectingAddresses.contains(moAddress.getAddress()))
                     .findFirst().orElse(null);

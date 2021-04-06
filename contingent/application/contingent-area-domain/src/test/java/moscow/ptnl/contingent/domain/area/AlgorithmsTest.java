@@ -57,7 +57,7 @@ class AlgorithmsTest{
 
         Validation validation = new Validation();
 
-        algorithms.searchServiceDistrictMOByAddress(areaType, new ArrayList<>(), validation);
+        algorithms.searchServiceDistrictMOByAddress(areaType, null, validation);
     }
 
     @Test
@@ -84,7 +84,7 @@ class AlgorithmsTest{
 
         Validation validation = new Validation();
 
-        MoAddress moAddressOut = algorithms.searchServiceDistrictMOByAddress(areaType, Arrays.asList(addressRegistry), validation);
+        MoAddress moAddressOut = algorithms.searchServiceDistrictMOByAddress(areaType, addressRegistry, validation);
         assertNotNull(moAddressOut);
     }
 
@@ -112,7 +112,7 @@ class AlgorithmsTest{
 
         Validation validation = new Validation();
 
-        MoAddress moAddressOut = algorithms.searchServiceDistrictMOByAddress(areaType, Arrays.asList(addressRegistry), validation);
+        MoAddress moAddressOut = algorithms.searchServiceDistrictMOByAddress(areaType, addressRegistry, validation);
         assertNotNull(moAddressOut);
     }
 }

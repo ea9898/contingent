@@ -1,5 +1,9 @@
 package moscow.ptnl.contingent.repository.area;
 
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.Addresses_;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress_;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
@@ -22,6 +26,7 @@ import java.util.Optional;
 
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 
 @Repository
@@ -57,6 +62,39 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             root.fetch(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.or(
+                            criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
+                            root.get(MoAddress_.endDate.getName()).isNull()
+                    ));
+        };
+        return moAddressPagingAndSortingRepository.findAll(moAddressSpecification);
+    }
+
+    @Override
+    public List<MoAddress> getActiveMoAddressByGlobalId(Long globalId, AreaType areaType) {
+        Specification<MoAddress> moAddressSpecification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(addressesJoin.get(Addresses_.globalId.getName()), globalId),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.or(
+                            criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
+                            root.get(MoAddress_.endDate.getName()).isNull()
+                    ));
+        };
+        return moAddressPagingAndSortingRepository.findAll(moAddressSpecification);
+    }
+
+    @Override
+    public List<MoAddress> getActiveMoAddressByGlobalIdAndLevel(Long globalId, String aoLevel, AreaType areaType) {
+        Specification<MoAddress> moAddressSpecification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
+            return criteriaBuilder.and(
+                    criteriaBuilder.or(
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.globalId.getName()), globalId),
+                            criteriaBuilder.notEqual(addressesJoin.get(Addresses_.aoLevel.getName()), aoLevel)
+                    ),
                     criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
                     criteriaBuilder.or(
                             criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
