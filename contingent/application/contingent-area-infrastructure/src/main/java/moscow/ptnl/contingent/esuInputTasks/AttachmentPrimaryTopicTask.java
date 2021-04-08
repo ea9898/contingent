@@ -94,6 +94,8 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
                     .withTopic(attachToDependentMsgTopicName)
                     .setEventObject(eventDto)
                     .buildMessage());
+        } else {
+            throw new RuntimeException("Участок %s не найден");
         }
     }
 }
