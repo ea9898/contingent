@@ -1,9 +1,7 @@
 package moscow.ptnl.contingent.infrastructure.service.trigger;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -14,7 +12,6 @@ import moscow.ptnl.contingent.domain.trigger.TriggerStatus;
 import moscow.ptnl.contingent.domain.trigger.TriggerHistoryItem;
 import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
-import moscow.ptnl.contingent.repository.trigger.TriggerStatusCRUDRepository;
 import moscow.ptnl.contingent.repository.trigger.TriggerHistoryItemCRUDRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +34,6 @@ public class TriggerService {
     private SettingService settingService;
     
     @Autowired
-    private TriggerStatusCRUDRepository triggerStatusRepository;
-    
-    @Autowired
     private TriggerHistoryItemCRUDRepository triggerHistoryRepository;
     
     @Autowired
@@ -47,6 +41,9 @@ public class TriggerService {
     
     @Autowired
     private TransactionRunService asyncRunService;
+        
+    @Autowired
+    private TriggerStatusHelper triggerStatusHelper;
 
     public void registerAction(TriggerName trigger, Runnable action) {
         triggerAction.registerAction(trigger, action, false);
@@ -62,54 +59,38 @@ public class TriggerService {
            ) {
             return;
         }
-        //2. Система записывает статус работы триггера, обновляя запись в таблице TRG_STATUS
-        Future<Boolean> taskSetStatus = asyncRunService.run(() -> {
-            //Нужно завершить транзакцию, чтобы сразу сохранить в БД. Использование saveAndFlush не работает
-            //Также выполняем SELECT .. FOR UPDATE чтобы избежать параллельного запуска
-            TriggerStatus status = triggerStatusRepository.findWithLock(trigger).orElse(new TriggerStatus(trigger));
-
-            if (Boolean.TRUE.equals(status.getRun())
-                    || !isAfterLastStartPlusInterval(status)) {
-                return false;
-            }
-            status.setLastStartDate(LocalDateTime.now());
-            status.setLastEndDate(null);
-            status.setRun(Boolean.TRUE);
-            triggerStatusRepository.save(status);
-            return true;
-        });
-        Boolean result = Boolean.FALSE;
-        long executionTimeLimit = getTriggerMaxExecutionTime(trigger);
+        
+        final long executionTimeLimit = getTriggerMaxExecutionTime(trigger);
+                
+        Boolean result = Boolean.FALSE;        
         Future<Boolean> taskAction = null;
 
         try {
-            if (!taskSetStatus.get(30, TimeUnit.SECONDS)) {
-                //Триггер уже запущен
+            //2. Система записывает статус работы триггера, обновляя запись в таблице TRG_STATUS
+            if (!triggerStatusHelper.setRunOnStatus(trigger)) {
+                //Триггер уже запущен или не может быть запущен по условиям запуска
                 return;
             }
-            taskSetStatus = null;
+
             //3. Выполняем триггер (в отдельной транзакции с прерыванием по таймауту)
             taskAction = asyncRunService.run(() -> triggerAction.action(trigger));
             result = taskAction.get(executionTimeLimit, TimeUnit.MINUTES);
         } catch (TimeoutException e) {
-            LOG.error("Выполнение триггера " + trigger + " прервано по таймауту", e);
-            //Завершаем выполнение потока триггера
-            if (taskSetStatus != null) {
-                taskSetStatus.cancel(true);
-            }
-            if (taskAction != null) {
-                taskAction.cancel(true);
-            }
+            LOG.error("Выполнение триггера " + trigger + " прервано по таймауту", e);            
         } catch (InterruptedException e) {
             LOG.error("Выполнение триггера " + trigger + " прервано", e);
         } catch (ExecutionException e) {
             LOG.error("Выполнение триггера " + trigger + " завершилось ошибкой", e.getCause());
+        }        
+        
+        //Завершаем выполнение потоков триггера        
+        if (taskAction != null && !taskAction.isDone()) {
+            //к сожалению cancel ничего путного не делает, хотя теоретически должен
+            try { taskAction.cancel(true);  } catch (Exception e) { LOG.error("Ошибка завершения триггера", e); }
         }
-        TriggerStatus status = triggerStatusRepository.findById(trigger).get();
+        
         //Меняем статус триггера
-        status.setRun(Boolean.FALSE);
-        status.setLastEndDate(LocalDateTime.now());
-        triggerStatusRepository.save(status);
+        TriggerStatus status = triggerStatusHelper.setRunOffStatus(trigger);
         
         //Производим запись в историю
         TriggerHistoryItem historyItem = new TriggerHistoryItem();
@@ -187,30 +168,5 @@ public class TriggerService {
         return true;
     }
     
-    /**
-     * Проверка, что с прошлого запуска триггера прошло достаточно времени.
-     * 
-     * @param status
-     * @return 
-     */
-    private boolean isAfterLastStartPlusInterval(TriggerStatus status) {
-        if (status.getLastStartDate() != null) {
-            Long interval = null;
-            switch (status.getTrigger()) {
-                case trigger_cleanup_esu_input:
-                    interval = settingService.getSettingProperty(SettingService.PAR_26, true);
-                break;
-                case trigger_cleanup_esu_output:
-                    interval = settingService.getSettingProperty(SettingService.PAR_28, true);
-                break;
-                case trigger_synch_areainfo_k1:
-                    interval = settingService.getSettingProperty(SettingService.PAR_36, true);
-                break;
-            }
-            if (interval != null && interval > 0) {
-                return status.getLastStartDate().plusMinutes(interval).isBefore(LocalDateTime.now());
-            }
-        }        
-        return true;
-    }
+    
 }
