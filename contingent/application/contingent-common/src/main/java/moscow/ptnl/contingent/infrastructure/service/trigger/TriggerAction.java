@@ -80,27 +80,34 @@ public class TriggerAction {
     //3. Система удаляет записи из ESU_INPUT
     private boolean triggerEsuInputCleanAction() {
         LOG.debug("Триггер удаления записей из ESU_INPUT");
+        long startTime = System.currentTimeMillis();
         
         Boolean removeOnlySuccessRecords = settingService.getSettingProperty(SettingService.PAR_23, true);
         Long esuInputPeriodKeeping = settingService.getSettingProperty(SettingService.PAR_21, true);
         LocalDateTime beforeDate = LocalDateTime.now().minusDays(esuInputPeriodKeeping);
         
-        Long deleted = 0L;
-        Pageable pageable = PageRequest.of(0, MAX_DELETED_RECORDS); //ограничиваем количество удаляемых записей
-        
+        Long deleted = 0L; 
         Page<Long> page = null;
-        if (Boolean.TRUE.equals(removeOnlySuccessRecords)) {
-            //3.1 Если триггер должен удалять только успешно обработанные записи            
-            page = esuInputCRUDRepository.findByReceivedTimeBeforeAndStatus(beforeDate, EsuStatusType.SUCCESS, pageable);            
-        } else if (Boolean.FALSE.equals(removeOnlySuccessRecords)) {
-            //3.2 Иначе триггер удаляет из ESU_INPUT записи
-            page = esuInputCRUDRepository.findByReceivedTimeBefore(beforeDate, pageable);            
-        }
-        if (page != null && !page.isEmpty()) {
-            deleted += esuInputCRUDRepository.deleteByIds(page.getContent());
-        }
+        int pageNumber = 0;
         
-        LOG.info("Триггер удалил {} записей из ESU_INPUT", deleted);        
+        do {
+            Pageable pageable = PageRequest.of(pageNumber, MAX_DELETED_RECORDS); //ограничиваем количество удаляемых за один проход записей
+        
+            if (Boolean.TRUE.equals(removeOnlySuccessRecords)) {
+                //3.1 Если триггер должен удалять только успешно обработанные записи            
+                page = esuInputCRUDRepository.findByReceivedTimeBeforeAndStatus(beforeDate, EsuStatusType.SUCCESS, pageable);            
+            } else if (Boolean.FALSE.equals(removeOnlySuccessRecords)) {
+                //3.2 Иначе триггер удаляет из ESU_INPUT записи
+                page = esuInputCRUDRepository.findByReceivedTimeBefore(beforeDate, pageable);            
+            }
+            if (page != null && !page.isEmpty()) {
+                deleted += esuInputCRUDRepository.deleteAllByIdInBatch(page.getContent());
+            }
+            
+            pageNumber++;
+        } while (page.hasNext());
+        
+        LOG.info("Триггер удалил {} записей из ESU_INPUT за {} мсек", deleted, (System.currentTimeMillis() - startTime));        
         return true;
     }
     
