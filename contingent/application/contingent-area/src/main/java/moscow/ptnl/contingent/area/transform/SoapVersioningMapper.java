@@ -37,9 +37,7 @@ public class SoapVersioningMapper {
                 targetField.set(target, null);
             }
             else if (Collection.class.isAssignableFrom(field.getType())) {
-                if (field.get(source) != null) {
-                    targetField.set(target, copyCollection((Collection<?>) value, (Collection<?>) value.getClass().newInstance(), targetField.getGenericType()));
-                }
+                targetField.set(target, copyCollection((Collection<?>) value, (Collection<?>) value.getClass().newInstance(), targetField.getGenericType()));
             }
             else if (field.getType().getAnnotation(XmlType.class) != null) {
                 targetField.set(target, map(value, targetField.getType().newInstance()));
@@ -57,7 +55,8 @@ public class SoapVersioningMapper {
         Class<?> targetClass = (Class<?>) paramType.getActualTypeArguments()[0];
 
         for (Object obj : source) {
-            Object clone = obj == null ? null : map(obj, targetClass.newInstance());
+            Object clone = obj == null ? null :
+                    (targetClass.getAnnotation(XmlType.class) == null ? obj : map(obj, targetClass.newInstance()));
             target.add(clone);
         }
         return target;

@@ -4,8 +4,9 @@ import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.UserContextMapper;
 import moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
-
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.error.ContingentException;
+
 import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +85,7 @@ import java.lang.invoke.MethodHandles;
 
 /**
  *
- * @author m.kachalov
+ * @author sorlov
  */
 @Service(AreaServiceImpl.SERVICE_NAME)
 @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -107,6 +108,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private UserContextMapper userContextMapper;
 
+    @Autowired
+    private AreaService areaServiceDomain;
+
     @Override
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
         try {
@@ -120,122 +124,266 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Override
     public AddMuAvailableAreaTypesResponse addMuAvailableAreaTypes(AddMuAvailableAreaTypesRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.addMuAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddMuAvailableAreaTypesRequest())),
+                    new AddMuAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public InitiateCreatePrimaryAreaResponse initiateCreatePrimaryArea(InitiateCreatePrimaryAreaRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.initiateCreatePrimaryArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.InitiateCreatePrimaryAreaRequest())),
+                    new InitiateCreatePrimaryAreaResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public AddMoAvailableAreaTypesResponse addMoAvailableAreaTypes(AddMoAvailableAreaTypesRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.addMoAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddMoAvailableAreaTypesRequest())),
+                    new AddMoAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public GetMuAvailableAreaTypesResponse getMuAvailableAreaTypes(GetMuAvailableAreaTypesRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.getMuAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesRequest())),
+                    new GetMuAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public SearchDnAreaResponse searchDnArea(SearchDnAreaRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.searchDnArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchDnAreaRequest())),
+                    new SearchDnAreaResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public SetMedicalEmployeeOnAreaResponse setMedicalEmployeeOnArea(SetMedicalEmployeeOnAreaRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.setMedicalEmployeeOnArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SetMedicalEmployeeOnAreaRequest())),
+                    new SetMedicalEmployeeOnAreaResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public DelMoAvailableAreaTypesResponse delMoAvailableAreaTypes(DelMoAvailableAreaTypesRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.delMoAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesRequest())),
+                    new DelMoAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public SearchAreaResponse searchArea(SearchAreaRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.searchArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchAreaRequest())),
+                    new SearchAreaResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public SearchMuByAreaAddressResponse searchMuByAreaAddress(SearchMuByAreaAddressRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.searchMuByAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchMuByAreaAddressRequest())),
+                    new SearchMuByAreaAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public AddMoAddressResponse addMoAddress(AddMoAddressRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.addMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddMoAddressRequest())),
+                    new AddMoAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.createOrder(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.CreateOrderRequest())),
+                    new CreateOrderResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.getNewAreaId(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest())),
+                    new GetNewAreaIdResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public DelMuAvailableAreaTypesResponse delMuAvailableAreaTypes(DelMuAvailableAreaTypesRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.delMuAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelMuAvailableAreaTypesRequest())),
+                    new DelMuAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.addAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddAreaAddressRequest())),
+                    new AddAreaAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public DelMoAddressResponse delMoAddress(DelMoAddressRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.delMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelMoAddressRequest())),
+                    new DelMoAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.initiateAddMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.InitiateAddMoAddressRequest())),
+                    new InitiateAddMoAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.searchOrder(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchOrderRequest())),
+                    new SearchOrderResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public GetMoAddressResponse getMoAddress(GetMoAddressRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.getMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMoAddressRequest())),
+                    new GetMoAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.updateDependentArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.UpdateDependentAreaRequest())),
+                    new UpdateDependentAreaResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public InitiateAddAreaAddressResponse initiateAddAreaAddress(InitiateAddAreaAddressRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.initiateAddAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.InitiateAddAreaAddressRequest())),
+                    new InitiateAddAreaAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public DelAreaAddressResponse delAreaAddress(DelAreaAddressRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.delAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelAreaAddressRequest())),
+                    new DelAreaAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.createPrimaryArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.CreatePrimaryAreaRequest())),
+                    new CreatePrimaryAreaResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.updatePrimaryArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.UpdatePrimaryAreaRequest())),
+                    new UpdatePrimaryAreaResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.createDependentArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.CreateDependentAreaRequest())),
+                    new CreateDependentAreaResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
@@ -244,10 +392,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return versioningMapper.map(areaServiceV1.getAreaById(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetAreaByIdRequest())),
                     new GetAreaByIdResponse());
         }
-        catch (ru.mos.emias.contingent2.area.Fault ex) {
-            //Мапинг исключения предыдущей версии контракта
-            throw mapFault(ex);
-        }
         catch (Exception ex) {
             throw mapException(ex);
         }
@@ -255,27 +399,57 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Override
     public GetAreaListBriefResponse getAreaListBrief(GetAreaListBriefRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.getAreaListBrief(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetAreaListBriefRequest())),
+                    new GetAreaListBriefResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.updateOrder(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.UpdateOrderRequest())),
+                    new UpdateOrderResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public ArchiveAreaResponse archiveArea(ArchiveAreaRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.archiveArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.ArchiveAreaRequest())),
+                    new ArchiveAreaResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public GetMoAvailableAreaTypesResponse getMoAvailableAreaTypes(GetMoAvailableAreaTypesRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.getMoAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesRequest())),
+                    new GetMoAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     @Override
     public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
-        return null;
+        try {
+            return versioningMapper.map(areaServiceV1.getAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetAreaAddressRequest())),
+                    new GetAreaAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
     }
 
     private ru.mos.emias.contingent2.area.v2.Fault mapFault(ru.mos.emias.contingent2.area.Fault ex) {
@@ -283,6 +457,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     }
 
     private ru.mos.emias.contingent2.area.v2.Fault mapException(Exception ex) {
+        if (ex instanceof ru.mos.emias.contingent2.area.Fault) {
+            //Мапинг исключения предыдущей версии контракта
+            return mapFault((ru.mos.emias.contingent2.area.Fault) ex);
+        }
         if (!(ex instanceof ContingentException)) {
             LOG.error(ex.getMessage(), ex);
         }
