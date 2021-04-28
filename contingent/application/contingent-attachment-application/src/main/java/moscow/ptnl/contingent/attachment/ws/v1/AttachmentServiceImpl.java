@@ -32,7 +32,7 @@ public class AttachmentServiceImpl implements AttachmentPT {
     @Autowired
     private AttachmentServiceInternal attachmentServiceInternal;
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiatePersonalAreaAttachmentResponse initiatePersonalAreaAttachment(InitiatePersonalAreaAttachmentRequest body) throws Fault {
         try {
             attachmentServiceInternal.initiatePersonalAreaAttachment(body.getPatientEmiasId(), body.getOperationDate(),

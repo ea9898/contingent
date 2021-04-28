@@ -1,37 +1,36 @@
 package moscow.ptnl.contingent.area.ws.v1;
 
-import moscow.ptnl.contingent.area.transform.AddMedicalEmployeeMapper;
-import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapper;
-import moscow.ptnl.contingent.area.transform.AreaBriefMapper;
-import moscow.ptnl.contingent.area.transform.ChangeMedicalEmployeeMapper;
-import moscow.ptnl.contingent.area.transform.SearchAreaAddressMapper;
-import moscow.ptnl.contingent.area.transform.SearchMuByAreaAddressMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddMedicalEmployeeMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddressRegistryToAddressRegistryBaseMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaBriefMapper;
+import moscow.ptnl.contingent.area.transform.v1.ChangeMedicalEmployeeMapper;
+import moscow.ptnl.contingent.area.transform.v1.SearchAreaAddressMapper;
+import moscow.ptnl.contingent.area.transform.v1.SearchMuByAreaAddressMapper;
 import moscow.ptnl.contingent.area.transform.UserContextMapper;
-import moscow.ptnl.contingent.area.transform.model.options.GetAreaListBriefOptions;
-import moscow.ptnl.contingent.area.transform.model.options.OptionEnum;
-import moscow.ptnl.contingent.area.transform.model.sorting.GetAreaListBriefSorting;
-import moscow.ptnl.contingent.area.transform.model.sorting.SearchMuByAreaAddressSorting;
+import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions;
+import moscow.ptnl.contingent.area.transform.OptionEnum;
+import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
+import moscow.ptnl.contingent.area.transform.v1.model.sorting.SearchMuByAreaAddressSorting;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.OrderService;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
-import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
-import moscow.ptnl.contingent.area.transform.AreaDnMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaDnMapper;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
-import moscow.ptnl.contingent.area.transform.AddressAllocationOrderMapper;
-import moscow.ptnl.contingent.area.transform.AreaMapper;
-import moscow.ptnl.contingent.area.transform.AreaTypeShortMapper;
-import moscow.ptnl.contingent.area.transform.GetMuAvailableAreaTypesResponseMapper;
-import moscow.ptnl.contingent.area.transform.MoAddressMapper;
-import moscow.ptnl.contingent.area.transform.PagingOptionsMapper;
-import moscow.ptnl.contingent.area.transform.SoapCustomMapper;
-import moscow.ptnl.contingent.area.transform.SoapExceptionMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddressAllocationOrderMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaTypeShortMapper;
+import moscow.ptnl.contingent.area.transform.v1.GetMuAvailableAreaTypesResponseMapper;
+import moscow.ptnl.contingent.area.transform.v1.MoAddressMapper;
+import moscow.ptnl.contingent.area.transform.v1.PagingOptionsMapper;
+import moscow.ptnl.contingent.area.transform.v1.SoapCustomMapper;
+import moscow.ptnl.contingent.area.transform.v1.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
@@ -116,7 +115,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.area.transform.AreaAddressMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaAddressMapper;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import ru.mos.emias.contingent2.area.types.InitiateAddMoAddressRequest;
@@ -134,6 +133,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
     public static final String SERVICE_NAME = "AREA";
+
+    @Autowired
+    private SoapExceptionMapper exceptionMapper;
 
     @Autowired
     private SoapCustomMapper soapCustomMapper;
@@ -192,7 +194,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private SearchMuByAreaAddressMapper searchMuByAreaAddressMapper;
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
             CreatePrimaryAreaResponse response = new CreatePrimaryAreaResponse();
@@ -209,7 +211,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public DelAreaAddressResponse delAreaAddress(DelAreaAddressRequest body) throws Fault {
         try {
             areaServiceDomain.delAreaAddress(body.getAreaId(), body.getAreaAddressIds());
@@ -219,7 +221,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         try {
             CreateDependentAreaResponse response = new CreateDependentAreaResponse();
@@ -238,7 +240,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws Fault {
         try {
             areaServiceDomain.updatePrimaryArea(body.getAreaId(), body.getNumber(),
@@ -254,7 +256,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws Fault {
         try {
             areaServiceDomain.updateDependentArea(body.getAreaId(), body.getMuId(), body.getNumber(), body.getDescription(),
@@ -271,7 +273,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddAreaAddressResponse initiateAddAreaAddress(InitiateAddAreaAddressRequest body) throws Fault {
         try {
             InitiateAddAreaAddressResponse response = new InitiateAddAreaAddressResponse();
@@ -285,7 +287,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
         try {
             
@@ -301,7 +303,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws Fault {
         try {
             orderServiceDomain.updateOrder(body.getId(), body.getNumber(), body.getDate(), body.getOuz(), body.getName());
@@ -313,7 +315,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         try {
             Page<AddressAllocationOrders> results = orderServiceDomain.searchOrder(body.getId(), body.getNumber(), body.getDate(),
@@ -330,7 +332,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
             AreaInfo area = areaServiceDomain.getAreaById(body.getAreaId());
@@ -343,7 +345,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SetMedicalEmployeeOnAreaResponse setMedicalEmployeeOnArea(SetMedicalEmployeeOnAreaRequest body) throws Fault {
         try {
             List<Long> assignmentIds = areaServiceDomain.setMedicalEmployeeOnArea(body.getAreaId(),
@@ -360,7 +362,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
         try {
             AddAreaAddressResponse response = new AddAreaAddressResponse();
@@ -373,7 +375,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
         try {
             areaServiceDomain.restoreArea(body.getAreaId());
@@ -385,7 +387,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMoAddressResponse addMoAddress(AddMoAddressRequest body) throws Fault {
         try {
             AddMoAddressResponse response = new AddMoAddressResponse();
@@ -399,7 +401,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchAreaResponse searchArea(SearchAreaRequest body) throws Fault {
         try {
             Page<AreaInfo> areas = areaServiceDomain.searchArea(body.getAreaTypeClassCode(), body.getMoId(),
@@ -424,7 +426,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     }
 
     @Override @Metrics
-    @EMIASSecured
+    @EMIASSecured(faultClass = Fault.class)
     public SearchMuByAreaAddressResponse searchMuByAreaAddress(SearchMuByAreaAddressRequest body) throws Fault {
         try {
             Map<GetAreaListBriefOptions, ? extends OptionEnum.OptionValuesEnum> options =
@@ -460,7 +462,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMoAddressResponse getMoAddress(GetMoAddressRequest body) throws Fault {
         try {
             GetMoAddressResponse response = new GetMoAddressResponse();
@@ -490,7 +492,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public DelMoAddressResponse delMoAddress(DelMoAddressRequest body) throws Fault {
         try {
             moMuMuServiceDomain.delMoAddress(body.getMoAddressIds(), body.getOrderId());
@@ -502,7 +504,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
         try {
             GetAreaAddressResponse response = new GetAreaAddressResponse();
@@ -521,7 +523,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateCreatePrimaryAreaResponse initiateCreatePrimaryArea(InitiateCreatePrimaryAreaRequest body) throws Fault {
         try {
             InitiateCreatePrimaryAreaResponse response = new InitiateCreatePrimaryAreaResponse();
@@ -552,7 +554,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public ArchiveAreaResponse archiveArea(ArchiveAreaRequest body) throws Fault {
         try {
             areaServiceDomain.archiveArea(body.getAreaId());
@@ -564,7 +566,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaListBriefResponse getAreaListBrief(GetAreaListBriefRequest body) throws Fault {
         try {
             Map<GetAreaListBriefOptions, ? extends OptionEnum.OptionValuesEnum> options =
@@ -597,7 +599,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMoAvailableAreaTypesResponse addMoAvailableAreaTypes(AddMoAvailableAreaTypesRequest body) throws Fault {
         try {
             moMuMuServiceDomain.addMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
@@ -609,7 +611,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public DelMoAvailableAreaTypesResponse delMoAvailableAreaTypes(DelMoAvailableAreaTypesRequest body) throws Fault {
         try {
             moMuMuServiceDomain.delMoAvailableAreaTypes(body.getMoId(), body.getAreaTypeCodes().getAreaTypeCodes());
@@ -621,7 +623,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMoAvailableAreaTypesResponse getMoAvailableAreaTypes(GetMoAvailableAreaTypesRequest body) throws Fault {
         try {
             GetMoAvailableAreaTypesResponse result = new GetMoAvailableAreaTypesResponse();
@@ -636,7 +638,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMuAvailableAreaTypesResponse addMuAvailableAreaTypes(AddMuAvailableAreaTypesRequest body) throws Fault {
         try {
             moMuMuServiceDomain.addMuAvailableAreaTypes(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
@@ -648,7 +650,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchDnAreaResponse searchDnArea(SearchDnAreaRequest body) throws Fault {
         try {
             Page<Area> areas = areaServiceDomain.searchDnArea(body.getMoId(),
@@ -668,7 +670,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public DelMuAvailableAreaTypesResponse delMuAvailableAreaTypes(DelMuAvailableAreaTypesRequest body) throws Fault {
         try {
             moMuMuServiceDomain.delMuAvailableAreaTypes(body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
@@ -680,7 +682,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMuAvailableAreaTypesResponse getMuAvailableAreaTypes(GetMuAvailableAreaTypesRequest body) throws Fault {
         try {
             return getMuAvailableAreaTypesResponseMapper.entityToDtoTransform(moMuMuServiceDomain.getMuAvailableAreaTypes(
@@ -691,7 +693,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
         try {
             Long result = areaServiceDomain.initiateAddMoAddress(
@@ -709,6 +711,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         if (!(ex instanceof ContingentException)) {
             LOG.error(ex.getMessage(), ex);
         }
-        return SoapExceptionMapper.map(ex, userContextMapper);
+        return exceptionMapper.map(ex, userContextMapper);
     }
 }

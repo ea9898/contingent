@@ -1,5 +1,4 @@
-<!-- edited with XMLSpy v2011 rel. 2 (http://www.altova.com) by DIT (DIT) -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
 	<xs:include schemaLocation="emias.system.v1.xsd"/>
 	<!--Типы для наименований-->
 	<xs:complexType name="Names">
@@ -43,7 +42,7 @@
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="NameWithType">
-				<xs:attribute name="id" type="xs:string">
+				<xs:attribute name="id" type="ID" use="optional">
 					<xs:annotation>
 						<xs:documentation>global_id ЕМИАС.НСИ</xs:documentation>
 					</xs:annotation>
@@ -88,7 +87,7 @@
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
-				<xs:attribute name="id" type="xs:string">
+				<xs:attribute name="id" type="ID" use="required">
 					<xs:annotation>
 						<xs:documentation>global_id ЕМИАС.НСИ</xs:documentation>
 					</xs:annotation>

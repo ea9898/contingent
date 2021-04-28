@@ -3,30 +3,71 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://emias.mos.ru/contingent2/core/v2/"
            xmlns:tns="http://emias.mos.ru/contingent2/core/v2/"
+           xmlns:address="http://emias.mos.ru/contingent2/address/v2/"
+           xmlns:restr="http://emias.mos.ru/restriction/types/core/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
     <xs:include schemaLocation="../../emias/emias.core.v1.xsd"/>
+
+    <xs:import schemaLocation="emias.contingent2.address.v2.xsd" namespace="http://emias.mos.ru/contingent2/address/v2/" />
+    <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="emias.restriction.types.core.xsd"/>
+
+    <xs:complexType name="CodeNameType">
+        <xs:sequence>
+            <xs:element name="code" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Код</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Наименование</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
     <!--business entities-->
     <xs:complexType name="AreaTypeShort">
         <xs:annotation>
             <xs:documentation>Типы участка в профиле МУ</xs:documentation>
         </xs:annotation>
-        <xs:sequence>
-            <xs:element name="code" type="xs:long">
-                <xs:annotation>
-                    <xs:documentation>Код типа участка</xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="name" type="xs:string">
-                <xs:annotation>
-                    <xs:documentation>Наименование типа участка</xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
+        <xs:complexContent>
+            <xs:extension base="tns:CodeNameType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AreaTypeClass">
+        <xs:annotation>
+            <xs:documentation>Класс типа участка</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:CodeNameType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AreaTypeKind">
+        <xs:annotation>
+            <xs:documentation>Вид типа участка</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:CodeNameType"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Specialization">
+        <xs:annotation>
+            <xs:documentation>Специализация участка</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:CodeNameType"/>
+        </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="PrimaryAreaTypeCodes">
         <xs:sequence>
             <xs:element name="primaryAreaTypeCode" type="xs:long" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="PolicyTypeCodes">
+        <xs:sequence>
+            <xs:element name="policyTypeCode" type="xs:long" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="AddressAllocationOrder">
@@ -61,12 +102,18 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
+    <xs:complexType name="PositionNomClinic">
+        <xs:sequence>
+            <xs:element name="code" type="xs:string" />
+            <xs:element name="name" type="xs:string" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
     <xs:complexType name="MedicalEmployee">
         <xs:sequence>
             <xs:element name="id" type="xs:long" />
             <xs:element name="medicalEmployeeJobId" type="xs:long" />
-            <xs:element name="snils" type="xs:string" />
-            <xs:element name="positionId" type="xs:long" />
+            <xs:element name="snils" type="restr:stringLimit20" />
+            <xs:element name="position" type="tns:PositionNomClinic" minOccurs="0" />
             <xs:element name="isReplacement" type="xs:boolean" />
             <xs:element name="startDate" type="xs:date" minOccurs="0" />
             <xs:element name="endDate" type="xs:date" minOccurs="0" />
@@ -76,17 +123,19 @@
         <xs:sequence>
             <xs:element name="id" type="xs:long" />
             <xs:element name="moId" type="xs:long" />
-            <xs:element name="muId" type="xs:long" />
-            <xs:element name="number" type="xs:int" minOccurs="0" />
+            <xs:element name="muId" type="xs:long" minOccurs="0" />
+            <xs:element name="number" type="restr:int5digits" minOccurs="0" />
             <xs:element name="description" type="xs:string" minOccurs="0" />
             <xs:element name="areaType" type="tns:AreaTypeShort" />
+            <xs:element name="areaTypeClass" type="tns:AreaTypeClass" />
+            <xs:element name="areaTypeKind" type="tns:AreaTypeKind" />
             <xs:element name="ageMin" type="xs:int" minOccurs="0" />
             <xs:element name="ageMax" type="xs:int" minOccurs="0" />
             <xs:element name="ageMinM" type="xs:int" minOccurs="0" />
             <xs:element name="ageMaxM" type="xs:int" minOccurs="0" />
             <xs:element name="ageMinW" type="xs:int" minOccurs="0" />
             <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
-            <xs:element name="autoAssignForAttachment" type="xs:boolean" />
+            <xs:element name="autoAssignForAttachment" type="xs:boolean" minOccurs="0" />
             <xs:element name="attachByMedicalReason" type="xs:boolean" minOccurs="0" />
             <xs:element name="primaryAreaTypeCodes" minOccurs="0">
                 <xs:complexType>
@@ -103,6 +152,243 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AreaDn">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" />
+            <xs:element name="moId" type="xs:long" />
+            <xs:element name="muId" type="xs:long" minOccurs="0" />
+            <xs:element name="number" type="restr:int5digits" minOccurs="0" />
+            <xs:element name="areaType" type="tns:AreaTypeShort" />
+            <xs:element name="specializations">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="specialization" type="tns:Specialization" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="medicalEmployee" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="xs:long" />
+                        <xs:element name="medicalEmployeeJobId" type="xs:long" />
+                        <xs:element name="snils" type="restr:stringLimit20" minOccurs="0" />
+                        <xs:element name="position" type="tns:PositionNomClinic" minOccurs="0" />
+                        <xs:element name="startDate" type="xs:date" minOccurs="0" />
+                        <xs:element name="endDate" type="xs:date" minOccurs="0" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AreaBrief">
+        <xs:sequence>
+            <xs:element name="id" type="ID" />
+            <xs:element name="moId" type="ID" />
+            <xs:element name="muId" type="ID" minOccurs="0" />
+            <xs:element name="number" type="restr:int5digits" minOccurs="0" />
+            <xs:element name="areaTypeCode" type="xs:long" />
+            <xs:element name="areaTypeTitle" type="xs:string" />
+            <xs:element name="archive" type="xs:boolean" />
+            <xs:element name="medicalEmployees" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="medicalEmployee" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="medicalEmployeeJobInfoId" type="xs:long" />
+                                    <xs:element name="isReplacement" type="xs:boolean" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AddMedicalEmployees">
+        <xs:annotation>
+            <xs:documentation>Сведения медработников для добавления на участок</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="addMedicalEmployee" type="tns:AddMedicalEmployee" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AddMedicalEmployee">
+        <xs:annotation>
+            <xs:documentation>Сведения медработника для добавления на участок</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="medicalEmployeeJobInfoId" type="xs:long"/>
+            <xs:element name="snils" type="restr:stringLimit20"/>
+            <xs:element name="positionCode" type="xs:string"/>
+            <xs:element name="subdivisionId" type="xs:long"/>
+            <xs:element name="isReplacement" type="xs:boolean"/>
+            <xs:element name="startDate" type="xs:date"/>
+            <xs:element name="endDate" type="xs:date" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ChangeMedicalEmployees">
+        <xs:annotation>
+            <xs:documentation>Сведения медработников для изменения</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="changeMedicalEmployee" type="tns:ChangeMedicalEmployee" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ChangeMedicalEmployee">
+        <xs:annotation>
+            <xs:documentation>Сведения медработника для изменения</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="assignmentId" type="xs:long"/>
+            <xs:element name="startDate" type="xs:date" minOccurs="0"/>
+            <xs:element name="endDate" type="xs:date" minOccurs="0"/>
+            <xs:element name="is_error" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="NsiAddress">
+        <xs:sequence>
+            <xs:element name="levelAddress" type="xs:int" />
+            <xs:element name="globalId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="NotNsiAddress">
+        <xs:sequence>
+            <xs:element name="levelParentId" type="xs:int" />
+            <xs:element name="parentId" type="xs:long" />
+            <xs:element name="houseType" type="xs:string" minOccurs="0"/>
+            <xs:element name="house" type="xs:string" minOccurs="0"/>
+            <xs:element name="buildingType" type="xs:string" minOccurs="0"/>
+            <xs:element name="building" type="xs:string" minOccurs="0"/>
+            <xs:element name="constructionType" type="xs:string" minOccurs="0"/>
+            <xs:element name="construction" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Address">
+        <xs:sequence>
+            <xs:element name="afeId" type="xs:long" />
+            <xs:element name="levelAddress" type="xs:int" />
+            <xs:element name="afeGlobalId" type="xs:long" minOccurs="0" />
+
+            <xs:element name="regionTeId" type="xs:long" minOccurs="0" />
+            <xs:element name="regionTeCode" type="xs:string" minOccurs="0" />
+            <xs:element name="regionTeName" type="xs:string" minOccurs="0" />
+            <xs:element name="regionTeTypeName" type="xs:string" minOccurs="0" />
+            <xs:element name="areaTeId" type="xs:long" minOccurs="0" />
+            <xs:element name="areaCodeOmkTe" type="xs:string" minOccurs="0" />
+            <xs:element name="areaTeName" type="xs:string" minOccurs="0" />
+            <xs:element name="areaTeTypeName" type="xs:string" minOccurs="0" />
+            <xs:element name="districtId" type="xs:long" minOccurs="0" />
+            <xs:element name="districtCode" type="xs:string" minOccurs="0" />
+            <xs:element name="districtName" type="xs:string" minOccurs="0" />
+            <xs:element name="districtTypeName" type="xs:string" minOccurs="0" />
+            <xs:element name="cityId" type="xs:long" minOccurs="0" />
+            <xs:element name="cityCode" type="xs:string" minOccurs="0" />
+            <xs:element name="cityName" type="xs:string" minOccurs="0" />
+            <xs:element name="cityTypeName" type="xs:string" minOccurs="0" />
+            <xs:element name="placeId" type="xs:long" minOccurs="0" />
+            <xs:element name="placeCode" type="xs:string" minOccurs="0" />
+            <xs:element name="placeName" type="xs:string" minOccurs="0" />
+            <xs:element name="placeTypeName" type="xs:string" minOccurs="0" />
+            <xs:element name="planId" type="xs:long" minOccurs="0" />
+            <xs:element name="planCode" type="xs:string" minOccurs="0" />
+            <xs:element name="planName" type="xs:string" minOccurs="0" />
+            <xs:element name="planTypeName" type="xs:string" minOccurs="0" />
+            <xs:element name="streetId" type="xs:long" minOccurs="0" />
+            <xs:element name="streetCode" type="xs:string" minOccurs="0" />
+            <xs:element name="streetName" type="xs:string" minOccurs="0" />
+            <xs:element name="streetTypeName" type="xs:string" minOccurs="0" />
+
+            <xs:element name="brId" type="xs:long" minOccurs="0" />
+            <xs:element name="brGlobalId" type="xs:long" minOccurs="0" />
+            <xs:element name="brAfeId" type="xs:long" minOccurs="0" />
+            <xs:element name="houseType" type="xs:string" minOccurs="0"/>
+            <xs:element name="house" type="xs:string" minOccurs="0"/>
+            <xs:element name="buildingType" type="xs:string" minOccurs="0"/>
+            <xs:element name="building" type="xs:string" minOccurs="0"/>
+            <xs:element name="constructionType" type="xs:string" minOccurs="0"/>
+            <xs:element name="construction" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MoAddress">
+        <xs:sequence>
+            <xs:element name="moAddressId" type="xs:long" />
+            <xs:element name="areaTypeCode" type="xs:long" />
+            <xs:element name="orderId" type="xs:long" />
+            <xs:element name="address" type="address:AddressRegistryBaseType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AreaAddress">
+        <xs:sequence>
+            <xs:element name="moId" type="xs:long" />
+            <xs:element name="muId" type="xs:long" minOccurs="0" />
+            <xs:element name="areaId" type="xs:long" />
+            <xs:element name="areaAddressId" type="xs:long" />
+            <xs:element name="address" type="address:AddressRegistryBaseType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MuTypes">
+        <xs:annotation>
+            <xs:documentation>Перечень типов МУ.
+                Обязательно, если переданы типы участков для добавления (primaryAreaTypesAdd). При этом:
+                • если участок принадлежит филиалу, то передается тип филиала;
+                • если участок принадлежит МО в целом (филиал отсутствует), то в данной структуре должны передаваться типы всех МУ, принадлежащих данной МО
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="muType" type="tns:MuType" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MuType">
+        <xs:sequence>
+            <xs:element name="muId" type="xs:long" />
+            <xs:element name="muTypeId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Fault">
+        <xs:annotation>
+            <xs:documentation>Перечень сообщений об ошибках валидации</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="fault" type="xs:string" maxOccurs="unbounded" default="Описание уточняется"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PolicyTypesAdd">
+        <xs:annotation>
+            <xs:documentation>Добавляемые типы полисов.
+                Код типа полиса. Возможные значения: 1 – полис ОМС
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="policyTypeCode" type="xs:long" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PolicyTypesDel">
+        <xs:annotation>
+            <xs:documentation>Удаляемые типы полисов.
+                Код типа полиса. Возможные значения: 1 – полис ОМС
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="policyTypeCode" type="xs:long" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 

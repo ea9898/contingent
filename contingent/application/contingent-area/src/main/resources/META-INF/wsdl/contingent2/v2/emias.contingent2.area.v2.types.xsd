@@ -2,10 +2,15 @@
 <xs:schema xmlns:tns="http://emias.mos.ru/contingent2/area/v2/types/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns:core="http://emias.mos.ru/contingent2/core/v2/"
+           xmlns:address="http://emias.mos.ru/contingent2/address/v2/"
+           xmlns:restr="http://emias.mos.ru/restriction/types/core/"
            targetNamespace="http://emias.mos.ru/contingent2/area/v2/types/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
     <xs:import namespace="http://emias.mos.ru/contingent2/core/v2/" schemaLocation="emias.contingent2.core.v2.xsd"/>
+    <xs:import schemaLocation="emias.contingent2.address.v2.xsd" namespace="http://emias.mos.ru/contingent2/address/v2/" />
+    <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="emias.restriction.types.core.xsd"/>
+
     <!--lists of entities-->
     <xs:complexType name="AddressAllocationOrderListResultPage">
         <xs:annotation>
@@ -24,70 +29,23 @@
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:element name="getProfileMURequest">
-        <xs:annotation>
-            <xs:documentation>Входные параметры метода getProfileMURequest</xs:documentation>
-        </xs:annotation>
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="muId" type="xs:long" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="getProfileMUResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="profileAreaType" type="core:AreaTypeShort" minOccurs="0" maxOccurs="unbounded" />
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="setProfileMURequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="muId" type="xs:long" />
-                <xs:element name="muTypeId" type="xs:string" />
-                <xs:element name="areaTypesAdd" minOccurs="0">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="areaTypesDel" minOccurs="0">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
-                <xs:element name="options" type="core:Options" minOccurs="0" />
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-    <xs:element name="setProfileMUResponse">
-        <xs:complexType>
-            <xs:sequence>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="createDependentAreaRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="moId" type="xs:long" />
-                <xs:element name="muId" type="xs:long" />
-                <xs:element name="number" type="xs:int" minOccurs="0" />
+                <xs:element name="muId" type="xs:long" minOccurs="0" />
+                <xs:element name="number" type="restr:int5digits" minOccurs="0" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
                 <xs:element name="areaTypeCode" type="xs:long" />
-                <xs:element name="primaryAreaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                <xs:element name="primaryAreaTypes" type="core:PrimaryAreaTypeCodes" maxOccurs="unbounded" />
+                <xs:element name="policyTypes" type="core:PolicyTypeCodes" maxOccurs="unbounded" minOccurs="0" />
                 <xs:element name="ageMin" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMax" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinM" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxM" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinW" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
-                <xs:element name="autoAssignForAttachment" type="xs:boolean" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -102,10 +60,11 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="moId" type="xs:long" />
-                <xs:element name="muId" type="xs:long" />
-                <xs:element name="number" type="xs:int" minOccurs="0" />
+                <xs:element name="muId" type="xs:long" minOccurs="0" />
+                <xs:element name="number" type="restr:int5digits" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
                 <xs:element name="areaTypeCode" type="xs:long" />
+                <xs:element name="policyTypes" type="core:PolicyTypeCodes" minOccurs="0" />
                 <xs:element name="ageMin" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMax" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinM" type="xs:int" minOccurs="0" />
@@ -114,7 +73,7 @@
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
                 <xs:element name="autoAssignForAttachment" type="xs:boolean" />
                 <xs:element name="attachByMedicalReason" type="xs:boolean" minOccurs="0" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -129,23 +88,26 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
-                <xs:element name="number" type="xs:int" minOccurs="0" />
+                <xs:element name="number" type="restr:int5digits" minOccurs="0" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
+                <xs:element name="PolicyTypesAdd" type="core:PolicyTypesAdd" minOccurs="0" />
+                <xs:element name="PolicyTypesDel" type="core:PolicyTypesDel" minOccurs="0" />
                 <xs:element name="ageMin" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMax" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinM" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxM" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinW" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
-                <xs:element name="autoAssignForAttachment" type="xs:boolean" />
+                <xs:element name="autoAssignForAttachment" type="xs:boolean" minOccurs="0" />
                 <xs:element name="attachByMedicalReason" type="xs:boolean" minOccurs="0" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
     <xs:element name="updatePrimaryAreaResponse">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="fault" type="core:Fault" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -154,18 +116,19 @@
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
                 <xs:element name="muId" type="xs:long" minOccurs="0" />
-                <xs:element name="number" type="xs:int" minOccurs="0" />
+                <xs:element name="number" type="restr:int5digits" minOccurs="0" />
                 <xs:element name="description" type="xs:string" minOccurs="0" />
                 <xs:element name="primaryAreaTypesAdd" type="core:PrimaryAreaTypeCodes" minOccurs="0" />
                 <xs:element name="primaryAreaTypesDel" type="core:PrimaryAreaTypeCodes" minOccurs="0" />
+                <xs:element name="policyTypesAdd" type="core:PolicyTypeCodes" minOccurs="0" />
+                <xs:element name="policyTypesDel" type="core:PolicyTypeCodes" minOccurs="0" />
                 <xs:element name="ageMin" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMax" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinM" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxM" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMinW" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
-                <xs:element name="autoAssignForAttachment" type="xs:boolean" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -184,7 +147,7 @@
                 <xs:element name="date" type="xs:date" />
                 <xs:element name="ouz" type="xs:string" />
                 <xs:element name="name" type="xs:string" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -205,7 +168,7 @@
                 <xs:element name="date" type="xs:date" minOccurs="0" />
                 <xs:element name="ouz" type="xs:string" minOccurs="0" />
                 <xs:element name="name" type="xs:string" minOccurs="0" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -224,8 +187,8 @@
                 <xs:element name="number" type="xs:string" minOccurs="0" />
                 <xs:element name="date" type="xs:date" minOccurs="0" />
                 <xs:element name="name" type="xs:string" minOccurs="0" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
-                <xs:element name="pagingOptions" type="core:PagingOptions" />
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -242,7 +205,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
-                <xs:element name="options" type="core:Options" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -255,5 +218,609 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="setMedicalEmployeeOnAreaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long"/>
+                <xs:element name="addMedicalEmployees" type="core:AddMedicalEmployees" minOccurs="0"/>
+                <xs:element name="changeMedicalEmployees" type="core:ChangeMedicalEmployees" minOccurs="0"/>
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="setMedicalEmployeeOnAreaResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="assignmentId" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="fault" type="core:Fault" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="restoreAreaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="restoreAreaResponse">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getNewAreaIdRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getNewAreaIdResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="newAreaId" type="xs:long" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addAreaAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element name="address" type="address:AddressRegistryBaseType" maxOccurs="unbounded"/>
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addAreaAddressResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaAddressId" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addMoAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="areaTypeCode" type="xs:long" />
+                <xs:element name="orderId" type="xs:long" />
+                <xs:element name="address" type="address:AddressRegistryBaseType" maxOccurs="unbounded" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addMoAddressResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moAddressId" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMoAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="areaType" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMoAddressResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="moId" type="xs:long" />
+                        <xs:element name="areaType" type="core:AreaTypeShort" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="order" type="core:AddressAllocationOrder" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="moAddress" type="core:MoAddress" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delMoAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moAddressId" type="xs:long" maxOccurs="unbounded" />
+                <xs:element name="orderId" type="xs:long" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delMoAddressResponse">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="archiveAreaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="archiveAreaResponse">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delAreaAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element name="areaAddressId" type="xs:long" minOccurs="1" maxOccurs="unbounded" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delAreaAddressResponse">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="areas">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaId" type="core:ID" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaAddressResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="areaAddress" type="core:AreaAddress" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addMoAvailableAreaTypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="areaTypeCodes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addMoAvailableAreaTypesResponse">
+        <xs:complexType>
+            <xs:sequence/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delMoAvailableAreaTypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="areaTypeCodes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delMoAvailableAreaTypesResponse">
+        <xs:complexType>
+            <xs:sequence/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMoAvailableAreaTypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMoAvailableAreaTypesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moAvailableAreaType" type="core:AreaTypeShort" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addMuAvailableAreaTypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="muId" type="xs:long" />
+                <xs:element name="areaTypeCodes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="addMuAvailableAreaTypesResponse">
+        <xs:complexType>
+            <xs:sequence/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delMuAvailableAreaTypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="muId" type="xs:long" />
+                <xs:element name="areaTypeCodes">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delMuAvailableAreaTypesResponse">
+        <xs:complexType>
+            <xs:sequence/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMuAvailableAreaTypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="muId" type="xs:long" />
+                <xs:element name="areaTypeState">
+                    <xs:annotation>
+                        <xs:documentation>
+                            0 - Используемые в МУ,
+                            1 - Доступные для добавления в список МУ,
+                            2 - Все
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:int">
+                            <xs:minInclusive value="0"/>
+                            <xs:maxInclusive value="2"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMuAvailableAreaTypesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="availableToUseAreaTypes" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaType" type="core:AreaTypeShort" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="availableToAddAreaTypes" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaType" type="core:AreaTypeShort" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchAreaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaTypeClassCode" type="xs:long" minOccurs="0"/>
+                <xs:element name="moId" type="xs:long" minOccurs="0"/>
+                <xs:element name="muId" type="xs:long" maxOccurs="unbounded" minOccurs="0"/>
+                <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" minOccurs="0"/>
+                <xs:element name="number" type="restr:int5digits" minOccurs="0"/>
+                <xs:element name="description" type="xs:string" minOccurs="0"/>
+                <xs:element name="isArchived" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="medicalEmployee" maxOccurs="unbounded" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Сведения медработника. Для поиска по МР должен быть передан хотя бы один из
+                            параметров
+                        </xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="medicalEmployeeJobId" type="xs:long" minOccurs="0"/>
+                            <xs:element name="snils" type="restr:stringLimit20" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="address" type="address:SearchAreaAddress" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="isExactAddressMatch" type="xs:boolean" minOccurs="0"/>
+                <xs:element ref="core:options" minOccurs="0"/>
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchAreaResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="area" type="core:Area" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="initiateCreatePrimaryAreaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="muId" type="xs:long" minOccurs="0" />
+                <xs:element name="number" type="restr:int5digits" />
+                <xs:element name="description" type="xs:string" minOccurs="0" />
+                <xs:element name="areaTypeCode" type="xs:long" />
+                <xs:element name="policyTypes" type="core:PolicyTypeCodes" minOccurs="0" />
+                <xs:element name="ageMin" type="xs:int" minOccurs="0" />
+                <xs:element name="ageMax" type="xs:int" minOccurs="0" />
+                <xs:element name="ageMinM" type="xs:int" minOccurs="0" />
+                <xs:element name="ageMaxM" type="xs:int" minOccurs="0" />
+                <xs:element name="ageMinW" type="xs:int" minOccurs="0" />
+                <xs:element name="ageMaxW" type="xs:int" minOccurs="0" />
+                <xs:element name="autoAssignForAttachment" type="xs:boolean" />
+                <xs:element name="attachByMedicalReason" type="xs:boolean" minOccurs="0" />
+                <xs:element name="addMedicalEmployees" type="core:AddMedicalEmployees" minOccurs="0" />
+                <xs:element name="address" type="address:AddressRegistryBaseType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="initiateCreatePrimaryAreaResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="initiateAddAreaAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element name="address" type="address:AddressRegistryBaseType" maxOccurs="unbounded"/>
+                <xs:element ref="core:options" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="initiateAddAreaAddressResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="initiateAddMoAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" />
+                <xs:element name="areaTypeCode" type="xs:long" />
+                <xs:element name="orderId" type="xs:long" />
+                <xs:element name="address" type="address:AddressRegistryBaseType" maxOccurs="unbounded" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="initiateAddMoAddressResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchDnAreaRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="xs:long" minOccurs="0" />
+                <xs:element name="mu" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="muId" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="areaTypes" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="specializations" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="specializationCode" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="areas" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaId" type="xs:long" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchDnAreaResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="area" type="core:AreaDn" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchMuByAreaAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaTypeCodes" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="areaTypeCode" type="core:ID" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:choice minOccurs="1" maxOccurs="1">
+                    <xs:element name="searchByCode" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:choice>
+                                    <xs:element name="regionOMKTEcode" minOccurs="0">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:pattern value="[0-9]{2}00" />
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:element>
+                                    <xs:element name="areaOMKTEcode" minOccurs="0">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:pattern value="([\d]{2})([1-9]0|0[1-9]|[1-9]{2})" />
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:element>
+                                </xs:choice>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="searchByNsiGlobalId" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="aoLevel" type="xs:string" />
+                                <xs:element name="globalIdNsi" type="xs:long" />
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchMuByAreaAddressResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="result" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="muId" type="core:ID" minOccurs="0" />
+                                    <xs:element name="moId" type="core:ID" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaListBriefRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areas">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="id" type="core:ID" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaListBriefResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="area" type="core:AreaBrief" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
 
 </xs:schema>

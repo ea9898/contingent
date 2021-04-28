@@ -66,7 +66,7 @@ public class SysopWebService extends BaseService implements SysopPT {
     @Autowired
     private SysopMsgParamRepository sysopMsgParamRepository;
 
-    @Override @EMIASSecured
+    @Override @EMIASSecured(faultClass = Fault.class)
     public GetOperationStatusResponse getOperationStatus(GetOperationStatusRequest body) throws Fault {
         try {
             GetOperationStatusResponse response = new GetOperationStatusResponse();
