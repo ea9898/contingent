@@ -129,6 +129,8 @@
             <xs:element name="areaType" type="tns:AreaTypeShort" />
             <xs:element name="areaTypeClass" type="tns:AreaTypeClass" />
             <xs:element name="areaTypeKind" type="tns:AreaTypeKind" />
+            <xs:element name="areaTypeProfile" type="tns:AreaTypeProfile" />
+            <xs:element name="muService" type="tns:MuService" />
             <xs:element name="ageMin" type="xs:int" minOccurs="0" />
             <xs:element name="ageMax" type="xs:int" minOccurs="0" />
             <xs:element name="ageMinM" type="xs:int" minOccurs="0" />
@@ -390,6 +392,24 @@
         <xs:sequence>
             <xs:element name="policyTypeCode" type="xs:long" maxOccurs="unbounded" />
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MuService">
+        <xs:annotation>
+            <xs:documentation>МУ, обслуживаемые участком</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="idMu" type="xs:long" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AreaTypeProfile">
+        <xs:annotation>
+            <xs:documentation>Профиль типа участка</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:CodeNameType"/>
+        </xs:complexContent>
     </xs:complexType>
 
 </xs:schema>
