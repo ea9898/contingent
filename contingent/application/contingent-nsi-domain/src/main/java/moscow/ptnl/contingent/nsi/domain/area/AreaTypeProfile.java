@@ -1,7 +1,6 @@
-package moscow.ptnl.contingent.domain.area.entity;
+package moscow.ptnl.contingent.nsi.domain.area;
 
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
-import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -18,7 +17,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "AREA_TYPE_PROFILE")
 @Cacheable
-public class AreaTypeProfile implements Serializable {
+public class AreaTypeProfile extends CodeName implements Serializable {
 
     private static final long serialVersionUID = 1281003603333730792L;
 
@@ -39,6 +38,50 @@ public class AreaTypeProfile implements Serializable {
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
     private Boolean archived;
+
+    @Override
+    public Long getCode() {
+        return code;
+    }
+
+    @Override
+    public void setCode(Long code) {
+        this.code = code;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Long getGlobalId() {
+        return globalId;
+    }
+
+    public void setGlobalId(Long globalId) {
+        this.globalId = globalId;
+    }
+
+    public AreaType getAreaType() {
+        return areaType;
+    }
+
+    public void setAreaType(AreaType areaType) {
+        this.areaType = areaType;
+    }
+
+    public Boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(Boolean archived) {
+        this.archived = archived;
+    }
 
     @Override
     public boolean equals(Object o) {

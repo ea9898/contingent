@@ -135,6 +135,9 @@ public class AreaType extends CodeName implements Serializable, NsiExternalEntit
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "areaType")
     private Set<AreaTypeSpecializations> areaTypeSpecializations;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "areaType")
+    private Set<AreaTypeProfile> areaTypeProfiles;
+
     public AreaType() {
     }
 
@@ -334,6 +337,14 @@ public class AreaType extends CodeName implements Serializable, NsiExternalEntit
 
     public void setAreaTypeSpecializations(Set<AreaTypeSpecializations> areaTypeSpecializations) {
         this.areaTypeSpecializations = areaTypeSpecializations;
+    }
+
+    public Set<AreaTypeProfile> getAreaTypeProfiles() {
+        return areaTypeProfiles;
+    }
+
+    public void setAreaTypeProfiles(Set<AreaTypeProfile> areaTypeProfiles) {
+        this.areaTypeProfiles = areaTypeProfiles;
     }
 
     @Override

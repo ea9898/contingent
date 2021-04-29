@@ -2,11 +2,15 @@ package moscow.ptnl.contingent.area.ws.v2;
 
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.UserContextMapper;
+import moscow.ptnl.contingent.area.transform.v2.AreaMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
+import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.error.ContingentException;
 
+import moscow.ptnl.contingent.security.annotation.EMIASSecured;
+import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,6 +114,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AreaService areaServiceDomain;
+
+    @Autowired
+    private AreaMapperV2 areaMapper;
 
     @Override
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
@@ -386,11 +393,13 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.getAreaById(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetAreaByIdRequest())),
-                    new GetAreaByIdResponse());
+            AreaInfo area = areaServiceDomain.getAreaByIdV2(body.getAreaId());
+            GetAreaByIdResponse response = new GetAreaByIdResponse();
+            response.setResult(areaMapper.entityToDtoTransform(area));
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);
