@@ -27,6 +27,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 
 @Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREAS")
@@ -78,6 +79,11 @@ public class Area implements Serializable {
     private Boolean attachByMedicalReason;
 
     @LogIt
+    @JoinColumn(name = "AREA_TYPE_PROFILE_CODE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AreaTypeProfile areaTypeProfile;
+
+    @LogIt
     @Column(name = "AGE_MIN")
     private Integer ageMin;
 
@@ -119,6 +125,10 @@ public class Area implements Serializable {
     @LogIt
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaAddress> areaAddresses = new HashSet<>();
+
+    @LogIt
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
+    private Set<AreaMuService> areaMuServices = new HashSet<>();
 
     public Area() {
     }
@@ -320,6 +330,25 @@ public class Area implements Serializable {
 
     public boolean isActual() {
         return !Boolean.TRUE.equals(archived);
+    }
+
+    public AreaTypeProfile getAreaTypeProfile() { return areaTypeProfile; }
+
+    public void setAreaTypeProfile(AreaTypeProfile areaTypeProfile) { this.areaTypeProfile = areaTypeProfile; }
+
+    public Set<AreaMuService> getAreaMuServices() {
+        return areaMuServices;
+    }
+
+    public Set<AreaMuService> getActualAreaMuServices() {
+        if (areaMuServices == null || areaMuServices.isEmpty()) {
+            return new HashSet<>();
+        }
+        LocalDate now = LocalDate.now();
+
+        return areaMuServices.stream()
+                .filter(e -> e.getEndDate() == null || e.getEndDate().isAfter(now) || e.getEndDate().equals(now))
+                .collect(Collectors.toSet());
     }
 
     @Override

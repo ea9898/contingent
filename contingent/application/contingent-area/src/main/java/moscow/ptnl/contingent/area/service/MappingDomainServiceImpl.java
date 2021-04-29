@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.area.transform.AddressMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddressMapper;
 import moscow.ptnl.contingent.domain.area.MappingDomainService;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;

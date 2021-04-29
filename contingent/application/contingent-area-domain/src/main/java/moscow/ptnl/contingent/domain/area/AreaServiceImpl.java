@@ -809,6 +809,16 @@ public class AreaServiceImpl implements AreaService {
         return new AreaInfo(area, mainMedicalEmployees, replacementMedicalEmployees);
     }
 
+    @Override
+    public AreaInfo getAreaByIdV2(Long areaId) throws ContingentException {
+        AreaInfo areaInfo = getAreaById(areaId);
+
+        areaInfo.setAreaTypeProfile(areaInfo.getArea().getAreaTypeProfile());
+        areaInfo.setAreaMuServices(new ArrayList<>(areaInfo.getArea().getActualAreaMuServices()));
+
+        return areaInfo;
+    }
+
     @Override  @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public List<Long> addAreaAddress(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
         return addAreaAddressInternal(areaId, addressesRegistry, limitAddress);

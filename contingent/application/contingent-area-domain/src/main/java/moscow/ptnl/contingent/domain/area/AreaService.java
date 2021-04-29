@@ -143,6 +143,8 @@ public interface AreaService {
      */
     AreaInfo getAreaById(Long areaId) throws ContingentException;
 
+    AreaInfo getAreaByIdV2(Long areaId) throws ContingentException;
+
     /**
      * (К_УУ_13) Добавление адресов на участок обслуживания
      * Добавление адресов на участок обслуживания

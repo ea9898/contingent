@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="2.0.0.0" author="sorlov" labels ="2.0.0.0">
+        <tagDatabase tag="2.0.0.0"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1681-1" author="sorlov" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_MU_SERVICE"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_MU_SERVICE</comment>
+        <createTable tableName="AREA_MU_SERVICE"
+                     remarks="МУ, обслуживаемые участком">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="AREA_ID" type="BIGINT" remarks="ИД участка">
+                <constraints nullable="false" />
+            </column>
+            <column name="MU_ID" type="BIGINT" remarks="ИД МУ, которое обслуживается участком">
+                <constraints nullable="false" />
+            </column>
+            <column name="START_DATE" type="TIMESTAMP(6)" remarks="Дата начала обслуживания МУ участком ">
+                <constraints nullable="false" />
+            </column>
+            <column name="END_DATE" type="TIMESTAMP(6)" remarks="Дата окончания обслуживания МУ участком" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_MU_SERVICE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1681-1-1" author="sorlov" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_MU_SERVICE" columnName="AREA_ID" />
+            <columnExists tableName="AREAS" columnName="ID" />
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_AREA_MU_SRV_AREA_ID" />
+            </not>
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_MU_SRV_AREA_ID</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_ID"
+                                 baseTableName="AREA_MU_SERVICE"
+                                 constraintName="FK_AREA_MU_SRV_AREA_ID"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="AREAS"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1681-1-2" author="sorlov" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_AREA_MU_SERVICE_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы AREA_MU_SERVICE</comment>
+        <createSequence sequenceName="SEQ_AREA_MU_SERVICE_ID"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_AREA_MU_SERVICE_ID"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1681-2" author="sorlov" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_TYPE_PROFILE"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_TYPE_PROFILE</comment>
+        <createTable tableName="AREA_TYPE_PROFILE"
+                     remarks="Профиль типа участка">
+            <column name="CODE" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="TITLE" type="VARCHAR2(250)" remarks="Наименование профиля">
+                <constraints nullable="false" />
+            </column>
+            <column name="GLOBAL_ID" type="BIGINT" remarks="Глобал ИД профиля">
+                <constraints nullable="false" />
+            </column>
+            <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Код типа участка">
+                <constraints nullable="false" />
+            </column>
+            <column name="ARCHIVED" type="NUMBER(1)" remarks="Признак архивности" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_TYPE_PROFILE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1681-2-1" author="sorlov" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_PROFILE" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_AREA_TYPE_PROF_AREA_TYPE" />
+            </not>
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_PROF_AREA_TYPE</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="AREA_TYPE_PROFILE"
+                                 constraintName="FK_AREA_TYPE_PROF_AREA_TYPE"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPE"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1681-3" author="sorlov" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AREA_TYPE_PROFILE"/>
+                <sqlCheck expectedResult="0">select count(*) from AREA_TYPE_PROFILE</sqlCheck>
+            </and>
+        </preConditions>
+        <loadUpdateData
+                encoding="UTF-8"
+                file="changelog/area/versions/2.0.0.0/files/AREA_TYPE_PROFILE.csv"
+                quotchar="&#39;"
+                separator=","
+                tableName="AREA_TYPE_PROFILE"
+                primaryKey="code">
+            <column name="CODE" type="NUMERIC"/>
+            <column name="TITLE" type="STRING"/>
+            <column name="GLOBAL_ID" type="NUMERIC"/>
+            <column name="AREA_TYPE_CODE" type="NUMERIC"/>
+            <column name="ARCHIVED" type="NUMERIC"/>
+        </loadUpdateData>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1682-1" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREAS"/>
+            <not>
+                <columnExists tableName="AREAS" columnName="AREA_TYPE_PROFILE_CODE"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки AREA_TYPE_PROFILE_CODE в таблицу AREAS</comment>
+        <addColumn tableName="AREAS">
+            <column name="AREA_TYPE_PROFILE_CODE" type="BIGINT"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="AREA_TYPE_PROFILE_CODE" tableName="AREAS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1682-2" author="ddryuchin" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_PROFILE" columnName="CODE" />
+            <columnExists tableName="AREAS" columnName="AREA_TYPE_PROFILE_CODE" />
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_AREA_TYPE_PROF_AREAS" />
+            </not>
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_PROF_AREAS</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_PROFILE_CODE"
+                                 baseTableName="AREAS"
+                                 constraintName="FK_AREA_TYPE_PROF_AREAS"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPE_PROFILE"/>
+    </changeSet>
+
+</databaseChangeLog>

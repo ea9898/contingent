@@ -1,7 +1,7 @@
 package service;
 
-import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapper;
-import moscow.ptnl.contingent.area.transform.AddressRegistryToAddressRegistryBaseMapperImpl;
+import moscow.ptnl.contingent.area.transform.v1.AddressRegistryToAddressRegistryBaseMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddressRegistryToAddressRegistryBaseMapperImpl;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
@@ -29,7 +29,6 @@ import moscow.ptnl.contingent.repository.area.MuAvailableAreaTypesCRUDRepository
 import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.BuildingRegistryCRUDRepository;
 import moscow.ptnl.contingent.service.history.HistoryServiceImpl;
 import org.junit.jupiter.api.BeforeEach;

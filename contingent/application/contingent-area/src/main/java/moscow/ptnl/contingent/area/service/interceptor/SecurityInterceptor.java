@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import moscow.ptnl.contingent.area.transform.SoapExceptionMapper;
+
+import moscow.ptnl.contingent.area.transform.SoapUnauthorizedExceptionMapper;
 import moscow.ptnl.contingent.area.transform.UserContextMapper;
 import moscow.ptnl.contingent.security.setting.AuthMethod;
 import moscow.ptnl.contingent.security.setting.AuthService;
@@ -39,7 +40,7 @@ public class SecurityInterceptor {
 
     @Autowired
     private UserContextMapper userContextMapper;
-    
+
     @Around(
         value = "execution(public * *(..)) && @annotation(annotation)",
         argNames="annotation"
@@ -58,10 +59,13 @@ public class SecurityInterceptor {
                 Map<String, AuthMethod> methodSetting = serviceSetting.getAuthMethods();
                 if (!methodSetting.containsKey(methodName)) {
                     LOG.warn("В настройках ограничений доступа для сервиса: {}, метод: {} не перечислен", serviceName, methodName);
-                    throw SoapExceptionMapper.map(new UnauthorizedException((methodSetting.get(methodName) != null) ? methodSetting.get(methodName).getAccessPermissions() : new long[]{0}), userContextMapper);
+                    throw SoapUnauthorizedExceptionMapper.map(new UnauthorizedException(
+                            methodSetting.get(methodName) != null ? methodSetting.get(methodName).getAccessPermissions() : new long[]{0}),
+                            userContextMapper, annotation.faultClass());
                 } else if (methodSetting.get(methodName).isEnabled()) { //включена проверка авторизации для метода
                     if (!hasAcessRights(methodSetting.get(methodName).getPermissions(), UserContextHolder.getPrincipal().getAccessRights())) {
-                        throw SoapExceptionMapper.map(new UnauthorizedException(methodSetting.get(methodName).getAccessPermissions()), userContextMapper);
+                        throw SoapUnauthorizedExceptionMapper.map(new UnauthorizedException(methodSetting.get(methodName).getAccessPermissions()),
+                                userContextMapper, annotation.faultClass());
                     }
                 }
             }            
