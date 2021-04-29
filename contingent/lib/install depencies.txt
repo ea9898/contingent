@@ -1,1 +1,1 @@
-mvn install:install-file -Dfile=client-libs-3.5.3.jar -DgroupId=ru.mos.emias.esu -DartifactId=client-libs -Dversion=3.5.3 -Dpackaging=jar
+mvn install:install-file -Dfile=client-lib-4.1.0.jar -DgroupId=ru.mos.emias.esu -DartifactId=client-lib -Dversion=4.1.0 -Dpackaging=jar
