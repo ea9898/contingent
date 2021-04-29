@@ -78,6 +78,11 @@ public class Area implements Serializable {
     private Boolean attachByMedicalReason;
 
     @LogIt
+    @JoinColumn(name = "AREA_TYPE_PROFILE_CODE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AreaTypeProfile areaTypeProfile;
+
+    @LogIt
     @Column(name = "AGE_MIN")
     private Integer ageMin;
 
@@ -321,6 +326,10 @@ public class Area implements Serializable {
     public boolean isActual() {
         return !Boolean.TRUE.equals(archived);
     }
+
+    public AreaTypeProfile getAreaTypeProfile() { return areaTypeProfile; }
+
+    public void setAreaTypeProfile(AreaTypeProfile areaTypeProfile) { this.areaTypeProfile = areaTypeProfile; }
 
     @Override
     public int hashCode() {        

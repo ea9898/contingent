@@ -133,4 +133,36 @@
         </loadUpdateData>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-1682-1" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREAS"/>
+            <not>
+                <columnExists tableName="AREAS" columnName="AREA_TYPE_PROFILE_CODE"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки AREA_TYPE_PROFILE_CODE в таблицу AREAS</comment>
+        <addColumn tableName="AREAS">
+            <column name="AREA_TYPE_PROFILE_CODE" type="BIGINT"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="AREA_TYPE_PROFILE_CODE" tableName="AREAS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1682-2" author="ddryuchin" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="AREA_TYPE_PROFILE" columnName="CODE" />
+            <columnExists tableName="AREAS" columnName="AREA_TYPE_PROFILE_CODE" />
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_AREA_TYPE_PROF_AREAS" />
+            </not>
+        </preConditions>
+        <comment>Создание внешнего ключа FK_AREA_TYPE_PROF_AREAS</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_PROFILE_CODE"
+                                 baseTableName="AREAS"
+                                 constraintName="FK_AREA_TYPE_PROF_AREAS"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPE_PROFILE"/>
+    </changeSet>
+
 </databaseChangeLog>
