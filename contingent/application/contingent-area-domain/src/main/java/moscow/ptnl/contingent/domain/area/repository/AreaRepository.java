@@ -16,8 +16,8 @@ public interface AreaRepository {
 
     List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean actual);
 
-    List<Area> findAreas(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes, Integer number,
-                         String description, Boolean archived);
+    List<Area> findAreas(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfile,
+                         List<Long> servicedMuIds, Integer number, String description, Boolean archived);
 
     List<Area> findAreas(Long areaTypeKindCode, Boolean archived, Long medicalEmployeeJobInfo);
 

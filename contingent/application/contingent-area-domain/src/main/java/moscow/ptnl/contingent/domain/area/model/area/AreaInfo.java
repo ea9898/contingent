@@ -3,7 +3,6 @@ package moscow.ptnl.contingent.domain.area.model.area;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaMuService;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 
 import java.util.List;
 
@@ -12,9 +11,7 @@ public class AreaInfo {
 
     private Area area;
 
-    private AreaTypeProfile areaTypeProfile;
-
-    private List<AreaMuService> areaMuServices;
+    private List<AreaMuService> areaServicedMUs;
 
     private List<AreaMedicalEmployees> mainAreaMedicalEmployees;
 
@@ -38,20 +35,12 @@ public class AreaInfo {
         this.area = area;
     }
 
-    public AreaTypeProfile getAreaTypeProfile() {
-        return areaTypeProfile;
+    public List<AreaMuService> getAreaServicedMUs() {
+        return areaServicedMUs;
     }
 
-    public void setAreaTypeProfile(AreaTypeProfile areaTypeProfile) {
-        this.areaTypeProfile = areaTypeProfile;
-    }
-
-    public List<AreaMuService> getAreaMuServices() {
-        return areaMuServices;
-    }
-
-    public void setAreaMuServices(List<AreaMuService> areaMuServices) {
-        this.areaMuServices = areaMuServices;
+    public void setAreaServicedMUs(List<AreaMuService> areaServicedMUs) {
+        this.areaServicedMUs = areaServicedMUs;
     }
 
     public List<AreaMedicalEmployees> getMainAreaMedicalEmployees() {

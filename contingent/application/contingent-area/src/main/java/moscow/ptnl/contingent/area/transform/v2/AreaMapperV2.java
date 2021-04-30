@@ -57,12 +57,12 @@ public class AreaMapperV2 implements Transform<Area, AreaInfo> {
 
         List<MedicalEmployee> employees = new ArrayList<>();
 
-        if (entityObject.getAreaTypeProfile() != null) {
-            area.setAreaTypeProfile(new CodeNameTypeMapper<>(new AreaTypeProfile(), entityObject.getAreaTypeProfile()).entityToDtoTransform());
+        if (areaObj.getAreaTypeProfile() != null) {
+            area.setAreaTypeProfile(new CodeNameTypeMapper<>(new AreaTypeProfile(), areaObj.getAreaTypeProfile()).entityToDtoTransform());
         }
-        if (!entityObject.getAreaMuServices().isEmpty()) {
+        if (entityObject.getAreaServicedMUs() != null && !entityObject.getAreaServicedMUs().isEmpty()) {
             MuService muService = new MuService();
-            muService.getIdMus().addAll(entityObject.getAreaMuServices().stream().map(AreaMuService::getMuId).collect(Collectors.toList()));
+            muService.getMuIds().addAll(entityObject.getAreaServicedMUs().stream().map(AreaMuService::getMuId).collect(Collectors.toList()));
             area.setMuService(muService);
         }
         if (entityObject.getMainAreaMedicalEmployees() != null

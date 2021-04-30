@@ -234,10 +234,10 @@ public interface AreaService {
      * @throws ContingentException
      */
     Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
-                              Integer number, String description, Boolean isArchived,
-                              List<MedicalEmployee> medicalEmployees,
+                              Long areaTypeProfile, List<Long> servicedMuIds, Integer number, String description,
+                              Boolean isArchived, List<MedicalEmployee> medicalEmployees,
                               List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch,
-                              PageRequest paging) throws ContingentException;
+                              PageRequest paging, boolean loadServicedMUs) throws ContingentException;
 
     /**
      * (К_УУ_26) Инициация процесса создания участка обслуживания первичного класса

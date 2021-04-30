@@ -26,7 +26,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import ru.mos.emias.contingent2.area.types.SearchAreaRequest;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -58,7 +57,7 @@ public class SearchAreaTest {
     @Test
     public void searchAreaExceptionTest() {
         Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.searchArea(null, null, EL,
-                EL, null, null, null, EL, EL, null, null));
+                EL, null, null, null, null, null, EL, EL, null, null, false));
         assertEquals(exception.getMessage(), "Не заданы критерии поиска");
     }
 
@@ -66,8 +65,8 @@ public class SearchAreaTest {
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchAreaAllParametersTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
-                1L, 204L, EL, Collections.singletonList(10L),
-                123, null, false, EL, EL, null, PR));
+                1L, 204L, EL, Collections.singletonList(10L), null, null,
+                123, null, false, EL, EL, null, PR, false));
         assertNotNull(areas);
         assertEquals(areas.getNumberOfElements(), 1);
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());
@@ -79,8 +78,8 @@ public class SearchAreaTest {
     public void searchAreaByMedicalEmployeesTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
                 null, null, EL, Collections.singletonList(10L),
-                null, null, false, Arrays.asList(new MedicalEmployee() {{setMedicalEmployeeJobId(123L);}},
-                        new MedicalEmployee() {{setSnils("snilscode1");}}), EL, null, PR));
+                null, null, null, null, false, Arrays.asList(new MedicalEmployee() {{setMedicalEmployeeJobId(123L);}},
+                        new MedicalEmployee() {{setSnils("snilscode1");}}), EL, null, PR, false));
         assertNotNull(areas);
         assertEquals(areas.getNumberOfElements(), 1);
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());
@@ -92,9 +91,9 @@ public class SearchAreaTest {
     public void searchAreaByAddressesExactMatchTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
                 null, null, EL, Collections.singletonList(10L),
-                null, null, false, EL,
+                null, null, null, null, false, EL,
                 Arrays.asList(new SearchAreaAddress() {{setGlobalIdNsi(111L); setAreaOMKTEcode(""); setRegionOMKTEcode("");}}),
-                true, PR));
+                true, PR, false));
         assertNotNull(areas);
         assertEquals(areas.getNumberOfElements(), 1);
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());

@@ -812,9 +812,7 @@ public class AreaServiceImpl implements AreaService {
     @Override
     public AreaInfo getAreaByIdV2(Long areaId) throws ContingentException {
         AreaInfo areaInfo = getAreaById(areaId);
-
-        areaInfo.setAreaTypeProfile(areaInfo.getArea().getAreaTypeProfile());
-        areaInfo.setAreaMuServices(new ArrayList<>(areaInfo.getArea().getActualAreaMuServices()));
+        areaInfo.setAreaServicedMUs(new ArrayList<>(areaInfo.getArea().getActualAreaMuServices()));
 
         return areaInfo;
     }
@@ -1167,8 +1165,10 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes, Integer number, String description, Boolean isArchived, List<MedicalEmployee> medicalEmployees, List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch, PageRequest paging) throws ContingentException {
-
+    public Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfile,
+                                     List<Long> servicedMuIds, Integer number, String description, Boolean isArchived, List<MedicalEmployee> medicalEmployees,
+                                     List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch, PageRequest paging,
+                                     boolean loadServicedMUs) throws ContingentException {
         //2
         areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
                 isArchived, medicalEmployees, searchAreaAddresses);
@@ -1180,7 +1180,8 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
 
         //4.1
-        List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description, isArchived);
+        List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile,
+                servicedMuIds, number, description, isArchived);
 
         //4.2
         if (!medicalEmployees.isEmpty()) {
@@ -1239,7 +1240,9 @@ public class AreaServiceImpl implements AreaService {
 
                 ai.setReplacementAreaMedicalEmployees(replacementMedicalEmployees);
             }
-
+            if (loadServicedMUs) {
+                ai.setAreaServicedMUs(new ArrayList<>(ai.getArea().getActualAreaMuServices()));
+            }
         });
 
         return new PageImpl<>(new ArrayList<>(areaInfos),

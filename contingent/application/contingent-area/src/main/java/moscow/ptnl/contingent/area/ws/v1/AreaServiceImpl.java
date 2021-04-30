@@ -407,14 +407,14 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             Page<AreaInfo> areas = areaServiceDomain.searchArea(body.getAreaTypeClassCode(), body.getMoId(),
                     body.getMuIds() == null ? Collections.EMPTY_LIST : body.getMuIds(),
                     body.getAreaTypeCodes() == null ? Collections.EMPTY_LIST : body.getAreaTypeCodes(),
-                    body.getNumber(), body.getDescription(), body.isIsArchived(),
+                    null, null, body.getNumber(), body.getDescription(), body.isIsArchived(),
                     body.getMedicalEmployees() == null ? Collections.EMPTY_LIST :
                             body.getMedicalEmployees().stream().map(me -> new MedicalEmployee(me.getMedicalEmployeeJobId(), me.getSnils()))
                                     .filter(empl -> empl.getMedicalEmployeeJobId() != null || empl.getSnils()!= null)
                                     .collect(Collectors.toList()),
                     body.getAddresses() == null ? Collections.EMPTY_LIST : body.getAddresses().stream().map(searchAreaAddressMapper::dtoToEntityTransform).collect(Collectors.toList()),
                     body.isIsExactAddressMatch(),
-                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()));
+                    pagingOptionsMapper.dtoToEntityTransform(body.getPagingOptions()), false);
             SearchAreaResponse response = new SearchAreaResponse();
             soapCustomMapper.mapPagingResults(response, areas);
             response.getAreas().addAll(areas.stream().map(area -> areaMapper.entityToDtoTransform(area)).collect(Collectors.toList()));

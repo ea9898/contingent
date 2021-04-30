@@ -6,12 +6,15 @@ import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees_;
+import moscow.ptnl.contingent.domain.area.entity.AreaMuService;
+import moscow.ptnl.contingent.domain.area.entity.AreaMuService_;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType_;
 import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClassEnum;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations_;
 import moscow.ptnl.contingent.repository.BaseRepository;
@@ -111,6 +114,22 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         };
     }
 
+    private Specification<Area> buildServicedMuIdsSpec(List<Long> servicedMuIds) {
+        return (root, criteriaQuery, cb) -> {
+            Subquery<AreaMuService> sub = criteriaQuery.subquery(AreaMuService.class);
+            Root<AreaMuService> subRoot = sub.from(AreaMuService.class);
+
+            return cb.exists(sub.where(cb.and(
+                    cb.equal(subRoot.get(AreaMuService_.area).get(Area_.id), root.get(Area_.id)),
+                    cb.or(
+                            cb.isNull(subRoot.get(AreaMuService_.endDate)),
+                            cb.greaterThanOrEqualTo(subRoot.get(AreaMuService_.endDate), LocalDate.now())
+                    ),
+                    cb.in(subRoot.get(AreaMuService_.muId.getName())).value(servicedMuIds)
+            )).select(subRoot));
+        };
+    }
+
     private Specification<Area> searchEmptyMuIdSpec() {
         return (root, criteriaQuery, criteriaBuilder) ->
                 root.get(Area_.muId.getName()).isNull();
@@ -170,7 +189,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
     @Override
     public List<Area> findAreas(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
-                                Integer number, String description, Boolean archived) {
+                                Long areaTypeProfile, List<Long> servicedMuIds, Integer number, String description, Boolean archived) {
         Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) -> {
             Join<Area, AreaType> areaTypeJoin = root.join(Area_.areaType, JoinType.LEFT);
             return criteriaBuilder.and(
@@ -182,6 +201,8 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                             criteriaBuilder.in(root.get(Area_.muId.getName())).value(muIds),
                     areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
                             criteriaBuilder.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes),
+                    areaTypeProfile == null ? criteriaBuilder.conjunction() :
+                            criteriaBuilder.equal(root.get(Area_.areaTypeProfile).get(AreaTypeProfile_.code), areaTypeProfile),
                     number == null ? criteriaBuilder.conjunction() :
                             criteriaBuilder.equal(root.get(Area_.number), number),
                     description == null ? criteriaBuilder.conjunction() :
@@ -190,6 +211,9 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                             criteriaBuilder.equal(root.get(Area_.archived), archived)
             );
         };
+        if (servicedMuIds != null && !servicedMuIds.isEmpty()) {
+            specification = specification.and(buildServicedMuIdsSpec(servicedMuIds));
+        }
         return areaCRUDRepository.findAll(specification);
     }
 

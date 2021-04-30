@@ -3,10 +3,13 @@ package moscow.ptnl.contingent.area.ws.v2;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.UserContextMapper;
 import moscow.ptnl.contingent.area.transform.v2.AreaMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.SearchAreaAddressMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.SoapCustomMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.error.ContingentException;
 
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
@@ -15,6 +18,7 @@ import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,6 +90,8 @@ import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaResponse;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -116,7 +122,13 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private AreaService areaServiceDomain;
 
     @Autowired
+    private SoapCustomMapperV2 soapCustomMapper;
+
+    @Autowired
     private AreaMapperV2 areaMapper;
+
+    @Autowired
+    private SearchAreaAddressMapperV2 searchAreaAddressMapper;
 
     @Override
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
@@ -206,11 +218,25 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchAreaResponse searchArea(SearchAreaRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.searchArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchAreaRequest())),
-                    new SearchAreaResponse());
+            Page<AreaInfo> areas = areaServiceDomain.searchArea(body.getAreaTypeClassCode(), body.getMoId(),
+                    body.getMuIds() == null ? Collections.emptyList() : body.getMuIds(),
+                    body.getAreaTypeCodes() == null ? Collections.emptyList() : body.getAreaTypeCodes(),
+                    body.getAreaTypeProfileCode(), body.getMuService() != null ? body.getMuService().getMuIds() : null,
+                    body.getNumber(), body.getDescription(), body.isIsArchived(),
+                    body.getMedicalEmployees() == null ? Collections.emptyList() :
+                            body.getMedicalEmployees().stream().map(me -> new MedicalEmployee(me.getMedicalEmployeeJobId(), me.getSnils()))
+                                    .filter(empl -> empl.getMedicalEmployeeJobId() != null || empl.getSnils()!= null)
+                                    .collect(Collectors.toList()),
+                    body.getAddresses() == null ? Collections.emptyList() : body.getAddresses().stream().map(searchAreaAddressMapper::dtoToEntityTransform).collect(Collectors.toList()),
+                    body.isIsExactAddressMatch(),
+                    soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null), true);
+            SearchAreaResponse response = new SearchAreaResponse();
+            soapCustomMapper.mapPagingResults(response, areas);
+            response.getAreas().addAll(areas.stream().map(area -> areaMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);
