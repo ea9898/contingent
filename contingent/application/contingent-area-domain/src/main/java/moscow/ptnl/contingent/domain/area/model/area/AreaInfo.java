@@ -23,6 +23,14 @@ public class AreaInfo {
         this.replacementAreaMedicalEmployees = replacementAreaMedicalEmployees;
     }
 
+    public AreaInfo(Area area, List<AreaMedicalEmployees> mainAreaMedicalEmployees,
+                    List<AreaMedicalEmployees> replacementAreaMedicalEmployees, List<AreaMuService> areaServicedMUs) {
+        this.area = area;
+        this.mainAreaMedicalEmployees = mainAreaMedicalEmployees;
+        this.replacementAreaMedicalEmployees = replacementAreaMedicalEmployees;
+        this.areaServicedMUs = areaServicedMUs;
+    }
+
     public AreaInfo(Area area) {
         this.area = area;
     }

@@ -313,6 +313,8 @@ public interface AreaService {
      */
     Page<Area> getAreaListBrief(List<Long> areaIds, PageRequest paging) throws ContingentException;
 
+    Page<AreaInfo> getAreaListBriefV2(List<Long> areaIds, Boolean fetchMedicalEmployees, PageRequest paging) throws ContingentException;
+
     /**
      * (К_УУ_30) Поиск МУ по адресу обслуживания (4. Передан блок searchByCode)
      * @param areaTypeCodes

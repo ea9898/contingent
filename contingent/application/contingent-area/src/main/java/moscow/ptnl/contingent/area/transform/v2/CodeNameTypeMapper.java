@@ -1,28 +1,25 @@
 package moscow.ptnl.contingent.area.transform.v2;
 
 import moscow.ptnl.contingent.nsi.domain.area.CodeName;
+import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.v2.CodeNameType;
 
-public class CodeNameTypeMapper<T extends CodeNameType, V extends CodeName> {
+@Component
+public class CodeNameTypeMapper {
 
-    private T dtoObject;
+    public <T extends CodeNameType, V extends CodeName> T entityToDtoTransform(V entityObject, Class<T> targetClass) {
+        if (entityObject == null) {
+            return null;
+        }
+        try {
+            T dtoObject = targetClass.newInstance();
+            dtoObject.setCode(entityObject.getCode());
+            dtoObject.setName(entityObject.getTitle());
 
-    private V entityObject;
-
-    public CodeNameTypeMapper(T dtoObject, V entityObject) {
-        this.dtoObject = dtoObject;
-        this.entityObject = entityObject;
-    }
-
-    public T entityToDtoTransform() {
-        dtoObject.setCode(entityObject.getCode());
-        dtoObject.setName(entityObject.getTitle());
-        return dtoObject;
-    }
-
-    public V dtoToEntityTransform() {
-        entityObject.setCode(dtoObject.getCode());
-        entityObject.setTitle(dtoObject.getName());
-        return entityObject;
+            return dtoObject;
+        }
+        catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalStateException("Can't instantiate class " + targetClass.getName());
+        }
     }
 }

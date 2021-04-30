@@ -32,6 +32,9 @@ public class AreaMapperV2 implements Transform<Area, AreaInfo> {
     @Autowired
     private AreaMedicalEmployeeMapperV2 areaMedicalEmployeeMapper;
 
+    @Autowired
+    private CodeNameTypeMapper codeNameTypeMapper;
+
     @Override
     public Area entityToDtoTransform(AreaInfo entityObject) {
         Area area = new Area();
@@ -43,8 +46,9 @@ public class AreaMapperV2 implements Transform<Area, AreaInfo> {
         area.setNumber(areaObj.getNumber());
         area.setDescription(areaObj.getDescription());
         area.setAreaType(areaTypeShortMapper.entityToDtoTransform(areaObj.getAreaType()));
-        area.setAreaTypeClass(new CodeNameTypeMapper<>(new AreaTypeClass(), areaObj.getAreaType().getAreaTypeClass()).entityToDtoTransform());
-        area.setAreaTypeKind(new CodeNameTypeMapper<>(new AreaTypeKind(), areaObj.getAreaType().getAreaTypeKind()).entityToDtoTransform());
+        area.setAreaTypeClass(codeNameTypeMapper.entityToDtoTransform(areaObj.getAreaType().getAreaTypeClass(), AreaTypeClass.class));
+        area.setAreaTypeKind(codeNameTypeMapper.entityToDtoTransform(areaObj.getAreaType().getAreaTypeKind(), AreaTypeKind.class));
+        area.setAreaTypeProfile(codeNameTypeMapper.entityToDtoTransform(areaObj.getAreaTypeProfile(), AreaTypeProfile.class));
         area.setAgeMin(areaObj.getAgeMin());
         area.setAgeMax(areaObj.getAgeMax());
         area.setAgeMinM(areaObj.getAgeMMin());
@@ -57,9 +61,6 @@ public class AreaMapperV2 implements Transform<Area, AreaInfo> {
 
         List<MedicalEmployee> employees = new ArrayList<>();
 
-        if (areaObj.getAreaTypeProfile() != null) {
-            area.setAreaTypeProfile(new CodeNameTypeMapper<>(new AreaTypeProfile(), areaObj.getAreaTypeProfile()).entityToDtoTransform());
-        }
         if (entityObject.getAreaServicedMUs() != null && !entityObject.getAreaServicedMUs().isEmpty()) {
             MuService muService = new MuService();
             muService.getMuIds().addAll(entityObject.getAreaServicedMUs().stream().map(AreaMuService::getMuId).collect(Collectors.toList()));

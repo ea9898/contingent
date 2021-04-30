@@ -1341,6 +1341,22 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
+    public Page<AreaInfo> getAreaListBriefV2(List<Long> areaIds, Boolean fetchMedicalEmployees, PageRequest paging) throws ContingentException {
+        Page<Area> areas = getAreaListBrief(areaIds, paging);
+
+        return new PageImpl<>(areas.stream().map(a -> {
+            Set<AreaMedicalEmployees> employees = Collections.emptySet();
+
+            if (fetchMedicalEmployees == null) {
+                employees = a.getActualMainMedicalEmployees();
+            } else if (Boolean.TRUE.equals(fetchMedicalEmployees)) {
+                employees = a.getActualMedicalEmployees();
+            }
+            return new AreaInfo(a, new ArrayList<>(employees), null, new ArrayList<>(a.getActualAreaMuServices()));
+        }).collect(Collectors.toList()), paging, areas.getTotalElements());
+    }
+
+    @Override
     public Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
                                      PageRequest paging) throws ContingentException {
 
