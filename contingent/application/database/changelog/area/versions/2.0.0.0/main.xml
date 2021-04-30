@@ -165,4 +165,50 @@
                                  referencedTableName="AREA_TYPE_PROFILE"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-1709-1" author="ddryuchin" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'area_types_with_profile'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Типы участков, имеющие профиль</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="area_types_with_profile"/>
+            <column name="codedoc" value="PAR_39"/>
+            <column name="type" value="3"/>
+            <column name="val" value=""/>
+            <column name="description" value="Типы участков, имеющие профиль"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='area_types_with_profile'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1709-2" author="ddryuchin" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'area_types_servicing_mu'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Типы участков, к которым могут быть распределены МУ</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="area_types_servicing_mu"/>
+            <column name="codedoc" value="PAR_40"/>
+            <column name="type" value="3"/>
+            <column name="val" value=""/>
+            <column name="description" value="Типы участков, к которым могут быть распределены МУ"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='area_types_servicing_mu'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
