@@ -111,6 +111,7 @@
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
 
+<!--
     <changeSet id="CONTINGENT2-1681-3" author="sorlov" labels="2.0.0.0">
         <preConditions onFail="MARK_RAN">
             <and>
@@ -132,6 +133,7 @@
             <column name="ARCHIVED" type="NUMERIC"/>
         </loadUpdateData>
     </changeSet>
+-->
 
     <changeSet id="CONTINGENT2-1682-1" author="ddryuchin">
         <preConditions onFail="MARK_RAN">
