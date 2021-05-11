@@ -36,9 +36,11 @@ import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyTypeEnum;
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeProfileRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
@@ -114,6 +116,9 @@ public class AreaHelper {
     @Autowired
     private AreaMedicalEmployeeRepository areaMedicalEmployeeRepository;
 
+    @Autowired
+    private AreaTypeProfileRepository areaTypeProfileRepository;
+
     public List<AreaType> checkAndGetAreaTypesExist(List<Long> areaTypes, Validation validation) {
         List<AreaType> result = new ArrayList<>();
 
@@ -124,6 +129,22 @@ public class AreaHelper {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaTypeCode", a));
             } else {
                 result.add(areaType.get());
+            }
+        });
+
+        return result;
+    }
+
+    public List<AreaTypeProfile> checkAndGetAreaTypeProfiles(List<Long> areaTypeProfileCodes, AreaType areaType, Validation validation) {
+        List<AreaTypeProfile> result = new ArrayList<>();
+
+        areaTypeProfileCodes.forEach(a -> {
+            Optional<AreaTypeProfile> areaTypeProfile = areaTypeProfileRepository.findByCodeAndAreaType(a, areaType.getCode());
+
+            if (!areaTypeProfile.isPresent() || Boolean.TRUE.equals(areaTypeProfile.get().getArchived())) {
+                validation.error(AreaErrorReason.AREA_TYPE_PROFILE_NOT_FOUND, new ValidationParameter("areaType", areaType.getTitle()));
+            } else {
+                result.add(areaTypeProfile.get());
             }
         });
 

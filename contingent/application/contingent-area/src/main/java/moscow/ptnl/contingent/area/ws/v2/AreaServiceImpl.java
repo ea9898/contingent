@@ -96,6 +96,7 @@ import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaResponse;
 
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Map;
@@ -400,8 +401,14 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.createPrimaryArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.CreatePrimaryAreaRequest())),
-                    new CreatePrimaryAreaResponse());
+            CreatePrimaryAreaResponse response = new CreatePrimaryAreaResponse();
+            Long id = areaServiceDomain.createPrimaryArea(body.getMoId(), body.getMuId(), body.getNumber(), body.getAreaTypeCode(),
+                    body.getAreaTypeProfileCode(), body.getPolicyTypes() == null ? new ArrayList<>() : body.getPolicyTypes().getPolicyTypeCodes(),
+                    body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
+                    body.isAutoAssignForAttachment(), body.isAttachByMedicalReason(), body.getDescription());
+
+            response.setId(id);
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

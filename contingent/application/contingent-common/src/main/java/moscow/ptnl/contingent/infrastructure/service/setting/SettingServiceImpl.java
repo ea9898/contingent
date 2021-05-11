@@ -89,5 +89,10 @@ public class SettingServiceImpl implements SettingService {
         String par31 = getSettingProperty(PAR_31);
         return Arrays.stream(par31.split(";")).map(Long::parseLong).collect(Collectors.toList());
     }
-    
+
+    @Override
+    public List<Long> par39() {
+        String par31 = getSettingProperty(PAR_39);
+        return Arrays.stream(par31.split(";")).filter(s -> !s.isEmpty()).map(Long::parseLong).collect(Collectors.toList());
+    }
 }

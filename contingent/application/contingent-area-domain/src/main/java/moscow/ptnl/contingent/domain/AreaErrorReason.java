@@ -81,7 +81,9 @@ public enum AreaErrorReason implements ErrorReason {
     NO_MU_ID_PARAMETER("UE086", "Не указан филиал МО"),
     AREA_ALREADY_DEPENDS_ON_AREA_TYPE("UE087", "Участок с ИД %s уже зависит от первичного типа участка %s"),
     SEARCH_AREA_INACCURATE_ADDRESS_ERROR("UE088", "Поиск участков по неточному совпадению может быть выполнен только для одного адреса"),
-    AREAS_NOT_IN_MO("UE089", "Участки с ИД %s не входят в состав МО с ИД %s")
+    AREAS_NOT_IN_MO("UE089", "Участки с ИД %s не входят в состав МО с ИД %s"),
+    EMPTY_AREA_TYPE_PROFILE("UE090", "Не указан код профиля (обязателен для типа участка %s)"),
+    AREA_TYPE_PROFILE_NOT_FOUND("UE091", "Переданный профиль не найден в справочнике или не соответствует типу участка %s")
     ;
 
     private final String description;

@@ -397,7 +397,12 @@ public class Area implements Serializable {
             area.setAreaType(areaType);
             return this;
         }
-        
+
+        public Builder areaTypeProfile(AreaTypeProfile areaTypeProfile) {
+            area.setAreaTypeProfile(areaTypeProfile);
+            return this;
+        }
+
         public Builder number(Integer number) {
             area.setNumber(number);
             return this;

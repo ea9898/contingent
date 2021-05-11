@@ -45,7 +45,11 @@ public interface AreaService {
                            Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                            boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 
-    Area createPrimaryAreaInternal(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
+    Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, Long areaTypeProfileCode, List<Long> policyTypesIds,
+                           Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                           boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
+
+    Area createPrimaryAreaInternal(long moId, Long muId, Integer number, Long areaTypeCode, Long areaTypeProfileCode, List<Long> policyTypesIds,
                                    Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                    boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException;
 

@@ -63,6 +63,8 @@ public interface SettingService {
     String PAR_37 = "synch_areainfo_k1_trigger_timeout";
     /** Период обработки данных триггером формирования топика AreaInfo (календарные дни). */
     String PAR_38 = "synch_areainfo_k1_trigger_check_period";
+    /** Типы участков, имеющие профиль. */
+    String PAR_39 = "area_types_with_profile";
 
     /**
      * Свойство извлекается из кэша.
@@ -106,4 +108,6 @@ public interface SettingService {
         LocalTime stop  = LocalTime.parse(times[1], formatter);
         return time.isAfter(start) && time.isBefore(stop);
     }
+
+    List<Long> par39();
 }

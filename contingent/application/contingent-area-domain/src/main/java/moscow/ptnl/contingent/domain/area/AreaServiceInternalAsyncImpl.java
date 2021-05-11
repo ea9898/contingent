@@ -108,7 +108,7 @@ public class AreaServiceInternalAsyncImpl implements AreaServiceInternalAsync {
             //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
             Long areaId = transactionRunner.run(() -> {
                 UserContextHolder.setContext(requestContext);
-                Area area = areaServiceDomain.createPrimaryAreaInternal(moId, muId, number, areaTypeCode, policyTypes, ageMin, ageMax, ageMinM,
+                Area area = areaServiceDomain.createPrimaryAreaInternal(moId, muId, number, areaTypeCode, null, policyTypes, ageMin, ageMax, ageMinM,
                         ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
                 areaServiceDomain.setMedicalEmployeeOnAreaInternal(area.getId(), addMedicalEmployees, Collections.emptyList());
                 areaServiceDomain.addAreaAddressInternal(area.getId(), addresses, false);
