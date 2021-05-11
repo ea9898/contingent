@@ -98,7 +98,7 @@ public class AreaServiceInternalAsyncImpl implements AreaServiceInternalAsync {
     @Async 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public void asyncCreatePrimaryArea(RequestContext requestContext, long sysopId, long moId, Long muId, Integer number, String description, Long areaTypeCode,
-                                       List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
+                                       Long areaTypeProfileCode, List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
                                        Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                        boolean autoAssignForAttachment, Boolean attachByMedicalReason,
                                        List<AddMedicalEmployee> addMedicalEmployees,
@@ -108,8 +108,8 @@ public class AreaServiceInternalAsyncImpl implements AreaServiceInternalAsync {
             //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
             Long areaId = transactionRunner.run(() -> {
                 UserContextHolder.setContext(requestContext);
-                Area area = areaServiceDomain.createPrimaryAreaInternal(moId, muId, number, areaTypeCode, null, policyTypes, ageMin, ageMax, ageMinM,
-                        ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
+                Area area = areaServiceDomain.createPrimaryAreaInternal(moId, muId, number, areaTypeCode, areaTypeProfileCode,
+                        policyTypes, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description);
                 areaServiceDomain.setMedicalEmployeeOnAreaInternal(area.getId(), addMedicalEmployees, Collections.emptyList());
                 areaServiceDomain.addAreaAddressInternal(area.getId(), addresses, false);
 

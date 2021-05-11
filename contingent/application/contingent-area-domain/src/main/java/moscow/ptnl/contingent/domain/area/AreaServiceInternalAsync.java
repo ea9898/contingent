@@ -21,7 +21,7 @@ public interface AreaServiceInternalAsync {
     @Async
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     void asyncCreatePrimaryArea(RequestContext requestContext, long sysopId, long moId, Long muId, Integer number, String description, Long areaTypeCode,
-                                List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
+                                Long areaTypeProfileCode, List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
                                 Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                 boolean autoAssignForAttachment, Boolean attachByMedicalReason,
                                 List<AddMedicalEmployee> addMedicalEmployees,

@@ -1280,7 +1280,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode,
+    public Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode, Long areaTypeProfileCode,
                                           List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
                                           Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                           boolean autoAssignForAttachment, Boolean attachByMedicalReason,
@@ -1292,7 +1292,7 @@ public class AreaServiceImpl implements AreaService {
 
         // 3
         areaServiceInternalAsync.asyncCreatePrimaryArea(UserContextHolder.getContext(), sysopId, moId, muId, number, description,
-                areaTypeCode, policyTypes, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW,
+                areaTypeCode, areaTypeProfileCode, policyTypes, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW,
                 autoAssignForAttachment, attachByMedicalReason, addMedicalEmployees, addresses);
 
         // 4 выполняется автоматически после выполнения createPrimaryArea, setMedicalEmployeeOnArea, addAreaAddress

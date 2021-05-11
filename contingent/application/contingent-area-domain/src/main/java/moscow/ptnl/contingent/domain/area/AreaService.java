@@ -273,12 +273,22 @@ public interface AreaService {
      * @return
      * @throws ContingentException
      */
-    Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode,
+    Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode, Long areaTypeProfileCode,
                                    List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
                                    Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                    boolean autoAssignForAttachment, Boolean attachByMedicalReason,
                                    List<AddMedicalEmployee> addMedicalEmployees,
                                    List<AddressRegistry> addresses) throws ContingentException;
+
+    default Long initiateCreatePrimaryArea(long moId, Long muId, Integer number, String description, Long areaTypeCode,
+                                   List<Long> policyTypes, Integer ageMin, Integer ageMax, Integer ageMinM,
+                                   Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason,
+                                   List<AddMedicalEmployee> addMedicalEmployees,
+                                   List<AddressRegistry> addresses) throws ContingentException {
+        return initiateCreatePrimaryArea(moId, muId, number, description, areaTypeCode, null, policyTypes, ageMin, ageMax, ageMinM, ageMaxM,
+                ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, addMedicalEmployees, addresses);
+    }
 
     /**
      * (К_УУ_27) Инициация процесса распределения жилых домов к территории обслуживания МО
