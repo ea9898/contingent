@@ -1,5 +1,6 @@
 package area.service;
 
+import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeProfileRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.SpecializationRepository;
@@ -157,6 +158,9 @@ public class MockRepositoriesConfiguration {
 
     @MockBean
     private SpecializationRepository specializationRepository;
+
+    @MockBean
+    private AreaTypeProfileRepository areaTypeProfileRepository;
 
     @MockBean
     private EntityManager entityManager;

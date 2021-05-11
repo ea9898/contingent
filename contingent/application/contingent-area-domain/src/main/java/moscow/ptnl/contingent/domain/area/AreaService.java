@@ -11,10 +11,13 @@ import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Интерфейс доменного сервиса для методов работы с участками.
@@ -323,8 +326,14 @@ public interface AreaService {
      * @return
      * @throws ContingentException
      */
-    Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes,
-                            List<Long> areaIds, PageRequest paging) throws ContingentException;
+    Page<AreaInfo> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
+                            List<Long> specializationCodes, List<Long> areaIds, PageRequest paging, boolean loadServicedMUs) throws ContingentException;
+
+    default Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes,
+                                    List<Long> areaIds, PageRequest paging) throws ContingentException {
+        Page<AreaInfo> areas = searchDnArea(moId, muIds, areaTypeCodes, null, Collections.emptyList(), specializationCodes, areaIds, paging, false);
+        return new PageImpl<>(areas.stream().map(AreaInfo::getArea).collect(Collectors.toList()), areas.getPageable(), areas.getTotalElements());
+    }
 
     /**
      * (К_УУ_31) Краткое предоставление списка участков

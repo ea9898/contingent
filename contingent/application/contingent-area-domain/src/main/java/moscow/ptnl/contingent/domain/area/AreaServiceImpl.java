@@ -1336,13 +1336,25 @@ public class AreaServiceImpl implements AreaService {
         // 5. Система возвращает в качестве результата: ИД операции
         return sysopId;
     }
-    @Override
-    public Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds, PageRequest paging) throws ContingentException {
-        //2
-        areaHelper.checkSearchDnParameters(moId, muIds, areaTypeCodes, specializationCodes, areaIds);
-        //3, 4, 5
-        return areaRepository.findAreas(moId, muIds, areaTypeCodes, specializationCodes, areaIds, paging);
 
+    @Override
+    public Page<AreaInfo> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
+                                   List<Long> specializationCodes, List<Long> areaIds, PageRequest paging, boolean loadServicedMUs) throws ContingentException {
+        //2
+        if (loadServicedMUs) { //V2
+            areaHelper.checkSearchDnParameters(moId, muIds, areaTypeCodes, areaTypeProfileCode, servicedMuIds, specializationCodes, areaIds);
+        } else { //V1
+            areaHelper.checkSearchDnParameters(moId, muIds, areaTypeCodes, specializationCodes, areaIds);
+        }
+        //3, 4, 5
+        Page<Area> areas = areaRepository.findAreas(moId, muIds, areaTypeCodes, areaTypeProfileCode, servicedMuIds, specializationCodes, areaIds, paging);
+
+        List<AreaInfo> areaInfos = areas.stream()
+                .map(a -> new AreaInfo(a, new ArrayList<>(a.getActualMainMedicalEmployees()),
+                        new ArrayList<>(a.getActualReplacementMedicalEmployees()),
+                        loadServicedMUs ? new ArrayList<>(a.getActualAreaMuServices()) : null))
+                .collect(Collectors.toList());
+        return new PageImpl<>(new ArrayList<>(areaInfos), paging, areas.getTotalElements());
     }
 
     @Override

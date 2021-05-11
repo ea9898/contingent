@@ -9,6 +9,7 @@ import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSo
 import moscow.ptnl.contingent.area.transform.v2.AddMedicalEmployeeMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AddressRegistryToAddressRegistryBaseMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaBriefMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AreaDnMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SearchAreaAddressMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapCustomMapperV2;
@@ -150,6 +151,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private AddressRegistryToAddressRegistryBaseMapperV2 addressRegistryBaseMapper;
 
+    @Autowired
+    private AreaDnMapperV2 areaDnMapper;
+
     @Override
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
         try {
@@ -227,11 +231,22 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchDnAreaResponse searchDnArea(SearchDnAreaRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.searchDnArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchDnAreaRequest())),
-                    new SearchDnAreaResponse());
+            Page<AreaInfo> areas = areaServiceDomain.searchDnArea(body.getMoId(),
+                    body.getMu() == null ? Collections.emptyList() : body.getMu().getMuIds(),
+                    body.getAreaTypes() == null ? Collections.emptyList() : body.getAreaTypes().getAreaTypeCodes(),
+                    body.getAreaTypeProfileCode(),
+                    body.getMuService() == null ? Collections.emptyList() : body.getMuService().getMuIds(),
+                    body.getSpecializations() == null ? Collections.emptyList() : body.getSpecializations().getSpecializationCodes(),
+                    body.getAreas() == null ? Collections.emptyList() : body.getAreas().getAreaIds(),
+                    soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null), true
+            );
+            SearchDnAreaResponse response = new SearchDnAreaResponse();
+            soapCustomMapper.mapPagingResults(response, areas);
+            response.getAreas().addAll(areas.stream().map(area -> areaDnMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

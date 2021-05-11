@@ -130,6 +130,11 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         };
     }
 
+    private Specification<Area> buildAreaTypeProfileSpec(Long areaTypeProfileCode) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(Area_.areaTypeProfile).get(AreaTypeProfile_.code), areaTypeProfileCode);
+    }
+
     private Specification<Area> searchEmptyMuIdSpec() {
         return (root, criteriaQuery, criteriaBuilder) ->
                 root.get(Area_.muId.getName()).isNull();
@@ -289,7 +294,8 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     @Override
-    public Page<Area> findAreas(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds, PageRequest paging) {
+    public Page<Area> findAreas(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
+                                List<Long> specializationCodes, List<Long> areaIds, PageRequest paging) {
         Specification<Area> specification = searchWithActualMainEmployeesSpec();
 
         if (moId != null) {
@@ -306,6 +312,12 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         }
         if (!specializationCodes.isEmpty()) {
             specification = specification.and(searchBySpecializationCodesSpec(specializationCodes));
+        }
+        if (!servicedMuIds.isEmpty()) {
+            specification = specification.and(buildServicedMuIdsSpec(servicedMuIds));
+        }
+        if (areaTypeProfileCode != null) {
+            specification = specification.and(buildAreaTypeProfileSpec(areaTypeProfileCode));
         }
         specification = specification.and(searchActive());
 

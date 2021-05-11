@@ -701,6 +701,8 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="areaTypeProfileCode" type="xs:long" minOccurs="0"/>
+                <xs:element name="muService" type="core:MuService" minOccurs="0" />
                 <xs:element name="specializations" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence>
