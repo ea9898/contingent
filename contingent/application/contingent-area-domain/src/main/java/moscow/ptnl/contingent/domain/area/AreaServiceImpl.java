@@ -264,7 +264,9 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Long createDependentArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> primaryAreaTypeCodesIds, List<Long> policyTypeCodesIds, Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW, String description) throws ContingentException {
+    public Long createDependentArea(long moId, Long muId, Integer number, Long areaTypeCode, Long areaTypeProfileCode, List<Long> primaryAreaTypeCodesIds,
+                                    List<Long> policyTypeCodesIds, Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                                    String description) throws ContingentException {
 
         Validation validation = new Validation();
 
@@ -311,15 +313,25 @@ public class AreaServiceImpl implements AreaService {
 
         //10
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
+        //11
+        List<AreaTypeProfile> areaTypeProfiles = Collections.emptyList();
+
+        if (settingService.par39().contains(areaTypeCode)) {
+            if (areaTypeProfileCode == null) {
+                validation.error(AreaErrorReason.EMPTY_AREA_TYPE_PROFILE, new ValidationParameter("areaType", areaType.getTitle()));
+            } else {
+                areaTypeProfiles = areaHelper.checkAndGetAreaTypeProfiles(Collections.singletonList(areaTypeProfileCode), areaType, validation);
+            }
+        }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-
-        //11
+        //12
         Area area = Area.builder()
                 .moId(moId)
                 .muId(muId)
                 .areaType(areaType)
+                .areaTypeProfile(areaTypeProfiles.isEmpty() ? null : areaTypeProfiles.get(0))
                 .number(number)
                 .archived(false)
                 .description(description)
@@ -333,14 +345,14 @@ public class AreaServiceImpl implements AreaService {
                 .build();
         areaRepository.save(area);
 
-        //12.
+        //13
         for (Long areaTypeCodeId : primaryAreaTypeCodesIds) {
             AreaToAreaType areaToAreaType = new AreaToAreaType();
             areaToAreaType.setArea(area);
             areaToAreaType.setAreaType(areaTypesRepository.findById(areaTypeCodeId).get());
             areaToAreaTypeRepository.save(areaToAreaType);
         }
-        //13
+        //14
         List<PolicyType> policyTypeList = policyTypeRepository.findByIds(policyTypeCodesIds);
 
         if (policyTypeCodesIds != null && !policyTypeCodesIds.isEmpty()) {
@@ -350,19 +362,19 @@ public class AreaServiceImpl implements AreaService {
             areaPolicyTypesRepository.save(areaPolicyTypes);
         }
 
-        //14
+        //15
         List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, true);
 
-        //15
+        //16
         if (primAreas != null && !primAreas.isEmpty()) {
             esuHelperService.sendAttachOnAreaChangeEvent(primAreas.stream().map(Area::getId).collect(Collectors.toList()),
                     null, area);
         }
 
-        //16
+        //17
         historyHelper.sendHistory(null, area, Area.class);
 
-        //17
+        //18
         return area.getId();
     }
 

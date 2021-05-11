@@ -426,11 +426,19 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public CreateDependentAreaResponse createDependentArea(CreateDependentAreaRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.createDependentArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.CreateDependentAreaRequest())),
-                    new CreateDependentAreaResponse());
+            CreateDependentAreaResponse response = new CreateDependentAreaResponse();
+            Long id = areaServiceDomain.createDependentArea(body.getMoId(), body.getMuId(),
+                    body.getNumber(), body.getAreaTypeCode(), body.getAreaTypeProfileCode(),
+                    body.getPrimaryAreaTypes().stream().flatMap(pat -> pat.getPrimaryAreaTypeCodes().stream()).collect(Collectors.toList()),
+                    body.getPolicyTypes().stream().flatMap(pt -> pt.getPolicyTypeCodes().stream()).collect(Collectors.toList()),
+                    body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(),
+                    body.getAgeMinW(), body.getAgeMaxW(), body.getDescription());
+
+            response.setId(id);
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

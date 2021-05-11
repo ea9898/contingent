@@ -38,6 +38,7 @@
                 <xs:element name="description" type="xs:string" minOccurs="0" />
                 <xs:element name="areaTypeCode" type="xs:long" />
                 <xs:element name="primaryAreaTypes" type="core:PrimaryAreaTypeCodes" maxOccurs="unbounded" />
+                <xs:element name="areaTypeProfileCode" type="xs:long" minOccurs="0" />
                 <xs:element name="policyTypes" type="core:PolicyTypeCodes" maxOccurs="unbounded" minOccurs="0" />
                 <xs:element name="ageMin" type="xs:int" minOccurs="0" />
                 <xs:element name="ageMax" type="xs:int" minOccurs="0" />

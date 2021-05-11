@@ -72,7 +72,15 @@ public interface AreaService {
      * @return
      * @throws ContingentException
      */
-    Long createDependentArea(long moId, Long muId, Integer number, Long areaTypeCode,
+    default Long createDependentArea(long moId, Long muId, Integer number, Long areaTypeCode,
+                             List<Long> primaryAreaTypeCodesIds, List<Long> policyTypeCodesIds,
+                             Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
+                             String description) throws ContingentException {
+        return createDependentArea(moId, muId, number, areaTypeCode, null, primaryAreaTypeCodesIds,
+                policyTypeCodesIds, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, description);
+    }
+
+    Long createDependentArea(long moId, Long muId, Integer number, Long areaTypeCode, Long areaTypeProfileCode,
                              List<Long> primaryAreaTypeCodesIds, List<Long> policyTypeCodesIds,
                              Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                              String description) throws ContingentException;
