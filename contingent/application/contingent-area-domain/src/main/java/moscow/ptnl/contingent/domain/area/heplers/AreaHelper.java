@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.AreaMuService;
 import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
@@ -21,6 +22,7 @@ import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepos
 import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaMuServiceRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
@@ -119,6 +121,9 @@ public class AreaHelper {
     @Autowired
     private AreaTypeProfileRepository areaTypeProfileRepository;
 
+    @Autowired
+    private AreaMuServiceRepository areaMuServiceRepository;
+
     public List<AreaType> checkAndGetAreaTypesExist(List<Long> areaTypes, Validation validation) {
         List<AreaType> result = new ArrayList<>();
 
@@ -142,7 +147,7 @@ public class AreaHelper {
             Optional<AreaTypeProfile> areaTypeProfile = areaTypeProfileRepository.findByCodeAndAreaType(a, areaType.getCode());
 
             if (!areaTypeProfile.isPresent() || Boolean.TRUE.equals(areaTypeProfile.get().getArchived())) {
-                validation.error(AreaErrorReason.AREA_TYPE_PROFILE_NOT_FOUND, new ValidationParameter("areaType", areaType.getTitle()));
+                validation.error(AreaErrorReason.AREA_TYPE_PROFILE_NOT_FOUND, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
             } else {
                 result.add(areaTypeProfile.get());
             }
@@ -970,5 +975,22 @@ public class AreaHelper {
             }
         }
         return null;
+    }
+
+    public void checkMuAlreadyServiced(Area area, List<Long> servicedMuIds, Validation validation) {
+        for (Long servicedMuId : servicedMuIds) {
+            List<AreaMuService> areaMuServices = areaMuServiceRepository.findActive(servicedMuId, area.getId(), area.getAreaTypeProfile().getCode());
+
+            if (!areaMuServices.isEmpty()) {
+                validation.error(AreaErrorReason.MU_ALREADY_SERVICED,
+                        new ValidationParameter("muService/muId", servicedMuId),
+                        new ValidationParameter("areaId", areaMuServices.stream()
+                                .map(AreaMuService::getArea)
+                                .map(Area::getId)
+                                .map(String::valueOf)
+                                .collect(Collectors.joining(";")))
+                );
+            }
+        }
     }
 }

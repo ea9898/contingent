@@ -79,6 +79,15 @@ public class AreaMuService implements Serializable {
         this.endDate = endDate;
     }
 
+    public static AreaMuService buildActive(Long muId, Area area) {
+        AreaMuService areaMuService = new AreaMuService();
+        areaMuService.setMuId(muId);
+        areaMuService.setArea(area);
+        areaMuService.setStartDate(LocalDate.now());
+
+        return areaMuService;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

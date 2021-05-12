@@ -275,6 +275,14 @@
         <wsdl:part name="body" element="ns1:getAreaListBriefResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="setAreaMuServiceInput">
+        <wsdl:part name="body" element="ns1:setAreaMuServiceRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="setAreaMuServiceOutput">
+        <wsdl:part name="body" element="ns1:setAreaMuServiceResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
             <wsdl:documentation>
@@ -522,6 +530,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:getAreaListBriefInput"/>
             <wsdl:output message="tns:getAreaListBriefOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="setAreaMuService">
+            <wsdl:documentation>
+                Изменение списка МУ, обслуживаемых участком (К_УУ_32)
+            </wsdl:documentation>
+            <wsdl:input message="tns:setAreaMuServiceInput"/>
+            <wsdl:output message="tns:setAreaMuServiceOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -951,6 +967,20 @@
 
         <wsdl:operation name="getAreaListBrief">
             <soap:operation soapAction="getAreaListBrief"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="setAreaMuService">
+            <soap:operation soapAction="setAreaMuService"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

@@ -65,6 +65,8 @@ public interface SettingService {
     String PAR_38 = "synch_areainfo_k1_trigger_check_period";
     /** Типы участков, имеющие профиль. */
     String PAR_39 = "area_types_with_profile";
+    /** Типы участков, к которым могут быть распределены МУ. */
+    String PAR_40 = "area_types_servicing_mu";
 
     /**
      * Свойство извлекается из кэша.
@@ -110,4 +112,6 @@ public interface SettingService {
     }
 
     List<Long> par39();
+
+    List<Long> par40();
 }

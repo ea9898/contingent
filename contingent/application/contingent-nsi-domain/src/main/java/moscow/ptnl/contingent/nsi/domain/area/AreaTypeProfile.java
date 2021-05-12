@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.nsi.domain.area;
 
 import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "AREA_TYPE_PROFILE")
 @Cacheable
+@Proxy(lazy = false)
 public class AreaTypeProfile extends CodeName implements Serializable, Keyable {
 
     private static final long serialVersionUID = 1281003603333730792L;

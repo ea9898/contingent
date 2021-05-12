@@ -9,7 +9,7 @@ import ru.mos.emias.errors.domain.ErrorReason;
 public enum AreaErrorReason implements ErrorReason {
 
     UNEXPECTED_ERROR("E000", "Непредвиденная ошибка. %s"),
-    AREA_TYPE_NOT_FOUND("Е002", "Тип участка с ИД: %s не найден в системе"),
+    AREA_TYPE_NOT_FOUND("E002", "Тип участка с ИД: %s не найден в системе"),
     AREA_NOT_FOUND("E006", "Участок обслуживания МО с ИД %s не найден в системе"),
 
     FORBIDDEN_ADDRESS_UPDATE_FIELDS("E007", "Редактирование следующих параметров запрещено: %s"), //С_УУ_НСИ_7
@@ -83,7 +83,9 @@ public enum AreaErrorReason implements ErrorReason {
     SEARCH_AREA_INACCURATE_ADDRESS_ERROR("UE088", "Поиск участков по неточному совпадению может быть выполнен только для одного адреса"),
     AREAS_NOT_IN_MO("UE089", "Участки с ИД %s не входят в состав МО с ИД %s"),
     EMPTY_AREA_TYPE_PROFILE("UE090", "Не указан код профиля (обязателен для типа участка %s)"),
-    AREA_TYPE_PROFILE_NOT_FOUND("UE091", "Переданный профиль не найден в справочнике или не соответствует типу участка %s")
+    AREA_TYPE_PROFILE_NOT_FOUND("UE091", "Переданный профиль не найден в справочнике или не соответствует типу участка %s"),
+    CANT_ADD_SERVICED_MU("UE092", "К типу участка %s не могут быть распределены медучреждения для обслуживания"),
+    MU_ALREADY_SERVICED("UE093", "Медучреждение %s обслуживается участком %s с тем же профилем типа участка")
     ;
 
     private final String description;

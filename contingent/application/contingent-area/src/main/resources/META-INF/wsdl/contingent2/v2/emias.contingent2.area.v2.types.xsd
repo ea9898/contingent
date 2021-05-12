@@ -830,4 +830,23 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="setAreaMuServiceRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="xs:long" />
+                <xs:element name="addMuService" type="core:MuService" minOccurs="0" />
+                <xs:element name="closeMuService" type="core:MuService" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="setAreaMuServiceResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="core:result" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

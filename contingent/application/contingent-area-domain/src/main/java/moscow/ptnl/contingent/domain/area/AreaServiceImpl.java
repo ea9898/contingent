@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.AreaMuService;
 import moscow.ptnl.contingent.domain.area.entity.AreaPolicyTypes;
 import moscow.ptnl.contingent.domain.area.entity.AreaToAreaType;
 import moscow.ptnl.contingent.domain.area.entity.Area_;
@@ -24,6 +25,7 @@ import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepos
 import moscow.ptnl.contingent.domain.area.repository.AddressesRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
+import moscow.ptnl.contingent.domain.area.repository.AreaMuServiceRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaPolicyTypesRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaToAreaTypeRepository;
@@ -154,6 +156,9 @@ public class AreaServiceImpl implements AreaService {
     @Autowired
     private AreaServiceInternalAsync areaServiceInternalAsync;
 
+    @Autowired
+    private AreaMuServiceRepository areaMuServiceRepository;
+
     @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
@@ -222,7 +227,7 @@ public class AreaServiceImpl implements AreaService {
 
         if (settingService.par39().contains(areaTypeCode)) {
             if (areaTypeProfileCode == null) {
-                validation.error(AreaErrorReason.EMPTY_AREA_TYPE_PROFILE, new ValidationParameter("areaType", areaType.getTitle()));
+                validation.error(AreaErrorReason.EMPTY_AREA_TYPE_PROFILE, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
             } else {
                 areaTypeProfiles = areaHelper.checkAndGetAreaTypeProfiles(Collections.singletonList(areaTypeProfileCode), areaType, validation);
             }
@@ -318,7 +323,7 @@ public class AreaServiceImpl implements AreaService {
 
         if (settingService.par39().contains(areaTypeCode)) {
             if (areaTypeProfileCode == null) {
-                validation.error(AreaErrorReason.EMPTY_AREA_TYPE_PROFILE, new ValidationParameter("areaType", areaType.getTitle()));
+                validation.error(AreaErrorReason.EMPTY_AREA_TYPE_PROFILE, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
             } else {
                 areaTypeProfiles = areaHelper.checkAndGetAreaTypeProfiles(Collections.singletonList(areaTypeProfileCode), areaType, validation);
             }
@@ -1496,5 +1501,49 @@ public class AreaServiceImpl implements AreaService {
             }
         }
         address.setUpdateDate(LocalDateTime.now());
+    }
+
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    public void setAreaMuService(long areaId, List<Long> addServicedMuIds, List<Long> closeServicedMuIds) throws ContingentException {
+        Validation validation = new Validation();
+        //2, 3
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //4
+        if (area.getAreaType() == null || !settingService.par40().contains(area.getAreaType().getCode())) {
+            validation.error(AreaErrorReason.CANT_ADD_SERVICED_MU, new ValidationParameter("areaTypeTitle",
+                    area.getAreaType() == null ? "" : area.getAreaType().getTitle()));
+        }
+        //5
+        if (addServicedMuIds.isEmpty() && closeServicedMuIds.isEmpty()) {
+            validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
+        }
+        Area oldArea = historyHelper.clone(area);
+        //6
+        areaHelper.checkMuAlreadyServiced(area, addServicedMuIds, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //6.1, 7.1
+        List<AreaMuService> newAreaMuServices = new ArrayList<>();
+
+        for (Long servicedMuId : addServicedMuIds) {
+            if (areaMuServiceRepository.findActive(servicedMuId, areaId).isEmpty()) {
+                newAreaMuServices.add(AreaMuService.buildActive(servicedMuId, area));
+            }
+        }
+        areaMuServiceRepository.saveAll(newAreaMuServices);
+        //7.2
+        for (Long servicedMuId : closeServicedMuIds) {
+            if (servicedMuId != null) {
+                areaMuServiceRepository.closeAreaMuServices(servicedMuId, area);
+            }
+        }
+        // Логирование изменений
+        historyHelper.sendHistory(oldArea, area, Area.class);
     }
 }

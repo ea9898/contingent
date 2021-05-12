@@ -89,6 +89,8 @@ import ru.mos.emias.contingent2.area.v2.types.SearchMuByAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v2.types.SearchMuByAreaAddressResponse;
 import ru.mos.emias.contingent2.area.v2.types.SearchOrderRequest;
 import ru.mos.emias.contingent2.area.v2.types.SearchOrderResponse;
+import ru.mos.emias.contingent2.area.v2.types.SetAreaMuServiceRequest;
+import ru.mos.emias.contingent2.area.v2.types.SetAreaMuServiceResponse;
 import ru.mos.emias.contingent2.area.v2.types.SetMedicalEmployeeOnAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.SetMedicalEmployeeOnAreaResponse;
 import ru.mos.emias.contingent2.area.v2.types.UpdateDependentAreaRequest;
@@ -97,6 +99,7 @@ import ru.mos.emias.contingent2.area.v2.types.UpdateOrderRequest;
 import ru.mos.emias.contingent2.area.v2.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaResponse;
+import ru.mos.emias.contingent2.core.v2.Result;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -564,6 +567,22 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             return versioningMapper.map(areaServiceV1.getAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetAreaAddressRequest())),
                     new GetAreaAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public SetAreaMuServiceResponse setAreaMuService(SetAreaMuServiceRequest body) throws Fault {
+        try {
+            areaServiceDomain.setAreaMuService(body.getAreaId(),
+                    body.getAddMuService() == null ? Collections.emptyList() : body.getAddMuService().getMuIds(),
+                    body.getCloseMuService() == null ? Collections.emptyList() : body.getCloseMuService().getMuIds());
+            SetAreaMuServiceResponse response = new SetAreaMuServiceResponse();
+            response.setResult(new Result());
+            response.getResult().setValue(true);
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

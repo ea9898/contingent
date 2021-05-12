@@ -340,6 +340,10 @@ public class Area implements Serializable {
         return areaMuServices;
     }
 
+    public void setAreaMuServices(Set<AreaMuService> areaMuServices) {
+        this.areaMuServices = areaMuServices;
+    }
+
     public Set<AreaMuService> getActualAreaMuServices() {
         if (areaMuServices == null || areaMuServices.isEmpty()) {
             return new HashSet<>();

@@ -378,4 +378,6 @@ public interface AreaService {
      * @throws ContingentException
      */
     void editAddress(Long arGlobalId, Map<String, String> fields) throws ContingentException;
+
+    void setAreaMuService(long areaId, List<Long> addServicedMuIds, List<Long> closeServicedMuIds) throws ContingentException;
 }
