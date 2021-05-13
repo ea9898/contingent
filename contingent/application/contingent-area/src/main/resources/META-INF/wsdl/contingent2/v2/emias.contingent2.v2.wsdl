@@ -542,7 +542,7 @@
         </wsdl:operation>
     </wsdl:portType>
 
-    <wsdl:binding name="AreaPTB" type="tns:AreaPT">
+    <wsdl:binding name="AreaPTB_v2" type="tns:AreaPT">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
          <wsdl:operation name="createPrimaryArea">
@@ -997,7 +997,7 @@
 
     <wsdl:service name="AreaService_v2">
         <!--<wsp:PolicyReference URI="#authPolicy"/>-->
-        <wsdl:port name="Area" binding="tns:AreaPTB">
+        <wsdl:port name="Area" binding="tns:AreaPTB_v2">
             <soap:address location="http://localhost:8080/area/v2/AreaService?wsdl"/>
         </wsdl:port>
     </wsdl:service>
