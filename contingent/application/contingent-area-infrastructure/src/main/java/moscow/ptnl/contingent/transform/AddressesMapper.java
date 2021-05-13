@@ -2,9 +2,11 @@ package moscow.ptnl.contingent.transform;
 
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.transform.Transform;
 import moscow.ptnl.contingent2.area.info.Address;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -13,8 +15,12 @@ import java.util.Set;
 @Component
 public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<AreaAddress>> {
 
+    @Autowired
+    private SettingService settingService;
+
     @Override
     public AreaInfoEvent.Addresses entityToDtoTransform(Set<AreaAddress> entity) {
+        boolean allowGlobalId = Boolean.TRUE.equals(settingService.getSettingProperty(SettingService.PAR_41));
         AreaInfoEvent.Addresses addresses = new AreaInfoEvent.Addresses();
         entity.stream()
                 .map(AreaAddress::getAddress)
@@ -94,8 +100,11 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
                             streetBTI.getCode().addAll(Arrays.asList(e.getAreaBtiCode().split(";")));
                         }
                     }
-
                     address.setStreetBTI(streetBTI);
+
+                    if (allowGlobalId && e.getGlobalId() != null) {
+                        address.setGlobalId(e.getGlobalId().toString());
+                    }
                     addresses.getAddress().add(address);
                 });
         return addresses;

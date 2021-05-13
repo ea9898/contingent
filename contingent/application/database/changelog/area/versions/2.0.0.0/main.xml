@@ -213,4 +213,27 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-1739-1" author="sorlov" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'area_info_global_id'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Передача глобал ИД адреса в сообщениях топика AreaInfo</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="area_info_global_id"/>
+            <column name="codedoc" value="PAR_41"/>
+            <column name="type" value="5"/>
+            <column name="val" value="0"/>
+            <column name="description" value="Передача глобал ИД адреса в сообщениях топика AreaInfo (0-отключена, 1-включена)"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='area_info_global_id'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
