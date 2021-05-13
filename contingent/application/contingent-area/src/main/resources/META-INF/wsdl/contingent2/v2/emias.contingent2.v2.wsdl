@@ -995,7 +995,7 @@
 
     </wsdl:binding>
 
-    <wsdl:service name="AreaService">
+    <wsdl:service name="AreaService_v2">
         <!--<wsp:PolicyReference URI="#authPolicy"/>-->
         <wsdl:port name="Area" binding="tns:AreaPTB">
             <soap:address location="http://localhost:8080/area/v2/AreaService?wsdl"/>
