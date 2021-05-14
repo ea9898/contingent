@@ -122,7 +122,7 @@ abstract class BaseTopicTask<T> implements Tasklet {
             } catch (Throwable ex) {
                 ex = ex instanceof ExecutionException ? ex.getCause() : ex;
                 LOG.error("Ошибка обработки входящего сообщения ЕСУ с ID={}", message.getEsuId(), ex);
-                ex = Objects.equals(ex.getMessage(), "Transaction has thrown an Exception") && ex.getCause() != null ? ex.getCause() : ex;
+                ex = ex.getMessage().startsWith("Transaction has thrown an Exception") && ex.getCause() != null ? ex.getCause() : ex;
                 errorMessage = ex.getMessage(); 
             } finally {
                 updateStatus(message, status, eventId, errorMessage);
