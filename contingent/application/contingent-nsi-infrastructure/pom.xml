@@ -19,10 +19,6 @@
     <packaging>jar</packaging>
     <url>http://maven.apache.org</url>
 
-    <properties>
-        <spring.batch.version>3.0.5.RELEASE</spring.batch.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
@@ -69,11 +65,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>${hibernate.jpamodelgen.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.batch</groupId>
-            <artifactId>spring-batch-core</artifactId>
-            <version>${spring.batch.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

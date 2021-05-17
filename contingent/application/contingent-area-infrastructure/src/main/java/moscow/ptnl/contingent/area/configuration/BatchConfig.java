@@ -1,51 +1,59 @@
 package moscow.ptnl.contingent.area.configuration;
 
+import moscow.ptnl.contingent.area.batch.CleanableJobRepository;
+import moscow.ptnl.contingent.area.batch.CleanableMapJobRepositoryFactoryBean;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
+import org.springframework.batch.core.configuration.BatchConfigurationException;
+import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.explore.support.MapJobExplorerFactoryBean;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
-import javax.sql.DataSource;
+import org.springframework.transaction.PlatformTransactionManager;
+
 import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+
 @Configuration
 @EnableBatchProcessing
-public class BatchConfig extends DefaultBatchConfigurer {
+public class BatchConfig implements BatchConfigurer {
     
     private static final Logger LOG = LoggerFactory.getLogger(BatchConfig.class);
 
     @Autowired
+    @Lazy
     private JobBuilderFactory jobs;
 
     @Autowired
+    @Lazy
     private StepBuilderFactory steps;
-
-    @Autowired
-    private JobLauncher jobLauncher;
-
-    @Autowired
-    private JobExplorer jobExplorer;
 
     @Autowired
     @Qualifier("attachmentPrimaryTopicTask")
@@ -59,7 +67,53 @@ public class BatchConfig extends DefaultBatchConfigurer {
     @Qualifier("dnEventInformerTask")
     private Tasklet dnEventInformerTask;
 
-    @Override
+    @Autowired
+    @Qualifier("cleanerTask")
+    private Tasklet cleanerTask;
+
+    private PlatformTransactionManager transactionManager;
+
+    private JobRepository jobRepository;
+
+    private JobLauncher jobLauncher;
+
+    private JobExplorer jobExplorer;
+
+    private MapJobRepositoryFactoryBean mapJobRepositoryFactoryBean;
+
+    @PostConstruct
+    public void initialize() {
+        try {
+            this.transactionManager = new ResourcelessTransactionManager();
+            this.jobRepository = this.createJobRepository();
+            this.jobExplorer = this.createJobExplorer();
+            this.jobLauncher = this.createJobLauncher();
+        } catch (Exception var3) {
+            throw new BatchConfigurationException(var3);
+        }
+    }
+
+    @Bean
+    @Lazy
+    public MapJobRepositoryFactoryBean getMapJobRepositoryFactoryBean() {
+        return mapJobRepositoryFactoryBean;
+    }
+
+    protected JobRepository createJobRepository() {
+        try {
+            mapJobRepositoryFactoryBean = new CleanableMapJobRepositoryFactoryBean();
+            mapJobRepositoryFactoryBean.afterPropertiesSet();
+            return mapJobRepositoryFactoryBean.getObject();
+        } catch (Exception ex) {
+            throw new IllegalStateException("Can't initialize Batch Job Repository", ex);
+        }
+    }
+
+    protected JobExplorer createJobExplorer() throws Exception {
+        MapJobExplorerFactoryBean jobExplorerFactory = new MapJobExplorerFactoryBean(mapJobRepositoryFactoryBean);
+        return jobExplorerFactory.getObject();
+    }
+
     protected JobLauncher createJobLauncher() throws Exception {
         SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("batch-task-thread-");
         executor.setConcurrencyLimit(10);
@@ -107,10 +161,19 @@ public class BatchConfig extends DefaultBatchConfigurer {
         }
     }
 
-    @Override
-    public void setDataSource(DataSource dataSource) {
-        // override to do not set datasource even if a datasource exist.
-        // initialize will use a Map based JobRepository (instead of database)
+    @Scheduled(fixedDelay = 10000, initialDelay = 40000)
+    public void scheduleCleaner() {
+        try {
+            boolean jobsActive = jobExplorer.getJobNames().stream()
+                    .distinct()
+                    .anyMatch(this::isJobRunning);
+
+            if (!jobsActive) {
+                ((CleanableJobRepository) mapJobRepositoryFactoryBean.getJobRepository()).clean();
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка в jobCleaner", e);
+        }
     }
 
     private void runJob(Job job) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
@@ -121,11 +184,31 @@ public class BatchConfig extends DefaultBatchConfigurer {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", UUID.randomUUID().toString())
                 .toJobParameters();
-        jobLauncher.run(job, params);
+        getJobLauncher().run(job, params);
     }
 
     private boolean isJobRunning(String jobName) {
-        Set<JobExecution> jobExecutions = jobExplorer.findRunningJobExecutions(jobName);
+        Set<JobExecution> jobExecutions = getJobExplorer().findRunningJobExecutions(jobName);
         return !jobExecutions.isEmpty();
+    }
+
+    @Override
+    public JobRepository getJobRepository() {
+        return this.jobRepository;
+    }
+
+    @Override
+    public PlatformTransactionManager getTransactionManager() {
+        return this.transactionManager;
+    }
+
+    @Override
+    public JobLauncher getJobLauncher() {
+        return this.jobLauncher;
+    }
+
+    @Override
+    public JobExplorer getJobExplorer() {
+        return this.jobExplorer;
     }
 }
