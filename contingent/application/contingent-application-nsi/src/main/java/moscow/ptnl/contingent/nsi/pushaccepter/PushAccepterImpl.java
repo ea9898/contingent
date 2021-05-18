@@ -10,6 +10,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
@@ -83,6 +84,9 @@ public class PushAccepterImpl extends PushAccepter {
                 break;
             case D_POSITION_NOM:
                 pushEventEntity = entityMapper.mapTyped(pack, PositionNom.class);
+                break;
+            case AREA_TYPE_PROFILE:
+                pushEventEntity = entityMapper.mapTyped(pack, AreaTypeProfile.class);
                 break;
         }
         if (pushEventEntity == null) {

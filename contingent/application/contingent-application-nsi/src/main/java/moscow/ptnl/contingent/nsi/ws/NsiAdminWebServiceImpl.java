@@ -8,6 +8,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
@@ -24,6 +25,7 @@ import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
 import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AddressFormingElementRepository;
+import moscow.ptnl.contingent.nsi.repository.AreaTypeProfileCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PolicyTypeCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomCRUDRepository;
 import moscow.ptnl.contingent.nsi.service.NsiAdminService;
@@ -134,6 +136,9 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     private PositionNomCRUDRepository positionNomCRUDRepository;
 
     @Autowired
+    private AreaTypeProfileCRUDRepository areaTypeProfileCRUDRepository;
+
+    @Autowired
     private AreaService areaServiceDomain;
 
     @Autowired
@@ -233,6 +238,10 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                 case D_POSITION_NOM:
                     List<PositionNom> positionNoms = entityMapper.mapTypedList(rows, PositionNom.class);
                     saveAll(positionNomCRUDRepository, positionNoms);
+                    break;
+                case AREA_TYPE_PROFILE:
+                    List<AreaTypeProfile> areaTypeProfiles = entityMapper.mapTypedList(rows, AreaTypeProfile.class);
+                    saveAll(areaTypeProfileCRUDRepository, areaTypeProfiles);
                     break;
             }
         } catch (Exception e) {
