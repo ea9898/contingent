@@ -9,7 +9,7 @@ import ru.mos.emias.errors.domain.ErrorReason;
 public enum AreaErrorReason implements ErrorReason {
 
     UNEXPECTED_ERROR("E000", "Непредвиденная ошибка. %s"),
-    AREA_TYPE_NOT_FOUND("E002", "Тип участка с ИД: %s не найден в системе"),
+    AREA_TYPE_NOT_FOUND("Е002", "Тип участка с ИД: %s не найден в системе"),
     AREA_NOT_FOUND("E006", "Участок обслуживания МО с ИД %s не найден в системе"),
 
     FORBIDDEN_ADDRESS_UPDATE_FIELDS("E007", "Редактирование следующих параметров запрещено: %s"), //С_УУ_НСИ_7
