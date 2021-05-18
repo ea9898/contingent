@@ -7,7 +7,7 @@
            xmlns:restr="http://emias.mos.ru/restriction/types/core/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
-    <xs:include schemaLocation="../../emias/emias.core.v1.xsd"/>
+    <xs:include schemaLocation="../../emias/v1/emias.core.v1.xsd"/>
 
     <xs:import schemaLocation="emias.contingent2.address.v1.xsd" namespace="http://emias.mos.ru/contingent2/address/v1/" />
     <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="emias.restriction.types.core.xsd"/>

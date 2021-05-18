@@ -11,8 +11,8 @@
     <wsdl:types>
         <xs:schema>
             <xs:import namespace="http://emias.mos.ru/system/v1/userContext/"
-                       schemaLocation="../emias/emias.system.v1.userContext.xsd"/>
-            <xs:import namespace="http://emias.mos.ru/system/v1/faults/" schemaLocation="../emias/emias.system.v1.faults.xsd"/>
+                       schemaLocation="../emias/v1_2/emias.system.v1.userContext.xsd"/>
+            <xs:import namespace="http://emias.mos.ru/system/v1/faults/" schemaLocation="../emias/v1_2/emias.system.v1.faults.xsd"/>
             <xs:import namespace="http://emias.mos.ru/contingent2/area/composite/v1/types/"
                        schemaLocation="emias.contingent2.area.composite.v1.types.xsd"/>
         </xs:schema>

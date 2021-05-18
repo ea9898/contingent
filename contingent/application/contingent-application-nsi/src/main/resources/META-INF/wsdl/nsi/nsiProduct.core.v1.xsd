@@ -2,7 +2,7 @@
 <xs:schema xmlns="http://emias.mos.ru/nsiProduct/core/v1/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://emias.mos.ru/nsiProduct/core/v1/" elementFormDefault="qualified"
            attributeFormDefault="unqualified">
-    <xs:include schemaLocation="../../../../../../../contingent-area/src/main/resources/META-INF/wsdl/emias/emias.core.v1.xsd"/>
+    <xs:include schemaLocation="../../../../../../../contingent-area/src/main/resources/META-INF/wsdl/emias/v1/emias.core.v1.xsd"/>
 
     <xs:complexType name="ehdDictionaries">
         <xs:sequence>
