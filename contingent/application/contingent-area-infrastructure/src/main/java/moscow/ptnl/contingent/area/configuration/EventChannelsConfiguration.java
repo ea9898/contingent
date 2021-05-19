@@ -47,8 +47,8 @@ public class EventChannelsConfiguration {
      */
     @Bean(name = HISTORY_EVENT_CHANNEL_NAME)
     public MessageChannel createHistoryEventChannel() {        
-        //return new DirectChannel();
-        return new QueueChannel(QUEUE_LENGTH);
+        return new DirectChannel();
+        //return new QueueChannel(QUEUE_LENGTH);
     }
 
     /**
@@ -58,8 +58,8 @@ public class EventChannelsConfiguration {
      */
     @Bean(name = SOAP_LOG_EVENT_CHANNEL_NAME)
     public MessageChannel createLogSoapEventChannel() {
-        //return new DirectChannel();
-        return new QueueChannel(QUEUE_LENGTH);
+        return new DirectChannel();
+        //return new QueueChannel(QUEUE_LENGTH);
     }
 
     /**
@@ -69,8 +69,8 @@ public class EventChannelsConfiguration {
      */
     @Bean(name = ESU_EVENT_CHANNEL_NAME)
     public MessageChannel createESUEventChannel() {        
-        //return new DirectChannel();
-        return new QueueChannel(QUEUE_LENGTH);
+        return new DirectChannel();
+        //return new QueueChannel(QUEUE_LENGTH); //в этой очереди иногда (зависит от деплоя приложения) либо все работает, либо пропадает. Почему непонятно.
     }
     
     
