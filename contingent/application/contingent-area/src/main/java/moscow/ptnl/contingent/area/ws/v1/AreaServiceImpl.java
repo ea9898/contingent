@@ -425,8 +425,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @Metrics
-    @EMIASSecured(faultClass = Fault.class)
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchMuByAreaAddressResponse searchMuByAreaAddress(SearchMuByAreaAddressRequest body) throws Fault {
         try {
             Map<GetAreaListBriefOptions, ? extends OptionEnum.OptionValuesEnum> options =
