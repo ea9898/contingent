@@ -844,7 +844,13 @@
     <xs:element name="setAreaMuServiceResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="core:result" minOccurs="0" />
+                <xs:element name="result" fixed="true">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:boolean"/>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

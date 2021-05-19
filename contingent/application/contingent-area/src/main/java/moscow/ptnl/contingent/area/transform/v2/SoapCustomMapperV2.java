@@ -38,7 +38,7 @@ public class SoapCustomMapperV2 {
         results.setPageSize(page.getSize());
         results.setPageTotal(page.getTotalPages());
         results.setMorePagesAvailable(page.getNumber() < page.getTotalPages() - 1);
-        results.setTotalItemsCount(page.getTotalElements());
+//        results.setTotalItemsCount(page.getTotalElements());
     }
 
     public <T extends OptionEnum> Map<T, OptionEnum.OptionValuesEnum> mapOptions(

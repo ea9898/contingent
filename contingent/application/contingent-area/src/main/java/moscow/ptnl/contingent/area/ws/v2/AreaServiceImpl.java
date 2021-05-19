@@ -99,7 +99,6 @@ import ru.mos.emias.contingent2.area.v2.types.UpdateOrderRequest;
 import ru.mos.emias.contingent2.area.v2.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaResponse;
-import ru.mos.emias.contingent2.core.v2.Result;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -580,7 +579,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.getAddMuService() == null ? Collections.emptyList() : body.getAddMuService().getMuIds(),
                     body.getCloseMuService() == null ? Collections.emptyList() : body.getCloseMuService().getMuIds());
             SetAreaMuServiceResponse response = new SetAreaMuServiceResponse();
-            response.setResult(new Result());
+            response.setResult(new SetAreaMuServiceResponse.Result());
             response.getResult().setValue(true);
             return response;
         }
