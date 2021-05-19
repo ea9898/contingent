@@ -2,6 +2,8 @@ package moscow.ptnl.contingent.nsi.domain.area;
 
 import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Cacheable;
@@ -20,26 +22,32 @@ import java.util.Objects;
 @Table(name = "AREA_TYPE_PROFILE")
 @Cacheable
 @Proxy(lazy = false)
+@MapToNsi(table = NsiTablesEnum.AREA_TYPE_PROFILE)
 public class AreaTypeProfile extends CodeName implements Serializable, Keyable {
 
     private static final long serialVersionUID = 1281003603333730792L;
 
     @Id
     @Column(name = "CODE", unique = true, nullable = false)
+    @MapToNsi
     private Long code;
 
     @Column(name = "TITLE", nullable = false)
+    @MapToNsi
     private String title;
 
     @Column(name = "GLOBAL_ID", nullable = false)
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     @JoinColumn(name = "AREA_TYPE_CODE", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi(value = "AREA_TYPE_CODE", findEntityByField = "globalId")
     private AreaType areaType;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
+    @MapToNsi
     private Boolean archived;
 
     @Override

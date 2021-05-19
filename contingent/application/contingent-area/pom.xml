@@ -245,7 +245,7 @@
                                     </wsdlOption>
                                     <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v2/emias.contingent2.v2.wsdl</wsdl>
-                                        <serviceName>AreaService</serviceName>
+                                        <serviceName>AreaService_v2</serviceName>
                                         <extraargs>
                                             <extraarg>-verbose</extraarg>
                                         </extraargs>

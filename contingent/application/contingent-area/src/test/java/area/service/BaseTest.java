@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.domain.area.MoMuServiceImpl;
 import moscow.ptnl.contingent.domain.area.OrderServiceImpl;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.transform.AddressesMapper;
 import moscow.ptnl.contingent.transform.AreaRestrictionMapper;
 import moscow.ptnl.contingent.domain.area.MoMuService;
@@ -88,6 +89,9 @@ public class BaseTest {
 
     @Mock
     public AddressAllocationOrderCRUDRepository addressAllocationOrderCRUDRepository;
+
+    @Mock
+    public SettingService settingService;
 
     @Mock
     @Qualifier(EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME)

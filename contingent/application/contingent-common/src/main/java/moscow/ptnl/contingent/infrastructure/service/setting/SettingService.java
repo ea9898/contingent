@@ -67,6 +67,8 @@ public interface SettingService {
     String PAR_39 = "area_types_with_profile";
     /** Типы участков, к которым могут быть распределены МУ. */
     String PAR_40 = "area_types_servicing_mu";
+    /** Передача глобал ИД адреса в сообщениях топика AreaInfo. */
+    String PAR_41 = "area_info_global_id";
 
     /**
      * Свойство извлекается из кэша.

@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.domain.settings.Setting;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,13 +93,15 @@ public class SettingServiceImpl implements SettingService {
 
     @Override
     public List<Long> par39() {
-        String par31 = getSettingProperty(PAR_39);
-        return Arrays.stream(par31.split(";")).filter(s -> !s.isEmpty()).map(Long::parseLong).collect(Collectors.toList());
+        String param = getSettingProperty(PAR_39);
+        return param == null ? Collections.emptyList() :
+                Arrays.stream(param.split(";")).filter(s -> !s.isEmpty()).map(Long::parseLong).collect(Collectors.toList());
     }
 
     @Override
     public List<Long> par40() {
-        String par31 = getSettingProperty(PAR_40);
-        return Arrays.stream(par31.split(";")).filter(s -> !s.isEmpty()).map(Long::parseLong).collect(Collectors.toList());
+        String param = getSettingProperty(PAR_40);
+        return param == null ? Collections.emptyList() :
+                Arrays.stream(param.split(";")).filter(s -> !s.isEmpty()).map(Long::parseLong).collect(Collectors.toList());
     }
 }

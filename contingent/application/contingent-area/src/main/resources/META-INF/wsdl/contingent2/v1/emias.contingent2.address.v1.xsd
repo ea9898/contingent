@@ -6,7 +6,7 @@
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
-    <xs:include schemaLocation="../../emias/emias.core.address.v1.xsd"/>
+    <xs:include schemaLocation="../../emias/v1/emias.core.address.v1.xsd"/>
     <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="emias.restriction.types.core.xsd"/>
 
     <xs:complexType name="SearchAreaAddress">

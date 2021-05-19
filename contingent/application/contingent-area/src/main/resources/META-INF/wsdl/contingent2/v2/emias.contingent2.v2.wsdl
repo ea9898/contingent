@@ -13,8 +13,8 @@
                   targetNamespace="http://emias.mos.ru/contingent2/area/v2/">
     <wsdl:types>
         <xs:schema>
-            <xs:import namespace="http://emias.mos.ru/system/v1/userContext/" schemaLocation="../../emias/emias.system.v1.userContext.xsd"/>
-            <xs:import namespace="http://emias.mos.ru/system/v1/faults/" schemaLocation="../../emias/emias.system.v1.faults.xsd"/>
+            <xs:import namespace="http://emias.mos.ru/system/v1/userContext/" schemaLocation="../../emias/v1/emias.system.v1.userContext.xsd"/>
+            <xs:import namespace="http://emias.mos.ru/system/v1/faults/" schemaLocation="../../emias/v1/emias.system.v1.faults.xsd"/>
             <xs:import namespace="http://emias.mos.ru/contingent2/area/v2/types/" schemaLocation="emias.contingent2.area.v2.types.xsd"/>
         </xs:schema>
     </wsdl:types>
@@ -542,7 +542,7 @@
         </wsdl:operation>
     </wsdl:portType>
 
-    <wsdl:binding name="AreaPTB" type="tns:AreaPT">
+    <wsdl:binding name="AreaPTB_v2" type="tns:AreaPT">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 
          <wsdl:operation name="createPrimaryArea">
@@ -995,9 +995,9 @@
 
     </wsdl:binding>
 
-    <wsdl:service name="AreaService">
+    <wsdl:service name="AreaService_v2">
         <!--<wsp:PolicyReference URI="#authPolicy"/>-->
-        <wsdl:port name="Area" binding="tns:AreaPTB">
+        <wsdl:port name="Area" binding="tns:AreaPTB_v2">
             <soap:address location="http://localhost:8080/area/v2/AreaService?wsdl"/>
         </wsdl:port>
     </wsdl:service>

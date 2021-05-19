@@ -4,7 +4,7 @@
            xmlns:fault="http://emias.mos.ru/system/v1/faults/"
            targetNamespace="http://emias.mos.ru/contingent2/area/composite/v1/types/"
            elementFormDefault="qualified">
-    <xs:include schemaLocation="../emias/emias.core.v1.xsd"/>
+    <xs:include schemaLocation="../emias/v1_2/emias.core.v1.xsd"/>
 
     <xs:element name="archiveAreaCompositeRequest">
         <xs:complexType>

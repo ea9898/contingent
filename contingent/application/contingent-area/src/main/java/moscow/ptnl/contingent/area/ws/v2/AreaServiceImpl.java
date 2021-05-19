@@ -99,7 +99,6 @@ import ru.mos.emias.contingent2.area.v2.types.UpdateOrderRequest;
 import ru.mos.emias.contingent2.area.v2.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaResponse;
-import ru.mos.emias.contingent2.core.v2.Result;
 
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -157,7 +156,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private AreaDnMapperV2 areaDnMapper;
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.restoreArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.RestoreAreaRequest())),
@@ -168,7 +167,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMuAvailableAreaTypesResponse addMuAvailableAreaTypes(AddMuAvailableAreaTypesRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.addMuAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddMuAvailableAreaTypesRequest())),
@@ -212,7 +211,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMoAvailableAreaTypesResponse addMoAvailableAreaTypes(AddMoAvailableAreaTypesRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.addMoAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddMoAvailableAreaTypesRequest())),
@@ -223,7 +222,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMuAvailableAreaTypesResponse getMuAvailableAreaTypes(GetMuAvailableAreaTypesRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.getMuAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesRequest())),
@@ -256,7 +255,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SetMedicalEmployeeOnAreaResponse setMedicalEmployeeOnArea(SetMedicalEmployeeOnAreaRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.setMedicalEmployeeOnArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SetMedicalEmployeeOnAreaRequest())),
@@ -267,7 +266,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public DelMoAvailableAreaTypesResponse delMoAvailableAreaTypes(DelMoAvailableAreaTypesRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.delMoAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesRequest())),
@@ -303,7 +302,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchMuByAreaAddressResponse searchMuByAreaAddress(SearchMuByAreaAddressRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.searchMuByAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchMuByAreaAddressRequest())),
@@ -314,7 +313,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMoAddressResponse addMoAddress(AddMoAddressRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.addMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddMoAddressRequest())),
@@ -325,7 +324,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public CreateOrderResponse createOrder(CreateOrderRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.createOrder(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.CreateOrderRequest())),
@@ -336,7 +335,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.getNewAreaId(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetNewAreaIdRequest())),
@@ -347,7 +346,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public DelMuAvailableAreaTypesResponse delMuAvailableAreaTypes(DelMuAvailableAreaTypesRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.delMuAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelMuAvailableAreaTypesRequest())),
@@ -358,7 +357,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.addAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddAreaAddressRequest())),
@@ -369,7 +368,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public DelMoAddressResponse delMoAddress(DelMoAddressRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.delMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelMoAddressRequest())),
@@ -380,7 +379,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.initiateAddMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.InitiateAddMoAddressRequest())),
@@ -391,7 +390,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.searchOrder(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchOrderRequest())),
@@ -402,7 +401,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMoAddressResponse getMoAddress(GetMoAddressRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.getMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMoAddressRequest())),
@@ -413,7 +412,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public UpdateDependentAreaResponse updateDependentArea(UpdateDependentAreaRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.updateDependentArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.UpdateDependentAreaRequest())),
@@ -424,7 +423,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddAreaAddressResponse initiateAddAreaAddress(InitiateAddAreaAddressRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.initiateAddAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.InitiateAddAreaAddressRequest())),
@@ -435,7 +434,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public DelAreaAddressResponse delAreaAddress(DelAreaAddressRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.delAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelAreaAddressRequest())),
@@ -446,7 +445,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
             CreatePrimaryAreaResponse response = new CreatePrimaryAreaResponse();
@@ -463,7 +462,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public UpdatePrimaryAreaResponse updatePrimaryArea(UpdatePrimaryAreaRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.updatePrimaryArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.UpdatePrimaryAreaRequest())),
@@ -493,7 +492,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    @Override @Metrics
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
             AreaInfo area = areaServiceDomain.getAreaByIdV2(body.getAreaId());
@@ -529,7 +528,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public UpdateOrderResponse updateOrder(UpdateOrderRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.updateOrder(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.UpdateOrderRequest())),
@@ -540,7 +539,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public ArchiveAreaResponse archiveArea(ArchiveAreaRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.archiveArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.ArchiveAreaRequest())),
@@ -551,7 +550,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMoAvailableAreaTypesResponse getMoAvailableAreaTypes(GetMoAvailableAreaTypesRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.getMoAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesRequest())),
@@ -562,7 +561,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
         try {
             return versioningMapper.map(areaServiceV1.getAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetAreaAddressRequest())),
@@ -580,7 +579,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.getAddMuService() == null ? Collections.emptyList() : body.getAddMuService().getMuIds(),
                     body.getCloseMuService() == null ? Collections.emptyList() : body.getCloseMuService().getMuIds());
             SetAreaMuServiceResponse response = new SetAreaMuServiceResponse();
-            response.setResult(new Result());
+            response.setResult(new SetAreaMuServiceResponse.Result());
             response.getResult().setValue(true);
             return response;
         }

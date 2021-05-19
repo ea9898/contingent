@@ -97,7 +97,7 @@ public class WebServiceConfiguration {
 
     private void initAreaService(EndpointImpl endpoint, String version) {
         String pathPart = (version != null && !version.isEmpty()) ? version + "/" : "";
-        endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/" + pathPart, "AreaService"));
+        endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/" + pathPart, "AreaService" + (version.equals("v1") ? "" : "_" + version)));
         String wsdlLocation = "classpath:META-INF/wsdl/contingent2/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "emias.contingent2." + (version == null ? "v1" : version) + ".wsdl";
         endpoint.setWsdlLocation(wsdlLocation);
         endpoint.setAddress("/" + pathPart + "areaService");
