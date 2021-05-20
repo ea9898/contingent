@@ -357,6 +357,15 @@ public class AreaHelper {
         }
     }
 
+    public void checkSearchParametersV2(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+                                        Long areaTypeProfile, List<Long> servicedMuIds, Integer number, String description,
+                                        Boolean isArchived, List<MedicalEmployee> medicalEmployees, List<SearchAreaAddress> addresses) throws ContingentException {
+        if (areaTypeClassCode == null && moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && areaTypeProfile == null && number == null
+                && description == null && isArchived == null && medicalEmployees.isEmpty() && addresses.isEmpty() && servicedMuIds.isEmpty()) {
+            throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
+        }
+    }
+
     public void checkSearchAreaInaccurateAddress(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
         if (Boolean.FALSE.equals(exactAddressMatch) && addresses.size() > 1) {
             throw new ContingentException(AreaErrorReason.SEARCH_AREA_INACCURATE_ADDRESS_ERROR);

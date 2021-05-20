@@ -283,7 +283,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             Page<AreaInfo> areas = areaServiceDomain.searchArea(body.getAreaTypeClassCode(), body.getMoId(),
                     body.getMuIds() == null ? Collections.emptyList() : body.getMuIds(),
                     body.getAreaTypeCodes() == null ? Collections.emptyList() : body.getAreaTypeCodes(),
-                    body.getAreaTypeProfileCode(), body.getMuService() != null ? body.getMuService().getMuIds() : null,
+                    body.getAreaTypeProfileCode(), body.getMuService() != null ? body.getMuService().getMuIds() : Collections.emptyList(),
                     body.getNumber(), body.getDescription(), body.isIsArchived(),
                     body.getMedicalEmployees() == null ? Collections.emptyList() :
                             body.getMedicalEmployees().stream().map(me -> new MedicalEmployee(me.getMedicalEmployeeJobId(), me.getSnils()))

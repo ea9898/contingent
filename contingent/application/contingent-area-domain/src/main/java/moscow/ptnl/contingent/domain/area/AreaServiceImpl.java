@@ -1210,9 +1210,13 @@ public class AreaServiceImpl implements AreaService {
                                      List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch, PageRequest paging,
                                      boolean loadServicedMUs) throws ContingentException {
         //2
-        areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
-                isArchived, medicalEmployees, searchAreaAddresses);
-
+        if (UserContextHolder.getContractVersion() > 1) {
+            areaHelper.checkSearchParametersV2(areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile, servicedMuIds,
+                    number, description, isArchived, medicalEmployees, searchAreaAddresses);
+        } else {
+            areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
+                    isArchived, medicalEmployees, searchAreaAddresses);
+        }
         //3
         areaHelper.checkSearchAreaInaccurateAddress(isExactAddressMatch, searchAreaAddresses);
 
