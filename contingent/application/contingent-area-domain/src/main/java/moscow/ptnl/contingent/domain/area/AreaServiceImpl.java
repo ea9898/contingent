@@ -222,14 +222,16 @@ public class AreaServiceImpl implements AreaService {
         // 11
         areaHelper.checkAttachByMedicalReason(areaType, attachByMedicalReason, validation);
 
-        // 12
         List<AreaTypeProfile> areaTypeProfiles = Collections.emptyList();
 
-        if (settingService.par39().contains(areaTypeCode)) {
-            if (areaTypeProfileCode == null) {
-                validation.error(AreaErrorReason.EMPTY_AREA_TYPE_PROFILE, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
-            } else {
-                areaTypeProfiles = areaHelper.checkAndGetAreaTypeProfiles(Collections.singletonList(areaTypeProfileCode), areaType, validation);
+        if (UserContextHolder.getContractVersion() > 1) {
+            // 12
+            if (settingService.par39().contains(areaTypeCode)) {
+                if (areaTypeProfileCode == null) {
+                    validation.error(AreaErrorReason.EMPTY_AREA_TYPE_PROFILE, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
+                } else {
+                    areaTypeProfiles = areaHelper.checkAndGetAreaTypeProfiles(Collections.singletonList(areaTypeProfileCode), areaType, validation);
+                }
             }
         }
         if (!validation.isSuccess()) {
@@ -318,14 +320,17 @@ public class AreaServiceImpl implements AreaService {
 
         //10
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
-        //11
+
         List<AreaTypeProfile> areaTypeProfiles = Collections.emptyList();
 
-        if (settingService.par39().contains(areaTypeCode)) {
-            if (areaTypeProfileCode == null) {
-                validation.error(AreaErrorReason.EMPTY_AREA_TYPE_PROFILE, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
-            } else {
-                areaTypeProfiles = areaHelper.checkAndGetAreaTypeProfiles(Collections.singletonList(areaTypeProfileCode), areaType, validation);
+        if (UserContextHolder.getContractVersion() > 1) {
+            //11
+            if (settingService.par39().contains(areaTypeCode)) {
+                if (areaTypeProfileCode == null) {
+                    validation.error(AreaErrorReason.EMPTY_AREA_TYPE_PROFILE, new ValidationParameter("areaTypeTitle", areaType.getTitle()));
+                } else {
+                    areaTypeProfiles = areaHelper.checkAndGetAreaTypeProfiles(Collections.singletonList(areaTypeProfileCode), areaType, validation);
+                }
             }
         }
         if (!validation.isSuccess()) {

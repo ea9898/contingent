@@ -34,7 +34,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @ComponentScan(basePackages = "moscow.ptnl")
 @EnableAsync
 public class WebServiceConfiguration {
-    
+
+    private static final String AREA_SERVICE_NAMESPACE = "http://emias.mos.ru/contingent2/area/";
+
     @Autowired
     private MetricsInterceptorService metricsInterceptorService;
 
@@ -64,7 +66,7 @@ public class WebServiceConfiguration {
     
     @Bean
     UserContextInterceptor credentialsValidator() { 
-        return new UserContextInterceptor(); 
+        return new UserContextInterceptor(AREA_SERVICE_NAMESPACE);
     }
     
     @Bean
@@ -97,7 +99,7 @@ public class WebServiceConfiguration {
 
     private void initAreaService(EndpointImpl endpoint, String version) {
         String pathPart = (version != null && !version.isEmpty()) ? version + "/" : "";
-        endpoint.setServiceName(new QName("http://emias.mos.ru/contingent2/area/" + pathPart, "AreaService" + (version.equals("v1") ? "" : "_" + version)));
+        endpoint.setServiceName(new QName(AREA_SERVICE_NAMESPACE + pathPart, "AreaService" + (version.equals("v1") ? "" : "_" + version)));
         String wsdlLocation = "classpath:META-INF/wsdl/contingent2/" + (pathPart.isEmpty() ? "v1/" : pathPart) + "emias.contingent2." + (version == null ? "v1" : version) + ".wsdl";
         endpoint.setWsdlLocation(wsdlLocation);
         endpoint.setAddress("/" + pathPart + "areaService");

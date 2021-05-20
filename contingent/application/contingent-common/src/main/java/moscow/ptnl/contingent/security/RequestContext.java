@@ -12,11 +12,13 @@ public class RequestContext {
     
     private final UUID requestId; //произвольный уникальтный идентификатор запроса
     private final String methodName; //имя вызываемого метода web-сервиса
+    private final String contractVersion; //версия контракта вызываемого сервиса
     private final UserContext userContext;
     
-    public RequestContext(String methodName, UserContext userContext) {
+    public RequestContext(String methodName, String contractVersion, UserContext userContext) {
         this.requestId = UUID.randomUUID();
         this.methodName = methodName;
+        this.contractVersion = contractVersion;
         this.userContext = userContext;
     }
     
@@ -29,7 +31,11 @@ public class RequestContext {
     String getMethodName() {
         return methodName;
     }
-    
+
+    String getContractVersion() {
+        return contractVersion;
+    }
+
     //пакетный доступ, чтобы зря не дергали метод
     UserContext getUserContext() {
         return this.userContext;

@@ -24,11 +24,14 @@ public class UserContextInterceptor extends AbstractSoapInterceptor {
     
     private final static Logger LOG = LoggerFactory.getLogger(UserContextInterceptor.class);
 
+    private final String namespace;
+
     @Autowired
     private UserContextMapper userContextMapper;
 
-    public UserContextInterceptor() {
+    public UserContextInterceptor(String namespace) {
         super(Phase.PRE_INVOKE);
+        this.namespace = namespace;
     }
 
     @Override
@@ -56,18 +59,26 @@ public class UserContextInterceptor extends AbstractSoapInterceptor {
         if (userContext.getUserName() == null) { userContext.setUserName("Не задано");}
         
         String methodName = null;
-        try {           
-            methodName = soapMessage
-                .getExchange()
-                .getBindingOperationInfo()
-                .getOperationInfo()
-                .getName()
-                .getLocalPart();
+        String contractVersion = null;
+
+        try {
+            QName operation = soapMessage
+                    .getExchange()
+                    .getBindingOperationInfo()
+                    .getOperationInfo()
+                    .getName();
+            methodName = operation.getLocalPart();
+
+            if (operation.getNamespaceURI().startsWith(namespace)) {
+                int lastSlash = operation.getNamespaceURI().lastIndexOf("/");
+                contractVersion = operation.getNamespaceURI().substring(namespace.length(),
+                        lastSlash >= namespace.length() ? lastSlash : operation.getNamespaceURI().length() - 1);
+            }
         } catch (Exception e) {
             LOG.error("Ошибка получения имени вызываемого метода", e);
             throw new RuntimeException("Не определен action");
         }
         
-        UserContextHolder.setContext(new RequestContext(methodName, userContextMapper.dtoToEntityTransform(userContext)));
+        UserContextHolder.setContext(new RequestContext(methodName, contractVersion, userContextMapper.dtoToEntityTransform(userContext)));
     }
 }

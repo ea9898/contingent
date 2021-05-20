@@ -27,7 +27,19 @@ public class UserContextHolder {
         }
         return context.getMethodName();
     }
-    
+
+    public static int getContractVersion() {
+        RequestContext context = getContext();
+        if (context == null || context.getContractVersion() == null) {
+            return 1;
+        }
+        try {
+            return Integer.parseInt(context.getContractVersion().substring(context.getContractVersion().indexOf('v') + 1));
+        } catch (Exception ex) {
+            return 1;
+        }
+    }
+
     public static UserContext getUserContext() {
         RequestContext context = getContext();
         if (context == null) {
