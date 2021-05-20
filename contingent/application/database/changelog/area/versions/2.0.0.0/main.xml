@@ -268,4 +268,17 @@
         </loadUpdateData>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-1814-1" author="sorlov" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MU_AVAILABLE_AREA_TYPES" columnName="AREA_TYPE_CODE"/>
+        </preConditions>
+        <sql>
+            delete from MU_AVAILABLE_AREA_TYPES where AREA_TYPE_CODE is null;
+        </sql>
+        <addNotNullConstraint tableName="MU_AVAILABLE_AREA_TYPES" columnName="AREA_TYPE_CODE" columnDataType="BIGINT"/>
+        <rollback>
+            <dropNotNullConstraint tableName="MU_AVAILABLE_AREA_TYPES" columnName="AREA_TYPE_CODE" columnDataType="BIGINT"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
