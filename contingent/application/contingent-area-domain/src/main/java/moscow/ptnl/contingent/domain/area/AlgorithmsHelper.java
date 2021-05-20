@@ -46,7 +46,7 @@ public class AlgorithmsHelper {
     // STREETCODE = STREETCODE
     public static BiPredicate<AddressRegistry, Addresses> streetCodeFilter = (addressRegistry, addr) ->
             planCodeFilter.test(addressRegistry, addr) &&
-            (addressRegistry.getStreet() == null || addr.getStreetCode().equals(addressRegistry.getStreet().getCode()));
+            (addressRegistry.getStreet() == null || (addr.getStreetCode() != null && addr.getStreetCode().equals(addressRegistry.getStreet().getCode())));
 
 
     // А_УУ_3 2.1.
