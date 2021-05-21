@@ -153,15 +153,24 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     @Override
     public List<Area> findAreasForSyncToK1(long daysForSelect) {
         Specification<Area> specification = (root, criteriaQuery, cb) -> {
+            LocalDate now = LocalDate.now();
             Join<Area, AreaType> areaTypeJoin = root.join(Area_.areaType, JoinType.LEFT);
             Subquery<AreaMedicalEmployees> sub = criteriaQuery.subquery(AreaMedicalEmployees.class);
             Root<AreaMedicalEmployees> subRoot = sub.from(AreaMedicalEmployees.class);
             sub.where(cb.and(
                     cb.equal(subRoot.get(AreaMedicalEmployees_.area), root.get(Area_.id)),
-                    cb.lessThan(subRoot.get(AreaMedicalEmployees_.endDate), LocalDate.now()),
-                    cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate), LocalDate.now().minusDays(daysForSelect)),
-                    cb.greaterThanOrEqualTo(cb.function("DATE", LocalDate.class, subRoot.get(AreaMedicalEmployees_.endDate)),
-                            cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName()))),
+                    cb.or(
+                            cb.and(
+                                    cb.lessThan(subRoot.get(AreaMedicalEmployees_.endDate), now),
+                                    cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate), now.minusDays(daysForSelect)),
+                                    cb.greaterThanOrEqualTo(cb.function("DATE", LocalDate.class, subRoot.get(AreaMedicalEmployees_.endDate)),
+                                            cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName())))),
+                            cb.and(
+                                    cb.lessThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.startDate), now),
+                                    cb.greaterThan(subRoot.get(AreaMedicalEmployees_.startDate), now.minusDays(daysForSelect)),
+                                    cb.greaterThanOrEqualTo(cb.function("DATE", LocalDate.class, subRoot.get(AreaMedicalEmployees_.startDate)),
+                                            cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName()))))
+                    ),
                     cb.or(
                             cb.isNull(subRoot.get(AreaMedicalEmployees_.isError)),
                             cb.equal(subRoot.get(AreaMedicalEmployees_.isError), false)
