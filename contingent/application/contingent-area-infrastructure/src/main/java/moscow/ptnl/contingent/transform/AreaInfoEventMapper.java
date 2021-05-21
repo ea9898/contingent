@@ -10,6 +10,7 @@ import moscow.ptnl.util.CollectionsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
 
     @Override
     public AreaInfoEvent entityToDtoTransform(moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent entity) {
+        LocalDate now = LocalDate.now();
         AreaInfoEvent event = new AreaInfoEvent();
         Area area = entity.getArea();
         //1
@@ -45,7 +47,10 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         event.setResidentsBindRate((area.getAreaType().getResidentsBindRate() != null) ? area.getAreaType().getResidentsBindRate().longValue() : null);
         event.setAreaRestriction(areaRestrictionMapper.entityToDtoTransform(area));
         //2
-        Set<AreaMedicalEmployees> areaMedicalEmployeesMain = area.getActualMainMedicalEmployees().stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toSet());
+        Set<AreaMedicalEmployees> areaMedicalEmployeesMain = area.getActualMainMedicalEmployees().stream()
+                .filter(me -> me.getError() == null || !me.getError())
+                .filter(me -> me.getStartDate() == null || me.getStartDate().isBefore(now) || me.getStartDate().equals(now))
+                .collect(Collectors.toSet());
         if (!CollectionsUtil.isNullOrEmpty(areaMedicalEmployeesMain)) {
             event.setMainEmployees(mainEmployeesMapper.entityToDtoTransform(areaMedicalEmployeesMain));
         }
