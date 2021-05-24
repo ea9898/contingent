@@ -492,7 +492,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @Metrics
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
             AreaInfo area = areaServiceDomain.getAreaByIdV2(body.getAreaId());
