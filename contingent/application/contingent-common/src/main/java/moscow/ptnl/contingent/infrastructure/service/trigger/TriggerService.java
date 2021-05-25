@@ -62,50 +62,53 @@ public class TriggerService {
         
         final long executionTimeLimit = getTriggerMaxExecutionTime(trigger);
                 
-        Boolean result = Boolean.FALSE;        
         Future<Boolean> taskAction = null;
 
         try {
+            Boolean result = false;
             //2. Система записывает статус работы триггера, обновляя запись в таблице TRG_STATUS
-            if (!triggerStatusHelper.setRunOnStatus(trigger)) {
-                //Триггер уже запущен или не может быть запущен по условиям запуска
-                return;
-            }
+            taskAction = asyncRunService.run(() -> triggerStatusHelper.setRunOnStatus(trigger));
 
-            //3. Выполняем триггер (в отдельной транзакции с прерыванием по таймауту)
-            taskAction = asyncRunService.run(() -> triggerAction.action(trigger));
-            result = taskAction.get(executionTimeLimit, TimeUnit.MINUTES);
+            if (taskAction.get(60, TimeUnit.SECONDS))
+                try {
+                    //3. Выполняем триггер (в отдельной транзакции с прерыванием по таймауту)
+                    taskAction = asyncRunService.run(() -> triggerAction.action(trigger));
+                    result = taskAction.get(executionTimeLimit, TimeUnit.MINUTES);
+                } finally {
+                    //Меняем статус триггера на "не запущен"
+                    TriggerStatus status = triggerStatusHelper.setRunOffStatus(trigger);
+
+                    //Производим запись в историю
+                    TriggerHistoryItem historyItem = new TriggerHistoryItem();
+                    historyItem.setTrigger(trigger);
+                    historyItem.setStartTime(status.getLastStartDate());
+                    historyItem.setEndTime(status.getLastEndDate());
+
+                    //4. Если при удалении записей получена ошибка
+                    if (Boolean.FALSE.equals(result)) {
+                        historyItem.setResult(0L);
+                    } else if (Boolean.TRUE.equals(result)) {
+                        historyItem.setResult(1L);
+                    }
+                    triggerHistoryRepository.save(historyItem);
+                }
         } catch (TimeoutException e) {
             LOG.error("Выполнение триггера " + trigger + " прервано по таймауту", e);            
         } catch (InterruptedException e) {
             LOG.error("Выполнение триггера " + trigger + " прервано", e);
         } catch (ExecutionException e) {
             LOG.error("Выполнение триггера " + trigger + " завершилось ошибкой", e.getCause());
-        }        
-        
-        //Завершаем выполнение потоков триггера        
-        if (taskAction != null && !taskAction.isDone()) {
-            //к сожалению cancel ничего путного не делает, хотя теоретически должен
-            try { taskAction.cancel(true);  } catch (Exception e) { LOG.error("Ошибка завершения триггера", e); }
+        } finally {
+            //Завершаем выполнение потоков триггера
+            if (taskAction != null && !taskAction.isDone()) {
+                //к сожалению cancel ничего путного не делает, хотя теоретически должен
+                try {
+                    taskAction.cancel(true);
+                } catch (Exception e) {
+                    LOG.error("Ошибка завершения триггера", e);
+                }
+            }
         }
-        
-        //Меняем статус триггера
-        TriggerStatus status = triggerStatusHelper.setRunOffStatus(trigger);
-        
-        //Производим запись в историю
-        TriggerHistoryItem historyItem = new TriggerHistoryItem();
-        historyItem.setTrigger(trigger);
-        historyItem.setStartTime(status.getLastStartDate());
-        historyItem.setEndTime(status.getLastEndDate());
-        
-        //4. Если при удалении записей получена ошибка
-        if (Boolean.FALSE.equals(result)) {
-            historyItem.setResult(0L);
-        } else if (Boolean.TRUE.equals(result)) {
-            historyItem.setResult(1L);
-        }
-        
-        triggerHistoryRepository.save(historyItem);
     }
     
     /**

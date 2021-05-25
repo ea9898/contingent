@@ -68,12 +68,20 @@ public class EsuScheduler {
     }
     
     /**
-     * Периодическая очистка таблиц ESU_INPUT, ESU_OUTPUT.
+     * Периодическая очистка таблиц ESU_INPUT.
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     @Scheduled(cron = "${esu.db.clean.cron.rule}")
-    public void esuInputOutputTablesCleaner() {
+    public void esuInputTablesCleaner() {
         triggerService.startTrigger(TriggerName.trigger_cleanup_esu_input);
+    }
+
+    /**
+     * Периодическая очистка таблиц ESU_OUTPUT.
+     */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+    @Scheduled(cron = "${esu.db.clean.cron.rule}")
+    public void esuOutputTablesCleaner() {
         triggerService.startTrigger(TriggerName.trigger_cleanup_esu_output);
     }
 }

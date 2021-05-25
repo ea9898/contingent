@@ -30,11 +30,7 @@ public class TriggerStatusHelper {
     
     @Autowired
     private TriggerStatusCRUDRepository triggerStatusRepository;
-    
-    @Transactional(
-            propagation = Propagation.REQUIRES_NEW,
-            noRollbackFor = Throwable.class
-    )
+
     public boolean setRunOnStatus(final TriggerName trigger) {
         try {
             //Нужно завершить транзакцию, чтобы сразу сохранить в БД. Использование saveAndFlush не работает
@@ -55,8 +51,7 @@ public class TriggerStatusHelper {
             
             return true;
         } catch (Throwable e) {
-            LOG.error("Ошибка выполнения триггера " + trigger, e);
-            e.printStackTrace();
+            LOG.error("Ошибка запуска триггера " + trigger, e);
         }
         return false;
     }
