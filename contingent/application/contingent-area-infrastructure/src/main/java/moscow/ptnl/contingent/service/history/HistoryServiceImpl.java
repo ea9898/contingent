@@ -73,7 +73,7 @@ public class HistoryServiceImpl implements HistoryService {
         }
 
         HistoryEventBuilder eventBuilder = HistoryEventBuilder
-                .withEntity(cls, entityId)
+                .withEntity(cls, entityId, methodName)
                 .setPrincipal(principal)
                 .setMethodName(methodName)
                 .setRequestUUID(requestUuid)

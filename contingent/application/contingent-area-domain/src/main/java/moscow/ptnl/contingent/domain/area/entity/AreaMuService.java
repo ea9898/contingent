@@ -1,5 +1,9 @@
 package moscow.ptnl.contingent.domain.area.entity;
 
+import moscow.ptnl.contingent.domain.history.ServiceName;
+import moscow.ptnl.contingent.domain.history.meta.Journalable;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +18,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Entity
+@Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREA_MU_SERVICE")
 @SequenceGenerator(name = "SEQ_AREA_MU_SERVICE_ID", sequenceName = "SEQ_AREA_MU_SERVICE_ID", allocationSize = 1)
 public class AreaMuService implements Serializable {
@@ -30,12 +34,15 @@ public class AreaMuService implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
 
+    @LogIt
     @Column(name = "MU_ID", nullable = false)
     private Long muId;
 
+    @LogIt
     @Column(name = "START_DATE", nullable = false)
     private LocalDate startDate;
 
+    @LogIt
     @Column(name = "END_DATE")
     private LocalDate endDate;
 

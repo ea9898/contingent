@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMuService;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @NoRepositoryBean
@@ -15,5 +16,9 @@ public interface AreaMuServiceRepository {
 
     void saveAll(List<AreaMuService> areaMuServices);
 
-    void closeAreaMuServices(Long servicedMuId, Area area);
+    AreaMuService save(AreaMuService areaMuService);
+
+    void closeAreaMuServices(Long servicedMuId, Area area, LocalDate searchEndDate, LocalDate newEndDate);
+
+    AreaMuService findById(Long id);
 }

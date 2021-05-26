@@ -72,8 +72,17 @@ public class AreaMuServiceRepositoryImpl extends BaseRepository implements AreaM
     }
 
     @Override
-    public void closeAreaMuServices(Long servicedMuId, Area area) {
-        LocalDate now = LocalDate.now();
-        areaMuServiceCRUDRepository.closeAreaMuServices(servicedMuId, area, now, now.minusDays(1));
+    public AreaMuService save(AreaMuService areaMuService) {
+        return areaMuServiceCRUDRepository.save(areaMuService);
+    }
+
+    @Override
+    public void closeAreaMuServices(Long servicedMuId, Area area, LocalDate searchEndDate, LocalDate newEndDate) {
+        areaMuServiceCRUDRepository.closeAreaMuServices(servicedMuId, area, searchEndDate, newEndDate);
+    }
+
+    @Override
+    public AreaMuService findById(Long id) {
+        return areaMuServiceCRUDRepository.getOne(id);
     }
 }

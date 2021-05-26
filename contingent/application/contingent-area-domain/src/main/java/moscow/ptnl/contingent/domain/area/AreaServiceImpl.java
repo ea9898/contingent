@@ -1538,21 +1538,32 @@ public class AreaServiceImpl implements AreaService {
             throw new ContingentException(validation);
         }
         //6.1, 7.1
-        List<AreaMuService> newAreaMuServices = new ArrayList<>();
+        List<AreaMuService> areaMuServicesAdded = new ArrayList<>();
 
         for (Long servicedMuId : addServicedMuIds) {
             if (areaMuServiceRepository.findActive(servicedMuId, areaId).isEmpty()) {
-                newAreaMuServices.add(AreaMuService.buildActive(servicedMuId, area));
+                areaMuServicesAdded.add(AreaMuService.buildActive(servicedMuId, area));
             }
         }
-        areaMuServiceRepository.saveAll(newAreaMuServices);
+        areaMuServiceRepository.saveAll(areaMuServicesAdded);
+        areaMuServicesAdded.forEach(amsa -> historyHelper.sendHistory(null, amsa, AreaMuService.class));
+
         //7.2
+        Map<AreaMuService, AreaMuService> deletedAreaMuServicesAdded = new HashMap<>();
         for (Long servicedMuId : closeServicedMuIds) {
             if (servicedMuId != null) {
-                areaMuServiceRepository.closeAreaMuServices(servicedMuId, area);
+                List<AreaMuService> amsActive = areaMuServiceRepository.findActive(servicedMuId, areaId);
+
+                LocalDate now = LocalDate.now();
+                amsActive.forEach(ams -> {
+                    AreaMuService amsOld = historyHelper.clone(ams);
+                    ams.setEndDate(now.minusDays(1));
+                    deletedAreaMuServicesAdded.put(amsOld, areaMuServiceRepository.save(ams));
+                });
+
             }
         }
         // Логирование изменений
-        historyHelper.sendHistory(oldArea, area, Area.class);
+        deletedAreaMuServicesAdded.forEach((o, n) -> historyHelper.sendHistory(o, n, AreaMuService.class));
     }
 }

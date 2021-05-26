@@ -20,11 +20,11 @@ public class HistoryEventBuilder {
     private final HistoryEvent event;
     private final Set<HistoryEventValue> values;    
     
-    private HistoryEventBuilder(Class<?> objectType, String objectId) {
+    private HistoryEventBuilder(Class<?> objectType, String objectId, String methodName) {
         this.event = new HistoryEvent();
         // TODO переделать под марировку в соответствии с докумиентацией
         // https://wiki.emias.mos.ru/pages/viewpage.action?pageId=74770777
-        this.event.setObjectType(getTableName(objectType));
+        this.event.setObjectType(getObjectType(methodName));
         this.event.setObjectId(objectId);
         this.event.setChangeDate(LocalDateTime.now());        
         this.values = new HashSet<>();        
@@ -33,7 +33,30 @@ public class HistoryEventBuilder {
     private String getTableName(Class<?> objectType) {
         return objectType.getAnnotation(Table.class) != null ? objectType.getAnnotation(Table.class).name() : objectType.getSimpleName();
     }
-    
+
+    private String getObjectType(String methodName) {
+        switch (methodName) {
+            case "createPrimaryArea":
+            case "createDependentArea":
+            case "updatePrimaryArea":
+            case "updateDependentArea":
+                return "AREA";
+            case "setMedicalEmployeeOnArea":
+                return "AREA_EMPLOYEE";
+            case "addAreaAddress":
+            case "delAreaAddress":
+                return "AREA_ADDRESS";
+            case "addMoAddress":
+            case "delMoAddress":
+                return "MO_ADDRESS";
+            case "setAreaMuService":
+                return "SERVICE_MU";
+            default:
+                return "";
+        }
+    }
+
+
     /**
      * Инициализация билдера с заполнением обязательных полей события.
      * 
@@ -41,8 +64,8 @@ public class HistoryEventBuilder {
      * @param entityId уникальный идентификатор сущности
      * @return 
      */
-    public static HistoryEventBuilder withEntity(Class<?> entityType, String entityId) {
-        HistoryEventBuilder builder = new HistoryEventBuilder(entityType, entityId);
+    public static HistoryEventBuilder withEntity(Class<?> entityType, String entityId, String methodName) {
+        HistoryEventBuilder builder = new HistoryEventBuilder(entityType, entityId, methodName);
         return builder;
     }
 
