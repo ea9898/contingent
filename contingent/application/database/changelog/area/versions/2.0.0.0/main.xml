@@ -300,4 +300,81 @@
         </loadUpdateData>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-1841-1" author="ddryuchin" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="POSITION_SUPP"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы POSITION_SUPP</comment>
+        <createTable tableName="POSITION_SUPP"
+                     remarks="Должности специалистов в СУПП">
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="CODE" type="VARCHAR(10)" remarks="Код">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="TITLE_SHORT" type="VARCHAR2(150)" remarks="Краткое наименование">
+                <constraints nullable="false" />
+            </column>
+            <column name="ARCHIVED" type="NUMBER(1)" remarks="Признак архивности" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="PARENT_ID" type="BIGINT" remarks="Глобал ИД родительской записи"/>
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="POSITION_SUPP"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1841-2" author="ddryuchin" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="MAPPING_POSITIONCODE_TO_OTHERPOSITION"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы MAPPING_POSITIONCODE_TO_OTHERPOSITION</comment>
+        <createTable tableName="MAPPING_POSITIONCODE_TO_OTHERPOSITION"
+                     remarks="Должности специалистов в СУПП">
+            <column name="GLOBAL_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="POSITIONCODE_ID" type="BIGINT" remarks="Код должности (из Распоряжения ДЗМ). ">
+                <constraints nullable="false" />
+            </column>
+            <column name="EGISZWORKPOSITION_ID" type="BIGINT" remarks="Должность из справочника ЕГИСЗ." />
+            <column name="PS_GLOBAL_ID" type="BIGINT" remarks="Должность специалиста в СУПП." />
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="MAPPING_POSITIONCODE_TO_OTHERPOSITION" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1681-3" author="ddryuchin" labels="1.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE_PROFILE" columnName="UPDATE_DATE"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_TYPE_PROFILE">
+            <column name="UPDATE_DATE" type="TIMESTAMP(6)" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="SOURCE" type="VARCHAR2(4000)" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE_PROFILE" columnName="UPDATE_DATE"/>
+            <dropColumn tableName="AREA_TYPE_PROFILE" columnName="SOURCE"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

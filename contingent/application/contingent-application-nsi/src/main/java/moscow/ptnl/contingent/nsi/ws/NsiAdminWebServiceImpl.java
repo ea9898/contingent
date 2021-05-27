@@ -4,18 +4,7 @@ import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiFormTablesEnum;
-import moscow.ptnl.contingent.nsi.domain.area.AreaType;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
-import moscow.ptnl.contingent.nsi.domain.area.Gender;
-import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
-import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
-import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
-import moscow.ptnl.contingent.nsi.domain.area.Specialization;
+import moscow.ptnl.contingent.nsi.domain.area.*;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
@@ -23,25 +12,12 @@ import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.error.NsiEhdErrorReason;
 import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
-import moscow.ptnl.contingent.nsi.repository.AddressFormingElementCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.*;
 import moscow.ptnl.contingent.nsi.domain.repository.AddressFormingElementRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeProfileCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.PolicyTypeCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionNomCRUDRepository;
 import moscow.ptnl.contingent.nsi.service.NsiAdminService;
 import moscow.ptnl.contingent.nsi.service.NsiFormServiceHelper;
 import moscow.ptnl.contingent.nsi.transform.NsiFormResponseMapper;
 import moscow.ptnl.contingent.nsi.transform.SoapExceptionMapper;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeRelationsCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypeSpecializationsCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypesCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypesClassCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.AreaTypesKindCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.GenderCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.NsiPushEventCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.PositionCodeCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import moscow.ptnl.contingent.nsi.transform.UpdateAddressByGlobalIdResponseMapper;
 import moscow.ptnl.contingent.repository.CommonRepository;
 import org.apache.cxf.annotations.SchemaValidation;
@@ -137,6 +113,12 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
 
     @Autowired
     private AreaTypeProfileCRUDRepository areaTypeProfileCRUDRepository;
+
+    @Autowired
+    private PositionSuppCRUDRepository positionSuppCRUDRepository;
+
+    @Autowired
+    private MappingPositioncodeToOtherpoositionCRUDRepository mappingPositioncodeToOtherpoositionCRUDRepository;
 
     @Autowired
     private AreaService areaServiceDomain;
@@ -242,6 +224,15 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                 case AREA_TYPE_PROFILE:
                     List<AreaTypeProfile> areaTypeProfiles = entityMapper.mapTypedList(rows, AreaTypeProfile.class);
                     saveAll(areaTypeProfileCRUDRepository, areaTypeProfiles);
+                    break;
+                case POSITION_SUPP:
+                    List<PositionSupp> positionSupps = entityMapper.mapTypedList(rows, PositionSupp.class);
+                    saveAll(positionSuppCRUDRepository, positionSupps);
+                    break;
+                case MAPPING_POSITIONCODE_TO_OTHERPOSITION:
+                    List<MappingPositioncodeToOtherpoosition> mappingPositioncodeToOtherpoositions =
+                            entityMapper.mapTypedList(rows, MappingPositioncodeToOtherpoosition.class);
+                    saveAll(mappingPositioncodeToOtherpoositionCRUDRepository, mappingPositioncodeToOtherpoositions);
                     break;
             }
         } catch (Exception e) {

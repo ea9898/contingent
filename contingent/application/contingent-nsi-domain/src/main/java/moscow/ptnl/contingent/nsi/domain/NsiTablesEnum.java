@@ -16,7 +16,9 @@ public enum NsiTablesEnum {
     GENDER(1122),
     D_POSITION_NOM(1129),
     POLICY_TYPE(1140),
-    AREA_TYPE_PROFILE(2416);
+    AREA_TYPE_PROFILE(2416),
+    POSITION_SUPP(1381),
+    MAPPING_POSITIONCODE_TO_OTHERPOSITION(1382);
 
     private final Integer code;
 
