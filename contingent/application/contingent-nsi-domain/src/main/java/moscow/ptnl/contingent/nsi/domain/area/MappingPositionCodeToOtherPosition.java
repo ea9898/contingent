@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "POSITION_SUPP")
+@Table(name = "MAPPING_POSITIONCODE_TO_OTHERPOSITION")
 @Cacheable
-@MapToNsi(table = NsiTablesEnum.POSITION_SUPP)
-public class MappingPositioncodeToOtherpoosition implements Serializable, NsiExternalEntity {
+@MapToNsi(table = NsiTablesEnum.MAPPING_POSITIONCODE_TO_OTHERPOSITION)
+public class MappingPositionCodeToOtherPosition implements Serializable, NsiExternalEntity {
 
     private static final long serialVersionUID = -1047920444396677746L;
 
@@ -26,7 +26,7 @@ public class MappingPositioncodeToOtherpoosition implements Serializable, NsiExt
 
     @Column(name = "POSITIONCODE_ID")
     @MapToNsi("POSITIONCODE_ID")
-    private Long positionCode;
+    private Long positionCodeId;
 
     @Column(name = "EGISZWORKPOSITION_ID")
     @MapToNsi("EGISZWORKPOSITION_ID")
@@ -56,9 +56,9 @@ public class MappingPositioncodeToOtherpoosition implements Serializable, NsiExt
         this.globalId = globalId;
     }
 
-    public Long getPositionCode() { return positionCode; }
+    public Long getPositionCodeId() { return positionCodeId; }
 
-    public void setPositionCode(Long positionCode) { this.positionCode = positionCode; }
+    public void setPositionCodeId(Long positionCodeId) { this.positionCodeId = positionCodeId; }
 
     public Long getEgiszworkpositionId() { return egiszworkpositionId; }
 
@@ -102,7 +102,7 @@ public class MappingPositioncodeToOtherpoosition implements Serializable, NsiExt
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MappingPositioncodeToOtherpoosition that = (MappingPositioncodeToOtherpoosition) o;
+        MappingPositionCodeToOtherPosition that = (MappingPositionCodeToOtherPosition) o;
         return Objects.equals(globalId, that.globalId);
     }
 

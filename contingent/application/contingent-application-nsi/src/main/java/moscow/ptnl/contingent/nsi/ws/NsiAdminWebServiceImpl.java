@@ -13,10 +13,7 @@ import moscow.ptnl.contingent.nsi.error.NsiEhdErrorReason;
 import moscow.ptnl.contingent.nsi.pushaccepter.NsiEntityMapper;
 import moscow.ptnl.contingent.nsi.pushaccepter.PushAccepter;
 import moscow.ptnl.contingent.nsi.repository.*;
-import moscow.ptnl.contingent.nsi.domain.repository.AddressFormingElementRepository;
 import moscow.ptnl.contingent.nsi.service.NsiAdminService;
-import moscow.ptnl.contingent.nsi.service.NsiFormServiceHelper;
-import moscow.ptnl.contingent.nsi.transform.NsiFormResponseMapper;
 import moscow.ptnl.contingent.nsi.transform.SoapExceptionMapper;
 import moscow.ptnl.contingent.nsi.transform.UpdateAddressByGlobalIdResponseMapper;
 import moscow.ptnl.contingent.repository.CommonRepository;
@@ -27,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.mos.emias.nsiproduct.core.v1.KeyValuePair;
 import ru.mos.emias.nsiproduct.core.v1.PagingOptions;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsRequest;
 import ru.mos.emias.nsiproduct.nsiservice.v1.types.GetCatalogItemsResponse;
@@ -45,8 +41,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 import ru.mos.emias.pushaccepterproduct.adminservice.v1.types.UpdateAddressByGlobalIdRequest;
@@ -118,7 +112,7 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     private PositionSuppCRUDRepository positionSuppCRUDRepository;
 
     @Autowired
-    private MappingPositioncodeToOtherpoositionCRUDRepository mappingPositioncodeToOtherpoositionCRUDRepository;
+    private MappingPositionCodeToOtherPositionCRUDRepository mappingPositionCodeToOtherPositionCRUDRepository;
 
     @Autowired
     private AreaService areaServiceDomain;
@@ -230,9 +224,9 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                     saveAll(positionSuppCRUDRepository, positionSupps);
                     break;
                 case MAPPING_POSITIONCODE_TO_OTHERPOSITION:
-                    List<MappingPositioncodeToOtherpoosition> mappingPositioncodeToOtherpoositions =
-                            entityMapper.mapTypedList(rows, MappingPositioncodeToOtherpoosition.class);
-                    saveAll(mappingPositioncodeToOtherpoositionCRUDRepository, mappingPositioncodeToOtherpoositions);
+                    List<MappingPositionCodeToOtherPosition> mappingPositionCodeToOtherPositions =
+                            entityMapper.mapTypedList(rows, MappingPositionCodeToOtherPosition.class);
+                    saveAll(mappingPositionCodeToOtherPositionCRUDRepository, mappingPositionCodeToOtherPositions);
                     break;
             }
         } catch (Exception e) {
