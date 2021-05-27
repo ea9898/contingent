@@ -585,7 +585,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    @Override //@EMIASSecured(faultClass = Fault.class) @Metrics
     public GetNewAreaIdResponse getNewAreaId(GetNewAreaIdRequest body) throws Fault {
         try {
             GetNewAreaIdResponse response = new GetNewAreaIdResponse();
