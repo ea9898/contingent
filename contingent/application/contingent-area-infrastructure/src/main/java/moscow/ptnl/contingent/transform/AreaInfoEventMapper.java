@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,14 +49,15 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         event.setAreaRestriction(areaRestrictionMapper.entityToDtoTransform(area));
         //2
         Set<AreaMedicalEmployees> areaMedicalEmployeesMain = area.getActualMainMedicalEmployees().stream()
-                .filter(me -> me.getError() == null || !me.getError())
-                .filter(me -> me.getStartDate() == null || me.getStartDate().isBefore(now) || me.getStartDate().equals(now))
+                .filter(buildEmployeesPredicate(now))
                 .collect(Collectors.toSet());
         if (!CollectionsUtil.isNullOrEmpty(areaMedicalEmployeesMain)) {
             event.setMainEmployees(mainEmployeesMapper.entityToDtoTransform(areaMedicalEmployeesMain));
         }
 
-        Set<AreaMedicalEmployees> areaMedicalEmployeesReplacement = area.getActualReplacementMedicalEmployees().stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toSet());
+        Set<AreaMedicalEmployees> areaMedicalEmployeesReplacement = area.getActualReplacementMedicalEmployees().stream()
+                .filter(buildEmployeesPredicate(now))
+                .collect(Collectors.toSet());
         if (!CollectionsUtil.isNullOrEmpty(areaMedicalEmployeesReplacement)) {
             event.setReplacementEmployees(replacementEmployeesMapper.entityToDtoTransform(areaMedicalEmployeesReplacement));
         }
@@ -66,6 +68,11 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         }
 
         return event;
+    }
+
+    private Predicate<AreaMedicalEmployees> buildEmployeesPredicate(LocalDate now) {
+        return (e) -> (e.getError() == null || !e.getError()) &&
+                (e.getStartDate() == null || e.getStartDate().isBefore(now) || e.getStartDate().equals(now));
     }
 
     @Override
