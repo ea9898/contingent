@@ -377,4 +377,18 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-1841-3" author="ddryuchin" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="POSITION_SUPP" columnName="ARCHIVED"/>
+        </preConditions>
+        <dropColumn tableName="POSITION_SUPP" columnName="ARCHIVED"/>
+        <rollback>
+            <addColumn tableName="POSITION_SUPP">
+                <column name="ARCHIVED" type="NUMBER(1)" remarks="Признак архивности" defaultValue="0">
+                    <constraints nullable="false" />
+                </column>
+            </addColumn>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

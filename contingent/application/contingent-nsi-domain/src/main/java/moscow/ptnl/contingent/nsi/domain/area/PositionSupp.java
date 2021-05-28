@@ -1,6 +1,5 @@
 package moscow.ptnl.contingent.nsi.domain.area;
 
-import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
@@ -33,10 +32,10 @@ public class PositionSupp implements Serializable, NsiExternalEntity {
     @MapToNsi("TITLE_SHORT")
     private String titleShort;
 
-    @Column(name = "ARCHIVED", nullable = false)
-    @Convert(converter = BooleanStrictIntegerConverter.class)
-    @MapToNsi
-    private Boolean archived;
+//    @Column(name = "ARCHIVED", nullable = false)
+//    @Convert(converter = BooleanStrictIntegerConverter.class)
+//    @MapToNsi
+//    private Boolean archived;
 
     @Column(name = "PARENT_ID")
     @MapToNsi("PARENT_ID")
@@ -77,13 +76,11 @@ public class PositionSupp implements Serializable, NsiExternalEntity {
 
     @Override
     public Boolean getArchived() {
-        return archived;
+        return false;
     }
 
     @Override
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
-    }
+    public void setArchived(Boolean archived) { }
 
     @Override
     public LocalDateTime getUpdateDate() {

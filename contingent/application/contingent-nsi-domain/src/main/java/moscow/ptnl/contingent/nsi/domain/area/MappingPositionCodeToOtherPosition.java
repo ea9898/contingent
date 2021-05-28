@@ -36,10 +36,10 @@ public class MappingPositionCodeToOtherPosition implements Serializable, NsiExte
     @MapToNsi("PS_GLOBAL_ID")
     private Long psGlobalId;
 
-    @Column(name = "ARCHIVED", nullable = false)
-    @Convert(converter = BooleanStrictIntegerConverter.class)
-    @MapToNsi
-    private Boolean archived;
+//    @Column(name = "ARCHIVED", nullable = false)
+//    @Convert(converter = BooleanStrictIntegerConverter.class)
+//    @MapToNsi
+//    private Boolean archived;
 
     @Column(name = "UPDATE_DATE", nullable = false)
     private LocalDateTime updateDate;
@@ -70,13 +70,11 @@ public class MappingPositionCodeToOtherPosition implements Serializable, NsiExte
 
     @Override
     public Boolean getArchived() {
-        return archived;
+        return false;
     }
 
     @Override
-    public void setArchived(Boolean archived) {
-        this.archived = archived;
-    }
+    public void setArchived(Boolean archived) { }
 
     @Override
     public LocalDateTime getUpdateDate() {
