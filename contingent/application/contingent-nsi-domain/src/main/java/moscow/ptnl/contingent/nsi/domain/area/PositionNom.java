@@ -37,7 +37,7 @@ public class PositionNom implements Serializable, NsiExternalEntity {
     private String title;
 
     @Column(name = "POSITION_CODE_ID", nullable = false)
-    @MapToNsi(value = "POSITION_CODE_ID", findEntityByField = "globalId", crossObject = PositionCode.class, crossField = "globalId")
+    @MapToNsi(value = "POSITION_CODE_ID")
     private Long positionCodeId;
 
     //Повторное одно объявление поля с Join нужно для синхронизации НСИ
