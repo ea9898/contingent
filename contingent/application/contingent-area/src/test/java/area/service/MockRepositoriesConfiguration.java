@@ -4,7 +4,10 @@ import moscow.ptnl.contingent.domain.area.repository.AreaMuServiceRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeProfileRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.MappingPositionCodeToOtherPositionRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.SpecializationRepository;
+import moscow.ptnl.contingent.nsi.repository.MappingPositionCodeToOtherPositionCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionSuppCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopMsgCRUDRepository;
@@ -40,6 +43,7 @@ import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionNomRepository;
 
 import moscow.ptnl.contingent.sysop.repository.SysopRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 
@@ -165,6 +169,15 @@ public class MockRepositoriesConfiguration {
 
     @MockBean
     private AreaMuServiceRepository areaMuServiceRepository;
+
+    @MockBean
+    private MappingPositionCodeToOtherPositionCRUDRepository mappingPositionCodeToOtherPositionCRUDRepository;
+
+    @MockBean
+    private MappingPositionCodeToOtherPositionRepository mappingPositionCodeToOtherPositionRepository;
+
+    @MockBean
+    private PositionSuppCRUDRepository positionSuppCRUDRepository;
 
     @MockBean
     private EntityManager entityManager;

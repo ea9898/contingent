@@ -85,7 +85,8 @@ public enum AreaErrorReason implements ErrorReason {
     EMPTY_AREA_TYPE_PROFILE("UE090", "Не указан код профиля (обязателен для типа участка %s)"),
     AREA_TYPE_PROFILE_NOT_FOUND("UE091", "Переданный профиль не найден в справочнике или не соответствует типу участка %s"),
     CANT_ADD_SERVICED_MU("UE092", "К типу участка %s не могут быть распределены медучреждения для обслуживания"),
-    MU_ALREADY_SERVICED("UE093", "Медучреждение %s обслуживается участком %s с тем же профилем типа участка")
+    MU_ALREADY_SERVICED("UE093", "Медучреждение %s обслуживается участком %s с тем же профилем типа участка"),
+    POSITION_CODE_NOT_FOUND("UE094", "Код должности медработника %s не найден в системе")
     ;
 
     private final String description;

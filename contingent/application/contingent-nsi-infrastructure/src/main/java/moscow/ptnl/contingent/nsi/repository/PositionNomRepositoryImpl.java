@@ -12,8 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -26,16 +25,14 @@ public class PositionNomRepositoryImpl extends BaseRepository implements Positio
     @Override
     public Optional<PositionNom> getByPositionCodeId(Long positionCodeId) {
         Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(PositionNom_.positionCode), positionCodeId);
+                criteriaBuilder.equal(root.get(PositionNom_.positionCodeId), positionCodeId);
         return positionNomCRUDRepository.findOne(specification);
     }
 
     @Override
-    public Optional<PositionNom> getByPositionCode(String positionCode) {
-        Specification<PositionNom> specification = (root, query, builder) -> {
-            final Join<PositionNom, PositionCode> positionCodeJoin = root.join(PositionNom_.positionCode, JoinType.LEFT);
-            return builder.equal(positionCodeJoin.get(PositionCode_.code), positionCode);
-        };
-        return positionNomCRUDRepository.findOne(specification);
+    public List<PositionNom> findByPositionCodeIds(List<Long> positionCodeId) {
+        Specification<PositionNom> specification = (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.in(root.get(PositionNom_.positionCodeId.getName())).value(positionCodeId);
+        return positionNomCRUDRepository.findAll(specification);
     }
 }

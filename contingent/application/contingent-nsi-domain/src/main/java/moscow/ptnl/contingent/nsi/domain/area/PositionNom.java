@@ -1,6 +1,5 @@
 package moscow.ptnl.contingent.nsi.domain.area;
 
-import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
@@ -37,10 +36,9 @@ public class PositionNom implements Serializable, NsiExternalEntity {
     @MapToNsi
     private String title;
 
-    @JoinColumn(name = "POSITION_CODE_ID", nullable = false, referencedColumnName = "GLOBAL_ID")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @MapToNsi(value = "POSITION_CODE_ID", findEntityByField = "globalId")
-    private PositionCode positionCode;
+    @Column(name = "POSITION_CODE_ID", nullable = false)
+    @MapToNsi(value = "POSITION_CODE_ID", findEntityByField = "code", crossObject = PositionCode.class, crossField = "globalId")
+    private Long positionCodeId;
 
     @Column(name = "START_DATE") //ограничение nullable = false снято из-за того что его нет в справочнике
     @MapToNsi("START")
@@ -114,12 +112,12 @@ public class PositionNom implements Serializable, NsiExternalEntity {
         this.specialization = specialization;
     }
 
-    public PositionCode getPositionCode() {
-        return positionCode;
+    public Long getPositionCodeId() {
+        return positionCodeId;
     }
 
-    public void setPositionCode(PositionCode positionCode) {
-        this.positionCode = positionCode;
+    public void setPositionCodeId(Long positionCodeId) {
+        this.positionCodeId = positionCodeId;
     }
 
     @Override

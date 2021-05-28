@@ -43,13 +43,16 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
+import moscow.ptnl.contingent.nsi.domain.area.MappingPositionCodeToOtherPosition;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.MappingPositionCodeToOtherPositionRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionNomRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.SpecializationRepository;
 import moscow.ptnl.contingent.security.UserContextHolder;
@@ -158,6 +161,12 @@ public class AreaServiceImpl implements AreaService {
 
     @Autowired
     private AreaMuServiceRepository areaMuServiceRepository;
+
+    @Autowired
+    private PositionCodeRepository positionCodeRepository;
+
+    @Autowired
+    private MappingPositionCodeToOtherPositionRepository mappingPositionCodeToOtherPositionRepository;
 
     @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
@@ -667,6 +676,7 @@ public class AreaServiceImpl implements AreaService {
         //4
         List<AreaMedicalEmployees> areaEmployeesDb = areaMedicalEmployeeRepository.getEmployeesByAreaId(areaId);
 
+        //5
         for (ChangeMedicalEmployee inputEmpl : changeEmployeesInput) {
 
             Optional<AreaMedicalEmployees> employee = areaEmployeesDb.stream().filter(
@@ -707,42 +717,58 @@ public class AreaServiceImpl implements AreaService {
             throw new ContingentException(validation);
         }
 
-        //5
+        //6
         List<AreaTypeSpecializations> areaTypeSpecializations = areaTypeSpecializationsRepository.
                 findByAreaTypeCode(area.getAreaType());
         for (AddMedicalEmployee empl : addEmployeesInput) {
-            //5.1.
+            //6.1.
             if (empl.getStartDate().isBefore(LocalDate.now())) {
                 validation.error(AreaErrorReason.START_DATE_IN_PAST,
                         new ValidationParameter("startDate", empl.getStartDate()));
             }
 
-            // 5.2.
+            //6.2.
             if (empl.getEndDate() != null && empl.getStartDate().isAfter(empl.getEndDate())){
                 validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
                         new ValidationParameter("endDate", empl.getEndDate()),
                         new ValidationParameter("startDate", empl.getStartDate()));
             }
 
-            //5.3.
+            //6.3.
+            List<PositionNom> positionsNom = new ArrayList<>();
+            //6.3.1.
+            //6.3.2.
+            if (Strings.isNumberWith4Digits(empl.getPositionCode())) {
+                //ЕСЛИ код должности медработника числовой (= медработник ведется в СУПП)
+                List<MappingPositionCodeToOtherPosition> mappingPositions = mappingPositionCodeToOtherPositionRepository.findByPositionSuppCode(empl.getPositionCode());
 
-            // 5.3.1.
-            // 5.3.2.
-            Optional<PositionNom> positionNomOptional = positionNomRepository.getByPositionCode(empl.getPositionCode());
-
-            if (!positionNomOptional.isPresent()) {
-                // TODO ???
-                continue;
+                if (!mappingPositions.isEmpty()) {
+                    positionsNom = positionNomRepository.findByPositionCodeIds(mappingPositions.stream()
+                            .map(MappingPositionCodeToOtherPosition::getPositionCodeId)
+                            .collect(Collectors.toList()));
+                }
+            } else {
+                //ИНАЧЕ (код должности медработника символьный) определяет ИД кода должности из СВМР.2
+                positionCodeRepository.getByCode(empl.getPositionCode())
+                        .flatMap(c -> positionNomRepository.getByPositionCodeId(c.getGlobalId()))
+                        .ifPresent(positionsNom::add);
             }
-
-            //5.4.
-            PositionNom positionNom = positionNomOptional.get();
-            Specialization specialization = positionNom.getSpecialization();
-
-            // 5.5.
-            if (specialization != null && areaTypeSpecializations.stream().noneMatch(ats -> ats.getSpecializationCode().equals(specialization.getCode()))) {
+            if (positionsNom.isEmpty()) {
+                validation.error(AreaErrorReason.POSITION_CODE_NOT_FOUND,
+                        new ValidationParameter("positionCode", empl.getPositionCode()));
+            }
+            //6.4.
+            List<Long> specializations = positionsNom.stream()
+                    .map(PositionNom::getSpecialization)
+                    .map(Specialization::getCode)
+                    .collect(Collectors.toList());
+            //6.5.
+            if (areaTypeSpecializations.stream().noneMatch(ats -> specializations.contains(ats.getSpecializationCode()))) {
                 validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
-                        new ValidationParameter("SpecializationTitle", specialization.getTitle()),
+                        new ValidationParameter("SpecializationTitle", positionsNom.stream()
+                                .map(PositionNom::getSpecialization)
+                                .map(Specialization::getTitle)
+                                .collect(Collectors.joining(","))),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                         new ValidationParameter("AreaSpecializationTitles", areaTypeSpecializations.stream()
                                 .map(AreaTypeSpecializations::getSpecializationCode)
@@ -751,13 +777,14 @@ public class AreaServiceImpl implements AreaService {
                                 .map(Specialization::getTitle)
                                 .collect(Collectors.joining(", "))));
             }
-
-            // 5.6.
+            //6.6.
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
 
             if (positions != null && !positions.isEmpty() && positions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(empl.getPositionCode()))) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
-                        new ValidationParameter("positionTitle", positionNom.getTitle()),
+                        new ValidationParameter("positionTitle", positionsNom.stream()
+                                .map(PositionNom::getTitle)
+                                .collect(Collectors.joining(","))),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
                         new ValidationParameter("areaTypeTitle", area.getAreaType().getTitle()));
             }
@@ -766,14 +793,14 @@ public class AreaServiceImpl implements AreaService {
             throw new ContingentException(validation);
         }
 
-        //6.1
+        //7.1
         List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
         Map<AreaMedicalEmployees, AreaMedicalEmployees> changesAme =  areaHelper.applyChanges(allEmployees, changeEmployeesInput);
         areaHelper.addNew(allEmployees, addEmployeesInput, area);
         areaHelper.checkDatesNotInterceptWithSamePosition(
                 allEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation); // отфитровываем ошибочно назначенные работников из проверки
 
-        //6.2
+        //7.2
         List<AreaMedicalEmployees> mainEmployees =
                 areaEmployeesDb.stream().filter(empl -> !empl.getReplacement()).collect(Collectors.toList());
         areaHelper.applyChanges(mainEmployees, changeEmployeesInput);
@@ -785,15 +812,15 @@ public class AreaServiceImpl implements AreaService {
                     mainEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation);  // отфитровываем ошибочно назначенные работников из проверки
         }
 
-        //6.3
+        //7.3
         if (area.getAreaType() != null &&
                 area.getAreaType().getAreaTypeKind() != null &&
                 (area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) ||
                         area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode()))) {
-            //6.3.1.
+            //7.3.1.
             List<Period> periodsWithoutMainEmpl = areaHelper.getPeriodsWithoutMainEmployee(mainEmployees);
             if (periodsWithoutMainEmpl.size() > 0) {
-                //6.3.2.
+                //7.3.2.
                 List<AreaMedicalEmployees> replacementEmployees = areaEmployeesDb.stream()
                         .filter(AreaMedicalEmployees::getReplacement).collect(Collectors.toList());
                 areaHelper.applyChanges(replacementEmployees, changeEmployeesInput);
@@ -804,7 +831,7 @@ public class AreaServiceImpl implements AreaService {
             }
         }
 
-        //7
+        //8
         List<Long> result = new ArrayList<>();
         areaHelper.applyChanges(changeEmployeesDb, changeEmployeesInput);
         areaHelper.addNew(changeEmployeesDb, addEmployeesInput, area);
