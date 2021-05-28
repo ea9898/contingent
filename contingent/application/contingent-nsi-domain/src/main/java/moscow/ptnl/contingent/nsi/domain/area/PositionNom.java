@@ -37,8 +37,14 @@ public class PositionNom implements Serializable, NsiExternalEntity {
     private String title;
 
     @Column(name = "POSITION_CODE_ID", nullable = false)
-    @MapToNsi(value = "POSITION_CODE_ID", findEntityByField = "code", crossObject = PositionCode.class, crossField = "globalId")
+    @MapToNsi(value = "POSITION_CODE_ID", findEntityByField = "globalId", crossObject = PositionCode.class, crossField = "globalId")
     private Long positionCodeId;
+
+    //Повторное одно объявление поля с Join нужно для синхронизации НСИ
+    //Т.к. в справочнике AreaTypeMedicalPositions есть ссылка на PositionNom
+    @JoinColumn(name = "POSITION_CODE_ID", nullable = false, referencedColumnName = "GLOBAL_ID", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PositionCode positionCode;
 
     @Column(name = "START_DATE") //ограничение nullable = false снято из-за того что его нет в справочнике
     @MapToNsi("START")
@@ -118,6 +124,14 @@ public class PositionNom implements Serializable, NsiExternalEntity {
 
     public void setPositionCodeId(Long positionCodeId) {
         this.positionCodeId = positionCodeId;
+    }
+
+    public PositionCode getPositionCode() {
+        return positionCode;
+    }
+
+    public void setPositionCode(PositionCode positionCode) {
+        this.positionCode = positionCode;
     }
 
     @Override
