@@ -167,7 +167,7 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
             }
             pageNum++;
             rows.addAll(response.getEhdCatalogItems().getRows());
-        } while (response.getPageNumber() <= response.getPageTotal() && response.isMorePagesAvailable());
+        } while (response.getPageNumber() <= response.getPageTotal());
 
         try {
             switch (nsiTablesEnum) {
