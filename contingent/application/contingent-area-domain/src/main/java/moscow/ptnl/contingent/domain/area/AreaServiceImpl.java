@@ -753,20 +753,24 @@ public class AreaServiceImpl implements AreaService {
                         .flatMap(c -> positionNomRepository.getByPositionCodeId(c.getGlobalId()))
                         .ifPresent(positionsNom::add);
             }
-            if (positionsNom.isEmpty()) {
-                validation.error(AreaErrorReason.POSITION_CODE_NOT_FOUND,
-                        new ValidationParameter("positionCode", empl.getPositionCode()));
-            }
             //6.4.
             List<Long> specializations = positionsNom.stream()
                     .map(PositionNom::getSpecialization)
+                    .filter(Objects::nonNull)
                     .map(Specialization::getCode)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
+
+            if (specializations.isEmpty()) {
+                validation.error(AreaErrorReason.POSITION_CODE_NOT_FOUND,
+                        new ValidationParameter("positionCode", empl.getPositionCode()));
+            }
             //6.5.
             if (areaTypeSpecializations.stream().noneMatch(ats -> specializations.contains(ats.getSpecializationCode()))) {
                 validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
                         new ValidationParameter("SpecializationTitle", positionsNom.stream()
                                 .map(PositionNom::getSpecialization)
+                                .filter(Objects::nonNull)
                                 .map(Specialization::getTitle)
                                 .collect(Collectors.joining(","))),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),

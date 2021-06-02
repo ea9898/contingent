@@ -24,7 +24,7 @@ public class MappingPositionCodeToOtherPosition implements Serializable, NsiExte
     @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
-    @Column(name = "POSITIONCODE_ID")
+    @Column(name = "POSITIONCODE_ID", nullable = false)
     @MapToNsi("POSITIONCODE_ID")
     private Long positionCodeId;
 
