@@ -988,17 +988,18 @@ public class AreaHelper {
 
     public void checkMuAlreadyServiced(Area area, List<Long> servicedMuIds, Validation validation) {
         for (Long servicedMuId : servicedMuIds) {
-            List<AreaMuService> areaMuServices = areaMuServiceRepository.findActive(servicedMuId, area.getId(), area.getAreaTypeProfile().getCode());
-
-            if (!areaMuServices.isEmpty()) {
-                validation.error(AreaErrorReason.MU_ALREADY_SERVICED,
-                        new ValidationParameter("muService/muId", servicedMuId),
-                        new ValidationParameter("areaId", areaMuServices.stream()
-                                .map(AreaMuService::getArea)
-                                .map(Area::getId)
-                                .map(String::valueOf)
-                                .collect(Collectors.joining(";")))
-                );
+            if (area.getAreaTypeProfile() != null) {
+                List<AreaMuService> areaMuServices = areaMuServiceRepository.findActive(servicedMuId, area.getId(), area.getAreaTypeProfile().getCode());
+                if (!areaMuServices.isEmpty()) {
+                    validation.error(AreaErrorReason.MU_ALREADY_SERVICED,
+                            new ValidationParameter("muService/muId", servicedMuId),
+                            new ValidationParameter("areaId", areaMuServices.stream()
+                                    .map(AreaMuService::getArea)
+                                    .map(Area::getId)
+                                    .map(String::valueOf)
+                                    .collect(Collectors.joining(";")))
+                    );
+                }
             }
         }
     }
