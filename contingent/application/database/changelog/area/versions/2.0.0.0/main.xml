@@ -391,4 +391,48 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-1872-1" author="ddryuchin" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'area_types_with_profile'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Типы участков, имеющие профиль</comment>
+        <update tableName="AD_CONFIG">
+            <column name="val" value="302"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+            <where>code = 'area_types_with_profile'</where>
+        </update>
+        <rollback>
+            <update tableName="AD_CONFIG">
+                <column name="val" value=""/>
+                <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+                <where>code = 'area_types_with_profile'</where>
+            </update>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-1872-2" author="ddryuchin" labels="2.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'area_types_servicing_mu'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Типы участков, к которым могут быть распределены МУ</comment>
+        <update tableName="AD_CONFIG">
+            <column name="val" value="302"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+            <where>code = 'area_types_servicing_mu'</where>
+        </update>
+        <rollback>
+            <update tableName="AD_CONFIG">
+                <column name="val" value=""/>
+                <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+                <where>code = 'area_types_servicing_mu'</where>
+            </update>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
