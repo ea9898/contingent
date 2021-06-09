@@ -14,9 +14,11 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
+import moscow.ptnl.contingent.nsi.domain.area.MappingPositionCodeToOtherPosition;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
+import moscow.ptnl.contingent.nsi.domain.area.PositionSupp;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsing.Package;
 import moscow.ptnl.contingent.nsi.pushaccepter.xmlparsingS.Table;
@@ -25,8 +27,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Component
 public class PushAccepterImpl extends PushAccepter {
@@ -87,6 +87,12 @@ public class PushAccepterImpl extends PushAccepter {
                 break;
             case AREA_TYPE_PROFILE:
                 pushEventEntity = entityMapper.mapTyped(pack, AreaTypeProfile.class);
+                break;
+            case POSITION_SUPP:
+                pushEventEntity = entityMapper.mapTyped(pack, PositionSupp.class);
+                break;
+            case MAPPING_POSITIONCODE_TO_OTHERPOSITION:
+                pushEventEntity = entityMapper.mapTyped(pack, MappingPositionCodeToOtherPosition.class);
                 break;
         }
         if (pushEventEntity == null) {
