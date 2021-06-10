@@ -9,6 +9,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.NsiActionsEnum;
@@ -19,6 +20,7 @@ import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.domain.area.PositionSupp;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
+import moscow.ptnl.contingent.nsi.repository.AreaTypeProfileCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.GenderCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.MappingPositionCodeToOtherPositionCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PolicyTypeCRUDRepository;
@@ -87,6 +89,9 @@ public class NsiEventProcessor {
     private PositionNomCRUDRepository positionNomCRUDRepository;
 
     @Autowired
+    private AreaTypeProfileCRUDRepository areaTypeProfileCRUDRepository;
+
+    @Autowired
     private PositionSuppCRUDRepository positionSuppCRUDRepository;
 
     @Autowired
@@ -117,6 +122,8 @@ public class NsiEventProcessor {
             saveOrModifyOrArchive(policyTypeCRUDRepository, (PolicyType) entity, action);
         } else if (entity instanceof PositionNom) {
             saveOrModifyOrArchive(positionNomCRUDRepository, (PositionNom) entity, action);
+        } else if (entity instanceof AreaTypeProfile) {
+            saveOrModifyOrArchive(areaTypeProfileCRUDRepository, (AreaTypeProfile) entity, action);
         } else if (entity instanceof PositionSupp) {
             saveOrModifyOrArchive(positionSuppCRUDRepository, (PositionSupp) entity, action);
         } else if (entity instanceof MappingPositionCodeToOtherPosition) {
