@@ -11,17 +11,20 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeMedicalPositions;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
-import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.nsi.domain.NsiActionsEnum;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
+import moscow.ptnl.contingent.nsi.domain.area.MappingPositionCodeToOtherPosition;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
+import moscow.ptnl.contingent.nsi.domain.area.PositionSupp;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.nsi.repository.GenderCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.MappingPositionCodeToOtherPositionCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PolicyTypeCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionCodeCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionNomCRUDRepository;
+import moscow.ptnl.contingent.nsi.repository.PositionSuppCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import moscow.ptnl.contingent.repository.CommonRepository;
 import moscow.ptnl.contingent.nsi.repository.AreaTypeMedicalPositionsCRUDRepository;
@@ -83,6 +86,12 @@ public class NsiEventProcessor {
     @Autowired
     private PositionNomCRUDRepository positionNomCRUDRepository;
 
+    @Autowired
+    private PositionSuppCRUDRepository positionSuppCRUDRepository;
+
+    @Autowired
+    private MappingPositionCodeToOtherPositionCRUDRepository mappingPositionCodeToOtherPositionCRUDRepository;
+
     @Async
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
     public Future<Void> processMessage(NsiExternalEntity entity, String action) {
@@ -108,6 +117,12 @@ public class NsiEventProcessor {
             saveOrModifyOrArchive(policyTypeCRUDRepository, (PolicyType) entity, action);
         } else if (entity instanceof PositionNom) {
             saveOrModifyOrArchive(positionNomCRUDRepository, (PositionNom) entity, action);
+        } else if (entity instanceof PositionSupp) {
+            saveOrModifyOrArchive(positionSuppCRUDRepository, (PositionSupp) entity, action);
+        } else if (entity instanceof MappingPositionCodeToOtherPosition) {
+            saveOrModifyOrArchive(mappingPositionCodeToOtherPositionCRUDRepository, (MappingPositionCodeToOtherPosition) entity, action);
+        } else if (entity != null) {
+            LOG.warn("Unknown NSI push object class=" + entity.getClass());
         }
         return new AsyncResult(null);
     }
