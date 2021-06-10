@@ -79,6 +79,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     @Column(name = "SUBDIVISION_ID")
     private Long subdivisionId;
 
+    @LogIt
     @Column(name = "IS_ERROR")
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean isError;
