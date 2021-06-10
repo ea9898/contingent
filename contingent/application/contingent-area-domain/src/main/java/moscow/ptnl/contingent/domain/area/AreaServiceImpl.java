@@ -1254,12 +1254,13 @@ public class AreaServiceImpl implements AreaService {
         //4
         areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
 
-        //4.1
+        //5 Система выполняет поиск участков по переданным входным параметрам (логическое И шагов 5.1, 5.2, 5.3, 5.4):
+        //5.1
         List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile,
                 servicedMuIds, number, description, isArchived);
 
-        //4.2
-        if (!medicalEmployees.isEmpty()) {
+        //5.2
+        if (!areas.isEmpty() && !medicalEmployees.isEmpty()) {
             areas = areaMedicalEmployeeRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
                     medicalEmployees.stream()
                             .map(MedicalEmployee::getMedicalEmployeeJobId)
@@ -1271,19 +1272,19 @@ public class AreaServiceImpl implements AreaService {
                             .collect(Collectors.toList()));
         }
 
-        //4.3
+        //5.3
         if (!searchAreaAddresses.isEmpty()) {
             List<Addresses> addresses;
             List<AreaAddress> areaAddresses;
-            //4.3.2
+            //5.3.2
             if (isExactAddressMatch == null || isExactAddressMatch) {
                 addresses = addressesRepository.findAddresses(searchAreaAddresses.stream()
                         .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
-                //4.3.3
+                //5.3.3
             } else {
                 addresses = algorithms.findIntersectingAddressesSearch(searchAreaAddresses);
             }
-            //4.3.4
+            //5.3.4
             if (!addresses.isEmpty()) {
                 areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
                 List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
