@@ -65,6 +65,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -1256,20 +1257,38 @@ public class AreaServiceImpl implements AreaService {
 
         //5 Система выполняет поиск участков по переданным входным параметрам (логическое И шагов 5.1, 5.2, 5.3, 5.4):
         //5.1
-        List<Area> areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile,
-                servicedMuIds, number, description, isArchived);
+        List<Area> areas = null;
 
+        boolean noSearchAreas = StringUtils.isEmpty(areaTypeClassCode) && StringUtils.isEmpty(moId) && CollectionUtils.isEmpty(muIds) &&
+                CollectionUtils.isEmpty(areaTypeCodes) && areaTypeProfile == null && CollectionUtils.isEmpty(servicedMuIds) &&
+                StringUtils.isEmpty(number) && StringUtils.isEmpty(description) && isArchived == null;
+
+        if (!noSearchAreas) {
+            //Только если есть критерии поиска для запроса
+            areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile,
+                    servicedMuIds, number, description, isArchived);
+        }
         //5.2
-        if (!areas.isEmpty() && !medicalEmployees.isEmpty()) {
-            areas = areaMedicalEmployeeRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
-                    medicalEmployees.stream()
-                            .map(MedicalEmployee::getMedicalEmployeeJobId)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toList()),
-                    medicalEmployees.stream()
-                            .map(MedicalEmployee::getSnils)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toList()));
+        if ((areas == null || !areas.isEmpty()) && !medicalEmployees.isEmpty()) {
+            List<Long> jobIds = medicalEmployees.stream()
+                    .map(MedicalEmployee::getMedicalEmployeeJobId)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            List<String> snilsCodes = medicalEmployees.stream()
+                    .map(MedicalEmployee::getSnils)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            if (areas != null && areas.size() > 1000) {
+                //Чтобы не передавать в SELECT .. IN () слишком много ID
+                List<Long> foundAreaIds = areaMedicalEmployeeRepository.findAreas(null, jobIds, snilsCodes).stream()
+                        .map(Area::getId)
+                        .collect(Collectors.toList());
+                areas = areas.stream().filter(area -> foundAreaIds.contains(area.getId())).collect(Collectors.toList());
+            } else {
+                areas = areaMedicalEmployeeRepository.findAreas(areas == null ? null : areas.stream().map(Area::getId).collect(Collectors.toList()),
+                        jobIds, snilsCodes);
+            }
         }
 
         //5.3
@@ -1287,8 +1306,13 @@ public class AreaServiceImpl implements AreaService {
             //5.3.4
             if (!addresses.isEmpty()) {
                 areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
-                List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
-                areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
+
+                if (areas == null) {
+                    areas = areaAddresses.stream().map(AreaAddress::getArea).collect(Collectors.toList());
+                } else {
+                    List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
+                    areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
+                }
             } else {
                 areas = Collections.emptyList();
             }
