@@ -758,6 +758,7 @@ public class AreaServiceImpl implements AreaService {
             List<Long> specializations = positionsNom.stream()
                     .map(PositionNom::getSpecialization)
                     .filter(Objects::nonNull)
+                    .distinct()
                     .map(Specialization::getCode)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
@@ -772,6 +773,7 @@ public class AreaServiceImpl implements AreaService {
                         new ValidationParameter("SpecializationTitle", positionsNom.stream()
                                 .map(PositionNom::getSpecialization)
                                 .filter(Objects::nonNull)
+                                .distinct()
                                 .map(Specialization::getTitle)
                                 .collect(Collectors.joining(","))),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
@@ -788,6 +790,7 @@ public class AreaServiceImpl implements AreaService {
             if (positions != null && !positions.isEmpty() && positions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(empl.getPositionCode()))) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionsNom.stream()
+                                .distinct()
                                 .map(PositionNom::getTitle)
                                 .collect(Collectors.joining(","))),
                         new ValidationParameter("jobInfoId", empl.getMedicalEmployeeJobInfoId()),
