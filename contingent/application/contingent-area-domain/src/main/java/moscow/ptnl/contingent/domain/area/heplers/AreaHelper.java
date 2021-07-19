@@ -774,7 +774,7 @@ public class AreaHelper {
                     empl.getStartDate(),
                     empl.getEndDate(),
                     empl.getSnils(),
-                    positionCodeRepository.getByCode(empl.getPositionCode()),
+                    empl.getPositionCode(),
                     LocalDateTime.now(),
                     LocalDateTime.now(),
                     empl.getSubdivisionId());

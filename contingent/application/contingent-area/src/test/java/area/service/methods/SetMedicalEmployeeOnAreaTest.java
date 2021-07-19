@@ -56,17 +56,17 @@ public class SetMedicalEmployeeOnAreaTest extends BaseTest {
                 .createDate(LocalDateTime.now())
                 .build();
         positionCode = Optional.of(new PositionCode(10L, "testNom", 12345L, "testPositionCode", "testTitle"));
-        employee1 = new AreaMedicalEmployees(1L, 1L, area1, true, LocalDate.of(2025, 1, 10), null, "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee2 = new AreaMedicalEmployees(2L, 1L, area1, false, LocalDate.of(2025, 2, 3), LocalDate.of(2025, 2, 10), "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee3 = new AreaMedicalEmployees(3L, 3L, area1, false, LocalDate.of(2025, 3, 2), LocalDate.of(2025, 3, 10), "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee4 = new AreaMedicalEmployees(4L, 4L, area1, false, LocalDate.of(2025, 3, 5), null, "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee5 = new AreaMedicalEmployees(5L, 5L, area2, false, LocalDate.of(2025, 3, 5), LocalDate.of(2025, 3, 15), "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee6 = new AreaMedicalEmployees(6L, 6L, area2, false, LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 10), "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee7 = new AreaMedicalEmployees(7L, 7L, area2, false, LocalDate.of(2025, 5, 10), LocalDate.of(2025, 5, 20), "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee8 = new AreaMedicalEmployees(8L, 7L, area2, false, LocalDate.of(2025, 2, 3), LocalDate.of(2025, 2, 10), "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee9 = new AreaMedicalEmployees(9L, 7L, area2, false, LocalDate.of(2025, 3, 5), LocalDate.of(2025, 3, 11), "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee10 = new AreaMedicalEmployees(10L, 7L, area2, true, LocalDate.of(2025, 3, 11), LocalDate.of(2025, 3, 20), "123", positionCode, LocalDateTime.now(), null, 1L);
-        employee11 = new AreaMedicalEmployees(11L, 7L, area2, true, LocalDate.of(2025, 2, 10), LocalDate.of(2025, 3, 5), "123", positionCode, LocalDateTime.now(), null, 1L);
+        employee1 = new AreaMedicalEmployees(1L, 1L, area1, true, LocalDate.of(2025, 1, 10), null, "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee2 = new AreaMedicalEmployees(2L, 1L, area1, false, LocalDate.of(2025, 2, 3), LocalDate.of(2025, 2, 10), "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee3 = new AreaMedicalEmployees(3L, 3L, area1, false, LocalDate.of(2025, 3, 2), LocalDate.of(2025, 3, 10), "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee4 = new AreaMedicalEmployees(4L, 4L, area1, false, LocalDate.of(2025, 3, 5), null, "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee5 = new AreaMedicalEmployees(5L, 5L, area2, false, LocalDate.of(2025, 3, 5), LocalDate.of(2025, 3, 15), "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee6 = new AreaMedicalEmployees(6L, 6L, area2, false, LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 10), "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee7 = new AreaMedicalEmployees(7L, 7L, area2, false, LocalDate.of(2025, 5, 10), LocalDate.of(2025, 5, 20), "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee8 = new AreaMedicalEmployees(8L, 7L, area2, false, LocalDate.of(2025, 2, 3), LocalDate.of(2025, 2, 10), "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee9 = new AreaMedicalEmployees(9L, 7L, area2, false, LocalDate.of(2025, 3, 5), LocalDate.of(2025, 3, 11), "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee10 = new AreaMedicalEmployees(10L, 7L, area2, true, LocalDate.of(2025, 3, 11), LocalDate.of(2025, 3, 20), "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
+        employee11 = new AreaMedicalEmployees(11L, 7L, area2, true, LocalDate.of(2025, 2, 10), LocalDate.of(2025, 3, 5), "123", positionCode.get().getCode(), LocalDateTime.now(), null, 1L);
         validation = new Validation();
         period1 = Period.ALL_TIME;
         period2 = new Period(LocalDate.now(), LocalDate.of(2025, 2, 2));
