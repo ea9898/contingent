@@ -35,6 +35,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.doReturn;
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
@@ -111,7 +112,7 @@ public class ArchiveAreaTest {
         areaAddress1.setStartDate(LocalDate.now().minusDays(5));
         areaPrimary1.setAreaAddresses(new HashSet<>(Collections.singletonList(areaAddress1)));
         areaMedicalEmployee1 = new AreaMedicalEmployees(111L, areaDependent1, false,
-                LocalDate.now().minusDays(5), null, "", Optional.empty(), LocalDateTime.now(), null, 1L);
+                LocalDate.now().minusDays(5), null, "", null, null, LocalDateTime.now(), null, 1L);
         areaDependent1.setMedicalEmployees(new HashSet<>(Collections.singletonList(areaMedicalEmployee1)));
     }
 

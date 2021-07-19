@@ -47,6 +47,7 @@ import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
 import moscow.ptnl.util.CollectionsUtil;
+import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -767,17 +768,21 @@ public class AreaHelper {
     public List<AreaMedicalEmployees> addNew(List<AreaMedicalEmployees> employees, List<AddMedicalEmployee> addEmployees, Area area) {
         List<AreaMedicalEmployees> newAME = new ArrayList<>();
         addEmployees.forEach(empl -> {
-            AreaMedicalEmployees medicalEmployees = new AreaMedicalEmployees(
-                    empl.getMedicalEmployeeJobInfoId(),
-                    area,
-                    empl.isReplacement(),
-                    empl.getStartDate(),
-                    empl.getEndDate(),
-                    empl.getSnils(),
-                    positionCodeRepository.getByCode(empl.getPositionCode()),
-                    LocalDateTime.now(),
-                    LocalDateTime.now(),
-                    empl.getSubdivisionId());
+            AreaMedicalEmployees medicalEmployees = new AreaMedicalEmployees();
+            medicalEmployees.setMedicalEmployeeJobId(empl.getMedicalEmployeeJobInfoId());
+            medicalEmployees.setArea(area);
+            medicalEmployees.setReplacement(empl.isReplacement());
+            medicalEmployees.setStartDate(empl.getStartDate());
+            medicalEmployees.setEndDate(empl.getEndDate());
+            medicalEmployees.setSnils(empl.getSnils());
+            if (!Strings.isNumberWith4Digits(empl.getPositionCode())) {
+                medicalEmployees.setPositionCode(empl.getPositionCode());
+            } else {
+                medicalEmployees.setPositionCodeSupp(Long.parseLong(empl.getPositionCode()));
+            }
+            medicalEmployees.setCreateDate(LocalDateTime.now());
+            medicalEmployees.setUpdateDate(LocalDateTime.now());
+            medicalEmployees.setSubdivisionId(empl.getSubdivisionId());
             employees.add(medicalEmployees);
             newAME.add(medicalEmployees.clone());
         });

@@ -68,6 +68,10 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     private String positionCode;
 
     @LogIt
+    @Column(name = "POSITION_CODE_SUPP")
+    private Long positionCodeSupp;
+
+    @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
@@ -88,13 +92,14 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     }
 
     public AreaMedicalEmployees(Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
-                                LocalDate endDate, String snils, Optional<PositionCode> positionCode,
+                                LocalDate endDate, String snils, String positionCode, Long positionCodeSupp,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
-        this(null, medicalEmployeeJobId, area, replacement, startDate, endDate, snils, positionCode, createDate, updateDate, subdivisionId);
+        this(null, medicalEmployeeJobId, area, replacement, startDate, endDate, snils, positionCode,
+                positionCodeSupp, createDate, updateDate, subdivisionId);
     }
 
     public AreaMedicalEmployees(Long id, Long medicalEmployeeJobId, Area area, Boolean replacement, LocalDate startDate,
-                                LocalDate endDate, String snils, Optional<PositionCode> positionCode,
+                                LocalDate endDate, String snils, String positionCode, Long positionCodeSupp,
                                 LocalDateTime createDate, LocalDateTime updateDate, Long subdivisionId) {
         this.id = id;
         this.medicalEmployeeJobId = medicalEmployeeJobId;
@@ -103,7 +108,8 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
         this.startDate = startDate;
         this.endDate = endDate;
         this.snils = snils;
-        this.positionCode = positionCode.map(PositionCode::getCode).orElse(null);
+        this.positionCode = positionCode;
+        this.positionCodeSupp = positionCodeSupp;
         this.createDate = createDate;
         this.updateDate = updateDate;
         this.subdivisionId = subdivisionId;
@@ -190,6 +196,10 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     public void setPositionCode(String positionCode) {
         this.positionCode = positionCode;
     }
+
+    public Long getPositionCodeSupp() { return positionCodeSupp; }
+
+    public void setPositionCodeSupp(Long positionCodeSupp) { this.positionCodeSupp = positionCodeSupp; }
 
     public Long getSubdivisionId() {
         return subdivisionId;
