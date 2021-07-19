@@ -14,4 +14,22 @@
         <rollback></rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-1951-1" author="ddryuchin">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+            <not>
+                <columnExists tableName="AREA_MEDICAL_EMPLOYEES" columnName="POSITION_CODE_SUPP"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки POSITION_CODE_SUPP в таблицу AREA_MEDICAL_EMPLOYEES</comment>
+        <addColumn tableName="AREA_MEDICAL_EMPLOYEES">
+            <column name="POSITION_CODE_SUPP" type="BIGINT"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="POSITION_CODE_SUPP" tableName="AREA_MEDICAL_EMPLOYEES"/>
+        </rollback>
+    </changeSet>
+
+
+
 </databaseChangeLog>
