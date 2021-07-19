@@ -659,14 +659,14 @@
     </changeSet>
 
 
-    <changeSet id="CONTINGENT2-191-NSI-4-2" author="mkachalov"  labels="1.0.0.0" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+    <changeSet id="CONTINGENT2-191-NSI-4-20" author="mkachalov"  labels="1.0.0.0" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
         <preConditions onFail="MARK_RAN">
             <and>
-                <tableExists tableName="position_nom" />
-                <sqlCheck expectedResult ="1">SELECT COUNT(column_name) FROM information_schema.columns WHERE table_name='position_nom' AND column_name='END'</sqlCheck>
+                <tableExists tableName="POSITION_NOM" />
+                <columnExists tableName="POSITION_NOM" columnName="END" />
             </and>
         </preConditions>
-        <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="p_end" oldColumnName="END" tableName="position_nom"/>
+        <renameColumn columnDataType="TIMESTAMP(6)" newColumnName="P_END" oldColumnName="END" tableName="POSITION_NOM"/>
     </changeSet>
 
     <changeSet id="CONTINGENT2-206-3-1" author="mkachalov"  labels="1.0.0.0">

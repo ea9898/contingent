@@ -25,6 +25,6 @@ public interface SysopMapper {
     @Mappings({
             @Mapping(target = "completenessStatus", expression = "java(value == null ? null : value.shortValue())")
     })
-    @Named("ToOperationCompletenessPercentage ")
+    @Named("ToOperationCompletenessPercentage")
     OperationCompletenessPercentage map(Integer value);
 }

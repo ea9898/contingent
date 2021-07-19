@@ -45,6 +45,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.MappingPositionCodeToOtherPosition;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
+import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeMedicalPositionsRepository;
@@ -736,24 +737,27 @@ public class AreaServiceImpl implements AreaService {
             }
 
             //6.3.
-            List<PositionNom> positionsNom = new ArrayList<>();
+            final List<PositionCode> positionsCode = new ArrayList<>();
             //6.3.1.
-            //6.3.2.
             if (Strings.isNumberWith4Digits(empl.getPositionCode())) {
                 //ЕСЛИ код должности медработника числовой (= медработник ведется в СУПП)
                 List<MappingPositionCodeToOtherPosition> mappingPositions = mappingPositionCodeToOtherPositionRepository.findByPositionSuppCode(empl.getPositionCode());
 
                 if (!mappingPositions.isEmpty()) {
-                    positionsNom = positionNomRepository.findByPositionCodeIds(mappingPositions.stream()
+                    positionsCode.addAll(positionCodeRepository.getByGlobalIds(mappingPositions.stream()
                             .map(MappingPositionCodeToOtherPosition::getPositionCodeId)
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toSet())));
                 }
             } else {
                 //ИНАЧЕ (код должности медработника символьный) определяет ИД кода должности из СВМР.2
                 positionCodeRepository.getByCode(empl.getPositionCode())
-                        .flatMap(c -> positionNomRepository.getByPositionCodeId(c.getGlobalId()))
-                        .ifPresent(positionsNom::add);
+                        .ifPresent(positionsCode::add);
             }
+            //6.3.2.
+            final List<PositionNom> positionsNom = positionsCode.isEmpty() ? Collections.emptyList() :
+                    positionNomRepository.findByPositionCodeIds(positionsCode.stream()
+                            .map(PositionCode::getGlobalId)
+                            .collect(Collectors.toList()));
             //6.4.
             List<Long> specializations = positionsNom.stream()
                     .map(PositionNom::getSpecialization)
@@ -787,7 +791,10 @@ public class AreaServiceImpl implements AreaService {
             //6.6.
             List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(area.getAreaType().getCode());
 
-            if (positions != null && !positions.isEmpty() && positions.stream().noneMatch(pos -> pos.getPositionCode().getCode().equals(empl.getPositionCode()))) {
+            if (!positions.isEmpty() && positions.stream().noneMatch(p -> positionsCode.stream()
+                    .map(PositionCode::getCode)
+                    .anyMatch(c -> Objects.equals(c, p.getPositionCode().getCode()))
+            )) {
                 validation.error(AreaErrorReason.POSITION_NOT_SET_FOR_AREA_TYPE,
                         new ValidationParameter("positionTitle", positionsNom.stream()
                                 .distinct()

@@ -7,7 +7,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 
 @Repository
@@ -20,5 +23,10 @@ public class PositionCodeRepositoryImpl extends BaseRepository implements Positi
     @Override
     public Optional<PositionCode> getByCode(String code) {
         return positionCodeCRUDRepository.findById(code);
+    }
+
+    @Override
+    public List<PositionCode> getByGlobalIds(Set<Long> globalIds) {
+        return positionCodeCRUDRepository.findByGlobalIdIn(globalIds);
     }
 }
