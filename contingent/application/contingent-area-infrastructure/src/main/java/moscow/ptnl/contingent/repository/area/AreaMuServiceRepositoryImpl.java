@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -31,6 +32,10 @@ public class AreaMuServiceRepositoryImpl extends BaseRepository implements AreaM
 
     private Specification<AreaMuService> buildAreaSpec(long areaId) {
         return (root, criteriaQuery, cb) -> cb.equal(root.get(AreaMuService_.area).get(Area_.id), areaId);
+    }
+
+    private Specification<AreaMuService> buildAreasSpec(Collection<Long> areaIds) {
+        return (root, criteriaQuery, cb) -> cb.in(root.get(Area_.id.getName())).value(areaIds);
     }
 
     private Specification<AreaMuService> buildExcludeAreaSpec(long areaId) {
@@ -84,5 +89,13 @@ public class AreaMuServiceRepositoryImpl extends BaseRepository implements AreaM
     @Override
     public AreaMuService findById(Long id) {
         return areaMuServiceCRUDRepository.getOne(id);
+    }
+
+    @Override
+    public List<AreaMuService> findActive(List<Long> areaIds) {
+        Specification<AreaMuService> specification = buildActiveEndDateSpec();
+        specification = specification.and(buildAreasSpec(areaIds));
+        specification = specification.and(buildActiveEndDateSpec());
+        return areaMuServiceCRUDRepository.findAll(specification);
     }
 }

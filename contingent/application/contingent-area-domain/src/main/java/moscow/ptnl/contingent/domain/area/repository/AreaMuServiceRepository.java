@@ -21,4 +21,6 @@ public interface AreaMuServiceRepository {
     void closeAreaMuServices(Long servicedMuId, Area area, LocalDate searchEndDate, LocalDate newEndDate);
 
     AreaMuService findById(Long id);
+
+    List<AreaMuService> findActive(List<Long> areaIds);
 }

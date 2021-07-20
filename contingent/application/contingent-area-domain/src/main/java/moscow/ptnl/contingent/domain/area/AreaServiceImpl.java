@@ -1350,13 +1350,17 @@ public class AreaServiceImpl implements AreaService {
 
                 ai.setReplacementAreaMedicalEmployees(replacementMedicalEmployees);
             }
-            if (loadServicedMUs) {
-                ai.setAreaServicedMUs(new ArrayList<>(ai.getArea().getActualAreaMuServices()));
-            }
         });
+        if (loadServicedMUs) {
+            List<Long> areaIds = areaInfos.stream().map(AreaInfo::getArea).map(Area::getId).distinct().collect(Collectors.toList());
 
-        return new PageImpl<>(new ArrayList<>(areaInfos),
-                paging, totalSize);
+            if (!areaIds.isEmpty()) {
+                Map<Area, List<AreaMuService>> muServices = areaMuServiceRepository.findActive(areaIds).stream()
+                        .collect(Collectors.groupingBy(AreaMuService::getArea));
+                areaInfos.forEach(i -> i.setAreaServicedMUs(muServices.getOrDefault(i.getArea(), Collections.emptyList())));
+            }
+        }
+        return new PageImpl<>(new ArrayList<>(areaInfos), paging, totalSize);
     }
 
     @Override
