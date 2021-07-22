@@ -316,8 +316,11 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMoAddressResponse addMoAddress(AddMoAddressRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.addMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddMoAddressRequest())),
-                    new AddMoAddressResponse());
+            AddMoAddressResponse response = new AddMoAddressResponse();
+            response.getMoAddressIds().addAll(
+                    areaServiceDomain.addMoAddress(body.getMoId(), body.getAreaTypeCodes(), body.getOrderId(),
+                            body.getAddresses().stream().map(addressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()),  true));
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

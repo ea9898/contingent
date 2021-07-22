@@ -1174,7 +1174,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
+    public List<Long> addMoAddress(long moId, List<Long> areaTypeCodes, long orderId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
         Validation validation = new Validation();
         // 1.
         if (limitAddress) {
@@ -1182,11 +1182,10 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 2.
-        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation);
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        AreaType areaType = areaTypes.get(0);
 
         // 3.
         AddressAllocationOrders order = addressAllocationOrderRepository.findById(orderId).orElse(null);
@@ -1205,14 +1204,17 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 5.
-        addressesRegistry.forEach(addr -> {
-            MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(areaType, addr, validation);
-            if (moAddress != null) {
-                validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
-                        new ValidationParameter("address", addr.getAddressString()),
-                        new ValidationParameter("moId", moAddress.getMoId()));
-            }
-        });
+        for (AreaType areaType : areaTypes) {
+            addressesRegistry.forEach(addr -> {
+                MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(areaType, addr, validation);
+
+                if (moAddress != null) {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
+                            new ValidationParameter("address", addr.getAddressString()),
+                            new ValidationParameter("moId", moAddress.getMoId()));
+                }
+            });
+        }
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
@@ -1221,16 +1223,19 @@ public class AreaServiceImpl implements AreaService {
         List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream().map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
         // 7.
         List<MoAddress> moAddresses = new ArrayList<>();
-        addresses.forEach(a -> {
-            MoAddress moAddress = new MoAddress();
-            moAddress.setAddress(a);
-            moAddress.setAreaType(areaType);
-            moAddress.setMoId(moId);
-            moAddress.setAddressAllocationOrder(order);
-            moAddress.setStartDate(LocalDate.now());
-            moAddress.setCreateDate(LocalDateTime.now());
-            moAddresses.add(moAddress);
-        });
+
+        for (AreaType areaType : areaTypes) {
+            addresses.forEach(a -> {
+                MoAddress moAddress = new MoAddress();
+                moAddress.setAddress(a);
+                moAddress.setAreaType(areaType);
+                moAddress.setMoId(moId);
+                moAddress.setAddressAllocationOrder(order);
+                moAddress.setStartDate(LocalDate.now());
+                moAddress.setCreateDate(LocalDateTime.now());
+                moAddresses.add(moAddress);
+            });
+        }
         moAddressRepository.saveAll(moAddresses);
 
         // Логирование добавление адресов

@@ -392,7 +392,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             AddMoAddressResponse response = new AddMoAddressResponse();
             response.getMoAddressIds().addAll(
-                    areaServiceDomain.addMoAddress(body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
+                    areaServiceDomain.addMoAddress(body.getMoId(), Collections.singletonList(body.getAreaTypeCode()), body.getOrderId(),
                             body.getAddresses().stream().map(addressRegistryToAddressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()),  true));
             return response;
         }

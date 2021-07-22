@@ -213,15 +213,15 @@ public interface AreaService {
      * (К_УУ_21) Распределение жилых домов к территории обслуживания МО
      * Распределение адресов к территории обслуживания медицинской организации
      * @param moId
-     * @param areaTypeCode
+     * @param areaTypeCodes
      * @param orderId
      * @param addressesRegistry
      * @param limitAddress
      * @return
      * @throws ContingentException
      */
-    List<Long> addMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistry> addressesRegistry, boolean limitAddress)
-            throws ContingentException;
+    List<Long> addMoAddress(long moId, List<Long> areaTypeCodes, long orderId, List<AddressRegistry> addressesRegistry,
+                            boolean limitAddress) throws ContingentException;
 
     /**
      * (К_УУ_24) Получение идентификатора для создания нового участка

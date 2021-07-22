@@ -128,7 +128,7 @@ public class AreaHelper {
     public List<AreaType> checkAndGetAreaTypesExist(List<Long> areaTypes, Validation validation) {
         List<AreaType> result = new ArrayList<>();
 
-        areaTypes.forEach(a -> {
+        areaTypes.stream().distinct().forEach(a -> {
             Optional<AreaType> areaType = areaTypesRepository.findById (a);
 
             if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchived())) {

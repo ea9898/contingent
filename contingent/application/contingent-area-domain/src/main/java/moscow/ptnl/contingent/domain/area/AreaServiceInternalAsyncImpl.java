@@ -84,7 +84,7 @@ public class AreaServiceInternalAsyncImpl implements AreaServiceInternalAsync {
             //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
             List<Long> ids = transactionRunner.run(() -> {
                 UserContextHolder.setContext(requestContext);
-                return areaServiceDomain.addMoAddress(moId, areaTypeCode, orderId, addresses, false);
+                return areaServiceDomain.addMoAddress(moId, Collections.singletonList(areaTypeCode), orderId, addresses, false);
             }).get();
             String sysopResult = ids.stream().map(id -> id.toString()).collect(Collectors.joining(";"));
             algorithms.sysOperationComplete(sysopId, true, sysopResult);
