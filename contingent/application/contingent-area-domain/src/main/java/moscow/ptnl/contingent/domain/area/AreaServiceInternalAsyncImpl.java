@@ -78,13 +78,13 @@ public class AreaServiceInternalAsyncImpl implements AreaServiceInternalAsync {
     @Override
     @Async 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void asyncInitiateAddMoAddress(long sysopId, RequestContext requestContext, long moId, long areaTypeCode, long orderId, List<AddressRegistry> addresses) throws ContingentException {
+    public void asyncInitiateAddMoAddress(long sysopId, RequestContext requestContext, long moId, List<Long> areaTypeCodes, long orderId, List<AddressRegistry> addresses) throws ContingentException {
         try {
             UserContextHolder.setContext(requestContext);
             //Выполняем в новой транзакции, чтобы можно было сохранить результат операции при ошибке
             List<Long> ids = transactionRunner.run(() -> {
                 UserContextHolder.setContext(requestContext);
-                return areaServiceDomain.addMoAddress(moId, Collections.singletonList(areaTypeCode), orderId, addresses, false);
+                return areaServiceDomain.addMoAddress(moId, areaTypeCodes, orderId, addresses, false);
             }).get();
             String sysopResult = ids.stream().map(id -> id.toString()).collect(Collectors.joining(";"));
             algorithms.sysOperationComplete(sysopId, true, sysopResult);

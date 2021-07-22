@@ -385,10 +385,13 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.initiateAddMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.InitiateAddMoAddressRequest())),
-                    new InitiateAddMoAddressResponse());
-        }
-        catch (Exception ex) {
+            Long result = areaServiceDomain.initiateAddMoAddress(
+                    body.getMoId(), body.getAreaTypeCodes(), body.getOrderId(),
+                    body.getAddresses().stream().map(addressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()));
+            InitiateAddMoAddressResponse response = new InitiateAddMoAddressResponse();
+            response.setId(result);
+            return response;
+        } catch (Exception ex) {
             throw mapException(ex);
         }
     }

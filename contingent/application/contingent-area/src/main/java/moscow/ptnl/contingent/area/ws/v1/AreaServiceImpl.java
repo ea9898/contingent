@@ -696,7 +696,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
         try {
             Long result = areaServiceDomain.initiateAddMoAddress(
-                    body.getMoId(), body.getAreaTypeCode(), body.getOrderId(),
+                    body.getMoId(), Collections.singletonList(body.getAreaTypeCode()), body.getOrderId(),
                     body.getAddresses().stream().map(addressRegistryToAddressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()));
             InitiateAddMoAddressResponse response = new InitiateAddMoAddressResponse();
             response.setId(result);

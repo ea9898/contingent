@@ -15,7 +15,8 @@ public interface AreaServiceInternalAsync {
     // Асинхронная инициация процесса распределения жилых домов к территории обслуживания МО (К_УУ_27)
     @Async
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    void asyncInitiateAddMoAddress(long sysopId, RequestContext requestContext, long moId, long areaTypeCode, long orderId, List<AddressRegistry> addresses) throws ContingentException;
+    void asyncInitiateAddMoAddress(long sysopId, RequestContext requestContext, long moId, List<Long> areaTypeCodes, long orderId,
+                                   List<AddressRegistry> addresses) throws ContingentException;
 
     // Асинхронное создание участка первичного класса (А_УУ_10)
     @Async

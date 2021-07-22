@@ -1391,7 +1391,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Long initiateAddMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistry> addresses) throws ContingentException {
+    public Long initiateAddMoAddress(long moId, List<Long> areaTypeCodes, long orderId, List<AddressRegistry> addresses) throws ContingentException {
         //1. Система выполняет проверку полномочий пользователя.
         // Реализовано через аннотацию
 
@@ -1399,7 +1399,7 @@ public class AreaServiceImpl implements AreaService {
         long sysopId = algorithms.sysOperationRegistration(SysopMethodType.INITIATE_ADD_MO_ADDRESS);
 
         //3. Система инициирует процесс (выполняется асинхронно) распределения жилых домов к территории обслуживания МО. (А_УУ_11)
-        areaServiceInternalAsync.asyncInitiateAddMoAddress(sysopId, UserContextHolder.getContext(), moId, areaTypeCode, orderId, addresses);
+        areaServiceInternalAsync.asyncInitiateAddMoAddress(sysopId, UserContextHolder.getContext(), moId, areaTypeCodes, orderId, addresses);
 
         //4. Система инициирует процесс журналирования (выполняется асинхронно) по инициации распределения жилых домов к территории обслуживания МО. (А_УУ_8), п.1
         // происходит в п 3 (не забываем добавлять имя метода в AreaServiceLogMethodsEnum)

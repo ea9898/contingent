@@ -303,7 +303,7 @@ public interface AreaService {
      * @return
      * @throws ContingentException
      */
-    Long initiateAddMoAddress(long moId, long areaTypeCode, long orderId, List<AddressRegistry> addresses) throws ContingentException;
+    Long initiateAddMoAddress(long moId, List<Long> areaTypeCodes, long orderId, List<AddressRegistry> addresses) throws ContingentException;
 
     /**
      * (К_УУ_28) Инициация процесса добавления адресов на участок обслуживания
