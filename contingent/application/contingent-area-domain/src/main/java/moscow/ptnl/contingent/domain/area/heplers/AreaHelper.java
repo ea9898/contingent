@@ -1008,4 +1008,12 @@ public class AreaHelper {
             }
         }
     }
+
+    //Система проверяет, что количество переданных на вход адресов не превышает максимально допустимое значение,
+    // указанное во внутреннем системном параметре
+    public void checkMaxRequestAddresses(int numberOfAddresses, Validation validation) {
+        if (numberOfAddresses > settingService.getPar42()) {
+            validation.error(AreaErrorReason.TOO_MANY_REQUEST_ADDRESSES, new ValidationParameter("maxAddresses", settingService.getPar42()));
+        }
+    }
 }

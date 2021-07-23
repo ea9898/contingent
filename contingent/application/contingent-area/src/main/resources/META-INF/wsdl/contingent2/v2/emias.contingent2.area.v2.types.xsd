@@ -855,4 +855,32 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="getMoAddressTotalRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="addressGlobalId" type="xs:long" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>
+                            global_id адреса в СУ НСИ
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMoAddressTotalResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="addressAllocation" type="core:AddressAllocation" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

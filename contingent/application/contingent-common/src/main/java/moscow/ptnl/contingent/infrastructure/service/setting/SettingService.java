@@ -69,6 +69,8 @@ public interface SettingService {
     String PAR_40 = "area_types_servicing_mu";
     /** Передача глобал ИД адреса в сообщениях топика AreaInfo. */
     String PAR_41 = "area_info_global_id";
+    /** Максимально допустимое количество глобал ИД адресов для поиска во входных параметрах метода */
+    String PAR_42 = "max_addresses_for_search";
 
     /**
      * Свойство извлекается из кэша.
@@ -116,4 +118,6 @@ public interface SettingService {
     List<Long> par39();
 
     List<Long> par40();
+
+    Integer getPar42();
 }

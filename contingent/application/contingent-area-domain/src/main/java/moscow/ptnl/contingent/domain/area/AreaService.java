@@ -8,6 +8,7 @@ import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
+import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
 import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.springframework.data.domain.Page;
@@ -380,4 +381,6 @@ public interface AreaService {
     void editAddress(Long arGlobalId, Map<String, String> fields) throws ContingentException;
 
     void setAreaMuService(long areaId, List<Long> addServicedMuIds, List<Long> closeServicedMuIds) throws ContingentException;
+
+    Page<MoAddressAllocation> getMoAddressTotal(List<Long> addressGlobalIds, PageRequest paging) throws ContingentException;
 }

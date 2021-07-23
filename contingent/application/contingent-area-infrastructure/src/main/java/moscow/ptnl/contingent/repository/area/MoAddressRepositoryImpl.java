@@ -87,6 +87,27 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
     }
 
     @Override
+    public List<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds) {
+        Specification<MoAddress> moAddressSpecification = (root, query, builder) -> {
+            Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
+            LocalDate now = LocalDate.now();
+
+            return builder.and(
+                    builder.in(addressesJoin.get(Addresses_.globalId.getName())).value(globalIds),
+                    builder.or(
+                            builder.lessThanOrEqualTo(root.get(MoAddress_.startDate.getName()), now),
+                            root.get(MoAddress_.startDate.getName()).isNull()
+                    ),
+                    builder.or(
+                            builder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), now),
+                            root.get(MoAddress_.endDate.getName()).isNull()
+                    )
+            );
+        };
+        return moAddressPagingAndSortingRepository.findAll(moAddressSpecification, Sort.by(MoAddress_.address.getName() + "." + Addresses_.globalId.getName()));
+    }
+
+    @Override
     public List<MoAddress> getActiveMoAddressByGlobalIdAndLevel(Long globalId, String aoLevel, AreaType areaType) {
         Specification<MoAddress> moAddressSpecification = (root, criteriaQuery, criteriaBuilder) -> {
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);

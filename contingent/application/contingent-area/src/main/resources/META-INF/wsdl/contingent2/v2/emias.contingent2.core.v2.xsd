@@ -416,4 +416,38 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="AddressAllocation">
+        <xs:annotation>
+            <xs:documentation>Сведения о распределении адреса к территории обслуживания МО</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="addressGlobalId" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>global_id адреса в СУ НСИ</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="moAllocation" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>Распределение к МО</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="moId" type="xs:long" />
+                        <xs:element name="moAddresses" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Территория обслуживания МО</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="areaType" type="tns:AreaTypeShort" />
+                                    <xs:element name="moAddressId" type="xs:long" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>

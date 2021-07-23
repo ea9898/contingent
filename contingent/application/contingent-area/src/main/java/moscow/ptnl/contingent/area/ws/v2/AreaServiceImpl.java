@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.transform.v2.AddressRegistryToAddressRegistry
 import moscow.ptnl.contingent.area.transform.v2.AreaBriefMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaDnMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.MoAddressAllocationMapper;
 import moscow.ptnl.contingent.area.transform.v2.SearchAreaAddressMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapCustomMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper;
@@ -18,6 +19,7 @@ import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
+import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
 import moscow.ptnl.contingent.error.ContingentException;
 
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
@@ -67,6 +69,8 @@ import ru.mos.emias.contingent2.area.v2.types.GetAreaListBriefRequest;
 import ru.mos.emias.contingent2.area.v2.types.GetAreaListBriefResponse;
 import ru.mos.emias.contingent2.area.v2.types.GetMoAddressRequest;
 import ru.mos.emias.contingent2.area.v2.types.GetMoAddressResponse;
+import ru.mos.emias.contingent2.area.v2.types.GetMoAddressTotalRequest;
+import ru.mos.emias.contingent2.area.v2.types.GetMoAddressTotalResponse;
 import ru.mos.emias.contingent2.area.v2.types.GetMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.v2.types.GetMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.v2.types.GetMuAvailableAreaTypesRequest;
@@ -155,6 +159,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AreaDnMapperV2 areaDnMapper;
+
+    @Autowired
+    private MoAddressAllocationMapper moAddressAllocationMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
@@ -587,6 +594,21 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             SetAreaMuServiceResponse response = new SetAreaMuServiceResponse();
             response.setResult(new SetAreaMuServiceResponse.Result());
             response.getResult().setValue(true);
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public GetMoAddressTotalResponse getMoAddressTotal(GetMoAddressTotalRequest body) throws Fault {
+        try {
+            Page<MoAddressAllocation> results = areaServiceDomain.getMoAddressTotal(body.getAddressGlobalIds(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
+            GetMoAddressTotalResponse response = new GetMoAddressTotalResponse();
+            response.getAddressAllocations().addAll(moAddressAllocationMapper.entityToDtoTransform(results.getContent()));
+            soapCustomMapper.mapPagingResults(response, results);
+
             return response;
         }
         catch (Exception ex) {

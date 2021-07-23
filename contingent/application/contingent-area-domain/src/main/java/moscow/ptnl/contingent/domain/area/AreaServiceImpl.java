@@ -19,6 +19,7 @@ import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
+import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
 import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.domain.area.model.sysop.SysopMethodType;
 import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepository;
@@ -1640,5 +1641,31 @@ public class AreaServiceImpl implements AreaService {
         }
         // Логирование изменений
         deletedAreaMuServicesAdded.forEach((o, n) -> historyHelper.sendHistory(o, n, AreaMuService.class));
+    }
+
+    @Override
+    public Page<MoAddressAllocation> getMoAddressTotal(List<Long> addressGlobalIds, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+        //2.
+        areaHelper.checkMaxPage(paging, validation);
+        //3.
+        areaHelper.checkMaxRequestAddresses(addressGlobalIds.size(), validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        if (paging != null) {
+            addressGlobalIds = addressGlobalIds.stream()
+                    .sorted()
+                    .skip((long) paging.getPageNumber() * paging.getPageSize())
+                    .limit(paging.getPageSize())
+                    .collect(Collectors.toList());
+        }
+        List<MoAddressAllocation> addresses = moAddressRepository.getActiveMoAddressesByGlobalIds(addressGlobalIds).stream()
+                .filter(a -> a.getAddress() != null)
+                .map(a -> new MoAddressAllocation(a.getAddress().getGlobalId(), a.getMoId(), a.getAreaType(), a.getId()))
+                .collect(Collectors.toList());
+
+        return paging == null ? new PageImpl<>(addresses) : new PageImpl<>(addresses, paging, addressGlobalIds.size());
     }
 }

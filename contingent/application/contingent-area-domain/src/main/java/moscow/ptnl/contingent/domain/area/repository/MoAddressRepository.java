@@ -18,6 +18,8 @@ public interface MoAddressRepository {
 
     List<MoAddress> getActiveMoAddressByGlobalId(Long globalId, AreaType areaType);
 
+    List<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds);
+
     List<MoAddress> getActiveMoAddressByGlobalIdAndLevel(Long globalId, String aoLevel, AreaType areaType);
 
     Optional<MoAddress> findById(Long id);

@@ -86,7 +86,8 @@ public enum AreaErrorReason implements ErrorReason {
     AREA_TYPE_PROFILE_NOT_FOUND("UE091", "Переданный профиль не найден в справочнике или не соответствует типу участка %s"),
     CANT_ADD_SERVICED_MU("UE092", "К типу участка %s не могут быть распределены медучреждения для обслуживания"),
     MU_ALREADY_SERVICED("UE093", "Медучреждение %s обслуживается участком %s с тем же профилем типа участка"),
-    POSITION_CODE_NOT_FOUND("UE094", "Код должности медработника %s не найден в системе")
+    POSITION_CODE_NOT_FOUND("UE094", "Код должности медработника %s не найден в системе"),
+    TOO_MANY_REQUEST_ADDRESSES("UE097", "Превышено максимально допустимое количество адресов для поиска (не более %s)")
     ;
 
     private final String description;

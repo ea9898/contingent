@@ -283,6 +283,14 @@
         <wsdl:part name="body" element="ns1:setAreaMuServiceResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="getMoAddressTotalInput">
+        <wsdl:part name="body" element="ns1:getMoAddressTotalRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMoAddressTotalOutput">
+        <wsdl:part name="body" element="ns1:getMoAddressTotalResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
             <wsdl:documentation>
@@ -538,6 +546,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:setAreaMuServiceInput"/>
             <wsdl:output message="tns:setAreaMuServiceOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMoAddressTotal">
+            <wsdl:documentation>
+                Получение сведений о нахождении адреса в составе территорий обслуживания всех МО (К_УУ_36)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getMoAddressTotalInput"/>
+            <wsdl:output message="tns:getMoAddressTotalOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -981,6 +997,20 @@
 
         <wsdl:operation name="setAreaMuService">
             <soap:operation soapAction="setAreaMuService"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMoAddressTotal">
+            <soap:operation soapAction="getMoAddressTotal"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>
