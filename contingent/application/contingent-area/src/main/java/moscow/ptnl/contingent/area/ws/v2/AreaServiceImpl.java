@@ -17,6 +17,7 @@ import moscow.ptnl.contingent.area.transform.v2.SoapCustomMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
+import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
@@ -57,6 +58,8 @@ import ru.mos.emias.contingent2.area.v2.types.DelAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v2.types.DelAreaAddressResponse;
 import ru.mos.emias.contingent2.area.v2.types.DelMoAddressRequest;
 import ru.mos.emias.contingent2.area.v2.types.DelMoAddressResponse;
+import ru.mos.emias.contingent2.area.v2.types.DelMoAddressTotalRequest;
+import ru.mos.emias.contingent2.area.v2.types.DelMoAddressTotalResponse;
 import ru.mos.emias.contingent2.area.v2.types.DelMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.v2.types.DelMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.v2.types.DelMuAvailableAreaTypesRequest;
@@ -138,6 +141,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AreaService areaServiceDomain;
+
+    @Autowired
+    private MoMuService moMuMuServiceDomain;
 
     @Autowired
     private SoapCustomMapperV2 soapCustomMapper;
@@ -452,6 +458,21 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             return versioningMapper.map(areaServiceV1.delAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelAreaAddressRequest())),
                     new DelAreaAddressResponse());
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public DelMoAddressTotalResponse delMoAddressTotal(DelMoAddressTotalRequest body) throws Fault {
+        try {
+            boolean result = moMuMuServiceDomain.delMoAddressTotal(body.getOrderId(), body.getAddressGlobalIds());
+
+            DelMoAddressTotalResponse response = new DelMoAddressTotalResponse();
+            response.setResult(new DelMoAddressTotalResponse.Result());
+            response.getResult().setValue(result);
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);

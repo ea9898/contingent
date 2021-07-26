@@ -192,23 +192,30 @@ public class MoMuServiceImpl implements MoMuService {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        //6. - 9.
+        deleteMuAndAreaAddresses(moAddresses);
+    }
 
-        // 4.
-        List<Long> moAddressesIds = moAddresses.stream()
-                .map(MoAddress::getId)
-                .collect(Collectors.toList());
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(moAddressesIds);
+    @Override
+    public boolean delMoAddressTotal(long orderId, List<Long> addressGlobalIds) throws ContingentException {
+        Validation validation = new Validation();
+        //2.
+        areaHelper.checkMaxRequestAddresses(addressGlobalIds.size(), validation);
+        //3.
+        areaHelper.checkOrderExists(orderId, validation);
 
-        if (!areaAddresses.isEmpty()) {
-            areaHelper.deleteAreaAddress(areaAddresses);
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
         }
+        //4.
+        List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddressesByGlobalIds(addressGlobalIds.stream()
+                .distinct()
+                .collect(Collectors.toList())
+        );
+        //5. Система закрывает территории обслуживания
+        deleteMuAndAreaAddresses(moAddresses);
 
-        // 5.
-        areaHelper.delMoAddresses(moAddresses);
-
-        for (MoAddress moAddress: moAddresses) {
-            historyHelper.sendHistory(moAddress, null, MoAddress.class);
-        }
+        return true;
     }
 
     @Override
@@ -230,5 +237,28 @@ public class MoMuServiceImpl implements MoMuService {
         }
 
         return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
+    }
+
+    /**
+     * Часть алгоритмов delMoAddress и delMoAddressTotal
+     * @param moAddresses
+     */
+    private void deleteMuAndAreaAddresses(List<MoAddress> moAddresses) {
+        if (moAddresses.isEmpty()) {
+            return;
+        }
+        List<Long> moAddressesIds = moAddresses.stream()
+                .map(MoAddress::getId)
+                .collect(Collectors.toList());
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(moAddressesIds);
+
+        if (!areaAddresses.isEmpty()) {
+            areaHelper.deleteAreaAddress(areaAddresses);
+        }
+        areaHelper.delMoAddresses(moAddresses);
+
+        for (MoAddress moAddress: moAddresses) {
+            historyHelper.sendHistory(moAddress, null, MoAddress.class);
+        }
     }
 }

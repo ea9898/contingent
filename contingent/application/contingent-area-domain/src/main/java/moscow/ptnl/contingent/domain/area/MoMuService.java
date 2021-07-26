@@ -92,4 +92,11 @@ public interface MoMuService {
      */
     Page<MoAddress> getMoAddress(long moId, List<Long> areaTypeCodes, PageRequest paging) throws ContingentException;
 
+    /**
+     * (К_УУ_35) Отмена распределения жилых домов к территории обслуживания всех МО
+     * @param orderId
+     * @param addressGlobalIds
+     * @return
+     */
+    boolean delMoAddressTotal(long orderId, List<Long> addressGlobalIds) throws ContingentException;
 }
