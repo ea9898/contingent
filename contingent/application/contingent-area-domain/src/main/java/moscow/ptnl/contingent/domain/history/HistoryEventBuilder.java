@@ -3,6 +3,13 @@ package moscow.ptnl.contingent.domain.history;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.entity.AreaMuService;
+import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.security.Principal;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
@@ -22,9 +29,7 @@ public class HistoryEventBuilder {
     
     private HistoryEventBuilder(Class<?> objectType, String objectId, String methodName) {
         this.event = new HistoryEvent();
-        // TODO переделать под марировку в соответствии с докумиентацией
-        // https://wiki.emias.mos.ru/pages/viewpage.action?pageId=74770777
-        this.event.setObjectType(getObjectType(methodName));
+        this.event.setObjectType(getObjectType(objectType, methodName));
         this.event.setObjectId(objectId);
         this.event.setChangeDate(LocalDateTime.now());        
         this.values = new HashSet<>();        
@@ -34,28 +39,27 @@ public class HistoryEventBuilder {
         return objectType.getAnnotation(Table.class) != null ? objectType.getAnnotation(Table.class).name() : objectType.getSimpleName();
     }
 
-    private String getObjectType(String methodName) {
-        switch (methodName) {
-            case "createPrimaryArea":
-            case "createDependentArea":
-            case "updatePrimaryArea":
-            case "updateDependentArea":
-                return "AREA";
-            case "setMedicalEmployeeOnArea":
-                return "AREA_EMPLOYEE";
-            case "addAreaAddress":
-            case "delAreaAddress":
-                return "AREA_ADDRESS";
-            case "addMoAddress":
-            case "delMoAddress":
-                return "MO_ADDRESS";
-            case "setAreaMuService":
-                return "SERVICE_MU";
-            default:
-                return "";
+    private String getObjectType(Class<?> objectType, String methodName) {
+        if (objectType.isAssignableFrom(Area.class)) {
+            return "AREA";
         }
+        else if (objectType.isAssignableFrom(AreaMedicalEmployees.class)) {
+            return "AREA_EMPLOYEE";
+        }
+        else if (objectType.isAssignableFrom(AreaAddress.class)) {
+            return "AREA_ADDRESS";
+        }
+        else if (objectType.isAssignableFrom(MoAddress.class)) {
+            return "MO_ADDRESS";
+        }
+        else if (objectType.isAssignableFrom(AreaMuService.class)) {
+            return "SERVICE_MU";
+        }
+        else if (objectType.isAssignableFrom(AddressAllocationOrders.class)) {
+            return "ADDRESS_ALLOCATION_ORDERS";
+        }
+        return "";
     }
-
 
     /**
      * Инициализация билдера с заполнением обязательных полей события.
