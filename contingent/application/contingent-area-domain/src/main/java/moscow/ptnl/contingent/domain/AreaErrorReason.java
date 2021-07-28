@@ -87,6 +87,8 @@ public enum AreaErrorReason implements ErrorReason {
     CANT_ADD_SERVICED_MU("UE092", "К типу участка %s не могут быть распределены медучреждения для обслуживания"),
     MU_ALREADY_SERVICED("UE093", "Медучреждение %s обслуживается участком %s с тем же профилем типа участка"),
     POSITION_CODE_NOT_FOUND("UE094", "Код должности медработника %s не найден в системе"),
+    AREA_TYPE_IS_NOT_PRIMARY_2("UE095", "Тип участка с ИД: %s не является первичным"),
+    AREA_TYPE_DO_NOT_SERVES_TERRITORY("UE096", "Тип участка с ИД: %s не имеет признак \"Обслуживает территорию\""),
     TOO_MANY_REQUEST_ADDRESSES("UE097", "Превышено максимально допустимое количество адресов для поиска (не более %s)")
     ;
 

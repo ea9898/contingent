@@ -3,9 +3,11 @@ package moscow.ptnl.contingent.domain.area.repository;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,4 +31,7 @@ public interface MoAddressRepository {
 	MoAddress save(MoAddress moAddress);
 
 	List<MoAddress> saveAll(List<MoAddress> moAddress);
+
+    Page<MoAddress> find(long moId, List<Long> addressGlobalIds, List<Long> areaTypeCodes, LocalDate orderDate, String orderName,
+              String orderNumber, String orderOuz, LocalDate orderCreateDate, PageRequest paging);
 }

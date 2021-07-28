@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.domain.area.model.area.MoAddressWithAddresses;
 import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
@@ -20,13 +21,18 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -237,6 +243,45 @@ public class MoMuServiceImpl implements MoMuService {
         }
 
         return moAddressRepository.getActiveMoAddresses(moId, areaTypeCodes, paging);
+    }
+
+    @Override
+    public Page<MoAddressWithAddresses> searchMoAddress(long moId, List<Long> addressGlobalIds, List<Long> areaTypeCodes, LocalDate orderDate,
+                                                        String orderName, String orderNumber, String orderOuz, LocalDate orderCreateDate,
+                                                        PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+        //2.
+        areaHelper.checkMaxPage(paging, validation);
+        //3.
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation);
+        areaHelper.checkAreaTypesArePrimary(areaTypes, validation);
+        areaHelper.checkAreaTypesServeTerritory(areaTypes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //4.
+        Page<MoAddress> addresses = moAddressRepository.find(moId, addressGlobalIds, areaTypeCodes, orderDate, orderName,
+                orderNumber, orderOuz, orderCreateDate, paging);
+        Map<MoAddress, List<AreaAddress>> areaAddressesMap = new HashMap<>();
+
+        if (!addresses.isEmpty()) {
+            //5.
+            List<AreaAddress> areaAddresses = areaAddressRepository.findActualAreaAddresses(addresses.stream()
+                    .map(MoAddress::getId)
+                    .distinct()
+                    .collect(Collectors.toList()));
+            areaAddressesMap.putAll(areaAddresses.stream()
+                    .collect(Collectors.groupingBy(AreaAddress::getMoAddress)));
+        }
+        List<MoAddressWithAddresses> mappedAddresses = addresses.stream()
+                .map(m -> new MoAddressWithAddresses(m, !areaAddressesMap.containsKey(m) ? Collections.emptyList() :
+                        areaAddressesMap.get(m).stream()
+                                .filter(a -> Objects.equals(a.getAddress(), m.getAddress()))
+                                .collect(Collectors.toList())))
+                .collect(Collectors.toList());
+
+        return paging == null ? new PageImpl<>(mappedAddresses) : new PageImpl<>(mappedAddresses, paging, addresses.getTotalElements());
     }
 
     /**

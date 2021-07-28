@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.repository.area;
 
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders_;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.Addresses_;
-import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
-import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress_;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
@@ -21,13 +21,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
+import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
@@ -143,5 +148,63 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
     @Override
     public List<MoAddress> saveAll(List<MoAddress> moAddress) {
         return moAddressPagingAndSortingRepository.saveAll(moAddress);
+    }
+
+    @Override
+    public Page<MoAddress> find(long moId, List<Long> addressGlobalIds, List<Long> areaTypeCodes, LocalDate orderDate,
+                                String orderName, String orderNumber, String orderOuz, LocalDate orderCreateDate, PageRequest paging) {
+        Specification<MoAddress> specification = (root, query, builder) -> {
+            if (query.getResultType() != Long.class) {
+                root.fetch(MoAddress_.address, JoinType.INNER);
+                root.fetch(MoAddress_.addressAllocationOrder, JoinType.LEFT);
+                root.fetch(MoAddress_.addressRejectOrder, JoinType.LEFT);
+            }
+            LocalDate now = LocalDate.now();
+
+            return builder.and(
+                    builder.equal(root.get(MoAddress_.moId), moId),
+                    areaTypeCodes == null || areaTypeCodes.isEmpty() ? builder.conjunction() :
+                            builder.in(root.get(MoAddress_.areaType).get(AreaType_.code.getName())).value(areaTypeCodes),
+                    builder.or(
+                            builder.lessThanOrEqualTo(root.get(MoAddress_.startDate.getName()), now),
+                            root.get(MoAddress_.startDate.getName()).isNull()
+                    ),
+                    builder.or(
+                            builder.greaterThan(root.get(MoAddress_.endDate.getName()), now),
+                            root.get(MoAddress_.endDate.getName()).isNull()
+                    ),
+                    addressGlobalIds == null || addressGlobalIds.isEmpty() ? builder.conjunction() :
+                            builder.in(root.get(MoAddress_.address).get(Addresses_.globalId.getName())).value(addressGlobalIds),
+                    orderDate == null ? builder.conjunction() :
+                            builder.equal(root.get(MoAddress_.addressAllocationOrder).get(AddressAllocationOrders_.date), orderDate),
+                    builder.or(
+                            buildAllocationOrderPredicate(builder, root.get(MoAddress_.addressAllocationOrder),
+                                    orderName, orderNumber, orderOuz, orderCreateDate),
+                            buildAllocationOrderPredicate(builder, root.get(MoAddress_.addressRejectOrder),
+                                    orderName, orderNumber, orderOuz, orderCreateDate)
+                    )
+            );
+        };
+        return paging == null ? new PageImpl<>(moAddressPagingAndSortingRepository.findAll(specification)) :
+                moAddressPagingAndSortingRepository.findAll(specification, paging);
+    }
+
+    private Predicate buildAllocationOrderPredicate(CriteriaBuilder builder, Path<AddressAllocationOrders> root,
+                                           String orderName, String orderNumber, String orderOuz, LocalDate orderCreateDate) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (StringUtils.hasText(orderNumber)) {
+            predicates.add(builder.equal(root.get(AddressAllocationOrders_.number), orderNumber));
+        }
+        if (orderCreateDate != null) {
+            predicates.add(builder.equal(builder.function("DATE", LocalDate.class, root.get(AddressAllocationOrders_.createDate)), orderCreateDate));
+        }
+        if (StringUtils.hasText(orderName)) {
+            predicates.add(builder.like(builder.lower(root.get(AddressAllocationOrders_.name)), "%" + orderName.toLowerCase() + "%"));
+        }
+        if (StringUtils.hasText(orderOuz)) {
+            predicates.add(builder.like(builder.lower(root.get(AddressAllocationOrders_.ouz)), "%" + orderOuz.toLowerCase() + "%"));
+        }
+        return predicates.isEmpty() ? builder.conjunction() : builder.and(predicates.toArray(new Predicate[0]));
     }
 }

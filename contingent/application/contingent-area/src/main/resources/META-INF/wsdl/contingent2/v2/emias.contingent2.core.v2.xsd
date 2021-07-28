@@ -450,4 +450,62 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="Order">
+        <xs:annotation>
+            <xs:documentation>Сведения распоряжения</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" />
+            <xs:element name="number" type="xs:string" />
+            <xs:element name="date" type="xs:date" minOccurs="0" />
+            <xs:element name="name" type="xs:string" minOccurs="0" />
+            <xs:element name="ouz" type="xs:string" minOccurs="0" />
+            <xs:element name="createDate" type="xs:date" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AreaAddressInfo">
+        <xs:annotation>
+            <xs:documentation>Распределение к участку</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="areaAddressId" type="xs:long" />
+            <xs:element name="areaId" type="xs:long" />
+            <xs:element name="startDate" type="xs:date" minOccurs="0" />
+            <xs:element name="endDate" type="xs:date" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AddressInfo">
+        <xs:annotation>
+            <xs:documentation>Расширенные сведения о распределении адреса к территории обслуживания МО</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="address" type="address:AddressRegistryBaseType" />
+            <xs:element name="moInfo" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="moId" type="tns:ID" />
+                        <xs:element name="moAddressInfo" type="tns:MoAddressInfo" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MoAddressInfo">
+        <xs:annotation>
+            <xs:documentation>Территория обслуживания МО</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="areaType" type="tns:AreaTypeShort" />
+            <xs:element name="moAddressId" type="xs:long" />
+            <xs:element name="startDate" type="xs:date" minOccurs="0" />
+            <xs:element name="endDate" type="xs:date" minOccurs="0" />
+            <xs:element name="allocationOrder" type="tns:Order" minOccurs="0" />
+            <xs:element name="rejectOrder" type="tns:Order" minOccurs="0" />
+            <xs:element name="areaAddressInfo" type="tns:AreaAddressInfo" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>

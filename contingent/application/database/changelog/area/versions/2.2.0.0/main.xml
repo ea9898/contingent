@@ -50,7 +50,7 @@
         </loadUpdateData>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-1959-1" author="sorlov" labels="2.2.0.0">
+    <changeSet id="CONTINGENT2-1958-1" author="sorlov" labels="2.2.0.0">
         <preConditions onFail="MARK_RAN">
             <and>
                 <tableExists tableName="AD_CONFIG"/>

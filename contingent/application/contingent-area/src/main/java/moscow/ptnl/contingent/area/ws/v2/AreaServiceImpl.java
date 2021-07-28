@@ -12,6 +12,7 @@ import moscow.ptnl.contingent.area.transform.v2.AreaBriefMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaDnMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.MoAddressAllocationMapper;
+import moscow.ptnl.contingent.area.transform.v2.MoAddressInfoMapper;
 import moscow.ptnl.contingent.area.transform.v2.SearchAreaAddressMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapCustomMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper;
@@ -21,6 +22,7 @@ import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
+import moscow.ptnl.contingent.domain.area.model.area.MoAddressWithAddresses;
 import moscow.ptnl.contingent.error.ContingentException;
 
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
@@ -92,6 +94,8 @@ import ru.mos.emias.contingent2.area.v2.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.SearchAreaResponse;
 import ru.mos.emias.contingent2.area.v2.types.SearchDnAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.SearchDnAreaResponse;
+import ru.mos.emias.contingent2.area.v2.types.SearchMoAddressRequest;
+import ru.mos.emias.contingent2.area.v2.types.SearchMoAddressResponse;
 import ru.mos.emias.contingent2.area.v2.types.SearchMuByAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v2.types.SearchMuByAreaAddressResponse;
 import ru.mos.emias.contingent2.area.v2.types.SearchOrderRequest;
@@ -168,6 +172,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private MoAddressAllocationMapper moAddressAllocationMapper;
+
+    @Autowired
+    private MoAddressInfoMapper moAddressInfoMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
@@ -630,6 +637,22 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             response.getAddressAllocations().addAll(moAddressAllocationMapper.entityToDtoTransform(results.getContent()));
             soapCustomMapper.mapPagingResults(response, results);
 
+            return response;
+        }
+        catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override
+    public SearchMoAddressResponse searchMoAddress(SearchMoAddressRequest body) throws Fault {
+        try {
+            SearchMoAddressResponse response = new SearchMoAddressResponse();
+            Page<MoAddressWithAddresses> results = moMuMuServiceDomain.searchMoAddress(body.getMoId(), body.getAddressGlobalIds(),
+                    body.getAreaTypeCodes(), body.getOrderDate(), body.getOrderName(), body.getOrderNumber(), body.getOrderOuz(),
+                    body.getOrderCreateDate(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
+            response.getAddressInfos().addAll(moAddressInfoMapper.entityToDtoTransform(results.getContent()));
+            soapCustomMapper.mapPagingResults(response, results);
             return response;
         }
         catch (Exception ex) {

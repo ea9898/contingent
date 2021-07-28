@@ -919,4 +919,33 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="searchMoAddressRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="core:ID" />
+                <xs:element name="addressGlobalId" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="areaTypeCode" type="xs:long" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="orderDate" type="xs:date" minOccurs="0" />
+                <xs:element name="orderNumber" type="xs:string" minOccurs="0" />
+                <xs:element name="orderName" type="xs:string" minOccurs="0" />
+                <xs:element name="orderCreateDate" type="xs:date" minOccurs="0" />
+                <xs:element name="orderOuz" type="xs:string" minOccurs="0" />
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchMoAddressResponse">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="core:PagingResults">
+                    <xs:sequence>
+                        <xs:element name="addressInfo" type="core:AddressInfo" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

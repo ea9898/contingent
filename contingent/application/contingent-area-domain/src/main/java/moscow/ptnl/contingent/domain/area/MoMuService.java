@@ -2,12 +2,14 @@ package moscow.ptnl.contingent.domain.area;
 
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
+import moscow.ptnl.contingent.domain.area.model.area.MoAddressWithAddresses;
 import moscow.ptnl.contingent.domain.area.model.area.MuAreaTypesFull;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface MoMuService {
@@ -99,4 +101,22 @@ public interface MoMuService {
      * @return
      */
     boolean delMoAddressTotal(long orderId, List<Long> addressGlobalIds) throws ContingentException;
+
+    /**
+     * (К_УУ_34) Поиск территорий обслуживания МО по параметрам
+     * @param moId
+     * @param addressGlobalIds
+     * @param areaTypeCodes
+     * @param orderDate
+     * @param orderName
+     * @param orderNumber
+     * @param orderOuz
+     * @param orderCreateDate
+     * @param paging
+     * @return
+     * @throws ContingentException
+     */
+    Page<MoAddressWithAddresses> searchMoAddress(long moId, List<Long> addressGlobalIds, List<Long> areaTypeCodes, LocalDate orderDate,
+                                                 String orderName, String orderNumber, String orderOuz, LocalDate orderCreateDate,
+                                                 PageRequest paging) throws ContingentException;
 }

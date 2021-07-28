@@ -36,6 +36,7 @@ import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClassEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
@@ -1015,5 +1016,21 @@ public class AreaHelper {
         if (numberOfAddresses > settingService.getPar42()) {
             validation.error(AreaErrorReason.TOO_MANY_REQUEST_ADDRESSES, new ValidationParameter("maxAddresses", settingService.getPar42()));
         }
+    }
+
+    //Система проверяет, что каждый переданный «Код типа участка» является первичным (AREA_TYPE.AREA_TYPE_CLASS_CODE = 1)
+    public void checkAreaTypesArePrimary(List<AreaType> areaTypes, Validation validation) {
+        areaTypes.stream()
+                .filter(a -> !AreaTypeClassEnum.PRIMARY.areaTypeClassEquals(a.getAreaTypeClass()))
+                .forEach(a -> validation.error(AreaErrorReason.AREA_TYPE_IS_NOT_PRIMARY_2,
+                        new ValidationParameter("areaTypeCode", a.getCode())));
+    }
+
+    //Система проверяет, что каждый переданный «Код типа участка» имеет признак "обслуживает территорию" (AREA_TYPE.HAS_SERVICE_TERRITORY = 1)
+    public void checkAreaTypesServeTerritory(List<AreaType> areaTypes, Validation validation) {
+        areaTypes.stream()
+                .filter(a -> !Boolean.TRUE.equals(a.getHasServiceTerritory()))
+                .forEach(a -> validation.error(AreaErrorReason.AREA_TYPE_DO_NOT_SERVES_TERRITORY,
+                        new ValidationParameter("areaTypeCode", a.getCode())));
     }
 }

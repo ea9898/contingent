@@ -23,6 +23,8 @@ import moscow.ptnl.contingent.domain.area.entity.Addresses_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 import moscow.ptnl.contingent.repository.CommonSpecification;
 
+import javax.persistence.criteria.JoinType;
+
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
 public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAddressRepository {
@@ -39,10 +41,32 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
             );
     }
 
+    // Спека поиска актуальных территорий обслуживания
+    private Specification<AreaAddress> actualAreaAddressesSpec() {
+        return (root, criteriaQuery, builder) -> {
+            LocalDate now = LocalDate.now();
+
+            return builder.and(
+                    builder.or(
+                            builder.lessThanOrEqualTo(root.get(MoAddress_.startDate.getName()), now),
+                            root.get(MoAddress_.startDate.getName()).isNull()
+                    ),
+                    builder.or(
+                            builder.greaterThan(root.get(MoAddress_.endDate.getName()), now),
+                            root.get(MoAddress_.endDate.getName()).isNull()
+                    )
+            );
+        };
+    }
+
     // Спека поиска территорий обслуживания по ID
     private Specification<AreaAddress> findMoAddressesByIdsSpec(List<Long> moAddressIds) {
-        return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.in(root.get(AreaAddress_.moAddress.getName()).get(MoAddress_.id.getName())).value(moAddressIds);
+        return (root, criteriaQuery, builder) -> {
+            root.fetch(AreaAddress_.address, JoinType.INNER);
+            root.fetch(AreaAddress_.moAddress, JoinType.INNER);
+            root.fetch(AreaAddress_.area, JoinType.INNER);
+            return builder.in(root.get(AreaAddress_.moAddress.getName()).get(MoAddress_.id.getName())).value(moAddressIds);
+        };
     }
 
     private Specification<AreaAddress> findAreaAddressesByIdsSpec(List<Long> areaAddressIds) {
@@ -66,6 +90,11 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     @Override
     public List<AreaAddress> findAreaAddresses(List<Long> moAddressIds) {
         return areaAddressPagingAndSortingRepository.findAll(findMoAddressesByIdsSpec(moAddressIds));
+    }
+
+    @Override
+    public List<AreaAddress> findActualAreaAddresses(List<Long> moAddressIds) {
+        return areaAddressPagingAndSortingRepository.findAll(findMoAddressesByIdsSpec(moAddressIds).and(actualAreaAddressesSpec()));
     }
 
     @Override
