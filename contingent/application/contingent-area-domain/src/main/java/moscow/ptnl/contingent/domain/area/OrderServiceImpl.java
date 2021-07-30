@@ -53,7 +53,11 @@ public class OrderServiceImpl implements OrderService {
                 .name(name)
                 .build();
 
-        return addressAllocationOrderRepository.save(order).getId();
+        addressAllocationOrderRepository.save(order);
+
+        historyHelper.sendHistory(null, order, AddressAllocationOrders.class);
+
+        return order.getId();
     }
 
     @Override
