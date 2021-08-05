@@ -69,4 +69,13 @@
         </loadUpdateData>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-733-1" author="ddryuchin" labels="2.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+            <columnExists tableName="AREA_MEDICAL_EMPLOYEES" columnName="START_DATE"/>
+        </preConditions>
+        <comment>Поле area_medical_employees.start_date сделано обязательным</comment>
+        <addNotNullConstraint tableName="AREA_MEDICAL_EMPLOYEES" columnName="START_DATE"/>
+    </changeSet>
+
 </databaseChangeLog>
