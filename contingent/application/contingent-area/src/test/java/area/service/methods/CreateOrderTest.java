@@ -57,6 +57,7 @@ public class CreateOrderTest extends BaseTest {
         doAnswer(AdditionalAnswers.returnsFirstArg()).when(addressAllocationOrderRepository).save(any());
         doReturn(Collections.emptyList()).when(addressAllocationOrderRepository).findAddressAllocationOrders("2", now, "ouz", "name", false);
         ArgumentCaptor<AddressAllocationOrders> argument = ArgumentCaptor.forClass(AddressAllocationOrders.class);
+        lenient().doNothing().when(historyService).write(any(), any(), any(), any(), any(), any());
         assertDoesNotThrow(() -> orderService.createOrder("2", now, "ouz", "name"));
         verify(addressAllocationOrderRepository).save(argument.capture());
         assertEquals("name", argument.getValue().getName());
