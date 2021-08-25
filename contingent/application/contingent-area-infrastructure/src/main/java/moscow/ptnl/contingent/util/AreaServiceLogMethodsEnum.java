@@ -17,6 +17,7 @@ public enum AreaServiceLogMethodsEnum {
     INITIATE_ADD_MO_ADDRESS("initiateAddMoAddress"),
     ARCHIVE_AREA("archiveArea"),
     RESTORE_AREA("restoreArea"),
+    CREATE_ORDER("createOrder"),
     SET_AREA_MU_SERVICE("setAreaMuService");
 
     private final String name;
