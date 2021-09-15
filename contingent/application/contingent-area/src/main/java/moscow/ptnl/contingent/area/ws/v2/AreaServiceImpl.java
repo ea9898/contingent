@@ -644,7 +644,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchMoAddressResponse searchMoAddress(SearchMoAddressRequest body) throws Fault {
         try {
             SearchMoAddressResponse response = new SearchMoAddressResponse();
