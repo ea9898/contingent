@@ -9,6 +9,7 @@ import moscow.ptnl.contingent.domain.area.entity.MoAddress_;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
+import moscow.ptnl.contingent2.area.info.Address;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -154,11 +155,13 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
     public Page<MoAddress> find(long moId, List<Long> addressGlobalIds, List<Long> areaTypeCodes, LocalDate orderDate,
                                 String orderName, String orderNumber, String orderOuz, LocalDate orderCreateDate, PageRequest paging) {
         Specification<MoAddress> specification = (root, query, builder) -> {
-            if (query.getResultType() != Long.class) {
-                root.fetch(MoAddress_.address, JoinType.INNER);
-                root.fetch(MoAddress_.addressAllocationOrder, JoinType.LEFT);
-                root.fetch(MoAddress_.addressRejectOrder, JoinType.LEFT);
-            }
+
+            Join<MoAddress, Addresses> moAddressAddressJoin = root.join(MoAddress_.address, JoinType.INNER);
+            Join<MoAddress, AddressAllocationOrders> moAddressAddressAllocationOrdersJoin =
+                    root.join(MoAddress_.addressAllocationOrder, JoinType.LEFT);
+            Join<MoAddress, AddressAllocationOrders> moAddressAddressRejectAllocationOrdersJoin =
+                    root.join(MoAddress_.addressRejectOrder, JoinType.LEFT);
+
             LocalDate now = LocalDate.now();
 
             return builder.and(
