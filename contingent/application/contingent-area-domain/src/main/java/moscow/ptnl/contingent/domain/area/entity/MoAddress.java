@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.domain.area.entity;
 
 import moscow.ptnl.contingent.domain.history.ServiceName;
+import moscow.ptnl.contingent.domain.history.converter.AreaTypeFieldConverter;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
@@ -38,7 +39,7 @@ public class MoAddress implements Serializable {
     @Column(name = "MO_ID")
     private Long moId;
 
-    @LogIt
+    @LogIt(converter = AreaTypeFieldConverter.class)
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType areaType;

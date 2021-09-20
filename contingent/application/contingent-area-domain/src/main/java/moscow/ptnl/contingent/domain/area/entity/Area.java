@@ -2,6 +2,12 @@ package moscow.ptnl.contingent.domain.area.entity;
 
 import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
+import moscow.ptnl.contingent.domain.history.converter.AreaTypeFieldConverter;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import moscow.ptnl.contingent.domain.history.ServiceName;
+import moscow.ptnl.contingent.domain.history.meta.Journalable;
+import moscow.ptnl.contingent.domain.history.meta.LogIt;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -23,11 +29,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.nsi.domain.area.AreaType;
-import moscow.ptnl.contingent.domain.history.ServiceName;
-import moscow.ptnl.contingent.domain.history.meta.Journalable;
-import moscow.ptnl.contingent.domain.history.meta.LogIt;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 
 @Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREAS")
@@ -49,7 +50,7 @@ public class Area implements Serializable {
     @Column(name = "MU_ID")
     private Long muId;
 
-    @LogIt
+    @LogIt(converter = AreaTypeFieldConverter.class)
     @JoinColumn(name = "AREA_TYPE_CODE")
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType areaType;
