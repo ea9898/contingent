@@ -93,7 +93,10 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
     }
 
     @Override
-    public List<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds) {
+    public Page<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds, Pageable paging) {
+        if (globalIds.isEmpty()) {
+            return Page.empty();
+        }
         Specification<MoAddress> moAddressSpecification = (root, query, builder) -> {
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
             LocalDate now = LocalDate.now();
@@ -110,7 +113,13 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                     )
             );
         };
-        return moAddressPagingAndSortingRepository.findAll(moAddressSpecification, Sort.by(MoAddress_.address.getName() + "." + Addresses_.globalId.getName()));
+        Sort sorting = Sort.by(MoAddress_.address.getName() + "." + Addresses_.globalId.getName());
+
+        if (paging != null && paging.isPaged()) {
+            return moAddressPagingAndSortingRepository.findAll(moAddressSpecification,
+                    PageRequest.of(paging.getPageNumber(), paging.getPageSize(), sorting));
+        }
+        return new PageImpl<>(moAddressPagingAndSortingRepository.findAll(moAddressSpecification, sorting));
     }
 
     @Override

@@ -1654,14 +1654,7 @@ public class AreaServiceImpl implements AreaService {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        if (paging != null) {
-            addressGlobalIds = addressGlobalIds.stream()
-                    .sorted()
-                    .skip((long) paging.getPageNumber() * paging.getPageSize())
-                    .limit(paging.getPageSize())
-                    .collect(Collectors.toList());
-        }
-        List<MoAddressAllocation> addresses = moAddressRepository.getActiveMoAddressesByGlobalIds(addressGlobalIds).stream()
+        List<MoAddressAllocation> addresses = moAddressRepository.getActiveMoAddressesByGlobalIds(addressGlobalIds, paging).stream()
                 .filter(a -> a.getAddress() != null)
                 .map(a -> new MoAddressAllocation(a.getAddress().getGlobalId(), a.getMoId(), a.getAreaType(), a.getId()))
                 .collect(Collectors.toList());
