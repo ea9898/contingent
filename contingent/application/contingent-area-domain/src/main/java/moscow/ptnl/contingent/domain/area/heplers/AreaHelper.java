@@ -277,17 +277,27 @@ public class AreaHelper {
     }
 
     /**
-     * Такое название из
+     * Для вызова из метода delMoAddress
      * @param addresses
      * @return
      */
     @LogESU(type = AreaInfoEvent.class, useResult = true, methodName = "delMoAddress")
     public Set<Area> deleteAreaAddress(List<AreaAddress> addresses) {
-
         Set<Area> areas = addresses.stream().map(AreaAddress::getArea).collect(Collectors.toSet());
-
         delAreaAddresses(addresses);
+        //Возвращаем участки, адреса которых были удалены, для передачи в ЕСУ
+        return areas;
+    }
 
+    /**
+     * Для вызова из метода delMoAddressTotal
+     * @param addresses
+     * @return
+     */
+    @LogESU(type = AreaInfoEvent.class, useResult = true, methodName = "delMoAddressTotal")
+    public Set<Area> deleteAreaAddressTotal(List<AreaAddress> addresses) {
+        Set<Area> areas = addresses.stream().map(AreaAddress::getArea).collect(Collectors.toSet());
+        delAreaAddresses(addresses);
         //Возвращаем участки, адреса которых были удалены, для передачи в ЕСУ
         return areas;
     }

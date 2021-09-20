@@ -199,7 +199,7 @@ public class MoMuServiceImpl implements MoMuService {
             throw new ContingentException(validation);
         }
         //6. - 9.
-        deleteMuAndAreaAddresses(moAddresses);
+        deleteMuAndAreaAddresses(moAddresses, false);
     }
 
     @Override
@@ -219,7 +219,7 @@ public class MoMuServiceImpl implements MoMuService {
                 .collect(Collectors.toList())
         );
         //5. Система закрывает территории обслуживания
-        deleteMuAndAreaAddresses(moAddresses);
+        deleteMuAndAreaAddresses(moAddresses, true);
 
         return true;
     }
@@ -288,7 +288,7 @@ public class MoMuServiceImpl implements MoMuService {
      * Часть алгоритмов delMoAddress и delMoAddressTotal
      * @param moAddresses
      */
-    private void deleteMuAndAreaAddresses(List<MoAddress> moAddresses) {
+    private void deleteMuAndAreaAddresses(List<MoAddress> moAddresses, boolean total) {
         if (moAddresses.isEmpty()) {
             return;
         }
@@ -298,7 +298,11 @@ public class MoMuServiceImpl implements MoMuService {
         List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddresses(moAddressesIds);
 
         if (!areaAddresses.isEmpty()) {
-            areaHelper.deleteAreaAddress(areaAddresses);
+            if (total) {
+                areaHelper.deleteAreaAddressTotal(areaAddresses);
+            } else {
+                areaHelper.deleteAreaAddress(areaAddresses);
+            }
         }
         areaHelper.delMoAddresses(moAddresses);
 
