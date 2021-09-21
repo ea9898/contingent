@@ -661,9 +661,11 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             ru.mos.emias.contingent2.core.v2.AreaHistory areaHistory = new ru.mos.emias.contingent2.core.v2.AreaHistory();
             areaHistory.setAreaId(results.getAreaId());
             areaHistory.setDateCreated(results.getDateCreated());
-            areaHistory.setEvents(new ru.mos.emias.contingent2.core.v2.AreaHistory.Events());
-            areaHistory.getEvents().getEvents().addAll(results.getEvents().get()
-                    .map(getAreaHistoryMapper::entityToDtoTransform).collect(Collectors.toList()));
+            if (results.getEvents().getTotalElements() > 0L) {
+                areaHistory.setEvents(new ru.mos.emias.contingent2.core.v2.AreaHistory.Events());
+                areaHistory.getEvents().getEvents().addAll(results.getEvents().get()
+                        .map(getAreaHistoryMapper::entityToDtoTransform).collect(Collectors.toList()));
+            }
             areaHistoryResultPage.setResult(areaHistory);
             soapCustomMapper.mapPagingResults(areaHistoryResultPage, results.getEvents());
             getAreaHistoryResponse.setResult(areaHistoryResultPage);
