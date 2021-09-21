@@ -508,4 +508,34 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="AreaHistory">
+        <xs:annotation>
+            <xs:documentation>История назначения медработников на участок</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="areaId" type="xs:long" />
+            <xs:element name="dateCreated" type="xs:dateTime" />
+            <xs:element name="events" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="event" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="login" type="xs:string" />
+                                    <xs:element name="jobId" type="xs:long" />
+                                    <xs:element name="snils" type="xs:string" />
+                                    <xs:element name="startDate" type="xs:dateTime" minOccurs="0" />
+                                    <xs:element name="endDate" type="xs:dateTime" minOccurs="0" />
+                                    <xs:element name="isError" type="xs:boolean" minOccurs="0" />
+                                    <xs:element name="isReplacement" type="xs:boolean" />
+                                    <xs:element name="updateDate" type="xs:dateTime" minOccurs="0" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
 </xs:schema>

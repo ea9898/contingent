@@ -78,4 +78,72 @@
         <addNotNullConstraint tableName="AREA_MEDICAL_EMPLOYEES" columnName="START_DATE" columnDataType="TIMESTAMP(6)"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-1882-1" author="ddryuchin" labels="2.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+            </and>
+        </preConditions>
+        <comment>Настройка безопасности методов web-сервиса</comment>
+        <loadUpdateData
+                encoding="UTF-8"
+                file="changelog/area/versions/2.2.0.0/files/security.config.15.csv"
+                quotchar=""
+                separator="#"
+                tableName="AD_CONFIG"
+                primaryKey="code">
+            <column name="code" type="STRING"/>
+            <column name="val" type="STRING"/>
+        </loadUpdateData>
+    </changeSet>
+
+    <changeSet runInTransaction="false" id="CONTINGENT2-1290" author="ddryuchin" labels="1.8.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_addresses_globalid"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки global_id таблицы addresses</comment>
+        <sql dbms="postgresql">
+            CREATE UNIQUE INDEX CONCURRENTLY idx_addresses_globalid ON addresses(global_id);
+        </sql>
+    </changeSet>
+
+
+    <changeSet runInTransaction="false" id="CONTINGENT2-1882-2" author="ddryuchin" labels="2.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_jl_history_ot_oid"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки object_id и object_type таблицы jl_history</comment>
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY idx_jl_history_ot_oid ON jl_history(object_id, object_type);
+        </sql>
+    </changeSet>
+
+    <changeSet runInTransaction="false" id="CONTINGENT2-1882-3" author="ddryuchin" labels="2.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_jl_history_mn_oid"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки object_id и method_name таблицы jl_history</comment>
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY idx_jl_history_mn_oid ON jl_history(object_id, method_name);
+        </sql>
+    </changeSet>
+
+    <changeSet runInTransaction="false" id="CONTINGENT2-1882-4" author="ddryuchin" labels="2.2.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_jl_history_col_jrn_cn"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки jrn_id и column_name таблицы jl_history_columns</comment>
+        <sql dbms="postgresql">
+            CREATE INDEX CONCURRENTLY idx_jl_history_col_jrn_cn ON jl_history_columns(jrn_id, column_name);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

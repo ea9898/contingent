@@ -2,8 +2,12 @@ package moscow.ptnl.contingent.domain.area.repository;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
+import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import javax.persistence.Tuple;
 import java.util.List;
 import java.util.Map;
 
@@ -29,4 +33,6 @@ public interface AreaMedicalEmployeeRepository {
     List<AreaMedicalEmployees> saveAll(List<AreaMedicalEmployees> areaMedicalEmployees);
 
     void delete(AreaMedicalEmployees areaMedicalEmployees);
+
+    Page<AreaHistory.Event> areaHistory(Long areaId, Pageable paging);
 }

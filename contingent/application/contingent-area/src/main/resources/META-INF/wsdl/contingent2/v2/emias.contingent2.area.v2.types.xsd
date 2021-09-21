@@ -29,6 +29,23 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="AreaHistoryResultPage">
+        <xs:annotation>
+            <xs:documentation>История назначения медработников на участок</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="core:PagingResults">
+                <xs:sequence>
+                    <xs:element name="result" type="core:AreaHistory" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>История назначения медработников на участок</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:element name="createDependentAreaRequest">
         <xs:complexType>
             <xs:sequence>
@@ -945,6 +962,24 @@
                     </xs:sequence>
                 </xs:extension>
             </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaHistoryRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="core:ID" />
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaHistoryResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="result" type="tns:AreaHistoryResultPage" />
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 

@@ -3,21 +3,29 @@ package moscow.ptnl.contingent.repository.area;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees_;
+import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
 import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.repository.CommonSpecification;
+
+import javax.persistence.Tuple;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
@@ -169,5 +177,10 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     @Override
     public void delete(AreaMedicalEmployees areaMedicalEmployees) {
         areaMedicalEmployeeCRUDRepository.delete(areaMedicalEmployees);
+    }
+
+    @Override
+    public Page<AreaHistory.Event> areaHistory(Long areaId, Pageable paging) {
+        return areaMedicalEmployeeCRUDRepository.areaHistory(areaId, paging);
     }
 }

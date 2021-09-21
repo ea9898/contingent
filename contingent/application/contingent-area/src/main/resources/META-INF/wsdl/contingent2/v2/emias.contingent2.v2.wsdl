@@ -307,6 +307,14 @@
         <wsdl:part name="body" element="ns1:searchMoAddressResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="getAreaHistoryInput">
+        <wsdl:part name="body" element="ns1:getAreaHistoryRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getAreaHistoryOutput">
+        <wsdl:part name="body" element="ns1:getAreaHistoryResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
             <wsdl:documentation>
@@ -518,7 +526,7 @@
         </wsdl:operation>
         <wsdl:operation name="initiateAddMoAddress">
             <wsdl:documentation>
-                ÐÐ½Ð¸ÑÐ¸Ð°ÑÐ¸Ñ Ð¿ÑÐ¾ÑÐµÑÑÐ° ÑÐ°ÑÐ¿ÑÐµÐ´ÐµÐ»ÐµÐ½Ð¸Ñ Ð¶Ð¸Ð»ÑÑ Ð´Ð¾Ð¼Ð¾Ð² Ðº ÑÐµÑÑÐ¸ÑÐ¾ÑÐ¸Ð¸ Ð¾Ð±ÑÐ»ÑÐ¶Ð¸Ð²Ð°Ð½Ð¸Ñ ÐÐ (Ð_Ð£Ð£_27)
+                Инициация процесса распределения жилых домов к территории обслуживания МО (К_УУ_27)
             </wsdl:documentation>
             <wsdl:input message="tns:initiateAddMoAddressInput"/>
             <wsdl:output message="tns:initiateAddMoAddressOutput"/>
@@ -586,6 +594,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:searchMoAddressInput"/>
             <wsdl:output message="tns:searchMoAddressOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getAreaHistory">
+            <wsdl:documentation>
+                Предоставление истории участка (К_УУ_33)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getAreaHistoryInput"/>
+            <wsdl:output message="tns:getAreaHistoryOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -1071,6 +1087,20 @@
 
         <wsdl:operation name="searchMoAddress">
             <soap:operation soapAction="searchMoAddress"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getAreaHistory">
+            <soap:operation soapAction="getAreaHistory"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

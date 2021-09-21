@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.transform.v2.AddressRegistryToAddressRegistry
 import moscow.ptnl.contingent.area.transform.v2.AreaBriefMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaDnMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.GetAreaHistoryMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.MoAddressAllocationMapper;
 import moscow.ptnl.contingent.area.transform.v2.MoAddressInfoMapper;
 import moscow.ptnl.contingent.area.transform.v2.SearchAreaAddressMapperV2;
@@ -19,6 +20,7 @@ import moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
+import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
@@ -50,6 +52,7 @@ import ru.mos.emias.contingent2.area.v2.types.AddMuAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.v2.types.AddMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.v2.types.ArchiveAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.ArchiveAreaResponse;
+import ru.mos.emias.contingent2.area.v2.types.AreaHistoryResultPage;
 import ru.mos.emias.contingent2.area.v2.types.CreateDependentAreaRequest;
 import ru.mos.emias.contingent2.area.v2.types.CreateDependentAreaResponse;
 import ru.mos.emias.contingent2.area.v2.types.CreateOrderRequest;
@@ -70,6 +73,8 @@ import ru.mos.emias.contingent2.area.v2.types.GetAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v2.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.v2.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.v2.types.GetAreaByIdResponse;
+import ru.mos.emias.contingent2.area.v2.types.GetAreaHistoryRequest;
+import ru.mos.emias.contingent2.area.v2.types.GetAreaHistoryResponse;
 import ru.mos.emias.contingent2.area.v2.types.GetAreaListBriefRequest;
 import ru.mos.emias.contingent2.area.v2.types.GetAreaListBriefResponse;
 import ru.mos.emias.contingent2.area.v2.types.GetMoAddressRequest;
@@ -175,6 +180,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private MoAddressInfoMapper moAddressInfoMapper;
+
+    @Autowired
+    private GetAreaHistoryMapperV2 getAreaHistoryMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
@@ -640,6 +648,27 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
+            throw mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public GetAreaHistoryResponse getAreaHistory(GetAreaHistoryRequest body) throws Fault {
+        try {
+            GetAreaHistoryResponse getAreaHistoryResponse = new GetAreaHistoryResponse();
+            AreaHistory results = areaServiceDomain.getAreaHistory(body.getAreaId(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
+            AreaHistoryResultPage areaHistoryResultPage = new AreaHistoryResultPage();
+            ru.mos.emias.contingent2.core.v2.AreaHistory areaHistory = new ru.mos.emias.contingent2.core.v2.AreaHistory();
+            areaHistory.setAreaId(results.getAreaId());
+            areaHistory.setDateCreated(results.getDateCreated());
+            areaHistory.setEvents(new ru.mos.emias.contingent2.core.v2.AreaHistory.Events());
+            areaHistory.getEvents().getEvents().addAll(results.getEvents().get()
+                    .map(getAreaHistoryMapper::entityToDtoTransform).collect(Collectors.toList()));
+            areaHistoryResultPage.setResult(areaHistory);
+            soapCustomMapper.mapPagingResults(areaHistoryResultPage, results.getEvents());
+            getAreaHistoryResponse.setResult(areaHistoryResultPage);
+            return getAreaHistoryResponse;
+        } catch (Exception ex) {
             throw mapException(ex);
         }
     }

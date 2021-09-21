@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.AddressArea;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
+import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
@@ -383,4 +384,13 @@ public interface AreaService {
     void setAreaMuService(long areaId, List<Long> addServicedMuIds, List<Long> closeServicedMuIds) throws ContingentException;
 
     Page<MoAddressAllocation> getMoAddressTotal(List<Long> addressGlobalIds, PageRequest paging) throws ContingentException;
+
+    /**
+     * Предоставление истории участка (К_УУ_33)
+     * @param areaId
+     * @param paging
+     * @return
+     * @throws ContingentException
+     */
+    AreaHistory getAreaHistory(long areaId, PageRequest paging) throws ContingentException;
 }

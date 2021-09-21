@@ -16,6 +16,7 @@ import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
+import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
@@ -70,6 +71,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.Tuple;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -1660,5 +1662,30 @@ public class AreaServiceImpl implements AreaService {
                 .collect(Collectors.toList());
 
         return paging == null ? new PageImpl<>(addresses) : new PageImpl<>(addresses, paging, addressGlobalIds.size());
+    }
+
+    @Override
+    public AreaHistory getAreaHistory(long areaId, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+        //2.
+        areaHelper.checkMaxPage(paging, validation);
+
+        // 3.
+        Area area = areaHelper.checkAndGetArea(areaId, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 4.
+        Page<AreaHistory.Event> areaHistoryEvents = areaMedicalEmployeeRepository.areaHistory(areaId, paging);
+
+        AreaHistory areaHistory = new AreaHistory();
+
+        areaHistory.setAreaId(area.getId());
+        areaHistory.setDateCreated(area.getCreateDate());
+        areaHistory.setEvents(areaHistoryEvents);
+
+        return areaHistory;
     }
 }
