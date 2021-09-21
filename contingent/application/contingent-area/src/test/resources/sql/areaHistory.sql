@@ -1,0 +1,46 @@
+INSERT INTO area_types_class (code, title, archived, global_id, update_date, source) VALUES (1, 'Первичный класс участков', 0, 125723193, '2021-06-25 16:11:18.958000', 'syncNsi');
+
+INSERT INTO area_types_kind (code, title, archived, global_id, update_date, source) VALUES (1, 'Мягко-ассоциированный участок', 0, 125694438, '2021-06-25 16:11:19.599000', 'syncNsi');
+
+INSERT INTO area_type (code, title, area_type_kind_code, area_type_class_code, head_finance, attach_by_medical_reason, has_service_territory, attach_by_request, mpgu_available, area_count_limit_code, gender_code, residents_bind_rate, age_min, age_max, age_m_min, age_m_max, age_w_min, age_w_max, archived, global_id, update_date, source) VALUES (10, 'Терапевтический', 1, 1, 1, 0, 1, 1, 1, 1, null, 2500, 18, 150, null, null, null, null, 0, 125694880, '2021-06-25 16:11:21.061000', 'syncNsi');
+
+INSERT INTO areas (id, mo_id, mu_id, area_type_code, number, is_auto_assign_for_attach, description, attach_by_medical_reason, age_min, age_max, age_m_min, age_m_max, age_w_min, age_w_max, create_date, update_date, archived, area_type_profile_code) VALUES (100002165, 204, 6485811854, 10, 51, 1, 'филиал5_уч2', null, 18, 150, null, null, null, null, '2020-02-28 14:56:22.057000', '2020-02-28 14:56:22.057000', 0, null);
+
+INSERT INTO area_medical_employees (id, medical_employee_job_id, area_id, is_replacement, start_date, end_date, snils, position_code, subdivision_id, create_date, update_date, is_error, position_code_supp) VALUES (57885, 11354096, 100002165, 0, '2021-07-07 00:00:00.000000', null, '07126017324', 'AMB_MED_264', 13950553, '2021-07-06 16:41:48.632000', '2021-07-06 16:41:48.632000', 0, null);
+INSERT INTO area_medical_employees (id, medical_employee_job_id, area_id, is_replacement, start_date, end_date, snils, position_code, subdivision_id, create_date, update_date, is_error, position_code_supp) VALUES (57879, 10005163, 100002165, 0, '2021-07-06 00:00:00.000000', '2021-07-06 00:00:00.000000', '01717644647', 'AMB_MED_264', 13950554, '2021-07-06 16:25:41.389000', '2021-07-06 16:25:46.114000', 0, null);
+INSERT INTO area_medical_employees (id, medical_employee_job_id, area_id, is_replacement, start_date, end_date, snils, position_code, subdivision_id, create_date, update_date, is_error, position_code_supp) VALUES (57878, 10005163, 100002165, 0, '2021-07-07 00:00:00.000000', '2021-07-07 00:00:00.000000', '01717644647', 'AMB_MED_264', 13950554, '2021-07-06 16:25:08.448000', '2021-07-06 16:25:29.462000', 1, null);
+
+INSERT INTO jl_history (id, object_type, object_id, change_date, user_login, job_info_id, service_name, method_name, user_role_id, jl_history_requests_id) VALUES (409172, 'AREA_EMPLOYEE', '57878', '2021-07-06 16:25:29.462000', 'HAdiatullina', 13023679015, 'Area', 'setMedicalEmployeeOnArea', 7014, '2c5d5853-b603-4642-a787-ae8bfe0a7f57');
+INSERT INTO jl_history (id, object_type, object_id, change_date, user_login, job_info_id, service_name, method_name, user_role_id, jl_history_requests_id) VALUES (409171, 'AREA_EMPLOYEE', '57878', '2021-07-06 16:25:08.452000', 'HAdiatullina', 13023679015, 'Area', 'setMedicalEmployeeOnArea', 7014, 'bed9465a-e0a5-4df0-8e9d-2047138802ef');
+INSERT INTO jl_history (id, object_type, object_id, change_date, user_login, job_info_id, service_name, method_name, user_role_id, jl_history_requests_id) VALUES (409174, 'AREA_EMPLOYEE', '57879', '2021-07-06 16:25:46.114000', 'HAdiatullina', 13023679015, 'Area', 'setMedicalEmployeeOnArea', 7014, '85098539-9da0-495e-956c-ad8159632398');
+INSERT INTO jl_history (id, object_type, object_id, change_date, user_login, job_info_id, service_name, method_name, user_role_id, jl_history_requests_id) VALUES (409173, 'AREA_EMPLOYEE', '57879', '2021-07-06 16:25:41.390000', 'HAdiatullina', 13023679015, 'Area', 'setMedicalEmployeeOnArea', 7014, 'c84a861b-28df-40d3-bd9b-63c93acf7d9e');
+INSERT INTO jl_history (id, object_type, object_id, change_date, user_login, job_info_id, service_name, method_name, user_role_id, jl_history_requests_id) VALUES (409239, 'AREA_EMPLOYEE', '57885', '2021-07-06 16:41:48.641000', 'HAdiatullina', 13023679015, 'Area', 'setMedicalEmployeeOnArea', 7014, 'a7c35135-4cde-4980-b925-fe4bb30fbe50');
+
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409172, 'updateDate', '06.07.2021 16:25:08', '06.07.2021 16:25:29', 'AREA_MEDICAL_EMPLOYEES', 2414652);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409172, 'endDate', null, '2021-07-07', 'AREA_MEDICAL_EMPLOYEES', 2414653);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409173, 'positionCode', null, 'AMB_MED_264', 'AREA_MEDICAL_EMPLOYEES', 2414654);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409173, 'startDate', null, '2021-07-06', 'AREA_MEDICAL_EMPLOYEES', 2414655);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409173, 'subdivisionId', null, '13950554', 'AREA_MEDICAL_EMPLOYEES', 2414656);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409173, 'snils', null, '01717644647', 'AREA_MEDICAL_EMPLOYEES', 2414657);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409173, 'area', null, '100002165', 'AREA_MEDICAL_EMPLOYEES', 2414658);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409173, 'medicalEmployeeJobId', null, '10005163', 'AREA_MEDICAL_EMPLOYEES', 2414659);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409173, 'createDate', null, '06.07.2021 16:25:41', 'AREA_MEDICAL_EMPLOYEES', 2414660);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409173, 'updateDate', null, '06.07.2021 16:25:41', 'AREA_MEDICAL_EMPLOYEES', 2414661);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409171, 'positionCode', null, 'AMB_MED_264', 'AREA_MEDICAL_EMPLOYEES', 2414644);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409171, 'updateDate', null, '06.07.2021 16:25:08', 'AREA_MEDICAL_EMPLOYEES', 2414645);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409171, 'subdivisionId', null, '13950554', 'AREA_MEDICAL_EMPLOYEES', 2414646);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409171, 'startDate', null, '2021-07-07', 'AREA_MEDICAL_EMPLOYEES', 2414647);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409171, 'snils', null, '01717644647', 'AREA_MEDICAL_EMPLOYEES', 2414648);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409171, 'area', null, '100002165', 'AREA_MEDICAL_EMPLOYEES', 2414649);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409171, 'medicalEmployeeJobId', null, '10005163', 'AREA_MEDICAL_EMPLOYEES', 2414650);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409171, 'createDate', null, '06.07.2021 16:25:08', 'AREA_MEDICAL_EMPLOYEES', 2414651);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409174, 'updateDate', '06.07.2021 16:25:41', '06.07.2021 16:25:46', 'AREA_MEDICAL_EMPLOYEES', 2414662);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409174, 'endDate', null, '2021-07-06', 'AREA_MEDICAL_EMPLOYEES', 2414663);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409239, 'positionCode', null, 'AMB_MED_264', 'AREA_MEDICAL_EMPLOYEES', 2415016);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409239, 'startDate', null, '2021-07-07', 'AREA_MEDICAL_EMPLOYEES', 2415017);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409239, 'snils', null, '07126017324', 'AREA_MEDICAL_EMPLOYEES', 2415018);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409239, 'area', null, '100002165', 'AREA_MEDICAL_EMPLOYEES', 2415019);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409239, 'subdivisionId', null, '13950553', 'AREA_MEDICAL_EMPLOYEES', 2415020);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409239, 'createDate', null, '06.07.2021 16:41:48', 'AREA_MEDICAL_EMPLOYEES', 2415021);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409239, 'medicalEmployeeJobId', null, '11354096', 'AREA_MEDICAL_EMPLOYEES', 2415022);
+INSERT INTO jl_history_columns (jrn_id, column_name, old_value, new_value, table_name, id) VALUES (409239, 'updateDate', null, '06.07.2021 16:41:48', 'AREA_MEDICAL_EMPLOYEES', 2415023);
