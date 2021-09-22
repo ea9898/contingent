@@ -19,7 +19,7 @@
         <xs:complexContent>
             <xs:extension base="core:PagingResults">
                 <xs:sequence>
-                    <xs:element name="addressAllocationOrders" type="core:AddressAllocationOrder" minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="order" type="core:AddressAllocationOrder" minOccurs="0" maxOccurs="unbounded">
                         <xs:annotation>
                             <xs:documentation>Сведения об участке</xs:documentation>
                         </xs:annotation>
@@ -339,16 +339,22 @@
 
     <xs:element name="getMoAddressResponse">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="core:PagingResults">
-                    <xs:sequence>
-                        <xs:element name="moId" type="xs:long" />
-                        <xs:element name="areaType" type="core:AreaTypeShort" minOccurs="0" maxOccurs="unbounded" />
-                        <xs:element name="order" type="core:AddressAllocationOrder" minOccurs="0" maxOccurs="unbounded" />
-                        <xs:element name="moAddress" type="core:MoAddress" minOccurs="0" maxOccurs="unbounded" />
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="moId" type="xs:long" />
+                                    <xs:element name="areaType" type="core:AreaTypeShort" minOccurs="0" maxOccurs="unbounded" />
+                                    <xs:element name="order" type="core:AddressAllocationOrder" minOccurs="0" maxOccurs="unbounded" />
+                                    <xs:element name="moAddress" type="core:MoAddress" minOccurs="0" maxOccurs="unbounded" />
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 
@@ -421,13 +427,19 @@
 
     <xs:element name="getAreaAddressResponse">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="core:PagingResults">
-                    <xs:sequence>
-                        <xs:element name="areaAddress" type="core:AreaAddress" minOccurs="0" maxOccurs="unbounded" />
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="areaAddress" type="core:AreaAddress" minOccurs="0" maxOccurs="unbounded" />
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 
@@ -619,13 +631,19 @@
 
     <xs:element name="searchAreaResponse">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="core:PagingResults">
-                    <xs:sequence>
-                        <xs:element name="area" type="core:Area" minOccurs="0" maxOccurs="unbounded"/>
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                        <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="area" type="core:Area" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 
@@ -742,13 +760,19 @@
 
     <xs:element name="searchDnAreaResponse">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="core:PagingResults">
-                    <xs:sequence>
-                        <xs:element name="area" type="core:AreaDn" minOccurs="0" maxOccurs="unbounded"/>
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="area" type="core:AreaDn" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 
@@ -802,20 +826,26 @@
 
     <xs:element name="searchMuByAreaAddressResponse">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="core:PagingResults">
-                    <xs:sequence>
-                        <xs:element name="result" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
                                 <xs:sequence>
-                                    <xs:element name="muId" type="core:ID" minOccurs="0" />
-                                    <xs:element name="moId" type="core:ID" />
+                                    <xs:element name="muInfo" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="muId" type="core:ID" minOccurs="0" />
+                                                <xs:element name="moId" type="core:ID" />
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
                                 </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 
@@ -837,13 +867,19 @@
 
     <xs:element name="getAreaListBriefResponse">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="core:PagingResults">
-                    <xs:sequence>
-                        <xs:element name="area" type="core:AreaBrief" minOccurs="0" maxOccurs="unbounded"/>
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="area" type="core:AreaBrief" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 

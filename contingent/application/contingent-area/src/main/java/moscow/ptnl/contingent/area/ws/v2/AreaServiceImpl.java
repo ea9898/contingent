@@ -6,20 +6,31 @@ import moscow.ptnl.contingent.area.transform.UserContextMapper;
 import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions;
 import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions.ShowMeValues;
 import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
+import moscow.ptnl.contingent.area.transform.v1.model.sorting.SearchMuByAreaAddressSorting;
 import moscow.ptnl.contingent.area.transform.v2.AddMedicalEmployeeMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AddressAllocationOrderMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AddressRegistryToAddressRegistryBaseMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AreaAddressMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaBriefMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaDnMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AreaTypeShortMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.GetAreaHistoryMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.MoAddressAllocationMapper;
 import moscow.ptnl.contingent.area.transform.v2.MoAddressInfoMapper;
+import moscow.ptnl.contingent.area.transform.v2.MoAddressMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SearchAreaAddressMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.SearchMuByAreaAddressMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapCustomMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
+import moscow.ptnl.contingent.domain.area.OrderService;
+import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
+import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
+import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
@@ -35,6 +46,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.contingent2.area.v2.AreaPT;
 import ru.mos.emias.contingent2.area.v2.Fault;
 
+import ru.mos.emias.contingent2.area.v2.types.AddressAllocationOrderListResultPage;
 import ru.mos.emias.contingent2.area.v2.types.AddAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v2.types.AddAreaAddressResponse;
 import ru.mos.emias.contingent2.area.v2.types.AddMoAddressRequest;
@@ -119,6 +132,7 @@ import ru.mos.emias.contingent2.area.v2.types.UpdatePrimaryAreaResponse;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -155,7 +169,13 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private MoMuService moMuMuServiceDomain;
 
     @Autowired
+    private OrderService orderServiceDomain;
+
+    @Autowired
     private SoapCustomMapperV2 soapCustomMapper;
+
+    @Autowired
+    private AreaTypeShortMapperV2 areaTypeShortMapper;
 
     @Autowired
     private AreaMapperV2 areaMapper;
@@ -183,6 +203,18 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private GetAreaHistoryMapperV2 getAreaHistoryMapper;
+
+    @Autowired
+    private AreaAddressMapperV2 areaAddressMapper;
+
+    @Autowired
+    private AddressAllocationOrderMapperV2 addressAllocationOrderMapper;
+
+    @Autowired
+    private MoAddressMapperV2 moAddressMapper;
+
+    @Autowired
+    private SearchMuByAreaAddressMapperV2 searchMuByAreaAddressMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public RestoreAreaResponse restoreArea(RestoreAreaRequest body) throws Fault {
@@ -274,8 +306,13 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null), true
             );
             SearchDnAreaResponse response = new SearchDnAreaResponse();
-            soapCustomMapper.mapPagingResults(response, areas);
-            response.getAreas().addAll(areas.stream().map(area -> areaDnMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
+            response.setResult(new SearchDnAreaResponse.Result());
+            soapCustomMapper.mapPagingResults(response.getResult(), areas);
+
+            if (!areas.isEmpty()) {
+                response.getResult().getAreas().addAll(areas.stream().map(area -> areaDnMapper.entityToDtoTransform(area))
+                        .collect(Collectors.toList()));
+            }
             return response;
         }
         catch (Exception ex) {
@@ -321,8 +358,13 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     body.isIsExactAddressMatch(),
                     soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null), true);
             SearchAreaResponse response = new SearchAreaResponse();
-            soapCustomMapper.mapPagingResults(response, areas);
-            response.getAreas().addAll(areas.stream().map(area -> areaMapper.entityToDtoTransform(area)).collect(Collectors.toList()));
+            response.setResult(new SearchAreaResponse.Result());
+            soapCustomMapper.mapPagingResults(response.getResult(), areas);
+
+            if (!areas.isEmpty()) {
+                response.getResult().getAreas().addAll(areas.stream().map(area -> areaMapper.entityToDtoTransform(area))
+                        .collect(Collectors.toList()));
+            }
             return response;
         }
         catch (Exception ex) {
@@ -333,8 +375,36 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchMuByAreaAddressResponse searchMuByAreaAddress(SearchMuByAreaAddressRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.searchMuByAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchMuByAreaAddressRequest())),
-                    new SearchMuByAreaAddressResponse());
+            Map<GetAreaListBriefOptions, ? extends OptionEnum.OptionValuesEnum> options =
+                    soapCustomMapper.mapOptions(body.getOptions(), GetAreaListBriefOptions.class);
+            SearchMuByAreaAddressResponse response = new SearchMuByAreaAddressResponse();
+            response.setResult(new SearchMuByAreaAddressResponse.Result());
+            PageRequest pageRequest = soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(SearchMuByAreaAddressSorting.class));
+            //Сортировка всегда по обоим полям. Дополняем, если не переданы оба
+            for (SearchMuByAreaAddressSorting sorting : SearchMuByAreaAddressSorting.values()) {
+                if (pageRequest.getSort().getOrderFor(sorting.getFieldName()) == null) {
+                    pageRequest = PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize(),
+                            pageRequest.getSort().and(Sort.by(sorting.getFieldName())));
+                }
+            }
+            Page<Area> areas;
+
+            if (body.getSearchByNsiGlobalId() != null) {
+                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
+                        body.getSearchByNsiGlobalId().getAoLevel(), body.getSearchByNsiGlobalId().getGlobalIdNsi(), pageRequest);
+            }
+            else {
+                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
+                        body.getSearchByCode().getAreaOMKTEcode(), body.getSearchByCode().getRegionOMKTEcode(), pageRequest);
+            }
+            soapCustomMapper.mapPagingResults(response.getResult(), areas);
+
+            if (!areas.isEmpty()) {
+                response.getResult().getMuInfos().addAll(areas.stream()
+                        .map(searchMuByAreaAddressMapper::entityToDtoTransform)
+                        .collect(Collectors.toList()));
+            }
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);
@@ -427,8 +497,17 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchOrderResponse searchOrder(SearchOrderRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.searchOrder(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SearchOrderRequest())),
-                    new SearchOrderResponse());
+            Page<AddressAllocationOrders> results = orderServiceDomain.searchOrder(body.getId(), body.getNumber(), body.getDate(),
+                    body.getName(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
+            SearchOrderResponse response = new SearchOrderResponse();
+            AddressAllocationOrderListResultPage resultPage = new AddressAllocationOrderListResultPage();
+            soapCustomMapper.mapPagingResults(resultPage, results);
+            resultPage.getOrders().addAll(results.get()
+                    .map(addressAllocationOrderMapper::entityToDtoTransform)
+                    .collect(Collectors.toList())
+            );
+            response.setResult(resultPage);
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);
@@ -438,8 +517,32 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMoAddressResponse getMoAddress(GetMoAddressRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.getMoAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMoAddressRequest())),
-                    new GetMoAddressResponse());
+            GetMoAddressResponse response = new GetMoAddressResponse();
+            response.setResult(new GetMoAddressResponse.Result());
+            Page<MoAddress> addresses = moMuMuServiceDomain.getMoAddress(body.getMoId(), body.getAreaTypes(),
+                    soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
+            response.getResult().setMoId(body.getMoId());
+
+            if (!addresses.isEmpty()) {
+                response.getResult().getAreaTypes().addAll(addresses.getContent().stream()
+                        .map(MoAddress::getAreaType)
+                        .distinct()
+                        .map(areaTypeShortMapper::entityToDtoTransform)
+                        .collect(Collectors.toSet()));
+                response.getResult().getOrders().addAll(addresses.getContent().stream()
+                        .map(MoAddress::getAddressAllocationOrder)
+                        .distinct()
+                        .map(addressAllocationOrderMapper::entityToDtoTransform)
+                        .collect(Collectors.toSet()));
+                response.getResult().getMoAddresses().addAll(addresses.getContent().stream()
+                        .map(moAddressMapper::entityToDtoTransform)
+                        .collect(Collectors.toList())
+                        .stream().sorted(Comparator.comparing(ru.mos.emias.contingent2.core.v2.MoAddress::getMoAddressId))
+                        .collect(Collectors.toList()));
+            }
+            soapCustomMapper.mapPagingResults(response.getResult(), addresses);
+
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);
@@ -560,16 +663,19 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             Map<GetAreaListBriefOptions, ? extends OptionEnum.OptionValuesEnum> options =
                     soapCustomMapper.mapOptions(body.getOptions(), GetAreaListBriefOptions.class);
             GetAreaListBriefResponse response = new GetAreaListBriefResponse();
+            response.setResult(new GetAreaListBriefResponse.Result());
             PageRequest pageRequest = soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(GetAreaListBriefSorting.class));
             ShowMeValues showMeOption = (ShowMeValues) options.get(GetAreaListBriefOptions.SHOW_ME);
             Boolean showMe = ShowMeValues.ALL.equals(showMeOption) ? Boolean.TRUE :
                     (ShowMeValues.NONE.equals(showMeOption) ? Boolean.FALSE : null);
             Page<AreaInfo> areas = areaServiceDomain.getAreaListBriefV2(body.getAreas().getIds(), showMe, pageRequest);
-            soapCustomMapper.mapPagingResults(response, areas);
-            response.getAreas().addAll(areas.stream()
-                    .map(a -> areaBriefMapper.entityToDtoTransform(a))
-                    .collect(Collectors.toList()));
+            soapCustomMapper.mapPagingResults(response.getResult(), areas);
 
+            if (!areas.isEmpty()) {
+                response.getResult().getAreas().addAll(areas.stream()
+                        .map(a -> areaBriefMapper.entityToDtoTransform(a))
+                        .collect(Collectors.toList()));
+            }
             return response;
         }
         catch (Exception ex) {
@@ -613,8 +719,20 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.getAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetAreaAddressRequest())),
-                    new GetAreaAddressResponse());
+            GetAreaAddressResponse response = new GetAreaAddressResponse();
+            response.setResult(new GetAreaAddressResponse.Result());
+
+            Page<AreaAddress> areaAddresses = areaServiceDomain.getAreaAddress(body.getMoId(),
+                    body.getAreas().getAreaIds(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
+
+            if (!areaAddresses.isEmpty()) {
+                response.getResult().getAreaAddresses().addAll(
+                        areaAddresses.getContent().stream()
+                                .map(areaAddressMapper::entityToDtoTransform)
+                                .collect(Collectors.toList()));
+            }
+            soapCustomMapper.mapPagingResults(response.getResult(), areaAddresses);
+            return response;
         }
         catch (Exception ex) {
             throw mapException(ex);
