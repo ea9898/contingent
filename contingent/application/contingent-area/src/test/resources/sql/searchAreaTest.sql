@@ -84,10 +84,11 @@ INSERT INTO ADDRESSES
              GLOBAL_ID,
              ADDRESS,
              CREATE_DATE,
-             UPDATE_DATE)
+             UPDATE_DATE,
+             REGION_TE_ID)
 VALUES
-(1, 111, 'Addr 1', sysdate(), sysdate()),
-(2, 222, 'Addr 2', sysdate(), sysdate())
+(1, 111, 'Addr 1', sysdate(), sysdate(), 1),
+(2, 222, 'Addr 2', sysdate(), sysdate(), 2)
 ;
 
 INSERT INTO AREA_ADDRESSES
