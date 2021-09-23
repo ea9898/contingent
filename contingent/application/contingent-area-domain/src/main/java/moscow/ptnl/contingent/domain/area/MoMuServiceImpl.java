@@ -216,8 +216,7 @@ public class MoMuServiceImpl implements MoMuService {
         //4.
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddressesByGlobalIds(addressGlobalIds.stream()
                 .distinct()
-                .collect(Collectors.toList()), null
-        ).getContent();
+                .collect(Collectors.toList())).getContent();
         //5. Система закрывает территории обслуживания
         deleteMuAndAreaAddresses(moAddresses, true);
 

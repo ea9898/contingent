@@ -1,15 +1,17 @@
 package moscow.ptnl.contingent.repository.area;
 
+import moscow.ptnl.contingent.domain.PageImplCustom;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders_;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.Addresses_;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress_;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
-import moscow.ptnl.contingent2.area.info.Address;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,24 +22,28 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
-import org.springframework.util.StringUtils;
+import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
 public class MoAddressRepositoryImpl extends BaseRepository implements MoAddressRepository {
+
+    @Autowired
+    private AddressesCRUDRepository addressesCRUDRepository;
 
     @Autowired
     private MoAddressPagingAndSortingRepository moAddressPagingAndSortingRepository;
@@ -93,7 +99,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
     }
 
     @Override
-    public Page<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds, Pageable paging) {
+    public Page<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds) {
         if (globalIds.isEmpty()) {
             return Page.empty();
         }
@@ -115,11 +121,65 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
         };
         Sort sorting = Sort.by(MoAddress_.address.getName() + "." + Addresses_.globalId.getName());
 
-        if (paging != null && paging.isPaged()) {
-            return moAddressPagingAndSortingRepository.findAll(moAddressSpecification,
-                    PageRequest.of(paging.getPageNumber(), paging.getPageSize(), sorting));
-        }
         return new PageImpl<>(moAddressPagingAndSortingRepository.findAll(moAddressSpecification, sorting));
+    }
+
+    @Override
+    public Page<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds, Pageable paging) {
+        if (globalIds.isEmpty()) {
+            return Page.empty();
+        }
+        LocalDate now = LocalDate.now();
+
+        Specification<Addresses> addressesSpecification = (root, query, cb) -> {
+            Subquery<MoAddress> sub = query.subquery(MoAddress.class);
+            Root<MoAddress> subRoot = sub.from(MoAddress.class);
+
+            sub.where(cb.and(
+                    cb.equal(subRoot.get(MoAddress_.address.getName()), root.get(Addresses_.id.getName())),
+                    cb.or(
+                            cb.lessThanOrEqualTo(subRoot.get(MoAddress_.startDate.getName()), now),
+                            subRoot.get(MoAddress_.startDate.getName()).isNull()
+                    ),
+                    cb.or(
+                            cb.greaterThanOrEqualTo(subRoot.get(MoAddress_.endDate.getName()), now),
+                            subRoot.get(MoAddress_.endDate.getName()).isNull()
+                    )
+            )).select(subRoot);
+
+            return cb.and(
+                    cb.in(root.get(Addresses_.globalId.getName())).value(globalIds),
+                    cb.exists(sub)
+            );
+        };
+        Sort sorting = Sort.by(Addresses_.globalId.getName());
+        Page<Addresses> addresses = addressesCRUDRepository.findAll(addressesSpecification,
+                PageRequest.of(paging.getPageNumber(), paging.getPageSize(), sorting));
+
+        if (addresses.isEmpty()) {
+            return Page.empty();
+        }
+        Specification<MoAddress> moAddressSpecification = (root, query, builder) -> {
+            Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
+
+            return builder.and(
+                    builder.in(addressesJoin.get(Addresses_.id.getName())).value(addresses.getContent().stream()
+                    .map(Addresses::getId)
+                    .collect(Collectors.toList())),
+                    builder.or(
+                            builder.lessThanOrEqualTo(root.get(MoAddress_.startDate.getName()), now),
+                            root.get(MoAddress_.startDate.getName()).isNull()
+                    ),
+                    builder.or(
+                            builder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), now),
+                            root.get(MoAddress_.endDate.getName()).isNull()
+                    )
+            );
+        };
+        sorting = Sort.by(MoAddress_.address.getName() + "." + Addresses_.globalId.getName());
+
+        return new PageImplCustom<>(moAddressPagingAndSortingRepository.findAll(moAddressSpecification, sorting),
+                paging, addresses.getTotalElements());
     }
 
     @Override

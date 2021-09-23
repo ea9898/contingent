@@ -20,6 +20,8 @@ public interface MoAddressRepository {
 
     List<MoAddress> getActiveMoAddressByGlobalId(Long globalId, AreaType areaType);
 
+    Page<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds);
+
     Page<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds, Pageable paging);
 
     List<MoAddress> getActiveMoAddressByGlobalIdAndLevel(Long globalId, String aoLevel, AreaType areaType);

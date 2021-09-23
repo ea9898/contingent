@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.domain.area;
 
 
 import moscow.ptnl.contingent.domain.AreaErrorReason;
+import moscow.ptnl.contingent.domain.PageImplCustom;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.Area;
@@ -1656,12 +1657,14 @@ public class AreaServiceImpl implements AreaService {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        List<MoAddressAllocation> addresses = moAddressRepository.getActiveMoAddressesByGlobalIds(addressGlobalIds, paging).stream()
+        Page<MoAddress> moAddresses = paging != null ? moAddressRepository.getActiveMoAddressesByGlobalIds(addressGlobalIds, paging)
+                : moAddressRepository.getActiveMoAddressesByGlobalIds(addressGlobalIds);
+        List<MoAddressAllocation> addresses = moAddresses.stream()
                 .filter(a -> a.getAddress() != null)
                 .map(a -> new MoAddressAllocation(a.getAddress().getGlobalId(), a.getMoId(), a.getAreaType(), a.getId()))
                 .collect(Collectors.toList());
 
-        return paging == null ? new PageImpl<>(addresses) : new PageImpl<>(addresses, paging, addressGlobalIds.size());
+        return paging == null ? new PageImpl<>(addresses) : new PageImplCustom<>(addresses, paging, moAddresses.getTotalElements());
     }
 
     @Override
