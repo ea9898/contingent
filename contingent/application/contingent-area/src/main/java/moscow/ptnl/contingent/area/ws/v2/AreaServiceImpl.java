@@ -760,8 +760,12 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             Page<MoAddressAllocation> results = areaServiceDomain.getMoAddressTotal(body.getAddressGlobalIds(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
             GetMoAddressTotalResponse response = new GetMoAddressTotalResponse();
-            response.getAddressAllocations().addAll(moAddressAllocationMapper.entityToDtoTransform(results.getContent()));
-            soapCustomMapper.mapPagingResults(response, results);
+            response.setResult(new GetMoAddressTotalResponse.Result());
+
+            if (!results.getContent().isEmpty()) {
+                response.getResult().getAddressAllocations().addAll(moAddressAllocationMapper.entityToDtoTransform(results.getContent()));
+            }
+            soapCustomMapper.mapPagingResults(response.getResult(), results);
 
             return response;
         }
@@ -797,11 +801,15 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public SearchMoAddressResponse searchMoAddress(SearchMoAddressRequest body) throws Fault {
         try {
             SearchMoAddressResponse response = new SearchMoAddressResponse();
+            response.setResult(new SearchMoAddressResponse.Result());
             Page<MoAddressWithAddresses> results = moMuMuServiceDomain.searchMoAddress(body.getMoId(), body.getAddressGlobalIds(),
                     body.getAreaTypeCodes(), body.getOrderDate(), body.getOrderName(), body.getOrderNumber(), body.getOrderOuz(),
                     body.getOrderCreateDate(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
-            response.getAddressInfos().addAll(moAddressInfoMapper.entityToDtoTransform(results.getContent()));
-            soapCustomMapper.mapPagingResults(response, results);
+
+            if (!results.getContent().isEmpty()) {
+                response.getResult().getAddressInfos().addAll(moAddressInfoMapper.entityToDtoTransform(results.getContent()));
+            }
+            soapCustomMapper.mapPagingResults(response.getResult(), results);
             return response;
         }
         catch (Exception ex) {

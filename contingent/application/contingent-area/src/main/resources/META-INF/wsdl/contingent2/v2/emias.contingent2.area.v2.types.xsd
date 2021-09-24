@@ -926,13 +926,19 @@
 
     <xs:element name="getMoAddressTotalResponse">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="core:PagingResults">
-                    <xs:sequence>
-                        <xs:element name="addressAllocation" type="core:AddressAllocation" minOccurs="0" maxOccurs="unbounded" />
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="addressAllocation" type="core:AddressAllocation" minOccurs="0" maxOccurs="unbounded" />
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 
@@ -991,13 +997,19 @@
 
     <xs:element name="searchMoAddressResponse">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="core:PagingResults">
-                    <xs:sequence>
-                        <xs:element name="addressInfo" type="core:AddressInfo" minOccurs="0" maxOccurs="unbounded" />
-                    </xs:sequence>
-                </xs:extension>
-            </xs:complexContent>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="addressInfo" type="core:AddressInfo" minOccurs="0" maxOccurs="unbounded" />
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 
