@@ -6,7 +6,9 @@ import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepos
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -63,7 +65,8 @@ public class AddressAllocationOrderRepositoryImpl extends BaseRepository impleme
                                 criteriaBuilder.like(
                                         criteriaBuilder.lower(root.get(AddressAllocationOrders_.name.getName())), "%" + name.toLowerCase() + "%"),
                         criteriaBuilder.equal(root.get(AddressAllocationOrders_.archived.getName()), false)
-                ), paging);
+                ), PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(AddressAllocationOrders_.id.getName()).ascending())
+        );
     }
 
     @Override

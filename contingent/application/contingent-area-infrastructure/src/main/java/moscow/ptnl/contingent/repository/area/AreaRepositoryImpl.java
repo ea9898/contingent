@@ -21,6 +21,7 @@ import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.support.incrementer.PostgresSequenceMaxValueIncrementer;
 import org.springframework.stereotype.Repository;
@@ -330,7 +331,8 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         }
         specification = specification.and(searchActive());
 
-        return areaCRUDRepository.findAll(specification, paging);
+        return areaCRUDRepository.findAll(specification,
+                PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(Area_.id.getName()).ascending()));
     }
 
     @Override
