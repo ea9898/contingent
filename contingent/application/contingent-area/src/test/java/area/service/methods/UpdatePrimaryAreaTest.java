@@ -147,7 +147,7 @@ public class UpdatePrimaryAreaTest {
         try {
             //Здесь проверяем только факт и порядок вызова функций areaHelper
             //Сами функции проверяются в AreaServiceHelperTest.java
-            order.verify(areaHelper).checkAndGetArea(eq(1L), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkAndGetArea(eq(1L), ArgumentMatchers.any(Validation.class), true);
             order.verify(areaHelper).checkAreaParametersForUpdate(eq(number), eq(Arrays.asList()), eq(Arrays.asList(1L)), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), eq(true), eq(false), eq("description"), any(Validation.class));
             order.verify(areaHelper).checkAreaParametersForUpdateChanged(eq(areaPrimary1), eq(number), eq(Collections.EMPTY_LIST), eq(Collections.singletonList(policyType1)), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), eq(true), eq(false), eq("description"), any(Validation.class));
             order.verify(areaHelper).checkAreaExistsInMU(isNull(), eq(moId), eq(areaTypePrimary1), eq(number), eq(areaPrimary1.getId()), any(Validation.class));

@@ -67,4 +67,16 @@ public class GetAreaHistoryTest {
         };
         Assertions.assertEquals(areaHistoryPage.getEvents().getTotalElements(), 5L);
     }
+
+    @Test
+    @Sql(scripts = {"/sql/areaHistory.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void getAreaHistoryCorrectArchive() {
+        AreaHistory areaHistoryPage = new AreaHistory();
+        try {
+            areaHistoryPage = areaServiceDomain.getAreaHistory(100002167L, null);
+        } catch (ContingentException e) {
+            fail("Ошибка " + e.getMessage());
+        };
+        Assertions.assertEquals(areaHistoryPage.getEvents().getTotalElements(), 0L);
+    }
 }

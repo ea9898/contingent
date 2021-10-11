@@ -408,7 +408,7 @@ public class AreaServiceImpl implements AreaService {
         Validation validation = new Validation();
 
         // 1, 2
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation, true);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
@@ -477,7 +477,7 @@ public class AreaServiceImpl implements AreaService {
     public void updateDependentArea(long areaId, Long muId, Integer number, String description, List<Long> primaryAreaTypeCodesAddIds, List<Long> primaryAreaTypeCodesDelIds, List<Long> policyTypesAddIds, List<Long> policyTypesDelIds, Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW) throws ContingentException {
         Validation validation = new Validation();
         //1, 2.
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation, true);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -653,7 +653,7 @@ public class AreaServiceImpl implements AreaService {
         Validation validation = new Validation();
 
         // 1. 2.
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation, true);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -913,7 +913,7 @@ public class AreaServiceImpl implements AreaService {
         Validation validation = new Validation();
 
         // 2 и 3
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation, true);
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
         // 4
@@ -1001,7 +1001,7 @@ public class AreaServiceImpl implements AreaService {
         Validation validation = new Validation();
 
         // 1. и 2.
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation, true);
         if (!validation.isSuccess()) { throw new ContingentException(validation); }
 
         // 3.
@@ -1088,7 +1088,7 @@ public class AreaServiceImpl implements AreaService {
         Validation validation = new Validation();
 
         // 1. 2.
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation, true);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -1595,7 +1595,7 @@ public class AreaServiceImpl implements AreaService {
     public void setAreaMuService(long areaId, List<Long> addServicedMuIds, List<Long> closeServicedMuIds) throws ContingentException {
         Validation validation = new Validation();
         //2, 3
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation, true);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -1674,7 +1674,7 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.checkMaxPage(paging, validation);
 
         // 3.
-        Area area = areaHelper.checkAndGetArea(areaId, validation);
+        Area area = areaHelper.checkAndGetArea(areaId, validation, false);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);

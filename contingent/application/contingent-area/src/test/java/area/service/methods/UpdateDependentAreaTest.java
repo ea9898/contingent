@@ -204,7 +204,7 @@ public class UpdateDependentAreaTest {
         try {
             //Здесь проверяем только факт и порядок вызова функций areaHelper
             //Сами функции проверяются в AreaServiceHelperTest.java
-            order.verify(areaHelper).checkAndGetArea(eq(1L), ArgumentMatchers.any(Validation.class));
+            order.verify(areaHelper).checkAndGetArea(eq(1L), ArgumentMatchers.any(Validation.class), true);
             order.verify(areaHelper).checkParametersChanged(eq(areaDep1), isNull(), eq(number), any(), eq(Arrays.asList(areaTypePrim2Code)), eq(Arrays.asList(areaTypePrimCode)),
                     eq(Arrays.asList(policyTypeCode)), eq(Arrays.asList()), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), ArgumentMatchers.any(Validation.class));
             order.verify(areaHelper).checkAreaDependsOnPrimaryAreaType(eq(areaDep1), eq(areaTypePrimary2), ArgumentMatchers.any(Validation.class));

@@ -215,14 +215,14 @@ public class AreaServiceHelperTest {
     void checkAndGetArea() {
         doReturn(Optional.of(areaPrimary1)).when(areaRepository).findById(areaPrimary1.getId());
         Validation validation = new Validation();
-        areaHelper.checkAndGetArea(areaPrimary1.getId(), validation);
+        areaHelper.checkAndGetArea(areaPrimary1.getId(), validation, true);
         assertTrue(validation.isSuccess());
         validation = new Validation();
         areaPrimary1.setArchived(true);
-        areaHelper.checkAndGetArea(areaPrimary1.getId(), validation);
+        areaHelper.checkAndGetArea(areaPrimary1.getId(), validation, true);
         assertFalse(validation.isSuccess());
         validation = new Validation();
-        areaHelper.checkAndGetArea(11111, validation);
+        areaHelper.checkAndGetArea(11111, validation, true);
         assertFalse(validation.isSuccess());
     }
 

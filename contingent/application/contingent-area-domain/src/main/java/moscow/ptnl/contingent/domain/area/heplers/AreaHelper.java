@@ -597,7 +597,7 @@ public class AreaHelper {
     }
 
     // Проверяет существует ли участок с указанным идентификатором и не находится ли он в архиве
-    public Area checkAndGetArea(long areaId, Validation validation) {
+    public Area checkAndGetArea(long areaId, Validation validation, boolean checkArchived) {
         Area area = areaRepository.findById(areaId).orElse(null);
 
         // Система выполняет поиск участка, по входному параметру ИД участка в БД.
@@ -607,7 +607,7 @@ public class AreaHelper {
         }
         else
             // Система проверяет, что участок не находится в архиве, иначе возвращает ошибку
-            if (area.getArchived()) {
+            if (checkArchived && area.getArchived()) {
                 validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
             }
 
