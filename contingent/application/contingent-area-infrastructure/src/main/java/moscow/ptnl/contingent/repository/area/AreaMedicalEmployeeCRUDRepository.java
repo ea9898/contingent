@@ -29,7 +29,7 @@ public interface AreaMedicalEmployeeCRUDRepository extends PagingAndSortingRepos
             value = "select " +
                     "ame.medical_employee_job_id as jobId, " +
                     "ame.snils as snils, " +
-                    "ame.is_replacement as is_replacement, " +
+                    "ame.is_replacement as isReplacement, " +
                     "jlh.user_login as login, " +
                     "jlh.change_date as changeDate, " +
                     "(select jhc.new_value from jl_history_columns jhc where jhc.jrn_id = jlh.id and jhc.column_name = 'startDate') as startDate, " +

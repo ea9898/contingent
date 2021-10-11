@@ -13,6 +13,7 @@ import javax.persistence.FieldResult;
 import javax.persistence.Id;
 import javax.persistence.SqlResultSetMapping;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class AreaHistory {
 
         String getSnils();
 
-        Integer getReplacement();
+        BigDecimal getIsReplacement();
 
         String getLogin();
 
@@ -54,7 +55,7 @@ public class AreaHistory {
 
         String getEndDate();
 
-        Integer getError();
+        String getIsError();
 
     }
 

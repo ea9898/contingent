@@ -8,6 +8,7 @@ import ru.lanit.emias.util.LocalDateTimeConvertUtils;
 import ru.mos.emias.contingent2.core.v2.AreaDn;
 import ru.mos.emias.contingent2.core.v2.AreaHistory;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Component
@@ -20,15 +21,15 @@ public class GetAreaHistoryMapperV2 implements Transform<AreaHistory.Events.Even
         event.setSnils(entityObject.getSnils());
         event.setLogin(entityObject.getLogin());
         event.setUpdateDate(entityObject.getUpdateDate());
-        event.setIsReplacement(Integer.valueOf(1).equals(entityObject.getReplacement()));
+        event.setIsReplacement(BigDecimal.valueOf(1).equals(entityObject.getIsReplacement()));
         if (entityObject.getStartDate() != null) {
             event.setStartDate(LocalDateTimeConvertUtils.parse(entityObject.getStartDate()));
         }
         if (entityObject.getEndDate() != null) {
             event.setEndDate(LocalDateTimeConvertUtils.parse(entityObject.getEndDate()));
         }
-        if (entityObject.getError() != null) {
-            event.setIsError(Integer.valueOf(1).equals(entityObject.getError()));
+        if (entityObject.getIsError() != null) {
+            event.setIsError("true".equals(entityObject.getIsError()));
         }
         return event;
     }
