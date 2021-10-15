@@ -1338,7 +1338,9 @@ public class AreaServiceImpl implements AreaService {
         }
 
         int totalSize = areas.size();
-        List<AreaInfo> areaInfos = areas.stream().sorted(Comparator.comparingLong(Area::getId))
+        List<AreaInfo> areaInfos = areas.stream()
+                .distinct()
+                .sorted(Comparator.comparingLong(Area::getId))
                 .skip(paging.getPageNumber() * paging.getPageSize()).limit(paging.getPageSize())
                 .map(AreaInfo::new).collect(Collectors.toList());
 
