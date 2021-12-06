@@ -35,7 +35,7 @@ public class AreaDnMapperV2 implements Transform<AreaDn, AreaInfo> {
     private PositionCodeRepository positionCodeRepository;
 
     @Autowired
-    private CodeNameTypeMapper codeNameTypeMapper;
+    private CodeNameTypeMapperV2 codeNameTypeMapper;
 
     @Override
     public AreaDn entityToDtoTransform(AreaInfo entityObject) {

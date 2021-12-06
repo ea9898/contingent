@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public abstract class AreaBriefMapperV2 {
 
     @Autowired
-    CodeNameTypeMapper codeNameTypeMapper;
+    CodeNameTypeMapperV2 codeNameTypeMapper;
 
     @Mappings({
             @Mapping(source = "area.id", target = "id"),

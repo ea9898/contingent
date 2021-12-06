@@ -77,6 +77,10 @@ public abstract class SoapBaseExceptionMapper<T extends Exception> {
     public abstract T newFault(String message, ru.mos.emias.system.v1.faults.BaseFault fault);
 
     public abstract T newFault(String message, ru.mos.emias.system.v1.faults.BaseFault fault, java.lang.Throwable cause);
+    
+    public abstract T mapFault(ru.mos.emias.contingent2.area.Fault ex);
+    
+    public abstract T mapException(Exception ex);
 
     private static UnexpectedFault.StackTrace map(StackTraceElement[] stackTrace) {
         UnexpectedFault.StackTrace trace = new UnexpectedFault.StackTrace();

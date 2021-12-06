@@ -2,7 +2,6 @@ package moscow.ptnl.contingent.area.ws.v2;
 
 import moscow.ptnl.contingent.area.transform.OptionEnum;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
-import moscow.ptnl.contingent.area.transform.UserContextMapper;
 import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions;
 import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions.ShowMeValues;
 import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
@@ -16,13 +15,12 @@ import moscow.ptnl.contingent.area.transform.v2.AreaDnMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.AreaTypeShortMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.GetAreaHistoryMapperV2;
-import moscow.ptnl.contingent.area.transform.v2.MoAddressAllocationMapper;
+import moscow.ptnl.contingent.area.transform.v2.MoAddressAllocationMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.MoAddressInfoMapper;
 import moscow.ptnl.contingent.area.transform.v2.MoAddressMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SearchAreaAddressMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SearchMuByAreaAddressMapperV2;
 import moscow.ptnl.contingent.area.transform.v2.SoapCustomMapperV2;
-import moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
@@ -36,7 +34,6 @@ import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressWithAddresses;
-import moscow.ptnl.contingent.error.ContingentException;
 
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
@@ -136,6 +133,7 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.area.transform.SoapBaseExceptionMapper;
 
 /**
  *
@@ -154,13 +152,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private ru.mos.emias.contingent2.area.AreaPT areaServiceV1;
 
     @Autowired
-    private SoapExceptionMapper exceptionMapper;
+    private SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v2.Fault> exceptionMapper;
 
     @Autowired
     private SoapVersioningMapper versioningMapper;
-
-    @Autowired
-    private UserContextMapper userContextMapper;
 
     @Autowired
     private AreaService areaServiceDomain;
@@ -196,7 +191,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private AreaDnMapperV2 areaDnMapper;
 
     @Autowired
-    private MoAddressAllocationMapper moAddressAllocationMapper;
+    private MoAddressAllocationMapperV2 moAddressAllocationMapper;
 
     @Autowired
     private MoAddressInfoMapper moAddressInfoMapper;
@@ -223,7 +218,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new RestoreAreaResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -234,7 +229,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new AddMuAvailableAreaTypesResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -267,7 +262,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -278,7 +273,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new AddMoAvailableAreaTypesResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -289,7 +284,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new GetMuAvailableAreaTypesResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -316,7 +311,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -327,7 +322,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new SetMedicalEmployeeOnAreaResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -338,7 +333,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new DelMoAvailableAreaTypesResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -368,7 +363,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -407,7 +402,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -421,7 +416,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -432,7 +427,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new CreateOrderResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -443,7 +438,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new GetNewAreaIdResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -454,7 +449,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new DelMuAvailableAreaTypesResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -465,7 +460,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new AddAreaAddressResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -476,7 +471,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new DelMoAddressResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -490,7 +485,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             response.setId(result);
             return response;
         } catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -510,7 +505,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -545,7 +540,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -556,7 +551,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new UpdateDependentAreaResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -567,7 +562,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new InitiateAddAreaAddressResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -578,7 +573,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new DelAreaAddressResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -593,7 +588,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -610,7 +605,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -621,7 +616,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new UpdatePrimaryAreaResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -640,7 +635,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -653,7 +648,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -679,7 +674,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -690,7 +685,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new UpdateOrderResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -701,7 +696,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new ArchiveAreaResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -712,7 +707,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     new GetMoAvailableAreaTypesResponse());
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -735,7 +730,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -751,7 +746,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -770,7 +765,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -793,7 +788,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             getAreaHistoryResponse.setResult(areaHistoryResultPage);
             return getAreaHistoryResponse;
         } catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
     }
 
@@ -813,22 +808,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             return response;
         }
         catch (Exception ex) {
-            throw mapException(ex);
+            throw exceptionMapper.mapException(ex);
         }
-    }
-
-    private ru.mos.emias.contingent2.area.v2.Fault mapFault(ru.mos.emias.contingent2.area.Fault ex) {
-        return ex.getCause() == null ? new Fault(ex.getMessage(), ex.getFaultInfo()) : new Fault(ex.getMessage(), ex.getFaultInfo(), ex.getCause());
-    }
-
-    private ru.mos.emias.contingent2.area.v2.Fault mapException(Exception ex) {
-        if (ex instanceof ru.mos.emias.contingent2.area.Fault) {
-            //Мапинг исключения предыдущей версии контракта
-            return mapFault((ru.mos.emias.contingent2.area.Fault) ex);
-        }
-        if (!(ex instanceof ContingentException)) {
-            LOG.error(ex.getMessage(), ex);
-        }
-        return exceptionMapper.map(ex, userContextMapper);
     }
 }

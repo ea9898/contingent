@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class MoAddressAllocationMapper implements Transform<List<AddressAllocation>, List<MoAddressAllocation>> {
+public class MoAddressAllocationMapperV2 implements Transform<List<AddressAllocation>, List<MoAddressAllocation>> {
 
     @Autowired
     private AreaTypeShortMapperV2 areaTypeShortMapper;

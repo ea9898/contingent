@@ -82,6 +82,13 @@ public class WebServiceConfiguration {
         initAreaService(endpoint, "v2");
         return endpoint;
     }
+    
+    @Bean
+    public Endpoint areaServiceV3(@Qualifier(moscow.ptnl.contingent.area.ws.v3.AreaServiceImpl.SERVICE_NAME) ru.mos.emias.contingent2.area.v3.AreaPT areaService, SpringBus cxfBus) {
+        EndpointImpl endpoint = new EndpointImpl(cxfBus, areaService);
+        initAreaService(endpoint, "v3");
+        return endpoint;
+    }
 
     @Bean
     public Endpoint areaCompositServiceV1(@Qualifier(AreaCompositeServiceImpl.SERVICE_NAME) ru.mos.emias.contingent2.area.composit.AreaCompositePT areaCompositService, SpringBus cxfBus) {

@@ -33,7 +33,7 @@ public class AreaMapperV2 implements Transform<Area, AreaInfo> {
     private AreaMedicalEmployeeMapperV2 areaMedicalEmployeeMapper;
 
     @Autowired
-    private CodeNameTypeMapper codeNameTypeMapper;
+    private CodeNameTypeMapperV2 codeNameTypeMapper;
 
     @Override
     public Area entityToDtoTransform(AreaInfo entityObject) {

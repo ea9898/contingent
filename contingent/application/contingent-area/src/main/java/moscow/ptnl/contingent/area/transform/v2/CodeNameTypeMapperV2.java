@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.v2.CodeNameType;
 
 @Component
-public class CodeNameTypeMapper {
+public class CodeNameTypeMapperV2 {
 
     public <T extends CodeNameType, V extends CodeName> T entityToDtoTransform(V entityObject, Class<T> targetClass) {
         if (entityObject == null) {
