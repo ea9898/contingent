@@ -52,7 +52,7 @@
         <hibernate.jpamodelgen.version>5.2.18.Final</hibernate.jpamodelgen.version>
         <cxf.version>3.2.14</cxf.version>
         <quartz.version>2.3.0</quartz.version>
-        <log4j.apache>2.11.2</log4j.apache>
+        <log4j.apache>2.16.0</log4j.apache>
         <buildTime>${maven.build.timestamp}</buildTime>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <metrics.version>3.1.2</metrics.version>

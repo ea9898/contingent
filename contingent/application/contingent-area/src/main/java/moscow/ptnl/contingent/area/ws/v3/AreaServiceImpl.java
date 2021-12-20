@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.ws.v3;
 import moscow.ptnl.contingent.area.transform.SoapBaseExceptionMapper;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
+import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
@@ -105,8 +106,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     
     @Autowired
     private ru.mos.emias.contingent2.area.v2.AreaPT areaServiceV2;
-    
-    
+
+    @Autowired
+    private MoMuService moMuMuServiceDomain;
+
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
         try {
@@ -308,8 +311,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMuAvailableAreaTypesResponse addMuAvailableAreaTypes(AddMuAvailableAreaTypesRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.addMuAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddMuAvailableAreaTypesRequest())),
-                    new AddMuAvailableAreaTypesResponse());
+            moMuMuServiceDomain.addMuAvailableAreaTypesV3(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
+
+            return new AddMuAvailableAreaTypesResponse();
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);

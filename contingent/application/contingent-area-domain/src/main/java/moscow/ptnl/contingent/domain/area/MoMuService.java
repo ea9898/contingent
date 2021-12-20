@@ -38,6 +38,8 @@ public interface MoMuService {
      */
     List<AreaType> getMoAvailableAreaTypes(long moId) throws ContingentException;
 
+    void addMuAvailableAreaTypesV3(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException;
+
     /**
      * (К_УУ_4)	Добавление типов, доступных для МУ
      * @param moId

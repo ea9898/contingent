@@ -1,15 +1,12 @@
-package service.methods;
+package area.service.methods;
 
-import org.junit.jupiter.api.Disabled;
-import service.BaseTest;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
-import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationMessage;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -20,41 +17,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.doReturn;
-
 /**
  * (К_УУ_4)	Добавление типов, доступных для МУ
  */
-public class AddMuAvailableAreaTypesTest extends BaseTest {
-
-    private AreaType areaType10;
-    private AreaType areaType20;
-
-    @BeforeEach
-    public void init() {
-        areaType10 = new AreaType(10L, "Тестовый тип участка 10", false);
-        areaType20 = new AreaType(20L, "Тестовый тип участка 20", false);
-    }
-
+public class AddMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     /**
      * С_УУ_73
      */
     @Test
     public void test_C_YY_73_1() {
-        Mockito.when(moAvailableAreaTypesRepository.findAreaTypes(2L)).thenReturn(new ArrayList<>());
-        Mockito.when(muAvailableAreaTypesRepository.findAreaTypes(3L)).thenReturn(new ArrayList<>());
+        Mockito.doReturn(new ArrayList<>()).when(moAvailableAreaTypesRepository).findAreaTypes(2L);
+        Mockito.doReturn(new ArrayList<>()).when(muAvailableAreaTypesRepository).findAreaTypes(3L);
 
-        Mockito.when(areaTypesRepository.findById(Mockito.anyLong()))
-                .then(invocation -> {
-                    Long invocationId = invocation.getArgument(0);
-                    if (invocationId.equals(10L)) {
-                        return Optional.of(areaType10);
-                    }
-                    if (invocationId.equals(20L)) {
-                        return Optional.of(areaType20);
-                    }
-                    return Optional.empty();
-                });
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
+        Mockito.doReturn(Optional.of(areaType20)).when(areaTypesRepository).findById(20L);
 
         try {
             moMuService.addMuAvailableAreaTypes(2L, 3L, Arrays.asList(10L, 20L));
@@ -80,20 +56,10 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
 
     @Test
     public void test_C_YY_73_2() {
-        Mockito.when(moAvailableAreaTypesRepository.findAreaTypes(2L)).thenReturn(new ArrayList<>());
-        Mockito.when(muAvailableAreaTypesRepository.findAreaTypes(3L)).thenReturn(new ArrayList<>());
+        Mockito.doReturn(new ArrayList<>()).when(moAvailableAreaTypesRepository).findAreaTypes(2L);
+        Mockito.doReturn(new ArrayList<>()).when(muAvailableAreaTypesRepository).findAreaTypes(3L);
 
-        Mockito.when(areaTypesRepository.findById(Mockito.anyLong()))
-                .then(invocation -> {
-                    Long invocationId = invocation.getArgument(0);
-                    if (invocationId.equals(10L)) {
-                        return Optional.of(areaType10);
-                    }
-                    if (invocationId.equals(20L)) {
-                        return Optional.of(areaType20);
-                    }
-                    return Optional.empty();
-                });
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
 
         try {
             moMuService.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
@@ -113,21 +79,20 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
         Assertions.fail("Должна быть ошибка С_УУ_73.");
     }
 
-
-
     /**
      * С_УУ_74
      */
     @Test
     public void test_C_YY_74_1() {
-        doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(areaType10.getCode());
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
+
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
         moAvailableAreaTypes10.setId(1L);
         moAvailableAreaTypes10.setCreateDate(LocalDateTime.now());
         moAvailableAreaTypes10.setMoId(2L);
 
-        Mockito.when(moAvailableAreaTypesRepository.findAreaTypes(2L)).thenReturn(Collections.singletonList(moAvailableAreaTypes10));
+        Mockito.doReturn(Collections.singletonList(moAvailableAreaTypes10)).when(moAvailableAreaTypesRepository).findAreaTypes(2L);
 
         MuAvailableAreaTypes muAvailableAreaTypes = new MuAvailableAreaTypes();
         muAvailableAreaTypes.setId(1L);
@@ -136,9 +101,7 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
         muAvailableAreaTypes.setCreateDate(LocalDateTime.now());
         muAvailableAreaTypes.setMoAvailableAreaType(moAvailableAreaTypes10);
 
-        Mockito.when(muAvailableAreaTypesRepository.findAreaTypes(3L)).thenReturn(Collections.singletonList(muAvailableAreaTypes));
-
-//        Mockito.when(muAvailableAreaTypesCRUDRepository.save(muAvailableAreaTypes)).thenReturn(null);
+        Mockito.doReturn(Collections.singletonList(muAvailableAreaTypes)).when(muAvailableAreaTypesRepository).findAreaTypes(3L);
 
         try {
             moMuService.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
@@ -163,17 +126,33 @@ public class AddMuAvailableAreaTypesTest extends BaseTest {
      */
     @Test
     public void test_correct() {
-        doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(areaType10.getCode());
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
         moAvailableAreaTypes10.setAreaType(areaType10);
         moAvailableAreaTypes10.setId(1L);
         moAvailableAreaTypes10.setCreateDate(LocalDateTime.now());
         moAvailableAreaTypes10.setMoId(2L);
 
-        Mockito.when(moAvailableAreaTypesRepository.findAreaTypes(2L)).thenReturn(Collections.singletonList(moAvailableAreaTypes10));
+        Mockito.doReturn(Collections.singletonList(moAvailableAreaTypes10)).when(moAvailableAreaTypesRepository).findAreaTypes(2L);
 
         try {
             moMuService.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
+        } catch (ContingentException e) {
+            Assertions.fail("Сценарий корректный, ошибки быть не должно.");
+        }
+    }
+
+    @Test
+    public void test_correct_v3() {
+        Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
+        MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
+        moAvailableAreaTypes10.setAreaType(areaType10);
+        moAvailableAreaTypes10.setId(1L);
+        moAvailableAreaTypes10.setCreateDate(LocalDateTime.now());
+        moAvailableAreaTypes10.setMoId(2L);
+
+        try {
+            moMuService.addMuAvailableAreaTypesV3(2L, 3L, Collections.singletonList(10L));
         } catch (ContingentException e) {
             Assertions.fail("Сценарий корректный, ошибки быть не должно.");
         }

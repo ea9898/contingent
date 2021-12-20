@@ -96,13 +96,12 @@ public class MoMuServiceImpl implements MoMuService {
         areaTypeCodes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation).stream()
                 .map(AreaType::getCode)
                 .collect(Collectors.toList());
-        List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
+        List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.   checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
         areaHelper.checkAndGetAreaTypesNotExistInMU(moAvailableAreaTypes, areaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        // TODO перееписать с deleteAll
         moAvailableAreaTypes.forEach(a -> moAvailableAreaTypesRepository.delete(a));
     }
 
@@ -140,6 +139,30 @@ public class MoMuServiceImpl implements MoMuService {
         });
 
     }
+
+    @Override
+    public void addMuAvailableAreaTypesV3(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException {
+        areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
+        Validation validation = new Validation();
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation);
+
+        areaHelper.checkAreaTypesExistInMU(muId, areaTypes, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        areaTypes.forEach(areaType -> {
+            MuAvailableAreaTypes muAvailableAreaType = new MuAvailableAreaTypes();
+            muAvailableAreaType.setMuId(muId);
+            muAvailableAreaType.setAreaType(areaType);
+            muAvailableAreaType.setCreateDate(LocalDateTime.now());
+
+            muAvailableAreaTypesRepository.save(muAvailableAreaType);
+
+        });
+    }
+
 
     @Override
     public void delMuAvailableAreaTypes(long muId, List<Long> areaTypeCodes) throws ContingentException {
