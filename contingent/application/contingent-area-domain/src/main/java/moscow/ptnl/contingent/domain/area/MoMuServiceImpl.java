@@ -306,6 +306,13 @@ public class MoMuServiceImpl implements MoMuService {
         return paging == null ? new PageImpl<>(mappedAddresses) : new PageImpl<>(mappedAddresses, paging, addresses.getTotalElements());
     }
 
+    @Override
+    public List<AreaType> getMuAvailableAreaTypes2(long muId) {
+        return muAvailableAreaTypesRepository.findAreaTypes(muId).stream()
+                .map(MuAvailableAreaTypes::getAreaType)
+                .collect(Collectors.toList());
+    }
+
     /**
      * Часть алгоритмов delMoAddress и delMoAddressTotal
      * @param moAddresses

@@ -121,4 +121,6 @@ public interface MoMuService {
     Page<MoAddressWithAddresses> searchMoAddress(long moId, List<Long> addressGlobalIds, List<Long> areaTypeCodes, LocalDate orderDate,
                                                  String orderName, String orderNumber, String orderOuz, LocalDate orderCreateDate,
                                                  PageRequest paging) throws ContingentException;
+
+    List<AreaType> getMuAvailableAreaTypes2(long muId);
 }

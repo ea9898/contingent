@@ -2,8 +2,10 @@ package moscow.ptnl.contingent.area.ws.v3;
 
 import moscow.ptnl.contingent.area.transform.SoapBaseExceptionMapper;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
+import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
@@ -82,6 +84,9 @@ import ru.mos.emias.contingent2.area.v3.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaResponse;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author m.kachalov
@@ -109,6 +114,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private MoMuService moMuMuServiceDomain;
+
+    @Autowired
+    private MuAvailableAreaTypes2Mapper muAvailableAreaTypes2Mapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
@@ -465,7 +473,15 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMuAvailableAreaTypes2Response getMuAvailableAreaTypes2(GetMuAvailableAreaTypes2Request body) throws Fault {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            GetMuAvailableAreaTypes2Response getMuAvailableAreaTypes2Response = new GetMuAvailableAreaTypes2Response();
+            getMuAvailableAreaTypes2Response.getMuAvailableAreaTypes().addAll(moMuMuServiceDomain.getMuAvailableAreaTypes2(body.getMuId())
+            .stream().map(muAvailableAreaTypes2Mapper::entityToDtoTransform).collect(Collectors.toList()));
+            return getMuAvailableAreaTypes2Response;
+        }
+        catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
+        }
     }
-    
+
 }
