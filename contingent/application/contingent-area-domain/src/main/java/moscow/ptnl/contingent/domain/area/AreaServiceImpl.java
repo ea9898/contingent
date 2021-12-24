@@ -239,7 +239,7 @@ public class AreaServiceImpl implements AreaService {
 
         List<AreaTypeProfile> areaTypeProfiles = Collections.emptyList();
 
-        if (UserContextHolder.getContractVersion() > 1) {
+        if (UserContextHolder.getContractVersion() == 2) {
             // 12
             if (settingService.par39().contains(areaTypeCode)) {
                 if (areaTypeProfileCode == null) {
@@ -338,7 +338,7 @@ public class AreaServiceImpl implements AreaService {
 
         List<AreaTypeProfile> areaTypeProfiles = Collections.emptyList();
 
-        if (UserContextHolder.getContractVersion() > 1) {
+        if (UserContextHolder.getContractVersion() == 2) {
             //11
             if (settingService.par39().contains(areaTypeCode)) {
                 if (areaTypeProfileCode == null) {
