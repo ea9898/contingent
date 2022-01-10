@@ -146,13 +146,4 @@
         </sql>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-2037-1" author="ddryuchin" labels="2.2.0.0">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="ADDRESSES"/>
-            <columnExists tableName="ADDRESSES" columnName="REGION_TE_ID" />
-        </preConditions>
-        <comment>Поле region_te_id в таблице addresses сделано обязательным</comment>
-        <addNotNullConstraint tableName="ADDRESSES" columnName="REGION_TE_ID" columnDataType="VARCHAR2(1000)"/>
-    </changeSet>
-
 </databaseChangeLog>
