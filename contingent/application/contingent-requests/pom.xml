@@ -337,34 +337,11 @@
                     <scope>provided</scope>
             </dependency>
             <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                    <version>${api.slf4j}</version>
-                    <scope>${slf4j.scope}</scope>
-            </dependency>
-            <dependency>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-slf4j-impl</artifactId>
-                    <version>${log4j.apache}</version>
-                    <scope>${artefact.scope}</scope>
-            </dependency>
-            <dependency>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-api</artifactId>
-                    <version>${log4j.apache}</version>
-                    <scope>${artefact.scope}</scope>
-            </dependency>
-            <dependency>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-core</artifactId>
-                    <version>${log4j.apache}</version>
-                    <scope>${artefact.scope}</scope>
-            </dependency>
-            <dependency>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-jcl</artifactId>
-                    <version>${log4j.apache}</version>
-                    <scope>${artefact.scope}</scope>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${api.slf4j}</version>
+                <!-- Используем логер встроенный в wildfly -->
+                <scope>${slf4j.scope}</scope>
             </dependency>
             <dependency>
                     <groupId>org.apache.cxf</groupId>
