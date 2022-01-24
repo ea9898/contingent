@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.transform;
 
-import moscow.ptnl.contingent.transform.Transform;
+import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
@@ -30,6 +30,9 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
     @Autowired
     private AddressesMapper addressesMapper;
 
+    @Autowired
+    private SettingService settingService;
+
     @Override
     public AreaInfoEvent entityToDtoTransform(moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent entity) {
         LocalDate now = LocalDate.now();
@@ -48,18 +51,27 @@ public class AreaInfoEventMapper implements Transform<AreaInfoEvent, moscow.ptnl
         event.setResidentsBindRate((area.getAreaType().getResidentsBindRate() != null) ? area.getAreaType().getResidentsBindRate().longValue() : null);
         event.setAreaRestriction(areaRestrictionMapper.entityToDtoTransform(area));
         //2
-        Set<AreaMedicalEmployees> areaMedicalEmployeesMain = area.getActualMainMedicalEmployees().stream()
-                .filter(buildEmployeesPredicate(now))
-                .collect(Collectors.toSet());
-        if (!CollectionsUtil.isNullOrEmpty(areaMedicalEmployeesMain)) {
-            event.setMainEmployees(mainEmployeesMapper.entityToDtoTransform(areaMedicalEmployeesMain));
-        }
-
-        Set<AreaMedicalEmployees> areaMedicalEmployeesReplacement = area.getActualReplacementMedicalEmployees().stream()
-                .filter(buildEmployeesPredicate(now))
-                .collect(Collectors.toSet());
-        if (!CollectionsUtil.isNullOrEmpty(areaMedicalEmployeesReplacement)) {
-            event.setReplacementEmployees(replacementEmployeesMapper.entityToDtoTransform(areaMedicalEmployeesReplacement));
+        if (settingService.getPar43().contains(event.getAreaType())) {
+            //медицинские работники, находящиеся на участках с типами, указанными в системном параметре PAR_43 всегда указываются как основные
+            Set<AreaMedicalEmployees> areaMedicalEmployeesMain = area.getActualMedicalEmployees().stream()
+                    .filter(buildEmployeesPredicate(now))
+                    .collect(Collectors.toSet());
+            if (!CollectionsUtil.isNullOrEmpty(areaMedicalEmployeesMain)) {
+                event.setMainEmployees(mainEmployeesMapper.entityToDtoTransform(areaMedicalEmployeesMain));
+            }
+        } else {
+            Set<AreaMedicalEmployees> areaMedicalEmployeesMain = area.getActualMainMedicalEmployees().stream()
+                    .filter(buildEmployeesPredicate(now))
+                    .collect(Collectors.toSet());
+            if (!CollectionsUtil.isNullOrEmpty(areaMedicalEmployeesMain)) {
+                event.setMainEmployees(mainEmployeesMapper.entityToDtoTransform(areaMedicalEmployeesMain));
+            }
+            Set<AreaMedicalEmployees> areaMedicalEmployeesReplacement = area.getActualReplacementMedicalEmployees().stream()
+                    .filter(buildEmployeesPredicate(now))
+                    .collect(Collectors.toSet());
+            if (!CollectionsUtil.isNullOrEmpty(areaMedicalEmployeesReplacement)) {
+                event.setReplacementEmployees(replacementEmployeesMapper.entityToDtoTransform(areaMedicalEmployeesReplacement));
+            }
         }
         //3
         Set<AreaAddress> areaAddressSet = area.getActualAreaAddresses();
