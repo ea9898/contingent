@@ -35,6 +35,10 @@ public class SoapVersioningMapper {
             }
             field.setAccessible(true);
             Field targetField = targetFields.get(field.getName());
+
+            if (targetField == null) {
+                continue;
+            }
             targetField.setAccessible(true);
             Object value = field.get(source);
             Transformer transformer;

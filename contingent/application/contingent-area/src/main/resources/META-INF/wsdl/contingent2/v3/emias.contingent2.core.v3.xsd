@@ -129,7 +129,6 @@
             <xs:element name="areaType" type="tns:AreaTypeShort" />
             <xs:element name="areaTypeClass" type="tns:AreaTypeClass" />
             <xs:element name="areaTypeKind" type="tns:AreaTypeKind" />
-            <xs:element name="areaTypeProfile" type="tns:AreaTypeProfile" minOccurs="0" />
             <xs:element name="muService" type="tns:MuService" minOccurs="0" />
             <xs:element name="ageMin" type="xs:int" minOccurs="0" />
             <xs:element name="ageMax" type="xs:int" minOccurs="0" />
