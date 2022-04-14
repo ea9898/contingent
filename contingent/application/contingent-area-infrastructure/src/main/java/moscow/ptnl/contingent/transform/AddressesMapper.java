@@ -103,7 +103,7 @@ public class AddressesMapper implements Transform<AreaInfoEvent.Addresses, Set<A
                     address.setStreetBTI(streetBTI);
 
                     if (allowGlobalId && e.getGlobalId() != null) {
-                        address.setGlobalId(e.getGlobalId().toString());
+                        address.setGlobalId(e.getGlobalId().intValue());
                     }
                     addresses.getAddress().add(address);
                 });
