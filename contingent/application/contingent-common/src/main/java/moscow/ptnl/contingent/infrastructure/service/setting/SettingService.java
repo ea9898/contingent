@@ -71,6 +71,8 @@ public interface SettingService {
     String PAR_41 = "area_info_global_id";
     /** Максимально допустимое количество глобал ИД адресов для поиска во входных параметрах метода */
     String PAR_42 = "max_addresses_for_search";
+    /** Типы участков, для которых при передаче сведений в К1 все МР должны быть указаны как основные */
+    String PAR_43 = "area_types_convert_k1_main_employees";
 
     /**
      * Свойство извлекается из кэша.
@@ -120,4 +122,6 @@ public interface SettingService {
     List<Long> par40();
 
     Integer getPar42();
+
+    List<Long> getPar43();
 }

@@ -42,7 +42,7 @@ public class DNEventInformerTask extends BaseTopicTask<DnEventInformer> {
     private static final String XSD_PATH = "META-INF/xsd/esu/dn.attach.xsd";
 
     public DNEventInformerTask() {
-        super(XSD_PATH, DnEventInformer.class);
+        super(null, DnEventInformer.class);
     }
 
     @Override

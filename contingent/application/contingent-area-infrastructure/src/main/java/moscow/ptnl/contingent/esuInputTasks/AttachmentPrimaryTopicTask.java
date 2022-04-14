@@ -47,7 +47,7 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
     private static final String XSD_PATH = "META-INF/xsd/esu/attachmentprimary.v1.xsd";
 
     public AttachmentPrimaryTopicTask() {
-        super(XSD_PATH, AttachPrimaryPatientEvent.class);
+        super(null, AttachPrimaryPatientEvent.class);
     }
 
 

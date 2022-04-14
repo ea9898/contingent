@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.esuInputTasks;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import moscow.ptnl.contingent.domain.esu.EsuInput;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
@@ -62,6 +63,7 @@ abstract class BaseTopicTask<T> implements Tasklet {
         this.host = CommonUtils.getHostName();
         this.jsonMapper = new ObjectMapper();
         this.jsonMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        this.jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Override

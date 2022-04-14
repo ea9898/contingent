@@ -85,7 +85,7 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
     private SettingService settingService;
 
     public JobExecutionInfoMsgTopicTask() {
-        super(XSD_PATH, JobExecutionInfoMsg.class);
+        super(null, JobExecutionInfoMsg.class);
     }
 
     @Override
