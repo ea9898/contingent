@@ -742,8 +742,9 @@ public class AreaServiceImpl implements AreaService {
 
             //6.3.
             final List<PositionCode> positionsCode = new ArrayList<>();
+            boolean positionCodeFromSUPP = Strings.isNumberWith4Digits(empl.getPositionCode());
             //6.3.1.
-            if (Strings.isNumberWith4Digits(empl.getPositionCode())) {
+            if (positionCodeFromSUPP) {
                 //ЕСЛИ код должности медработника числовой (= медработник ведется в СУПП)
                 List<MappingPositionCodeToOtherPosition> mappingPositions = mappingPositionCodeToOtherPositionRepository.findByPositionSuppCode(empl.getPositionCode());
 
@@ -760,8 +761,11 @@ public class AreaServiceImpl implements AreaService {
             //6.3.2.
             final List<PositionNom> positionsNom = positionsCode.isEmpty() ? Collections.emptyList() :
                     positionNomRepository.findByPositionCodeIds(positionsCode.stream()
-                            .map(PositionCode::getGlobalId)
-                            .collect(Collectors.toList()));
+                                    .map(PositionCode::getGlobalId)
+                                    .collect(Collectors.toList())
+                            ).stream()
+                            .filter(p -> positionCodeFromSUPP || p.getEndDate() == null)
+                            .collect(Collectors.toList());
             //6.4.
             List<Long> specializations = positionsNom.stream()
                     .map(PositionNom::getSpecialization)
