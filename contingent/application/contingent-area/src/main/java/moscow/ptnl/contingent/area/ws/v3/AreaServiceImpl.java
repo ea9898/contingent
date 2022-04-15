@@ -5,7 +5,6 @@ import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
-import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
@@ -15,6 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mos.emias.contingent2.area.v3.types.DelMoAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.v3.types.DelMoAvailableAreaTypesResponse;
+import ru.mos.emias.contingent2.area.v3.types.GetMoAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.v3.types.GetMoAvailableAreaTypesResponse;
+import ru.mos.emias.contingent2.area.v3.types.GetMuAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.v3.types.GetMuAvailableAreaTypesResponse;
+import ru.mos.emias.contingent2.area.v3.types.AddMoAvailableAreaTypesRequest;
+import ru.mos.emias.contingent2.area.v3.types.AddMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.v3.AreaPT;
 import ru.mos.emias.contingent2.area.v3.Fault;
 import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressRequest;
@@ -84,7 +91,6 @@ import ru.mos.emias.contingent2.area.v3.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaResponse;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -484,4 +490,47 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public AddMoAvailableAreaTypesResponse addMoAvailableAreaTypes(AddMoAvailableAreaTypesRequest body) throws Fault {
+        try {
+            return versioningMapper.map(areaServiceV1.addMoAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddMoAvailableAreaTypesRequest())),
+                    new AddMoAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public DelMoAvailableAreaTypesResponse delMoAvailableAreaTypes(DelMoAvailableAreaTypesRequest body) throws Fault {
+        try {
+            return versioningMapper.map(areaServiceV1.delMoAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.DelMoAvailableAreaTypesRequest())),
+                    new DelMoAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public GetMoAvailableAreaTypesResponse getMoAvailableAreaTypes(GetMoAvailableAreaTypesRequest body) throws Fault {
+        try {
+            return versioningMapper.map(areaServiceV1.getMoAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMoAvailableAreaTypesRequest())),
+                    new GetMoAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public GetMuAvailableAreaTypesResponse getMuAvailableAreaTypes(GetMuAvailableAreaTypesRequest body) throws Fault {
+        try {
+            return versioningMapper.map(areaServiceV1.getMuAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesRequest())),
+                    new GetMuAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
+        }
+    }
 }
