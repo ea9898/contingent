@@ -27,4 +27,57 @@
         </loadUpdateData>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2257-1" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="MU_AVAILABLE_AREA_TYPES"/>
+            <not>
+                <columnExists tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки MO_ID в таблицу MU_AVAILABLE_AREA_TYPES</comment>
+        <addColumn tableName="MU_AVAILABLE_AREA_TYPES">
+            <column name="MO_ID" type="BIGINT"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="MO_ID" tableName="MU_AVAILABLE_AREA_TYPES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2257-2" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID"/>
+        </preConditions>
+        <comment>Миграция данных для заполнения поля MO_ID таблицы MU_AVAILABLE_AREA_TYPES</comment>
+        <sql dbms="postgresql">
+            DO '
+            DECLARE
+            src    record;
+            BEGIN
+            for src in
+            (
+            SELECT mu.id, mo.mo_id FROM mu_available_area_types mu
+            JOIN mo_available_area_types mo ON mo.id = mu.mo_available_area_types_id
+            )
+            loop
+            update mu_available_area_types mu
+            set mo_id = src.MO_ID
+            where mu.ID = src.ID
+            ;
+            end loop;
+            END;
+            ';
+        </sql>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2257-3" author="sorlov" labels="3.0.0.0">
+        <preConditions>
+            <columnExists tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID"/>
+        </preConditions>
+        <comment>Делаем поле MO_ID таблицы MU_AVAILABLE_AREA_TYPES обязательным</comment>
+        <addNotNullConstraint tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID" />
+        <rollback>
+            <dropNotNullConstraint tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID" />
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
