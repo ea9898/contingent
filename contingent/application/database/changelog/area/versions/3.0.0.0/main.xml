@@ -69,12 +69,12 @@
         </sql>
     </changeSet>
 
-    <changeSet id="CONTINGENT2-2257-3" author="sorlov" labels="3.0.0.0">
+    <changeSet id="CONTINGENT2-2257-4" author="sorlov" labels="3.0.0.0">
         <preConditions>
             <columnExists tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID"/>
         </preConditions>
         <comment>Делаем поле MO_ID таблицы MU_AVAILABLE_AREA_TYPES обязательным</comment>
-        <addNotNullConstraint tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID" />
+        <addNotNullConstraint tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID" columnDataType="BIGINT" />
         <rollback>
             <dropNotNullConstraint tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID" />
         </rollback>

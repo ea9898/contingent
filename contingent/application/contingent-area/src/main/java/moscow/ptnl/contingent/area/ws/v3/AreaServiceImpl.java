@@ -1,19 +1,30 @@
 package moscow.ptnl.contingent.area.ws.v3;
 
+import moscow.ptnl.contingent.area.transform.OptionEnum;
 import moscow.ptnl.contingent.area.transform.SoapBaseExceptionMapper;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
+import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions;
+import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
+import moscow.ptnl.contingent.area.transform.v3.AreaBriefMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
+import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
 import moscow.ptnl.contingent.area.ws.BaseService;
+import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
+import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mos.emias.contingent2.area.v3.types.GetAreaListBriefRequest;
+import ru.mos.emias.contingent2.area.v3.types.GetAreaListBriefResponse;
 import ru.mos.emias.contingent2.area.v3.types.DelMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.v3.types.DelMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAvailableAreaTypesRequest;
@@ -52,8 +63,6 @@ import ru.mos.emias.contingent2.area.v3.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetAreaByIdResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetAreaHistoryRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetAreaHistoryResponse;
-import ru.mos.emias.contingent2.area.v3.types.GetAreaListBriefRequest;
-import ru.mos.emias.contingent2.area.v3.types.GetAreaListBriefResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAddressResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAddressTotalRequest;
@@ -91,6 +100,8 @@ import ru.mos.emias.contingent2.area.v3.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaResponse;
 
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -119,10 +130,19 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private ru.mos.emias.contingent2.area.v2.AreaPT areaServiceV2;
 
     @Autowired
+    private SoapCustomMapperV3 soapCustomMapper;
+
+    @Autowired
+    private AreaService areaServiceDomain;
+
+    @Autowired
     private MoMuService moMuMuServiceDomain;
 
     @Autowired
     private MuAvailableAreaTypes2Mapper muAvailableAreaTypes2Mapper;
+
+    @Autowired
+    private AreaBriefMapperV3 areaBriefMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
@@ -248,8 +268,23 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaListBriefResponse getAreaListBrief(GetAreaListBriefRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV2.getAreaListBrief(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v2.types.GetAreaListBriefRequest())),
-                    new GetAreaListBriefResponse());
+            Map<GetAreaListBriefOptions, ? extends OptionEnum.OptionValuesEnum> options =
+                    soapCustomMapper.mapOptions(body.getOptions(), GetAreaListBriefOptions.class);
+            GetAreaListBriefResponse response = new GetAreaListBriefResponse();
+            response.setResult(new GetAreaListBriefResponse.Result());
+            PageRequest pageRequest = soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(GetAreaListBriefSorting.class));
+            GetAreaListBriefOptions.ShowMeValues showMeOption = (GetAreaListBriefOptions.ShowMeValues) options.get(GetAreaListBriefOptions.SHOW_ME);
+            Boolean showMe = GetAreaListBriefOptions.ShowMeValues.ALL.equals(showMeOption) ? Boolean.TRUE :
+                    (GetAreaListBriefOptions.ShowMeValues.NONE.equals(showMeOption) ? Boolean.FALSE : null);
+            Page<AreaInfo> areas = areaServiceDomain.getAreaListBriefV2(body.getAreas().getIds(), showMe, pageRequest);
+            soapCustomMapper.mapPagingResults(response.getResult(), areas);
+
+            if (!areas.isEmpty()) {
+                response.getResult().getAreas().addAll(areas.stream()
+                        .map(a -> areaBriefMapper.entityToDtoTransform(a))
+                        .collect(Collectors.toList()));
+            }
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);
