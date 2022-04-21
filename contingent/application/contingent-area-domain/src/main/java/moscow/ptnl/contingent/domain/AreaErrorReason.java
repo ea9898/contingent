@@ -89,7 +89,8 @@ public enum AreaErrorReason implements ErrorReason {
     POSITION_CODE_NOT_FOUND("UE094", "Код должности медработника %s не найден в системе"),
     AREA_TYPE_IS_NOT_PRIMARY_2("UE095", "Тип участка с ИД: %s не является первичным"),
     AREA_TYPE_DO_NOT_SERVES_TERRITORY("UE096", "Тип участка с ИД: %s не имеет признак \"Обслуживает территорию\""),
-    TOO_MANY_REQUEST_ADDRESSES("UE097", "Превышено максимально допустимое количество адресов для поиска (не более %s)")
+    TOO_MANY_REQUEST_ADDRESSES("UE097", "Превышено максимально допустимое количество адресов для поиска (не более %s)"),
+    MU_SERVICE_NOT_FOUND("UE103", "Не найдено обслуживаемых МУ в рамках выбранного типа участка")
     ;
 
     private final String description;

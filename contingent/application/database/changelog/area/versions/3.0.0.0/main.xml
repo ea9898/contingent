@@ -136,4 +136,36 @@
                                  referencedTableName="AREA_TYPE"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2265-1" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_MU_MU_SERVICE_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы MU_MU_SERVICE</comment>
+        <createSequence sequenceName="SEQ_MU_MU_SERVICE_ID" remarks="сиквенс для таблицы MU_MU_SERVICE"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_MU_MU_SERVICE_ID"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2265-2" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+            </and>
+        </preConditions>
+        <comment>Настройка безопасности методов web-сервиса</comment>
+        <loadUpdateData
+                encoding="UTF-8"
+                file="changelog/area/versions/3.0.0.0/files/security.config.17.csv"
+                quotchar=""
+                separator="#"
+                tableName="AD_CONFIG"
+                primaryKey="code">
+            <column name="code" type="STRING"/>
+            <column name="val" type="STRING"/>
+        </loadUpdateData>
+    </changeSet>
+
 </databaseChangeLog>

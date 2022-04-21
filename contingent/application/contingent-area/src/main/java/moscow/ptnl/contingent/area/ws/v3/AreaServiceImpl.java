@@ -11,6 +11,7 @@ import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
+import moscow.ptnl.contingent.domain.area.entity.MuMuService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
@@ -69,6 +70,8 @@ import ru.mos.emias.contingent2.area.v3.types.GetMoAddressTotalRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAddressTotalResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetMuAvailableAreaTypes2Request;
 import ru.mos.emias.contingent2.area.v3.types.GetMuAvailableAreaTypes2Response;
+import ru.mos.emias.contingent2.area.v3.types.GetMuMuServiceRequest;
+import ru.mos.emias.contingent2.area.v3.types.GetMuMuServiceResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetNewAreaIdRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetNewAreaIdResponse;
 import ru.mos.emias.contingent2.area.v3.types.InitiateAddAreaAddressRequest;
@@ -99,8 +102,10 @@ import ru.mos.emias.contingent2.area.v3.types.UpdateOrderRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaResponse;
+import ru.mos.emias.contingent2.core.v3.MuService;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -563,6 +568,25 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             return versioningMapper.map(areaServiceV1.getMuAvailableAreaTypes(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.GetMuAvailableAreaTypesRequest())),
                     new GetMuAvailableAreaTypesResponse());
+        }
+        catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public GetMuMuServiceResponse getMuMuService(GetMuMuServiceRequest body) throws Fault {
+        try {
+            List<MuMuService> results = moMuMuServiceDomain.getMuMuService(body.getMuId(), body.getAreaTypeCode());
+
+            GetMuMuServiceResponse response = new GetMuMuServiceResponse();
+            response.setServiceMu(new MuService());
+            response.getServiceMu().getMuIds().addAll(results.stream()
+                    .map(MuMuService::getServiceMuId)
+                    .sorted()
+                    .collect(Collectors.toList())
+            );
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);
