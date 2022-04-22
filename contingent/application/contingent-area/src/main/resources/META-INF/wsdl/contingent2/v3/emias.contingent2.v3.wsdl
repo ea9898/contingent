@@ -331,6 +331,14 @@
         <wsdl:part name="body" element="ns1:getMuMuServiceResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="getMuAvailableAreaTypesInMoInput">
+        <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesInMoRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMuAvailableAreaTypesInMoOutput">
+        <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesInMoResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
             <wsdl:documentation>
@@ -626,6 +634,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:getAreaHistoryInput"/>
             <wsdl:output message="tns:getAreaHistoryOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMuAvailableAreaTypesInMo">
+            <wsdl:documentation>
+                Предоставление типов участков из разрешенных для любого МУ в МО доступных для МУ (К_УУ_38)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getMuAvailableAreaTypesInMoInput"/>
+            <wsdl:output message="tns:getMuAvailableAreaTypesInMoOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
         <wsdl:operation name="getMuMuService">
@@ -1147,6 +1163,20 @@
 
         <wsdl:operation name="getAreaHistory">
             <soap:operation soapAction="getAreaHistory"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMuAvailableAreaTypesInMo">
+            <soap:operation soapAction="getMuAvailableAreaTypesInMo"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

@@ -20,6 +20,7 @@ import ru.mos.emias.contingent2.core.v3.SortOrder;
 import ru.mos.emias.contingent2.core.v3.SortingOptions;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,14 @@ public class SoapCustomMapperV3 {
         results.setPageTotal(page.getTotalPages());
         results.setMorePagesAvailable(page.getNumber() < page.getTotalPages() - 1);
         results.setTotalItemsCount(page.getTotalElements());
+    }
+
+    public void mapPagingResults(PagingResults results, PageRequest paging, Collection<?> collection) {
+        results.setPageNumber(paging.getPageNumber());
+        results.setPageSize(paging.getPageSize());
+        results.setPageTotal((int) Math.ceil((double) collection.size() / paging.getPageSize()));
+        results.setMorePagesAvailable(paging.getPageNumber() < results.getPageTotal() - 1);
+        results.setTotalItemsCount(collection.size());
     }
 
     public <T extends OptionEnum> Map<T, OptionEnum.OptionValuesEnum> mapOptions(

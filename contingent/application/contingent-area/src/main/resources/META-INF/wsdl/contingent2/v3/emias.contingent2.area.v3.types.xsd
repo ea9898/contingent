@@ -1074,4 +1074,32 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="getMuAvailableAreaTypesInMoRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="moId" type="core:ID" maxOccurs="unbounded" />
+                <xs:element ref="core:options" minOccurs="0" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getMuAvailableAreaTypesInMoResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="muAvailableAreaTypes" type="core:MuAvailableAreaType" maxOccurs="unbounded" />
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

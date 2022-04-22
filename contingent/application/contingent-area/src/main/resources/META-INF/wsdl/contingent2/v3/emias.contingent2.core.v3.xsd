@@ -548,5 +548,22 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    
+
+    <xs:complexType name="MuAvailableAreaType">
+        <xs:annotation>
+            <xs:documentation>Информация о типах участков, доступных всем МУ в рамках одного МО</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="moId" type="tns:ID" />
+            <xs:element name="muInfo" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="muId" type="tns:ID" />
+                        <xs:element name="areaTypes" type="tns:AreaTypeShort" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>

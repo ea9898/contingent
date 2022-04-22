@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.domain.area;
 
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
+import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.entity.MuMuService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressWithAddresses;
@@ -126,4 +127,6 @@ public interface MoMuService {
     List<AreaType> getMuAvailableAreaTypes2(long muId);
 
     List<MuMuService> getMuMuService(long muId, long areaTypeCode) throws ContingentException;
+
+    List<MuAvailableAreaTypes> getMuAvailableAreaTypesInMo(List<Long> moIds, PageRequest pageRequest) throws ContingentException;
 }

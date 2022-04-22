@@ -345,6 +345,12 @@ public class AreaHelper {
         }
     }
 
+    public void checkPaging(PageRequest paging, Validation validation) {
+        if (paging != null && (paging.getPageNumber() < 0 || paging.getPageSize() <= 0)) {
+            validation.error(AreaErrorReason.PAGING_INCORRECT);
+        }
+    }
+
     public void checkSearchDnParameters(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
                                         List<Long> specializationCodes, List<Long> areaIds) throws ContingentException {
         if (moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && areaTypeProfileCode == null && servicedMuIds.isEmpty() &&

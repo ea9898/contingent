@@ -362,4 +362,22 @@ public class MoMuServiceImpl implements MoMuService {
         }
         return results;
     }
+
+    @Override
+    public List<MuAvailableAreaTypes> getMuAvailableAreaTypesInMo(List<Long> moIds, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+        areaHelper.checkMaxPage(paging, validation);
+        areaHelper.checkPaging(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        List<MuAvailableAreaTypes> results = muAvailableAreaTypesRepository.findAreaTypes(moIds);
+
+        if (results.isEmpty()) {
+            validation.error(AreaErrorReason.MU_AREA_TYPE_NOT_FOUND);
+            throw new ContingentException(validation);
+        }
+        return results;
+    }
 }

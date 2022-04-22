@@ -31,6 +31,9 @@ public class MuAvailableAreaTypes implements Serializable {
     @Column(name = "MU_ID")
     private Long muId;
 
+    @Column(name = "MO_ID", nullable = false)
+    private Long moId;
+
     @JoinColumn(name = "AREA_TYPE_CODE", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private AreaType areaType;
@@ -66,6 +69,14 @@ public class MuAvailableAreaTypes implements Serializable {
 
     public void setMuId(Long muId) {
         this.muId = muId;
+    }
+
+    public Long getMoId() {
+        return moId;
+    }
+
+    public void setMoId(Long moId) {
+        this.moId = moId;
     }
 
     public AreaType getAreaType() {

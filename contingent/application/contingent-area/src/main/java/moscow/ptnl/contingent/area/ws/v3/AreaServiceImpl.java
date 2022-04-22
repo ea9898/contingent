@@ -8,11 +8,13 @@ import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSo
 import moscow.ptnl.contingent.area.transform.v3.AreaBriefMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
+import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
+import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.entity.MuMuService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
@@ -33,6 +35,8 @@ import ru.mos.emias.contingent2.area.v3.types.DelMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.v3.types.DelMoAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAvailableAreaTypesResponse;
+import ru.mos.emias.contingent2.area.v3.types.GetMuAvailableAreaTypesInMoRequest;
+import ru.mos.emias.contingent2.area.v3.types.GetMuAvailableAreaTypesInMoResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetMuAvailableAreaTypesRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetMuAvailableAreaTypesResponse;
 import ru.mos.emias.contingent2.area.v3.types.AddMoAvailableAreaTypesRequest;
@@ -158,6 +162,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private SearchAreaAddressMapperV3 searchAreaAddressMapper;
+
+    @Autowired
+    private MuAvailableAreaTypesInMoMapper muAvailableAreaTypesInMoMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
@@ -618,6 +625,30 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                     .sorted()
                     .collect(Collectors.toList())
             );
+            return response;
+        }
+        catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public GetMuAvailableAreaTypesInMoResponse getMuAvailableAreaTypesInMo(GetMuAvailableAreaTypesInMoRequest body) throws Fault {
+        try {
+            Collections.sort(body.getMoIds());
+            List<Long> moIds = body.getPagingOptions() == null ? body.getMoIds() :
+                    body.getMoIds().stream()
+                            .sorted()
+                            .skip((long) body.getPagingOptions().getPageNumber() * body.getPagingOptions().getPageSize())
+                            .limit(body.getPagingOptions().getPageSize())
+                            .collect(Collectors.toList());
+            PageRequest paging = soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null);
+            List<MuAvailableAreaTypes> results = moMuMuServiceDomain.getMuAvailableAreaTypesInMo(moIds, paging);
+            GetMuAvailableAreaTypesInMoResponse response = new GetMuAvailableAreaTypesInMoResponse();
+            response.setResult(new GetMuAvailableAreaTypesInMoResponse.Result());
+            response.getResult().getMuAvailableAreaTypes().addAll(muAvailableAreaTypesInMoMapper.entityToDtoTransform(results));
+            soapCustomMapper.mapPagingResults(response.getResult(), paging, body.getMoIds());
+
             return response;
         }
         catch (Exception ex) {
