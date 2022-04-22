@@ -151,6 +151,8 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     @Override
     public List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils) {
         Specification<AreaMedicalEmployees> specification = findAreasMedicalEmplyeesNotError();
+        specification = specification.and(actualEmployeesSpec());
+
         if (areaIds != null && !areaIds.isEmpty()) {
             specification = specification.and(findAreasMedicalEmplyeesByAreaIdsSpec(areaIds));
         }

@@ -157,6 +157,16 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="AreaSearchResult">
+        <xs:complexContent>
+            <xs:extension base="tns:Area">
+                <xs:sequence>
+                    <xs:element name="residentsBindRate" type="xs:int" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="AreaDn">
         <xs:sequence>
             <xs:element name="id" type="xs:long" />

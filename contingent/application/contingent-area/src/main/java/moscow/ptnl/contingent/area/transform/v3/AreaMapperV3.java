@@ -7,9 +7,9 @@ import moscow.ptnl.contingent.transform.Transform;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mos.emias.contingent2.core.v3.Area;
+import ru.mos.emias.contingent2.core.v3.AreaSearchResult;
 import ru.mos.emias.contingent2.core.v3.AreaTypeClass;
 import ru.mos.emias.contingent2.core.v3.AreaTypeKind;
-import ru.mos.emias.contingent2.core.v3.AreaTypeProfile;
 import ru.mos.emias.contingent2.core.v3.AreaTypeShort;
 import ru.mos.emias.contingent2.core.v3.MedicalEmployee;
 import ru.mos.emias.contingent2.core.v3.MuService;
@@ -33,10 +33,21 @@ public class AreaMapperV3 implements Transform<Area, AreaInfo> {
     @Autowired
     private CodeNameTypeMapperV3 codeNameTypeMapper;
 
+    public AreaSearchResult areaSearchResultTransform(AreaInfo entityObject) {
+        AreaSearchResult result = entityToDtoTransform(entityObject, new AreaSearchResult());
+
+        if (entityObject.getArea().getAreaType() != null) {
+            result.setResidentsBindRate(entityObject.getArea().getAreaType().getResidentsBindRate());
+        }
+        return result;
+    }
+
     @Override
     public Area entityToDtoTransform(AreaInfo entityObject) {
-        Area area = new Area();
+        return entityToDtoTransform(entityObject, new Area());
+    }
 
+    private  <T extends Area> T entityToDtoTransform(AreaInfo entityObject, T area) {
         moscow.ptnl.contingent.domain.area.entity.Area areaObj = entityObject.getArea();
         area.setId(areaObj.getId());
         area.setMoId(areaObj.getMoId());
