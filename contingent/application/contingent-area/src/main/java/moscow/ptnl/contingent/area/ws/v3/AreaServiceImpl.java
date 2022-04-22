@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions;
 import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
 import moscow.ptnl.contingent.area.transform.v3.AreaBriefMapperV3;
+import moscow.ptnl.contingent.area.transform.v3.AreaMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
 import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
 import moscow.ptnl.contingent.area.ws.BaseService;
@@ -144,6 +145,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private MoMuService moMuMuServiceDomain;
 
     @Autowired
+    private AreaMapperV3 areaMapper;
+
+    @Autowired
     private MuAvailableAreaTypes2Mapper muAvailableAreaTypes2Mapper;
 
     @Autowired
@@ -251,8 +255,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV2.getAreaById(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v2.types.GetAreaByIdRequest())),
-                    new GetAreaByIdResponse());
+            AreaInfo area = areaServiceDomain.getAreaByIdV2(body.getAreaId());
+            GetAreaByIdResponse response = new GetAreaByIdResponse();
+            response.setResult(areaMapper.entityToDtoTransform(area));
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);

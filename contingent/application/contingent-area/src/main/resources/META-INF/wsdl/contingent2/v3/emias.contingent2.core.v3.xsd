@@ -114,6 +114,7 @@
             <xs:element name="medicalEmployeeJobId" type="xs:long" />
             <xs:element name="snils" type="restr:stringLimit20" />
             <xs:element name="position" type="tns:PositionNomClinic" minOccurs="0" />
+            <xs:element name="tempDutyStartDate" type="xs:date" minOccurs="0" />
             <xs:element name="isReplacement" type="xs:boolean" />
             <xs:element name="startDate" type="xs:date" minOccurs="0" />
             <xs:element name="endDate" type="xs:date" minOccurs="0" />
