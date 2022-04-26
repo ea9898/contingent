@@ -2,7 +2,7 @@ package moscow.ptnl.contingent.area.endpoint;
 
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.history.HistoryEvent;
-import moscow.ptnl.contingent.repository.history.HistoryEventRepository;
+import moscow.ptnl.contingent.repository.history.HistoryEventCRUDRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class HistoryEventEndpoint {
     private static final Logger LOG = LoggerFactory.getLogger(HistoryEventEndpoint.class);
     
     @Autowired
-    private HistoryEventRepository historyEventRepository;
+    private HistoryEventCRUDRepository historyEventCRUDRepository;
     
     /**
      * Получатель сообщений для записи в историю.
@@ -37,7 +37,7 @@ public class HistoryEventEndpoint {
         LOG.debug("Received history event: {}", msg.getPayload().getObjectType());
         try {
             HistoryEvent event = msg.getPayload();
-            historyEventRepository.save(event);
+            historyEventCRUDRepository.save(event);
         } catch (Exception e) {
             LOG.error("ошибка записи события", e);
         }

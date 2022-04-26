@@ -128,6 +128,7 @@ public final class EntityConverterHelper {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T parseValue(String value, Class<T> type) {
         if (value == null || type == null) {
             return null;
@@ -143,6 +144,12 @@ public final class EntityConverterHelper {
         }
         else if (type.equals(Boolean.class)) {
             return (T) (Boolean) Boolean.parseBoolean(value);
+        }
+        else if (type.equals(java.time.LocalDateTime.class)) {
+            return (T) java.time.LocalDateTime.parse(value, LOCAL_DATE_TIME_FORMAT);
+        }
+        else if (type.equals(java.time.LocalDate.class)) {
+            return (T) java.time.LocalDate.parse(value, LOCAL_DATE_FORMAT);
         }
         else {
             throw new IllegalArgumentException("Incorrect field type " + type);

@@ -14,18 +14,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
-import java.math.BigInteger;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.repository.CommonSpecification;
-
-import javax.persistence.Tuple;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)

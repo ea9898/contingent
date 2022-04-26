@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOp
 import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
 import moscow.ptnl.contingent.area.transform.v3.AreaBriefMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaMapperV3;
+import moscow.ptnl.contingent.area.transform.v3.GetAreaHistoryMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3;
@@ -16,6 +17,7 @@ import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.entity.MuMuService;
+import moscow.ptnl.contingent.domain.area.model.area.AreaFullHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
@@ -109,6 +111,7 @@ import ru.mos.emias.contingent2.area.v3.types.UpdateOrderRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaResponse;
+import ru.mos.emias.contingent2.core.v3.AreaHistory;
 import ru.mos.emias.contingent2.core.v3.MuService;
 
 import java.util.Collections;
@@ -165,6 +168,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private MuAvailableAreaTypesInMoMapper muAvailableAreaTypesInMoMapper;
+
+    @Autowired
+    private GetAreaHistoryMapperV3 getAreaHistoryMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
@@ -351,10 +357,24 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaHistoryResponse getAreaHistory(GetAreaHistoryRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV2.getAreaHistory(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v2.types.GetAreaHistoryRequest())),
-                    new GetAreaHistoryResponse());
-        }
-        catch (Exception ex) {
+            GetAreaHistoryResponse response = new GetAreaHistoryResponse();
+            AreaFullHistory results = areaServiceDomain.getAreaHistory3(body.getAreaId());
+            response.setAreaId(results.getAreaId());
+
+            if (!results.getAreaEvents().isEmpty()) {
+                response.setAreaEvents(new AreaHistory.AreaEvents());
+                response.getAreaEvents().getEvents().addAll(results.getAreaEvents().stream()
+                        .map(getAreaHistoryMapper::entityToDtoTransform)
+                        .collect(Collectors.toList()));
+            }
+            if (!results.getMedicalEmployeeEvents().isEmpty()) {
+                response.setMedicalEmployeeEvents(new AreaHistory.MedicalEmployeeEvents());
+                response.getMedicalEmployeeEvents().getEvents().addAll(results.getMedicalEmployeeEvents().stream()
+                        .map(getAreaHistoryMapper::entityToDtoTransform)
+                        .collect(Collectors.toList()));
+            }
+            return response;
+        } catch (Exception ex) {
             throw exceptionMapper.mapException(ex);
         }
     }

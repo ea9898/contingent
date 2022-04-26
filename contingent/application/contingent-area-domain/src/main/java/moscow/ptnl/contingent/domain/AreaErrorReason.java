@@ -91,6 +91,7 @@ public enum AreaErrorReason implements ErrorReason {
     AREA_TYPE_DO_NOT_SERVES_TERRITORY("UE096", "Тип участка с ИД: %s не имеет признак \"Обслуживает территорию\""),
     TOO_MANY_REQUEST_ADDRESSES("UE097", "Превышено максимально допустимое количество адресов для поиска (не более %s)"),
     MU_SERVICE_NOT_FOUND("UE103", "Не найдено обслуживаемых МУ в рамках выбранного типа участка"),
+    NO_HISTORY_FOR_AREA("UE104", "Нет данных по истории изменений на участке %s"),
     MU_AREA_TYPE_NOT_FOUND("UE105", "Не найдено типов участков из разрешенных для любого МУ в МО"),
     PAGING_INCORRECT("", "Указано некорректное значение параметра пагинации")
     ;

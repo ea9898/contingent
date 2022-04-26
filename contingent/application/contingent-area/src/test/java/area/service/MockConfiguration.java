@@ -12,6 +12,7 @@ import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.AreaServiceImpl;
 import moscow.ptnl.contingent.domain.area.AreaServiceInternalAsyncImpl;
 import moscow.ptnl.contingent.domain.area.OrderServiceImpl;
+import moscow.ptnl.contingent.domain.area.repository.HistoryEventRepository;
 import moscow.ptnl.contingent.service.esu.EsuHelperServiceImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.v1.AreaAddressMapper;
@@ -124,6 +125,9 @@ public class MockConfiguration {
     public LogESUInterceptor logESUInterceptor() {
         return new LogESUInterceptor();
     }
+
+    @MockBean
+    public HistoryEventRepository historyEventRepository;
 
     @MockBean
     public AreaAddressChecker areaAddressChecker;
