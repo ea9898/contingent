@@ -5,8 +5,10 @@ import moscow.ptnl.contingent.area.transform.SoapBaseExceptionMapper;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions;
 import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
+import moscow.ptnl.contingent.area.transform.v3.AddMedicalEmployeeMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaBriefMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaMapperV3;
+import moscow.ptnl.contingent.area.transform.v3.ChangeMedicalEmployeeMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.GetAreaHistoryMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;
@@ -171,6 +173,12 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private GetAreaHistoryMapperV3 getAreaHistoryMapper;
+
+    @Autowired
+    private AddMedicalEmployeeMapperV3 addMedicalEmployeeMapper;
+
+    @Autowired
+    private ChangeMedicalEmployeeMapperV3 changeMedicalEmployeeMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
@@ -449,8 +457,15 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SetMedicalEmployeeOnAreaResponse setMedicalEmployeeOnArea(SetMedicalEmployeeOnAreaRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV1.setMedicalEmployeeOnArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.SetMedicalEmployeeOnAreaRequest())),
-                    new SetMedicalEmployeeOnAreaResponse());
+            List<Long> assignmentIds = areaServiceDomain.setMedicalEmployeeOnArea(body.getAreaId(),
+                    body.getAddMedicalEmployees() == null ? Collections.emptyList() : body.getAddMedicalEmployees().getAddMedicalEmployees().stream().map(
+                            addMedicalEmployeeMapper::dtoToEntityTransform).collect(Collectors.toList()),
+                    body.getChangeMedicalEmployees() == null ? Collections.emptyList() : body.getChangeMedicalEmployees().getChangeMedicalEmployees().stream().map(
+                            changeMedicalEmployeeMapper::dtoToEntityTransform).collect(Collectors.toList()));
+
+            SetMedicalEmployeeOnAreaResponse response = new SetMedicalEmployeeOnAreaResponse();
+            response.getAssignmentIds().addAll(assignmentIds);
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);

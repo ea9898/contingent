@@ -245,6 +245,7 @@
             <xs:element name="snils" type="restr:stringLimit20"/>
             <xs:element name="positionCode" type="xs:string"/>
             <xs:element name="subdivisionId" type="xs:long"/>
+            <xs:element name="isTempDuty" type="xs:boolean" minOccurs="0"/>
             <xs:element name="isReplacement" type="xs:boolean"/>
             <xs:element name="startDate" type="xs:date"/>
             <xs:element name="endDate" type="xs:date" minOccurs="0"/>
@@ -268,7 +269,8 @@
             <xs:element name="assignmentId" type="xs:long"/>
             <xs:element name="startDate" type="xs:date" minOccurs="0"/>
             <xs:element name="endDate" type="xs:date" minOccurs="0"/>
-            <xs:element name="is_error" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="isTempDuty" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="isError" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     

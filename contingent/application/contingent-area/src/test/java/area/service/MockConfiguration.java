@@ -12,6 +12,7 @@ import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.AreaServiceImpl;
 import moscow.ptnl.contingent.domain.area.AreaServiceInternalAsyncImpl;
 import moscow.ptnl.contingent.domain.area.OrderServiceImpl;
+import moscow.ptnl.contingent.domain.area.heplers.MedicalEmployeeHelper;
 import moscow.ptnl.contingent.domain.area.repository.HistoryEventRepository;
 import moscow.ptnl.contingent.service.esu.EsuHelperServiceImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
@@ -75,7 +76,10 @@ public class MockConfiguration {
 
     @Bean
     public AreaHelper areaHelper() { return new AreaHelper(); }
-    
+
+    @Bean
+    public MedicalEmployeeHelper medicalEmployeeHelper() { return new MedicalEmployeeHelper(); }
+
     @Bean
     public XMLGregorianCalendarMapper getXMLGregorianCalendarMapper() {
         return new XMLGregorianCalendarMapper();

@@ -592,7 +592,9 @@ public class AreaHelper {
             if (changeEmpl.getEndDate() != null) {
                 empl.setEndDate(changeEmpl.getEndDate());
             }
-
+            if (Boolean.TRUE.equals(changeEmpl.getTempDuty())) {
+                empl.setTempDutyStartDate(LocalDate.now());
+            }
             empl.setUpdateDate(LocalDateTime.now());
             empl.setError(changeEmpl.isIsError());
 
@@ -796,6 +798,9 @@ public class AreaHelper {
                 medicalEmployees.setPositionCode(empl.getPositionCode());
             } else {
                 medicalEmployees.setPositionCodeSupp(Long.parseLong(empl.getPositionCode()));
+            }
+            if (Boolean.TRUE.equals(empl.getTempDuty())) {
+                medicalEmployees.setTempDutyStartDate(LocalDate.now());
             }
             medicalEmployees.setCreateDate(LocalDateTime.now());
             medicalEmployees.setUpdateDate(LocalDateTime.now());
