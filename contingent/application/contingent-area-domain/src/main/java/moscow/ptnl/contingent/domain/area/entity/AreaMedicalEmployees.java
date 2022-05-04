@@ -4,7 +4,6 @@ import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
-import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -22,7 +21,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREA_MEDICAL_EMPLOYEES")
@@ -70,6 +68,10 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     @LogIt
     @Column(name = "POSITION_CODE_SUPP")
     private Long positionCodeSupp;
+
+    @LogIt
+    @Column(name = "TEMP_DUTY_START_DATE")
+    private LocalDate tempDutyStartDate;
 
     @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
@@ -172,7 +174,15 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     public void setSnils(String snils) {
         this.snils = snils;
     }
-    
+
+    public LocalDate getTempDutyStartDate() {
+        return tempDutyStartDate;
+    }
+
+    public void setTempDutyStartDate(LocalDate tempDutyStartDate) {
+        this.tempDutyStartDate = tempDutyStartDate;
+    }
+
     public LocalDateTime getCreateDate() {
         return createDate;
     }

@@ -23,12 +23,16 @@
                     <xs:simpleType>
                         <xs:restriction base="xs:string">
                             <xs:enumeration value="createPrimaryArea"/>
+                            <xs:enumeration value="initiateCreatePrimaryArea"/>
                             <xs:enumeration value="updatePrimaryArea"/>
                             <xs:enumeration value="setMedicalEmployeeOnArea"/>
                             <xs:enumeration value="addAreaAddress"/>
+                            <xs:enumeration value="initiateAddAreaAddress"/>
                             <xs:enumeration value="delAreaAddress"/>
                             <xs:enumeration value="archiveArea"/>
                             <xs:enumeration value="restoreArea"/>
+                            <xs:enumeration value="delMoAddress"/>
+                            <xs:enumeration value="trigger_synch_areainfo_k1"/>
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
@@ -178,9 +182,9 @@
                     <xs:documentation>Строение (BR.L3_VALUE)</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="globalId" type="xs:string" minOccurs="0">
+            <xs:element name="globalId" type="xs:int" minOccurs="0">
                 <xs:annotation>
-                    <xs:documentation>Глобал ИД адреса</xs:documentation>
+                    <xs:documentation>Глобал ИД адреса в адресном реестре НСИ2</xs:documentation>
                 </xs:annotation>
             </xs:element>
         </xs:sequence>

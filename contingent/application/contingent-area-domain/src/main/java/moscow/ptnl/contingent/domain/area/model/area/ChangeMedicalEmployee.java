@@ -13,6 +13,8 @@ public class ChangeMedicalEmployee {
 
     protected LocalDate endDate;
 
+    protected Boolean isTempDuty;
+
     protected Boolean isError;
 
     public long getAssignmentId() {
@@ -37,6 +39,14 @@ public class ChangeMedicalEmployee {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Boolean getTempDuty() {
+        return isTempDuty;
+    }
+
+    public void setTempDuty(Boolean tempDuty) {
+        isTempDuty = tempDuty;
     }
 
     public Boolean isIsError() { return isError; }

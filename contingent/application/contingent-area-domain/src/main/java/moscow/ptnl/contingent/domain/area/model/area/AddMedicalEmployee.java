@@ -14,6 +14,8 @@ public class AddMedicalEmployee {
 
     private boolean isReplacement;
 
+    private Boolean isTempDuty;
+
     private LocalDate startDate;
 
     private LocalDate endDate;
@@ -56,6 +58,14 @@ public class AddMedicalEmployee {
 
     public void setReplacement(boolean replacement) {
         isReplacement = replacement;
+    }
+
+    public Boolean getTempDuty() {
+        return isTempDuty;
+    }
+
+    public void setTempDuty(Boolean tempDuty) {
+        isTempDuty = tempDuty;
     }
 
     public LocalDate getStartDate() {

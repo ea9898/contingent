@@ -27,4 +27,145 @@
         </loadUpdateData>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2257-1" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="MU_AVAILABLE_AREA_TYPES"/>
+            <not>
+                <columnExists tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки MO_ID в таблицу MU_AVAILABLE_AREA_TYPES</comment>
+        <addColumn tableName="MU_AVAILABLE_AREA_TYPES">
+            <column name="MO_ID" type="BIGINT"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="MO_ID" tableName="MU_AVAILABLE_AREA_TYPES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2257-2" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID"/>
+        </preConditions>
+        <comment>Миграция данных для заполнения поля MO_ID таблицы MU_AVAILABLE_AREA_TYPES</comment>
+        <sql dbms="postgresql">
+            DO '
+            DECLARE
+            src    record;
+            BEGIN
+            for src in
+            (
+            SELECT mu.id, mo.mo_id FROM mu_available_area_types mu
+            JOIN mo_available_area_types mo ON mo.id = mu.mo_available_area_types_id
+            )
+            loop
+            update mu_available_area_types mu
+            set mo_id = src.MO_ID
+            where mu.ID = src.ID
+            ;
+            end loop;
+            END;
+            ';
+        </sql>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2257-4" author="sorlov" labels="3.0.0.0">
+        <preConditions>
+            <columnExists tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID"/>
+        </preConditions>
+        <comment>Делаем поле MO_ID таблицы MU_AVAILABLE_AREA_TYPES обязательным</comment>
+        <addNotNullConstraint tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID" columnDataType="BIGINT" />
+        <rollback>
+            <dropNotNullConstraint tableName="MU_AVAILABLE_AREA_TYPES" columnName="MO_ID" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2268-1" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="AREA_MEDICAL_EMPLOYEES"/>
+            <not>
+                <columnExists tableName="AREA_MEDICAL_EMPLOYEES" columnName="TEMP_DUTY_START_DATE"/>
+            </not>
+        </preConditions>
+        <comment>Добавление колонки TEMP_DUTY_START_DATE в таблицу AREA_MEDICAL_EMPLOYEES</comment>
+        <addColumn tableName="AREA_MEDICAL_EMPLOYEES">
+            <column name="TEMP_DUTY_START_DATE" type="TIMESTAMP(6)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="TEMP_DUTY_START_DATE" tableName="AREA_MEDICAL_EMPLOYEES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2268-2" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="MU_MU_SERVICE"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы MU_MU_SERVICE</comment>
+        <createTable tableName="MU_MU_SERVICE"
+                     remarks="Список МУ, контингент которых обслуживают специализированные МУ в разрезе типов участков">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="MU_ID" type="BIGINT" remarks="Идентификатор МУ">
+                <constraints nullable="false" />
+            </column>
+            <column name="SERVICE_MU_ID" type="BIGINT" remarks="Идентификатор обслуживаемого МУ">
+                <constraints nullable="false" />
+            </column>
+            <column name="AREA_TYPE_CODE" type="BIGINT" remarks="Код типа участка">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="MU_MU_SERVICE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2268-3" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="MU_MU_SERVICE" columnName="AREA_TYPE_CODE" />
+            <columnExists tableName="AREA_TYPE" columnName="CODE" />
+        </preConditions>
+        <comment>Создание внешнего ключа FK_MU_MU_SERVICE_AREA_TYPE</comment>
+        <addForeignKeyConstraint baseColumnNames="AREA_TYPE_CODE"
+                                 baseTableName="MU_MU_SERVICE"
+                                 constraintName="FK_MU_MU_SERVICE_AREA_TYPE"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="AREA_TYPE"/>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2265-1" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="SEQ_MU_MU_SERVICE_ID"/>
+            </not>
+        </preConditions>
+        <comment>Создание сиквенса для таблицы MU_MU_SERVICE</comment>
+        <createSequence sequenceName="SEQ_MU_MU_SERVICE_ID" remarks="сиквенс для таблицы MU_MU_SERVICE"/>
+        <rollback>
+            <dropSequence sequenceName="SEQ_MU_MU_SERVICE_ID"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2136-1" author="sorlov" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+            </and>
+        </preConditions>
+        <comment>Настройка безопасности методов web-сервиса</comment>
+        <loadUpdateData
+                encoding="UTF-8"
+                file="changelog/area/versions/3.0.0.0/files/security.config.17.csv"
+                quotchar=""
+                separator="#"
+                tableName="AD_CONFIG"
+                primaryKey="code">
+            <column name="code" type="STRING"/>
+            <column name="val" type="STRING"/>
+        </loadUpdateData>
+    </changeSet>
+
 </databaseChangeLog>

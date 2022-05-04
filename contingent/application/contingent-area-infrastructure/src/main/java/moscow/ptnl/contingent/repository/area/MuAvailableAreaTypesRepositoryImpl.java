@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesReposit
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -56,4 +57,8 @@ public class MuAvailableAreaTypesRepositoryImpl extends BaseRepository implement
         muAvailableAreaTypesCRUDRepository.deleteAll(muAvailableAreaTypes);
     }
 
+    @Override
+    public List<MuAvailableAreaTypes> findAreaTypes(List<Long> moIds) {
+        return muAvailableAreaTypesCRUDRepository.findByMoIdIn(moIds);
+    }
 }

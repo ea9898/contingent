@@ -114,6 +114,7 @@
             <xs:element name="medicalEmployeeJobId" type="xs:long" />
             <xs:element name="snils" type="restr:stringLimit20" />
             <xs:element name="position" type="tns:PositionNomClinic" minOccurs="0" />
+            <xs:element name="tempDutyStartDate" type="xs:date" minOccurs="0" />
             <xs:element name="isReplacement" type="xs:boolean" />
             <xs:element name="startDate" type="xs:date" minOccurs="0" />
             <xs:element name="endDate" type="xs:date" minOccurs="0" />
@@ -129,7 +130,6 @@
             <xs:element name="areaType" type="tns:AreaTypeShort" />
             <xs:element name="areaTypeClass" type="tns:AreaTypeClass" />
             <xs:element name="areaTypeKind" type="tns:AreaTypeKind" />
-            <xs:element name="areaTypeProfile" type="tns:AreaTypeProfile" minOccurs="0" />
             <xs:element name="muService" type="tns:MuService" minOccurs="0" />
             <xs:element name="ageMin" type="xs:int" minOccurs="0" />
             <xs:element name="ageMax" type="xs:int" minOccurs="0" />
@@ -155,6 +155,16 @@
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AreaSearchResult">
+        <xs:complexContent>
+            <xs:extension base="tns:Area">
+                <xs:sequence>
+                    <xs:element name="residentsBindRate" type="xs:int" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="AreaDn">
@@ -206,6 +216,7 @@
                             <xs:complexType>
                                 <xs:sequence>
                                     <xs:element name="medicalEmployeeJobInfoId" type="xs:long" />
+                                    <xs:element name="tempDutyStartDate" type="xs:date" minOccurs="0" />
                                     <xs:element name="isReplacement" type="xs:boolean" />
                                 </xs:sequence>
                             </xs:complexType>
@@ -234,6 +245,7 @@
             <xs:element name="snils" type="restr:stringLimit20"/>
             <xs:element name="positionCode" type="xs:string"/>
             <xs:element name="subdivisionId" type="xs:long"/>
+            <xs:element name="isTempDuty" type="xs:boolean" minOccurs="0"/>
             <xs:element name="isReplacement" type="xs:boolean"/>
             <xs:element name="startDate" type="xs:date"/>
             <xs:element name="endDate" type="xs:date" minOccurs="0"/>
@@ -257,7 +269,8 @@
             <xs:element name="assignmentId" type="xs:long"/>
             <xs:element name="startDate" type="xs:date" minOccurs="0"/>
             <xs:element name="endDate" type="xs:date" minOccurs="0"/>
-            <xs:element name="is_error" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="isTempDuty" type="xs:boolean" minOccurs="0"/>
+            <xs:element name="isError" type="xs:boolean" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -514,22 +527,55 @@
         </xs:annotation>
         <xs:sequence>
             <xs:element name="areaId" type="xs:long" />
-            <xs:element name="dateCreated" type="xs:dateTime" />
-            <xs:element name="events" minOccurs="0">
+            <xs:element name="areaEvents" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="event" maxOccurs="unbounded">
                             <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="login" type="xs:string" />
-                                    <xs:element name="jobId" type="xs:long" />
-                                    <xs:element name="snils" type="xs:string" />
-                                    <xs:element name="startDate" type="xs:dateTime" minOccurs="0" />
-                                    <xs:element name="endDate" type="xs:dateTime" minOccurs="0" />
-                                    <xs:element name="isError" type="xs:boolean" minOccurs="0" />
-                                    <xs:element name="isReplacement" type="xs:boolean" />
-                                    <xs:element name="updateDate" type="xs:dateTime" minOccurs="0" />
-                                </xs:sequence>
+                                <xs:complexContent>
+                                    <xs:extension base="tns:EventBase">
+                                        <xs:sequence>
+                                            <xs:element name="changeData">
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="description" type="tns:StringOldNewValue" minOccurs="0" />
+                                                        <xs:element name="number" type="tns:LongOldNewValue" minOccurs="0" />
+                                                        <xs:element name="createDate" type="tns:DatetimeOldNewValue" minOccurs="0" />
+                                                        <xs:element name="archived" type="tns:BoolOldNewValue" minOccurs="0" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="medicalEmployeeEvents" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="event" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="tns:EventBase">
+                                        <xs:sequence>
+                                            <xs:element name="medicalEmployeeJobId" type="xs:long" />
+                                            <xs:element name="changeData">
+                                                <xs:complexType>
+                                                    <xs:sequence>
+                                                        <xs:element name="startDate" type="tns:DatetimeOldNewValue" minOccurs="0" />
+                                                        <xs:element name="endDate" type="tns:DatetimeOldNewValue" minOccurs="0" />
+                                                        <xs:element name="tempDutyStartDate" type="tns:DatetimeOldNewValue" minOccurs="0" />
+                                                        <xs:element name="isError" type="tns:BoolOldNewValue" minOccurs="0" />
+                                                        <xs:element name="isReplacement" type="tns:BoolOldNewValue" minOccurs="0" />
+                                                    </xs:sequence>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:extension>
+                                </xs:complexContent>
                             </xs:complexType>
                         </xs:element>
                     </xs:sequence>
@@ -537,5 +583,74 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    
+
+    <xs:complexType name="MuAvailableAreaType">
+        <xs:annotation>
+            <xs:documentation>Информация о типах участков, доступных всем МУ в рамках одного МО</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="moId" type="tns:ID" />
+            <xs:element name="muInfo" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="muId" type="tns:ID" />
+                        <xs:element name="areaTypes" type="tns:AreaTypeShort" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="EventBase">
+        <xs:annotation>
+            <xs:documentation>Базовый тип события</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="eventType" type="xs:string" />
+            <xs:element name="updateDate" type="xs:dateTime" />
+            <xs:element name="userLogin" type="xs:string" />
+            <xs:element name="userJobId" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="StringOldNewValue">
+        <xs:annotation>
+            <xs:documentation>Измененное значение - строка</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="oldValue" type="xs:string" minOccurs="0" />
+            <xs:element name="newValue" type="xs:string" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="LongOldNewValue">
+        <xs:annotation>
+            <xs:documentation>Измененное значение - число</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="oldValue" type="xs:long" minOccurs="0" />
+            <xs:element name="newValue" type="xs:long" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DatetimeOldNewValue">
+        <xs:annotation>
+            <xs:documentation>Измененное значение - дата/время</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="oldValue" type="xs:dateTime" minOccurs="0" />
+            <xs:element name="newValue" type="xs:dateTime" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="BoolOldNewValue">
+        <xs:annotation>
+            <xs:documentation>Измененное значение - логический</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="oldValue" type="xs:boolean" minOccurs="0" />
+            <xs:element name="newValue" type="xs:boolean" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>

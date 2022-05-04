@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
+import moscow.ptnl.contingent.domain.area.entity.MuMuService;
 import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.domain.area.model.area.AreaTypeStateType;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressWithAddresses;
@@ -13,6 +14,7 @@ import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.MuMuServiceRepository;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.error.ValidationParameter;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +64,9 @@ public class MoMuServiceImpl implements MoMuService {
 
     @Autowired
     private AreaAddressRepository areaAddressRepository;
+
+    @Autowired
+    private MuMuServiceRepository muMuServiceRepository;
 
     @Autowired
     @Lazy
@@ -338,5 +344,40 @@ public class MoMuServiceImpl implements MoMuService {
         for (MoAddress moAddress: moAddresses) {
             historyHelper.sendHistory(moAddress, null, MoAddress.class);
         }
+    }
+
+    @Override
+    public List<MuMuService> getMuMuService(long muId, long areaTypeCode) throws ContingentException {
+        Validation validation = new Validation();
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Arrays.asList(areaTypeCode), validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        List<MuMuService> results = muMuServiceRepository.getMuMuServices(muId, areaTypes.get(0));
+
+        if (results.isEmpty()) {
+            validation.error(AreaErrorReason.MU_SERVICE_NOT_FOUND);
+            throw new ContingentException(validation);
+        }
+        return results;
+    }
+
+    @Override
+    public List<MuAvailableAreaTypes> getMuAvailableAreaTypesInMo(List<Long> moIds, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+        areaHelper.checkMaxPage(paging, validation);
+        areaHelper.checkPaging(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        List<MuAvailableAreaTypes> results = muAvailableAreaTypesRepository.findAreaTypes(moIds);
+
+        if (results.isEmpty()) {
+            validation.error(AreaErrorReason.MU_AREA_TYPE_NOT_FOUND);
+            throw new ContingentException(validation);
+        }
+        return results;
     }
 }

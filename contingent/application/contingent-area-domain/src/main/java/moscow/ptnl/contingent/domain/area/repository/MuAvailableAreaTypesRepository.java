@@ -16,4 +16,6 @@ public interface MuAvailableAreaTypesRepository {
     MuAvailableAreaTypes save(MuAvailableAreaTypes muAvailableAreaTypes);
 
     void deleteAll(List<MuAvailableAreaTypes> muAvailableAreaTypes);
+
+    List<MuAvailableAreaTypes> findAreaTypes(List<Long> moIds);
 }

@@ -171,6 +171,30 @@
         <wsdl:part name="body" element="ns1:getAreaAddressResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="addMoAvailableAreaTypesInput">
+        <wsdl:part name="body" element="ns1:addMoAvailableAreaTypesRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="addMoAvailableAreaTypesOutput">
+        <wsdl:part name="body" element="ns1:addMoAvailableAreaTypesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMoAvailableAreaTypesInput">
+        <wsdl:part name="body" element="ns1:getMoAvailableAreaTypesRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMoAvailableAreaTypesOutput">
+        <wsdl:part name="body" element="ns1:getMoAvailableAreaTypesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="delMoAvailableAreaTypesInput">
+        <wsdl:part name="body" element="ns1:delMoAvailableAreaTypesRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="delMoAvailableAreaTypesOutput">
+        <wsdl:part name="body" element="ns1:delMoAvailableAreaTypesResponse"/>
+    </wsdl:message>
+
     <wsdl:message name="addMuAvailableAreaTypesInput">
         <wsdl:part name="body" element="ns1:addMuAvailableAreaTypesRequest"/>
     </wsdl:message>
@@ -185,6 +209,14 @@
 
     <wsdl:message name="delMuAvailableAreaTypesOutput">
         <wsdl:part name="body" element="ns1:delMuAvailableAreaTypesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMuAvailableAreaTypesInput">
+        <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMuAvailableAreaTypesOutput">
+        <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesResponse"/>
     </wsdl:message>
 
     <wsdl:message name="getMuAvailableAreaTypes2Input">
@@ -289,6 +321,22 @@
 
     <wsdl:message name="getAreaHistoryOutput">
         <wsdl:part name="body" element="ns1:getAreaHistoryResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMuMuServiceInput">
+        <wsdl:part name="body" element="ns1:getMuMuServiceRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMuMuServiceOutput">
+        <wsdl:part name="body" element="ns1:getMuMuServiceResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMuAvailableAreaTypesInMoInput">
+        <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesInMoRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMuAvailableAreaTypesInMoOutput">
+        <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesInMoResponse"/>
     </wsdl:message>
 
     <wsdl:portType name="AreaPT">
@@ -436,6 +484,30 @@
             <wsdl:output message="tns:getAreaAddressOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
+        <wsdl:operation name="addMoAvailableAreaTypes">
+            <wsdl:documentation>
+                Добавление типов участков, доступных для МО (К_УУ_1)
+            </wsdl:documentation>
+            <wsdl:input message="tns:addMoAvailableAreaTypesInput"/>
+            <wsdl:output message="tns:addMoAvailableAreaTypesOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMoAvailableAreaTypes">
+            <wsdl:documentation>
+                Предоставление типов участков, доступных для МО (К_УУ_3)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getMoAvailableAreaTypesInput"/>
+            <wsdl:output message="tns:getMoAvailableAreaTypesOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="delMoAvailableAreaTypes">
+            <wsdl:documentation>
+                Удаление типов участка из доступных для МО (К_УУ_2)
+            </wsdl:documentation>
+            <wsdl:input message="tns:delMoAvailableAreaTypesInput"/>
+            <wsdl:output message="tns:delMoAvailableAreaTypesOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
         <wsdl:operation name="addMuAvailableAreaTypes">
             <wsdl:documentation>
                 Добавление типов участков, доступных для МУ (К_УУ_4)
@@ -450,6 +522,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:delMuAvailableAreaTypesInput"/>
             <wsdl:output message="tns:delMuAvailableAreaTypesOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMuAvailableAreaTypes">
+            <wsdl:documentation>
+                Предоставление типов участков, доступных для МУ (К_УУ_6)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getMuAvailableAreaTypesInput"/>
+            <wsdl:output message="tns:getMuAvailableAreaTypesOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
         <wsdl:operation name="getMuAvailableAreaTypes2">
@@ -554,6 +634,22 @@
             </wsdl:documentation>
             <wsdl:input message="tns:getAreaHistoryInput"/>
             <wsdl:output message="tns:getAreaHistoryOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMuAvailableAreaTypesInMo">
+            <wsdl:documentation>
+                Предоставление типов участков из разрешенных для любого МУ в МО доступных для МУ (К_УУ_38)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getMuAvailableAreaTypesInMoInput"/>
+            <wsdl:output message="tns:getMuAvailableAreaTypesInMoOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMuMuService">
+            <wsdl:documentation>
+                Предоставление МУ, контингент которых обслуживают специализированные МУ, в разрезе типов участков (К_УУ_39)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getMuMuServiceInput"/>
+            <wsdl:output message="tns:getMuMuServiceOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -811,7 +907,49 @@
             <wsdl:fault name="fault">
                 <soap:fault name="fault" use="literal"/>
             </wsdl:fault>
-        </wsdl:operation> 
+        </wsdl:operation>
+
+        <wsdl:operation name="addMoAvailableAreaTypes">
+            <soap:operation soapAction="addMoAvailableAreaTypes"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMoAvailableAreaTypes">
+            <soap:operation soapAction="getMoAvailableAreaTypes"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="delMoAvailableAreaTypes">
+            <soap:operation soapAction="delMoAvailableAreaTypes"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
 
         <wsdl:operation name="addMuAvailableAreaTypes">
             <soap:operation soapAction="addMuAvailableAreaTypes"/>
@@ -843,6 +981,20 @@
 
         <wsdl:operation name="getMuAvailableAreaTypes2">
             <soap:operation soapAction="getMuAvailableAreaTypes2"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMuAvailableAreaTypes">
+            <soap:operation soapAction="getMuAvailableAreaTypes"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>
@@ -1011,6 +1163,34 @@
 
         <wsdl:operation name="getAreaHistory">
             <soap:operation soapAction="getAreaHistory"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMuAvailableAreaTypesInMo">
+            <soap:operation soapAction="getMuAvailableAreaTypesInMo"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMuMuService">
+            <soap:operation soapAction="getMuMuService"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

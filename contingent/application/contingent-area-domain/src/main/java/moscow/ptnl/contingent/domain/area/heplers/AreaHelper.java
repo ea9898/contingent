@@ -345,6 +345,12 @@ public class AreaHelper {
         }
     }
 
+    public void checkPaging(PageRequest paging, Validation validation) {
+        if (paging != null && (paging.getPageNumber() < 0 || paging.getPageSize() <= 0)) {
+            validation.error(AreaErrorReason.PAGING_INCORRECT);
+        }
+    }
+
     public void checkSearchDnParameters(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
                                         List<Long> specializationCodes, List<Long> areaIds) throws ContingentException {
         if (moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && areaTypeProfileCode == null && servicedMuIds.isEmpty() &&
@@ -586,7 +592,9 @@ public class AreaHelper {
             if (changeEmpl.getEndDate() != null) {
                 empl.setEndDate(changeEmpl.getEndDate());
             }
-
+            if (Boolean.TRUE.equals(changeEmpl.getTempDuty())) {
+                empl.setTempDutyStartDate(LocalDate.now());
+            }
             empl.setUpdateDate(LocalDateTime.now());
             empl.setError(changeEmpl.isIsError());
 
@@ -790,6 +798,9 @@ public class AreaHelper {
                 medicalEmployees.setPositionCode(empl.getPositionCode());
             } else {
                 medicalEmployees.setPositionCodeSupp(Long.parseLong(empl.getPositionCode()));
+            }
+            if (Boolean.TRUE.equals(empl.getTempDuty())) {
+                medicalEmployees.setTempDutyStartDate(LocalDate.now());
             }
             medicalEmployees.setCreateDate(LocalDateTime.now());
             medicalEmployees.setUpdateDate(LocalDateTime.now());

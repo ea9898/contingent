@@ -11,12 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.ColumnResult;
-import javax.persistence.ConstructorResult;
-import javax.persistence.SqlResultSetMapping;
-import javax.persistence.Tuple;
-import java.math.BigInteger;
-
 @Repository
 @Transactional(propagation=Propagation.MANDATORY)
 public interface AreaMedicalEmployeeCRUDRepository extends PagingAndSortingRepository<AreaMedicalEmployees, Long> {

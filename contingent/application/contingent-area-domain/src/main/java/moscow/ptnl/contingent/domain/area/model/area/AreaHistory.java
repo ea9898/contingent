@@ -1,23 +1,10 @@
 package moscow.ptnl.contingent.domain.area.model.area;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 
-import javax.persistence.Column;
-import javax.persistence.ColumnResult;
-import javax.persistence.ConstructorResult;
-import javax.persistence.Entity;
-import javax.persistence.EntityResult;
-import javax.persistence.FieldResult;
-import javax.persistence.Id;
-import javax.persistence.SqlResultSetMapping;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AreaHistory {
 
