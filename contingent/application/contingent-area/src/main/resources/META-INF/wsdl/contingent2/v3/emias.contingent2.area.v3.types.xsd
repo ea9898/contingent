@@ -1074,7 +1074,7 @@
                         <xs:complexContent>
                             <xs:extension base="core:PagingResults">
                                 <xs:sequence>
-                                    <xs:element name="muAvailableAreaTypes" type="core:MuAvailableAreaType" maxOccurs="unbounded" />
+                                    <xs:element name="muAvailableAreaTypes" type="core:MuAvailableAreaType" minOccurs="0" maxOccurs="unbounded" />
                                 </xs:sequence>
                             </xs:extension>
                         </xs:complexContent>

@@ -168,4 +168,23 @@
         </loadUpdateData>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2288-1" author="ddryuchin" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+            </and>
+        </preConditions>
+        <comment>Настройка безопасности методов web-сервиса</comment>
+        <loadUpdateData
+                encoding="UTF-8"
+                file="changelog/area/versions/3.0.0.0/files/security.config.19.csv"
+                quotchar=""
+                separator="#"
+                tableName="AD_CONFIG"
+                primaryKey="code">
+            <column name="code" type="STRING"/>
+            <column name="val" type="STRING"/>
+        </loadUpdateData>
+    </changeSet>
+
 </databaseChangeLog>

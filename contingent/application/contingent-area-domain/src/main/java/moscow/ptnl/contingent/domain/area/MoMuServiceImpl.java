@@ -378,14 +378,6 @@ public class MoMuServiceImpl implements MoMuService {
 
     @Override
     public List<MuAvailableAreaTypes> getMuAvailableAreaTypesInMo(List<Long> moIds) throws ContingentException {
-        Validation validation = new Validation();
-
-        List<MuAvailableAreaTypes> results = muAvailableAreaTypesRepository.findAreaTypes(moIds);
-
-        if (results.isEmpty()) {
-            validation.error(AreaErrorReason.MU_AREA_TYPE_NOT_FOUND);
-            throw new ContingentException(validation);
-        }
-        return results;
+        return muAvailableAreaTypesRepository.findAreaTypes(moIds);
     }
 }

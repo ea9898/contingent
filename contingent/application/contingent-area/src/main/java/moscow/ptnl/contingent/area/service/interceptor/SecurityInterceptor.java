@@ -79,7 +79,7 @@ public class SecurityInterceptor {
         if (serviceAnnotation == null) {
             throw new RuntimeException("У сервиса не определено имя");
         }
-        return serviceAnnotation.value();
+        return serviceAnnotation.value().split("-")[0];
     }
     
     private boolean hasAcessRights(List<Long> methodRights, Set<Long> userRights) {

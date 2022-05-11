@@ -672,13 +672,13 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetMuAvailableAreaTypesInMoResponse getMuAvailableAreaTypesInMo(GetMuAvailableAreaTypesInMoRequest body) throws Fault {
         try {
             Page<Long> moIdPage = moMuMuServiceDomain.checkMoIdsInMaat(body.getMoIds(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
-
             List<MuAvailableAreaTypes> results = moMuMuServiceDomain.getMuAvailableAreaTypesInMo(moIdPage.getContent());
             GetMuAvailableAreaTypesInMoResponse response = new GetMuAvailableAreaTypesInMoResponse();
             response.setResult(new GetMuAvailableAreaTypesInMoResponse.Result());
-            response.getResult().getMuAvailableAreaTypes().addAll(muAvailableAreaTypesInMoMapper.entityToDtoTransform(results));
+            if (moIdPage.getContent().size() > 0) {
+                response.getResult().getMuAvailableAreaTypes().addAll(muAvailableAreaTypesInMoMapper.entityToDtoTransform(results));
+            }
             soapCustomMapper.mapPagingResults(response.getResult(), moIdPage);
-
             return response;
         }
         catch (Exception ex) {
