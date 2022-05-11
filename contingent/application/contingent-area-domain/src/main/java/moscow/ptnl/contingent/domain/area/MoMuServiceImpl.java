@@ -161,6 +161,7 @@ public class MoMuServiceImpl implements MoMuService {
         areaTypes.forEach(areaType -> {
             MuAvailableAreaTypes muAvailableAreaType = new MuAvailableAreaTypes();
             muAvailableAreaType.setMuId(muId);
+            muAvailableAreaType.setMoId(moId);
             muAvailableAreaType.setAreaType(areaType);
             muAvailableAreaType.setCreateDate(LocalDateTime.now());
 
