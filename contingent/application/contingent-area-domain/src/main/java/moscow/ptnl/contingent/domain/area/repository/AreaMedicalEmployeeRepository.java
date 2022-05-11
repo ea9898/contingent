@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.domain.area.repository;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -23,6 +24,8 @@ public interface AreaMedicalEmployeeRepository {
     Map<Area, List<AreaMedicalEmployees>> getEmployeesByAreaIds(List<Area> areas);
 
     List<AreaMedicalEmployees> findEmployees(long jobId, Boolean replacement);
+
+    List<AreaMedicalEmployees> findEmployees(AreaType areaType, long jobId, Boolean replacement);
 
     List<Area> findAreasByEmployee(long jobId);
 

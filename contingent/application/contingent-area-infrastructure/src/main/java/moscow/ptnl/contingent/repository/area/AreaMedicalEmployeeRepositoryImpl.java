@@ -5,6 +5,7 @@ import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees_;
 import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
 import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -90,6 +91,11 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
                 criteriaBuilder.equal(root.get(AreaMedicalEmployees_.medicalEmployeeJobId), jobId);
     }
 
+    private Specification<AreaMedicalEmployees> getEmployeesByAreaTypeSpec(AreaType areaType) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area).get(Area_.areaType), areaType);
+    }
+
     @Override
     public List<AreaMedicalEmployees> getEmployeesByAreaId(long areaId) {
         return areaMedicalEmployeeCRUDRepository.findAll(findAreasMedicalEmplyeesByAreaIdSpec(areaId));
@@ -125,8 +131,16 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
 
     @Override
     public List<AreaMedicalEmployees> findEmployees(long jobId, Boolean replacement) {
+        return findEmployees(null, jobId, replacement);
+    }
+
+    @Override
+    public List<AreaMedicalEmployees> findEmployees(AreaType areaType, long jobId, Boolean replacement) {
         Specification<AreaMedicalEmployees> specification = getEmployeesByJobIdSpec(jobId);
 
+        if (areaType != null) {
+            specification.and(getEmployeesByAreaTypeSpec(areaType));
+        }
         if (Boolean.TRUE.equals(replacement)) {
             specification = specification.and(replacementEmployeesSpec());
         }

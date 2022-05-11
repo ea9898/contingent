@@ -72,7 +72,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @Transactional
@@ -893,6 +895,58 @@ public class AreaHelper {
                                     next.getMedicalEmployeeJobId()));
                 }
             }
+            if (!validation.isSuccess()) {
+                throw new ContingentException(validation);
+            }
+        }
+    }
+
+    public void checkMainEmployeesUniqueness(Area area, List<AreaMedicalEmployees> mainEmployees,
+                                                   Validation validation) throws ContingentException {
+        Function<LocalDate, LocalDate> notNullableEndDate = (d) -> d == null ? LocalDate.MAX : d;
+
+        for (AreaMedicalEmployees employee : mainEmployees) {
+            List<AreaMedicalEmployees> employeePositions = areaMedicalEmployeeRepository.findEmployees(area.getAreaType(),
+                    employee.getMedicalEmployeeJobId(), false);
+
+            employeePositions.stream()
+                    .filter(p -> !Objects.equals(p.getArea(), area))
+                    //Проверяется пересечение периодов действия (START_DATE / END_DATE)
+                    //max(start1, start2) < min(end1, end2)
+                    .filter(p -> Stream.of(p.getStartDate(), employee.getStartDate()).max(Comparator.naturalOrder()).get().minusDays(1).isBefore(
+                            Stream.of(notNullableEndDate.apply(p.getEndDate()), notNullableEndDate.apply(employee.getEndDate())).min(Comparator.naturalOrder()).get()))
+                    .findFirst()
+                    .ifPresent(p -> validation.error(AreaErrorReason.MAIN_EMPLOYEE_EXISTS,
+                            new ValidationParameter("jobInfoId", employee.getMedicalEmployeeJobId()),
+                            new ValidationParameter("areaId", p.getArea().getId())));
+        }
+    }
+
+    public void checkTempDutyEmployeesUniqueness(Area area, List<AreaMedicalEmployees> employees, Validation validation) {
+        employees.stream().filter(p -> p.getTempDutyStartDate() != null)
+                .forEach(e -> {
+                    List<AreaMedicalEmployees> employeePositions = areaMedicalEmployeeRepository.findEmployees(area.getAreaType(),
+                            e.getMedicalEmployeeJobId(), true);
+
+                    employeePositions.stream()
+                            .filter(p -> !Objects.equals(p.getArea(), area))
+                            .filter(p -> p.getTempDutyStartDate() != null)
+                            .findFirst()
+                            .ifPresent(p -> validation.error(AreaErrorReason.TEMP_DUTY_EMPLOYEE_EXISTS,
+                                    new ValidationParameter("jobInfoId", e.getMedicalEmployeeJobId()),
+                                    new ValidationParameter("areaId", p.getArea().getId())));
+                });
+    }
+
+    public void checkTempDutyEmployees(List<ChangeMedicalEmployee> changeEmployeesInput, List<AddMedicalEmployee> addEmployeesInput,
+                                       List<AreaMedicalEmployees> areaEmployeesDb, Validation validation) throws ContingentException {
+        if (changeEmployeesInput.stream().anyMatch(e -> Boolean.TRUE.equals(e.getTempDuty()))
+                || addEmployeesInput.stream().anyMatch(e -> Boolean.TRUE.equals(e.getTempDuty()))) {
+            areaEmployeesDb.stream().filter(p -> p.getTempDutyStartDate() != null)
+                    .findFirst()
+                    .ifPresent(foundEmployee -> validation.error(AreaErrorReason.MULTIPLE_TEMP_DUTY_EMPLOYEES,
+                            new ValidationParameter("jobInfoId", foundEmployee.getMedicalEmployeeJobId())));
+
             if (!validation.isSuccess()) {
                 throw new ContingentException(validation);
             }

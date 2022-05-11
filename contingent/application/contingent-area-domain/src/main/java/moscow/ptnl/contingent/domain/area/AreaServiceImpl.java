@@ -717,13 +717,13 @@ public class AreaServiceImpl implements AreaService {
                 area.getAreaType().getAreaTypeKind().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) {
             areaHelper.checkMainEmployeesOverlappingDates(
                     mainEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation);  // отфитровываем ошибочно назначенные работников из проверки
+            //7.3
+            areaHelper.checkMainEmployeesUniqueness(area, mainEmployees, validation);
+            //7.4
+            areaHelper.checkTempDutyEmployees(changeEmployeesInput, addEmployeesInput, areaEmployeesDb, validation);
+            //7.5
+            areaHelper.checkTempDutyEmployeesUniqueness(area, allEmployees, validation);
         }
-        //7.3
-        //TODO CONTINGENT2-2260
-        //7.4
-        //TODO CONTINGENT2-2260
-        //7.5
-        //TODO CONTINGENT2-2260
         //7.6
         if (area.getAreaType() != null &&
                 area.getAreaType().getAreaTypeKind() != null &&
