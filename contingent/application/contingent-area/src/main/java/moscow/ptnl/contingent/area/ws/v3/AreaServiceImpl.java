@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions;
 import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
 import moscow.ptnl.contingent.area.transform.v3.AddMedicalEmployeeMapperV3;
+import moscow.ptnl.contingent.area.transform.v3.AddressRegistryToAddressRegistryBaseMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaBriefMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.ChangeMedicalEmployeeMapperV3;
@@ -180,6 +181,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private ChangeMedicalEmployeeMapperV3 changeMedicalEmployeeMapper;
+
+    @Autowired
+    private AddressRegistryToAddressRegistryBaseMapperV3 addressRegistryBaseMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
@@ -425,8 +429,30 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateCreatePrimaryAreaResponse initiateCreatePrimaryArea(InitiateCreatePrimaryAreaRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV2.initiateCreatePrimaryArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v2.types.InitiateCreatePrimaryAreaRequest())),
-                    new InitiateCreatePrimaryAreaResponse());
+            InitiateCreatePrimaryAreaResponse response = new InitiateCreatePrimaryAreaResponse();
+            Long id = areaServiceDomain.initiateCreatePrimaryArea(
+                    body.getMoId(),
+                    body.getMuId(),
+                    body.getNumber(),
+                    body.getDescription(),
+                    body.getAreaTypeCode(),
+                    null,
+                    body.getPolicyTypes() == null ? new ArrayList<>() : body.getPolicyTypes().getPolicyTypeCodes(),
+                    body.getAgeMin(),
+                    body.getAgeMax(),
+                    body.getAgeMinM(),
+                    body.getAgeMaxM(),
+                    body.getAgeMinW(),
+                    body.getAgeMaxW(),
+                    body.isAutoAssignForAttachment(),
+                    body.isAttachByMedicalReason(),
+                    body.getAddMedicalEmployees() == null ? Collections.emptyList() : body.getAddMedicalEmployees().getAddMedicalEmployees().stream()
+                            .map(addMedicalEmployeeMapper::dtoToEntityTransform).collect(Collectors.toList()),
+                    body.getAddresses() == null ? Collections.emptyList() : body.getAddresses().stream()
+                            .map(addressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()));
+
+            response.setId(id);
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);
