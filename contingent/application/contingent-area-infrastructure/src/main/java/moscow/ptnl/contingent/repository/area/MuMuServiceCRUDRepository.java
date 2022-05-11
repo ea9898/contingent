@@ -15,4 +15,6 @@ import java.util.List;
 public interface MuMuServiceCRUDRepository extends PagingAndSortingRepository<MuMuService, Long> {
 
     List<MuMuService> findByMuIdAndAreaType(long muId, AreaType areaType);
+
+    List<MuMuService> findByServiceMuIdAndAreaType(long serviceMuId, AreaType areaType);
 }

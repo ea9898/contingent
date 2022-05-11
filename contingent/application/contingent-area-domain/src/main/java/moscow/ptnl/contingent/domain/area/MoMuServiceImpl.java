@@ -366,6 +366,22 @@ public class MoMuServiceImpl implements MoMuService {
     }
 
     @Override
+    public List<MuMuService> getServicingMU(long muId, long areaTypeCode) throws ContingentException {
+        Validation validation = new Validation();
+        List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(Arrays.asList(areaTypeCode), validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        List<MuMuService> results = muMuServiceRepository.getServicingMU(muId, areaTypes.get(0));
+
+        if (results.isEmpty()) {
+            throw new ContingentException(validation.error(AreaErrorReason.SERVICING_MU_NOT_FOUND));
+        }
+        return results;
+    }
+
+    @Override
     public Page<Long> checkMoIdsInMaat(List<Long> moIds, PageRequest paging) throws ContingentException {
         List<Long> moIdsOut = muAvailableAreaTypesRepository.checkMoIdsInMaat(moIds);
         List<Long> moIdsPage = moIdsOut.stream()

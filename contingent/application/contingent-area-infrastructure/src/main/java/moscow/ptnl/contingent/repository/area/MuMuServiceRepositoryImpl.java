@@ -23,4 +23,9 @@ public class MuMuServiceRepositoryImpl extends BaseRepository implements MuMuSer
     public List<MuMuService> getMuMuServices(long muId, AreaType areaType) {
         return muMuServiceCRUDRepository.findByMuIdAndAreaType(muId, areaType);
     }
+
+    @Override
+    public List<MuMuService> getServicingMU(long serviceMuId, AreaType areaType) {
+        return muMuServiceCRUDRepository.findByServiceMuIdAndAreaType(serviceMuId, areaType);
+    }
 }

@@ -339,6 +339,14 @@
         <wsdl:part name="body" element="ns1:getMuAvailableAreaTypesInMoResponse"/>
     </wsdl:message>
 
+    <wsdl:message name="getServicingMUInput">
+        <wsdl:part name="body" element="ns1:getServicingMURequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getServicingMUOutput">
+        <wsdl:part name="body" element="ns1:getServicingMUResponse"/>
+    </wsdl:message>
+
     <wsdl:portType name="AreaPT">
         <wsdl:operation name="createPrimaryArea">
             <wsdl:documentation>
@@ -650,6 +658,14 @@
             </wsdl:documentation>
             <wsdl:input message="tns:getMuMuServiceInput"/>
             <wsdl:output message="tns:getMuMuServiceOutput"/>
+            <wsdl:fault name="fault" message="tns:fault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getServicingMU">
+            <wsdl:documentation>
+                Предоставление специализированных МУ, обслуживающих контингент неспециализированных МУ (К_УУ_40)
+            </wsdl:documentation>
+            <wsdl:input message="tns:getServicingMUInput"/>
+            <wsdl:output message="tns:getServicingMUOutput"/>
             <wsdl:fault name="fault" message="tns:fault"/>
         </wsdl:operation>
     </wsdl:portType>
@@ -1191,6 +1207,20 @@
 
         <wsdl:operation name="getMuMuService">
             <soap:operation soapAction="getMuMuService"/>
+            <wsdl:input>
+                <soap:header message="tns:userContext" part="userContext" use="literal"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getServicingMU">
+            <soap:operation soapAction="getServicingMU"/>
             <wsdl:input>
                 <soap:header message="tns:userContext" part="userContext" use="literal"/>
                 <soap:body use="literal"/>

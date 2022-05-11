@@ -96,7 +96,8 @@ public enum AreaErrorReason implements ErrorReason {
     TEMP_DUTY_EMPLOYEE_EXISTS("UE102", "Один и тот же МР %s не может быть ВРИО на 2-х и более участках одного и того же типа. Сейчас он ВРИО на участке %s"),
     MU_SERVICE_NOT_FOUND("UE103", "Не найдено обслуживаемых МУ в рамках выбранного типа участка"),
     NO_HISTORY_FOR_AREA("UE104", "Нет данных по истории изменений на участке %s"),
-    PAGING_INCORRECT("UE106", "Указано некорректное значение параметра пагинации")
+    PAGING_INCORRECT("UE106", "Указано некорректное значение параметра пагинации"),
+    SERVICING_MU_NOT_FOUND("UE107", "Не найдено специализированных МО/МУ в рамках выбранного типа участка")
     ;
 
     private final String description;

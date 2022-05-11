@@ -86,6 +86,8 @@ import ru.mos.emias.contingent2.area.v3.types.GetMuMuServiceRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetMuMuServiceResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetNewAreaIdRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetNewAreaIdResponse;
+import ru.mos.emias.contingent2.area.v3.types.GetServicingMURequest;
+import ru.mos.emias.contingent2.area.v3.types.GetServicingMUResponse;
 import ru.mos.emias.contingent2.area.v3.types.InitiateAddAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.InitiateAddAreaAddressResponse;
 import ru.mos.emias.contingent2.area.v3.types.InitiateAddMoAddressRequest;
@@ -156,7 +158,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private AreaService areaServiceDomain;
 
     @Autowired
-    private MoMuService moMuMuServiceDomain;
+    private MoMuService moMuServiceDomain;
 
     @Autowired
     private AreaMapperV3 areaMapper;
@@ -417,7 +419,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMuAvailableAreaTypesResponse addMuAvailableAreaTypes(AddMuAvailableAreaTypesRequest body) throws Fault {
         try {
-            moMuMuServiceDomain.addMuAvailableAreaTypesV3(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
+            moMuServiceDomain.addMuAvailableAreaTypesV3(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new AddMuAvailableAreaTypesResponse();
         }
@@ -622,7 +624,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetMuAvailableAreaTypes2Response getMuAvailableAreaTypes2(GetMuAvailableAreaTypes2Request body) throws Fault {
         try {
             GetMuAvailableAreaTypes2Response getMuAvailableAreaTypes2Response = new GetMuAvailableAreaTypes2Response();
-            getMuAvailableAreaTypes2Response.getMuAvailableAreaTypes().addAll(moMuMuServiceDomain.getMuAvailableAreaTypes2(body.getMuId())
+            getMuAvailableAreaTypes2Response.getMuAvailableAreaTypes().addAll(moMuServiceDomain.getMuAvailableAreaTypes2(body.getMuId())
             .stream().map(muAvailableAreaTypes2Mapper::entityToDtoTransform).collect(Collectors.toList()));
             return getMuAvailableAreaTypes2Response;
         }
@@ -678,7 +680,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMuMuServiceResponse getMuMuService(GetMuMuServiceRequest body) throws Fault {
         try {
-            List<MuMuService> results = moMuMuServiceDomain.getMuMuService(body.getMuId(), body.getAreaTypeCode());
+            List<MuMuService> results = moMuServiceDomain.getMuMuService(body.getMuId(), body.getAreaTypeCode());
 
             GetMuMuServiceResponse response = new GetMuMuServiceResponse();
             response.setServiceMu(new MuService());
@@ -697,14 +699,32 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMuAvailableAreaTypesInMoResponse getMuAvailableAreaTypesInMo(GetMuAvailableAreaTypesInMoRequest body) throws Fault {
         try {
-            Page<Long> moIdPage = moMuMuServiceDomain.checkMoIdsInMaat(body.getMoIds(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
-            List<MuAvailableAreaTypes> results = moMuMuServiceDomain.getMuAvailableAreaTypesInMo(moIdPage.getContent());
+            Page<Long> moIdPage = moMuServiceDomain.checkMoIdsInMaat(body.getMoIds(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
+            List<MuAvailableAreaTypes> results = moMuServiceDomain.getMuAvailableAreaTypesInMo(moIdPage.getContent());
             GetMuAvailableAreaTypesInMoResponse response = new GetMuAvailableAreaTypesInMoResponse();
             response.setResult(new GetMuAvailableAreaTypesInMoResponse.Result());
             if (moIdPage.getContent().size() > 0) {
                 response.getResult().getMuAvailableAreaTypes().addAll(muAvailableAreaTypesInMoMapper.entityToDtoTransform(results));
             }
             soapCustomMapper.mapPagingResults(response.getResult(), moIdPage);
+            return response;
+        }
+        catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
+        }
+    }
+
+    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
+    public GetServicingMUResponse getServicingMU(GetServicingMURequest body) throws Fault {
+        try {
+            List<MuMuService> muMuServices = moMuServiceDomain.getServicingMU(body.getMuId(), body.getAreaTypeCode());
+
+            GetServicingMUResponse response = new GetServicingMUResponse();
+            response.setServicingMu(new GetServicingMUResponse.ServicingMu());
+            response.getServicingMu().getMuIds().addAll(muMuServices.stream()
+                    .map(MuMuService::getMuId)
+                    .collect(Collectors.toList()));
+
             return response;
         }
         catch (Exception ex) {

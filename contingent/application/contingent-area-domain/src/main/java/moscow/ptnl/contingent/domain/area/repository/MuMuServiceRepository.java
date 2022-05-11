@@ -10,4 +10,6 @@ import java.util.List;
 public interface MuMuServiceRepository {
 
     List<MuMuService> getMuMuServices(long muId, AreaType areaType);
+
+    List<MuMuService> getServicingMU(long serviceMuId, AreaType areaType);
 }
