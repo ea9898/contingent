@@ -35,7 +35,7 @@ public class AreaMuServiceRepositoryImpl extends BaseRepository implements AreaM
     }
 
     private Specification<AreaMuService> buildAreasSpec(Collection<Long> areaIds) {
-        return (root, criteriaQuery, cb) -> cb.in(root.get(Area_.id.getName())).value(areaIds);
+        return (root, criteriaQuery, cb) -> cb.in(root.get(AreaMuService_.area).get(Area_.id.getName())).value(areaIds);
     }
 
     private Specification<AreaMuService> buildExcludeAreaSpec(long areaId) {
@@ -95,7 +95,6 @@ public class AreaMuServiceRepositoryImpl extends BaseRepository implements AreaM
     public List<AreaMuService> findActive(List<Long> areaIds) {
         Specification<AreaMuService> specification = buildActiveEndDateSpec();
         specification = specification.and(buildAreasSpec(areaIds));
-        specification = specification.and(buildActiveEndDateSpec());
         return areaMuServiceCRUDRepository.findAll(specification);
     }
 }
