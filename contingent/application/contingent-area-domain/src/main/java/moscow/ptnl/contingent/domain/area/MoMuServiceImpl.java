@@ -102,7 +102,7 @@ public class MoMuServiceImpl implements MoMuService {
         areaTypeCodes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation).stream()
                 .map(AreaType::getCode)
                 .collect(Collectors.toList());
-        List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.   checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
+        List<MoAvailableAreaTypes> moAvailableAreaTypes = areaHelper.checkAndGetAreaTypesNotExistInMO(moId, areaTypeCodes, validation);
         areaHelper.checkAndGetAreaTypesNotExistInMU(moAvailableAreaTypes, areaTypeCodes, validation);
 
         if (!validation.isSuccess()) {
@@ -321,6 +321,7 @@ public class MoMuServiceImpl implements MoMuService {
 
     /**
      * Часть алгоритмов delMoAddress и delMoAddressTotal
+     *
      * @param moAddresses
      */
     private void deleteMuAndAreaAddresses(List<MoAddress> moAddresses, boolean total) {
@@ -341,7 +342,7 @@ public class MoMuServiceImpl implements MoMuService {
         }
         areaHelper.delMoAddresses(moAddresses);
 
-        for (MoAddress moAddress: moAddresses) {
+        for (MoAddress moAddress : moAddresses) {
             historyHelper.sendHistory(moAddress, null, MoAddress.class);
         }
     }
@@ -364,14 +365,21 @@ public class MoMuServiceImpl implements MoMuService {
     }
 
     @Override
-    public List<MuAvailableAreaTypes> getMuAvailableAreaTypesInMo(List<Long> moIds, PageRequest paging) throws ContingentException {
-        Validation validation = new Validation();
-        areaHelper.checkMaxPage(paging, validation);
-        areaHelper.checkPaging(paging, validation);
+    public Page<Long> checkMoIdsInMaat(List<Long> moIds, PageRequest paging) throws ContingentException {
+        List<Long> moIdsOut = muAvailableAreaTypesRepository.checkMoIdsInMaat(moIds);
+        List<Long> moIdsPage = moIdsOut.stream()
+                .distinct()
+                .sorted()
+                .skip((long) paging.getPageNumber() * paging.getPageSize())
+                .limit(paging.getPageSize())
+                .collect(Collectors.toList());
+        return new PageImpl<>(moIdsPage, paging, moIdsOut.size());
+    }
 
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
-        }
+    @Override
+    public List<MuAvailableAreaTypes> getMuAvailableAreaTypesInMo(List<Long> moIds) throws ContingentException {
+        Validation validation = new Validation();
+
         List<MuAvailableAreaTypes> results = muAvailableAreaTypesRepository.findAreaTypes(moIds);
 
         if (results.isEmpty()) {

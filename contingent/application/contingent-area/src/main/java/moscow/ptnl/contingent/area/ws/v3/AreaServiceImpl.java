@@ -116,6 +116,7 @@ import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaResponse;
 import ru.mos.emias.contingent2.core.v3.AreaHistory;
 import ru.mos.emias.contingent2.core.v3.MuService;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -670,19 +671,13 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetMuAvailableAreaTypesInMoResponse getMuAvailableAreaTypesInMo(GetMuAvailableAreaTypesInMoRequest body) throws Fault {
         try {
-            Collections.sort(body.getMoIds());
-            List<Long> moIds = body.getPagingOptions() == null ? body.getMoIds() :
-                    body.getMoIds().stream()
-                            .sorted()
-                            .skip((long) body.getPagingOptions().getPageNumber() * body.getPagingOptions().getPageSize())
-                            .limit(body.getPagingOptions().getPageSize())
-                            .collect(Collectors.toList());
-            PageRequest paging = soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null);
-            List<MuAvailableAreaTypes> results = moMuMuServiceDomain.getMuAvailableAreaTypesInMo(moIds, paging);
+            Page<Long> moIdPage = moMuMuServiceDomain.checkMoIdsInMaat(body.getMoIds(), soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null));
+
+            List<MuAvailableAreaTypes> results = moMuMuServiceDomain.getMuAvailableAreaTypesInMo(moIdPage.getContent());
             GetMuAvailableAreaTypesInMoResponse response = new GetMuAvailableAreaTypesInMoResponse();
             response.setResult(new GetMuAvailableAreaTypesInMoResponse.Result());
             response.getResult().getMuAvailableAreaTypes().addAll(muAvailableAreaTypesInMoMapper.entityToDtoTransform(results));
-            soapCustomMapper.mapPagingResults(response.getResult(), paging, body.getMoIds());
+            soapCustomMapper.mapPagingResults(response.getResult(), moIdPage);
 
             return response;
         }

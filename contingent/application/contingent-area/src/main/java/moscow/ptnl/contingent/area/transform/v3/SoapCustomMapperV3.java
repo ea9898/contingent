@@ -42,14 +42,6 @@ public class SoapCustomMapperV3 {
         results.setTotalItemsCount(page.getTotalElements());
     }
 
-    public void mapPagingResults(PagingResults results, PageRequest paging, Collection<?> collection) {
-        results.setPageNumber(paging.getPageNumber());
-        results.setPageSize(paging.getPageSize());
-        results.setPageTotal((int) Math.ceil((double) collection.size() / paging.getPageSize()));
-        results.setMorePagesAvailable(paging.getPageNumber() < results.getPageTotal() - 1);
-        results.setTotalItemsCount(collection.size());
-    }
-
     public <T extends OptionEnum> Map<T, OptionEnum.OptionValuesEnum> mapOptions(
             Options options, Class<T> optionsClass) throws ContingentException {
         Map<T, OptionEnum.OptionValuesEnum> result = new HashMap<>();
@@ -68,8 +60,7 @@ public class SoapCustomMapperV3 {
             if (key == null) {
                 validation.error(AreaErrorReason.INCORRECT_OPTIONS_KEY,
                         new ValidationParameter("key", keys.stream().map(OptionEnum::getKeyName).collect(Collectors.joining(", "))));
-            }
-            else {
+            } else {
                 OptionEnum.OptionValuesEnum value = key.getPossibleValues().stream()
                         .filter(k -> Objects.equals(k.name(), option.getValue()))
                         .findFirst()
@@ -115,6 +106,14 @@ public class SoapCustomMapperV3 {
             return PageRequest.of(settingService.getPar5(), settingService.getPar6());
         }
         Sort sort = mapSorting(options.getSortingOptions(), fields);
+
+        if (options.getPageSize() > settingService.getPar3()) {
+            throw new ContingentException(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
+        }
+
+        if (options.getPageNumber() < 0 || options.getPageSize() <= 0) {
+            throw new ContingentException(AreaErrorReason.PAGING_INCORRECT);
+        }
 
         return PageRequest.of(options.getPageNumber(), options.getPageSize(), sort);
     }

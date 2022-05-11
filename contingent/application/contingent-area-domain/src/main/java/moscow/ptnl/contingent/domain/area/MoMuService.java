@@ -128,5 +128,8 @@ public interface MoMuService {
 
     List<MuMuService> getMuMuService(long muId, long areaTypeCode) throws ContingentException;
 
-    List<MuAvailableAreaTypes> getMuAvailableAreaTypesInMo(List<Long> moIds, PageRequest pageRequest) throws ContingentException;
+   /** (К_УУ_38) Предоставление типов участков из разрешенных для любого МУ в МО доступных для МУ */
+    Page<Long> checkMoIdsInMaat(List<Long> moIds, PageRequest paging) throws ContingentException;
+
+    List<MuAvailableAreaTypes> getMuAvailableAreaTypesInMo(List<Long> moIds) throws ContingentException;
 }

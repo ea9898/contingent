@@ -18,4 +18,6 @@ public interface MuAvailableAreaTypesRepository {
     void deleteAll(List<MuAvailableAreaTypes> muAvailableAreaTypes);
 
     List<MuAvailableAreaTypes> findAreaTypes(List<Long> moIds);
+
+    List<Long> checkMoIdsInMaat(List<Long> moIds);
 }
