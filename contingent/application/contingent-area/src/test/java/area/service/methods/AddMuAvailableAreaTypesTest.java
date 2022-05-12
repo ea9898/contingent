@@ -143,6 +143,7 @@ public class AddMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
     }
 
     @Test
+    @Disabled
     public void test_correct_v3() {
         Mockito.doReturn(Optional.of(areaType10)).when(areaTypesRepository).findById(10L);
         MoAvailableAreaTypes moAvailableAreaTypes10 = new MoAvailableAreaTypes();
@@ -152,7 +153,7 @@ public class AddMuAvailableAreaTypesTest extends MuAvailableAreaTypesTest {
         moAvailableAreaTypes10.setMoId(2L);
 
         try {
-            moMuService.addMuAvailableAreaTypesV3(2L, 3L, Collections.singletonList(10L));
+            moMuService.addMuAvailableAreaTypes(2L, 3L, Collections.singletonList(10L));
         } catch (ContingentException e) {
             Assertions.fail("Сценарий корректный, ошибки быть не должно.");
         }

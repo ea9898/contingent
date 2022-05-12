@@ -138,6 +138,7 @@ public class MoMuServiceImpl implements MoMuService {
         moAvailableAreaTypes.forEach(a -> {
             MuAvailableAreaTypes muAvailableAreaType = new MuAvailableAreaTypes();
             muAvailableAreaType.setMuId(muId);
+            muAvailableAreaType.setMoId(moId);
             muAvailableAreaType.setAreaType(a.getAreaType());
             muAvailableAreaType.setMoAvailableAreaType(a);
             muAvailableAreaType.setCreateDate(LocalDateTime.now());
@@ -147,6 +148,7 @@ public class MoMuServiceImpl implements MoMuService {
     }
 
     @Override
+    @Deprecated
     public void addMuAvailableAreaTypesV3(long moId, long muId, List<Long> areaTypeCodes) throws ContingentException {
         areaTypeCodes = areaTypeCodes.stream().distinct().collect(Collectors.toList());
         Validation validation = new Validation();

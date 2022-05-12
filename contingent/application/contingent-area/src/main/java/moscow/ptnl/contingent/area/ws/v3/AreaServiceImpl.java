@@ -419,7 +419,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddMuAvailableAreaTypesResponse addMuAvailableAreaTypes(AddMuAvailableAreaTypesRequest body) throws Fault {
         try {
-            moMuServiceDomain.addMuAvailableAreaTypesV3(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
+            moMuServiceDomain.addMuAvailableAreaTypes(body.getMoId(), body.getMuId(), body.getAreaTypeCodes().getAreaTypeCodes());
 
             return new AddMuAvailableAreaTypesResponse();
         }
