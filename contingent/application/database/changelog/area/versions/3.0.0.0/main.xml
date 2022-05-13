@@ -187,4 +187,21 @@
         </loadUpdateData>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2301-1" author="ddryuchin" labels="3.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="IDX_MU_MU_SERVICE_MU"/>
+            </not>
+        </preConditions>
+        <comment>Создание индекса колонки MU_ID таблицы MU_MU_SERVICE</comment>
+        <createIndex indexName="IDX_MU_MU_SERVICE_MU"
+                     tableName="MU_MU_SERVICE"
+                     unique="false">
+            <column name="mu_id" type="bigint"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="MU_MU_SERVICE" indexName="IDX_MU_MU_SERVICE_MU" />
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

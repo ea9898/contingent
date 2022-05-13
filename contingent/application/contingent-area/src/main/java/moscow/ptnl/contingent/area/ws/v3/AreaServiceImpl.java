@@ -723,6 +723,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             response.setServicingMu(new GetServicingMUResponse.ServicingMu());
             response.getServicingMu().getMuIds().addAll(muMuServices.stream()
                     .map(MuMuService::getMuId)
+                    .sorted()
                     .collect(Collectors.toList()));
 
             return response;
