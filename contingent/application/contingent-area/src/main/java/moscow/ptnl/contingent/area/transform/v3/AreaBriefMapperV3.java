@@ -29,8 +29,6 @@ public abstract class AreaBriefMapperV3 {
             @Mapping(source = "area.areaType.code", target = "areaTypeCode"),
             @Mapping(source = "area.areaType.title", target = "areaTypeTitle"),
             @Mapping(source = "area.archived", target = "archive"),
-            @Mapping(target = "areaTypeProfile",
-                    expression = "java( codeNameTypeMapper.entityToDtoTransform(entity.getArea().getAreaTypeProfile(), AreaTypeProfile.class) )"),
             @Mapping(target = "medicalEmployees", expression = "java( map(entity.getMainAreaMedicalEmployees()) )"),
             @Mapping(source = "areaServicedMUs", target = "muService")
     })

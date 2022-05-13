@@ -174,7 +174,6 @@
             <xs:element name="muId" type="xs:long" minOccurs="0" />
             <xs:element name="number" type="restr:int5digits" minOccurs="0" />
             <xs:element name="areaType" type="tns:AreaTypeShort" />
-            <xs:element name="areaTypeProfile" type="tns:AreaTypeProfile" minOccurs="0" />
             <xs:element name="muService" type="tns:MuService" minOccurs="0" />
             <xs:element name="specializations">
                 <xs:complexType>
@@ -206,7 +205,6 @@
             <xs:element name="number" type="restr:int5digits" minOccurs="0" />
             <xs:element name="areaTypeCode" type="xs:long" />
             <xs:element name="areaTypeTitle" type="xs:string" />
-            <xs:element name="areaTypeProfile" type="tns:AreaTypeProfile" minOccurs="0" />
             <xs:element name="muService" type="tns:MuService" minOccurs="0" />
             <xs:element name="archive" type="xs:boolean" />
             <xs:element name="medicalEmployees" minOccurs="0">
