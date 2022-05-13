@@ -1,9 +1,10 @@
 package moscow.ptnl.contingent.repository.history;
 
-import moscow.ptnl.contingent.domain.area.model.area.AreaFullHistory;
+import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.domain.history.HistoryEvent;
 import moscow.ptnl.contingent.repository.CommonRepository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,45 +21,124 @@ import java.util.List;
 @Transactional(propagation = Propagation.MANDATORY)
 public interface HistoryEventCRUDRepository extends CommonRepository<HistoryEvent, Long> {
 
-    @Query(value = "select " +
-            "ame.medical_employee_job_id as medicalEmployeeJobId, " +
-            "jlh.user_login as userLogin, " +
-            "jlh.job_info_id as userJobId, " +
-            "jlh.change_date as updateDate, " +
-            "jhc1.old_value as startDateOld, jhc1.new_value as startDateNew, " +
-            "jhc2.old_value as endDateOld, jhc2.new_value as endDateNew, " +
-            "jhc3.old_value as isErrorOld, jhc3.new_value as isErrorNew, " +
-            "jhc4.old_value as isReplacementOld, jhc4.new_value as isReplacementNew, " +
-            "jhc5.old_value as tempDutyStartDateOld, jhc5.new_value as tempDutyStartDateNew " +
-            "from area_medical_employees as ame " +
-            "inner join jl_history jlh on cast(jlh.object_id as numeric) = ame.id " +
-            " and jlh.object_type in ('AREA_MEDICAL_EMPLOYEES', 'AREA_EMPLOYEE') " +
-            "left join jl_history_columns jhc1 on jhc1.jrn_id = jlh.id and jhc1.column_name = 'startDate' " +
-            "left join jl_history_columns jhc2 on jhc2.jrn_id = jlh.id and jhc2.column_name = 'endDate' " +
-            "left join jl_history_columns jhc3 on jhc3.jrn_id = jlh.id and jhc3.column_name = 'isError' " +
-            "left join jl_history_columns jhc4 on jhc4.jrn_id = jlh.id and jhc4.column_name = 'isReplacement' " +
-            "left join jl_history_columns jhc5 on jhc5.jrn_id = jlh.id and jhc5.column_name = 'tempDutyStartDate' " +
-            "where ame.area_id = :areaId " +
-            "order by jlh.id ",
+    @Query(value =
+            "WITH history AS (\n" +
+            "    SELECT\n" +
+            "        id,\n" +
+            "        object_id,\n" +
+            "        change_date,\n" +
+            "        user_login,\n" +
+            "        job_info_id,\n" +
+            "        (\n" +
+            "            CASE\n" +
+            "                WHEN object_type = 'AREA_MEDICAL_EMPLOYEES' THEN 1\n" +
+            "                WHEN object_type = 'AREA_EMPLOYEE'          THEN 1\n" +
+            "                WHEN object_type = 'AREA'                   THEN 2\n" +
+            "                ELSE 0\n" +
+            "            END\n" +
+            "        ) obj_type\n" +
+            "    FROM\n" +
+            "        jl_history\n" +
+            ") SELECT\n" +
+            "    ame.medical_employee_job_id AS medicalemployeejobid,\n" +
+            "    jlh.obj_type AS objType,\n" +
+            "    CAST(jlh.object_id AS NUMERIC) AS objectId,\n" +
+            "    jlh.user_login AS userlogin,\n" +
+            "    jlh.job_info_id AS userjobid,\n" +
+            "    jlh.change_date AS updatedate,\n" +
+            "    jhc1.old_value AS startdateold,\n" +
+            "    jhc1.new_value AS startdatenew,\n" +
+            "    jhc2.old_value AS enddateold,\n" +
+            "    jhc2.new_value AS enddatenew,\n" +
+            "    jhc3.old_value AS iserrorold,\n" +
+            "    jhc3.new_value AS iserrornew,\n" +
+            "    jhc4.old_value AS isreplacementold,\n" +
+            "    jhc4.new_value AS isreplacementnew,\n" +
+            "    jhc5.old_value AS tempdutystartdateold,\n" +
+            "    jhc5.new_value AS tempdutystartdatenew,\n" +
+            "    jhc11.old_value AS descriptionold,\n" +
+            "    jhc11.new_value AS descriptionnew,\n" +
+            "    jhc12.old_value AS numberold,\n" +
+            "    jhc12.new_value AS numbernew,\n" +
+            "    jhc13.old_value AS createdateold,\n" +
+            "    jhc13.new_value AS createdatenew,\n" +
+            "    jhc14.old_value AS archivedold,\n" +
+            "    jhc14.new_value AS archivednew\n" +
+            "FROM\n" +
+            "    history jlh\n" +
+            "    LEFT JOIN area_medical_employees ame ON\n" +
+            "        CAST(jlh.object_id AS NUMERIC) = ame.id\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc1 ON\n" +
+            "        jhc1.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc1.column_name = 'startDate'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc2 ON\n" +
+            "        jhc2.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc2.column_name = 'endDate'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc3 ON\n" +
+            "        jhc3.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc3.column_name = 'isError'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc4 ON\n" +
+            "        jhc4.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc4.column_name = 'isReplacement'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc5 ON\n" +
+            "        jhc5.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc5.column_name = 'tempDutyStartDate'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc11 ON\n" +
+            "        jhc11.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc11.column_name = 'description'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2\n" +
+            "    LEFT JOIN jl_history_columns jhc12 ON\n" +
+            "        jhc12.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc12.column_name = 'number'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2\n" +
+            "    LEFT JOIN jl_history_columns jhc13 ON\n" +
+            "        jhc13.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc13.column_name = 'createDate'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2\n" +
+            "    LEFT JOIN jl_history_columns jhc14 ON\n" +
+            "        jhc14.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc14.column_name = 'archived'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2\n" +
+            "WHERE\n" +
+            "        CAST(jlh.object_id AS NUMERIC) IN (\n" +
+            "            SELECT\n" +
+            "                id\n" +
+            "            FROM\n" +
+            "                area_medical_employees ame\n" +
+            "            WHERE\n" +
+            "                ame.area_id = :areaId\n" +
+            "        )\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    OR\n" +
+            "        CAST(jlh.object_id AS NUMERIC) = :areaId\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2\n",
             nativeQuery = true)
-    List<AreaFullHistory.MedicalEmployeeEvent> findMedicalEmployeeEvents(@Param("areaId") Long areaId);
-
-    @Query(value = "select " +
-            "jlh.user_login as userLogin, " +
-            "jlh.job_info_id as userJobId, " +
-            "jlh.change_date as updateDate, " +
-            "jhc1.old_value as descriptionOld, jhc1.new_value as descriptionNew, " +
-            "jhc2.old_value as numberOld, jhc2.new_value as numberNew, " +
-            "jhc3.old_value as createDateOld, jhc3.new_value as createDateNew, " +
-            "jhc4.old_value as archivedOld, jhc4.new_value as archivedNew " +
-            "from jl_history as jlh " +
-            "left join jl_history_columns jhc1 on jhc1.jrn_id = jlh.id and jhc1.column_name = 'description' " +
-            "left join jl_history_columns jhc2 on jhc2.jrn_id = jlh.id and jhc2.column_name = 'number' " +
-            "left join jl_history_columns jhc3 on jhc3.jrn_id = jlh.id and jhc3.column_name = 'createDate' " +
-            "left join jl_history_columns jhc4 on jhc4.jrn_id = jlh.id and jhc4.column_name = 'archived' " +
-            "where cast(jlh.object_id as numeric) = :areaId " +
-            " and jlh.object_type in ('AREA') " +
-            "order by jlh.id ",
-            nativeQuery = true)
-    List<AreaFullHistory.AreaEvent> findAreaEvents(@Param("areaId") Long areaId);
+    List<AreaOrEmployeeEvent> findAreaAndEmployeeEvents(@Param("areaId") Long areaId, Pageable paging);
 }

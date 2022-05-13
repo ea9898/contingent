@@ -15,13 +15,14 @@ import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
+import moscow.ptnl.contingent.area.transform.v3.model.sorting.GetAreaHistorySorting;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.entity.MuAvailableAreaTypes;
 import moscow.ptnl.contingent.domain.area.entity.MuMuService;
-import moscow.ptnl.contingent.domain.area.model.area.AreaFullHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
@@ -116,7 +117,7 @@ import ru.mos.emias.contingent2.area.v3.types.UpdateOrderRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaResponse;
-import ru.mos.emias.contingent2.core.v3.AreaHistory;
+import ru.mos.emias.contingent2.core.v3.HistoryEvent;
 import ru.mos.emias.contingent2.core.v3.MuService;
 
 import java.util.ArrayList;
@@ -373,18 +374,12 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetAreaHistoryResponse getAreaHistory(GetAreaHistoryRequest body) throws Fault {
         try {
             GetAreaHistoryResponse response = new GetAreaHistoryResponse();
-            AreaFullHistory results = areaServiceDomain.getAreaHistory3(body.getAreaId());
-            response.setAreaId(results.getAreaId());
+            List<AreaOrEmployeeEvent> results = areaServiceDomain.getAreaHistory3(body.getAreaId(),
+                    soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(GetAreaHistorySorting.class)));
 
-            if (!results.getAreaEvents().isEmpty()) {
-                response.setAreaEvents(new AreaHistory.AreaEvents());
-                response.getAreaEvents().getEvents().addAll(results.getAreaEvents().stream()
-                        .map(getAreaHistoryMapper::entityToDtoTransform)
-                        .collect(Collectors.toList()));
-            }
-            if (!results.getMedicalEmployeeEvents().isEmpty()) {
-                response.setMedicalEmployeeEvents(new AreaHistory.MedicalEmployeeEvents());
-                response.getMedicalEmployeeEvents().getEvents().addAll(results.getMedicalEmployeeEvents().stream()
+            if (!results.isEmpty()) {
+                response.setResult(new GetAreaHistoryResponse.Result());
+                response.getResult().getEvents().addAll(results.stream()
                         .map(getAreaHistoryMapper::entityToDtoTransform)
                         .collect(Collectors.toList()));
             }

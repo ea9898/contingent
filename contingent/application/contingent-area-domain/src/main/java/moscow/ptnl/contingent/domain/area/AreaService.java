@@ -3,11 +3,10 @@ package moscow.ptnl.contingent.domain.area;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
-import moscow.ptnl.contingent.domain.area.model.area.AddressArea;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
-import moscow.ptnl.contingent.domain.area.model.area.AreaFullHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
@@ -395,5 +394,5 @@ public interface AreaService {
      */
     AreaHistory getAreaHistory(long areaId, PageRequest paging) throws ContingentException;
 
-    AreaFullHistory getAreaHistory3(long areaId) throws ContingentException;
+    List<AreaOrEmployeeEvent> getAreaHistory3(long areaId, PageRequest paging) throws ContingentException;
 }

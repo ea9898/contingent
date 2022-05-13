@@ -1025,6 +1025,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="core:ID" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
                 <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
@@ -1032,9 +1033,19 @@
 
     <xs:element name="getAreaHistoryResponse">
         <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="core:AreaHistory" />
-            </xs:complexContent>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="event" type="core:HistoryEvent" minOccurs="0" maxOccurs="unbounded" />
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 

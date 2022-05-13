@@ -18,9 +18,9 @@ import moscow.ptnl.contingent.domain.area.heplers.MedicalEmployeeHelper;
 import moscow.ptnl.contingent.domain.area.model.area.AddMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.AddressLevelType;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
-import moscow.ptnl.contingent.domain.area.model.area.AreaFullHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
@@ -47,7 +47,6 @@ import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
-import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeSpecializationsRepository;
@@ -1588,28 +1587,22 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public AreaFullHistory getAreaHistory3(long areaId) throws ContingentException {
+    public List<AreaOrEmployeeEvent> getAreaHistory3(long areaId, PageRequest paging) throws ContingentException {
         Validation validation = new Validation();
         //2.
-        Area area = areaHelper.checkAndGetArea(areaId, validation, false);
+        areaHelper.checkMaxPage(paging, validation);
+        areaHelper.checkPaging(paging, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
         //3.
-        List<AreaFullHistory.AreaEvent> areaEvents = historyEventRepository.areaEvents(areaId);
-        //4.
-        List<AreaFullHistory.MedicalEmployeeEvent> medicalEmployeeEvents = historyEventRepository.medicalEmployeeEvents(areaId);
+        Area area = areaHelper.checkAndGetArea(areaId, validation, false);
 
-        if (areaEvents.isEmpty() && medicalEmployeeEvents.isEmpty()) {
-            throw new ContingentException(new Validation().error(AreaErrorReason.NO_HISTORY_FOR_AREA, new ValidationParameter("areaId", areaId)));
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
         }
-        AreaFullHistory areaHistory = new AreaFullHistory();
-
-        areaHistory.setAreaId(area.getId());
-        areaHistory.setAreaEvents(areaEvents);
-        areaHistory.setMedicalEmployeeEvents(medicalEmployeeEvents);
-
-        return areaHistory;
+        //4.
+        return historyEventRepository.findAreaAndEmployeeEvents(areaId, paging);
     }
 }

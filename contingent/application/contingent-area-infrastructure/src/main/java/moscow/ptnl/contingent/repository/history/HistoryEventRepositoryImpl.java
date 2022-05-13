@@ -1,10 +1,12 @@
 package moscow.ptnl.contingent.repository.history;
 
-import moscow.ptnl.contingent.domain.area.model.area.AreaFullHistory;
+import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.domain.area.repository.HistoryEventRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +21,14 @@ public class HistoryEventRepositoryImpl extends BaseRepository implements Histor
     private HistoryEventCRUDRepository historyEventCRUDRepository;
 
     @Override
-    public List<AreaFullHistory.MedicalEmployeeEvent> medicalEmployeeEvents(long areaId) {
-        return historyEventCRUDRepository.findMedicalEmployeeEvents(areaId);
-    }
+    public List<AreaOrEmployeeEvent> findAreaAndEmployeeEvents(long areaId, PageRequest paging) {
+        Sort.Direction mainDirection = paging.getSort().get().findFirst().map(Sort.Order::getDirection).orElse(Sort.Direction.DESC);
 
-    @Override
-    public List<AreaFullHistory.AreaEvent> areaEvents(long areaId) {
-        return historyEventCRUDRepository.findAreaEvents(areaId);
+        if (paging.getSort().isSorted()) {
+            paging = PageRequest.of(paging.getPageNumber(), paging.getPageSize(), paging.getSort().and(Sort.by(mainDirection, "id")));
+        } else {
+            paging = PageRequest.of(paging.getPageNumber(), paging.getPageSize(), Sort.by(mainDirection, "change_date", "id"));
+        }
+        return historyEventCRUDRepository.findAreaAndEmployeeEvents(areaId, paging);
     }
 }
