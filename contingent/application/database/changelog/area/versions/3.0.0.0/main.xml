@@ -204,4 +204,10 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2037-1" author="ddryuchin" labels="3.0.0.0">
+        <dropNotNullConstraint columnDataType="VARCHAR(1000)"
+                               columnName="region_te_id"
+                               tableName="addresses"/>
+    </changeSet>
+
 </databaseChangeLog>
