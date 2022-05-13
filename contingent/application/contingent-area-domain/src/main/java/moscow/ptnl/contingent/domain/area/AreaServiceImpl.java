@@ -1587,7 +1587,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public List<AreaOrEmployeeEvent> getAreaHistory3(long areaId, PageRequest paging) throws ContingentException {
+    public Page<AreaOrEmployeeEvent> getAreaHistory3(long areaId, PageRequest paging) throws ContingentException {
         Validation validation = new Validation();
         //2.
         areaHelper.checkMaxPage(paging, validation);

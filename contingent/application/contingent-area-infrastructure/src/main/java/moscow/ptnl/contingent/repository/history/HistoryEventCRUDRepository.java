@@ -4,14 +4,13 @@ import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.domain.history.HistoryEvent;
 import moscow.ptnl.contingent.repository.CommonRepository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  *
@@ -21,7 +20,44 @@ import java.util.List;
 @Transactional(propagation = Propagation.MANDATORY)
 public interface HistoryEventCRUDRepository extends CommonRepository<HistoryEvent, Long> {
 
-    @Query(value =
+    @Query(countQuery =
+            "WITH history AS (\n" +
+            "    SELECT\n" +
+            "        id,\n" +
+            "        object_id,\n" +
+            "        (\n" +
+            "            CASE\n" +
+            "                WHEN object_type = 'AREA_MEDICAL_EMPLOYEES' THEN 1\n" +
+            "                WHEN object_type = 'AREA_EMPLOYEE'          THEN 1\n" +
+            "                WHEN object_type = 'AREA'                   THEN 2\n" +
+            "                ELSE 0\n" +
+            "            END\n" +
+            "        ) obj_type\n" +
+            "    FROM\n" +
+            "        jl_history\n" +
+            ") SELECT COUNT(jlh.id)\n" +
+            "FROM\n" +
+            "    history jlh\n" +
+            "    LEFT JOIN area_medical_employees ame ON\n" +
+            "        CAST(jlh.object_id AS NUMERIC) = ame.id\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "WHERE\n" +
+            "        CAST(jlh.object_id AS NUMERIC) IN (\n" +
+            "            SELECT\n" +
+            "                id\n" +
+            "            FROM\n" +
+            "                area_medical_employees ame\n" +
+            "            WHERE\n" +
+            "                ame.area_id = :areaId\n" +
+            "        )\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    OR\n" +
+            "        CAST(jlh.object_id AS NUMERIC) = :areaId\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2",
+            value =
             "WITH history AS (\n" +
             "    SELECT\n" +
             "        id,\n" +
@@ -140,5 +176,5 @@ public interface HistoryEventCRUDRepository extends CommonRepository<HistoryEven
             "    AND\n" +
             "        jlh.obj_type = 2\n",
             nativeQuery = true)
-    List<AreaOrEmployeeEvent> findAreaAndEmployeeEvents(@Param("areaId") Long areaId, Pageable paging);
+    Page<AreaOrEmployeeEvent> findAreaAndEmployeeEvents(@Param("areaId") Long areaId, Pageable paging);
 }

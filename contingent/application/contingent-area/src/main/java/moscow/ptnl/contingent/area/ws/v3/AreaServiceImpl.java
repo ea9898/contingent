@@ -374,15 +374,16 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public GetAreaHistoryResponse getAreaHistory(GetAreaHistoryRequest body) throws Fault {
         try {
             GetAreaHistoryResponse response = new GetAreaHistoryResponse();
-            List<AreaOrEmployeeEvent> results = areaServiceDomain.getAreaHistory3(body.getAreaId(),
+            response.setResult(new GetAreaHistoryResponse.Result());
+            Page<AreaOrEmployeeEvent> results = areaServiceDomain.getAreaHistory3(body.getAreaId(),
                     soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(GetAreaHistorySorting.class)));
 
             if (!results.isEmpty()) {
-                response.setResult(new GetAreaHistoryResponse.Result());
                 response.getResult().getEvents().addAll(results.stream()
                         .map(getAreaHistoryMapper::entityToDtoTransform)
                         .collect(Collectors.toList()));
             }
+            soapCustomMapper.mapPagingResults(response.getResult(), results);
             return response;
         } catch (Exception ex) {
             throw exceptionMapper.mapException(ex);
