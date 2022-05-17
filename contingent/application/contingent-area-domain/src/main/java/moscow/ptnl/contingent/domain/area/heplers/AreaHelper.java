@@ -920,9 +920,12 @@ public class AreaHelper {
                             new ValidationParameter("jobInfoId", employee.getMedicalEmployeeJobId()),
                             new ValidationParameter("areaId", p.getArea().getId())));
         }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
     }
 
-    public void checkTempDutyEmployeesUniqueness(Area area, List<AreaMedicalEmployees> employees, Validation validation) {
+    public void checkTempDutyEmployeesUniqueness(Area area, List<AreaMedicalEmployees> employees, Validation validation) throws ContingentException {
         employees.stream().filter(p -> p.getTempDutyStartDate() != null)
                 .forEach(e -> {
                     List<AreaMedicalEmployees> employeePositions = areaMedicalEmployeeRepository.findEmployees(area.getAreaType(),
@@ -936,6 +939,10 @@ public class AreaHelper {
                                     new ValidationParameter("jobInfoId", e.getMedicalEmployeeJobId()),
                                     new ValidationParameter("areaId", p.getArea().getId())));
                 });
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
     }
 
     public void checkTempDutyEmployees(List<ChangeMedicalEmployee> changeEmployeesInput, List<AddMedicalEmployee> addEmployeesInput,
