@@ -949,7 +949,9 @@ public class AreaHelper {
                                        List<AreaMedicalEmployees> areaEmployeesDb, Validation validation) throws ContingentException {
         if (changeEmployeesInput.stream().anyMatch(e -> Boolean.TRUE.equals(e.getTempDuty()))
                 || addEmployeesInput.stream().anyMatch(e -> Boolean.TRUE.equals(e.getTempDuty()))) {
-            areaEmployeesDb.stream().filter(p -> p.getTempDutyStartDate() != null)
+            areaEmployeesDb.stream()
+                    .filter(p -> changeEmployeesInput.stream().noneMatch(e -> Objects.equals(p.getId(), e.getAssignmentId())))
+                    .filter(p -> p.getTempDutyStartDate() != null)
                     .findFirst()
                     .ifPresent(foundEmployee -> validation.error(AreaErrorReason.MULTIPLE_TEMP_DUTY_EMPLOYEES,
                             new ValidationParameter("jobInfoId", foundEmployee.getMedicalEmployeeJobId())));
