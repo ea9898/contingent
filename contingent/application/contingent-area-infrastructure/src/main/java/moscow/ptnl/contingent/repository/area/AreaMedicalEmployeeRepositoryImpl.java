@@ -1,8 +1,6 @@
 package moscow.ptnl.contingent.repository.area;
 
-import moscow.ptnl.contingent.domain.area.entity.Area;
-import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
-import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees_;
+import moscow.ptnl.contingent.domain.area.entity.*;
 import moscow.ptnl.contingent.domain.area.model.area.AreaHistory;
 import moscow.ptnl.contingent.domain.area.repository.AreaMedicalEmployeeRepository;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
@@ -16,12 +14,15 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.domain.area.entity.Area_;
+
 import moscow.ptnl.contingent.repository.CommonSpecification;
+
+import javax.persistence.criteria.*;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
@@ -91,11 +92,6 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
                 criteriaBuilder.equal(root.get(AreaMedicalEmployees_.medicalEmployeeJobId), jobId);
     }
 
-    private Specification<AreaMedicalEmployees> getEmployeesByAreaTypeSpec(AreaType areaType) {
-        return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area).get(Area_.areaType), areaType);
-    }
-
     @Override
     public List<AreaMedicalEmployees> getEmployeesByAreaId(long areaId) {
         return areaMedicalEmployeeCRUDRepository.findAll(findAreasMedicalEmplyeesByAreaIdSpec(areaId));
@@ -136,10 +132,16 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
 
     @Override
     public List<AreaMedicalEmployees> findEmployees(AreaType areaType, long jobId, Boolean replacement) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<AreaMedicalEmployees> criteria = criteriaBuilder.createQuery(AreaMedicalEmployees.class);
+        Root<AreaMedicalEmployees> root = criteria.from(AreaMedicalEmployees.class);
+        Join<AreaMedicalEmployees, Area> areaJoin = root.join(AreaMedicalEmployees_.area, JoinType.INNER);
+
         Specification<AreaMedicalEmployees> specification = getEmployeesByJobIdSpec(jobId);
+        List<Predicate> predicates = new ArrayList<>();
 
         if (areaType != null) {
-            specification.and(getEmployeesByAreaTypeSpec(areaType));
+            predicates.add(criteriaBuilder.equal(areaJoin.get(Area_.areaType), areaType));
         }
         if (Boolean.TRUE.equals(replacement)) {
             specification = specification.and(replacementEmployeesSpec());
@@ -147,7 +149,9 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
         if (Boolean.FALSE.equals(replacement)) {
             specification = specification.and(mainEmployeesSpec());
         }
-        return areaMedicalEmployeeCRUDRepository.findAll(specification);
+        predicates.add(specification.toPredicate(root, criteria, criteriaBuilder));
+        criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+        return entityManager.createQuery(criteria).getResultList();
     }
 
     @Override
