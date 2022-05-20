@@ -598,7 +598,7 @@ public class AreaHelper {
                 empl.setTempDutyStartDate(LocalDate.now());
             }
             empl.setUpdateDate(LocalDateTime.now());
-            empl.setError(changeEmpl.isIsError());
+            empl.setError(Boolean.TRUE.equals(changeEmpl.isIsError()));
 
             historyMap.put(medicalEmployeeOld, empl);
         }
@@ -807,6 +807,7 @@ public class AreaHelper {
             medicalEmployees.setCreateDate(LocalDateTime.now());
             medicalEmployees.setUpdateDate(LocalDateTime.now());
             medicalEmployees.setSubdivisionId(empl.getSubdivisionId());
+            medicalEmployees.setError(false);
             employees.add(medicalEmployees);
             newAME.add(medicalEmployees.clone());
         });
