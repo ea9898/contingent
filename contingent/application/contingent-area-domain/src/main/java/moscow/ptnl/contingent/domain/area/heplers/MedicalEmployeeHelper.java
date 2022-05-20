@@ -80,7 +80,7 @@ public class MedicalEmployeeHelper {
             LocalDate startDate = inputEmployee.getStartDate() != null ? inputEmployee.getStartDate()
                     : emplDb != null ? emplDb.getStartDate() : null;
             LocalDate endDate = inputEmployee.getEndDate() != null ? inputEmployee.getEndDate()
-                    : emplDb != null ? emplDb.getStartDate() : null;
+                    : emplDb != null ? emplDb.getEndDate() : null;
             if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
                 validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
                         new ValidationParameter("endDate", endDate),
