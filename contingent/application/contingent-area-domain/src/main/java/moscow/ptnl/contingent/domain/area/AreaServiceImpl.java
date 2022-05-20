@@ -698,10 +698,12 @@ public class AreaServiceImpl implements AreaService {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-
+        List<ChangeMedicalEmployee> changeEmployeesCorrectInput = changeEmployeesInput.stream()
+                .filter(e -> !Boolean.TRUE.equals(e.isIsError()))
+                .collect(Collectors.toList());
         //7.1
         List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
-        Map<AreaMedicalEmployees, AreaMedicalEmployees> changesAme =  areaHelper.applyChanges(allEmployees, changeEmployeesInput);
+        Map<AreaMedicalEmployees, AreaMedicalEmployees> changesAme =  areaHelper.applyChanges(allEmployees, changeEmployeesCorrectInput);
         areaHelper.addNew(allEmployees, addEmployeesInput, area);
         areaHelper.checkDatesNotInterceptWithSamePosition(
                 allEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation); // отфитровываем ошибочно назначенные работников из проверки
@@ -709,17 +711,17 @@ public class AreaServiceImpl implements AreaService {
         //7.2
         List<AreaMedicalEmployees> mainEmployees =
                 areaEmployeesDb.stream().filter(empl -> !empl.getReplacement()).collect(Collectors.toList());
-        areaHelper.applyChanges(mainEmployees, changeEmployeesInput);
+        areaHelper.applyChanges(mainEmployees, changeEmployeesCorrectInput);
         areaHelper.addNew(mainEmployees, addEmployeesInput.stream()
                 .filter(empl -> !empl.isReplacement()).collect(Collectors.toList()), area);
         if (area.getAreaType() != null && area.getAreaType().getAreaTypeKind() != null &&
                 area.getAreaType().getAreaTypeKind().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) {
             areaHelper.checkMainEmployeesOverlappingDates(
-                    mainEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation);  // отфитровываем ошибочно назначенные работников из проверки
+                    mainEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation);
             //7.3
             areaHelper.checkMainEmployeesUniqueness(area, mainEmployees, validation);
             //7.4
-            areaHelper.checkTempDutyEmployees(changeEmployeesInput, addEmployeesInput, areaEmployeesDb, validation);
+            areaHelper.checkTempDutyEmployees(changeEmployeesCorrectInput, addEmployeesInput, areaEmployeesDb, validation);
             //7.5
             areaHelper.checkTempDutyEmployeesUniqueness(area, allEmployees, validation);
         }
@@ -734,7 +736,7 @@ public class AreaServiceImpl implements AreaService {
                 //7.6.2.
                 List<AreaMedicalEmployees> replacementEmployees = areaEmployeesDb.stream()
                         .filter(AreaMedicalEmployees::getReplacement).collect(Collectors.toList());
-                areaHelper.applyChanges(replacementEmployees, changeEmployeesInput);
+                areaHelper.applyChanges(replacementEmployees, changeEmployeesCorrectInput);
                 areaHelper.addNew(replacementEmployees, addEmployeesInput.stream()
                         .filter(AddMedicalEmployee::isReplacement).collect(Collectors.toList()), area);
                 replacementEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate, nullsFirst(naturalOrder())));
