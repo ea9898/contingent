@@ -63,7 +63,7 @@ public interface GetAreaHistoryMapperV3 {
 
     default String mapEventType(AreaOrEmployeeEvent entity) {
         if (entity. getObjType().intValue() == 2) {
-            if (entity.getCreateDateOld() == null) {
+            if (entity.getCreateDateNew() != null && entity.getCreateDateOld() == null) {
                 return "create";
             }
             else if ("true".equalsIgnoreCase(entity.getArchivedNew())) {
