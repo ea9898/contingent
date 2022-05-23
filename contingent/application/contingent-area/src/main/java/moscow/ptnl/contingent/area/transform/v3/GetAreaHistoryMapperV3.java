@@ -72,7 +72,7 @@ public interface GetAreaHistoryMapperV3 {
             return "update";
         }
         else if (entity.getObjType().intValue() == 1) {
-            if (entity.getStartDateOld() == null) {
+            if (entity.getCreateDateNew() != null && entity.getStartDateOld() == null) {
                 return "create";
             }
             else if (entity.getEndDateNew() != null) {
