@@ -107,6 +107,14 @@ public class SoapCustomMapperV2 {
         }
         Sort sort = mapSorting(options.getSortingOptions(), fields);
 
+        if (options.getPageSize() > settingService.getPar3()) {
+            throw new ContingentException(AreaErrorReason.TOO_BIG_PAGE_SIZE, new ValidationParameter("pageSize", settingService.getPar3()));
+        }
+
+        if (options.getPageNumber() < 0 || options.getPageSize() <= 0) {
+            throw new ContingentException(AreaErrorReason.PAGING_INCORRECT);
+        }
+
         return PageRequest.of(options.getPageNumber(), options.getPageSize(), sort);
     }
 }
