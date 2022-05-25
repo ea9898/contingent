@@ -701,6 +701,9 @@ public class AreaServiceImpl implements AreaService {
         List<ChangeMedicalEmployee> changeEmployeesCorrectInput = changeEmployeesInput.stream()
                 .filter(e -> !Boolean.TRUE.equals(e.isIsError()))
                 .collect(Collectors.toList());
+        Set<Long> changedEmployeeIds = new HashSet<>(changeEmployeesCorrectInput.stream()
+                .map(ChangeMedicalEmployee::getAssignmentId)
+                .collect(Collectors.toList()));
         //7.1
         List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
         Map<AreaMedicalEmployees, AreaMedicalEmployees> changesAme =  areaHelper.applyChanges(allEmployees, changeEmployeesCorrectInput);
@@ -719,11 +722,11 @@ public class AreaServiceImpl implements AreaService {
             areaHelper.checkMainEmployeesOverlappingDates(
                     mainEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation);
             //7.3
-            areaHelper.checkMainEmployeesUniqueness(area, mainEmployees, validation);
+            areaHelper.checkMainEmployeesUniqueness(area, mainEmployees, changedEmployeeIds, validation);
             //7.4
             areaHelper.checkTempDutyEmployees(changeEmployeesCorrectInput, addEmployeesInput, areaEmployeesDb, validation);
             //7.5
-            areaHelper.checkTempDutyEmployeesUniqueness(area, allEmployees, validation);
+            areaHelper.checkTempDutyEmployeesUniqueness(area, allEmployees, changedEmployeeIds, validation);
         }
         //7.6
         if (area.getAreaType() != null &&

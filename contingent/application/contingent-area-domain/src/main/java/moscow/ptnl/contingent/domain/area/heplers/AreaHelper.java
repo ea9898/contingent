@@ -902,11 +902,15 @@ public class AreaHelper {
         }
     }
 
-    public void checkMainEmployeesUniqueness(Area area, List<AreaMedicalEmployees> mainEmployees,
+    public void checkMainEmployeesUniqueness(Area area, List<AreaMedicalEmployees> mainEmployees, Set<Long> changedEmployeeIds,
                                                    Validation validation) throws ContingentException {
         Function<LocalDate, LocalDate> notNullableEndDate = (d) -> d == null ? LocalDate.MAX : d;
 
         for (AreaMedicalEmployees employee : mainEmployees) {
+            if (employee.getId() != null && !changedEmployeeIds.contains(employee.getId())) {
+                //Проверяем только МР из запроса
+                continue;
+            }
             List<AreaMedicalEmployees> employeePositions = areaMedicalEmployeeRepository.findEmployees(area.getAreaType(),
                     employee.getMedicalEmployeeJobId(), false);
 
@@ -926,8 +930,11 @@ public class AreaHelper {
         }
     }
 
-    public void checkTempDutyEmployeesUniqueness(Area area, List<AreaMedicalEmployees> employees, Validation validation) throws ContingentException {
-        employees.stream().filter(p -> p.getTempDutyStartDate() != null)
+    public void checkTempDutyEmployeesUniqueness(Area area, List<AreaMedicalEmployees> employees, Set<Long> changedEmployeeIds, Validation validation) throws ContingentException {
+        employees.stream()
+                //Проверяем только МР из запроса
+                .filter(p -> p.getId() == null || changedEmployeeIds.contains(p.getId()))
+                .filter(p -> p.getTempDutyStartDate() != null)
                 .forEach(e -> {
                     List<AreaMedicalEmployees> employeePositions = areaMedicalEmployeeRepository.findEmployees(area.getAreaType(),
                             e.getMedicalEmployeeJobId(), true);
