@@ -77,6 +77,10 @@ public class OrderServiceImpl implements OrderService {
             validation.error(AreaErrorReason.ADDRESS_ALLOCATION_ORDER_IS_ARCHIVED,
                     new ValidationParameter("orderId", id));
         }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
         AddressAllocationOrders oldOrder = historyHelper.clone(order);
 
         // 3.
