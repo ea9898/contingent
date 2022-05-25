@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.domain.area.entity;
 
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "MO_AVAILABLE_AREA_TYPES")
+@Proxy(lazy=false)
 @SequenceGenerator(name = "SEQ_MO_AVAILABLE_AREA_TYPES", sequenceName = "SEQ_MO_AVAILABLE_AREA_TYPES", allocationSize=1)
 public class MoAvailableAreaTypes implements Serializable {
 

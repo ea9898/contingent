@@ -18,9 +18,11 @@ import java.util.Objects;
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
+import org.hibernate.annotations.Proxy;
 
 @Entity @Journalable(ServiceName.AREA)
 @Table(name = "AREA_ADDRESSES")
+@Proxy(lazy=false)
 @SequenceGenerator(name = "seq_area_address", sequenceName = "seq_area_address", allocationSize=1)
 public class AreaAddress implements Serializable, Cloneable {
 

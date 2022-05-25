@@ -15,9 +15,11 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
+import org.hibernate.annotations.Proxy;
 
 @Entity
 @Table(name = "AREA_POLICY_TYPES")
+@Proxy(lazy=false)
 @SequenceGenerator(name = "seq_area_policy_types", sequenceName = "seq_area_policy_types", allocationSize=1)
 @Cacheable
 public class AreaPolicyTypes implements Serializable {

@@ -8,6 +8,7 @@ import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -31,6 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity @Journalable(ServiceName.AREA)
+@Proxy(lazy=false)
 @Table(name = "AREAS")
 @SequenceGenerator(name = "SEQ_AREAS", sequenceName = "SEQ_AREAS", allocationSize=1)
 public class Area implements Serializable {

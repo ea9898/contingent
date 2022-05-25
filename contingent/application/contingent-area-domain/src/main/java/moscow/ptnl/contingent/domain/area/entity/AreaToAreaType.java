@@ -13,9 +13,11 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
+import org.hibernate.annotations.Proxy;
 
 @Entity
 @Table(name = "AREA_TO_AREA_TYPE")
+@Proxy(lazy=false)
 @SequenceGenerator(name = "SEQ_AREA_TO_AREA_TYPE", sequenceName = "SEQ_AREA_TO_AREA_TYPE", allocationSize=1)
 public class AreaToAreaType implements Serializable {
 

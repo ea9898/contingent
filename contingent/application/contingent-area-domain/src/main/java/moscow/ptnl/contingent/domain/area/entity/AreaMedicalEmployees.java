@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
 import moscow.ptnl.contingent.domain.history.meta.LogIt;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity @Journalable(ServiceName.AREA)
+@Proxy(lazy=false)
 @Table(name = "AREA_MEDICAL_EMPLOYEES")
 @SequenceGenerator(name = "seq_area_medical_employee", sequenceName = "seq_area_medical_employee", allocationSize=1)
 public class AreaMedicalEmployees implements Serializable, Cloneable {
