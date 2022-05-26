@@ -238,7 +238,7 @@ public class MoMuServiceImpl implements MoMuService {
     public boolean delMoAddressTotal(long orderId, List<Long> addressGlobalIds) throws ContingentException {
         Validation validation = new Validation();
         //2.
-        areaHelper.checkMaxRequestAddresses(addressGlobalIds.size(), validation);
+        areaHelper.tooManyAreaAddresses(addressGlobalIds, settingService.getPar2(), validation);
         //3.
         areaHelper.checkOrderExists(orderId, validation);
 
