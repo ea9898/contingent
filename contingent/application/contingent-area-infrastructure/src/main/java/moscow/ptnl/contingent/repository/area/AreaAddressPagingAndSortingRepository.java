@@ -25,9 +25,9 @@ public interface AreaAddressPagingAndSortingRepository extends PagingAndSortingR
             "WHERE " +
             "  (:regionOMKTECode IS NOT NULL AND ad.regionTeCode = :regionOMKTECode " +
             "    OR :regionOMKTECode IS NULL AND (ad.areaCodeOmkTe = :areaCodeOmkTe OR ad.regionTeCode = :regionTeCode AND ad.aoLevel = :aoLevelRegionTe) " +
-            "  ) AND (aad.endDate IS NULL OR aad.endDate > :endDate)" +
-            "  AND ar.areaType.code IN (:areaTypeCodes)" +
-            "  AND ar.archived = false"
+            "  ) AND (aad.endDate IS NULL OR aad.endDate > :endDate) " +
+            "  AND (:areaTypeCodes IS NULL OR ar.areaType.code IN (:areaTypeCodes)) " +
+            "  AND ar.archived = false "
     )
     Page<MoMuPair> findMoMuList(@Param("areaTypeCodes") List<Long> areaTypeCodes,
                                 @Param("areaCodeOmkTe") String areaOMKTECode,

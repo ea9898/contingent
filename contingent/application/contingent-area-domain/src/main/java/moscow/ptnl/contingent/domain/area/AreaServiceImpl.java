@@ -1403,6 +1403,7 @@ public class AreaServiceImpl implements AreaService {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        areaTypeCodes = areaTypeCodes == null || areaTypeCodes.isEmpty() ? null : areaTypeCodes;
         regionOMKTECode = StringUtils.hasText(regionOMKTECode) ? regionOMKTECode : null;
         String regionTeCode = areaOMKTECode == null ? null : areaOMKTECode.substring(0, 2) + "00";
 
