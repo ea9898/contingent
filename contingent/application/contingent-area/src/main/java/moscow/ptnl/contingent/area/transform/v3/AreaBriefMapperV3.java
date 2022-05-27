@@ -30,7 +30,8 @@ public abstract class AreaBriefMapperV3 {
             @Mapping(source = "area.areaType.title", target = "areaTypeTitle"),
             @Mapping(source = "area.archived", target = "archive"),
             @Mapping(target = "medicalEmployees", expression = "java( map(entity.getMainAreaMedicalEmployees()) )"),
-            @Mapping(source = "areaServicedMUs", target = "muService")
+            @Mapping(source = "areaServicedMUs", target = "muService"),
+            @Mapping(source = "area.createDate", target = "dateCreated")
     })
     public abstract AreaBrief entityToDtoTransform(AreaInfo entity);
 

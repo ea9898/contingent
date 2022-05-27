@@ -66,7 +66,7 @@ public class AreaMapperV3 implements Transform<Area, AreaInfo> {
         area.setAutoAssignForAttachment(areaObj.getAutoAssignForAttach());
         area.setAttachByMedicalReason(areaObj.getAttachByMedicalReason());
         area.setArchive(Boolean.TRUE.equals(areaObj.getArchived()));
-
+        area.setDateCreated(areaObj.getCreateDate());
         List<MedicalEmployee> employees = new ArrayList<>();
 
         if (entityObject.getAreaServicedMUs() != null && !entityObject.getAreaServicedMUs().isEmpty()) {

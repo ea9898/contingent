@@ -5,9 +5,11 @@ import moscow.ptnl.contingent.area.transform.SoapBaseExceptionMapper;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions;
 import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
+import moscow.ptnl.contingent.area.transform.v2.AreaDnMapperV2;
 import moscow.ptnl.contingent.area.transform.v3.AddMedicalEmployeeMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AddressRegistryToAddressRegistryBaseMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaBriefMapperV3;
+import moscow.ptnl.contingent.area.transform.v3.AreaDnMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.ChangeMedicalEmployeeMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.GetAreaHistoryMapperV3;
@@ -187,6 +189,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private AddressRegistryToAddressRegistryBaseMapperV3 addressRegistryBaseMapper;
+
+    @Autowired
+    private AreaDnMapperV3 areaDnMapper;
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
@@ -471,8 +476,24 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public SearchDnAreaResponse searchDnArea(SearchDnAreaRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV2.searchDnArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v2.types.SearchDnAreaRequest())),
-                    new SearchDnAreaResponse());
+            Page<AreaInfo> areas = areaServiceDomain.searchDnArea(body.getMoId(),
+                    body.getMu() == null ? Collections.emptyList() : body.getMu().getMuIds(),
+                    body.getAreaTypes() == null ? Collections.emptyList() : body.getAreaTypes().getAreaTypeCodes(),
+                    null,
+                    body.getMuService() == null ? Collections.emptyList() : body.getMuService().getMuIds(),
+                    body.getSpecializations() == null ? Collections.emptyList() : body.getSpecializations().getSpecializationCodes(),
+                    body.getAreas() == null ? Collections.emptyList() : body.getAreas().getAreaIds(),
+                    soapCustomMapper.mapPagingOptions(body.getPagingOptions(), null), true
+            );
+            SearchDnAreaResponse response = new SearchDnAreaResponse();
+            response.setResult(new SearchDnAreaResponse.Result());
+            soapCustomMapper.mapPagingResults(response.getResult(), areas);
+
+            if (!areas.isEmpty()) {
+                response.getResult().getAreas().addAll(areas.stream().map(area -> areaDnMapper.entityToDtoTransform(area))
+                        .collect(Collectors.toList()));
+            }
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);

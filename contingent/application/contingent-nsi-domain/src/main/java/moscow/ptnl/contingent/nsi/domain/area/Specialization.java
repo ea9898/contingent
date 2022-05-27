@@ -30,14 +30,14 @@ public class Specialization implements Serializable, NsiExternalEntity {
     @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
-    @Size(max = 100)
+    @Size(max = 250)
     @Column(name = "TITLE", nullable = false)
     @MapToNsi
     private String title;
 
     @Column(name = "CODE")
     @MapToNsi
-    private Long code;
+    private String code;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
@@ -68,11 +68,11 @@ public class Specialization implements Serializable, NsiExternalEntity {
         this.globalId = globalId;
     }
 
-    public Long getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Long code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

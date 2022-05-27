@@ -749,7 +749,7 @@
                 <xs:element name="specializations" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="specializationCode" type="xs:long" maxOccurs="unbounded" />
+                            <xs:element name="specializationCode" type="xs:string" maxOccurs="unbounded" />
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>

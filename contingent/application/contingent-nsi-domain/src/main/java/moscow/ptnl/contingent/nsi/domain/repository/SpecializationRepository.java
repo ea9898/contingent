@@ -12,6 +12,6 @@ import java.util.List;
 @NoRepositoryBean
 public interface SpecializationRepository {
 
-    Specialization getByCode(Long code);
+    Specialization getByCode(String code);
 
 }

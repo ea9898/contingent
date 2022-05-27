@@ -1334,7 +1334,7 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     public Page<AreaInfo> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
-                                   List<Long> specializationCodes, List<Long> areaIds, PageRequest paging, boolean loadServicedMUs) throws ContingentException {
+                                   List<String> specializationCodes, List<Long> areaIds, PageRequest paging, boolean loadServicedMUs) throws ContingentException {
         //2
         if (loadServicedMUs) { //V2
             areaHelper.checkSearchDnParameters(moId, muIds, areaTypeCodes, areaTypeProfileCode, servicedMuIds, specializationCodes, areaIds);

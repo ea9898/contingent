@@ -104,7 +104,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         };
     }
 
-    private Specification<Area> searchBySpecializationCodesSpec(List<Long> specializationCodes) {
+    private Specification<Area> searchBySpecializationCodesSpec(List<String> specializationCodes) {
         return (root, criteriaQuery, cb) -> {
             Subquery<AreaTypeSpecializations> sub = criteriaQuery.subquery(AreaTypeSpecializations.class);
             Root<AreaTypeSpecializations> subRoot = sub.from(AreaTypeSpecializations.class);
@@ -305,7 +305,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
     @Override
     public Page<Area> findAreas(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
-                                List<Long> specializationCodes, List<Long> areaIds, PageRequest paging) {
+                                List<String> specializationCodes, List<Long> areaIds, PageRequest paging) {
         Specification<Area> specification = searchWithActualMainEmployeesSpec();
 
         if (moId != null) {

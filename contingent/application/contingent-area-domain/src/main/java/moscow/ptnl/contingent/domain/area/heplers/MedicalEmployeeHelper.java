@@ -140,7 +140,7 @@ public class MedicalEmployeeHelper {
                         .filter(p -> positionCodeFromSUPP || p.getEndDate() == null)
                         .collect(Collectors.toList());
         //6.5
-        List<Long> specializations = positionsNom.stream()
+        List<String> specializations = positionsNom.stream()
                 .map(PositionNom::getSpecialization)
                 .filter(Objects::nonNull)
                 .distinct()

@@ -330,8 +330,8 @@ public class Algorithms {
                             || address.getBuilding().getConstruction().getName().length() == 0)) {
                         codesNotSetError += " код дома (building/house/name) или корпуса (building/build/name) или строения (building/construction/name);";
                     }
-                    if (address.getRegionOMKTE() != null && address.getRegionOMKTE().getCode().split(";").length > 1
-                            || address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode().split(";").length > 1) {
+                    if (address.getRegionOMKTE() != null && address.getRegionOMKTE().getCode() != null && address.getRegionOMKTE().getCode().split(";").length > 1
+                            || address.getAreaOMKTE() != null && address.getAreaOMKTE().getCode() != null && address.getAreaOMKTE().getCode().split(";").length > 1) {
                         validation.error(AreaErrorReason.NOT_SINGLE_AREA_OR_REGION);
                     }
                 }

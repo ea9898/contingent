@@ -330,9 +330,9 @@ public interface AreaService {
      * @throws ContingentException
      */
     Page<AreaInfo> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
-                            List<Long> specializationCodes, List<Long> areaIds, PageRequest paging, boolean loadServicedMUs) throws ContingentException;
+                            List<String> specializationCodes, List<Long> areaIds, PageRequest paging, boolean loadServicedMUs) throws ContingentException;
 
-    default Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes,
+    default Page<Area> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<String> specializationCodes,
                                     List<Long> areaIds, PageRequest paging) throws ContingentException {
         Page<AreaInfo> areas = searchDnArea(moId, muIds, areaTypeCodes, null, Collections.emptyList(), specializationCodes, areaIds, paging, false);
         return new PageImpl<>(areas.stream().map(AreaInfo::getArea).collect(Collectors.toList()), areas.getPageable(), areas.getTotalElements());

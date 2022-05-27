@@ -22,7 +22,7 @@ public class AreaTypeSpecializationsRepositoryImpl implements AreaTypeSpecializa
     AreaTypeSpecializationsCRUDRepository areaTypeSpecializationsCRUDRepository;
 
     @Override
-    public List<AreaTypeSpecializations> findBySpecializationCode(Long specializationCode) {
+    public List<AreaTypeSpecializations> findBySpecializationCode(String specializationCode) {
         Specification<AreaTypeSpecializations> specification = (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get(AreaTypeSpecializations_.specializationCode.getName()), specializationCode);
         return areaTypeSpecializationsCRUDRepository.findAll(specification);

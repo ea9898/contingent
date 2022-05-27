@@ -210,4 +210,24 @@
                                tableName="addresses"/>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2335-1" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="specialization"/>
+            <columnExists tableName="specialization" columnName="code" />
+            <columnExists tableName="specialization" columnName="title" />
+        </preConditions>
+        <comment>Изменения типов колонок code и title таблицы specialization</comment>
+        <modifyDataType columnName="code" tableName="specialization" newDataType="varchar(10)" />
+        <modifyDataType columnName="title" tableName="specialization" newDataType="varchar(250)" />
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2335-2" author="ddryuchin" labels="1.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="area_type_specializations"/>
+            <columnExists tableName="area_type_specializations" columnName="specialization_code" />
+        </preConditions>
+        <comment>Изменения типов колонок code таблицы area_type_specializations</comment>
+        <modifyDataType columnName="specialization_code" tableName="area_type_specializations" newDataType="varchar(10)" />
+    </changeSet>
+
 </databaseChangeLog>

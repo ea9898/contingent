@@ -18,7 +18,7 @@ public class SpecializationRepositoryImpl extends BaseRepository implements Spec
     private SpecializationCRUDRepository specializationCRUDRepository;
 
     @Override
-    public Specialization getByCode(Long code) {
+    public Specialization getByCode(String code) {
         Specification<Specialization> specification = (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get(Specialization_.code.getName()), code);
 

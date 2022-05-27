@@ -9,7 +9,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 @NoRepositoryBean
 public interface AreaTypeSpecializationsRepository {
     
-    List<AreaTypeSpecializations> findBySpecializationCode(Long specializationCode);
+    List<AreaTypeSpecializations> findBySpecializationCode(String specializationCode);
 
     List<AreaTypeSpecializations> findByAreaTypeCode(AreaType areaType);
 

@@ -40,7 +40,7 @@ public class AreaTypeSpecializations implements Serializable, NsiExternalEntity 
 
     @Column(name = "SPECIALIZATION_CODE")
     @MapToNsi(value = "SPECIALIZATION_CODE", findEntityByField = "code", crossObject = Specialization.class, crossField = "globalId")
-    private Long specializationCode;
+    private String specializationCode;
 
     @Column(name = "ARCHIVED")
     @Convert(converter = BooleanStrictIntegerConverter.class)
@@ -70,11 +70,11 @@ public class AreaTypeSpecializations implements Serializable, NsiExternalEntity 
         this.areaType = areaType;
     }
 
-    public Long getSpecializationCode() {
+    public String getSpecializationCode() {
         return specializationCode;
     }
 
-    public void setSpecializationCode(Long specializationCode) {
+    public void setSpecializationCode(String specializationCode) {
         this.specializationCode = specializationCode;
     }
 

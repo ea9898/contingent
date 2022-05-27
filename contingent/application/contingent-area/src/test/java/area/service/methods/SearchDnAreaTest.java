@@ -61,7 +61,7 @@ public class SearchDnAreaTest {
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchDnAreaAllParametersTest() {
         Page<Area> areas = assertDoesNotThrow(() -> areaService.searchDnArea(
-                204L, Collections.singletonList(100L), Collections.singletonList(10L), Collections.singletonList(49L), EL, PR));
+                204L, Collections.singletonList(100L), Collections.singletonList(10L), Collections.singletonList("49"), EL, PR));
         assertNotNull(areas);
         assertEquals(1, areas.getNumberOfElements());
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());

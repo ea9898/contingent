@@ -354,14 +354,14 @@ public class AreaHelper {
     }
 
     public void checkSearchDnParameters(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
-                                        List<Long> specializationCodes, List<Long> areaIds) throws ContingentException {
+                                        List<String> specializationCodes, List<Long> areaIds) throws ContingentException {
         if (moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && areaTypeProfileCode == null && servicedMuIds.isEmpty() &&
                 specializationCodes.isEmpty() && areaIds.isEmpty()) {
             throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
         }
     }
 
-    public void checkSearchDnParameters(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<Long> specializationCodes, List<Long> areaIds) throws ContingentException {
+    public void checkSearchDnParameters(Long moId, List<Long> muIds, List<Long> areaTypeCodes, List<String> specializationCodes, List<Long> areaIds) throws ContingentException {
         if (moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && specializationCodes.isEmpty() && areaIds.isEmpty()) {
             throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
         }
