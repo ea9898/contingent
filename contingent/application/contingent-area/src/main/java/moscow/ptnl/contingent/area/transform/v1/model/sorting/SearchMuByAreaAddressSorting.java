@@ -5,8 +5,8 @@ import moscow.ptnl.util.Strings;
 
 public enum SearchMuByAreaAddressSorting implements SortingFieldEnum {
 
-    MO_ID("ar.moId"),
-    MU_ID("ar.muId");
+    MO_ID("moId"),
+    MU_ID("muId");
 
     private String fieldName;
 

@@ -393,7 +393,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                             .map(searchMuByAreaAddressMapper::entityToDtoTransform)
                             .collect(Collectors.toList()));
                 }
-                return response;
             }
             else {
                 Page<MoMuPair> results = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
@@ -405,8 +404,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                             .map(searchMuByAreaAddressMapper::entityToDtoTransform)
                             .collect(Collectors.toList()));
                 }
-                return response;
             }
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);

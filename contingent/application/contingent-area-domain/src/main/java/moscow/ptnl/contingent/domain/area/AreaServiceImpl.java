@@ -1406,6 +1406,10 @@ public class AreaServiceImpl implements AreaService {
         areaTypeCodes = areaTypeCodes == null || areaTypeCodes.isEmpty() ? null : areaTypeCodes;
         regionOMKTECode = StringUtils.hasText(regionOMKTECode) ? regionOMKTECode : null;
         String regionTeCode = areaOMKTECode == null ? null : areaOMKTECode.substring(0, 2) + "00";
+        paging = PageRequest.of(paging.getPageNumber(), paging.getPageSize(),
+                Sort.by(paging.getSort().stream()
+                        .map(s -> s.withProperty("ar." + s.getProperty()))
+                        .collect(Collectors.toList())));
 
         Page<MoMuPair> results = areaAddressRepository.findMoMuList(areaTypeCodes, areaOMKTECode, regionOMKTECode,
                 regionTeCode, AddressLevelType.REGION_TE.getLevel(), LocalDate.now(), paging);
