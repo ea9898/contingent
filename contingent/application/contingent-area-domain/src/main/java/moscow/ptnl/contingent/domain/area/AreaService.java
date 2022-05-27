@@ -10,6 +10,7 @@ import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
+import moscow.ptnl.contingent.domain.area.model.area.MoMuPair;
 import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.springframework.data.domain.Page;
@@ -357,8 +358,8 @@ public interface AreaService {
      * @return
      * @throws ContingentException
      */
-    Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
-                                     PageRequest paging) throws ContingentException;
+    Page<MoMuPair> searchMuByAreaAddress(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
+                                         PageRequest paging) throws ContingentException;
 
     /**
      * (К_УУ_30) Поиск МУ по адресу обслуживания (3. Передан блок searchByNsiGlobalId)

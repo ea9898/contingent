@@ -24,6 +24,7 @@ import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.domain.area.model.area.ChangeMedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
+import moscow.ptnl.contingent.domain.area.model.area.MoMuPair;
 import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.domain.area.model.sysop.SysopMethodType;
 import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepository;
@@ -68,6 +69,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -1391,9 +1394,8 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
-                                     PageRequest paging) throws ContingentException {
-
+    public Page<MoMuPair> searchMuByAreaAddress(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
+                                                PageRequest paging) throws ContingentException {
         Validation validation = new Validation();
 
         areaHelper.checkMaxPage(paging, validation);
@@ -1401,27 +1403,16 @@ public class AreaServiceImpl implements AreaService {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+        regionOMKTECode = StringUtils.hasText(regionOMKTECode) ? regionOMKTECode : null;
+        String regionTeCode = areaOMKTECode == null ? null : areaOMKTECode.substring(0, 2) + "00";
 
-        List<Addresses> addresses;
+        Page<MoMuPair> results = areaAddressRepository.findMoMuList(areaTypeCodes, areaOMKTECode, regionOMKTECode,
+                regionTeCode, AddressLevelType.REGION_TE.getLevel(), LocalDate.now(), paging);
 
-        if (StringUtils.hasText(regionOMKTECode)) {
-            // 4.1.2 Система выполняет поиск адреса из входных параметров, а также адресов более низких уровней в таблице Адрес (ADDRESSES)
-            addresses = addressesRepository.findAddresses(null, regionOMKTECode, null);
-        }
-        else {
-            // 4.2.2 Система выполняет поиск адресов в таблице Адрес (ADDRESSES)
-            String regionTeCode = areaOMKTECode.substring(0, 2) + "00";
-            // поиск адреса из входных параметров, а также адресов более низких уровней, т.е. всех записей, у которых
-            addresses = addressesRepository.findAddresses(areaOMKTECode, null, null);
-            // поиск адреса округа, к которому относится данный район
-            addresses.addAll(addressesRepository.findAddresses(null, regionTeCode, AddressLevelType.REGION_TE.getLevel()));
-        }
-        if (addresses.isEmpty()) {
+        if (results.isEmpty()) {
             throw new ContingentException(new Validation().error(AreaErrorReason.ADDRESS_NOT_FOUND));
         }
-        // 5. Система выполняет поиск актуальных участков заданного типа, обслуживающих адреса, полученные на предыдущем этапе сценария,
-        // и получает их ИД МУ (AREAS.MU_ID) и ИД МО (AREAS.MO_ID)
-        return areaRepository.findActualAreasByAddressIds(areaTypeCodes, addresses.stream().map(Addresses::getId).collect(Collectors.toList()), paging);
+        return results;
     }
 
     @Override

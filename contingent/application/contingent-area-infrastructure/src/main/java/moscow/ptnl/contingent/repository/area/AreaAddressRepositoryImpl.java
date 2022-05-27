@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
 import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress_;
+import moscow.ptnl.contingent.domain.area.model.area.MoMuPair;
 import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+
 import moscow.ptnl.contingent.domain.area.entity.Addresses_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 import moscow.ptnl.contingent.repository.CommonSpecification;
@@ -146,5 +148,12 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     @Override
     public AreaAddress save(AreaAddress areaAddress) {
         return areaAddressPagingAndSortingRepository.save(areaAddress);
+    }
+
+    @Override
+    public Page<MoMuPair> findMoMuList(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
+                                       String regionTeCode, String aoLevelRegionTe, LocalDate endDate, PageRequest paging) {
+         return areaAddressPagingAndSortingRepository.findMoMuList(areaTypeCodes, areaOMKTECode, regionOMKTECode,
+                 regionTeCode, aoLevelRegionTe, endDate, paging);
     }
 }

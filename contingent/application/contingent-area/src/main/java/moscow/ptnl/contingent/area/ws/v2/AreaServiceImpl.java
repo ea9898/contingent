@@ -35,6 +35,7 @@ import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressAllocation;
 import moscow.ptnl.contingent.domain.area.model.area.MoAddressWithAddresses;
 
+import moscow.ptnl.contingent.domain.area.model.area.MoMuPair;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
@@ -382,24 +383,30 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                             pageRequest.getSort().and(Sort.by(sorting.getFieldName())));
                 }
             }
-            Page<Area> areas;
-
             if (body.getSearchByNsiGlobalId() != null) {
-                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
+                Page<Area> areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
                         body.getSearchByNsiGlobalId().getAoLevel(), body.getSearchByNsiGlobalId().getGlobalIdNsi(), pageRequest);
+                soapCustomMapper.mapPagingResults(response.getResult(), areas);
+
+                if (!areas.isEmpty()) {
+                    response.getResult().getMuInfos().addAll(areas.stream()
+                            .map(searchMuByAreaAddressMapper::entityToDtoTransform)
+                            .collect(Collectors.toList()));
+                }
+                return response;
             }
             else {
-                areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
+                Page<MoMuPair> results = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
                         body.getSearchByCode().getAreaOMKTEcode(), body.getSearchByCode().getRegionOMKTEcode(), pageRequest);
-            }
-            soapCustomMapper.mapPagingResults(response.getResult(), areas);
+                soapCustomMapper.mapPagingResults(response.getResult(), results);
 
-            if (!areas.isEmpty()) {
-                response.getResult().getMuInfos().addAll(areas.stream()
-                        .map(searchMuByAreaAddressMapper::entityToDtoTransform)
-                        .collect(Collectors.toList()));
+                if (!results.isEmpty()) {
+                    response.getResult().getMuInfos().addAll(results.stream()
+                            .map(searchMuByAreaAddressMapper::entityToDtoTransform)
+                            .collect(Collectors.toList()));
+                }
+                return response;
             }
-            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);

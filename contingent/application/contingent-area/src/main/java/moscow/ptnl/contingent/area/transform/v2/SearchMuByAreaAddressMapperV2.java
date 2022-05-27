@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.area.transform.v2;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.area.model.area.MoMuPair;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -17,4 +18,10 @@ public interface SearchMuByAreaAddressMapperV2 {
             @Mapping(source = "moId", target = "moId")
     })
     SearchMuByAreaAddressResponse.Result.MuInfo entityToDtoTransform(Area area);
+
+    @Mappings({
+            @Mapping(source = "muId", target = "muId"),
+            @Mapping(source = "moId", target = "moId")
+    })
+    SearchMuByAreaAddressResponse.Result.MuInfo entityToDtoTransform(MoMuPair dto);
 }
