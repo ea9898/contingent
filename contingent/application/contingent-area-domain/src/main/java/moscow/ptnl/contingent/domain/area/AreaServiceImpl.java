@@ -1406,10 +1406,6 @@ public class AreaServiceImpl implements AreaService {
         areaTypeCodes = areaTypeCodes == null || areaTypeCodes.isEmpty() ? null : areaTypeCodes;
         regionOMKTECode = StringUtils.hasText(regionOMKTECode) ? regionOMKTECode : null;
         String regionTeCode = areaOMKTECode == null ? null : areaOMKTECode.substring(0, 2) + "00";
-        paging = PageRequest.of(paging.getPageNumber(), paging.getPageSize(),
-                Sort.by(paging.getSort().stream()
-                        .map(s -> s.withProperty("ar." + s.getProperty()))
-                        .collect(Collectors.toList())));
 
         Page<MoMuPair> results = areaAddressRepository.findMoMuList(areaTypeCodes, areaOMKTECode, regionOMKTECode,
                 regionTeCode, AddressLevelType.REGION_TE.getLevel(), LocalDate.now(), paging);
@@ -1421,7 +1417,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String aoLevel, long globalIdNsi,
+    public Page<MoMuPair> searchMuByAreaAddress(List<Long> areaTypeCodes, String aoLevel, long globalIdNsi,
                                      PageRequest paging) throws ContingentException {
         // 3.1 Система выполняет поиск адреса из входных параметров в таблице Адрес
         List<Addresses> addresses = addressesRepository.findAddresses(Collections.singletonList(globalIdNsi), aoLevel);
@@ -1436,7 +1432,11 @@ public class AreaServiceImpl implements AreaService {
         addresses.addAll(algorithms.findIntersectingAddressesSearch(Collections.singletonList(new SearchAreaAddress(addresses.get(0)))));
         // 5. Система выполняет поиск актуальных участков заданного типа, обслуживающих адреса, полученные на предыдущем этапе сценария,
         // и получает их ИД МУ (AREAS.MU_ID) и ИД МО (AREAS.MO_ID)
-        return areaRepository.findActualAreasByAddressIds(areaTypeCodes, addresses.stream().map(Addresses::getId).collect(Collectors.toList()), paging);
+        return areaAddressRepository.findMoMuList(areaTypeCodes, addresses.stream()
+                        .map(Addresses::getId)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList()),
+                LocalDate.now(), paging);
     }
 
     @Override

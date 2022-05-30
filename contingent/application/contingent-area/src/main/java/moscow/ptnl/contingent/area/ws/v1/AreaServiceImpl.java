@@ -435,28 +435,24 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                             pageRequest.getSort().and(Sort.by(sorting.getFieldName())));
                 }
             }
-            if (body.getSearchByNsiGlobalId() != null) {
-                Page<Area> areas = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
-                        body.getSearchByNsiGlobalId().getAoLevel(), body.getSearchByNsiGlobalId().getGlobalIdNsi(), pageRequest);
-                soapCustomMapper.mapPagingResults(response, areas);
-                response.getResults().addAll(areas.stream()
-                        .map(searchMuByAreaAddressMapper::entityToDtoTransform)
-                        .collect(Collectors.toList()));
+            Page<MoMuPair> results;
 
-                return response;
+            if (body.getSearchByNsiGlobalId() != null) {
+                results = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
+                        body.getSearchByNsiGlobalId().getAoLevel(), body.getSearchByNsiGlobalId().getGlobalIdNsi(), pageRequest);
             }
             else {
-                Page<MoMuPair> results = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
+                results = areaServiceDomain.searchMuByAreaAddress(body.getAreaTypeCodes() != null ? body.getAreaTypeCodes().getAreaTypeCodes() : null,
                         body.getSearchByCode().getAreaOMKTEcode(), body.getSearchByCode().getRegionOMKTEcode(), pageRequest);
-                soapCustomMapper.mapPagingResults(response, results);
-
-                if (!results.isEmpty()) {
-                    response.getResults().addAll(results.stream()
-                            .map(searchMuByAreaAddressMapper::entityToDtoTransform)
-                            .collect(Collectors.toList()));
-                }
-                return response;
             }
+            soapCustomMapper.mapPagingResults(response, results);
+
+            if (!results.isEmpty()) {
+                response.getResults().addAll(results.stream()
+                        .map(searchMuByAreaAddressMapper::entityToDtoTransform)
+                        .collect(Collectors.toList()));
+            }
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);

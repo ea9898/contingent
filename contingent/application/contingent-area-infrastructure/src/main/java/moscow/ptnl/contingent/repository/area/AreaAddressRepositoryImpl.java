@@ -156,4 +156,9 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
          return areaAddressPagingAndSortingRepository.findMoMuList(areaTypeCodes, areaOMKTECode, regionOMKTECode,
                  regionTeCode, aoLevelRegionTe, endDate, paging);
     }
+
+    @Override
+    public Page<MoMuPair> findMoMuList(List<Long> areaTypeCodes, List<Long> addressIds, LocalDate endDate, PageRequest paging) {
+        return areaAddressPagingAndSortingRepository.findMoMuList(areaTypeCodes, addressIds, endDate, paging);
+    }
 }

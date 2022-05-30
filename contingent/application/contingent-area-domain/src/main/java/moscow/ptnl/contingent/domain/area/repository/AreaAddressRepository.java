@@ -33,4 +33,6 @@ public interface AreaAddressRepository {
 
     Page<MoMuPair> findMoMuList(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
                                 String regionTeCode, String aoLevelRegionTe, LocalDate endDate, PageRequest paging);
+
+    Page<MoMuPair> findMoMuList(List<Long> areaTypeCodes, List<Long> addressIds, LocalDate endDate, PageRequest paging);
 }

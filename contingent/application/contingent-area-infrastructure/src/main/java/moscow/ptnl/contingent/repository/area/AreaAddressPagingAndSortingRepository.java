@@ -36,4 +36,18 @@ public interface AreaAddressPagingAndSortingRepository extends PagingAndSortingR
                                 @Param("aoLevelRegionTe") String aoLevelRegionTe,
                                 @Param("endDate") LocalDate endDate,
                                 Pageable paging);
+
+    @Query("SELECT DISTINCT new moscow.ptnl.contingent.domain.area.model.area.MoMuPair(ar.moId, ar.muId) FROM AreaAddress aad " +
+            "JOIN aad.address ad " +
+            "JOIN aad.area ar " +
+            "WHERE " +
+            "  (aad.endDate IS NULL OR aad.endDate > :endDate) " +
+            "  AND ad.id IN (:addressIds) " +
+            "  AND (:areaTypeCodes IS NULL OR ar.areaType.code IN (:areaTypeCodes)) " +
+            "  AND ar.archived = false "
+    )
+    Page<MoMuPair> findMoMuList(@Param("areaTypeCodes") List<Long> areaTypeCodes,
+                                @Param("addressIds") List<Long> addressIds,
+                                @Param("endDate") LocalDate endDate,
+                                Pageable paging);
 }

@@ -370,7 +370,7 @@ public interface AreaService {
      * @return
      * @throws ContingentException
      */
-    Page<Area> searchMuByAreaAddress(List<Long> areaTypeCodes, String aoLevel, long globalIdNsi,
+    Page<MoMuPair> searchMuByAreaAddress(List<Long> areaTypeCodes, String aoLevel, long globalIdNsi,
                                      PageRequest paging) throws ContingentException;
 
     /**
