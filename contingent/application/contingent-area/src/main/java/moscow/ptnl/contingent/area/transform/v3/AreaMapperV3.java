@@ -36,7 +36,7 @@ public class AreaMapperV3 implements Transform<Area, AreaInfo> {
     public AreaSearchResult areaSearchResultTransform(AreaInfo entityObject) {
         AreaSearchResult result = entityToDtoTransform(entityObject, new AreaSearchResult());
 
-        if (entityObject.getArea().getAreaType() != null) {
+        if (entityObject.getArea().getAreaType() != null && entityObject.getArea().getAreaType().getResidentsBindRate() != null) {
             result.setResidentsBindRate(entityObject.getArea().getAreaType().getResidentsBindRate());
         }
         return result;
