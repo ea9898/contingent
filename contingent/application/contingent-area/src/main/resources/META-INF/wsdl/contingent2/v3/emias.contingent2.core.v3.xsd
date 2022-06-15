@@ -177,7 +177,7 @@
         <xs:complexContent>
             <xs:extension base="tns:Area">
                 <xs:sequence>
-                    <xs:element name="residentsBindRate" type="xs:int" />
+                    <xs:element name="residentsBindRate" type="xs:int" minOccurs="0"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
