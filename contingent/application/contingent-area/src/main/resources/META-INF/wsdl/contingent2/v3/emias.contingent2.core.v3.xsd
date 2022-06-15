@@ -161,7 +161,7 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="dateCreated" type="xs:dateTime" />
+            <xs:element name="dateCreated" type="xs:date" />
             <xs:element name="archive" type="xs:boolean" />
             <xs:element name="medicalEmployees" minOccurs="0">
                 <xs:complexType>
