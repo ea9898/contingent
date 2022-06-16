@@ -52,7 +52,7 @@ public class AreaDnMapperV3 implements Transform<AreaDn, AreaInfo> {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList())
         );
-        area.setDateCreated(areaObject.getCreateDate());
+        area.setDateCreated(areaObject.getCreateDate().toLocalDate());
         if (entityObject.getAreaServicedMUs() != null && !entityObject.getAreaServicedMUs().isEmpty()) {
             MuService muService = new MuService();
             muService.getMuIds().addAll(entityObject.getAreaServicedMUs().stream().map(AreaMuService::getMuId).collect(Collectors.toList()));

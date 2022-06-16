@@ -198,7 +198,7 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="dateCreated" type="xs:dateTime" />
+            <xs:element name="dateCreated" type="xs:date" />
             <xs:element name="medicalEmployee" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
@@ -223,7 +223,7 @@
             <xs:element name="areaTypeCode" type="xs:long" />
             <xs:element name="areaTypeTitle" type="xs:string" />
             <xs:element name="muService" type="tns:MuService" minOccurs="0" />
-            <xs:element name="dateCreated" type="xs:dateTime" />
+            <xs:element name="dateCreated" type="xs:date" />
             <xs:element name="archive" type="xs:boolean" />
             <xs:element name="medicalEmployees" minOccurs="0">
                 <xs:complexType>
