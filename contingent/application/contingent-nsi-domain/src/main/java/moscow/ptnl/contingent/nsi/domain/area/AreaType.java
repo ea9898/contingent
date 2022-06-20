@@ -161,6 +161,7 @@ public class AreaType extends CodeName implements Serializable, NsiExternalEntit
         this.code = code;
     }
 
+    @Override
     public Long getGlobalId() {
         return globalId;
     }

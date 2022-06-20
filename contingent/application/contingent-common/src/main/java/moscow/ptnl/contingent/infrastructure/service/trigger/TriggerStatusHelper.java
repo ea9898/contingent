@@ -39,7 +39,7 @@ public class TriggerStatusHelper {
                     .findWithLock(trigger)
                     .orElse(new TriggerStatus(trigger));
 
-             if (Boolean.TRUE.equals(status.getRun())
+             if (Boolean.TRUE.equals(status.getRun() && isAfterLastStartPlusInterval(status))
                     || !isAfterLastStartPlusInterval(status)) {
                 return false;
             }

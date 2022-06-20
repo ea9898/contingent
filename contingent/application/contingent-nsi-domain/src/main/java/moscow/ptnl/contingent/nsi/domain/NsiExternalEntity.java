@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 */
 public interface NsiExternalEntity extends Keyable {
 
+    Long getGlobalId();
+
     LocalDateTime getUpdateDate();
 
     String getSource();
