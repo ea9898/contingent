@@ -1506,10 +1506,12 @@ public class AreaServiceImpl implements AreaService {
         }
         Area oldArea = historyHelper.clone(area);
         //6
-        areaHelper.checkMuAlreadyServiced(area, addServicedMuIds, validation);
+        if (UserContextHolder.getContractVersion() < 3) {
+            areaHelper.checkMuAlreadyServiced(area, addServicedMuIds, validation);
 
-        if (!validation.isSuccess()) {
-            throw new ContingentException(validation);
+            if (!validation.isSuccess()) {
+                throw new ContingentException(validation);
+            }
         }
         //6.1, 7.1
         List<AreaMuService> areaMuServicesAdded = new ArrayList<>();
