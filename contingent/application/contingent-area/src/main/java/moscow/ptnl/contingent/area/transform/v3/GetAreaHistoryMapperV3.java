@@ -46,9 +46,13 @@ public interface GetAreaHistoryMapperV3 {
             addAttributeValue("tempDutyStartDate", entity.getTempDutyStartDateOld(), entity.getTempDutyStartDateNew(), values);
             addAttributeValue("isReplacement", entity.getIsReplacementOld(), entity.getIsReplacementNew(), values);
         }
-        HistoryEvent.ChangeData changeData = new HistoryEvent.ChangeData();
-        changeData.getAttributeValues().addAll(values);
-        return changeData;
+        if (!values.isEmpty()) {
+            HistoryEvent.ChangeData changeData = new HistoryEvent.ChangeData();
+            changeData.getAttributeValues().addAll(values);
+            return changeData;
+        } else {
+            return null;
+        }
     }
 
     default void addAttributeValue(String attributeName, String oldValue, String newValue, List<AttributeValues> values) {

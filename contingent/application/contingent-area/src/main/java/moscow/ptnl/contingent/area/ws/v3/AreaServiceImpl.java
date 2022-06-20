@@ -127,6 +127,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -386,6 +387,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             if (!results.isEmpty()) {
                 response.getResult().getEvents().addAll(results.stream()
                         .map(getAreaHistoryMapper::entityToDtoTransform)
+                        .filter(event -> Objects.nonNull(event.getChangeData()) && !event.getChangeData().getAttributeValues().isEmpty())
                         .collect(Collectors.toList()));
             }
             soapCustomMapper.mapPagingResults(response.getResult(), results);
