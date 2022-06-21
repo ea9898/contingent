@@ -14,37 +14,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Mapper(componentModel="spring")
+@Mapper(componentModel = "spring")
 public interface GetAreaHistoryMapperV3 {
 
     GetAreaHistoryMapperV3 MAPPER = Mappers.getMapper(GetAreaHistoryMapperV3.class);
 
     @Mappings({
-            @Mapping(target="eventType", expression="java( mapEventType(entity) )"),
-            @Mapping(target="updateDate", source="updateDate"),
-            @Mapping(target="userLogin", source="userLogin"),
-            @Mapping(target="userJobId", expression="java( mapUserJobId(entity) )"),
-            @Mapping(target="objectType", expression="java( mapObjectType(entity) )"),
-            @Mapping(target="objectId", expression="java( mapObjectId(entity) )"),
-            @Mapping(target="changeData", expression="java( mapChangeData(entity) )")
+            @Mapping(target = "eventType", expression = "java( mapEventType(entity) )"),
+            @Mapping(target = "updateDate", source = "updateDate"),
+            @Mapping(target = "userLogin", source = "userLogin"),
+            @Mapping(target = "userJobId", expression = "java( mapUserJobId(entity) )"),
+            @Mapping(target = "objectType", expression = "java( mapObjectType(entity) )"),
+            @Mapping(target = "objectId", expression = "java( mapObjectId(entity) )"),
+            @Mapping(target = "changeData", expression = "java( mapChangeData(entity) )")
     })
     HistoryEvent entityToDtoTransform(AreaOrEmployeeEvent entity);
 
     default HistoryEvent.ChangeData mapChangeData(AreaOrEmployeeEvent entity) {
         List<AttributeValues> values = new ArrayList<>();
 
-        if (entity.getObjType().intValue() == 2) {
-            addAttributeValue("description", entity.getDescriptionOld(), entity.getDescriptionNew(), values);
-            addAttributeValue("number", entity.getNumberOld(), entity.getNumberNew(), values);
-            addAttributeValue("createDate", entity.getCreateDateOld(), entity.getCreateDateNew(), values);
-            addAttributeValue("archived", entity.getArchivedOld(), entity.getArchivedNew(), values);
-        }
-        else if (entity.getObjType().intValue() == 1) {
+        if (entity.getObjType().intValue() == 1) {
             addAttributeValue("startDate", entity.getStartDateOld(), entity.getStartDateNew(), values);
             addAttributeValue("endDate", entity.getEndDateOld(), entity.getEndDateNew(), values);
             addAttributeValue("isError", entity.getIsErrorOld(), entity.getIsErrorNew(), values);
             addAttributeValue("tempDutyStartDate", entity.getTempDutyStartDateOld(), entity.getTempDutyStartDateNew(), values);
             addAttributeValue("isReplacement", entity.getIsReplacementOld(), entity.getIsReplacementNew(), values);
+        }
+        if (entity.getObjType().intValue() == 2) {
+            addAttributeValue("description", entity.getDescriptionOld(), entity.getDescriptionNew(), values);
+            addAttributeValue("number", entity.getNumberOld(), entity.getNumberNew(), values);
+            addAttributeValue("createDate", entity.getCreateDateOld(), entity.getCreateDateNew(), values);
+            addAttributeValue("archived", entity.getArchivedOld(), entity.getArchivedNew(), values);
         }
         if (!values.isEmpty()) {
             HistoryEvent.ChangeData changeData = new HistoryEvent.ChangeData();
@@ -66,20 +66,17 @@ public interface GetAreaHistoryMapperV3 {
     }
 
     default String mapEventType(AreaOrEmployeeEvent entity) {
-        if (entity. getObjType().intValue() == 2) {
-            if (entity.getCreateDateNew() != null && entity.getCreateDateOld() == null) {
+        if (entity.getObjType().intValue() == 1) { // area_medical_employee
+            if (entity.getStartDateNew() != null && entity.getStartDateOld() == null) {
                 return "create";
-            }
-            else if ("true".equalsIgnoreCase(entity.getArchivedNew())) {
+            } else if (entity.getEndDateNew() != null) {
                 return "delete";
             }
             return "update";
-        }
-        else if (entity.getObjType().intValue() == 1) {
-            if (entity.getCreateDateNew() != null && entity.getStartDateOld() == null) {
+        } else if (entity.getObjType().intValue() == 2) { // area
+            if (entity.getStartDateOld() == null && entity.getCreateDateNew() != null) {
                 return "create";
-            }
-            else if (entity.getEndDateNew() != null) {
+            } else if ("true".equalsIgnoreCase(entity.getArchivedNew())) {
                 return "delete";
             }
             return "update";
@@ -90,8 +87,7 @@ public interface GetAreaHistoryMapperV3 {
     default Long mapObjectId(AreaOrEmployeeEvent entity) {
         if (entity.getObjType().intValue() == 2) {
             return entity.getObjectId().longValue();
-        }
-        else if (entity.getObjType().intValue() == 1) {
+        } else if (entity.getObjType().intValue() == 1) {
             return entity.getMedicalEmployeeJobId().longValue();
         }
         return null;
@@ -100,8 +96,7 @@ public interface GetAreaHistoryMapperV3 {
     default String mapObjectType(AreaOrEmployeeEvent entity) {
         if (entity.getObjType().intValue() == 2) {
             return "AREA";
-        }
-        else if (entity.getObjType().intValue() == 1) {
+        } else if (entity.getObjType().intValue() == 1) {
             return "AREA_ME_JOB_ID";
         }
         return null;
