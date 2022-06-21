@@ -701,6 +701,8 @@ public class AreaServiceImpl implements AreaService {
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+
+        // 7.
         List<ChangeMedicalEmployee> changeEmployeesCorrectInput = changeEmployeesInput.stream()
                 .filter(e -> !Boolean.TRUE.equals(e.isIsError()))
                 .collect(Collectors.toList());
@@ -752,7 +754,11 @@ public class AreaServiceImpl implements AreaService {
 
         //8
         List<Long> result = new ArrayList<>();
-        areaHelper.applyChanges(changeEmployeesDb, changeEmployeesInput);
+        areaHelper.applyChanges(changeEmployeesDb, changeEmployeesInput).forEach((areaMedicalEmployees, areaMedicalEmployees2) -> {
+            if (!changesAme.containsKey(areaMedicalEmployees)) {
+                changesAme.put(areaMedicalEmployees, areaMedicalEmployees2);
+            }
+        });
         areaHelper.addNew(changeEmployeesDb, addEmployeesInput, area);
         areaMedicalEmployeeRepository.saveAll(changeEmployeesDb).forEach(saved -> {
             if (!areaEmployeesDb.contains(saved)) {
@@ -766,11 +772,6 @@ public class AreaServiceImpl implements AreaService {
         for (Map.Entry<AreaMedicalEmployees, AreaMedicalEmployees> entry: changesAme.entrySet()) {
             historyHelper.sendHistory(entry.getKey(), entry.getValue(), AreaMedicalEmployees.class);
         }
-
-        // 8
-        //if (areaHelper.isAreaPrimary(area)) {
-        //    esuHelperService.sendAreaInfoEvent(area, "setMedicalEmployeeOnArea");
-        //}
 
         return result;
     }
