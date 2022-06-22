@@ -1501,9 +1501,15 @@ public class AreaServiceImpl implements AreaService {
             validation.error(AreaErrorReason.CANT_ADD_SERVICED_MU, new ValidationParameter("areaTypeTitle",
                     area.getAreaType() == null ? "" : area.getAreaType().getTitle()));
         }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
         //5
         if (addServicedMuIds.isEmpty() && closeServicedMuIds.isEmpty()) {
             validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
+        }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
         }
         Area oldArea = historyHelper.clone(area);
         //6
