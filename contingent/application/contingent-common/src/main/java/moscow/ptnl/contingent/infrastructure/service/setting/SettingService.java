@@ -73,6 +73,8 @@ public interface SettingService {
     String PAR_42 = "max_addresses_for_search";
     /** Типы участков, для которых при передаче сведений в К1 все МР должны быть указаны как основные */
     String PAR_43 = "area_types_convert_k1_main_employees";
+    /** Типы участков, на которых проводится проверка на то, что МР не может одновременно быть основным на двух и более участках одного типа */
+    String PAR_44 = "area_types_is_check_double_main_employees";
 
     /**
      * Свойство извлекается из кэша.
@@ -124,4 +126,6 @@ public interface SettingService {
     Integer getPar42();
 
     List<Long> getPar43();
+
+    List<Long> getPar44();
 }

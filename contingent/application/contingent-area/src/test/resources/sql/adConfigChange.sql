@@ -1,0 +1,1 @@
+update ad_config set val = '30;' where code = 'area_types_is_check_double_main_employees';

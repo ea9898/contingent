@@ -15,6 +15,7 @@ import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.repository.area.AreaMedicalEmployeeCRUDRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -74,6 +75,15 @@ public class SetMedicalEmployeeOnAreaIntTest {
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql", "/sql/positionCodeAndCoTest.sql"},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void getPositionCodeFromMapTest() {
+        List<Long> results = Assertions.assertDoesNotThrow(() -> areaService.setMedicalEmployeeOnAreaInternal(4, Arrays.asList(
+                new AddMedicalEmployee() {{ setMedicalEmployeeJobInfoId(12L); setPositionCode("135"); setStartDate(LocalDate.now()); }}
+        ), Collections.emptyList()));
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql", "/sql/positionCodeAndCoTest.sql", "/sql/adConfigChange.sql"},
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void getPositionCodeFromMapTest2376() {
         List<Long> results = Assertions.assertDoesNotThrow(() -> areaService.setMedicalEmployeeOnAreaInternal(4, Arrays.asList(
                 new AddMedicalEmployee() {{ setMedicalEmployeeJobInfoId(12L); setPositionCode("135"); setStartDate(LocalDate.now()); }}
         ), Collections.emptyList()));
