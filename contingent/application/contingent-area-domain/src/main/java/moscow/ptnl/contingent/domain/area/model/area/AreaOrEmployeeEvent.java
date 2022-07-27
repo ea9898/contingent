@@ -51,7 +51,7 @@ public interface AreaOrEmployeeEvent {
 
     String getIsErrorNew();
 
-    String getIsReplacementOld();
+    String getReplacementOld();
 
-    String getIsReplacementNew();
+    String getReplacementNew();
 }

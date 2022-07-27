@@ -38,7 +38,7 @@ public interface GetAreaHistoryMapperV3 {
             addAttributeValue("endDate", entity.getEndDateOld(), entity.getEndDateNew(), values);
             addAttributeValue("isError", entity.getIsErrorOld(), entity.getIsErrorNew(), values);
             addAttributeValue("tempDutyStartDate", entity.getTempDutyStartDateOld(), entity.getTempDutyStartDateNew(), values);
-            addAttributeValue("isReplacement", entity.getIsReplacementOld(), entity.getIsReplacementNew(), values);
+            addAttributeValue("replacement", entity.getReplacementOld(), entity.getReplacementNew(), values);
         }
         if (entity.getObjType().intValue() == 2) {
             addAttributeValue("description", entity.getDescriptionOld(), entity.getDescriptionNew(), values);

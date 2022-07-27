@@ -88,8 +88,8 @@ public interface HistoryEventCRUDRepository extends CommonRepository<HistoryEven
             "    jhc2.new_value AS enddatenew,\n" +
             "    jhc3.old_value AS iserrorold,\n" +
             "    jhc3.new_value AS iserrornew,\n" +
-            "    jhc4.old_value AS isreplacementold,\n" +
-            "    jhc4.new_value AS isreplacementnew,\n" +
+            "    jhc4.old_value AS replacementold,\n" +
+            "    jhc4.new_value AS replacementnew,\n" +
             "    jhc5.old_value AS tempdutystartdateold,\n" +
             "    jhc5.new_value AS tempdutystartdatenew,\n" +
             "    jhc11.old_value AS descriptionold,\n" +
@@ -127,7 +127,7 @@ public interface HistoryEventCRUDRepository extends CommonRepository<HistoryEven
             "    LEFT JOIN jl_history_columns jhc4 ON\n" +
             "        jhc4.jrn_id = jlh.id\n" +
             "    AND\n" +
-            "        jhc4.column_name = 'isReplacement'\n" +
+            "        jhc4.column_name = 'replacement'\n" +
             "    AND\n" +
             "        jlh.obj_type = 1\n" +
             "    LEFT JOIN jl_history_columns jhc5 ON\n" +
