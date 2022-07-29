@@ -75,6 +75,8 @@ public interface SettingService {
     String PAR_43 = "area_types_convert_k1_main_employees";
     /** Типы участков, на которых проводится проверка на то, что МР не может одновременно быть основным на двух и более участках одного типа */
     String PAR_44 = "area_types_is_check_double_main_employees";
+    /** Типы участков у которых может быть более одного основного МР */
+    String PAR_45 = "area_types_double_main_employees_enable";
 
     /**
      * Свойство извлекается из кэша.
@@ -128,4 +130,6 @@ public interface SettingService {
     List<Long> getPar43();
 
     List<Long> getPar44();
+
+    List<Long> getPar45();
 }

@@ -124,4 +124,11 @@ public class SettingServiceImpl implements SettingService {
         return param == null ? Collections.emptyList() :
                 Arrays.stream(param.split(";")).filter(s -> !s.isEmpty()).map(Long::parseLong).collect(Collectors.toList());
     }
+
+    @Override
+    public List<Long> getPar45() {
+        String param = getSettingProperty(PAR_45);
+        return param == null ? Collections.emptyList() :
+                Arrays.stream(param.split(";")).filter(s -> !s.isEmpty()).map(Long::parseLong).collect(Collectors.toList());
+    }
 }

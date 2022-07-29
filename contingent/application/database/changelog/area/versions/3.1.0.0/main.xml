@@ -31,4 +31,27 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2392-1" author="ddryuchin" labels="3.1.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where code = 'area_types_double_main_employees_enable'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Типы участков у которых может быть более одного основного МР</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="code" value="area_types_double_main_employees_enable"/>
+            <column name="codedoc" value="PAR_45"/>
+            <column name="type" value="3"/>
+            <column name="val" value="30;190"/>
+            <column name="description" value="Типы участков у которых может быть более одного основного МР	"/>
+            <column name="last_change" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>code='area_types_double_main_employees_enable'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
