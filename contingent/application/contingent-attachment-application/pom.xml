@@ -263,27 +263,27 @@
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>common</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>metrics</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>attachment-domain</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>nsi-domain</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
             <artifactId>area-infrastructure</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>ru.mos.emias.errors</groupId>

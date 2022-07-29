@@ -97,9 +97,20 @@ public class HistoryServiceImpl implements HistoryService {
                 //вытаскиваем значения поля для старого и нового объекта
                 Object oldValue = f.get(oldObject);
                 Object newValue = f.get(newObject);
-                //ищем измененные значения
-                if (!converter.equals(oldValue, newValue)) {                
-                    eventBuilder.addValue(f.getName(), converter.toString(oldValue), converter.toString(newValue), cls);
+                
+                switch (logAnnotation.trigger()) {
+                    case ALWAYS: 
+                        //берем не пустое значение
+                        if (oldValue != null || newValue != null) {
+                            eventBuilder.addValue(f.getName(), converter.toString(oldValue), converter.toString(newValue), cls);
+                        }
+                    break;
+                    case ONCHANGE: 
+                        //берем измененное значение
+                        if (!converter.equals(oldValue, newValue)) {                
+                            eventBuilder.addValue(f.getName(), converter.toString(oldValue), converter.toString(newValue), cls);
+                        }
+                    break;
                 }
             } catch (Exception e) {
                 LOG.error("ошибка логирования поля: " + f.getName() + " в классе: " + cls.getName(), e);

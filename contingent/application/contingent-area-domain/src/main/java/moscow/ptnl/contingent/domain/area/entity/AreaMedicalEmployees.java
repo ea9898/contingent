@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import moscow.ptnl.contingent.domain.history.meta.LogTrigger;
 
 @Entity @Journalable(ServiceName.AREA)
 @Proxy(lazy=false)
@@ -45,7 +46,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
 
-    @LogIt
+    @LogIt(trigger = LogTrigger.ALWAYS)
     @Column(name = "IS_REPLACEMENT", nullable = false)
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean replacement;
@@ -71,7 +72,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     @Column(name = "POSITION_CODE_SUPP")
     private Long positionCodeSupp;
 
-    @LogIt
+    @LogIt(trigger = LogTrigger.ALWAYS)
     @Column(name = "TEMP_DUTY_START_DATE")
     private LocalDate tempDutyStartDate;
 

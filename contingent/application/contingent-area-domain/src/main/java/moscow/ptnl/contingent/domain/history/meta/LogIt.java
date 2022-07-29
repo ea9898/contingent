@@ -23,4 +23,11 @@ public @interface LogIt {
      */
     Class<? extends FieldConverter> converter() default DefaultConverter.class;
     
+    /**
+     * В каком случае производить запись в лог.
+     * 
+     * @return 
+     */
+    LogTrigger trigger() default LogTrigger.ONCHANGE;
+    
 }
