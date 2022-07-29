@@ -48,7 +48,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     @LogIt
     @Column(name = "IS_REPLACEMENT", nullable = false)
     @Convert(converter = BooleanIntegerConverter.class)
-    private Boolean replacement = Boolean.FALSE;
+    private Boolean replacement;
 
     @LogIt
     @Column(name = "START_DATE")
