@@ -596,6 +596,8 @@ public class AreaHelper {
             }
             if (Boolean.TRUE.equals(changeEmpl.getTempDuty())) {
                 empl.setTempDutyStartDate(LocalDate.now());
+            } else {
+                empl.setTempDutyStartDate(null);
             }
             empl.setUpdateDate(LocalDateTime.now());
             empl.setError(Boolean.TRUE.equals(changeEmpl.isIsError()));

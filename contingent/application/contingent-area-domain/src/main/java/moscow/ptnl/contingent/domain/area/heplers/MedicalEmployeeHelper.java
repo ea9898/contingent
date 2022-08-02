@@ -72,11 +72,11 @@ public class MedicalEmployeeHelper {
 
         if (inputEmployee.isIsError() == null || !inputEmployee.isIsError()) {
             //5.2.1
-            if (inputEmployee.getEndDate() == null && inputEmployee.getStartDate() == null) {
-                validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
-            }
+//            if (inputEmployee.getEndDate() == null && inputEmployee.getStartDate() == null) {
+//                validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
+//            }
 
-            //5.2.2
+            //5.2.1
             LocalDate startDate = inputEmployee.getStartDate() != null ? inputEmployee.getStartDate()
                     : emplDb != null ? emplDb.getStartDate() : null;
             LocalDate endDate = inputEmployee.getEndDate() != null ? inputEmployee.getEndDate()
@@ -86,7 +86,7 @@ public class MedicalEmployeeHelper {
                         new ValidationParameter("endDate", endDate),
                         new ValidationParameter("startDate", startDate));
             }
-            //5.2.3
+            //5.2.2
             if (Boolean.TRUE.equals(inputEmployee.getTempDuty()) &&
                     emplDb != null && !Boolean.TRUE.equals(emplDb.getReplacement())) {
                 validation.error(AreaErrorReason.NOT_REPLACEMENT_EMPLOYEE);
