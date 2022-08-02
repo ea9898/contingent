@@ -725,7 +725,7 @@ public class AreaServiceImpl implements AreaService {
         if (area.getAreaType() != null && area.getAreaType().getAreaTypeKind() != null &&
                 area.getAreaType().getAreaTypeKind().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) {
             // 7.2
-            if (settingService.getPar45().isEmpty() || settingService.getPar45().contains(area.getAreaType().getCode())) {
+            if (settingService.getPar45().isEmpty() || !settingService.getPar45().contains(area.getAreaType().getCode())) {
                 areaHelper.checkMainEmployeesOverlappingDates(
                         mainEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation);
             }

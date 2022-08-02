@@ -132,7 +132,7 @@ public class AreaHelper {
         List<AreaType> result = new ArrayList<>();
 
         areaTypes.stream().distinct().forEach(a -> {
-            Optional<AreaType> areaType = areaTypesRepository.findById (a);
+            Optional<AreaType> areaType = areaTypesRepository.findById(a);
 
             if (!areaType.isPresent() || Boolean.TRUE.equals(areaType.get().getArchived())) {
                 validation.error(AreaErrorReason.AREA_TYPE_NOT_FOUND, new ValidationParameter("areaTypeCode", a));
@@ -262,8 +262,7 @@ public class AreaHelper {
             if (!order.isPresent() ||
                     order.get().getEndDate() != null && order.get().getEndDate().isBefore(LocalDate.now())) {
                 validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("addressId", a));
-            }
-            else {
+            } else {
                 result.add(order.get());
             }
         });
@@ -280,6 +279,7 @@ public class AreaHelper {
 
     /**
      * Для вызова из метода delMoAddress
+     *
      * @param addresses
      * @return
      */
@@ -293,6 +293,7 @@ public class AreaHelper {
 
     /**
      * Для вызова из метода delMoAddressTotal
+     *
      * @param addresses
      * @return
      */
@@ -306,14 +307,14 @@ public class AreaHelper {
 
     /**
      * Система закрывает территории обслуживания МО
+     *
      * @param addresses
      */
     public void delMoAddresses(List<MoAddress> addresses) {
         addresses.forEach(a -> {
             if (a.getStartDate() != null && a.getStartDate().equals(LocalDate.now())) {
                 moAddressRepository.delete(a);
-            }
-            else {
+            } else {
                 a.setEndDate(LocalDate.now().minusDays(1));
                 a.setUpdateDate(LocalDateTime.now());
                 moAddressRepository.save(a);
@@ -324,6 +325,7 @@ public class AreaHelper {
 
     /**
      * Система закрывает территории обслуживания участка
+     *
      * @param addresses
      */
     public void delAreaAddresses(List<AreaAddress> addresses) {
@@ -332,8 +334,7 @@ public class AreaHelper {
                 a.setEndDate(LocalDate.now().minusDays(1)); // чтоб адреса не попадали в актуальные в отправке в ЕСУ
                 a.setUpdateDate(LocalDateTime.now());
                 areaAddressRepository.delete(a);
-            }
-            else {
+            } else {
                 a.setEndDate(LocalDate.now().minusDays(1));
             }
         });
@@ -415,7 +416,7 @@ public class AreaHelper {
                         iter.add(copy);
                     }
                 }
-            } else if (regions.length > 1){
+            } else if (regions.length > 1) {
                 iter.remove();
                 for (String region : regions) {
                     SearchAreaAddress copy = new SearchAreaAddress(current);
@@ -490,7 +491,7 @@ public class AreaHelper {
         }
     }
 
-    public void checkPolicyTypesIsOMS(List<Long> policyTypesAdd,  Validation validation) throws ContingentException {
+    public void checkPolicyTypesIsOMS(List<Long> policyTypesAdd, Validation validation) throws ContingentException {
         if (!policyTypesAdd.isEmpty() && policyTypesAdd.stream().anyMatch(policy -> !policy.equals(PolicyTypeEnum.OMS.getCode()))) {
             validation.error(AreaErrorReason.POLICY_TYPE_IS_INCORRECT);
             throw new ContingentException(validation);
@@ -536,7 +537,7 @@ public class AreaHelper {
             if (areaType.getMpguAvailable() != null
                     && !Boolean.TRUE.equals(areaType.getMpguAvailable())) {
                 validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
-                        new ValidationParameter("areaTypeTitle", areaType.getTitle() ));
+                        new ValidationParameter("areaTypeTitle", areaType.getTitle()));
             }
             if (Boolean.TRUE.equals(attachByMedicalReason)) {
                 validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
@@ -554,9 +555,8 @@ public class AreaHelper {
     }
 
     public void checkAreaTypeRelations(AreaType dependentAreaType, AreaType primaryAreaType, Validation validation) {
-        Optional<AreaTypeRelations>areaTypeRelations = areaTypeRelationsRepository.getByDependentAndPrimaryAreaTypes(dependentAreaType, primaryAreaType);
-        if (!areaTypeRelations.isPresent())
-        {
+        Optional<AreaTypeRelations> areaTypeRelations = areaTypeRelationsRepository.getByDependentAndPrimaryAreaTypes(dependentAreaType, primaryAreaType);
+        if (!areaTypeRelations.isPresent()) {
             validation.error(AreaErrorReason.AREA_TYPE_RELATIONS_NOT_EXISTS,
                     new ValidationParameter("dependentAreaTypeTitle", dependentAreaType.getTitle()),
                     new ValidationParameter("primaryAreaTypeTitle", primaryAreaType.getTitle()));
@@ -594,13 +594,13 @@ public class AreaHelper {
             if (changeEmpl.getEndDate() != null) {
                 empl.setEndDate(changeEmpl.getEndDate());
             }
-            if (Boolean.TRUE.equals(changeEmpl.getTempDuty())) {
-                empl.setTempDutyStartDate(LocalDate.now());
-            } else {
-                empl.setTempDutyStartDate(null);
+            if (Objects.nonNull(changeEmpl.getTempDuty())) {
+                empl.setTempDutyStartDate(Boolean.TRUE.equals(changeEmpl.getTempDuty()) ? LocalDate.now() : null);
             }
             empl.setUpdateDate(LocalDateTime.now());
-            empl.setError(Boolean.TRUE.equals(changeEmpl.isIsError()));
+            if (Objects.nonNull(changeEmpl.isIsError())) {
+                empl.setError(Boolean.TRUE.equals(changeEmpl.isIsError()));
+            }
 
             historyMap.put(medicalEmployeeOld, empl);
         }
@@ -616,8 +616,7 @@ public class AreaHelper {
         // Участок найден, иначе возвращает ошибку
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
-        }
-        else
+        } else
             // Система проверяет, что участок не находится в архиве, иначе возвращает ошибку
             if (checkArchived && area.getArchived()) {
                 validation.error(AreaErrorReason.AREA_IS_ARCHIVED, new ValidationParameter("areaId", areaId));
@@ -905,7 +904,7 @@ public class AreaHelper {
     }
 
     public void checkMainEmployeesUniqueness(Area area, List<AreaMedicalEmployees> mainEmployees, Set<Long> changedEmployeeIds,
-                                                   Validation validation) throws ContingentException {
+                                             Validation validation) throws ContingentException {
         Function<LocalDate, LocalDate> notNullableEndDate = (d) -> d == null ? LocalDate.MAX : d;
 
         for (AreaMedicalEmployees employee : mainEmployees) {
@@ -1005,8 +1004,7 @@ public class AreaHelper {
 
         if (area == null) {
             validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
-        }
-        else if (!area.getArchived()) {
+        } else if (!area.getArchived()) {
             validation.error(AreaErrorReason.AREA_IS_NOT_ARCHIVED, new ValidationParameter("areaId", areaId));
         }
         return area;
@@ -1018,8 +1016,7 @@ public class AreaHelper {
             if (a.getStartDate().equals(LocalDate.now())) {
                 a.setEndDate(LocalDate.now().minusDays(1)); // что б МР не попадали в актуальные при отправке в ЕСУ
                 areaMedicalEmployeeRepository.delete(a);
-            }
-            else {
+            } else {
                 a.setEndDate(LocalDate.now().minusDays(1));
             }
         });
@@ -1061,7 +1058,7 @@ public class AreaHelper {
             if (foundError) {
                 validation.error(AreaErrorReason.REPLACEMENT_WITHOUT_MAIN_EMPLOYEE,
                         new ValidationParameter("startDate", period.getStartDate()),
-                        new ValidationParameter("endDate",period.getEndDate()));
+                        new ValidationParameter("endDate", period.getEndDate()));
                 foundError = false;
             }
         }
