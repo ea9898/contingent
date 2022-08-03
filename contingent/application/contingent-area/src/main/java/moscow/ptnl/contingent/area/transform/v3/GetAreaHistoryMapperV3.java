@@ -56,7 +56,7 @@ public interface GetAreaHistoryMapperV3 {
     }
 
     default void addAttributeValue(String attributeName, String oldValue, String newValue, List<AttributeValues> values) {
-        if (!Objects.equals(oldValue, newValue)) {
+        if (Objects.nonNull(oldValue) && Objects.nonNull(newValue)) { // выводим в случае если одно из значений не нулевое
             AttributeValues value = new AttributeValues();
             value.setAttributeName(attributeName);
             value.setOldValue(oldValue);
