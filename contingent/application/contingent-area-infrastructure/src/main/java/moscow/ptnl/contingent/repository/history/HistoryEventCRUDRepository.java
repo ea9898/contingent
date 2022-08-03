@@ -174,7 +174,17 @@ public interface HistoryEventCRUDRepository extends CommonRepository<HistoryEven
             "    OR\n" +
             "        CAST(jlh.object_id AS NUMERIC) = :areaId\n" +
             "    AND\n" +
-            "        jlh.obj_type = 2\n",
+            "        jlh.obj_type = 2\n" +
+            "    AND (jhc1.old_value is not null OR jhc1.new_value is not null OR " +
+                    "jhc2.old_value is not null OR jhc2.new_value is not null OR " +
+                    "jhc3.old_value is not null OR jhc3.new_value is not null OR " +
+                    "jhc4.old_value is not null OR jhc4.new_value is not null OR " +
+                    "jhc5.old_value is not null OR jhc5.new_value is not null OR " +
+                    "jhc11.old_value is not null OR jhc11.new_value is not null OR " +
+                    "jhc12.old_value is not null OR jhc12.new_value is not null OR " +
+                    "jhc13.old_value is not null OR jhc13.new_value is not null OR " +
+                    "jhc14.old_value is not null OR jhc14.new_value is not null " +
+                    ")",
             nativeQuery = true)
     Page<AreaOrEmployeeEvent> findAreaAndEmployeeEvents(@Param("areaId") Long areaId, Pageable paging);
 }
