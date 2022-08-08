@@ -390,7 +390,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
                         .filter(event -> Objects.nonNull(event.getChangeData()) && !event.getChangeData().getAttributeValues().isEmpty())
                         .collect(Collectors.toList()));
             }
-            soapCustomMapper.mapPagingResults(response.getResult(), results);
+             soapCustomMapper.mapPagingResults(response.getResult(), results);
             return response;
         } catch (Exception ex) {
             throw exceptionMapper.mapException(ex);

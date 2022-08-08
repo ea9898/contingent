@@ -42,6 +42,62 @@ public interface HistoryEventCRUDRepository extends CommonRepository<HistoryEven
             "        CAST(jlh.object_id AS NUMERIC) = ame.id\n" +
             "    AND\n" +
             "        jlh.obj_type = 1\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc1 ON\n" +
+            "        jhc1.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc1.column_name = 'startDate'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc2 ON\n" +
+            "        jhc2.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc2.column_name = 'endDate'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc3 ON\n" +
+            "        jhc3.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc3.column_name = 'isError'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc4 ON\n" +
+            "        jhc4.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc4.column_name = 'replacement'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc5 ON\n" +
+            "        jhc5.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc5.column_name = 'tempDutyStartDate'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 1\n" +
+            "    LEFT JOIN jl_history_columns jhc11 ON\n" +
+            "        jhc11.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc11.column_name = 'description'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2\n" +
+            "    LEFT JOIN jl_history_columns jhc12 ON\n" +
+            "        jhc12.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc12.column_name = 'number'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2\n" +
+            "    LEFT JOIN jl_history_columns jhc13 ON\n" +
+            "        jhc13.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc13.column_name = 'createDate'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2\n" +
+            "    LEFT JOIN jl_history_columns jhc14 ON\n" +
+            "        jhc14.jrn_id = jlh.id\n" +
+            "    AND\n" +
+            "        jhc14.column_name = 'archived'\n" +
+            "    AND\n" +
+            "        jlh.obj_type = 2\n" +
             "WHERE\n" +
             "        CAST(jlh.object_id AS NUMERIC) IN (\n" +
             "            SELECT\n" +
@@ -53,10 +109,23 @@ public interface HistoryEventCRUDRepository extends CommonRepository<HistoryEven
             "        )\n" +
             "    AND\n" +
             "        jlh.obj_type = 1\n" +
+            "    AND\n" +
+            "       (jhc1.old_value is not null OR jhc1.new_value is not null OR " +
+            "       jhc2.old_value is not null OR jhc2.new_value is not null OR " +
+            "       jhc3.old_value is not null OR jhc3.new_value is not null OR " +
+            "       jhc4.old_value is not null OR jhc4.new_value is not null OR " +
+            "       jhc5.old_value is not null OR jhc5.new_value is not null " +
+            "        )" +
             "    OR\n" +
             "        CAST(jlh.object_id AS NUMERIC) = :areaId\n" +
             "    AND\n" +
-            "        jlh.obj_type = 2",
+            "        jlh.obj_type = 2" +
+            "    AND (" +
+            "       jhc11.old_value is not null OR jhc11.new_value is not null OR " +
+            "       jhc12.old_value is not null OR jhc12.new_value is not null OR " +
+            "       jhc13.old_value is not null OR jhc13.new_value is not null OR " +
+            "       jhc14.old_value is not null OR jhc14.new_value is not null " +
+            ")",
             value =
             "WITH history AS (\n" +
             "    SELECT\n" +
@@ -171,19 +240,22 @@ public interface HistoryEventCRUDRepository extends CommonRepository<HistoryEven
             "        )\n" +
             "    AND\n" +
             "        jlh.obj_type = 1\n" +
+            "    AND\n" +
+            "       (jhc1.old_value is not null OR jhc1.new_value is not null OR " +
+            "       jhc2.old_value is not null OR jhc2.new_value is not null OR " +
+            "       jhc3.old_value is not null OR jhc3.new_value is not null OR " +
+            "       jhc4.old_value is not null OR jhc4.new_value is not null OR " +
+            "       jhc5.old_value is not null OR jhc5.new_value is not null " +
+            "        )" +
             "    OR\n" +
             "        CAST(jlh.object_id AS NUMERIC) = :areaId\n" +
             "    AND\n" +
             "        jlh.obj_type = 2\n" +
-            "    AND (jhc1.old_value is not null OR jhc1.new_value is not null OR " +
-                    "jhc2.old_value is not null OR jhc2.new_value is not null OR " +
-                    "jhc3.old_value is not null OR jhc3.new_value is not null OR " +
-                    "jhc4.old_value is not null OR jhc4.new_value is not null OR " +
-                    "jhc5.old_value is not null OR jhc5.new_value is not null OR " +
-                    "jhc11.old_value is not null OR jhc11.new_value is not null OR " +
-                    "jhc12.old_value is not null OR jhc12.new_value is not null OR " +
-                    "jhc13.old_value is not null OR jhc13.new_value is not null OR " +
-                    "jhc14.old_value is not null OR jhc14.new_value is not null " +
+            "    AND (" +
+            "       jhc11.old_value is not null OR jhc11.new_value is not null OR " +
+            "       jhc12.old_value is not null OR jhc12.new_value is not null OR " +
+            "       jhc13.old_value is not null OR jhc13.new_value is not null OR " +
+            "       jhc14.old_value is not null OR jhc14.new_value is not null " +
                     ")",
             nativeQuery = true)
     Page<AreaOrEmployeeEvent> findAreaAndEmployeeEvents(@Param("areaId") Long areaId, Pageable paging);
