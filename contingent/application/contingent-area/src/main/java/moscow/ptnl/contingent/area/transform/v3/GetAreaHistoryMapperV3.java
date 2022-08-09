@@ -11,6 +11,7 @@ import ru.mos.emias.contingent2.core.v3.HistoryEvent;
 import ru.mos.emias.contingent2.core.v3.HistoryEvent.ChangeData.AttributeValues;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public interface GetAreaHistoryMapperV3 {
     @Mappings({
             @Mapping(target = "eventType", expression = "java( mapEventType(entity) )"),
             @Mapping(target = "updateDate", source = "updateDate"),
-            @Mapping(target = "userLogin", source = "userLogin"),
+            @Mapping(target = "userLogin", expression = "java( mapUserLogin(entity))"),
             @Mapping(target = "userJobId", expression = "java( mapUserJobId(entity) )"),
             @Mapping(target = "objectType", expression = "java( mapObjectType(entity) )"),
             @Mapping(target = "objectId", expression = "java( mapObjectId(entity) )"),
@@ -108,4 +109,12 @@ public interface GetAreaHistoryMapperV3 {
         }
         return entity.getUserJobId().longValue();
     }
+
+    default String mapUserLogin(AreaOrEmployeeEvent entity) {
+        if (entity.getUserJobId() == null || entity.getUserJobId().longValue() == 0 || entity.getUserJobId().longValue() == 1) {
+            return "Нет данных";
+        }
+        return entity.getUserLogin();
+    }
+
 }
