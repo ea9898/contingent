@@ -19,7 +19,7 @@ import java.util.List;
 @Transactional(propagation=Propagation.MANDATORY)
 public interface AreaAddressPagingAndSortingRepository extends PagingAndSortingRepository<AreaAddress, Long>, JpaSpecificationExecutor<AreaAddress> {
 
-    @Query("SELECT DISTINCT new moscow.ptnl.contingent.domain.area.model.area.MoMuPair(ar.moId, ar.muId) FROM AreaAddress aad " +
+    @Query("SELECT new moscow.ptnl.contingent.domain.area.model.area.MoMuPair(ar.moId, ar.muId) FROM AreaAddress aad " +
             "JOIN aad.address ad " +
             "JOIN aad.area ar " +
             "WHERE " +
@@ -27,7 +27,8 @@ public interface AreaAddressPagingAndSortingRepository extends PagingAndSortingR
             "    OR :regionOMKTECode IS NULL AND (ad.areaCodeOmkTe = :areaCodeOmkTe OR ad.regionTeCode = :regionTeCode AND ad.aoLevel = :aoLevelRegionTe) " +
             "  ) AND (aad.endDate IS NULL OR aad.endDate > :endDate) " +
             "  AND (:areaTypeCodes IS NULL OR ar.areaType.code IN (:areaTypeCodes)) " +
-            "  AND ar.archived = false "
+            "  AND ar.archived = false " +
+            "  GROUP BY ar.moId, ar.muId"
     )
     Page<MoMuPair> findMoMuList(@Param("areaTypeCodes") List<Long> areaTypeCodes,
                                 @Param("areaCodeOmkTe") String areaOMKTECode,
@@ -37,14 +38,16 @@ public interface AreaAddressPagingAndSortingRepository extends PagingAndSortingR
                                 @Param("endDate") LocalDate endDate,
                                 Pageable paging);
 
-    @Query("SELECT DISTINCT new moscow.ptnl.contingent.domain.area.model.area.MoMuPair(ar.moId, ar.muId) FROM AreaAddress aad " +
+    @Query("SELECT new moscow.ptnl.contingent.domain.area.model.area.MoMuPair(ar.moId, ar.muId) " +
+            "FROM AreaAddress aad " +
             "JOIN aad.address ad " +
             "JOIN aad.area ar " +
             "WHERE " +
             "  (aad.endDate IS NULL OR aad.endDate > :endDate) " +
             "  AND ad.id IN (:addressIds) " +
             "  AND (:areaTypeCodes IS NULL OR ar.areaType.code IN (:areaTypeCodes)) " +
-            "  AND ar.archived = false "
+            "  AND ar.archived = false " +
+            "  GROUP BY ar.moId, ar.muId"
     )
     Page<MoMuPair> findMoMuList(@Param("areaTypeCodes") List<Long> areaTypeCodes,
                                 @Param("addressIds") List<Long> addressIds,

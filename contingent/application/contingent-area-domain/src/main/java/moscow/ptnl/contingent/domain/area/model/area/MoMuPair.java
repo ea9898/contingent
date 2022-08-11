@@ -9,6 +9,9 @@ public class MoMuPair {
 
     private Long muId;
 
+    public MoMuPair() {
+    }
+
     public MoMuPair(Long moId, Long muId) {
         this.moId = moId;
         this.muId = muId;
