@@ -154,9 +154,12 @@ public class MedicalEmployeeHelper {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
+        List<String> strPositionsNom = positionsNom.stream().map(i -> i.getGlobalId().toString()).collect(Collectors.toList());
+        String join = String.join(", ", strPositionsNom);
+
         if (specializations.isEmpty()) {
             validation.error(AreaErrorReason.SPECIALIZATION_CODE_IS_NOT_DEFINED,
-                    new ValidationParameter("positionCode", inputEmployee.getPositionCode()));
+                    new ValidationParameter("positionCode", join));
         }
         //6.6
         if (areaTypeSpecializations.stream().filter(item -> item.getArchived() != null && item.getArchived().equals(Boolean.FALSE))
