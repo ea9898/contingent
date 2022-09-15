@@ -107,7 +107,7 @@ public class MedicalEmployeeHelper {
         }
 
         //6.3
-        if (inputEmployee.getEndDate() != null && inputEmployee.getStartDate().isAfter(inputEmployee.getEndDate())){
+        if (inputEmployee.getEndDate() != null && inputEmployee.getStartDate().isAfter(inputEmployee.getEndDate())) {
             validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
                     new ValidationParameter("endDate", inputEmployee.getEndDate()),
                     new ValidationParameter("startDate", inputEmployee.getStartDate()));
@@ -119,7 +119,8 @@ public class MedicalEmployeeHelper {
         //6.4.1.
         if (positionCodeFromSUPP) {
             //ЕСЛИ код должности медработника числовой (= медработник ведется в СУПП)
-            List<MappingPositionCodeToOtherPosition> mappingPositions = mappingPositionCodeToOtherPositionRepository.findByPositionSuppCode(inputEmployee.getPositionCode());
+            List<MappingPositionCodeToOtherPosition> mappingPositions =
+                    mappingPositionCodeToOtherPositionRepository.findByPositionSuppCode(inputEmployee.getPositionCode());
 
             if (!mappingPositions.isEmpty()) {
                 positionsCode.addAll(positionCodeRepository.getByGlobalIds(mappingPositions.stream()
@@ -134,26 +135,32 @@ public class MedicalEmployeeHelper {
         //6.4.2.
         final List<PositionNom> positionsNom = positionsCode.isEmpty() ? Collections.emptyList() :
                 positionNomRepository.findByPositionCodeIds(positionsCode.stream()
-                                .map(PositionCode::getGlobalId)
-                                .collect(Collectors.toList())
-                        ).stream()
+                        .map(PositionCode::getGlobalId)
+                        .collect(Collectors.toList())
+                ).stream()
                         .filter(p -> positionCodeFromSUPP || p.getEndDate() == null)
                         .collect(Collectors.toList());
+        if (positionsNom.isEmpty()) {
+            validation.error(AreaErrorReason.SPECIALIZATION_IS_NOT_SPECIFIED,
+                    new ValidationParameter("positionCode", inputEmployee.getPositionCode()));
+        }
         //6.5
         List<String> specializations = positionsNom.stream()
                 .map(PositionNom::getSpecialization)
                 .filter(Objects::nonNull)
                 .distinct()
+                .filter(item -> item.getArchived() != null && item.getArchived().equals(Boolean.FALSE))
                 .map(Specialization::getCode)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         if (specializations.isEmpty()) {
-            validation.error(AreaErrorReason.POSITION_CODE_NOT_FOUND,
+            validation.error(AreaErrorReason.SPECIALIZATION_CODE_IS_NOT_DEFINED,
                     new ValidationParameter("positionCode", inputEmployee.getPositionCode()));
         }
         //6.6
-        if (areaTypeSpecializations.stream().noneMatch(ats -> specializations.contains(ats.getSpecializationCode()))) {
+        if (areaTypeSpecializations.stream().filter(item -> item.getArchived() != null && item.getArchived().equals(Boolean.FALSE))
+                .noneMatch(ats -> specializations.contains(ats.getSpecializationCode()))) {
             validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
                     new ValidationParameter("SpecializationTitle", positionsNom.stream()
                             .map(PositionNom::getSpecialization)
