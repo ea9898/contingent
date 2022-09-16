@@ -96,7 +96,7 @@ public class SetMedicalEmployeeOnAreaIntTest {
         ContingentException result = Assertions.assertThrows(ContingentException.class, () -> areaService.setMedicalEmployeeOnAreaInternal(4, Arrays.asList(
                 new AddMedicalEmployee() {{ setMedicalEmployeeJobInfoId(12L); setPositionCode("test5"); setStartDate(LocalDate.now()); }}
         ), Collections.emptyList()));
-        Assertions.assertEquals("Код должности медработника test5 не найден в системе", result.getMessage());
+        Assertions.assertEquals("Для должности мед. работника в справочнике номенклатуры должностей не указана специализация", result.getMessage());
     }
 
     @Test
@@ -106,6 +106,6 @@ public class SetMedicalEmployeeOnAreaIntTest {
         ContingentException result = Assertions.assertThrows(ContingentException.class, () -> areaService.setMedicalEmployeeOnAreaInternal(4, Arrays.asList(
                 new AddMedicalEmployee() {{ setMedicalEmployeeJobInfoId(12L); setPositionCode("1357"); setStartDate(LocalDate.now()); }}
         ), Collections.emptyList()));
-        Assertions.assertEquals("Код должности медработника 1357 не найден в системе", result.getMessage());
+        Assertions.assertEquals("Для должности мед. работника в справочнике номенклатуры должностей не указана специализация", result.getMessage());
     }
 }
