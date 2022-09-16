@@ -1863,7 +1863,7 @@ public class A_YY_3_Test extends BaseTest {
         addresses4.setPlaceCode("PLACECODE_CODE_1");
         addresses4.setCityCode("CITY_CODE_1");
         addresses4.setAreaCode("AREA_CODE_10");
-        addresses4.setAreaCodeOmkTe("AREA_OMKTE_CODE_20");
+        addresses4.setAreaCodeOmkTe("AREA_OMKTE_CODE_2");
         addresses4.setRegionTeCode("REGION_OMKTE_CODE_2");
         addressesList.add(addresses4);
 
