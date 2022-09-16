@@ -154,16 +154,16 @@ public class MedicalEmployeeHelper {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        List<String> strPositionsNom = positionsNom.stream().map(i -> i.getGlobalId().toString()).collect(Collectors.toList());
-        String join = String.join(", ", strPositionsNom);
-
         if (specializations.isEmpty()) {
             validation.error(AreaErrorReason.SPECIALIZATION_CODE_IS_NOT_DEFINED,
-                    new ValidationParameter("positionCode", join));
+                    new ValidationParameter("positionCode", positionsNom.stream()
+                            .map(i -> i.getGlobalId().toString())
+                            .collect(Collectors.joining(", "))));
         }
         //6.6
         if (areaTypeSpecializations.stream().filter(item -> item.getArchived() != null && item.getArchived().equals(Boolean.FALSE))
                 .noneMatch(ats -> specializations.contains(ats.getSpecializationCode()))) {
+
             validation.error(AreaErrorReason.SPECIALIZATION_NOT_RELATED_TO_AREA,
                     new ValidationParameter("SpecializationTitle", positionsNom.stream()
                             .map(PositionNom::getSpecialization)
@@ -174,8 +174,10 @@ public class MedicalEmployeeHelper {
                     new ValidationParameter("jobInfoId", inputEmployee.getMedicalEmployeeJobInfoId()),
                     new ValidationParameter("AreaSpecializationTitles", areaTypeSpecializations.stream()
                             .map(AreaTypeSpecializations::getSpecializationCode)
+                            .filter(Objects::nonNull)
                             .distinct()
                             .map(specializationRepository::getByCode)
+                            .filter(Objects::nonNull)
                             .map(Specialization::getTitle)
                             .collect(Collectors.joining(", "))));
         }
