@@ -226,7 +226,7 @@ public class Algorithms {
                         String[] codes2 = addressRegistry.getRegionOMKTE().getCode().split(AlgorithmsHelper.ADDRESS_CODE_VALUES_SPLITTER);
                         return addresses.stream().filter(addr ->
                                         Arrays.stream(codes2).anyMatch(c -> addr.getRegionTeCode() != null && addr.getRegionTeCode().equals(c)) &&
-                                        Arrays.stream(codes).anyMatch(c -> addr.getAreaCodeOmkTe() != null && addr.getAreaCodeOmkTe().equals(c)))
+                                        Arrays.stream(codes).anyMatch(c -> addr.getAreaCodeOmkTe() == null || addr.getAreaCodeOmkTe().equals(c)))
                                 .collect(Collectors.toList());
                     } else {
                         return new ArrayList<>();
