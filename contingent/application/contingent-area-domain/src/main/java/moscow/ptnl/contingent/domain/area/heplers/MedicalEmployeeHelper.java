@@ -132,6 +132,11 @@ public class MedicalEmployeeHelper {
             positionCodeRepository.getByCode(inputEmployee.getPositionCode())
                     .ifPresent(positionsCode::add);
         }
+        if (positionsCode.isEmpty()) {
+            validation.error(AreaErrorReason.POSITION_CODE_NOT_FOUND,
+                    new ValidationParameter("positionCode", inputEmployee.getPositionCode()));
+
+        }
         //6.4.2.
         final List<PositionNom> positionsNom = positionsCode.isEmpty() ? Collections.emptyList() :
                 positionNomRepository.findByPositionCodeIds(positionsCode.stream()
