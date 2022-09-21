@@ -843,11 +843,11 @@ public class AreaServiceImpl implements AreaService {
         addressesRegistry.forEach(ar -> {
             MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(),
                     ar, validation);
-            if (moAddressIntersect == null || !moAddressIntersect.getMoId().equals(area.getMoId())) {
+            if (moAddressIntersect != null && moAddressIntersect.getMoId().equals(area.getMoId())) {
+                findMoAddress.put(ar.getGlobalIdNsi(), moAddressIntersect);
+            } else {
                 validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
                         new ValidationParameter("moId", area.getMoId()));
-            } else if (moAddressIntersect.getMoId().equals(area.getMoId())) {
-                findMoAddress.put(ar.getGlobalIdNsi(), moAddressIntersect);
             }
         });
 

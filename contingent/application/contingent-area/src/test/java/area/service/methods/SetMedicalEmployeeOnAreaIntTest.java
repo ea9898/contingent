@@ -112,7 +112,7 @@ public class SetMedicalEmployeeOnAreaIntTest {
                     setStartDate(LocalDate.now());
                 }}
         ), Collections.emptyList()));
-        Assertions.assertEquals("Для должности мед. работника в справочнике номенклатуры должностей не указана специализация", result.getMessage());
+        Assertions.assertEquals("Код должности медработника test5 не найден в системе", result.getMessage());
     }
 
     @Test
@@ -126,7 +126,7 @@ public class SetMedicalEmployeeOnAreaIntTest {
                     setStartDate(LocalDate.now());
                 }}
         ), Collections.emptyList()));
-        Assertions.assertEquals("Для должности мед. работника в справочнике номенклатуры должностей не указана специализация", result.getMessage());
+        Assertions.assertEquals("Код должности медработника 1357 не найден в системе", result.getMessage());
     }
 
     @Test
