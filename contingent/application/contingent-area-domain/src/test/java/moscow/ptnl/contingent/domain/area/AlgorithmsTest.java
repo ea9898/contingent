@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -88,8 +89,8 @@ class AlgorithmsTest{
 
         Validation validation = new Validation();
 
-        MoAddress moAddressOut = algorithms.searchServiceDistrictMOByAddress(areaType, addressRegistry, validation);
-        assertNotNull(moAddressOut);
+        List<MoAddress> moAddressOut = algorithms.searchServiceDistrictMOByAddress(areaType, addressRegistry, validation);
+        assertFalse(moAddressOut.isEmpty());
     }
 
     @Test
@@ -116,7 +117,7 @@ class AlgorithmsTest{
 
         Validation validation = new Validation();
 
-        MoAddress moAddressOut = algorithms.searchServiceDistrictMOByAddress(areaType, addressRegistry, validation);
-        assertNotNull(moAddressOut);
+        List<MoAddress> moAddressOut = algorithms.searchServiceDistrictMOByAddress(areaType, addressRegistry, validation);
+        assertFalse(moAddressOut.isEmpty());
     }
 }

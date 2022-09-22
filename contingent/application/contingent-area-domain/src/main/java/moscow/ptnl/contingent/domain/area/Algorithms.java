@@ -69,7 +69,7 @@ public class Algorithms {
     }
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
-    public MoAddress searchServiceDistrictMOByAddress(AreaType areaType,
+    public List<MoAddress> searchServiceDistrictMOByAddress(AreaType areaType,
                                                       AddressRegistry addressRegistryTypes, Validation validation) {
 
         // 1
@@ -79,7 +79,7 @@ public class Algorithms {
             List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddressByGlobalId(addressRegistryTypes.getGlobalIdNsi(), areaType);
 
             if (moAddresses != null && !moAddresses.isEmpty()) {
-                return moAddresses.get(0);
+                return moAddresses;
             }
         }
 
@@ -106,10 +106,10 @@ public class Algorithms {
         // 5.
         if (!intersectingAddresses.isEmpty()) {
             return moAddresses.stream().filter(moAddress -> intersectingAddresses.contains(moAddress.getAddress()))
-                    .findFirst().orElse(null);
+                    .collect(Collectors.toList());
         }
 
-        return null;
+        return new ArrayList<>();
     }
 
     // Поиск участков по адресу (А_УУ_2)

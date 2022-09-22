@@ -841,10 +841,11 @@ public class AreaServiceImpl implements AreaService {
         // 7
         Map<Long, MoAddress> findMoAddress = new HashMap<>();
         addressesRegistry.forEach(ar -> {
-            MoAddress moAddressIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(),
+            List<MoAddress> moAddressesIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(),
                     ar, validation);
-            if (moAddressIntersect != null && moAddressIntersect.getMoId().equals(area.getMoId())) {
-                findMoAddress.put(ar.getGlobalIdNsi(), moAddressIntersect);
+            Optional<MoAddress> moAddress = moAddressesIntersect.stream().filter(mai -> mai.getMoId().equals(area.getMoId())).findFirst();
+            if (moAddress.isPresent()) {
+                findMoAddress.put(ar.getGlobalIdNsi(), moAddress.get());
             } else {
                 validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
                         new ValidationParameter("moId", area.getMoId()));
@@ -1116,12 +1117,12 @@ public class AreaServiceImpl implements AreaService {
         // 5.
         for (AreaType areaType : areaTypes) {
             addressesRegistry.forEach(addr -> {
-                MoAddress moAddress = algorithms.searchServiceDistrictMOByAddress(areaType, addr, validation);
+                List<MoAddress> moAddress = algorithms.searchServiceDistrictMOByAddress(areaType, addr, validation);
 
-                if (moAddress != null) {
+                if (moAddress != null && !moAddress.isEmpty()) {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
                             new ValidationParameter("address", addr.getAddressString()),
-                            new ValidationParameter("moId", moAddress.getMoId()));
+                            new ValidationParameter("moId", moAddress.get(0).getMoId()));
                 }
             });
         }
