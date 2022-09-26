@@ -92,7 +92,7 @@ public class Algorithms {
             moAddresses.addAll(moAddressRepository.getActiveMoAddressByGlobalIdAndLevel(
                     addressRegistryTypes.getGlobalIdNsi(), addressRegistryTypes.getAoLevel(), areaType));
         }
-        if (moAddresses.isEmpty()) { return null; }
+        if (moAddresses.isEmpty()) { return moAddresses; }
 
         // 3.
         List<Addresses> moAddressesObj = moAddresses.stream().map(MoAddress::getAddress)

@@ -194,7 +194,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                     criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
                     criteriaBuilder.or(
                             criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
-                            root.get(MoAddress_.endDate.getName()).isNull()
+                            criteriaBuilder.isNull(root.get(MoAddress_.endDate.getName()))
                     ));
         };
         return moAddressPagingAndSortingRepository.findAll(moAddressSpecification);
