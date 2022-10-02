@@ -353,6 +353,22 @@ public class Algorithms {
         });
     }
 
+    public void checkAddressFLKV3(List<AddressRegistry> addresses, Validation validation) {
+
+        List<Addresses> addressesExistedList = addressesRepository.findAddresses(addresses.stream()
+                .map(AddressRegistry::getGlobalIdNsi)
+                .collect(Collectors.toList()));
+
+        Set<Long>  globalIdExisted = addressesExistedList.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());
+        addresses.removeIf(item -> globalIdExisted.contains(item.getGlobalIdNsi()));
+
+        List<AddressRegistry> addressesNotExistedList = addresses.stream()
+                .filter(item -> globalIdExisted.contains(item.getGlobalIdNsi()))
+                .collect(Collectors.toList());
+
+        checkAddressFLK(addressesNotExistedList, validation);
+    }
+
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
     // алгоритм изменён, вместо входного списка адресов НСИ, делаем запросы в нси с нужными фильтрами
     public List<Addresses> findIntersectingAddressesSearch(List<SearchAreaAddress> addressesRegistryType) throws ContingentException {

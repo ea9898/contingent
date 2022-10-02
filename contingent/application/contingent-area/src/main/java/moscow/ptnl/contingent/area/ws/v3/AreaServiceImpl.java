@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.area.ws.v3;
 import moscow.ptnl.contingent.area.transform.OptionEnum;
 import moscow.ptnl.contingent.area.transform.SoapBaseExceptionMapper;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddressRegistryToAddressRegistryBaseMapper;
 import moscow.ptnl.contingent.area.transform.v1.model.options.GetAreaListBriefOptions;
 import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
 import moscow.ptnl.contingent.area.transform.v2.AreaDnMapperV2;
@@ -26,6 +27,7 @@ import moscow.ptnl.contingent.domain.area.entity.MuMuService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
+import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
@@ -619,13 +621,21 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
+        AddAreaAddressResponse response = new AddAreaAddressResponse();
+
         try {
-            return versioningMapper.map(areaServiceV1.addAreaAddress(versioningMapper.map(body, new ru.mos.emias.contingent2.area.types.AddAreaAddressRequest())),
-                    new AddAreaAddressResponse());
+            response.getAreaAddressIds()
+                    .addAll(
+                            areaServiceDomain
+                                    .addAreaAddressV3(
+                                            body.getAreaId(),
+                                            body.getAddresses().stream().map(addressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()),
+                                            true));
+        } catch (ContingentException e) {
+            e.printStackTrace();
         }
-        catch (Exception ex) {
-            throw exceptionMapper.mapException(ex);
-        }
+        return response;
+
     }
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics

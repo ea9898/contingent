@@ -903,6 +903,101 @@ public class AreaServiceImpl implements AreaService {
         return areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
     }
 
+    @Override
+    public List<Long> addAreaAddressInternalV3(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
+        Validation validation = new Validation();
+
+        // 2 и 3
+        Area area = areaHelper.checkAndGetArea(areaId, validation, true);
+        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+
+        // 4
+        if (limitAddress) {
+            areaHelper.checkTooManyAddresses(addressesRegistry, settingService.getPar1());
+        }
+
+        // 5
+        Set<Long> addrSet = new HashSet<>(addressesRegistry.size());
+        addressesRegistry.removeIf(addr -> !addrSet.add(addr.getGlobalIdNsi()));
+
+        // 6
+//        algorithms.checkAddressFLK(addressesRegistry, validation);
+        algorithms.checkAddressFLKV3(addressesRegistry, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 7
+        Map<Long, MoAddress> findMoAddress = new HashMap<>();
+        addressesRegistry.forEach(ar -> {
+            List<MoAddress> moAddressesIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(),
+                    ar, validation);
+            Optional<MoAddress> moAddress = moAddressesIntersect.stream().filter(mai -> mai.getMoId().equals(area.getMoId())).findFirst();
+            if (moAddress.isPresent()) {
+                findMoAddress.put(ar.getGlobalIdNsi(), moAddress.get());
+            } else {
+                validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
+                        new ValidationParameter("moId", area.getMoId()));
+            }
+        });
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 8
+        List<AreaAddress> intersectingAddresses = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
+        intersectingAddresses.forEach(a -> {
+            if (!a.getArea().equals(area)) {
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
+                        new ValidationParameter("globalIdNsi", a.getAddress().getGlobalId()),
+                        new ValidationParameter("areaId", a.getArea().getId()),
+                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+            } else {
+                String addressString = addressesRegistry.stream()
+                        .filter(r -> Objects.equals(r.getGlobalIdNsi(), a.getAddress().getGlobalId()))
+                        .map(AddressRegistry::getAddressString)
+                        .findFirst()
+                        .orElse(a.getAddress().getAddress());
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", addressString));
+            }
+        });
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        // 9
+        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream().map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
+
+        // 10
+        List<AreaAddress> areaAddresses = addresses.stream().map(addr -> {
+            AreaAddress areaAddress = new AreaAddress();
+            areaAddress.setArea(area);
+            areaAddress.setMoAddress(findMoAddress.get(addr.getGlobalId()));
+            areaAddress.setAddress(addr);
+            areaAddress.setCreateDate(LocalDateTime.now());
+            areaAddress.setUpdateDate(LocalDateTime.now());
+            areaAddress.setStartDate(LocalDate.now());
+            return areaAddress;
+        }).collect(Collectors.toList());
+        areaAddressRepository.saveAll(areaAddresses);
+
+        // 11 аннотация @LogESU
+
+        // 12
+        for (AreaAddress areaAddress: areaAddresses) {
+            historyHelper.sendHistory(null, areaAddress, AreaAddress.class);
+        }
+
+        return areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
+    }
+
+    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    public List<Long> addAreaAddressV3(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
+        return addAreaAddressInternalV3(areaId, addressesRegistry, limitAddress);
+    }
+
     @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
         Validation validation = new Validation();

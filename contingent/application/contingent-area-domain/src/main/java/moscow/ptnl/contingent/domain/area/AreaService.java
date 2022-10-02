@@ -176,6 +176,10 @@ public interface AreaService {
 
     List<Long> addAreaAddressInternal(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException;
 
+    List<Long> addAreaAddressV3(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException;
+
+    List<Long> addAreaAddressInternalV3(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException;
+
     /**
      * (К_УУ_14) Удаление адресов из участка обслуживания
      * Удаление адресов из участка обслуживания
