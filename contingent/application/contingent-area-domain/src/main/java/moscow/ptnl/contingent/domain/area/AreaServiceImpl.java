@@ -921,8 +921,7 @@ public class AreaServiceImpl implements AreaService {
         addressesRegistry.removeIf(addr -> !addrSet.add(addr.getGlobalIdNsi()));
 
         // 6
-//        algorithms.checkAddressFLK(addressesRegistry, validation);
-        algorithms.checkAddressFLKV3(addressesRegistry, validation);
+        List<Addresses> checkAddressFLKV = algorithms.checkAddressFLKV3(addressesRegistry, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);

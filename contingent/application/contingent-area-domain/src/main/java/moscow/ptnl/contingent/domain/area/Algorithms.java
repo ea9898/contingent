@@ -64,6 +64,9 @@ public class Algorithms {
 
     private AlgorithmsHelper algorithmsHelper;
 
+    @Autowired
+    private MappingDomainService mappingDomainService;
+
     public Algorithms(AlgorithmsHelper algorithmsHelper) {
         this.algorithmsHelper = algorithmsHelper;
     }
@@ -353,7 +356,7 @@ public class Algorithms {
         });
     }
 
-    public void checkAddressFLKV3(List<AddressRegistry> addresses, Validation validation) {
+    public List<Addresses> checkAddressFLKV3(List<AddressRegistry> addresses, Validation validation) {
 
         List<Addresses> addressesExistedList = addressesRepository.findAddresses(addresses.stream()
                 .map(AddressRegistry::getGlobalIdNsi)
@@ -366,7 +369,14 @@ public class Algorithms {
                 .filter(item -> globalIdExisted.contains(item.getGlobalIdNsi()))
                 .collect(Collectors.toList());
 
+        List<Addresses> addressesList = addresses.stream().map(i -> mappingDomainService.dtoToEntityTransform(i)).collect(Collectors.toList());
+
         checkAddressFLK(addressesNotExistedList, validation);
+        if(validation.isSuccess()) {
+            addressesExistedList.addAll(addressesRepository.saveAll(addressesList));
+        }
+
+        return addressesExistedList;
     }
 
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
