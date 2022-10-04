@@ -626,16 +626,14 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         try {
             response.getAreaAddressIds()
                     .addAll(
-                            areaServiceDomain
-                                    .addAreaAddressV3(
-                                            body.getAreaId(),
-                                            body.getAddresses().stream().map(addressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()),
+                            areaServiceDomain.addAreaAddressV3(
+                                    body.getAreaId(), body.getAddresses().stream()
+                                            .map(addressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()),
                                             true));
         } catch (ContingentException e) {
             e.printStackTrace();
         }
         return response;
-
     }
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
