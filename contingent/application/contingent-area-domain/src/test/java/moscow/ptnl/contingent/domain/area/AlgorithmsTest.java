@@ -1,11 +1,11 @@
 package moscow.ptnl.contingent.domain.area;
 
-import moscow.ptnl.contingent.domain.MockConfiguration;
-import moscow.ptnl.contingent.domain.MockRepositoriesConfiguration;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
+import moscow.ptnl.contingent.domain.configuration.MockConfiguration;
+import moscow.ptnl.contingent.domain.configuration.MockRepositoriesConfiguration;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;

@@ -88,6 +88,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.naturalOrder;
@@ -179,14 +180,16 @@ public class AreaServiceImpl implements AreaService {
     @Autowired
     private MappingPositionCodeToOtherPositionRepository mappingPositionCodeToOtherPositionRepository;
 
-    @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
+    @Override
+    @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         return createPrimaryAreaInternal(moId, muId, number, areaTypeCode, null, policyTypesIds, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description).getId();
     }
 
-    @Override @LogESU(type = AreaInfoEvent.class, useResult = true)
+    @Override
+    @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, Long areaTypeProfileCode, List<Long> policyTypesIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
@@ -408,7 +411,8 @@ public class AreaServiceImpl implements AreaService {
         return area.getId();
     }
 
-    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    @Override
+    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void updatePrimaryArea(long areaId, Integer number, List<Long> policyTypesAddIds, List<Long> policyTypesDelIds, Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW, Boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
 
@@ -645,7 +649,8 @@ public class AreaServiceImpl implements AreaService {
 
     }
 
-    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    @Override
+    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public List<Long> setMedicalEmployeeOnArea(long areaId, List<AddMedicalEmployee> addEmployeesInput,
                                                List<ChangeMedicalEmployee> changeEmployeesInput) throws ContingentException {
         return setMedicalEmployeeOnAreaInternal(areaId, addEmployeesInput, changeEmployeesInput);
@@ -671,8 +676,7 @@ public class AreaServiceImpl implements AreaService {
         areaMedicalEmployeeRepository.findAllById(changeIds).forEach(changeEmployeesDb::add);
 
         if (!AreaTypeKindEnum.MILDLY_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode())
-                && !AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode()))
-        {
+                && !AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.equalsCode(area.getAreaType().getAreaTypeKind().getCode())) {
 
             addEmployeesInput.stream().filter(empl -> !empl.isReplacement())
                     .forEach(empl -> validation.error(AreaErrorReason.AREA_NOT_RELATED_TO_MILDLY_ASSOCIATED));
@@ -711,7 +715,7 @@ public class AreaServiceImpl implements AreaService {
                 .collect(Collectors.toList()));
         //7.1
         List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
-        Map<AreaMedicalEmployees, AreaMedicalEmployees> changesAme =  areaHelper.applyChanges(allEmployees, changeEmployeesCorrectInput);
+        Map<AreaMedicalEmployees, AreaMedicalEmployees> changesAme = areaHelper.applyChanges(allEmployees, changeEmployeesCorrectInput);
         areaHelper.addNew(allEmployees, addEmployeesInput, area);
         areaHelper.checkDatesNotInterceptWithSamePosition(
                 allEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation); // отфитровываем ошибочно назначенные работников из проверки
@@ -774,7 +778,7 @@ public class AreaServiceImpl implements AreaService {
         });
 
         // Логирование изменений
-        for (Map.Entry<AreaMedicalEmployees, AreaMedicalEmployees> entry: changesAme.entrySet()) {
+        for (Map.Entry<AreaMedicalEmployees, AreaMedicalEmployees> entry : changesAme.entrySet()) {
             historyHelper.sendHistory(entry.getKey(), entry.getValue(), AreaMedicalEmployees.class);
         }
 
@@ -809,7 +813,8 @@ public class AreaServiceImpl implements AreaService {
         return areaInfo;
     }
 
-    @Override  @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    @Override
+    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public List<Long> addAreaAddress(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
         return addAreaAddressInternal(areaId, addressesRegistry, limitAddress);
     }
@@ -820,7 +825,9 @@ public class AreaServiceImpl implements AreaService {
 
         // 2 и 3
         Area area = areaHelper.checkAndGetArea(areaId, validation, true);
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         // 4
         if (limitAddress) {
@@ -847,7 +854,7 @@ public class AreaServiceImpl implements AreaService {
             if (moAddress.isPresent()) {
                 findMoAddress.put(ar.getGlobalIdNsi(), moAddress.get());
             } else {
-                validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
+                validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString", ar.getAddressString()),
                         new ValidationParameter("moId", area.getMoId()));
             }
         });
@@ -896,7 +903,7 @@ public class AreaServiceImpl implements AreaService {
         // 11 аннотация @LogESU
 
         // 12
-        for (AreaAddress areaAddress: areaAddresses) {
+        for (AreaAddress areaAddress : areaAddresses) {
             historyHelper.sendHistory(null, areaAddress, AreaAddress.class);
         }
 
@@ -909,7 +916,9 @@ public class AreaServiceImpl implements AreaService {
 
         // 2 и 3
         Area area = areaHelper.checkAndGetArea(areaId, validation, true);
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         // 4
         if (limitAddress) {
@@ -929,16 +938,10 @@ public class AreaServiceImpl implements AreaService {
 
         // 7
         Map<Long, MoAddress> findMoAddress = new HashMap<>();
-        addressesRegistry.forEach(ar -> {
-            List<MoAddress> moAddressesIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(),
-                    ar, validation);
-            Optional<MoAddress> moAddress = moAddressesIntersect.stream().filter(mai -> mai.getMoId().equals(area.getMoId())).findFirst();
-            if (moAddress.isPresent()) {
-                findMoAddress.put(ar.getGlobalIdNsi(), moAddress.get());
-            } else {
-                validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI, new ValidationParameter("addressString",  ar.getAddressString()),
-                        new ValidationParameter("moId", area.getMoId()));
-            }
+        checkAddressFLKV.forEach(address -> {
+            List<MoAddress> moAddressesIntersect = algorithms.searchServiceDistrictMOByAddressV3(area.getAreaType(), area.getMoId(), address);
+            Optional<MoAddress> first = moAddressesIntersect.stream().findFirst();
+            first.ifPresent(moAddress -> findMoAddress.put(address.getGlobalId(), moAddress));
         });
 
         if (!validation.isSuccess()) {
@@ -946,22 +949,37 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 8
-        List<AreaAddress> intersectingAddresses = algorithms.searchAreaByAddress(area.getMoId(), area.getAreaType(), addressesRegistry, validation);
-        intersectingAddresses.forEach(a -> {
-            if (!a.getArea().equals(area)) {
-                validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
-                        new ValidationParameter("globalIdNsi", a.getAddress().getGlobalId()),
-                        new ValidationParameter("areaId", a.getArea().getId()),
-                        new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
-            } else {
-                String addressString = addressesRegistry.stream()
-                        .filter(r -> Objects.equals(r.getGlobalIdNsi(), a.getAddress().getGlobalId()))
-                        .map(AddressRegistry::getAddressString)
-                        .findFirst()
-                        .orElse(a.getAddress().getAddress());
-                validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", addressString));
-            }
+        checkAddressFLKV.forEach(address -> {
+            List<AreaAddress> searchAreaByAddressV3 = algorithms.searchAreaByAddressV3(area.getMoId(), area.getAreaType(), address, validation);
+            searchAreaByAddressV3.forEach(a -> {
+                if (searchAreaByAddressV3.size() > 1 && searchAreaByAddressV3.stream().findAny().equals(area)) {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI,
+                            new ValidationParameter("globalIdNsi", a.getAddress().getGlobalId()),
+                            new ValidationParameter("areaId", a.getArea().getId()),
+                            new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+                }
+                if (searchAreaByAddressV3.size() > 1 && searchAreaByAddressV3.stream().noneMatch(ar -> ar.getArea().equals(area))) {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI,
+                            new ValidationParameter("globalIdNsi", a.getAddress().getGlobalId()),
+                            new ValidationParameter("areaId", a.getArea().getId()),
+                            new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+                }
+                if (!a.getArea().equals(area)) {
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
+                            new ValidationParameter("globalIdNsi", a.getAddress().getGlobalId()),
+                            new ValidationParameter("areaId", a.getArea().getId()),
+                            new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+                } else {
+                    String addressString = addressesRegistry.stream()
+                            .filter(r -> Objects.equals(r.getGlobalIdNsi(), a.getAddress().getGlobalId()))
+                            .map(AddressRegistry::getAddressString)
+                            .findFirst()
+                            .orElse(a.getAddress().getAddress());
+                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", addressString));
+                }
+            });
         });
+
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
@@ -985,29 +1003,35 @@ public class AreaServiceImpl implements AreaService {
         // 11 аннотация @LogESU
 
         // 12
-        for (AreaAddress areaAddress: areaAddresses) {
+        for (AreaAddress areaAddress : areaAddresses) {
             historyHelper.sendHistory(null, areaAddress, AreaAddress.class);
         }
 
         return areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
     }
 
-    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    @Override
+    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public List<Long> addAreaAddressV3(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
         return addAreaAddressInternalV3(areaId, addressesRegistry, limitAddress);
     }
 
-    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    @Override
+    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void delAreaAddress(long areaId, List<Long> areaAddressIds) throws ContingentException {
         Validation validation = new Validation();
 
         // 1. и 2.
         Area area = areaHelper.checkAndGetArea(areaId, validation, true);
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         // 3.
         areaHelper.tooManyAreaAddresses(areaAddressIds, settingService.getPar2(), validation);
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         // 4.
         List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaAddressIds);
@@ -1017,11 +1041,13 @@ public class AreaServiceImpl implements AreaService {
                 validation.error(AreaErrorReason.MO_ADDRESS_NOT_EXISTS, new ValidationParameter("addressId", aai));
             }
         });
-        if (!validation.isSuccess()) { throw new ContingentException(validation); }
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
 
         // 5.
         LocalDate localDate = LocalDate.now();
-        for (AreaAddress areaAddress: areaAddresses) {
+        for (AreaAddress areaAddress : areaAddresses) {
             if (areaAddress.getStartDate() == null || !areaAddress.getStartDate().equals(localDate)) {
                 AreaAddress areaAddressOld = areaAddress.clone();
                 // 5.1.
@@ -1061,13 +1087,15 @@ public class AreaServiceImpl implements AreaService {
             areaIds.stream().filter(aIn -> !foundAreasIds.contains(aIn)).forEach(aIn ->
                     validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", aIn)));
 
-            if (!validation.isSuccess()) { throw new ContingentException(validation); }
+            if (!validation.isSuccess()) {
+                throw new ContingentException(validation);
+            }
         }
 
         // 4.
         List<Long> areaIdsNotInMo = areas.stream().filter(area -> !area.getMoId().equals(moId))
                 .map(Area::getId).collect(Collectors.toList());
-        if (!areaIdsNotInMo.isEmpty())  {
+        if (!areaIdsNotInMo.isEmpty()) {
             validation.error(AreaErrorReason.AREAS_NOT_IN_MO,
                     new ValidationParameter("areaIds", areaIdsNotInMo.stream().map(Object::toString)
                             .collect(Collectors.joining(","))),
@@ -1084,7 +1112,8 @@ public class AreaServiceImpl implements AreaService {
                 areaAddresses.getPageable(), areaAddresses.getTotalElements());
     }
 
-    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    @Override
+    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void archiveArea(long areaId) throws ContingentException {
         Validation validation = new Validation();
 
@@ -1128,7 +1157,8 @@ public class AreaServiceImpl implements AreaService {
 
     }
 
-    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    @Override
+    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void restoreArea(Long areaId) throws ContingentException {
         Validation validation = new Validation();
 
@@ -1435,7 +1465,7 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     public Page<AreaInfo> searchDnArea(Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfileCode, List<Long> servicedMuIds,
-                                   List<String> specializationCodes, List<Long> areaIds, PageRequest paging, boolean loadServicedMUs) throws ContingentException {
+                                       List<String> specializationCodes, List<Long> areaIds, PageRequest paging, boolean loadServicedMUs) throws ContingentException {
         //2
         if (loadServicedMUs) { //V2
             areaHelper.checkSearchDnParameters(moId, muIds, areaTypeCodes, areaTypeProfileCode, servicedMuIds, specializationCodes, areaIds);
@@ -1519,7 +1549,7 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     public Page<MoMuPair> searchMuByAreaAddress(List<Long> areaTypeCodes, String aoLevel, long globalIdNsi,
-                                     PageRequest paging) throws ContingentException {
+                                                PageRequest paging) throws ContingentException {
         // 3.1 Система выполняет поиск адреса из входных параметров в таблице Адрес
         List<Addresses> addresses = addressesRepository.findAddresses(Collections.singletonList(globalIdNsi), aoLevel);
 
@@ -1563,8 +1593,7 @@ public class AreaServiceImpl implements AreaService {
 
             if (field == null) {
                 notFoundFields.add(entry.getKey());
-            }
-            else {
+            } else {
                 fieldValues.put(field, entry.getValue());
             }
         }
@@ -1579,15 +1608,15 @@ public class AreaServiceImpl implements AreaService {
                 Object value = "null".equals(entry.getValue()) ? null : EntityConverterHelper.parseValue(entry.getValue(), entry.getKey().getType());
                 Method fieldSetter = EntityConverterHelper.getSetterMethod(Addresses.class, entry.getKey());
                 fieldSetter.invoke(address, value);
-            }
-            catch (IllegalAccessException | InvocationTargetException ex) {
+            } catch (IllegalAccessException | InvocationTargetException ex) {
                 throw new RuntimeException("Не удалось применить значение поля " + entry.getKey().getName(), ex);
             }
         }
         address.setUpdateDate(LocalDateTime.now());
     }
 
-    @Override @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    @Override
+    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
     public void setAreaMuService(long areaId, List<Long> addServicedMuIds, List<Long> closeServicedMuIds) throws ContingentException {
         Validation validation = new Validation();
         //2, 3

@@ -5,12 +5,14 @@
  */
 package area.service;
 
+import moscow.ptnl.contingent.area.service.MappingDomainServiceImpl;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaAddressChecker;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.AreaServiceImpl;
 import moscow.ptnl.contingent.domain.area.AreaServiceInternalAsyncImpl;
+import moscow.ptnl.contingent.domain.area.MappingDomainService;
 import moscow.ptnl.contingent.domain.area.OrderServiceImpl;
 import moscow.ptnl.contingent.domain.area.heplers.MedicalEmployeeHelper;
 import moscow.ptnl.contingent.domain.area.repository.HistoryEventRepository;
@@ -55,7 +57,7 @@ import org.springframework.messaging.MessageChannel;
 @EnableIntegration
 @EnableAspectJAutoProxy
 public class MockConfiguration {
-    
+
     @Bean
     public EsuHelperServiceImpl esuHelperService() {
         return new EsuHelperServiceImpl();
@@ -64,6 +66,11 @@ public class MockConfiguration {
     @Bean
     public Algorithms algorithms(){
         return new Algorithms(Mockito.mock(AlgorithmsHelper.class));
+    }
+
+    @Bean
+    public MappingDomainServiceImpl mappingDomain(){
+        return new MappingDomainServiceImpl();
     }
 
     @MockBean

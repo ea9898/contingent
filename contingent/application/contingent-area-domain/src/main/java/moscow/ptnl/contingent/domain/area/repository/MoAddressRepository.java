@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.domain.area.repository;
 
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,20 @@ public interface MoAddressRepository {
 	List<MoAddress> getActiveMoAddresses(AreaType areaType);
 
     List<MoAddress> getActiveMoAddressByGlobalId(Long globalId, AreaType areaType);
+
+    List<MoAddress> getActiveMoAddressByGlobalIdV3(AreaType areaType, Long moId, Addresses addresses);
+
+    List<MoAddress> getActiveMoAddressLevel8(AreaType areaType, Long moId, Addresses addresses);
+
+    List<MoAddress> getActiveMoAddressLevel7(AreaType areaType, Long moId, Addresses addresses);
+
+    List<MoAddress> getActiveMoAddressLevel65(AreaType areaType, Long moId, Addresses addresses);
+
+    List<MoAddress> getActiveMoAddressLevel6(AreaType areaType, Long moId, Addresses addresses);
+
+    List<MoAddress> getActiveMoAddressLevel4(AreaType areaType, Long moId, Addresses addresses);
+
+    List<MoAddress> getActiveMoAddressLevel25(AreaType areaType, Long moId, Addresses addresses);
 
     Page<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds);
 

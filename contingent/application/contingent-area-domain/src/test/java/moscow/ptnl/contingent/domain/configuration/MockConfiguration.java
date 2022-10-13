@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.domain;
+package moscow.ptnl.contingent.domain.configuration;
 
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;

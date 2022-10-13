@@ -115,6 +115,40 @@ public class Algorithms {
         return new ArrayList<>();
     }
 
+    // Поиск территорий обслуживания МО по адресу (для метода К_УУ_13) (А_УУ_17)
+    public List<MoAddress> searchServiceDistrictMOByAddressV3(AreaType areaType, Long moId, Addresses addressRegistryTypes) {
+        List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddressByGlobalIdV3(areaType, moId, addressRegistryTypes);
+
+        if(!moAddresses.isEmpty()) {
+            return moAddresses;
+        }
+
+        if(addressRegistryTypes.getAoLevel().equals("8")) {
+            moAddresses = moAddressRepository.getActiveMoAddressLevel8(areaType, moId, addressRegistryTypes);
+        }
+        else if(addressRegistryTypes.getAoLevel().equals("7")) {
+            moAddresses = moAddressRepository.getActiveMoAddressLevel7(areaType, moId, addressRegistryTypes);
+        }
+        else if(addressRegistryTypes.getAoLevel().equals("65")) {
+            moAddresses = moAddressRepository.getActiveMoAddressLevel65(areaType, moId, addressRegistryTypes);
+        }
+        else if(addressRegistryTypes.getAoLevel().equals("6")) {
+            moAddresses = moAddressRepository.getActiveMoAddressLevel6(areaType, moId, addressRegistryTypes);
+        }
+        else if(addressRegistryTypes.getAoLevel().equals("4")) {
+            moAddresses = moAddressRepository.getActiveMoAddressLevel4(areaType, moId, addressRegistryTypes);
+        }
+        else if(addressRegistryTypes.getAoLevel().equals("25")) {
+            moAddresses = moAddressRepository.getActiveMoAddressLevel25(areaType, moId, addressRegistryTypes);
+        }
+
+        if(!moAddresses.isEmpty()) {
+            return moAddresses;
+        }
+
+        return new ArrayList<>();
+    }
+
     // Поиск участков по адресу (А_УУ_2)
     public List<AreaAddress> searchAreaByAddress(Long moId, AreaType areaTypeCode, List<AddressRegistry> addressRegistryTypes,
                                     Validation validation) {
@@ -140,6 +174,44 @@ public class Algorithms {
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    // Поиск участков по адресу (для метода К_УУ_13) (А_УУ_16)
+    public List<AreaAddress> searchAreaByAddressV3(Long moId, AreaType areaTypeCode, Addresses addressRegistryTypes, Validation validation) {
+        List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddressesV3(moId, areaTypeCode, addressRegistryTypes);
+
+        if (!areaAddresses.isEmpty()) {
+            return areaAddresses;
+        }
+
+        if(addressRegistryTypes.getAoLevel().equals("8")) {
+            areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel8(moId, areaTypeCode, addressRegistryTypes);
+        }
+        else if (addressRegistryTypes.getAoLevel().equals("65")) {
+            areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel65(moId, areaTypeCode, addressRegistryTypes);
+        }
+        else if (addressRegistryTypes.getAoLevel().equals("6")) {
+            areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel6(moId, areaTypeCode, addressRegistryTypes);
+        }
+        else if (addressRegistryTypes.getAoLevel().equals("4")) {
+            areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel4(moId, areaTypeCode, addressRegistryTypes);
+        }
+        else if (addressRegistryTypes.getAoLevel().equals("25")) {
+            areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel25(moId, areaTypeCode, addressRegistryTypes);
+        }
+        else if (addressRegistryTypes.getAoLevel().equals("2")) {
+            areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel2(moId, areaTypeCode, addressRegistryTypes);
+        }
+        else if (addressRegistryTypes.getAoLevel().equals("7")) {
+            areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel7(moId, areaTypeCode, addressRegistryTypes);
+        }
+
+        return areaAddresses;
+//        if(!areaAddresses.isEmpty()) {
+//            return areaAddresses;
+//        }
+//
+//        return null;
     }
 
     // Поиск пересекающихся адресов (А_УУ_3)

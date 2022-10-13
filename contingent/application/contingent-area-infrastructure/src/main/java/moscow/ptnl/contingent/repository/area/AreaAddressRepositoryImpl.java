@@ -1,11 +1,14 @@
 package moscow.ptnl.contingent.repository.area;
 
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
+import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress_;
 import moscow.ptnl.contingent.domain.area.entity.Area_;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress_;
 import moscow.ptnl.contingent.domain.area.model.area.MoMuPair;
 import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,16 +22,20 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import moscow.ptnl.contingent.domain.area.entity.Addresses_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 import moscow.ptnl.contingent.repository.CommonSpecification;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 
 @Repository
-@Transactional(propagation=Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY)
 public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAddressRepository {
 
     @Autowired
@@ -37,10 +44,10 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     // Спека поиска актуальных территорий обслуживания
     private Specification<AreaAddress> activeAreaAddressesSpec() {
         return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.or(
-                criteriaBuilder.greaterThanOrEqualTo(root.get(AreaAddress_.endDate.getName()), LocalDate.now()),
-                root.get(AreaAddress_.endDate.getName()).isNull()
-            );
+                criteriaBuilder.or(
+                        criteriaBuilder.greaterThanOrEqualTo(root.get(AreaAddress_.endDate.getName()), LocalDate.now()),
+                        root.get(AreaAddress_.endDate.getName()).isNull()
+                );
     }
 
     // Спека поиска актуальных территорий обслуживания
@@ -80,12 +87,354 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     @Override
     public List<AreaAddress> getActiveAreaAddresses(long moId, long areaTypeCode) {
         Specification<AreaAddress> specification = (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.and(
-                criteriaBuilder.equal(root.get(AreaAddress_.area.getName()).get(Area_.moId.getName()), moId),
-                criteriaBuilder.equal(root.get(AreaAddress_.area.getName()).get(Area_.areaType.getName()).get(AreaType_.code.getName()), areaTypeCode)
-            );
+                criteriaBuilder.and(
+                        criteriaBuilder.equal(root.get(AreaAddress_.area.getName()).get(Area_.moId.getName()), moId),
+                        criteriaBuilder.equal(root.get(AreaAddress_.area.getName()).get(Area_.areaType.getName()).get(AreaType_.code.getName()), areaTypeCode)
+                );
 
         specification = specification.and(activeAreaAddressesSpec());
+        return areaAddressPagingAndSortingRepository.findAll(specification);
+    }
+
+    @Override
+    public List<AreaAddress> getActiveAreaAddressesV3(long moId, AreaType areaTypeCode, Addresses globalIdNsi) {
+        Specification<AreaAddress> specification = (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) -> {
+            Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.INNER);
+            Join<AreaAddress, Area> areaTypeCodeJoin = root.join(AreaAddress_.area, JoinType.INNER);
+
+            return criteriaBuilder.and(
+                    root.get(AreaAddress_.endDate.getName()).isNull(),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.moId.getName()), moId),
+                    criteriaBuilder.equal(addressesJoin.get(Addresses_.globalId.getName()), globalIdNsi.getGlobalId())
+            );
+        };
+
+        return areaAddressPagingAndSortingRepository.findAll(specification);
+    }
+
+    private Predicate getPredicateAreaAddressLevel8AoLevel8(Addresses addresses, Join<AreaAddress, Addresses> addressesJoin, CriteriaBuilder criteriaBuilder) {
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(addressesJoin.get(Addresses_.streetCode.getName()).isNotNull());
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.streetCode.getName()), addresses.getStreetCode()));
+        predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "8"));
+        if (addresses.getPlanCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode.getName()), addresses.getPlanCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.planCode.getName()).isNull());
+        }
+        if (addresses.getPlaceCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.placeCode.getName()), addresses.getPlaceCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.placeCode.getName()).isNull());
+        }
+        if (addresses.getCityCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.cityCode.getName()), addresses.getCityCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.cityCode.getName()).isNull());
+        }
+
+        return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+    }
+
+    private Predicate getPredicateAreaAddressCheckedAoLevel65(Addresses addresses, Join<AreaAddress, Addresses> addressesJoin, CriteriaBuilder criteriaBuilder) {
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "65"));
+        if (addresses.getPlanCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode.getName()), addresses.getPlanCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.planCode.getName()).isNull());
+        }
+        if (addresses.getPlaceCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.placeCode.getName()), addresses.getPlaceCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.placeCode.getName()).isNull());
+        }
+        if (addresses.getCityCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.cityCode.getName()), addresses.getCityCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.cityCode.getName()).isNull());
+        }
+
+        return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+    }
+
+    private Predicate getPredicateAreaAddressCheckedAoLevel6(Addresses addresses, Join<AreaAddress, Addresses> addressesJoin, CriteriaBuilder criteriaBuilder) {
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "6"));
+        if (addresses.getPlaceCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.placeCode.getName()), addresses.getPlaceCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.placeCode.getName()).isNull());
+        }
+        if (addresses.getCityCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.cityCode.getName()), addresses.getCityCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.cityCode.getName()).isNull());
+        }
+
+        return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+    }
+
+    private Predicate getPredicateAreaAddressCheckedAoLevel4(Addresses addresses, Join<AreaAddress, Addresses> addressesJoin, CriteriaBuilder criteriaBuilder) {
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "4"));
+        if (addresses.getCityCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.cityCode.getName()), addresses.getCityCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.cityCode.getName()).isNull());
+        }
+
+        return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+    }
+
+    @Override
+    public List<AreaAddress> getActiveAreaAddressesLevel8(long moId, AreaType areaTypeCode, Addresses addresses) {
+        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.INNER);
+            Join<AreaAddress, Area> areaTypeCodeJoin = root.join(AreaAddress_.area, JoinType.INNER);
+
+            return criteriaBuilder.and(
+                    root.get(AreaAddress_.endDate.getName()).isNull(),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.moId.getName()), moId),
+
+                    criteriaBuilder.or(
+                            getPredicateAreaAddressLevel8AoLevel8(addresses, addressesJoin, criteriaBuilder),
+                            getPredicateAreaAddressCheckedAoLevel65(addresses, addressesJoin, criteriaBuilder),
+                            getPredicateAreaAddressCheckedAoLevel6(addresses, addressesJoin, criteriaBuilder),
+                            getPredicateAreaAddressCheckedAoLevel4(addresses, addressesJoin, criteriaBuilder),
+                            criteriaBuilder.or(
+                                    criteriaBuilder.and(
+                                            addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
+                                    )
+                            ),
+                            criteriaBuilder.or(
+                                    criteriaBuilder.and(
+                                            addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
+                                    )
+                            )
+                    )
+            );
+        };
+
+        return areaAddressPagingAndSortingRepository.findAll(specification);
+    }
+
+    private Predicate getPredicateAreaAddressLevel7AoLevel7(Addresses addresses, Join<AreaAddress, Addresses> addressesJoin, CriteriaBuilder criteriaBuilder) {
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(addressesJoin.get(Addresses_.streetCode.getName()).isNotNull());
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.streetCode.getName()), addresses.getStreetCode()));
+        predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "7"));
+        if (addresses.getPlanCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode.getName()), addresses.getPlanCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.planCode.getName()).isNull());
+        }
+        if (addresses.getPlaceCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.placeCode.getName()), addresses.getPlaceCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.placeCode.getName()).isNull());
+        }
+        if (addresses.getCityCode() != null) {
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.cityCode.getName()), addresses.getCityCode()));
+        } else {
+            predicates.add(addressesJoin.get(Addresses_.cityCode.getName()).isNull());
+        }
+
+        return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+    }
+
+    @Override
+    public List<AreaAddress> getActiveAreaAddressesLevel7(long moId, AreaType areaTypeCode, Addresses addresses) {
+        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.INNER);
+            Join<AreaAddress, Area> areaTypeCodeJoin = root.join(AreaAddress_.area, JoinType.INNER);
+
+            return criteriaBuilder.and(
+                    root.get(AreaAddress_.endDate.getName()).isNull(),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.moId.getName()), moId),
+
+                    criteriaBuilder.or(
+                            getPredicateAreaAddressLevel7AoLevel7(addresses, addressesJoin, criteriaBuilder),
+                            getPredicateAreaAddressCheckedAoLevel65(addresses, addressesJoin, criteriaBuilder),
+                            getPredicateAreaAddressCheckedAoLevel6(addresses, addressesJoin, criteriaBuilder),
+                            getPredicateAreaAddressCheckedAoLevel4(addresses, addressesJoin, criteriaBuilder),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
+                            ),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
+                            )
+                    )
+            );
+        };
+
+        return areaAddressPagingAndSortingRepository.findAll(specification);
+    }
+
+    @Override
+    public List<AreaAddress> getActiveAreaAddressesLevel65(long moId, AreaType areaTypeCode, Addresses addresses) {
+        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.INNER);
+            Join<AreaAddress, Area> areaTypeCodeJoin = root.join(AreaAddress_.area, JoinType.INNER);
+
+            return criteriaBuilder.and(
+                    root.get(AreaAddress_.endDate.getName()).isNull(),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.moId.getName()), moId),
+
+                    criteriaBuilder.or(
+                            getPredicateAreaAddressCheckedAoLevel65(addresses, addressesJoin, criteriaBuilder),
+                            getPredicateAreaAddressCheckedAoLevel6(addresses, addressesJoin, criteriaBuilder),
+                            getPredicateAreaAddressCheckedAoLevel4(addresses, addressesJoin, criteriaBuilder),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
+                            ),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
+                            )
+                    )
+            );
+        };
+
+        return areaAddressPagingAndSortingRepository.findAll(specification);
+    }
+
+    @Override
+    public List<AreaAddress> getActiveAreaAddressesLevel6(long moId, AreaType areaTypeCode, Addresses addresses) {
+        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.INNER);
+            Join<AreaAddress, Area> areaTypeCodeJoin = root.join(AreaAddress_.area, JoinType.INNER);
+
+            return criteriaBuilder.and(
+                    root.get(AreaAddress_.endDate.getName()).isNull(),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.moId.getName()), moId),
+
+                    criteriaBuilder.or(
+                            getPredicateAreaAddressCheckedAoLevel6(addresses, addressesJoin, criteriaBuilder),
+                            getPredicateAreaAddressCheckedAoLevel4(addresses, addressesJoin, criteriaBuilder),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
+                                    criteriaBuilder.equal(root.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
+                            ),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
+                                    criteriaBuilder.equal(root.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
+                            )
+                    )
+            );
+        };
+
+        return areaAddressPagingAndSortingRepository.findAll(specification);
+    }
+
+    @Override
+    public List<AreaAddress> getActiveAreaAddressesLevel4(long moId, AreaType areaTypeCode, Addresses addresses) {
+        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.INNER);
+            Join<AreaAddress, Area> areaTypeCodeJoin = root.join(AreaAddress_.area, JoinType.INNER);
+
+            return criteriaBuilder.and(
+                    root.get(AreaAddress_.endDate.getName()).isNull(),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.moId.getName()), moId),
+
+                    criteriaBuilder.or(
+                            getPredicateAreaAddressCheckedAoLevel4(addresses, addressesJoin, criteriaBuilder),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
+                                    criteriaBuilder.equal(root.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
+                            ),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
+                                    criteriaBuilder.equal(root.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
+                            )
+                    )
+            );
+        };
+
+        return areaAddressPagingAndSortingRepository.findAll(specification);
+    }
+
+    @Override
+    public List<AreaAddress> getActiveAreaAddressesLevel25(long moId, AreaType areaTypeCode, Addresses addresses) {
+        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.INNER);
+            Join<AreaAddress, Area> areaTypeCodeJoin = root.join(AreaAddress_.area, JoinType.INNER);
+
+            return criteriaBuilder.and(
+                    root.get(AreaAddress_.endDate.getName()).isNull(),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.moId.getName()), moId),
+
+                    criteriaBuilder.or(
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
+                                    criteriaBuilder.equal(root.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
+                            ),
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
+                                    criteriaBuilder.equal(root.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
+                            )
+                    )
+            );
+        };
+
+        return areaAddressPagingAndSortingRepository.findAll(specification);
+    }
+
+    @Override
+    public List<AreaAddress> getActiveAreaAddressesLevel2(long moId, AreaType areaTypeCode, Addresses addresses) {
+        Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.INNER);
+            Join<AreaAddress, Area> areaTypeCodeJoin = root.join(AreaAddress_.area, JoinType.INNER);
+
+            return criteriaBuilder.and(
+                    root.get(AreaAddress_.endDate.getName()).isNull(),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()),
+                    criteriaBuilder.equal(areaTypeCodeJoin.get(Area_.moId.getName()), moId),
+
+                    criteriaBuilder.or(
+                            criteriaBuilder.and(
+                                    addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
+                                    criteriaBuilder.equal(root.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
+                            )
+                    )
+            );
+        };
+
         return areaAddressPagingAndSortingRepository.findAll(specification);
     }
 
@@ -153,8 +502,8 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     @Override
     public Page<MoMuPair> findMoMuList(List<Long> areaTypeCodes, String areaOMKTECode, String regionOMKTECode,
                                        String regionTeCode, String aoLevelRegionTe, LocalDate endDate, PageRequest paging) {
-         return areaAddressPagingAndSortingRepository.findMoMuList(areaTypeCodes, areaOMKTECode, regionOMKTECode,
-                 regionTeCode, aoLevelRegionTe, endDate, paging);
+        return areaAddressPagingAndSortingRepository.findMoMuList(areaTypeCodes, areaOMKTECode, regionOMKTECode,
+                regionTeCode, aoLevelRegionTe, endDate, paging);
     }
 
     @Override

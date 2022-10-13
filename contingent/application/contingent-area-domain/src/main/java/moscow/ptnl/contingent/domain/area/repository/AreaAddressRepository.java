@@ -1,7 +1,9 @@
 package moscow.ptnl.contingent.domain.area.repository;
 
+import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.model.area.MoMuPair;
+import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,22 @@ import java.util.List;
 public interface AreaAddressRepository {
 
     List<AreaAddress> getActiveAreaAddresses(long moId, long areaTypeCode);
+
+    List<AreaAddress> getActiveAreaAddressesV3(long moId, AreaType areaTypeCode, Addresses globalIdNsi);
+
+    List<AreaAddress> getActiveAreaAddressesLevel8(long moId, AreaType areaTypeCode, Addresses addresses);
+
+    List<AreaAddress> getActiveAreaAddressesLevel65(long moId, AreaType areaTypeCode, Addresses addresses);
+
+    List<AreaAddress> getActiveAreaAddressesLevel6(long moId, AreaType areaTypeCode, Addresses addresses);
+
+    List<AreaAddress> getActiveAreaAddressesLevel4(long moId, AreaType areaTypeCode, Addresses addresses);
+
+    List<AreaAddress> getActiveAreaAddressesLevel25(long moId, AreaType areaTypeCode, Addresses addresses);
+
+    List<AreaAddress> getActiveAreaAddressesLevel2(long moId, AreaType areaTypeCode, Addresses addresses);
+
+    List<AreaAddress> getActiveAreaAddressesLevel7(long moId, AreaType areaTypeCode, Addresses addresses);
 
     List<AreaAddress> findAreaAddresses(List<Long> moAddressIds);
 
