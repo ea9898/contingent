@@ -475,10 +475,11 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
         Specification<AreaAddress> specification = (root, criteriaQuery, cb) ->
                 cb.and(
                         cb.in(root.get(AreaAddress_.address.getName()).get(Addresses_.id.getName())).value(addressIds),
-                        cb.or(
-                                cb.greaterThanOrEqualTo(root.get(AreaAddress_.endDate), LocalDate.now()),
-                                cb.isNull(root.get(AreaAddress_.endDate))
-                        )
+                        cb.isNull(root.get(AreaAddress_.endDate))
+//                        cb.or(
+//                                cb.greaterThanOrEqualTo(root.get(AreaAddress_.endDate), LocalDate.now()),
+//                                cb.isNull(root.get(AreaAddress_.endDate))
+//                        )
                 );
 
         return areaAddressPagingAndSortingRepository.findAll(specification);

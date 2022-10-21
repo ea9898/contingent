@@ -1303,7 +1303,9 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.checkSearchAreaInaccurateAddress(isExactAddressMatch, searchAreaAddresses);
 
         //4
-        areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
+//        areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
+        List<Addresses> foundedAddresses = areaHelper.checkSearchAreaAddresses2(isExactAddressMatch, searchAreaAddresses);
+
 
         //5 Система выполняет поиск участков по переданным входным параметрам (логическое И шагов 5.1, 5.2, 5.3, 5.4):
         //5.1
@@ -1346,25 +1348,11 @@ public class AreaServiceImpl implements AreaService {
             List<Addresses> addresses;
             List<AreaAddress> areaAddresses;
             //5.3.2
-            if (isExactAddressMatch == null || isExactAddressMatch) {
-                addresses = addressesRepository.findAddresses(searchAreaAddresses.stream()
-                        .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList()));
+            if (isExactAddressMatch == null || isExactAddressMatch || foundedAddresses.stream().allMatch(addr->addr.getAoLevel().equals("8"))) {
+                areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).collect(Collectors.toList()));
+            } else {
                 //5.3.3
-            } else {
                 addresses = algorithms.findIntersectingAddressesSearch(searchAreaAddresses);
-            }
-            //5.3.4
-            if (!addresses.isEmpty()) {
-                areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
-
-                if (areas == null) {
-                    areas = areaAddresses.stream().map(AreaAddress::getArea).collect(Collectors.toList());
-                } else {
-                    List<Long> areaIds = areaAddresses.stream().map(areaAddress -> areaAddress.getArea().getId()).collect(Collectors.toList());
-                    areas = areas.stream().filter(area -> areaIds.contains(area.getId())).collect(Collectors.toList());
-                }
-            } else {
-                areas = Collections.emptyList();
             }
         }
 

@@ -231,6 +231,14 @@
                                         </extraargs>
                                     </wsdlOption>
                                     <wsdlOption>
+                                        <wsdl>${basedir}/src/main/resources/META-INF/wsdl/formService/formProduct.formService.v1.wsdl</wsdl>
+                                        <wsdlLocation>classpath:formProduct.formService.v1.wsdl</wsdlLocation>
+                                        <extendedSoapHeaders>true</extendedSoapHeaders>
+                                        <extraargs>
+                                            <extraarg>-verbose</extraarg>
+                                        </extraargs>
+                                    </wsdlOption>
+                                    <wsdlOption>
                                         <wsdl>${basedir}/src/main/resources/META-INF/wsdl/composite/emias.contingent2.composite.v1.wsdl</wsdl>
                                         <serviceName>AreaCompositeService</serviceName>
                                         <extraargs>

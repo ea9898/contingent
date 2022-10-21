@@ -8,6 +8,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
+import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
@@ -98,5 +99,10 @@ public class SearchAreaTest {
         assertEquals(areas.getNumberOfElements(), 1);
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());
         assertEquals(areas.getContent().get(0).getArea().getId(), (Long) 2L);
+    }
+
+    @Test
+    public void searchAreaByAddressesEmpty() {
+
     }
 }

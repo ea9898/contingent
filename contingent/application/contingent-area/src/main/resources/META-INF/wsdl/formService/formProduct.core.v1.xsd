@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://emias.mos.ru/formProduct/core/v1/"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://emias.mos.ru/formProduct/core/v1/"
-           elementFormDefault="qualified"
+<xs:schema xmlns="http://emias.mos.ru/formProduct/core/v1/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://emias.mos.ru/formProduct/core/v1/" elementFormDefault="qualified"
            attributeFormDefault="unqualified">
-    <xs:include schemaLocation="emias.core.v1.xsd"/>
+    <xs:include schemaLocation="../emias/v1_2/emias.core.v1.xsd"/>
 
     <xs:complexType name="forms">
         <xs:sequence>

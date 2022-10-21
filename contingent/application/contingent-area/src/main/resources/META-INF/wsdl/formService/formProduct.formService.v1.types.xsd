@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://emias.mos.ru/formProduct/formService/v1/types/"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://emias.mos.ru/formProduct/formService/v1/types/"
-           elementFormDefault="qualified"
+<xs:schema xmlns="http://emias.mos.ru/formProduct/formService/v1/types/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://emias.mos.ru/formProduct/formService/v1/types/" elementFormDefault="qualified"
            attributeFormDefault="unqualified"
            xmlns:core="http://emias.mos.ru/formProduct/core/v1/">
     <xs:import namespace="http://emias.mos.ru/formProduct/core/v1/" schemaLocation="formProduct.core.v1.xsd"/>
@@ -40,6 +38,7 @@
                 <xs:element name="fieldId" type="xs:int"/>
                 <xs:element name="filters" type="core:filters" nillable="true"/>
                 <xs:element name="query" type="xs:string"/>
+                <xs:element name="pagingOptions" type="core:PagingOptions" />
                 <xs:element name="formType" type="xs:string" nillable="true"/>
             </xs:sequence>
         </xs:complexType>
@@ -63,6 +62,7 @@
             <xs:sequence>
                 <xs:element name="formId" type="xs:int"/>
                 <xs:element name="globalId" type="xs:int"/>
+                <xs:element name="is_deleted" type="xs:boolean" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

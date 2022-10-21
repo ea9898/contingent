@@ -1,6 +1,7 @@
 package moscow.ptnl.contingent.domain.area.heplers;
 
 import moscow.ptnl.contingent.domain.AreaErrorReason;
+import moscow.ptnl.contingent.domain.area.NsiFormResponseMapper;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.Area;
@@ -28,6 +29,7 @@ import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesRepository;
+import moscow.ptnl.contingent.domain.area.repository.NsiFormServiceHelper;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import moscow.ptnl.contingent.domain.util.Period;
@@ -52,9 +54,11 @@ import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
 
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
+import javax.swing.text.html.parser.DocumentParser;
 import javax.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -62,6 +66,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -127,6 +132,12 @@ public class AreaHelper {
 
     @Autowired
     private AreaMuServiceRepository areaMuServiceRepository;
+
+    @Autowired
+    private NsiFormServiceHelper nsiFormServiceHelper;
+
+    @Autowired
+    private NsiFormResponseMapper nsiFormResponseMapper;
 
     public List<AreaType> checkAndGetAreaTypesExist(List<Long> areaTypes, Validation validation) {
         List<AreaType> result = new ArrayList<>();
@@ -425,6 +436,53 @@ public class AreaHelper {
                 }
             }
         }
+    }
+
+    public List<Addresses> checkSearchAreaAddresses2(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
+        // 4.1.1
+        List<Long> listGlobalIdNsi = addresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList());
+        List<Addresses> foundAddresses = addressesRepository.findAddresses(listGlobalIdNsi);
+
+        if (foundAddresses.stream().anyMatch(addr -> addr.getAoLevel().equals("1"))) {
+            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
+                    new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
+        }
+
+        List<Addresses> lvlMoreThenOne = foundAddresses.stream().filter(addr -> !addr.getAoLevel().equals("1")).collect(Collectors.toList());
+
+        Set<Long> foundIds = foundAddresses.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());
+        if (Boolean.FALSE.equals(exactAddressMatch)) {
+            List<Long> notFoundId = listGlobalIdNsi.stream().filter(id -> !foundIds.contains(id)).collect(Collectors.toList());
+            //4.1.2
+            for (Long id : notFoundId) {
+                Document document = nsiFormServiceHelper.searchByGlobalId(127, id, null);
+                if (document == null) {
+                    throw new ContingentException(AreaErrorReason.ADDRESSES_WITH_GLOBAL_ID_NOT_FOUND_IN_NSI2,
+                            new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
+                }
+                Addresses address = new Addresses();
+                try {
+                    nsiFormResponseMapper.transformAndMergeEntity(document, address);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                if (address.getAoLevel().equals("1")) {
+                    throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
+                            new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
+                }
+                if (!address.getAoLevel().equals("1")) {
+                    foundAddresses.add(address);
+                }
+            }
+        }
+
+        //4.2
+        if (!(addresses.size() == 1 || lvlMoreThenOne.stream().allMatch(addr -> addr.getAoLevel().equals("8")))) {
+            throw new ContingentException(AreaErrorReason.IT_IS_ALLOWED_ENTER_ONE_MORE_THAN_ONE_ADDRESS,
+                    new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
+        }
+
+        return foundAddresses;
     }
 
     public void checkAreaTypeIsPrimary(AreaType areaType, Validation validation) {

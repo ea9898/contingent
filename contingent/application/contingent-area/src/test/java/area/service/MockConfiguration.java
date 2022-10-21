@@ -5,7 +5,9 @@
  */
 package area.service;
 
+import moscow.ptnl.contingent.area.configuration.NsiFormServiceConfiguration;
 import moscow.ptnl.contingent.area.service.MappingDomainServiceImpl;
+import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaAddressChecker;
@@ -16,6 +18,7 @@ import moscow.ptnl.contingent.domain.area.MappingDomainService;
 import moscow.ptnl.contingent.domain.area.OrderServiceImpl;
 import moscow.ptnl.contingent.domain.area.heplers.MedicalEmployeeHelper;
 import moscow.ptnl.contingent.domain.area.repository.HistoryEventRepository;
+import moscow.ptnl.contingent.domain.area.repository.NsiFormServiceHelper;
 import moscow.ptnl.contingent.service.esu.EsuHelperServiceImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.v1.AreaAddressMapper;
@@ -48,6 +51,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageChannel;
+import ru.mos.emias.formproduct.formservice.v1.FormService;
+import ru.mos.emias.formproduct.formservice.v1.FormServicePortType;
 
 /**
  *
@@ -71,6 +76,21 @@ public class MockConfiguration {
     @Bean
     public MappingDomainServiceImpl mappingDomain(){
         return new MappingDomainServiceImpl();
+    }
+
+    @Bean
+    public NsiFormServiceHelper nsiFormServiceHelper(){
+        return new NsiFormServiceHelperImpl();
+    }
+
+    @Bean
+    public FormService formService(){
+        return new FormService();
+    }
+
+    @Bean
+    public NsiFormServiceConfiguration nsiFormServiceConfiguration(){
+        return new NsiFormServiceConfiguration();
     }
 
     @MockBean
