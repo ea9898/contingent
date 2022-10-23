@@ -8,6 +8,7 @@ package area.service;
 import moscow.ptnl.contingent.area.configuration.NsiFormServiceConfiguration;
 import moscow.ptnl.contingent.area.service.MappingDomainServiceImpl;
 import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
+import moscow.ptnl.contingent.area.transform.NsiFormResponseMapperImpl;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaAddressChecker;
@@ -15,6 +16,7 @@ import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.AreaServiceImpl;
 import moscow.ptnl.contingent.domain.area.AreaServiceInternalAsyncImpl;
 import moscow.ptnl.contingent.domain.area.MappingDomainService;
+import moscow.ptnl.contingent.domain.area.NsiFormResponseMapper;
 import moscow.ptnl.contingent.domain.area.OrderServiceImpl;
 import moscow.ptnl.contingent.domain.area.heplers.MedicalEmployeeHelper;
 import moscow.ptnl.contingent.domain.area.repository.HistoryEventRepository;
@@ -51,8 +53,22 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.MessageChannel;
+import ru.mos.emias.formproduct.formservice.v1.Fault;
 import ru.mos.emias.formproduct.formservice.v1.FormService;
 import ru.mos.emias.formproduct.formservice.v1.FormServicePortType;
+import ru.mos.emias.formproduct.formservice.v1.types.GetFieldsByFormIdRequest;
+import ru.mos.emias.formproduct.formservice.v1.types.GetFieldsByFormIdResponse;
+import ru.mos.emias.formproduct.formservice.v1.types.GetFormsRequest;
+import ru.mos.emias.formproduct.formservice.v1.types.GetFormsResponse;
+import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchFromGlobalIdRequest;
+import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchFromGlobalIdResponse;
+import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchFromGlobalIdXsdRequest;
+import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchFromGlobalIdXsdResponse;
+import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchRequest;
+import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchResponse;
+import ru.mos.emias.formproduct.formservice.v1.types.SubscribeFormRequest;
+import ru.mos.emias.formproduct.formservice.v1.types.SubscribeFormResponse;
+import ru.mos.emias.system.v1.usercontext.UserContext;
 
 /**
  *
@@ -89,8 +105,43 @@ public class MockConfiguration {
     }
 
     @Bean
-    public NsiFormServiceConfiguration nsiFormServiceConfiguration(){
-        return new NsiFormServiceConfiguration();
+    public NsiFormResponseMapper areaHelper1(){
+        return new NsiFormResponseMapperImpl();
+    }
+
+    @Bean
+    public FormServicePortType formServicePortType(){
+        return new FormServicePortType() {
+            @Override
+            public GetFormsResponse getForms(GetFormsRequest body, UserContext userContext) throws Fault {
+                return null;
+            }
+
+            @Override
+            public GetFieldsByFormIdResponse getFieldsByFormId(GetFieldsByFormIdRequest body, UserContext userContext) throws Fault {
+                return null;
+            }
+
+            @Override
+            public PhpSphinxSearchFromGlobalIdResponse searchByGlobalId(PhpSphinxSearchFromGlobalIdRequest body, UserContext userContext) throws Fault {
+                return null;
+            }
+
+            @Override
+            public PhpSphinxSearchResponse searchByText(PhpSphinxSearchRequest body, UserContext userContext) throws Fault {
+                return null;
+            }
+
+            @Override
+            public SubscribeFormResponse subscription(SubscribeFormRequest body, UserContext userContext) throws Fault {
+                return null;
+            }
+
+            @Override
+            public PhpSphinxSearchFromGlobalIdXsdResponse generateXsdEntity(PhpSphinxSearchFromGlobalIdXsdRequest body, UserContext userContext) throws Fault {
+                return null;
+            }
+        };
     }
 
     @MockBean

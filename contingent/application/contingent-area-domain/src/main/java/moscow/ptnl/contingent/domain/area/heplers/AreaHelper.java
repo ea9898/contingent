@@ -404,51 +404,18 @@ public class AreaHelper {
         }
     }
 
-    public void checkSearchAreaAddresses(List<SearchAreaAddress> addresses) throws ContingentException {
-        if (addresses.stream().anyMatch(addr -> AddressLevelType.MOSCOW.getLevel().equals(addr.getAoLevel()))) {
-            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
-                    new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
-        }
-        ListIterator<SearchAreaAddress> iter = addresses.listIterator();
-        while (iter.hasNext()) {
-            SearchAreaAddress current = iter.next();
-            String[] regions = current.getRegionOMKTEcode().split(";");
-            if (current.getAreaOMKTEcode() != null) {
-                String[] areas = current.getAreaOMKTEcode().split(";");
-                if (areas.length > 1 || regions.length > 1) {
-                    iter.remove();
-                    for (String area : areas) {
-                        SearchAreaAddress copy = new SearchAreaAddress(current);
-                        copy.setAreaOMKTEcode(area);
-                        String firstTwoDigits = area.substring(0, 2);
-                        Optional<String> region = Arrays.stream(regions).filter(
-                                reg -> reg.startsWith(firstTwoDigits)).findFirst();
-                        region.ifPresent(copy::setRegionOMKTEcode);
-                        iter.add(copy);
-                    }
-                }
-            } else if (regions.length > 1) {
-                iter.remove();
-                for (String region : regions) {
-                    SearchAreaAddress copy = new SearchAreaAddress(current);
-                    copy.setRegionOMKTEcode(region);
-                    iter.add(copy);
-                }
-            }
-        }
-    }
-
     public List<Addresses> checkSearchAreaAddresses2(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
         // 4.1.1
         List<Long> listGlobalIdNsi = addresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList());
         List<Addresses> foundAddresses = addressesRepository.findAddresses(listGlobalIdNsi);
 
-        if (foundAddresses.stream().anyMatch(addr -> addr.getAoLevel().equals("1"))) {
+        if (foundAddresses.stream().anyMatch(addr -> addr.getAoLevel() != null && addr.getAoLevel().equals("1"))) {
             throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
                     new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
         }
 
-        List<Addresses> lvlMoreThenOne = foundAddresses.stream().filter(addr -> !addr.getAoLevel().equals("1")).collect(Collectors.toList());
+        List<Addresses> lvlMoreThenOne = foundAddresses.stream().filter(addr -> addr.getAoLevel()== null
+                || !addr.getAoLevel().equals("1")).collect(Collectors.toList());
 
         Set<Long> foundIds = foundAddresses.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());
         if (Boolean.FALSE.equals(exactAddressMatch)) {

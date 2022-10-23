@@ -96,13 +96,8 @@ public class SearchAreaTest {
                 Arrays.asList(new SearchAreaAddress() {{setGlobalIdNsi(111L); setAreaOMKTEcode(""); setRegionOMKTEcode("");}}),
                 true, PR, false));
         assertNotNull(areas);
-        assertEquals(areas.getNumberOfElements(), 1);
+        assertEquals(1, areas.getNumberOfElements());
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());
-        assertEquals(areas.getContent().get(0).getArea().getId(), (Long) 2L);
-    }
-
-    @Test
-    public void searchAreaByAddressesEmpty() {
-
+        assertEquals((Long) 2L, areas.getContent().get(0).getArea().getId());
     }
 }
