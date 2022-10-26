@@ -59,6 +59,20 @@ VALUES
 (12, 136, 100, 20, 242, 0, 0, 'Description area 12', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate())
 ;
 
+INSERT INTO AREA_MU_SERVICE
+            (ID,
+            AREA_ID,
+            MU_ID,
+            START_DATE,
+            END_DATE
+            )
+VALUES
+(1, 2, 100, TO_DATE('02-04-2018', 'DD-MM-YYYY'), null),
+(2, 4, 100, TO_DATE('02-04-2018', 'DD-MM-YYYY'), null),
+(3, 10, 100, TO_DATE('02-04-2018', 'DD-MM-YYYY'), null),
+(4, 12, 100, TO_DATE('02-04-2018', 'DD-MM-YYYY'), TO_DATE('03-04-2018', 'DD-MM-YYYY'))
+;
+
 INSERT INTO AREA_MEDICAL_EMPLOYEES
             (ID,
              MEDICAL_EMPLOYEE_JOB_ID,

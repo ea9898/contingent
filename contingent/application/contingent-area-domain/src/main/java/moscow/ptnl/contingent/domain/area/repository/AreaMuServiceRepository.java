@@ -23,4 +23,6 @@ public interface AreaMuServiceRepository {
     AreaMuService findById(Long id);
 
     List<AreaMuService> findActive(List<Long> areaIds);
+
+    List<AreaMuService> findActiveByMuIds(List<Long> muIds);
 }

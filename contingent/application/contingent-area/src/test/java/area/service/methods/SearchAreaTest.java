@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes= {PersistenceConfiguration.class, MockConfiguration.class})
+@ContextConfiguration(classes = {PersistenceConfiguration.class, MockConfiguration.class})
 @Transactional
 public class SearchAreaTest {
 
@@ -79,8 +79,12 @@ public class SearchAreaTest {
     public void searchAreaByMedicalEmployeesTest() {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
                 null, null, EL, Collections.singletonList(10L),
-                null, null, null, null, false, Arrays.asList(new MedicalEmployee() {{setMedicalEmployeeJobId(123L);}},
-                        new MedicalEmployee() {{setSnils("snilscode1");}}), EL, null, PR, false));
+                null, null, null, null, false, Arrays.asList(new MedicalEmployee() {{
+                                                                 setMedicalEmployeeJobId(123L);
+                                                             }},
+                        new MedicalEmployee() {{
+                            setSnils("snilscode1");
+                        }}), EL, null, PR, false));
         assertNotNull(areas);
         assertEquals(areas.getNumberOfElements(), 1);
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());
@@ -93,11 +97,54 @@ public class SearchAreaTest {
         Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
                 null, null, EL, Collections.singletonList(10L),
                 null, null, null, null, false, EL,
-                Arrays.asList(new SearchAreaAddress() {{setGlobalIdNsi(111L); setAreaOMKTEcode(""); setRegionOMKTEcode("");}}),
+                Arrays.asList(new SearchAreaAddress() {{
+                    setGlobalIdNsi(111L);
+                    setAreaOMKTEcode("");
+                    setRegionOMKTEcode("");
+                }}),
                 true, PR, false));
         assertNotNull(areas);
         assertEquals(1, areas.getNumberOfElements());
         assertEquals(areas.getNumberOfElements(), areas.getContent().size());
         assertEquals((Long) 2L, areas.getContent().get(0).getArea().getId());
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void searchAreaByListAddressesEmpty() {
+        Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
+                null, 204L, Arrays.asList(100L), Collections.singletonList(10L),
+                null, null, null, null, false, EL,
+                EL,
+                true, PR, true));
+
+
+        assertNotNull(areas);
+        assertEquals(2, areas.getContent().size());
+
+        for (AreaInfo aInfo : areas) {
+            assertEquals(204L, aInfo.getArea().getMoId().longValue());
+            assertEquals(100L, aInfo.getArea().getMuId().longValue());
+        }
+
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void searchAreaByListAddressesEmpty2() {
+        Page<AreaInfo> areas = assertDoesNotThrow(() -> areaServiceDomain.searchArea(
+                null, 136L, Arrays.asList(100L), Collections.singletonList(20L),
+                null, null, null, null, false, EL,
+                EL,
+                true, PR, true));
+
+
+        assertNotNull(areas);
+        assertEquals(1, areas.getContent().size());
+
+        for (AreaInfo aInfo : areas) {
+            assertEquals(136L, aInfo.getArea().getMoId().longValue());
+            assertEquals(100L, aInfo.getArea().getMuId().longValue());
+        }
     }
 }

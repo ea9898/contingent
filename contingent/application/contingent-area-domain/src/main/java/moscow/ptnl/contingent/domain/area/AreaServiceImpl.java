@@ -69,8 +69,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -88,7 +86,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.naturalOrder;
@@ -848,8 +845,12 @@ public class AreaServiceImpl implements AreaService {
         // 7
         Map<Long, MoAddress> findMoAddress = new HashMap<>();
         addressesRegistry.forEach(ar -> {
-            List<MoAddress> moAddressesIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(),
-                    ar, validation);
+            List<MoAddress> moAddressesIntersect = algorithms.searchServiceDistrictMOByAddress(area.getAreaType(), ar, validation);
+
+            if (moAddressesIntersect != null && !moAddressesIntersect.isEmpty()) {
+                moAddressesIntersect.sort(Comparator.comparingLong(MoAddress::getId));
+            }
+
             Optional<MoAddress> moAddress = moAddressesIntersect.stream().filter(mai -> mai.getMoId().equals(area.getMoId())).findFirst();
             if (moAddress.isPresent()) {
                 findMoAddress.put(ar.getGlobalIdNsi(), moAddress.get());
@@ -1303,9 +1304,10 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.checkSearchAreaInaccurateAddress(isExactAddressMatch, searchAreaAddresses);
 
         //4
-//        areaHelper.checkSearchAreaAddresses(searchAreaAddresses);
-        List<Addresses> foundedAddresses = areaHelper.checkSearchAreaAddresses2(isExactAddressMatch, searchAreaAddresses);
-
+        List<Addresses> foundedAddresses = null;
+        if (searchAreaAddresses != null && !searchAreaAddresses.isEmpty()) {
+            foundedAddresses = areaHelper.checkSearchAreaAddresses(isExactAddressMatch, searchAreaAddresses);
+        }
 
         //5 Система выполняет поиск участков по переданным входным параметрам (логическое И шагов 5.1, 5.2, 5.3, 5.4):
         //5.1
@@ -1344,18 +1346,25 @@ public class AreaServiceImpl implements AreaService {
         }
 
         //5.3
-        if (!searchAreaAddresses.isEmpty()) {
+        if (searchAreaAddresses != null && !searchAreaAddresses.isEmpty()) {
             //5.3.2
-            if (isExactAddressMatch == null || isExactAddressMatch || foundedAddresses.stream().allMatch(addr->addr.getAoLevel().equals("8"))) {
+            if (isExactAddressMatch == null || isExactAddressMatch || foundedAddresses.stream().allMatch(addr -> addr.getAoLevel().equals("8"))) {
                 List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).collect(Collectors.toList()));
                 Set<Long> idAreasSet = areaAddresses.stream().map(item -> item.getArea().getId()).collect(Collectors.toSet());
-                areas =  areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
+                areas = areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
             } else {
                 //5.3.3
                 List<Addresses> addresses = algorithms.findIntersectingAddressesSearch(searchAreaAddresses);
-                Set<Long> idAreasSet = addresses.stream().map(item-> item.getAreaId()).collect(Collectors.toSet());
-                areas =  areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
+                Set<Long> idAreasSet = addresses.stream().map(item -> item.getAreaId()).collect(Collectors.toSet());
+                areas = areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
             }
+        }
+
+        // 5.4
+        if (muIds != null && !muIds.isEmpty()) {
+            List<AreaMuService> listMu = areaMuServiceRepository.findActiveByMuIds(muIds);
+            Set<Long> idAreasSet = listMu.stream().map(item -> item.getArea().getId()).distinct().collect(Collectors.toSet());
+            areas = areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
         }
 
         int totalSize = areas.size();
@@ -1383,6 +1392,7 @@ public class AreaServiceImpl implements AreaService {
                 ai.setReplacementAreaMedicalEmployees(replacementMedicalEmployees);
             }
         });
+
         if (loadServicedMUs) {
             List<Long> areaIds = areaInfos.stream().map(AreaInfo::getArea).map(Area::getId).distinct().collect(Collectors.toList());
 

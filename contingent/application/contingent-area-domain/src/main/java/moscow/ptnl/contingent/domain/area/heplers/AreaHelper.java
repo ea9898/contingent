@@ -404,9 +404,10 @@ public class AreaHelper {
         }
     }
 
-    public List<Addresses> checkSearchAreaAddresses2(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
-        // 4.1.1
+    public List<Addresses> checkSearchAreaAddresses(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
         List<Long> listGlobalIdNsi = addresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList());
+
+        // 4.1.1
         List<Addresses> foundAddresses = addressesRepository.findAddresses(listGlobalIdNsi);
 
         if (foundAddresses.stream().anyMatch(addr -> addr.getAoLevel() != null && addr.getAoLevel().equals("1"))) {
@@ -414,7 +415,7 @@ public class AreaHelper {
                     new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
         }
 
-        List<Addresses> lvlMoreThenOne = foundAddresses.stream().filter(addr -> addr.getAoLevel()== null
+        List<Addresses> lvlMoreThenOne = foundAddresses.stream().filter(addr -> addr.getAoLevel() == null
                 || !addr.getAoLevel().equals("1")).collect(Collectors.toList());
 
         Set<Long> foundIds = foundAddresses.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());

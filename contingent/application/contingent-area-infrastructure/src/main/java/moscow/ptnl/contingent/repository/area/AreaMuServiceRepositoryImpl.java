@@ -30,6 +30,11 @@ public class AreaMuServiceRepositoryImpl extends BaseRepository implements AreaM
                 criteriaBuilder.equal(root.get(AreaMuService_.muId), muId);
     }
 
+    private Specification<AreaMuService> buildMuIdsSpec(List<Long> muIds) {
+
+        return (root, criteriaQuery, criteriaBuilder) -> root.get(AreaMuService_.muId).in(muIds);
+    }
+
     private Specification<AreaMuService> buildAreaSpec(long areaId) {
         return (root, criteriaQuery, cb) -> cb.equal(root.get(AreaMuService_.area).get(Area_.id), areaId);
     }
@@ -95,6 +100,13 @@ public class AreaMuServiceRepositoryImpl extends BaseRepository implements AreaM
     public List<AreaMuService> findActive(List<Long> areaIds) {
         Specification<AreaMuService> specification = buildActiveEndDateSpec();
         specification = specification.and(buildAreasSpec(areaIds));
+        return areaMuServiceCRUDRepository.findAll(specification);
+    }
+
+    @Override
+    public List<AreaMuService> findActiveByMuIds(List<Long> muIds) {
+        Specification<AreaMuService> specification = buildActiveEndDateSpec();
+        specification = specification.and(buildMuIdsSpec(muIds));
         return areaMuServiceCRUDRepository.findAll(specification);
     }
 }
