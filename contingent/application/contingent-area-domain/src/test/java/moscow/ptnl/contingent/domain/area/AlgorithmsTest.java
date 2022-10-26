@@ -31,7 +31,7 @@ import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes= {MockConfiguration.class, MockRepositoriesConfiguration.class})
+@ContextConfiguration(classes= {MockRepositoriesConfiguration.class, MockConfiguration.class})
 class AlgorithmsTest{
 
     @Autowired
