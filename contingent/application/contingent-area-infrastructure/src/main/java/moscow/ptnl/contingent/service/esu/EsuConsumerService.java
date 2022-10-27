@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.service.esu;
 
+import moscow.ptnl.contingent.infrastructure.service.EsuProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import ru.mos.emias.esu.lib.consumer.EsuConsumerBuilder;
 import ru.mos.emias.esu.lib.consumer.message.EsuConsumerMessageProcessor;
 import ru.mos.emias.esu.lib.consumer.EsuTopicConsumer;
+import ru.mos.emias.esu.lib.property.EsuErrorProducerPropertiesBuilder;
+import ru.mos.emias.esu.lib.property.EsuLogProducerPropertiesBuilder;
 
 /**
  * Сервис подписки на топики и сохранения в БД сообщений от ЕСУ.
@@ -57,24 +60,9 @@ public class EsuConsumerService {
     @Value("${esu.consumer.topic.dn.event}")
     private String dnEventInformerTopicName;
 
-    @Value("${esu.service.address}")
-    private String bootstrapServers;
+    @Autowired(required = false)
+    private EsuProperties esuProperties;
 
-    @Value("${esu.consumer.group.id}")
-    private String consumerGroupId;
-
-    @Value("${esu.consumer.topic.threads.number}")
-    private Integer topicThreadsNumber;
-
-    @Value("${esu.consumer.polling.interval}")
-    private Integer pollingInterval;
-
-    @Value("${esu.consumer.polling.timeout}")
-    private Integer pollingTimeout;
-
-    @Value("${esu.consumer.error.producer.timeout}")
-    private Integer producerTimeout;
-    
     @Autowired
     private SettingService settingService;
 
@@ -219,29 +207,40 @@ public class EsuConsumerService {
         return Optional.empty();
     }
 
-    private EsuTopicConsumer buildConsumer(String topicName, EsuConsumerMessageProcessor processor)
-            throws ReflectionException, IntrospectionException, MalformedObjectNameException {
-            return 
+    private EsuTopicConsumer buildConsumer(String topicName, EsuConsumerMessageProcessor processor) {
+        if (esuProperties == null) {
+            throw new IllegalStateException("Не определен бин EsuProperties");
+        }
+        EsuConsumerBuilder builder =
                 (new EsuConsumerBuilder(
-                    bootstrapServers, // Сервера для подключения к ЕСУ Kafka
-                    consumerGroupId, // Идентификатор подписчика
-                    topicName, // Название топика
-                    topicThreadsNumber // Кол-во потоков
+                        esuProperties.getBootstrapServersESU(), // Сервера для подключения к ЕСУ Kafka
+                        esuProperties.getConsumerGroupId(), // Идентификатор подписчика
+                        topicName, // Название топика
+                        esuProperties.getTopicThreadsNumber() // Кол-во потоков
                 ))
-                .withProcessor(processor) // Объект класса, унаследованного от EsuConsumerMessageProcessor. NOT THREAD SAFE
-                .withPollingInterval(pollingInterval) // Интервал между запросами в Kafka в мс (по-умолчанию 300)
-                .withPollingTimeout(pollingTimeout) // Таймаут чтения сообщений из Kafka в мс (по-умолчанию 300)
-                .withProducerTimeout(producerTimeout) // Таймаут продюсера, при отправке сообщений в топик ConsumerErrors
-                /* 
-                    Боремся с ошибкой: 
-                    Commit cannot be completed since the group has already rebalanced and assigned the partitions to another member
-                    ребаланс по таймауту
-                    https://coderoad.ru/43991845/Kafka10-1-heartbeat-interval-ms-session-timeout-ms-%D0%B8-max-poll-interval-ms
-                */
-                .withCustomProperty("session.timeout.ms", 30000) //default 3 seconds, но в разных примерах в Интернет ставят около 30 сек
-                .withCustomProperty("heartbeat.interval.ms", 10000) //рекомендуют треть от session.timeout.ms
-                .withCustomProperty("max.poll.interval.ms", 270000) //default 30 seconds, увеличим до 270 сек (возможно у нас что-то с транзакциями и вставка в залоченную таблицу подвисает)
-                .build();
+                        .withProcessor(processor) // Объект класса, унаследованного от EsuConsumerMessageProcessor. NOT THREAD SAFE
+                        .withPollingInterval(esuProperties.getPollingInterval()) // Интервал между запросами в Kafka в мс (по-умолчанию 300)
+                        .withPollingTimeout(esuProperties.getPollingTimeout()) // Таймаут чтения сообщений из Kafka в мс (по-умолчанию 300)
+                        .withCustomErrorProducerProperties(new EsuErrorProducerPropertiesBuilder().withRequestTimeout(esuProperties.getProducerTimeout()).build())  // Таймаут продюсера, при отправке сообщений в топик ConsumerErrors
+                        /*
+                            Боремся с ошибкой:
+                            Commit cannot be completed since the group has already rebalanced and assigned the partitions to another member
+                            ребаланс по таймауту
+                            https://coderoad.ru/43991845/Kafka10-1-heartbeat-interval-ms-session-timeout-ms-%D0%B8-max-poll-interval-ms
+                        */
+                        .withCustomProperty("session.timeout.ms", 30000) //default 3 seconds, но в разных примерах в Интернет ставят около 30 сек
+                        .withCustomProperty("heartbeat.interval.ms", 10000) //рекомендуют треть от session.timeout.ms
+                        .withCustomProperty("max.poll.interval.ms", 270000); //default 30 seconds, увеличим до 270 сек (возможно у нас что-то с транзакциями и вставка в залоченную таблицу подвисает)
+
+        if (esuProperties.isLogEnabled()) {
+            builder = builder.withCustomLogProducerProperties( //логирование консумера отправкой метрик в специальные топики Kafka
+                    new EsuLogProducerPropertiesBuilder(esuProperties.getLogServers(), esuProperties.getMetricMessageProduct())
+                            .enabled(esuProperties.isLogEnabled())
+                            .withProduct(esuProperties.getMetricMessageProduct())
+                            .build()
+            );
+        }
+        return builder.build();
     }
     
     /**

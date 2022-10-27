@@ -36,7 +36,7 @@
         <spring.version>5.2.14.RELEASE</spring.version>
         <infinispan.version>8.2.4.Final</infinispan.version>
 
-        <spring-kafka.version>2.6.7</spring-kafka.version><!-- версия kafka-clients-2.6 для соответствия версии в esu-client-lib -->
+        <spring-kafka.version>2.8.1</spring-kafka.version><!-- версия kafka-clients-2.6 для соответствия версии в esu-client-lib -->
 
         <artefact.scope>compile</artefact.scope>
         <!-- Используем логер встроенный в wildfly -->
@@ -64,7 +64,7 @@
         <emias.errors.version>1.0.6</emias.errors.version>
         <prometheus.version>0.8.0</prometheus.version>
         <micrometer.version>1.3.1</micrometer.version>
-        <esu.client.lib.version>4.1.0</esu.client.lib.version>
+        <esu.client.lib.version>4.4.1</esu.client.lib.version>
     </properties>
 
     <repositories>
