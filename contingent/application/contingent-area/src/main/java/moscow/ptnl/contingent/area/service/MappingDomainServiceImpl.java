@@ -7,6 +7,7 @@ import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+// TODO перенести трансформацию в domain area модуль
 @Component
 public class MappingDomainServiceImpl implements MappingDomainService {
 

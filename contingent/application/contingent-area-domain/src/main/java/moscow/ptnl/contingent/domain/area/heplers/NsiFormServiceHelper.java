@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.domain.area.repository;
+package moscow.ptnl.contingent.domain.area.heplers;
 
 import org.springframework.data.repository.NoRepositoryBean;
 import org.w3c.dom.Document;

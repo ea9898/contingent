@@ -25,6 +25,7 @@ import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.sysop.repository.SysopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +66,7 @@ public class Algorithms {
     private AlgorithmsHelper algorithmsHelper;
 
     @Autowired
+    @Lazy
     private MappingDomainService mappingDomainService;
 
     public Algorithms(AlgorithmsHelper algorithmsHelper) {

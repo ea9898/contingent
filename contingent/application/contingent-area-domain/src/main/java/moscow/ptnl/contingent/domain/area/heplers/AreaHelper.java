@@ -29,7 +29,6 @@ import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
 import moscow.ptnl.contingent.domain.area.repository.MuAvailableAreaTypesRepository;
-import moscow.ptnl.contingent.domain.area.repository.NsiFormServiceHelper;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import moscow.ptnl.contingent.domain.util.Period;
@@ -52,27 +51,24 @@ import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
 import moscow.ptnl.util.CollectionsUtil;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
-import javax.swing.text.html.parser.DocumentParser;
 import javax.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -134,9 +130,11 @@ public class AreaHelper {
     private AreaMuServiceRepository areaMuServiceRepository;
 
     @Autowired
+    @Lazy
     private NsiFormServiceHelper nsiFormServiceHelper;
 
     @Autowired
+    @Lazy
     private NsiFormResponseMapper nsiFormResponseMapper;
 
     public List<AreaType> checkAndGetAreaTypesExist(List<Long> areaTypes, Validation validation) {

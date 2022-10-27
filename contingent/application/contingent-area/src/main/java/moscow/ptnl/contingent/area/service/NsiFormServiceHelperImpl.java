@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.service;
 
-import moscow.ptnl.contingent.domain.area.repository.NsiFormServiceHelper;
+import moscow.ptnl.contingent.domain.area.heplers.NsiFormServiceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
