@@ -5,7 +5,7 @@
  */
 package area.service;
 
-import moscow.ptnl.contingent.area.service.MappingDomainServiceImpl;
+import moscow.ptnl.contingent.domain.area.MappingDomainServiceImpl;
 import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.NsiFormResponseMapperImpl;
 import moscow.ptnl.contingent.domain.area.Algorithms;
@@ -27,7 +27,7 @@ import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
 import moscow.ptnl.contingent.infrastructure.service.TransactionRunService;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.area.service.interceptor.LogESUInterceptor;
-import moscow.ptnl.contingent.area.transform.v1.AddressMapper;
+import moscow.ptnl.contingent.domain.area.transform.AddressMapper;
 import moscow.ptnl.contingent.area.transform.v1.AddressRegistryBaseTypeCloner;
 import moscow.ptnl.contingent.area.transform.v1.AreaAddressClone;
 import moscow.ptnl.contingent.area.transform.v1.AreaMedicalEmployeesClone;

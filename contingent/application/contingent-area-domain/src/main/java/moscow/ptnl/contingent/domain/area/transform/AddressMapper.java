@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.area.transform.v1;
+package moscow.ptnl.contingent.domain.area.transform;
 
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;

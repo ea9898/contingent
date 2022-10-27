@@ -66,7 +66,6 @@ public class Algorithms {
     private AlgorithmsHelper algorithmsHelper;
 
     @Autowired
-    @Lazy
     private MappingDomainService mappingDomainService;
 
     public Algorithms(AlgorithmsHelper algorithmsHelper) {
