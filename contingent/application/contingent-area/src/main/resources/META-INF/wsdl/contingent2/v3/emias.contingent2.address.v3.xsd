@@ -14,7 +14,7 @@
             <xs:documentation>Сведения адреса для метода searchArea</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="aoLevel" type="restr:stringLimit2">
+            <xs:element name="aoLevel" type="restr:stringLimit2" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>Уровень адресного объекта (по уровням Адресного реестра НСИ). Обязательно для заполнения</xs:documentation>
                 </xs:annotation>
@@ -24,7 +24,7 @@
                     <xs:documentation>Уникальный идентификатор адреса в ЕМИАС.НСИ</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="regionOMKTEcode" type="restr:stringStrict">
+            <xs:element name="regionOMKTEcode" type="restr:stringStrict" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>Код округа Москвы</xs:documentation>
                 </xs:annotation>
