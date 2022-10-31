@@ -1360,12 +1360,8 @@ public class AreaServiceImpl implements AreaService {
             }
         }
 
-        // 5.4
-        if (muIds != null && !muIds.isEmpty()) {
-            List<AreaMuService> listMu = areaMuServiceRepository.findActiveByMuIds(muIds);
-            Set<Long> idAreasSet = listMu.stream().map(item -> item.getArea().getId()).distinct().collect(Collectors.toSet());
-            areas = areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
-        }
+        // 5.4 фильтруется в
+        // moscow/ptnl/contingent/domain/area/AreaServiceImpl.java:1322
 
         int totalSize = areas.size();
         List<AreaInfo> areaInfos = areas.stream()
