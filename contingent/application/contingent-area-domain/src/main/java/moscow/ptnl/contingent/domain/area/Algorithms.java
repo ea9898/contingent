@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -74,8 +75,7 @@ public class Algorithms {
     }
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_1)
-    public List<MoAddress> searchServiceDistrictMOByAddress(AreaType areaType,
-                                                      AddressRegistry addressRegistryTypes, Validation validation) {
+    public List<MoAddress> searchServiceDistrictMOByAddress(AreaType areaType, AddressRegistry addressRegistryTypes, Validation validation) {
 
         // 1
         if (Boolean.TRUE.equals(settingService.getSettingProperty(SettingService.PAR_32))
@@ -97,7 +97,9 @@ public class Algorithms {
             moAddresses.addAll(moAddressRepository.getActiveMoAddressByGlobalIdAndLevel(
                     addressRegistryTypes.getGlobalIdNsi(), addressRegistryTypes.getAoLevel(), areaType));
         }
-        if (moAddresses.isEmpty()) { return moAddresses; }
+        if (moAddresses.isEmpty()) {
+            return moAddresses;
+        }
 
         // 3.
         List<Addresses> moAddressesObj = moAddresses.stream().map(MoAddress::getAddress)
@@ -117,34 +119,68 @@ public class Algorithms {
         return new ArrayList<>();
     }
 
+    // Поиск территорий обслуживания МО по адресу (А_УУ_15)
+    public List<MoAddress> searchServiceDistrictMOByAddressV33(AreaType areaType, Long globalIdNsi) {
+
+        // 1
+        List<MoAddress> moAddressByGlobalId = moAddressRepository.getActiveMoAddressByGlobalIdAndAreaTypeCode(globalIdNsi, areaType.getCode());
+
+        // 4
+        if (!moAddressByGlobalId.isEmpty()) {
+            return moAddressByGlobalId;
+        }
+
+        // 2
+        Optional<Addresses> addressesByGlobalIdNsi = addressesRepository.findAddressesByGlobalIdNsi(globalIdNsi);
+
+        Addresses addresses;
+
+        if (addressesByGlobalIdNsi.isPresent()) {
+            addresses = addressesByGlobalIdNsi.get();
+
+            if (addresses.getAoLevel().equals("8")) {
+                return moAddressRepository.getActiveMoAddressLevel8(areaType, null, addresses);
+            } else if (addresses.getAoLevel().equals("7")) {
+                return moAddressRepository.getActiveMoAddressLevel7(areaType, null, addresses);
+            } else if (addresses.getAoLevel().equals("65")) {
+                return moAddressRepository.getActiveMoAddressLevel65(areaType, null, addresses);
+            } else if (addresses.getAoLevel().equals("6")) {
+                return moAddressRepository.getActiveMoAddressLevel6(areaType, null, addresses);
+            } else if (addresses.getAoLevel().equals("4")) {
+                return moAddressRepository.getActiveMoAddressLevel4(areaType, null, addresses);
+            } else if (addresses.getAoLevel().equals("25")) {
+                return moAddressRepository.getActiveMoAddressLevel25(areaType, null, addresses);
+            } else if (addresses.getAoLevel().equals("2")) {
+                return moAddressRepository.getActiveMoAddressLevel2(areaType, null, addresses);
+            }
+        }
+
+        return new ArrayList<>();
+    }
+
     // Поиск территорий обслуживания МО по адресу (для метода К_УУ_13) (А_УУ_17)
     public List<MoAddress> searchServiceDistrictMOByAddressV3(AreaType areaType, Long moId, Addresses addressRegistryTypes) {
         List<MoAddress> moAddresses = moAddressRepository.getActiveMoAddressByGlobalIdV3(areaType, moId, addressRegistryTypes);
 
-        if(!moAddresses.isEmpty()) {
+        if (!moAddresses.isEmpty()) {
             return moAddresses;
         }
 
-        if(addressRegistryTypes.getAoLevel().equals("8")) {
+        if (addressRegistryTypes.getAoLevel().equals("8")) {
             moAddresses = moAddressRepository.getActiveMoAddressLevel8(areaType, moId, addressRegistryTypes);
-        }
-        else if(addressRegistryTypes.getAoLevel().equals("7")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("7")) {
             moAddresses = moAddressRepository.getActiveMoAddressLevel7(areaType, moId, addressRegistryTypes);
-        }
-        else if(addressRegistryTypes.getAoLevel().equals("65")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("65")) {
             moAddresses = moAddressRepository.getActiveMoAddressLevel65(areaType, moId, addressRegistryTypes);
-        }
-        else if(addressRegistryTypes.getAoLevel().equals("6")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("6")) {
             moAddresses = moAddressRepository.getActiveMoAddressLevel6(areaType, moId, addressRegistryTypes);
-        }
-        else if(addressRegistryTypes.getAoLevel().equals("4")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("4")) {
             moAddresses = moAddressRepository.getActiveMoAddressLevel4(areaType, moId, addressRegistryTypes);
-        }
-        else if(addressRegistryTypes.getAoLevel().equals("25")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("25")) {
             moAddresses = moAddressRepository.getActiveMoAddressLevel25(areaType, moId, addressRegistryTypes);
         }
 
-        if(!moAddresses.isEmpty()) {
+        if (!moAddresses.isEmpty()) {
             return moAddresses;
         }
 
@@ -153,7 +189,7 @@ public class Algorithms {
 
     // Поиск участков по адресу (А_УУ_2)
     public List<AreaAddress> searchAreaByAddress(Long moId, AreaType areaTypeCode, List<AddressRegistry> addressRegistryTypes,
-                                    Validation validation) {
+                                                 Validation validation) {
 
         // 1.
         List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddresses(moId, areaTypeCode.getCode());
@@ -186,25 +222,19 @@ public class Algorithms {
             return areaAddresses;
         }
 
-        if(addressRegistryTypes.getAoLevel().equals("8")) {
+        if (addressRegistryTypes.getAoLevel().equals("8")) {
             areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel8(moId, areaTypeCode, addressRegistryTypes);
-        }
-        else if (addressRegistryTypes.getAoLevel().equals("65")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("65")) {
             areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel65(moId, areaTypeCode, addressRegistryTypes);
-        }
-        else if (addressRegistryTypes.getAoLevel().equals("6")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("6")) {
             areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel6(moId, areaTypeCode, addressRegistryTypes);
-        }
-        else if (addressRegistryTypes.getAoLevel().equals("4")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("4")) {
             areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel4(moId, areaTypeCode, addressRegistryTypes);
-        }
-        else if (addressRegistryTypes.getAoLevel().equals("25")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("25")) {
             areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel25(moId, areaTypeCode, addressRegistryTypes);
-        }
-        else if (addressRegistryTypes.getAoLevel().equals("2")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("2")) {
             areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel2(moId, areaTypeCode, addressRegistryTypes);
-        }
-        else if (addressRegistryTypes.getAoLevel().equals("7")) {
+        } else if (addressRegistryTypes.getAoLevel().equals("7")) {
             areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel7(moId, areaTypeCode, addressRegistryTypes);
         }
 
@@ -237,14 +267,14 @@ public class Algorithms {
             }
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.STREET.getLevel())) {
-                    List<Addresses> outAddresses = addresses.stream().filter(addr ->
-                            AlgorithmsHelper.streetCodeFilter.test(addressRegistry, addr))
-                            .collect(Collectors.toList());
-                    if (!outAddresses.isEmpty()) {
-                        return outAddresses;
-                    } else {
-                        return AlgorithmsHelper.checkPlanCodeExist.apply(addressRegistry, addresses);
-                    }
+                List<Addresses> outAddresses = addresses.stream().filter(addr ->
+                        AlgorithmsHelper.streetCodeFilter.test(addressRegistry, addr))
+                        .collect(Collectors.toList());
+                if (!outAddresses.isEmpty()) {
+                    return outAddresses;
+                } else {
+                    return AlgorithmsHelper.checkPlanCodeExist.apply(addressRegistry, addresses);
+                }
             }
 
             if (addressRegistry.getAoLevel().equals(AddressLevelType.PLAN.getLevel())) {
@@ -302,7 +332,7 @@ public class Algorithms {
                     if (addressRegistry.getRegionOMKTE() != null) {
                         String[] codes2 = addressRegistry.getRegionOMKTE().getCode().split(AlgorithmsHelper.ADDRESS_CODE_VALUES_SPLITTER);
                         return addresses.stream().filter(addr ->
-                                        Arrays.stream(codes2).anyMatch(c -> addr.getRegionTeCode() != null && addr.getRegionTeCode().equals(c)) &&
+                                Arrays.stream(codes2).anyMatch(c -> addr.getRegionTeCode() != null && addr.getRegionTeCode().equals(c)) &&
                                         Arrays.stream(codes).anyMatch(c -> addr.getAreaCodeOmkTe() == null || addr.getAreaCodeOmkTe().equals(c)))
                                 .collect(Collectors.toList());
                     } else {
@@ -435,7 +465,7 @@ public class Algorithms {
                 .map(AddressRegistry::getGlobalIdNsi)
                 .collect(Collectors.toList()));
 
-        Set<Long>  globalIdExisted = addressesExistedList.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());
+        Set<Long> globalIdExisted = addressesExistedList.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());
         addresses.removeIf(item -> globalIdExisted.contains(item.getGlobalIdNsi()));
 
         List<AddressRegistry> addressesNotExistedList = addresses.stream()
@@ -445,7 +475,7 @@ public class Algorithms {
         List<Addresses> addressesList = addresses.stream().map(i -> mappingDomainService.dtoToEntityTransform(i)).collect(Collectors.toList());
 
         checkAddressFLK(addressesNotExistedList, validation);
-        if(validation.isSuccess()) {
+        if (validation.isSuccess()) {
             addressesExistedList.addAll(addressesRepository.saveAll(addressesList));
         }
 
@@ -490,7 +520,7 @@ public class Algorithms {
                     }
                 case AREA:
                     if (StringUtils.hasText(address.getAreaCode())) {
-                        resultAddresses.addAll(addressesRepository.findActualAddresses(null,null,
+                        resultAddresses.addAll(addressesRepository.findActualAddresses(null, null,
                                 null, null, address.getAreaCode(), areaOmkTeCodes, regionTeCodes, AREA.getLevel()));
                     }
                 case AREA_TE:

@@ -886,7 +886,8 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 9
-        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream().map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
+        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream()
+                .map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
 
         // 10
         List<AreaAddress> areaAddresses = addresses.stream().map(addr -> {
@@ -1212,18 +1213,18 @@ public class AreaServiceImpl implements AreaService {
     @Override
     public List<Long> addMoAddress(long moId, List<Long> areaTypeCodes, long orderId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
         Validation validation = new Validation();
-        // 1.
+        // 2
         if (limitAddress) {
             areaHelper.checkTooManyAddresses(addressesRegistry, settingService.getPar1());
         }
 
-        // 2.
+        // 3
         List<AreaType> areaTypes = areaHelper.checkAndGetAreaTypesExist(areaTypeCodes, validation);
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 3.
+        // 4
         AddressAllocationOrders order = addressAllocationOrderRepository.findById(orderId).orElse(null);
 
         if (order == null || Boolean.TRUE.equals(order.getArchived())) {
@@ -1231,23 +1232,25 @@ public class AreaServiceImpl implements AreaService {
                     new ValidationParameter("orderId", orderId));
         }
 
+        // 5
         addressesRegistry = areaHelper.filterDistinctAddressesByGlobalId(addressesRegistry);
-        // 4.
+
+        // 6
         algorithms.checkAddressFLK(addressesRegistry, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
 
-        // 5.
+        // 7
         for (AreaType areaType : areaTypes) {
             addressesRegistry.forEach(addr -> {
-                List<MoAddress> moAddress = algorithms.searchServiceDistrictMOByAddress(areaType, addr, validation);
+                List<MoAddress> moAddress = algorithms.searchServiceDistrictMOByAddressV33(areaType, addr.getGlobalIdNsi());
 
                 if (moAddress != null && !moAddress.isEmpty()) {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
-                            new ValidationParameter("address", addr.getAddressString()),
-                            new ValidationParameter("moId", moAddress.get(0).getMoId()));
+                            new ValidationParameter("address", addr.getGlobalIdNsi()),
+                            new ValidationParameter("moId", moAddress));
                 }
             });
         }
@@ -1255,13 +1258,16 @@ public class AreaServiceImpl implements AreaService {
             throw new ContingentException(validation);
         }
 
-        // 6.
-        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream().map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
-        // 7.
+        // 8
+//        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream()
+//                .map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
+
+        // 9
+        List<Addresses> addressesList = addressesRegistry.stream().map(i -> mappingDomainService.dtoToEntityTransform(i)).collect(Collectors.toList());
         List<MoAddress> moAddresses = new ArrayList<>();
 
         for (AreaType areaType : areaTypes) {
-            addresses.forEach(a -> {
+            addressesList.forEach(a -> {
                 MoAddress moAddress = new MoAddress();
                 moAddress.setAddress(a);
                 moAddress.setAreaType(areaType);
