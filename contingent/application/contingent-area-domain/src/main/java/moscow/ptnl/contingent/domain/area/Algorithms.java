@@ -105,7 +105,6 @@ public class Algorithms {
         List<Addresses> moAddressesObj = moAddresses.stream().map(MoAddress::getAddress)
                 .collect(Collectors.toList());
 
-
         // 4.
         List<Addresses> intersectingAddresses = findIntersectingAddressesAdd(
                 Collections.singletonList(addressRegistryTypes), moAddressesObj, validation);
