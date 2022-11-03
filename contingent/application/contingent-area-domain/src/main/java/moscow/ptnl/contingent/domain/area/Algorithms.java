@@ -453,17 +453,17 @@ public class Algorithms {
 
     // Поиск пересекающихся адресов при поиске  участков (А_УУ_7)
     // алгоритм изменён, вместо входного списка адресов НСИ, делаем запросы в нси с нужными фильтрами
-    public List<Addresses> findIntersectingAddressesSearch(List<SearchAreaAddress> addressesRegistryType) throws ContingentException {
+    public List<Addresses> findIntersectingAddressesSearch(List<Addresses> addressesRegistryType) throws ContingentException {
 
         List<Long> inputIds = addressesRegistryType.stream()
-                .map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList());
+                .map(Addresses::getGlobalId).collect(Collectors.toList());
 
         Set<Addresses> resultAddresses = new HashSet<>(addressesRepository.findActualAddresses(inputIds));
 
-        for (SearchAreaAddress address : addressesRegistryType) {
+        for (Addresses address : addressesRegistryType) {
             AddressLevelType level = AddressLevelType.find(address.getAoLevel());
-            List<String> areaOmkTeCodes = address.getAreaOMKTEcode() == null ? null : Arrays.asList(address.getAreaOMKTEcode().split(";"));
-            List<String> regionTeCodes = address.getRegionOMKTEcode() == null ? null : Arrays.asList(address.getRegionOMKTEcode().split(";"));
+            List<String> areaOmkTeCodes = address.getAreaCodeOmkTe() == null ? null : Arrays.asList(address.getAreaCodeOmkTe().split(";"));
+            List<String> regionTeCodes = address.getRegionTeCode() == null ? null : Arrays.asList(address.getRegionTeCode().split(";"));
 
             switch (level) {
                 case ID:
@@ -493,14 +493,14 @@ public class Algorithms {
                                 null, null, address.getAreaCode(), areaOmkTeCodes, regionTeCodes, AREA.getLevel()));
                     }
                 case AREA_TE:
-                    if (StringUtils.hasText(address.getAreaOMKTEcode())) {
+                    if (StringUtils.hasText(address.getAreaCodeOmkTe())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null,
                                 null, null, null, null, areaOmkTeCodes, null, AREA_TE.getLevel()));
                     } else {
                         throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_NESTING);
                     }
                 case REGION_TE:
-                    if (StringUtils.hasText(address.getRegionOMKTEcode())) {
+                    if (StringUtils.hasText(address.getRegionTeCode())) {
                         resultAddresses.addAll(addressesRepository.findActualAddresses(null,
                                 null, null, null, null, null, regionTeCodes, REGION_TE.getLevel()));
                     }

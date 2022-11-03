@@ -140,7 +140,7 @@ public class SearchAreaTest {
 
 
         assertNotNull(areas);
-        assertEquals(1, areas.getContent().size());
+        assertEquals(2, areas.getContent().size());
 
         for (AreaInfo aInfo : areas) {
             assertEquals(136L, aInfo.getArea().getMoId().longValue());

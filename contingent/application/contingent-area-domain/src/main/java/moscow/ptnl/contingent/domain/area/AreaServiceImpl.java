@@ -1354,7 +1354,7 @@ public class AreaServiceImpl implements AreaService {
                 areas = areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
             } else {
                 //5.3.3
-                List<Addresses> addresses = algorithms.findIntersectingAddressesSearch(searchAreaAddresses);
+                List<Addresses> addresses = algorithms.findIntersectingAddressesSearch(foundedAddresses);
                 Set<Long> idAreasSet = addresses.stream().map(item -> item.getAreaId()).collect(Collectors.toSet());
                 areas = areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
             }
@@ -1556,7 +1556,7 @@ public class AreaServiceImpl implements AreaService {
             throw new ContingentException(new Validation().error(AreaErrorReason.MULTIPLE_NSI_ADDRESSES_ERROR));
         }
         // 3.2 Система выполняет поиск адресов, пересекающихся с адресом, полученным на предыдущем шаге
-        addresses.addAll(algorithms.findIntersectingAddressesSearch(Collections.singletonList(new SearchAreaAddress(addresses.get(0)))));
+        addresses.addAll(algorithms.findIntersectingAddressesSearch(Collections.singletonList(addresses.get(0))));
         // 5. Система выполняет поиск актуальных участков заданного типа, обслуживающих адреса, полученные на предыдущем этапе сценария,
         // и получает их ИД МУ (AREAS.MU_ID) и ИД МО (AREAS.MO_ID)
         return areaAddressRepository.findMoMuList(areaTypeCodes, addresses.stream()
