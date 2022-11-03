@@ -99,7 +99,7 @@ public enum AreaErrorReason implements ErrorReason {
     SERVICING_MU_NOT_FOUND("UE107", "Не найдено специализированных МО/МУ в рамках выбранного типа участка"),
     SPECIALIZATION_IS_NOT_SPECIFIED("UE111", "Для должности мед. работника в справочнике номенклатуры должностей не указана специализация"),
     SPECIALIZATION_CODE_IS_NOT_DEFINED("UE112", "Для ИД специализации мед. работника %s не определён код специализации или он заархивирован"),
-    ADDRESSES_WITH_GLOBAL_ID_NOT_FOUND_IN_NSI2("UE113", "Адреса с global_id <global_id> не найден в НСИ.2"),
+    ADDRESSES_WITH_GLOBAL_ID_NOT_FOUND_IN_NSI2("UE113", "Адреса с global_id %s не найден в НСИ.2"),
     IT_IS_ALLOWED_ENTER_ONE_MORE_THAN_ONE_ADDRESS("UE114", "Для поиска участка по адресообразующему элементу допускается вводить не более одного адреса")
     ;
 

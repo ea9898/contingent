@@ -422,10 +422,6 @@ public class AreaHelper {
             //4.1.2
             for (Long id : notFoundId) {
                 Document document = nsiFormServiceHelper.searchByGlobalId(127, id, null);
-                if (document == null) {
-                    throw new ContingentException(AreaErrorReason.ADDRESSES_WITH_GLOBAL_ID_NOT_FOUND_IN_NSI2,
-                            new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
-                }
                 Addresses address = new Addresses();
                 try {
                     nsiFormResponseMapper.transformAndMergeEntity(document, address);

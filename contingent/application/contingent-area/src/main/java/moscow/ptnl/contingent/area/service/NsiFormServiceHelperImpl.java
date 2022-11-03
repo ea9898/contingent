@@ -1,6 +1,9 @@
 package moscow.ptnl.contingent.area.service;
 
+import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.domain.area.heplers.NsiFormServiceHelper;
+import moscow.ptnl.contingent.error.ContingentException;
+import moscow.ptnl.contingent.error.ValidationParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -35,7 +38,7 @@ public class NsiFormServiceHelperImpl implements NsiFormServiceHelper {
                 }
             });
 
-    public Document searchByGlobalId(long formId, long globalId, UserContext userContext) {
+    public Document searchByGlobalId(long formId, long globalId, UserContext userContext) throws ContingentException {
         PhpSphinxSearchFromGlobalIdRequest request = new PhpSphinxSearchFromGlobalIdRequest();
         request.setFormId((int) formId);
         request.setGlobalId((int) globalId);
@@ -44,8 +47,10 @@ public class NsiFormServiceHelperImpl implements NsiFormServiceHelper {
         String xml = null;
         try {
             xml = formService.searchByGlobalId(request, userContext).getOut();
-        } catch (Fault fault) {
-            fault.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ContingentException(AreaErrorReason.ADDRESSES_WITH_GLOBAL_ID_NOT_FOUND_IN_NSI2,
+                    new ValidationParameter("global_id", globalId));
         }
 
         try {
