@@ -435,7 +435,7 @@ public class AreaHelper {
         }
 
         //4.2
-        if (!(addresses.size() == 1 || foundAddresses.stream().allMatch(addr -> addr.getAoLevel().equals("8")))) {
+        if (!(addresses.size() == 1 || (!foundAddresses.isEmpty() && foundAddresses.stream().allMatch(addr -> addr.getAoLevel().equals("8"))))) {
             throw new ContingentException(AreaErrorReason.IT_IS_ALLOWED_ENTER_ONE_MORE_THAN_ONE_ADDRESS);
         }
 

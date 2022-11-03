@@ -1346,7 +1346,7 @@ public class AreaServiceImpl implements AreaService {
         }
 
         //5.3
-        if (searchAreaAddresses != null && !searchAreaAddresses.isEmpty()) {
+        if (foundedAddresses != null && !foundedAddresses.isEmpty()) {
             //5.3.2
             if (isExactAddressMatch == null || isExactAddressMatch || foundedAddresses.stream().allMatch(addr -> addr.getAoLevel().equals("8"))) {
                 List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).collect(Collectors.toList()));
