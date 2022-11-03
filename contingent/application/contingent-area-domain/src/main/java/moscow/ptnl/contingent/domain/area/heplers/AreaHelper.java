@@ -413,9 +413,6 @@ public class AreaHelper {
                     new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
         }
 
-        List<Addresses> lvlMoreThenOne = foundAddresses.stream().filter(addr -> addr.getAoLevel() == null
-                || !addr.getAoLevel().equals("1")).collect(Collectors.toList());
-
         Set<Long> foundIds = foundAddresses.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());
         if (Boolean.FALSE.equals(exactAddressMatch)) {
             List<Long> notFoundId = listGlobalIdNsi.stream().filter(id -> !foundIds.contains(id)).collect(Collectors.toList());
@@ -431,17 +428,15 @@ public class AreaHelper {
                 if (address.getAoLevel().equals("1")) {
                     throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
                             new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
-                }
-                if (!address.getAoLevel().equals("1")) {
+                } else {
                     foundAddresses.add(address);
                 }
             }
         }
 
         //4.2
-        if (!(addresses.size() == 1 || lvlMoreThenOne.stream().allMatch(addr -> addr.getAoLevel().equals("8")))) {
-            throw new ContingentException(AreaErrorReason.IT_IS_ALLOWED_ENTER_ONE_MORE_THAN_ONE_ADDRESS,
-                    new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
+        if (!(addresses.size() == 1 || foundAddresses.stream().allMatch(addr -> addr.getAoLevel().equals("8")))) {
+            throw new ContingentException(AreaErrorReason.IT_IS_ALLOWED_ENTER_ONE_MORE_THAN_ONE_ADDRESS);
         }
 
         return foundAddresses;
