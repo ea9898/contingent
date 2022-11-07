@@ -381,7 +381,7 @@ public class AreaHelper {
                                       Integer number, String description, Boolean isArchived,
                                       List<MedicalEmployee> medicalEmployees,
                                       List<SearchAreaAddress> addresses) throws ContingentException {
-        if (areaTypeClassCode == null && moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && number == null
+        if (areaTypeClassCode == null && moId == null && muIds != null && muIds.isEmpty() && areaTypeCodes.isEmpty() && number == null
                 && description == null && isArchived == null && medicalEmployees.isEmpty() && addresses.isEmpty()) {
             throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
         }
