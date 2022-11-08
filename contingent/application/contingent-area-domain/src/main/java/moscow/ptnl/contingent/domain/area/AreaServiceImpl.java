@@ -1311,7 +1311,7 @@ public class AreaServiceImpl implements AreaService {
 
         //5 Система выполняет поиск участков по переданным входным параметрам (логическое И шагов 5.1, 5.2, 5.3, 5.4):
         //5.1
-        List<Area> areas = new ArrayList<>();
+        List<Area> areas = null;
 
         boolean noSearchAreas = StringUtils.isEmpty(areaTypeClassCode) && StringUtils.isEmpty(moId) && CollectionUtils.isEmpty(muIds) &&
                 CollectionUtils.isEmpty(areaTypeCodes) && areaTypeProfile == null && CollectionUtils.isEmpty(servicedMuIds) &&
@@ -1347,16 +1347,20 @@ public class AreaServiceImpl implements AreaService {
 
         //5.3
         if (foundedAddresses != null && !foundedAddresses.isEmpty()) {
+            List<AreaAddress> areaAddresses = new ArrayList<>();
             //5.3.2
             if (isExactAddressMatch == null || isExactAddressMatch || foundedAddresses.stream().allMatch(addr -> addr.getAoLevel().equals("8"))) {
-                List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).collect(Collectors.toList()));
-                Set<Long> idAreasSet = areaAddresses.stream().map(item -> item.getArea().getId()).collect(Collectors.toSet());
-                areas = areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
+                areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).collect(Collectors.toList()));
             } else {
                 //5.3.3
                 List<Addresses> addresses = algorithms.findIntersectingAddressesSearch(foundedAddresses);
-                Set<Long> idAreasSet = addresses.stream().map(item -> item.getAreaId()).collect(Collectors.toSet());
+                areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
+            }
+            Set<Long> idAreasSet = areaAddresses.stream().map(item -> item.getArea().getId()).collect(Collectors.toSet());
+            if (areas != null) {
                 areas = areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());
+            } else {
+                areas = areaAddresses.stream().map(AreaAddress::getArea).collect(Collectors.toList());
             }
         }
 
