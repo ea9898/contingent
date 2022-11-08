@@ -621,19 +621,19 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public AddAreaAddressResponse addAreaAddress(AddAreaAddressRequest body) throws Fault {
-        AddAreaAddressResponse response = new AddAreaAddressResponse();
 
         try {
+            AddAreaAddressResponse response = new AddAreaAddressResponse();
             response.getAreaAddressIds()
                     .addAll(
                             areaServiceDomain.addAreaAddressV3(
                                     body.getAreaId(), body.getAddresses().stream()
                                             .map(addressRegistryBaseMapper::dtoToEntityTransform).collect(Collectors.toList()),
-                                            true));
-        } catch (ContingentException e) {
-            e.printStackTrace();
+                                    true));
+            return response;
+        } catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
         }
-        return response;
     }
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics

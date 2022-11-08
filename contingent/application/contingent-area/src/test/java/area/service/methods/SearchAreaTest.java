@@ -165,5 +165,24 @@ public class SearchAreaTest {
         assertEquals(exception.getMessage(), "Некорректный уровень адреса 1");
     }
 
+    @Test
+    @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql", "/sql/searchArea2494.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void searchArea2494() {
+//        assertDoesNotThrow(() -> areaServiceDomain.addMoAddress());
+
+        SearchAreaAddress searchAreaAddress = new SearchAreaAddress();
+        searchAreaAddress.setAoLevel("8");
+        searchAreaAddress.setGlobalIdNsi(68669240);
+        searchAreaAddress.setRegionOMKTEcode("0400");
+        searchAreaAddress.setAreaOMKTEcode("0410");
+        searchAreaAddress.setStreetCode("1731");
+
+        Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.searchArea(
+                null, null, null, null,
+                null, null, null, null, false, EL,
+                Collections.singletonList(searchAreaAddress), true, PR, true));
+        assertEquals(exception.getMessage(), "Некорректный уровень адреса 1");
+    }
+
 
 }
