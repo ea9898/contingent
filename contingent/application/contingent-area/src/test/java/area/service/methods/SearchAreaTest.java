@@ -177,11 +177,10 @@ public class SearchAreaTest {
         searchAreaAddress.setAreaOMKTEcode("0410");
         searchAreaAddress.setStreetCode("1731");
 
-        Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.searchArea(
+        assertDoesNotThrow(() -> areaServiceDomain.searchArea(
                 null, null, null, null,
                 null, null, null, null, false, EL,
                 Collections.singletonList(searchAreaAddress), true, PR, true));
-        assertEquals(exception.getMessage(), "Некорректный уровень адреса 1");
     }
 
 
