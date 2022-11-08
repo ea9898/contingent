@@ -185,4 +185,19 @@ public class SearchAreaTest {
     }
 
 
+    @Test
+    @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchAreaTest.sql", "/sql/searchArea2494.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void searchArea2494_2() {
+        SearchAreaAddress searchAreaAddress = new SearchAreaAddress();
+        searchAreaAddress.setAoLevel("8");
+        searchAreaAddress.setGlobalIdNsi(-99999998L);
+        searchAreaAddress.setRegionOMKTEcode("0400");
+        searchAreaAddress.setAreaOMKTEcode("0403");
+        searchAreaAddress.setStreetCode("7041");
+
+        assertDoesNotThrow(() -> areaServiceDomain.searchArea(
+                null, null, null, null,
+                null, null, null, null, null, EL,
+                Collections.singletonList(searchAreaAddress), true, PR, true));
+    }
 }

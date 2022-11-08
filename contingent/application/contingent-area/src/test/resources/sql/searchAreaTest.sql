@@ -101,8 +101,8 @@ INSERT INTO ADDRESSES
              UPDATE_DATE,
              REGION_TE_ID)
 VALUES
-(1, 111, 'Addr 1', sysdate(), sysdate(), 1),
-(2, 222, 'Addr 2', sysdate(), sysdate(), 2)
+(-1, 111, 'Addr 1', sysdate(), sysdate(), 1),
+(-2, 222, 'Addr 2', sysdate(), sysdate(), 2)
 ;
 
 INSERT INTO AREA_ADDRESSES
@@ -113,8 +113,8 @@ INSERT INTO AREA_ADDRESSES
              CREATE_DATE,
              UPDATE_DATE)
 VALUES
-(3, 2, sysdate(), 1, sysdate(), sysdate()),
-(4, 4, sysdate(), 2, sysdate(), sysdate())
+(3, 2, sysdate(), -1, sysdate(), sysdate()),
+(4, 4, sysdate(), -2, sysdate(), sysdate())
 ;
 
 INSERT INTO SPECIALIZATION

@@ -1311,7 +1311,7 @@ public class AreaServiceImpl implements AreaService {
 
         //5 Система выполняет поиск участков по переданным входным параметрам (логическое И шагов 5.1, 5.2, 5.3, 5.4):
         //5.1
-        List<Area> areas = null;
+        List<Area> areas = new ArrayList<>();
 
         boolean noSearchAreas = StringUtils.isEmpty(areaTypeClassCode) && StringUtils.isEmpty(moId) && CollectionUtils.isEmpty(muIds) &&
                 CollectionUtils.isEmpty(areaTypeCodes) && areaTypeProfile == null && CollectionUtils.isEmpty(servicedMuIds) &&
