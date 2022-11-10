@@ -986,10 +986,7 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 9
-        List<Addresses> addresses = areaHelper.getMoAreaAddresses(addressesRegistry.stream().map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
-
-        // 10
-        List<AreaAddress> areaAddresses = addresses.stream().map(addr -> {
+        List<AreaAddress> areaAddresses = checkAddressFLKV.stream().map(addr -> {
             AreaAddress areaAddress = new AreaAddress();
             areaAddress.setArea(area);
             areaAddress.setMoAddress(findMoAddress.get(addr.getGlobalId()));
@@ -1001,9 +998,9 @@ public class AreaServiceImpl implements AreaService {
         }).collect(Collectors.toList());
         areaAddressRepository.saveAll(areaAddresses);
 
-        // 11 аннотация @LogESU
+        // 10 аннотация @LogESU
 
-        // 12
+        // 11
         for (AreaAddress areaAddress : areaAddresses) {
             historyHelper.sendHistory(null, areaAddress, AreaAddress.class);
         }
