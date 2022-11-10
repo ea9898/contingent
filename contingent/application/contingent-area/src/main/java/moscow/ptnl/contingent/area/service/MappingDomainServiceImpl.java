@@ -16,6 +16,8 @@ public class MappingDomainServiceImpl implements MappingDomainService {
 
     @Override
     public Addresses dtoToEntityTransform(AddressRegistry addressRegistry) {
-        return addressMapper.dtoToEntityTransform(addressRegistry);
+        Addresses addresses = addressMapper.dtoToEntityTransform(addressRegistry);
+
+        return addresses;
     }
 }

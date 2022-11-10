@@ -1236,7 +1236,7 @@ public class AreaServiceImpl implements AreaService {
         addressesRegistry = areaHelper.filterDistinctAddressesByGlobalId(addressesRegistry);
 
         // 6
-        algorithms.checkAddressFLK(addressesRegistry, validation);
+        algorithms.checkAddressFLKV3(addressesRegistry, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
