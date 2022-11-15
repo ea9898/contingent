@@ -11,6 +11,9 @@ import liquibase.resource.FileSystemResourceAccessor;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.AddressAllocationOrders;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
+import moscow.ptnl.contingent.domain.area.model.area.Area;
+import moscow.ptnl.contingent.domain.area.model.area.AreaOMKTE;
+import moscow.ptnl.contingent.domain.area.model.area.RegionOMKTE;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,7 +31,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,6 +49,7 @@ public class AddMoAddressTest {
         Liquibase liquibase = new Liquibase("changelog/area/versions/master.xml", new FileSystemResourceAccessor("../database"), database);
         liquibase.update("");
     }
+
     // --------------- 2 шаг ---------------- //
     @Test
     public void addMoAddressesTestAmountAddressesMoreThenPar1() {
@@ -138,4 +141,79 @@ public class AddMoAddressTest {
     }
 
     // --------------- 5 шаг ---------------- //
+    @Test
+    // Если передано несколько адресов, то Система выбирает уникальные (по global_id) и далее при проверках и добавлении использует только их
+    @Sql(scripts = {"/sql/areaTypeCodeUnique.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void addMoAddressesTestMultipleAddressesDuplicateGlobalId() throws ContingentException {
+        List<AddressRegistry> addressRegistryList = new ArrayList<>();
+        AddressRegistry addressRegistry1 = new AddressRegistry();
+        addressRegistry1.setGlobalIdNsi(1L);
+        addressRegistry1.setAoLevel("3");
+        addressRegistry1.setAreaOMKTE(new AreaOMKTE() {{ setCode("111"); }});
+        addressRegistry1.setRegionOMKTE(new RegionOMKTE() {{ setCode("222"); }});
+        addressRegistry1.setArea(new Area() {{ setCode("222"); }});
+        addressRegistry1.setAddressString("address1");
+
+        AddressRegistry addressRegistry2 = new AddressRegistry();
+        addressRegistry2.setGlobalIdNsi(2L);
+        addressRegistry2.setAoLevel("3");
+        addressRegistry2.setAreaOMKTE(new AreaOMKTE() {{ setCode("111"); }});
+        addressRegistry2.setRegionOMKTE(new RegionOMKTE() {{ setCode("222"); }});
+        addressRegistry2.setArea(new Area() {{ setCode("333"); }});
+        addressRegistry2.setAddressString("address2");
+
+        AddressRegistry addressRegistry3 = new AddressRegistry();
+        addressRegistry3.setGlobalIdNsi(2L);
+        addressRegistry3.setAoLevel("3");
+        addressRegistry3.setAreaOMKTE(new AreaOMKTE() {{ setCode("123"); }});
+        addressRegistry3.setRegionOMKTE(new RegionOMKTE() {{ setCode("234"); }});
+        addressRegistry3.setArea(new Area() {{ setCode("456"); }});
+        addressRegistry3.setAddressString("address3");
+
+        List<Long> areaTypeCode = new ArrayList<>();
+        areaTypeCode.add(1L);
+
+        addressRegistryList.add(addressRegistry1);
+        addressRegistryList.add(addressRegistry2);
+        addressRegistryList.add(addressRegistry3);
+
+        List<Long> addMoAddress = areaService.addMoAddress(1, areaTypeCode, 1, addressRegistryList, false);
+        assertNotNull(addMoAddress);
+        assertEquals(2, addMoAddress.size());
+    }
+
+    // --------------- 9 шаг ---------------- //
+    @Test
+    // Система сохраняет экземпляр сущности «Территория обслуживания МО» (MO_ADDRESSES) для каждого переданного уникального кода типа участка
+    @Sql(scripts = {"/sql/areaTypeCodeUnique.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void addMoAddressesTestMultipleAddresses() throws ContingentException {
+        List<AddressRegistry> addressRegistryList = new ArrayList<>();
+        AddressRegistry addressRegistry1 = new AddressRegistry();
+        addressRegistry1.setGlobalIdNsi(1L);
+        addressRegistry1.setAoLevel("3");
+        addressRegistry1.setAreaOMKTE(new AreaOMKTE() {{ setCode("111"); }});
+        addressRegistry1.setRegionOMKTE(new RegionOMKTE() {{ setCode("222"); }});
+        addressRegistry1.setArea(new Area() {{ setCode("222"); }});
+        addressRegistry1.setAddressString("address1");
+
+        AddressRegistry addressRegistry2 = new AddressRegistry();
+        addressRegistry2.setGlobalIdNsi(2L);
+        addressRegistry2.setAoLevel("3");
+        addressRegistry2.setAreaOMKTE(new AreaOMKTE() {{ setCode("111"); }});
+        addressRegistry2.setRegionOMKTE(new RegionOMKTE() {{ setCode("222"); }});
+        addressRegistry2.setArea(new Area() {{ setCode("333"); }});
+        addressRegistry2.setAddressString("address2");
+
+        List<Long> areaTypeCode = new ArrayList<>();
+        areaTypeCode.add(1L);
+        areaTypeCode.add(333L);
+        areaTypeCode.add(1L);
+
+        addressRegistryList.add(addressRegistry1);
+        addressRegistryList.add(addressRegistry2);
+
+        List<Long> addMoAddress = areaService.addMoAddress(1, areaTypeCode, 1, addressRegistryList, false);
+        assertNotNull(addMoAddress);
+        assertEquals(4, addMoAddress.size());
+    }
 }

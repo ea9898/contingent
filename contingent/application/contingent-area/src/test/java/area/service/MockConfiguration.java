@@ -8,6 +8,7 @@ package area.service;
 import moscow.ptnl.contingent.area.service.MappingDomainServiceImpl;
 import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.NsiFormResponseMapperImpl;
+import moscow.ptnl.contingent.area.transform.v1.AddressMapperImpl;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaAddressChecker;
@@ -221,8 +222,11 @@ public class MockConfiguration {
     @MockBean
     public HistoryService historyService;
 
-    @MockBean
-    public AddressMapper addressMapper;
+//    @MockBean
+//    public AddressMapper addressMapper;
+
+    @Bean
+    public AddressMapper addressMapper() { return new AddressMapperImpl(); }
 
     @Bean
     public AreaService areaService() { return new AreaServiceImpl(); }

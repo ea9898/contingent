@@ -389,12 +389,14 @@ public class Algorithms {
             //1
             if (address.getAoLevel() == null) {
                 validation.error(AreaErrorReason.AO_LEVEL_NOT_SET);
+                return ;
             } else {
                 //2
                 AddressLevelType addressLevelType = AddressLevelType.find(address.getAoLevel());
                 if (addressLevelType == null || addressLevelType.getLevel().equals(AddressLevelType.MOSCOW.getLevel())) {
                     validation.error(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
                             new ValidationParameter("aoLevel", address.getAoLevel()));
+                    return ;
                 }
                 //4
                 if (!address.getAoLevel().equals(AddressLevelType.REGION_TE.getLevel())

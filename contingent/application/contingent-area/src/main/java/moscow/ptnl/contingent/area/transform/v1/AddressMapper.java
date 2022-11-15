@@ -12,67 +12,67 @@ import org.mapstruct.Mappings;
 public abstract class AddressMapper {
 
     @Mappings({
-            @Mapping(target="globalId", source="globalIdNsi"), //+
-            @Mapping(target="address", source="addressString"), //+
+            @Mapping(target="globalId", source="globalIdNsi"),
+            @Mapping(target="address", source="addressString"),
 
-            @Mapping(target = "regionId", source = "region.id"), //+
-            @Mapping(target = "regionCode", source = "region.code"), //+
-            @Mapping(target = "regionName", source = "region.name"), //+
-            @Mapping(target = "regionTypename", source = "region.type.full"), //+
+            @Mapping(target = "regionId", source = "region.id"),
+            @Mapping(target = "regionCode", source = "region.code"),
+            @Mapping(target = "regionName", source = "region.name"),
+            @Mapping(target = "regionTypename", source = "region.type.full"),
 
-            @Mapping(target = "regionTeId", source = "regionOMKTE.id"), //+
-            @Mapping(target = "regionTeCode", source = "regionOMKTE.code"), //+
-            @Mapping(target = "regionTeName", source = "regionOMKTE.name"), //+
-            @Mapping(target = "regionTeTypeName", source = "regionOMKTE.type.full"), //+
-            @Mapping(target = "regionTeTypeNameShort", source = "regionOMKTE.type.short"), //+
+            @Mapping(target = "regionTeId", source = "regionOMKTE.id"),
+            @Mapping(target = "regionTeCode", source = "regionOMKTE.code"),
+            @Mapping(target = "regionTeName", source = "regionOMKTE.name"),
+            @Mapping(target = "regionTeTypeName", source = "regionOMKTE.type.full"),
+            @Mapping(target = "regionTeTypeNameShort", source = "regionOMKTE.type.short"),
 
-            @Mapping(target = "areaCodeOmkTe", source = "areaOMKTE.code"), //+
-            @Mapping(target = "areaTeName", source = "areaOMKTE.name"), //+
-            @Mapping(target = "areaTeTypeName", source = "areaOMKTE.type.full"), //+
+            @Mapping(target = "areaCodeOmkTe", source = "areaOMKTE.code"),
+            @Mapping(target = "areaTeName", source = "areaOMKTE.name"),
+            @Mapping(target = "areaTeTypeName", source = "areaOMKTE.type.full"),
             @Mapping(target = "areaTeTypeNameShort", source = "areaOMKTE.type.short"),
 
-            @Mapping(target = "areaCode", source = "area.code"), //+
-            @Mapping(target = "areaBtiCode", source = "area.codeBTI"), //+
-            @Mapping(target = "areaName", source = "area.name"), //+
-            @Mapping(target = "areaTypeName", source = "area.type.full"), //+
+            @Mapping(target = "areaCode", source = "area.code"),
+            @Mapping(target = "areaBtiCode", source = "area.codeBTI"),
+            @Mapping(target = "areaName", source = "area.name"),
+            @Mapping(target = "areaTypeName", source = "area.type.full"),
             @Mapping(target = "areaTypeNameShort", source = "area.type.short"),
 
-            @Mapping(target = "cityCode", source = "city.code"), //+
-            @Mapping(target = "cityBtiCode", source = "city.codeBTI"), //+
-            @Mapping(target = "cityName", source = "city.name"), //+
-            @Mapping(target = "cityTypeName", source = "city.type.full"), //+
+            @Mapping(target = "cityCode", source = "city.code"),
+            @Mapping(target = "cityBtiCode", source = "city.codeBTI"),
+            @Mapping(target = "cityName", source = "city.name"),
+            @Mapping(target = "cityTypeName", source = "city.type.full"),
             @Mapping(target = "cityTypeNameShort", source = "city.type.short"),
 
-            @Mapping(target = "placeCode", source = "place.code"), //+
-            @Mapping(target = "placeBtiCode", source = "place.codeBTI"), //+
-            @Mapping(target = "placeName", source = "place.name"), //+
-            @Mapping(target = "placeTypeName", source = "place.type.full"), //+
+            @Mapping(target = "placeCode", source = "place.code"),
+            @Mapping(target = "placeBtiCode", source = "place.codeBTI"),
+            @Mapping(target = "placeName", source = "place.name"),
+            @Mapping(target = "placeTypeName", source = "place.type.full"),
             @Mapping(target = "placeTypeNameShort", source = "place.type.short"),
 
-            @Mapping(target = "planCode", source = "plan.code"), //+
-            @Mapping(target = "planBtiCode", source = "plan.codeBTI"), //+
-            @Mapping(target = "planName", source = "plan.name"), //+
-            @Mapping(target = "planTypeName", source = "plan.type.full"), //+
+            @Mapping(target = "planCode", source = "plan.code"),
+            @Mapping(target = "planBtiCode", source = "plan.codeBTI"),
+            @Mapping(target = "planName", source = "plan.name"),
+            @Mapping(target = "planTypeName", source = "plan.type.full"),
             @Mapping(target = "planTypeNameShort", source = "plan.type.short"),
 
-            @Mapping(target = "streetCode", source = "street.code"), //+
-            @Mapping(target = "streetBtiCode", source = "street.codeBTI"), //+
-            @Mapping(target = "streetName", source = "street.name"), //+
-            @Mapping(target = "streetTypeName", source = "street.type.full"), //+
+            @Mapping(target = "streetCode", source = "street.code"),
+            @Mapping(target = "streetBtiCode", source = "street.codeBTI"),
+            @Mapping(target = "streetName", source = "street.name"),
+            @Mapping(target = "streetTypeName", source = "street.type.full"),
             @Mapping(target = "streetTypeNameShort", source = "street.type.short"),
-            @Mapping(target = "streetOmkUm", source = "street.codeOMKUM"), //+
+            @Mapping(target = "streetOmkUm", source = "street.codeOMKUM"),
 
-            @Mapping(target = "l1Type", source = "building.house.type.full"), //+
+            @Mapping(target = "l1Type", source = "building.house.type.full"),
             @Mapping(target = "l1TypeShort", source = "building.house.type.short"),
-            @Mapping(target = "l1Value", source = "building.house.name"), //+
+            @Mapping(target = "l1Value", source = "building.house.name"),
 
-            @Mapping(target = "l2Type", source = "building.build.type.full"), //+
+            @Mapping(target = "l2Type", source = "building.build.type.full"),
             @Mapping(target = "l2TypeShort", source = "building.build.type.short"),
-            @Mapping(target = "l2Value", source = "building.build.name"), //+
+            @Mapping(target = "l2Value", source = "building.build.name"),
 
-            @Mapping(target = "l3Type", source = "building.construction.type.full"), //+
+            @Mapping(target = "l3Type", source = "building.construction.type.full"),
             @Mapping(target = "l3TypeShort", source = "building.construction.type.short"),
-            @Mapping(target = "l3Value", source = "building.construction.name"), //+
+            @Mapping(target = "l3Value", source = "building.construction.name"),
             @Mapping(target = "updateDate", expression = "java( java.time.LocalDateTime.now() )"),
 
             @Mapping(target = "areaTeId", source = "areaOMKTE.id"),
