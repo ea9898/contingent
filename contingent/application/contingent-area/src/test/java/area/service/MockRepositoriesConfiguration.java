@@ -1,6 +1,7 @@
 package area.service;
 
 import moscow.ptnl.contingent.domain.area.repository.AreaMuServiceRepository;
+import moscow.ptnl.contingent.domain.area.repository.MuMuServiceRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeProfileRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
@@ -42,8 +43,8 @@ import moscow.ptnl.contingent.nsi.domain.repository.PolicyTypeRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionNomRepository;
 
+import moscow.ptnl.contingent.repository.settings.SettingsRepository;
 import moscow.ptnl.contingent.sysop.repository.SysopRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 
@@ -57,8 +58,14 @@ import javax.persistence.EntityManager;
 public class MockRepositoriesConfiguration {
 
     @MockBean
+    public SettingsRepository settingsRepository;
+
+    @MockBean
     public MoAddressRepository moAddressRepository;
-    
+
+    @MockBean
+    public MuMuServiceRepository muMuServiceRepository;
+
     @MockBean
     public AddressFormingElementRepository addressFormingElementRepository;
 

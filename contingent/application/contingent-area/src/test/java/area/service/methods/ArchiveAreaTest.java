@@ -70,7 +70,7 @@ public class ArchiveAreaTest {
         MockEsuService receiveService = (MockEsuService) esuService;
         receiveService.init(); //очищаем коллекцию полученных сообщений
         //нужно для работы интерцептора LogESU
-        Mockito.when(settingService.getPar4()).thenReturn(Boolean.TRUE);
+//        MocAkito.when(settingService.getPar4()).thenReturn(Boolean.TRUE);
         Mockito.when(areaRepository.getEntityManager()).thenReturn(Mockito.mock(EntityManager.class));
         AreaTypeClass areaTypeClass1 = new AreaTypeClass();
         areaTypeClass1.setCode(1L);

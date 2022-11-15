@@ -13,6 +13,8 @@ import javax.persistence.EntityManager;
 import area.service.MockRepositoriesConfiguration;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Area;
+import moscow.ptnl.contingent.domain.settings.Setting;
+import moscow.ptnl.contingent.domain.settings.SettingValueType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.error.ContingentException;
@@ -24,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import moscow.ptnl.contingent.repository.settings.SettingsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -55,7 +59,10 @@ public class RestoreAreaTest {
     
     @Autowired
     private SettingService settingService;
-    
+
+    @Autowired
+    private SettingsRepository settingsRepository;
+
     
     @BeforeEach
     public void init() {
@@ -92,7 +99,8 @@ public class RestoreAreaTest {
             Mockito.when(areaRepository.findPrimaryAreasByAreaEqAreaType(area)).thenReturn(findedPrimaryAreas);
             
             //нужно для работы интерцептора LogESU
-            Mockito.when(settingService.getPar4()).thenReturn(Boolean.TRUE); 
+            Mockito.when(settingsRepository.findById(Mockito.eq("synchronize_k2_and_k1"), Mockito.anyBoolean()))
+                    .thenReturn(Optional.of(new Setting() {{ setVal("1"); setType(SettingValueType.LONG); }}));
             Mockito.when(areaRepository.getEntityManager()).thenReturn(Mockito.mock(EntityManager.class));
             
             //тестируемый метод в ктором есть интерцептор LogESU и внутренняя отправка сообщений в ЕСУ в самом методе
@@ -151,7 +159,8 @@ public class RestoreAreaTest {
             Mockito.when(areaRepository.findPrimaryAreasByAreaEqAreaType(area)).thenReturn(findedPrimaryAreas);
             
             //нужно для работы интерцептора LogESU
-            Mockito.when(settingService.getPar4()).thenReturn(Boolean.TRUE); 
+            Mockito.when(settingsRepository.findById(Mockito.eq("synchronize_k2_and_k1"), Mockito.anyBoolean()))
+                    .thenReturn(Optional.of(new Setting() {{ setVal("1"); setType(SettingValueType.LONG); }}));
             Mockito.when(areaRepository.getEntityManager()).thenReturn(Mockito.mock(EntityManager.class));
             
             //тестируемый метод в ктором есть интерцептор LogESU и внутренняя отправка сообщений в ЕСУ в самом методе
