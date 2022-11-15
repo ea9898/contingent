@@ -83,26 +83,39 @@ public class AddAreaAddressTest {
         addressRegistry.setGlobalIdNsi(-999999998L);
         addressRegistry.setAddressString("город Москва, улица Ивантеевская");
         addressRegistry.setAoLevel("8");
-        addressRegistry.setRegionOMKTE(new RegionOMKTE() {{ setId(67200856L); setCode("0400"); setName("Москва");}});
+        addressRegistry.setRegionOMKTE(new RegionOMKTE() {{
+            setId(67200856L);
+            setCode("0400");
+            setName("Москва");
+        }});
         addressRegistry.setArea(new Area() {{
             setId(672008111L);
             setCode("888");
             setName("Сведения о районе в регионе");
-            setType(new Names(){{ setFull("Тип"); setShort("Шорт");}});
+            setType(new Names() {{
+                setFull("Тип");
+                setShort("Шорт");
+            }});
             setCodeOMKTE("0001");
             setCodeBTI("0002");
-            }});
+        }});
         addressRegistry.setAreaOMKTE(new AreaOMKTE() {{
             setId(672008222L);
             setCode("0403");
             setName("Сведения об округе (по ОМК ТЕ)");
-            setType(new Names(){{ setFull("Тип"); setShort("Шорт");}});
+            setType(new Names() {{
+                setFull("Тип");
+                setShort("Шорт");
+            }});
         }});
         addressRegistry.setCity(new City() {{
             setId(672008333L);
             setCode("000");
             setName("Город");
-            setType(new Names(){{ setFull("Тип"); setShort("Шорт");}});
+            setType(new Names() {{
+                setFull("Тип");
+                setShort("Шорт");
+            }});
             setCodeOMKTM("001");
             setCodeBTI("002");
         }});
@@ -110,7 +123,10 @@ public class AddAreaAddressTest {
             setId(672008444L);
             setCode("000");
             setName("Сведения о населенном пункте");
-            setType(new Names(){{ setFull("Населенный пункт"); setShort("НП");}});
+            setType(new Names() {{
+                setFull("Населенный пункт");
+                setShort("НП");
+            }});
             setCodeOMKTM("111");
             setCodeBTI("222");
         }});
@@ -118,26 +134,123 @@ public class AddAreaAddressTest {
             setId(672008555L);
             setCode("0000");
             setName("Сведения о планировочной структуре");
-            setType(new Names(){{ setFull("планировочная структура"); setShort("ПС");}});
+            setType(new Names() {{
+                setFull("планировочная структура");
+                setShort("ПС");
+            }});
             setCodeBTI("195411");
         }});
         addressRegistry.setStreet(new Street() {{
             setId(672008666L);
             setCode("7041");
             setName("Ивантеевская улица");
-            setType(new Names(){{ setFull("Улица"); setShort("ул");}});
+            setType(new Names() {{
+                setFull("Улица");
+                setShort("ул");
+            }});
             setCodeOMKUM("020930");
             setCodeBTI("194863");
         }});
-        addressRegistry.setBuilding(new Building(){{
-            setHouse(new House() {{ setName("99");}});
+        addressRegistry.setBuilding(new Building() {{
+            setHouse(new House() {{
+                setName("99");
+            }});
         }});
 
         AddAreaAddressRequest addAreaAddressRequest = new AddAreaAddressRequest();
         addAreaAddressRequest.setAreaId(175715882L);
         addAreaAddressRequest.getAddresses().add(addressRegistry);
 
-        AddAreaAddressResponse response =  assertDoesNotThrow(() -> areaPTv3.addAreaAddress(addAreaAddressRequest));
+        AddAreaAddressResponse response = assertDoesNotThrow(() -> areaPTv3.addAreaAddress(addAreaAddressRequest));
         assertEquals(1, response.getAreaAddressIds().size());
+    }
+
+
+    @Test
+    @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/addAreaAddress2501.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void addAreaAddressTest2501_1() {
+        AddressRegistryBaseType addressRegistry = new AddressRegistryBaseType();
+        addressRegistry.setGlobalIdNsi(-300L);
+        addressRegistry.setAddressString("город Москва, улица Ивантеевская");
+        addressRegistry.setAoLevel("8");
+        addressRegistry.setRegionOMKTE(new RegionOMKTE() {{
+            setId(67200856L);
+            setCode("0400");
+            setName("Москва");
+        }});
+        addressRegistry.setArea(new Area() {{
+            setId(672008111L);
+            setCode("888");
+            setName("Сведения о районе в регионе");
+            setType(new Names() {{
+                setFull("Тип");
+                setShort("Шорт");
+            }});
+            setCodeOMKTE("0001");
+            setCodeBTI("0002");
+        }});
+        addressRegistry.setAreaOMKTE(new AreaOMKTE() {{
+            setId(672008222L);
+            setCode("0403");
+            setName("Сведения об округе (по ОМК ТЕ)");
+            setType(new Names() {{
+                setFull("Тип");
+                setShort("Шорт");
+            }});
+        }});
+        addressRegistry.setCity(new City() {{
+            setId(672008333L);
+            setCode("000");
+            setName("Город");
+            setType(new Names() {{
+                setFull("Тип");
+                setShort("Шорт");
+            }});
+            setCodeOMKTM("001");
+            setCodeBTI("002");
+        }});
+        addressRegistry.setPlace(new Place() {{
+            setId(672008444L);
+            setCode("000");
+            setName("Сведения о населенном пункте");
+            setType(new Names() {{
+                setFull("Населенный пункт");
+                setShort("НП");
+            }});
+            setCodeOMKTM("111");
+            setCodeBTI("222");
+        }});
+        addressRegistry.setPlan(new Plan() {{
+            setId(672008555L);
+            setCode("0000");
+            setName("Сведения о планировочной структуре");
+            setType(new Names() {{
+                setFull("планировочная структура");
+                setShort("ПС");
+            }});
+            setCodeBTI("195411");
+        }});
+        addressRegistry.setStreet(new Street() {{
+            setId(672008666L);
+            setCode("7041");
+            setName("Ивантеевская улица");
+            setType(new Names() {{
+                setFull("Улица");
+                setShort("ул");
+            }});
+            setCodeOMKUM("020930");
+            setCodeBTI("194863");
+        }});
+        addressRegistry.setBuilding(new Building() {{
+            setHouse(new House() {{
+                setName("99");
+            }});
+        }});
+
+        AddAreaAddressRequest addAreaAddressRequest = new AddAreaAddressRequest();
+        addAreaAddressRequest.setAreaId(175715882L);
+        addAreaAddressRequest.getAddresses().add(addressRegistry);
+
+        assertThrows(ContingentException.class, () -> areaPTv3.addAreaAddress(addAreaAddressRequest));
     }
 }
