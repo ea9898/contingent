@@ -35,11 +35,15 @@ public interface MoAddressRepository {
 
     List<MoAddress> getActiveMoAddressLevel25(AreaType areaType, Long moId, Addresses addresses);
 
+    List<MoAddress> getActiveMoAddressLevel2(AreaType areaType, Long moId, Addresses addresses);
+
     Page<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds);
 
     Page<MoAddress> getActiveMoAddressesByGlobalIds(List<Long> globalIds, Pageable paging);
 
     List<MoAddress> getActiveMoAddressByGlobalIdAndLevel(Long globalId, String aoLevel, AreaType areaType);
+
+    List<MoAddress> getActiveMoAddressByGlobalIdAndAreaTypeCode(Long globalId, Long areaType);
 
     Optional<MoAddress> findById(Long id);
 

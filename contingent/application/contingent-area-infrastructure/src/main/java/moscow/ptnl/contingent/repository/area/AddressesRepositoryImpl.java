@@ -17,9 +17,9 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.repository.CommonSpecification;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
@@ -34,10 +34,10 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
     @Override
     public List<Addresses> findAddresses(List<Long> nsiGlobalIds, String aoLevel) {
         Specification<Addresses> specification = (Specification<Addresses>) (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.and(   
-                    criteriaBuilder.in(root.get(Addresses_.globalId.getName())).value(nsiGlobalIds),//root.get(Addresses_.globalId).in(nsiGlobalIds),                     
-                    aoLevel == null 
-                            ? criteriaBuilder.conjunction() 
+            criteriaBuilder.and(
+                    criteriaBuilder.in(root.get(Addresses_.globalId.getName())).value(nsiGlobalIds),//root.get(Addresses_.globalId).in(nsiGlobalIds),
+                    aoLevel == null
+                            ? criteriaBuilder.conjunction()
                             : criteriaBuilder.equal(root.get(Addresses_.aoLevel), aoLevel)
             );
         return addressesCRUDRepository.findAll(specification);
@@ -127,5 +127,13 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
     @Override
     public List<Addresses> saveAll(List<Addresses> addresses) {
         return addressesCRUDRepository.saveAll(addresses);
+    }
+
+    @Override
+    public Optional<Addresses> findAddressesByGlobalIdNsi(Long globalIdNsi) {
+        Specification<Addresses> specification = (Specification<Addresses>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(Addresses_.globalId), globalIdNsi);
+
+        return addressesCRUDRepository.findOne(specification);
     }
 }
