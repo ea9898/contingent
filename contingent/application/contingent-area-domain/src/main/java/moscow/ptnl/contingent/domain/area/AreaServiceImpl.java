@@ -942,7 +942,13 @@ public class AreaServiceImpl implements AreaService {
         checkAddressFLKV.forEach(address -> {
             List<MoAddress> moAddressesIntersect = algorithms.searchServiceDistrictMOByAddressV3(area.getAreaType(), area.getMoId(), address);
             Optional<MoAddress> first = moAddressesIntersect.stream().findFirst();
-            first.ifPresent(moAddress -> findMoAddress.put(address.getGlobalId(), moAddress));
+            if (first.isPresent()) {
+                first.ifPresent(moAddress -> findMoAddress.put(address.getGlobalId(), moAddress));
+            } else {
+                validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI,
+                        new ValidationParameter("address", address.getAddress()),
+                        new ValidationParameter("moId", area.getMoId()));
+            }
         });
 
         if (!validation.isSuccess()) {

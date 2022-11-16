@@ -31,6 +31,7 @@ import ru.mos.emias.contingent2.address.v3.Plan;
 import ru.mos.emias.contingent2.address.v3.Area;
 import ru.mos.emias.contingent2.address.v3.RegionOMKTE;
 import ru.mos.emias.contingent2.address.v3.Street;
+import ru.mos.emias.contingent2.area.v3.Fault;
 import ru.mos.emias.contingent2.area.v3.AreaPT;
 import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressResponse;
@@ -165,7 +166,6 @@ public class AddAreaAddressTest {
         assertEquals(1, response.getAreaAddressIds().size());
     }
 
-
     @Test
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/addAreaAddress2501.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void addAreaAddressTest2501_1() {
@@ -251,6 +251,6 @@ public class AddAreaAddressTest {
         addAreaAddressRequest.setAreaId(175715882L);
         addAreaAddressRequest.getAddresses().add(addressRegistry);
 
-        assertThrows(ContingentException.class, () -> areaPTv3.addAreaAddress(addAreaAddressRequest));
+        assertThrows(Fault.class, () -> areaPTv3.addAreaAddress(addAreaAddressRequest));
     }
 }
