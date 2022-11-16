@@ -17,21 +17,21 @@ public interface AreaAddressRepository {
 
     List<AreaAddress> getActiveAreaAddresses(long moId, long areaTypeCode);
 
-    List<AreaAddress> getActiveAreaAddressesV3(long moId, AreaType areaTypeCode, Addresses globalIdNsi);
+    List<AreaAddress> getActiveAreaAddressesV3(Long moId, AreaType areaTypeCode, Addresses globalIdNsi);
 
-    List<AreaAddress> getActiveAreaAddressesLevel8(long moId, AreaType areaTypeCode, Addresses addresses);
+    List<AreaAddress> getActiveAreaAddressesLevel8(Long moId, AreaType areaTypeCode, Addresses addresses);
 
-    List<AreaAddress> getActiveAreaAddressesLevel65(long moId, AreaType areaTypeCode, Addresses addresses);
+    List<AreaAddress> getActiveAreaAddressesLevel65(Long moId, AreaType areaTypeCode, Addresses addresses);
 
-    List<AreaAddress> getActiveAreaAddressesLevel6(long moId, AreaType areaTypeCode, Addresses addresses);
+    List<AreaAddress> getActiveAreaAddressesLevel6(Long moId, AreaType areaTypeCode, Addresses addresses);
 
-    List<AreaAddress> getActiveAreaAddressesLevel4(long moId, AreaType areaTypeCode, Addresses addresses);
+    List<AreaAddress> getActiveAreaAddressesLevel4(Long moId, AreaType areaTypeCode, Addresses addresses);
 
-    List<AreaAddress> getActiveAreaAddressesLevel25(long moId, AreaType areaTypeCode, Addresses addresses);
+    List<AreaAddress> getActiveAreaAddressesLevel25(Long moId, AreaType areaTypeCode, Addresses addresses);
 
-    List<AreaAddress> getActiveAreaAddressesLevel2(long moId, AreaType areaTypeCode, Addresses addresses);
+    List<AreaAddress> getActiveAreaAddressesLevel2(Long moId, AreaType areaTypeCode, Addresses addresses);
 
-    List<AreaAddress> getActiveAreaAddressesLevel7(long moId, AreaType areaTypeCode, Addresses addresses);
+    List<AreaAddress> getActiveAreaAddressesLevel7(Long moId, AreaType areaTypeCode, Addresses addresses);
 
     List<AreaAddress> findAreaAddresses(List<Long> moAddressIds);
 

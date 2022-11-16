@@ -1346,12 +1346,16 @@ public class AreaServiceImpl implements AreaService {
         if (foundedAddresses != null && !foundedAddresses.isEmpty()) {
             List<AreaAddress> areaAddresses = new ArrayList<>();
             //5.3.2
-            if (isExactAddressMatch == null || isExactAddressMatch || foundedAddresses.stream().allMatch(addr -> addr.getAoLevel().equals("8"))) {
+            if (isExactAddressMatch == null || isExactAddressMatch || foundedAddresses.stream().allMatch(addr -> "8".equals(addr.getAoLevel()))) {
                 areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).collect(Collectors.toList()));
             } else {
                 //5.3.3
-                List<Addresses> addresses = algorithms.findIntersectingAddressesSearch(foundedAddresses);
-                areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(addresses.stream().map(Addresses::getId).collect(Collectors.toList()));
+                //По алгоритму из п4.2 здесь должен быть только один адрес
+                Addresses address = foundedAddresses.get(0);
+
+                if (!"8".equals(address.getAoLevel())) {
+                    areaAddresses = algorithms.searchAreaByAddressV3(null, null, address, null);
+                }
             }
             Set<Long> idAreasSet = areaAddresses.stream().map(item -> item.getArea().getId()).collect(Collectors.toSet());
             if (areas != null) {

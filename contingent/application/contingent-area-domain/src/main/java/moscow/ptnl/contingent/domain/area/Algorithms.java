@@ -185,7 +185,7 @@ public class Algorithms {
             return areaAddresses;
         }
 
-        if(addressRegistryTypes.getAoLevel().equals("8")) {
+        if (addressRegistryTypes.getAoLevel().equals("8")) {
             areaAddresses = areaAddressRepository.getActiveAreaAddressesLevel8(moId, areaTypeCode, addressRegistryTypes);
         }
         else if (addressRegistryTypes.getAoLevel().equals("65")) {
