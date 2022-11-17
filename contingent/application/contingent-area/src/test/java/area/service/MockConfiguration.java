@@ -37,7 +37,6 @@ import moscow.ptnl.contingent.area.transform.v3.SoapExceptionMapper;
 import moscow.ptnl.contingent.domain.area.MappingDomainServiceImpl;
 import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.NsiFormResponseMapperImpl;
-import moscow.ptnl.contingent.area.transform.v1.AddressMapperImpl;
 import moscow.ptnl.contingent.domain.area.Algorithms;
 import moscow.ptnl.contingent.domain.area.AlgorithmsHelper;
 import moscow.ptnl.contingent.area.service.AreaAddressChecker;

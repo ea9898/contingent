@@ -261,7 +261,7 @@ public class A_YY_6_Test {
         assertNotNull(validation.getMessages());
         assertEquals(1, validation.getMessages().size());
         assertEquals("UE072", validation.getMessages().get(0).getCode());
-        assertEquals("Некорректный уровень адреса (9)", validation.getMessages().get(0).getMessage());
+        assertEquals("Некорректный уровень адреса 9", validation.getMessages().get(0).getMessage());
     }
 
     @Test // Система проверяет, что не передан уровень адреса (aoLevel), иначе возвращает ошибку С_УУ_110
@@ -833,7 +833,7 @@ public class A_YY_6_Test {
         algorithms.checkAddressFLKV3(addressRegistries, validation);
 
         assertFalse(validation.isSuccess());
-        assertEquals("Некорректный уровень адреса (1)", validation.getMessages().get(0).getMessage());
+        assertEquals("Некорректный уровень адреса 1", validation.getMessages().get(0).getMessage());
     }
 
     @Test

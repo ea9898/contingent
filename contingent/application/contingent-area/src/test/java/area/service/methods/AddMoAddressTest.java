@@ -58,7 +58,7 @@ public class AddMoAddressTest {
             addressRegistryList.add(new AddressRegistry());
         }
         Throwable exception = assertThrows(ContingentException.class, () -> areaService.addMoAddress(0, Collections.emptyList(), 0, addressRegistryList, true));
-        assertEquals("Превышено максимально допустимое количество адресов для распределения (не более 0)", exception.getMessage());
+        assertEquals("Превышено максимально допустимое количество адресов для распределения (не более 50)", exception.getMessage());
     }
 
     // --------------- 3 шаг ---------------- //
