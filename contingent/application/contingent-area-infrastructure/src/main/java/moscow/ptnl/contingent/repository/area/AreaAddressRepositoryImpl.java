@@ -339,12 +339,12 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
                     getPredicateAreaAddressCheckedAoLevel4(addresses, addressesJoin, criteriaBuilder),
                     criteriaBuilder.and(
                             addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
-                            criteriaBuilder.equal(root.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
                             criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
                     ),
                     criteriaBuilder.and(
                             addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
-                            criteriaBuilder.equal(root.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
                             criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
                     )
             ));
@@ -366,12 +366,12 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
                     getPredicateAreaAddressCheckedAoLevel4(addresses, addressesJoin, criteriaBuilder),
                     criteriaBuilder.and(
                             addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
-                            criteriaBuilder.equal(root.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
                             criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
                     ),
                     criteriaBuilder.and(
                             addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
-                            criteriaBuilder.equal(root.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
                             criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
                     )
             ));
@@ -392,12 +392,12 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
             predicates.add(criteriaBuilder.or(
                     criteriaBuilder.and(
                             addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
-                            criteriaBuilder.equal(root.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
                             criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
                     ),
                     criteriaBuilder.and(
                             addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
-                            criteriaBuilder.equal(root.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
                             criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
                     )
             ));
@@ -418,7 +418,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
             predicates.add(criteriaBuilder.or(
                     criteriaBuilder.and(
                             addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
-                            criteriaBuilder.equal(root.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
                             criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
                     )
             ));
