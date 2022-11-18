@@ -1239,7 +1239,7 @@ public class AreaServiceImpl implements AreaService {
         addressesRegistry = areaHelper.filterDistinctAddressesByGlobalId(addressesRegistry);
 
         // 6
-        algorithms.checkAddressFLKV3(addressesRegistry, validation);
+        List <Addresses> addresses = algorithms.checkAddressFLKV3(addressesRegistry, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
@@ -1247,13 +1247,13 @@ public class AreaServiceImpl implements AreaService {
 
         // 7
         for (AreaType areaType : areaTypes) {
-            addressesRegistry.forEach(addr -> {
-                List<MoAddress> moAddress = algorithms.searchServiceDistrictMOByAddressV33(areaType, addr.getGlobalIdNsi());
+            addresses.forEach(addr -> {
+                List<MoAddress> moAddress = algorithms.searchServiceDistrictMOByAddressV33(areaType, addr.getGlobalId());
 
                 if (moAddress != null && !moAddress.isEmpty()) {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
-                            new ValidationParameter("address", addr.getGlobalIdNsi()),
-                            new ValidationParameter("moId", moAddress));
+                            new ValidationParameter("address", addr.getGlobalId()),
+                            new ValidationParameter("moId", moAddress.stream().map(MoAddress::getMoId).map(String::valueOf).collect( Collectors.joining(","))));
                 }
             });
         }
@@ -1266,11 +1266,10 @@ public class AreaServiceImpl implements AreaService {
 //                .map(ar -> mappingDomainService.dtoToEntityTransform(ar)).collect(Collectors.toList()));
 
         // 9
-        List<Addresses> addressesList = addressesRegistry.stream().map(i -> mappingDomainService.dtoToEntityTransform(i)).collect(Collectors.toList());
         List<MoAddress> moAddresses = new ArrayList<>();
 
         for (AreaType areaType : areaTypes) {
-            addressesList.forEach(a -> {
+            addresses.forEach(a -> {
                 MoAddress moAddress = new MoAddress();
                 moAddress.setAddress(a);
                 moAddress.setAreaType(areaType);
