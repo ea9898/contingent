@@ -123,9 +123,9 @@ public class Algorithms {
         // 1
         List<MoAddress> moAddressByGlobalId = moAddressRepository.getActiveMoAddressByGlobalIdAndAreaTypeCode(globalIdNsi, areaType.getCode());
 
-        // 4
+        // 3
         if (!moAddressByGlobalId.isEmpty()) {
-            return moAddressByGlobalId;
+            return moAddressByGlobalId.stream().distinct().collect(Collectors.toList());
         }
 
         // 2
