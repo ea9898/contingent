@@ -206,7 +206,7 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 40L);
+        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 999L);
 
         assertEquals(1, moAddresses.size());
         assertEquals(1L, moAddresses.get(0).getId().longValue());

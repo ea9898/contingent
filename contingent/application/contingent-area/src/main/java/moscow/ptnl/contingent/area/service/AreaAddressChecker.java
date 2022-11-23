@@ -29,6 +29,7 @@ public class AreaAddressChecker {
     @Autowired
     private AreaAddressRepository areaAddressRepository;
 
+    @Deprecated
     public void checkMoAddressesExist(long moId, long areaTypeCode, List<AddressWrapper> newAddresses, Validation validation) {
         List<AddressWrapper> existingAddresses = new ArrayList<>();
 

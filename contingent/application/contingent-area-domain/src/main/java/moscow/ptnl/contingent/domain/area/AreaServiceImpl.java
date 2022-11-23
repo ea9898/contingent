@@ -1252,7 +1252,7 @@ public class AreaServiceImpl implements AreaService {
 
                 if (moAddress != null && !moAddress.isEmpty()) {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
-                            new ValidationParameter("address", addr.getGlobalId()),
+                            new ValidationParameter("address", addr.getAddress()),
                             new ValidationParameter("moId", moAddress.stream().map(MoAddress::getMoId).distinct().map(String::valueOf).collect(Collectors.joining(","))));
                 }
             });
