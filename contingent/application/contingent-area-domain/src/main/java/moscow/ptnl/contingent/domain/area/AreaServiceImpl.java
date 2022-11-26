@@ -1248,12 +1248,13 @@ public class AreaServiceImpl implements AreaService {
         // 7
         for (AreaType areaType : areaTypes) {
             addresses.forEach(addr -> {
-                List<MoAddress> moAddress = algorithms.searchServiceDistrictMOByAddressV33(areaType, addr.getGlobalId());
+                List<Long> moAddress = algorithms.searchServiceDistrictMOByAddressV33(areaType, addr.getGlobalId());
 
                 if (moAddress != null && !moAddress.isEmpty()) {
                     validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
                             new ValidationParameter("address", addr.getAddress()),
-                            new ValidationParameter("moId", moAddress.stream().map(MoAddress::getMoId).distinct().map(String::valueOf).collect(Collectors.joining(","))));
+//                            new ValidationParameter("moId", moAddress.stream().map(MoAddress::getMoId).distinct().map(String::valueOf).collect(Collectors.joining(","))));
+                            new ValidationParameter("moId", moAddress.stream().map(String::valueOf).collect(Collectors.joining(","))));
                 }
             });
         }

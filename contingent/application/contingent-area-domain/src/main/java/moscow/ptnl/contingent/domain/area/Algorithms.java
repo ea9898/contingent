@@ -118,14 +118,14 @@ public class Algorithms {
     }
 
     // Поиск территорий обслуживания МО по адресу (А_УУ_15)
-    public List<MoAddress> searchServiceDistrictMOByAddressV33(AreaType areaType, Long globalIdNsi) {
+    public List<Long> searchServiceDistrictMOByAddressV33(AreaType areaType, Long globalIdNsi) {
 
         // 1
         List<MoAddress> moAddressByGlobalId = moAddressRepository.getActiveMoAddressByGlobalIdAndAreaTypeCode(globalIdNsi, areaType.getCode());
 
         // 3
         if (!moAddressByGlobalId.isEmpty()) {
-            return moAddressByGlobalId.stream().distinct().collect(Collectors.toList());
+            return moAddressByGlobalId.stream().map(MoAddress::getMoId).distinct().collect(Collectors.toList());
         }
 
         // 2
@@ -135,21 +135,24 @@ public class Algorithms {
 
         if (addressesByGlobalIdNsi.isPresent()) {
             addresses = addressesByGlobalIdNsi.get();
-
+            List<MoAddress> moAddressList = null;
             if (addresses.getAoLevel().equals("8")) {
-                return moAddressRepository.getActiveMoAddressLevel8(areaType, null, addresses);
+                moAddressList = moAddressRepository.getActiveMoAddressLevel8(areaType, null, addresses);
             } else if (addresses.getAoLevel().equals("7")) {
-                return moAddressRepository.getActiveMoAddressLevel7(areaType, null, addresses);
+                moAddressList = moAddressRepository.getActiveMoAddressLevel7(areaType, null, addresses);
             } else if (addresses.getAoLevel().equals("65")) {
-                return moAddressRepository.getActiveMoAddressLevel65(areaType, null, addresses);
+                moAddressList = moAddressRepository.getActiveMoAddressLevel65(areaType, null, addresses);
             } else if (addresses.getAoLevel().equals("6")) {
-                return moAddressRepository.getActiveMoAddressLevel6(areaType, null, addresses);
+                moAddressList = moAddressRepository.getActiveMoAddressLevel6(areaType, null, addresses);
             } else if (addresses.getAoLevel().equals("4")) {
-                return moAddressRepository.getActiveMoAddressLevel4(areaType, null, addresses);
+                moAddressList = moAddressRepository.getActiveMoAddressLevel4(areaType, null, addresses);
             } else if (addresses.getAoLevel().equals("25")) {
-                return moAddressRepository.getActiveMoAddressLevel25(areaType, null, addresses);
+                moAddressList = moAddressRepository.getActiveMoAddressLevel25(areaType, null, addresses);
             } else if (addresses.getAoLevel().equals("2")) {
-                return moAddressRepository.getActiveMoAddressLevel2(areaType, null, addresses);
+                moAddressList = moAddressRepository.getActiveMoAddressLevel2(areaType, null, addresses);
+            }
+            if(moAddressList!=null && !moAddressList.isEmpty()) {
+                return moAddressList.stream().map(MoAddress::getMoId).distinct().collect(Collectors.toList());
             }
         }
 

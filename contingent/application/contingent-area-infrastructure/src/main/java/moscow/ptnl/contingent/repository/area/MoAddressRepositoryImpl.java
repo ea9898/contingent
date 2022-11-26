@@ -132,6 +132,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.streetCode.getName()), addresses.getStreetCode()));
         predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "7"));
         if (addresses.getPlanCode() != null) {
             predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode.getName()), addresses.getPlanCode()));
         } else {
@@ -148,6 +149,8 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             predicates.add(addressesJoin.get(Addresses_.cityCode.getName()).isNull());
         }
 
+
+
         return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
     }
 
@@ -157,6 +160,8 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.streetCode.getName()), addresses.getStreetCode()));
         predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
+//        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "65"));
+
         if (addresses.getPlanCode() != null) {
             predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode.getName()), addresses.getPlanCode()));
         } else {
@@ -374,6 +379,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                     criteriaBuilder.or(
                             moId == null ? getPredicateMoAddressAoLevelFullFind7(addresses, addressesJoin, criteriaBuilder) :
                                     getPredicateMoAddressCheckedLevel65(addresses, addressesJoin, criteriaBuilder),
+                            moId == null ? getPredicateMoAddressCheckedLevel65(addresses, addressesJoin, criteriaBuilder) : criteriaBuilder.disjunction(),
 
                             getPredicateMoAddressCheckedLevel6(addresses, addressesJoin, criteriaBuilder),
                             getPredicateMoAddressCheckedLevel4(addresses, addressesJoin, criteriaBuilder),
@@ -387,7 +393,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
                             )
-                    )
+                            )
             );
         };
 

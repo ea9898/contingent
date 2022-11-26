@@ -5,8 +5,9 @@ INSERT INTO addresses (
             areacode_omk_te,
             planCode,
             placeCode,
-            cityCode)
-VALUES (2, 10, '1686', '0212', '0000', '000', '002');
+            cityCode,
+            aoLevel)
+VALUES (2, 10, '1686', '0212', '0000', '000', '002', '7');
 
 INSERT INTO area_types_class (
             code,

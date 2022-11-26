@@ -65,12 +65,11 @@ public class A_YY_15_Test {
         moAddress.setAreaType(areaType);
         moAddress.setAddress(addresses);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, addresses.getGlobalId());
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, addresses.getGlobalId());
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals(111L, moAddresses.get(0).getAddress().getGlobalId().longValue());
+        assertEquals(20L, moAddresses.get(0).longValue());
+
     }
 
     @Test
@@ -79,16 +78,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("1686", moAddresses.get(0).getAddress().getStreetCode());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-        assertEquals("000", moAddresses.get(0).getAddress().getPlaceCode());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -97,14 +90,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("000", moAddresses.get(0).getAddress().getPlaceCode());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -113,14 +102,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("000", moAddresses.get(0).getAddress().getPlaceCode());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -129,13 +114,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -144,12 +126,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -158,12 +138,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -172,16 +150,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("1686", moAddresses.get(0).getAddress().getStreetCode());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-        assertEquals("000", moAddresses.get(0).getAddress().getPlaceCode());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -190,14 +162,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 30L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 30L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -206,13 +174,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 999L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 999L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -221,13 +186,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -236,12 +198,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 70L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 70L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -250,12 +210,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 80L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 80L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -264,14 +222,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 30L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 30L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -280,14 +234,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 40L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 40L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("000", moAddresses.get(0).getAddress().getPlaceCode());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -296,13 +246,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -311,12 +258,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -325,12 +270,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 70L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 70L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -339,14 +282,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 30L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 30L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
-        assertEquals("000", moAddresses.get(0).getAddress().getPlaceCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -355,13 +294,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 40L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 40L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -370,12 +306,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -384,12 +318,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -398,13 +330,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 40L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 40L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-        assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -413,12 +342,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -427,12 +354,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -441,12 +366,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 50L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -455,12 +378,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     @Test
@@ -469,12 +390,10 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 60L);
 
         assertEquals(1, moAddresses.size());
-        assertEquals(1L, moAddresses.get(0).getId().longValue());
-        assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-        assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+        assertEquals(20L, moAddresses.get(0).longValue());
     }
 
     // -------------------------------------------------------------------------------- //
@@ -486,17 +405,10 @@ public class A_YY_15_Test {
         areaType.setCode(199L);
 
         for (long i = 20; i <= 80; i += 10) {
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, i);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, i);
 
             assertEquals(1, moAddresses.size());
-            assertEquals(1L, moAddresses.get(0).getId().longValue());
-            assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-            assertEquals("1686", moAddresses.get(0).getAddress().getStreetCode());
-            assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-            assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-            assertEquals("000", moAddresses.get(0).getAddress().getPlaceCode());
-            assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
-            assertEquals("001", moAddresses.get(0).getAddress().getRegionTeCode());
+            assertEquals(20L, moAddresses.get(0).longValue());
         }
     }
 
@@ -507,16 +419,10 @@ public class A_YY_15_Test {
         areaType.setCode(199L);
 
         for (long i = 20; i <= 80; i += 10) {
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, i);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, i);
 
             assertEquals(1, moAddresses.size());
-            assertEquals(1L, moAddresses.get(0).getId().longValue());
-            assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-            assertEquals("1686", moAddresses.get(0).getAddress().getStreetCode());
-            assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-            assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-            assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
-            assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+            assertEquals(20L, moAddresses.get(0).longValue());
         }
     }
 
@@ -527,16 +433,10 @@ public class A_YY_15_Test {
         areaType.setCode(199L);
 
         for (long i = 20; i <= 80; i += 10) {
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
             assertEquals(1, moAddresses.size());
-            assertEquals(1L, moAddresses.get(0).getId().longValue());
-            assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-            assertEquals("1686", moAddresses.get(0).getAddress().getStreetCode());
-            assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-            assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-            assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
-            assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+            assertEquals(20L, moAddresses.get(0).longValue());
         }
     }
 
@@ -547,16 +447,10 @@ public class A_YY_15_Test {
         areaType.setCode(199L);
 
         for (long i = 20; i <= 80; i += 10) {
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
             assertEquals(1, moAddresses.size());
-            assertEquals(1L, moAddresses.get(0).getId().longValue());
-            assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-            assertEquals("1686", moAddresses.get(0).getAddress().getStreetCode());
-            assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-            assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-            assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
-            assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+            assertEquals(20L, moAddresses.get(0).longValue());
         }
     }
 
@@ -567,16 +461,10 @@ public class A_YY_15_Test {
         areaType.setCode(199L);
 
         for (long i = 20; i <= 80; i += 10) {
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
             assertEquals(1, moAddresses.size());
-            assertEquals(1L, moAddresses.get(0).getId().longValue());
-            assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-            assertEquals("1686", moAddresses.get(0).getAddress().getStreetCode());
-            assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-            assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-            assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
-            assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+            assertEquals(20L, moAddresses.get(0).longValue());
         }
     }
 
@@ -587,16 +475,10 @@ public class A_YY_15_Test {
         areaType.setCode(199L);
 
         for (long i = 20; i <= 80; i += 10) {
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
             assertEquals(1, moAddresses.size());
-            assertEquals(1L, moAddresses.get(0).getId().longValue());
-            assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-            assertEquals("1686", moAddresses.get(0).getAddress().getStreetCode());
-            assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-            assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-            assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
-            assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+            assertEquals(20L, moAddresses.get(0).longValue());
         }
     }
 
@@ -607,16 +489,10 @@ public class A_YY_15_Test {
         areaType.setCode(199L);
 
         for (long i = 20; i <= 80; i += 10) {
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
             assertEquals(1, moAddresses.size());
-            assertEquals(1L, moAddresses.get(0).getId().longValue());
-            assertEquals(20L, moAddresses.get(0).getMoId().longValue());
-            assertEquals("1686", moAddresses.get(0).getAddress().getStreetCode());
-            assertEquals("0212", moAddresses.get(0).getAddress().getAreaCodeOmkTe());
-            assertEquals("0000", moAddresses.get(0).getAddress().getPlanCode());
-            assertEquals("002", moAddresses.get(0).getAddress().getCityCode());
-            assertEquals("1000", moAddresses.get(0).getAddress().getRegionTeCode());
+            assertEquals(20L, moAddresses.get(0).longValue());
         }
     }
 
@@ -626,16 +502,12 @@ public class A_YY_15_Test {
         AreaType areaType = new AreaType();
         areaType.setCode(199L);
 
-        List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+        List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
 
-        List<Long> listId = moAddresses.stream().map(item -> item.getId()).sorted().collect(Collectors.toList());
-        List<Long> expectedIds = new ArrayList<>();
+        List<Long> listId = moAddresses.stream().sorted().collect(Collectors.toList());
 
-        for (long i = 1; i <= 7; i++) {
-            expectedIds.add(i);
-        }
-
-        assertIterableEquals(expectedIds, listId);
+        assertEquals(1, listId.size());
+        assertEquals(20, listId.get(0).longValue());
     }
 
     @Test
@@ -655,7 +527,7 @@ public class A_YY_15_Test {
             addresses.setCityCode("0021");
             addresses.setRegionTeCode("08001");
             addresses.setAoLevel(aoLevel);
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
             assertTrue(moAddresses.isEmpty());
         }
     }
@@ -678,7 +550,7 @@ public class A_YY_15_Test {
             addresses.setCityCode("002");
             addresses.setRegionTeCode("0800");
             addresses.setAoLevel(aoLevel);
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 10L);
             assertTrue(moAddresses.isEmpty());
         }
     }
@@ -701,7 +573,7 @@ public class A_YY_15_Test {
             addresses.setCityCode("002");
             addresses.setRegionTeCode("0800");
             addresses.setAoLevel(aoLevel);
-            List<MoAddress> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 101L);
+            List<Long> moAddresses = algorithms.searchServiceDistrictMOByAddressV33(areaType, 101L);
             assertTrue(moAddresses.isEmpty());
         }
     }

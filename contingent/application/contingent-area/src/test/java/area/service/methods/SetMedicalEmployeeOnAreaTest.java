@@ -1,4 +1,4 @@
-package service.methods;
+package area.service.methods;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
