@@ -111,13 +111,13 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
         return areaAddressPagingAndSortingRepository.findAll(specification);
     }
 
-    private Predicate getPredicateAreaAddressLevel8AoLevel8(Addresses addresses, Join<AreaAddress, Addresses> addressesJoin, CriteriaBuilder criteriaBuilder) {
+    private Predicate getPredicateAreaAddressLevel8AoLevel7(Addresses addresses, Join<AreaAddress, Addresses> addressesJoin, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(addressesJoin.get(Addresses_.streetCode.getName()).isNotNull());
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.streetCode.getName()), addresses.getStreetCode()));
         predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
-        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "8"));
+        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "7"));
         if (addresses.getPlanCode() != null) {
             predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode.getName()), addresses.getPlanCode()));
         } else {
@@ -216,7 +216,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
             addEndDateMoIdAreaTypePredicates(root, criteriaBuilder, predicates, moId, areaTypeCode);
 
             predicates.add(criteriaBuilder.or(
-                    getPredicateAreaAddressLevel8AoLevel8(addresses, addressesJoin, criteriaBuilder),
+                    getPredicateAreaAddressLevel8AoLevel7(addresses, addressesJoin, criteriaBuilder),
                     getPredicateAreaAddressCheckedAoLevel65(addresses, addressesJoin, criteriaBuilder),
                     getPredicateAreaAddressCheckedAoLevel6(addresses, addressesJoin, criteriaBuilder),
                     getPredicateAreaAddressCheckedAoLevel4(addresses, addressesJoin, criteriaBuilder),

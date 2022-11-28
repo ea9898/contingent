@@ -9,12 +9,9 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import moscow.ptnl.contingent.domain.area.Algorithms;
-import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.entity.Addresses;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
-import moscow.ptnl.contingent.domain.area.repository.AreaAddressRepository;
-import moscow.ptnl.contingent.domain.area.repository.MoAddressRepository;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import org.junit.jupiter.api.BeforeAll;
@@ -77,8 +74,8 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
         assertEquals(78799044L, areaAddresses.get(0).getAddress().getGlobalId().longValue());
     }
 
-    @Test // A_УУ_16 aoLevel 8-8
-    @Sql(scripts = {"/sql/addAreaAddressesByAreaAddressesAoLevel8AoLevel8.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Test // A_УУ_16 aoLevel 8-7
+    @Sql(scripts = {"/sql/addAreaAddressesByAreaAddressesAoLevel8AoLevel7.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void addAreaAddressesByAreaAddressesAoLevel8AoLevel8() {
         Addresses addresses  = new Addresses();
         addresses.setId(17062L);

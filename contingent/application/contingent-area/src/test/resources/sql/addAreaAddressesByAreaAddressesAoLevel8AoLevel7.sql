@@ -7,7 +7,7 @@ INSERT INTO addresses (
             placeCode,
             cityCode,
             aolevel)
-VALUES (17062, 10, '1686', '0212', '0000', '000', '002', '8');
+VALUES (17062, 10, '1686', '0212', '0000', '000', '002', '7');
 
 INSERT INTO area_types_class (
             code,
