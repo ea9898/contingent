@@ -11,6 +11,7 @@ import liquibase.resource.FileSystemResourceAccessor;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.error.ContingentException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +38,16 @@ import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressResponse;
 
 import javax.sql.DataSource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPConstants;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -253,4 +264,20 @@ public class AddAreaAddressTest {
 
         assertThrows(Fault.class, () -> areaPTv3.addAreaAddress(addAreaAddressRequest));
     }
+
+    @Test
+    @Sql(scripts = {"/sql/area_type.sql", "/sql/addAreaAddressTest2522.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void addAreaAddressTest2522_1() throws SOAPException, IOException, JAXBException {
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("xml/addAreaAddress2522.xml");
+        SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, inputStream);
+        Unmarshaller unmarshaller = JAXBContext.newInstance(AddAreaAddressRequest.class).createUnmarshaller();
+
+        AddAreaAddressRequest request = (AddAreaAddressRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
+        Fault fault = assertThrows(Fault.class, () -> areaPTv3.addAreaAddress(request));
+
+//        Assertions.assertEquals("Адрес город Москва, Дом Нескольких уже обслуживается данным участком.", fault.getMessage());
+        Assertions.assertEquals(1, ((ru.mos.emias.system.v1.faults.BusinessFault)fault.getFaultInfo()).getMessages().getMessages().size());
+    }
+
 }

@@ -1,0 +1,301 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:user="http://emias.mos.ru/system/v1/userContext/" xmlns:typ="http://emias.mos.ru/contingent2/area/v3/types/" xmlns:v3="http://emias.mos.ru/contingent2/address/v3/" xmlns:v31="http://emias.mos.ru/contingent2/core/v3/">
+    <soap:Header>
+        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+            <wsse:UsernameToken wsu:Id="UsernameToken-3">
+                <wsse:Username>autotest</wsse:Username>
+            </wsse:UsernameToken>
+        </wsse:Security>
+        <user:userContext>
+            <user:systemName>UPK/UPK</user:systemName>
+            <user:userName>autotest</user:userName>
+            <user:userRoleId>10</user:userRoleId>
+            <!--Optional:-->
+            <user:isUserRoleSystemWide>false</user:isUserRoleSystemWide>
+            <user:userRights>
+                <!--Zero or more repetitions:-->
+                <user:userRightId>320013</user:userRightId>
+            </user:userRights>
+            <user:jobExecutionId>100</user:jobExecutionId>
+            <!--Optional:-->
+            <user:hostIp>192.168.0.0</user:hostIp>
+            <!--Optional:-->
+            <user:hostName>serv_test</user:hostName>
+        </user:userContext>
+    </soap:Header>
+    <soap:Body>
+        <typ:addAreaAddressRequest>
+            <typ:areaId>175715882</typ:areaId>
+            <!--1 or more repetitions:-->
+            <typ:address globalIdNsi="-1800" aoLevel="8">
+                <v3:addressString>город Москва, Дом Нескольких</v3:addressString>
+                <v3:region id="1112">
+                    <v3:name>Москва</v3:name>
+                </v3:region>
+                <!--Optional:-->
+                <v3:regionOMKTE id="1112" code="1112">
+                    <v3:name>regionOMKTE</v3:name>
+                </v3:regionOMKTE>
+                <!--Optional:-->
+                <v3:area id="1112" code="112">
+                    <v3:name>area</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Описание типа полностью</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Тип коротко</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKTE>1112</v3:codeOMKTE>
+                    <!--Optional:-->
+                    <v3:codeBTI>1112</v3:codeBTI>
+                </v3:area>
+                <!--Optional:-->
+                <v3:areaOMKTE id="2223" code="2223">
+                    <v3:name>areaOMKTE</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Фулл район</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Шорт район</v3:short>
+                    </v3:type>
+                </v3:areaOMKTE>
+                <v3:city id="334" code="334">
+                    <v3:name>city</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Сити Фул</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Сити шорт</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKTM>334</v3:codeOMKTM>
+                    <!--Optional:-->
+                    <v3:codeBTI>334</v3:codeBTI>
+                </v3:city>
+                <v3:place id="445" code="445">
+                    <v3:name>place</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Плейс Фул</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Плейс шорт</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKTM>445</v3:codeOMKTM>
+                    <!--Optional:-->
+                    <v3:codeBTI>445</v3:codeBTI>
+                </v3:place>
+                <v3:plan id="5556" code="5556">
+                    <v3:name>plan</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>План фул</v3:full>
+                        <!--Optional:-->
+                        <v3:short>План шорт</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeBTI>445</v3:codeBTI>
+                </v3:plan>
+                <v3:street id="5556" code="5556">
+                    <v3:name>street улица</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Улица</v3:full>
+                        <!--Optional:-->
+                        <v3:short>ул</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKUM>55556</v3:codeOMKUM>
+                    <!--Optional:-->
+                    <v3:codeBTI>55556</v3:codeBTI>
+                </v3:street>
+                <v3:building>
+                    <v3:house>
+                        <v3:name>10</v3:name>
+                    </v3:house>
+                </v3:building>
+            </typ:address>
+
+            <typ:address globalIdNsi="-1801" aoLevel="8">
+                <v3:addressString>город Москва, Дом Нескольких2</v3:addressString>
+                <v3:region id="1112">
+                    <v3:name>Москва</v3:name>
+                </v3:region>
+                <!--Optional:-->
+                <v3:regionOMKTE id="1112" code="1112">
+                    <v3:name>regionOMKTE</v3:name>
+                </v3:regionOMKTE>
+                <!--Optional:-->
+                <v3:area id="1112" code="112">
+                    <v3:name>area</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Описание типа полностью</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Тип коротко</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKTE>1112</v3:codeOMKTE>
+                    <!--Optional:-->
+                    <v3:codeBTI>1112</v3:codeBTI>
+                </v3:area>
+                <!--Optional:-->
+                <v3:areaOMKTE id="2223" code="2223">
+                    <v3:name>areaOMKTE</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Фулл район</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Шорт район</v3:short>
+                    </v3:type>
+                </v3:areaOMKTE>
+                <v3:city id="334" code="334">
+                    <v3:name>city</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Сити Фул</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Сити шорт</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKTM>334</v3:codeOMKTM>
+                    <!--Optional:-->
+                    <v3:codeBTI>334</v3:codeBTI>
+                </v3:city>
+                <v3:place id="445" code="445">
+                    <v3:name>place</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Плейс Фул</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Плейс шорт</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKTM>445</v3:codeOMKTM>
+                    <!--Optional:-->
+                    <v3:codeBTI>445</v3:codeBTI>
+                </v3:place>
+                <v3:plan id="5556" code="5556">
+                    <v3:name>plan</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>План фул</v3:full>
+                        <!--Optional:-->
+                        <v3:short>План шорт</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeBTI>445</v3:codeBTI>
+                </v3:plan>
+                <v3:street id="5556" code="5556">
+                    <v3:name>street улица</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Улица</v3:full>
+                        <!--Optional:-->
+                        <v3:short>ул</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKUM>55556</v3:codeOMKUM>
+                    <!--Optional:-->
+                    <v3:codeBTI>55556</v3:codeBTI>
+                </v3:street>
+                <v3:building>
+                    <v3:house>
+                        <v3:name>11</v3:name>
+                    </v3:house>
+                </v3:building>
+            </typ:address>
+
+            <typ:address globalIdNsi="-1802" aoLevel="8">
+                <v3:addressString>город Москва, Дом Нескольких3</v3:addressString>
+                <v3:region id="1112">
+                    <v3:name>Москва</v3:name>
+                </v3:region>
+                <!--Optional:-->
+                <v3:regionOMKTE id="1112" code="1112">
+                    <v3:name>regionOMKTE</v3:name>
+                </v3:regionOMKTE>
+                <!--Optional:-->
+                <v3:area id="1112" code="112">
+                    <v3:name>area</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Описание типа полностью</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Тип коротко</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKTE>1112</v3:codeOMKTE>
+                    <!--Optional:-->
+                    <v3:codeBTI>1112</v3:codeBTI>
+                </v3:area>
+                <!--Optional:-->
+                <v3:areaOMKTE id="2223" code="2223">
+                    <v3:name>areaOMKTE</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Фулл район</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Шорт район</v3:short>
+                    </v3:type>
+                </v3:areaOMKTE>
+                <v3:city id="334" code="334">
+                    <v3:name>city</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Сити Фул</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Сити шорт</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKTM>334</v3:codeOMKTM>
+                    <!--Optional:-->
+                    <v3:codeBTI>334</v3:codeBTI>
+                </v3:city>
+                <v3:place id="445" code="445">
+                    <v3:name>place</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Плейс Фул</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Плейс шорт</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKTM>445</v3:codeOMKTM>
+                    <!--Optional:-->
+                    <v3:codeBTI>445</v3:codeBTI>
+                </v3:place>
+                <v3:plan id="5556" code="5556">
+                    <v3:name>plan</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>План фул</v3:full>
+                        <!--Optional:-->
+                        <v3:short>План шорт</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeBTI>445</v3:codeBTI>
+                </v3:plan>
+                <v3:street id="5556" code="5556">
+                    <v3:name>street улица</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Улица</v3:full>
+                        <!--Optional:-->
+                        <v3:short>ул</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKUM>55556</v3:codeOMKUM>
+                    <!--Optional:-->
+                    <v3:codeBTI>55556</v3:codeBTI>
+                </v3:street>
+                <v3:building>
+                    <v3:house>
+                        <v3:name>12</v3:name>
+                    </v3:house>
+                </v3:building>
+            </typ:address>
+
+        </typ:addAreaAddressRequest>
+    </soap:Body>
+</soap:Envelope>
