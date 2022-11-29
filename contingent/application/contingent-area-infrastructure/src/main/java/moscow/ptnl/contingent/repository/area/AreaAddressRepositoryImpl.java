@@ -80,9 +80,12 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     }
 
     private Specification<AreaAddress> findAreaAddressesByIdsSpec(List<Long> areaAddressIds) {
-        return CommonSpecification.in(AreaAddress_.id, areaAddressIds);
-        //return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
-        //        root.get(AreaAddress_.id.getName()).in(areaAddressIds);                
+//        return CommonSpecification.in(AreaAddress_.id, areaAddressIds);
+        return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.and(
+                        root.get(AreaAddress_.id.getName()).in(areaAddressIds),
+                        root.get(Area_.id.getName()).in(areaAddressIds)
+                );
     }
 
     @Override
