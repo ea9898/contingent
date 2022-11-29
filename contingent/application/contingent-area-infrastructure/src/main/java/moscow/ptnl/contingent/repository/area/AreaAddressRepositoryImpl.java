@@ -80,12 +80,12 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     }
 
     private Specification<AreaAddress> findAreaAddressesByIdsSpec(List<Long> areaAddressIds) {
-//        return CommonSpecification.in(AreaAddress_.id, areaAddressIds);
+        return CommonSpecification.in(AreaAddress_.id, areaAddressIds);
+    }
+
+    private Specification<AreaAddress> findAreaAddressesByAreaIdSpec(Long areaId) {
         return (Specification<AreaAddress>) (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.and(
-                        root.get(AreaAddress_.id.getName()).in(areaAddressIds),
-                        root.get(Area_.id.getName()).in(areaAddressIds)
-                );
+                criteriaBuilder.equal(root.get(AreaAddress_.area.getName()).get(Area_.id.getName()), areaId);
     }
 
     @Override
@@ -442,8 +442,20 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     }
 
     @Override
+    public List<AreaAddress> findAreaAddressesActual(Long areaId, List<Long> areaAddressIds) {
+        return areaAddressPagingAndSortingRepository.findAll(
+                findAreaAddressesByIdsSpec(areaAddressIds)
+                        .and(findAreaAddressesByAreaIdSpec(areaId))
+                        .and(actualAreaAddressesSpec())
+        );
+    }
+
+    @Override
     public List<AreaAddress> findAreaAddressesActual(List<Long> areaAddressIds) {
-        return areaAddressPagingAndSortingRepository.findAll(findAreaAddressesByIdsSpec(areaAddressIds).and(activeAreaAddressesSpec()));
+        return areaAddressPagingAndSortingRepository.findAll(
+                findAreaAddressesByIdsSpec(areaAddressIds)
+                        .and(activeAreaAddressesSpec())
+        );
     }
 
     @Override

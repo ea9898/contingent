@@ -1039,7 +1039,7 @@ public class AreaServiceImpl implements AreaService {
         }
 
         // 4.
-        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaAddressIds);
+        List<AreaAddress> areaAddresses = areaAddressRepository.findAreaAddressesActual(areaId, areaAddressIds);
         areaAddressIds.forEach(aai -> {
             List<Long> areaAddressesIdsDiff = areaAddresses.stream().map(AreaAddress::getId).collect(Collectors.toList());
             if (areaAddresses.stream().map(AreaAddress::getId).noneMatch(aa -> aa.equals(aai))) {
