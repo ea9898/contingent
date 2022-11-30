@@ -280,4 +280,35 @@ public class AddAreaAddressTest {
         Assertions.assertEquals(1, ((ru.mos.emias.system.v1.faults.BusinessFault)fault.getFaultInfo()).getMessages().getMessages().size());
     }
 
+    @Test
+    @Sql(scripts = {"/sql/area_type.sql", "/sql/addAreaAddressTest2531.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void addAreaAddressTest2531_1() throws SOAPException, IOException, JAXBException {
+        AddAreaAddressRequest request2a = addAreaRequest("xml/addAreaAddress2531_1.xml");
+        AddAreaAddressResponse response2a = assertDoesNotThrow(() -> areaPTv3.addAreaAddress(request2a));
+
+        Assertions.assertNotNull(response2a.getAreaAddressIds());
+        Assertions.assertEquals(1, response2a.getAreaAddressIds().size());
+
+        AddAreaAddressRequest request2b = addAreaRequest("xml/addAreaAddress2531_2.xml");
+        AddAreaAddressResponse response2b = assertDoesNotThrow(() -> areaPTv3.addAreaAddress(request2b));
+
+        Assertions.assertNotNull(response2b.getAreaAddressIds());
+        Assertions.assertEquals(1, response2b.getAreaAddressIds().size());
+
+        AddAreaAddressRequest requestMain = addAreaRequest("xml/addAreaAddress2531_3.xml");
+        Fault fault = assertThrows(Fault.class, () -> areaPTv3.addAreaAddress(requestMain));
+
+        Assertions.assertNotNull(fault.getMessage());
+
+    }
+
+    private AddAreaAddressRequest addAreaRequest(String filePath) throws SOAPException, JAXBException, IOException {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
+        SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, inputStream);
+        Unmarshaller unmarshaller = JAXBContext.newInstance(AddAreaAddressRequest.class).createUnmarshaller();
+
+        return (AddAreaAddressRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
+
+    }
+
 }
