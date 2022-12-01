@@ -250,7 +250,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.streetCode.getName()), addresses.getStreetCode()));
         predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
-        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "7"));
+//        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "7"));
         if (addresses.getPlanCode() != null) {
             predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode.getName()), addresses.getPlanCode()));
         } else {
