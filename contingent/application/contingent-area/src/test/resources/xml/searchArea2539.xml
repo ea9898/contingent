@@ -1,0 +1,38 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:user="http://emias.mos.ru/system/v1/userContext/" xmlns:typ="http://emias.mos.ru/contingent2/area/v3/types/" xmlns:v3="http://emias.mos.ru/contingent2/core/v3/" xmlns:v31="http://emias.mos.ru/contingent2/address/v3/">
+    <soap:Header>
+        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+            <wsse:UsernameToken wsu:Id="UsernameToken-3">
+                <wsse:Username>autotest</wsse:Username>
+            </wsse:UsernameToken>
+        </wsse:Security>
+        <user:userContext>
+            <user:systemName>UPK/UPK</user:systemName>
+            <user:userName>autotest</user:userName>
+            <user:userRoleId>10</user:userRoleId>
+            <!--Optional:-->
+            <user:isUserRoleSystemWide>false</user:isUserRoleSystemWide>
+            <user:userRights>
+                <!--Zero or more repetitions:-->
+                <user:userRightId>320025</user:userRightId>
+            </user:userRights>
+            <user:jobExecutionId>100</user:jobExecutionId>
+            <!--Optional:-->
+            <user:hostIp>192.168.0.0</user:hostIp>
+            <!--Optional:-->
+            <user:hostName>serv_test</user:hostName>
+        </user:userContext>
+    </soap:Header>
+    <soap:Body>
+        <typ:searchAreaRequest>
+            <typ:address>
+                <!--Указываем адрес улицы, на которой расположены наши дома-->
+                <v31:aoLevel>7</v31:aoLevel>
+                <v31:globalIdNsi>-1700</v31:globalIdNsi>
+                <v31:regionOMKTEcode>2222</v31:regionOMKTEcode>
+                <v31:areaOMKTEcode>3333</v31:areaOMKTEcode>
+            </typ:address>
+            <typ:isExactAddressMatch>0</typ:isExactAddressMatch>
+            <v3:pagingOptions pageNumber="0" pageSize="100"/>
+        </typ:searchAreaRequest>
+    </soap:Body>
+</soap:Envelope>
