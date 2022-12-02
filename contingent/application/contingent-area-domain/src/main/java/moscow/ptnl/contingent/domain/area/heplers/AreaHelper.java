@@ -414,7 +414,7 @@ public class AreaHelper {
         }
 
         Set<Long> foundIds = foundAddresses.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());
-        if (Boolean.FALSE.equals(exactAddressMatch)) {
+        if (Boolean.FALSE.equals(exactAddressMatch) || addresses.isEmpty()) {
             List<Long> notFoundId = listGlobalIdNsi.stream().filter(id -> !foundIds.contains(id)).collect(Collectors.toList());
             //4.1.2
             for (Long id : notFoundId) {

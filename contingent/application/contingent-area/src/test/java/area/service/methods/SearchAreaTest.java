@@ -8,7 +8,6 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
-import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
@@ -16,7 +15,6 @@ import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.error.ContingentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,6 +31,9 @@ import ru.mos.emias.contingent2.area.v3.Fault;
 import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.SearchAreaRequest;
 import ru.mos.emias.contingent2.area.v3.types.SearchAreaResponse;
+import ru.mos.emias.contingent2.area.v3.Fault;
+import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressRequest;
+import ru.mos.emias.contingent2.area.v3.types.SearchAreaRequest;
 
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
@@ -234,7 +235,48 @@ public class SearchAreaTest {
                 null, null, null, null,
                 null, null, null, null, null, EL,
                 Collections.singletonList(searchAreaAddress), false, PR, true));
+    }
 
+    @Test
+    @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchArea2538.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void searchArea() throws SOAPException, IOException, JAXBException {
+        SearchAreaAddress searchAreaAddress = new SearchAreaAddress();
+        searchAreaAddress.setAoLevel("7");
+        searchAreaAddress.setGlobalIdNsi(-999990077L);
+        searchAreaAddress.setAreaOMKTEcode("0403");
+        searchAreaAddress.setCityCode("000");
+        searchAreaAddress.setPlaceCode("000");
+        searchAreaAddress.setPlanCode("0000");
+        searchAreaAddress.setStreetCode("7041");
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("xml/searchArea2538.xml");
+        SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, inputStream);
+        Unmarshaller unmarshaller = JAXBContext.newInstance(SearchAreaRequest.class).createUnmarshaller();
+
+        SearchAreaRequest request = (SearchAreaRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
+        SearchAreaResponse response = assertDoesNotThrow(() -> areaPTv3.searchArea(request));
+
+        Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.searchArea(
+                request.getAreaTypeClassCode(), request.getMoId(), request.getMuIds(), request.getAreaTypeCodes(),
+                null, request.getMuIds(), request.getNumber(), request.getDescription(), request.isIsArchived(), EL,
+                Collections.singletonList(searchAreaAddress), false, PR, true));
+
+        assertEquals("Адрес с global_id -999990077 не найден в НСИ.2", exception.getMessage());
+        Assertions.assertEquals(1, response.getResult().getAreas().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchArea2538.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void searchAreaFoundAddressAoLevelEqualsOne() throws SOAPException, IOException, JAXBException {
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("xml/searchArea2538.xml");
+        SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, inputStream);
+        Unmarshaller unmarshaller = JAXBContext.newInstance(SearchAreaRequest.class).createUnmarshaller();
+
+        SearchAreaRequest request = (SearchAreaRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
+        SearchAreaResponse response = assertDoesNotThrow(() -> areaPTv3.searchArea(request));
+
+        Assertions.assertEquals(1, response.getResult().getAreas().size());
     }
 
     @Test
@@ -243,9 +285,23 @@ public class SearchAreaTest {
         SearchAreaRequest request = soapToObject("xml/searchArea2539.xml");
         SearchAreaResponse response = assertDoesNotThrow(() -> areaPTv3.searchArea(request));
 
+        SearchAreaAddress searchAreaAddress = new SearchAreaAddress();
+        searchAreaAddress.setAoLevel("1");
+        searchAreaAddress.setGlobalIdNsi(-99999007L);
+        searchAreaAddress.setAreaOMKTEcode("0403");
+        searchAreaAddress.setCityCode("000");
+        searchAreaAddress.setPlaceCode("000");
+        searchAreaAddress.setPlanCode("0000");
+        searchAreaAddress.setStreetCode("7041");
+
+        Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.searchArea(
+                request.getAreaTypeClassCode(), request.getMoId(), request.getMuIds(), request.getAreaTypeCodes(),
+                null, request.getMuIds(), request.getNumber(), request.getDescription(), request.isIsArchived(), EL,
+                Collections.singletonList(searchAreaAddress), false, PR, true));
+
+        assertEquals("Некорректный уровень адреса 1", exception.getMessage());
         Assertions.assertEquals(1, response.getResult().getAreas().size());
     }
-
 
     private SearchAreaRequest soapToObject(String filePath) throws SOAPException, JAXBException, IOException {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
@@ -255,6 +311,4 @@ public class SearchAreaTest {
         return (SearchAreaRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
 
     }
-
-
 }
