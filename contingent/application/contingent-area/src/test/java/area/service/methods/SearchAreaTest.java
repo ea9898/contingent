@@ -279,7 +279,7 @@ public class SearchAreaTest {
         Assertions.assertEquals(1, response.getResult().getAreas().size());
     }
 
-    @Test
+    @Test // ЕСЛИ адрес найден И его уровень aolevel =1, ТО система формирует ошибку С_УУ_107
     @Sql(scripts = {"/sql/area_type.sql", "/sql/searchArea2539.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void searchArea2539() throws SOAPException, JAXBException, IOException {
         SearchAreaRequest request = soapToObject("xml/searchArea2539.xml");
@@ -287,7 +287,7 @@ public class SearchAreaTest {
 
         SearchAreaAddress searchAreaAddress = new SearchAreaAddress();
         searchAreaAddress.setAoLevel("1");
-        searchAreaAddress.setGlobalIdNsi(-99999007L);
+        searchAreaAddress.setGlobalIdNsi(-1701L);
         searchAreaAddress.setAreaOMKTEcode("0403");
         searchAreaAddress.setCityCode("000");
         searchAreaAddress.setPlaceCode("000");

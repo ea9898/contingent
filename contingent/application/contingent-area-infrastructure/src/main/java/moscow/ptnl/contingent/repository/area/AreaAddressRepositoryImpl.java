@@ -200,11 +200,15 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     private void addEndDateMoIdAreaTypePredicates(Root<AreaAddress> root, CriteriaBuilder cb, List<Predicate> predicates,
                                                   Long moId, AreaType areaTypeCode) {
         Join<AreaAddress, Area> areaJoin = root.join(AreaAddress_.area, JoinType.INNER);
+
+        // AREA_ADDRESSES.END_DATE IS NULL
         predicates.add(root.get(AreaAddress_.endDate.getName()).isNull());
 
+        // AREAS.AREA_TYPE_CODE = areaTypeCode (соединение AREAS.ID = AREA_ADDRESSES.area_id), если передан
         if (areaTypeCode != null) {
             predicates.add(cb.equal(areaJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()));
         }
+        // AREAS.MO_ID = moId, если передан
         if (moId != null) {
             predicates.add(cb.equal(areaJoin.get(Area_.moId.getName()), moId));
         }

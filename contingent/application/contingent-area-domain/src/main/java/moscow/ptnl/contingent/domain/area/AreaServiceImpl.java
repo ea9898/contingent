@@ -959,33 +959,34 @@ public class AreaServiceImpl implements AreaService {
         // 8
         checkAddressFLKV.forEach(address -> {
             List<AreaAddress> searchAreaByAddressV3 = algorithms.searchAreaByAddressV3(area.getMoId(), area.getAreaType(), address, validation);
-            searchAreaByAddressV3.forEach(a -> {
-                if (searchAreaByAddressV3.size() > 1 && searchAreaByAddressV3.stream().findAny().equals(area)) {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI,
-                            new ValidationParameter("globalIdNsi", a.getAddress().getGlobalId()),
-                            new ValidationParameter("areaId", a.getArea().getId()),
-                            new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
-                }
-                if (searchAreaByAddressV3.size() > 1 && searchAreaByAddressV3.stream().noneMatch(ar -> ar.getArea().equals(area))) {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI,
-                            new ValidationParameter("globalIdNsi", a.getAddress().getGlobalId()),
-                            new ValidationParameter("areaId", a.getArea().getId()),
-                            new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
-                }
-                if (!a.getArea().equals(area)) {
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
-                            new ValidationParameter("globalIdNsi", a.getAddress().getGlobalId()),
-                            new ValidationParameter("areaId", a.getArea().getId()),
-                            new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
-                } else {
-                    String addressString = addressesRegistry.stream()
-                            .filter(r -> Objects.equals(r.getGlobalIdNsi(), a.getAddress().getGlobalId()))
-                            .map(AddressRegistry::getAddressString)
-                            .findFirst()
-                            .orElse(a.getAddress().getAddress());
-                    validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", addressString));
-                }
-            });
+            // Алгоритм вернул несколько значений AREA_ADDRESSES.AREA_ID И
+            // Хотя бы одно из значений (AREA_ADDRESSES.AREA_ID) = ИД участка из входных параметров
+            if (searchAreaByAddressV3.size() > 1 && searchAreaByAddressV3.stream().map(i -> i.getArea().getId()).findAny().get().equals(area.getId())) {
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI,
+                        new ValidationParameter("addressString", address.getAddress()));
+//            } else if (searchAreaByAddressV3.size() > 1 && searchAreaByAddressV3.stream().noneMatch(ar -> ar.getArea().getId().equals(area.getId()))) {
+                // Алгоритм вернул несколько значений AREA_ADDRESSES.AREA_ID И
+                // Ни одно из значений (AREA_ADDRESSES.AREA_ID) не совпадает с ИД участка из входных параметров
+            } else if (searchAreaByAddressV3.size() > 1 && searchAreaByAddressV3.stream().anyMatch(i -> i.getArea().getId().equals(area.getId()))) {
+                validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI,
+                        new ValidationParameter("addressString", address.getAddress()));
+            } else if (!searchAreaByAddressV3.isEmpty()) {
+                searchAreaByAddressV3.forEach(a -> {
+                    if (!a.getArea().getId().equals(area.getId())) {
+                        validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_ANOTHER_AREA,
+                                new ValidationParameter("globalIdNsi", a.getAddress().getGlobalId()),
+                                new ValidationParameter("areaId", a.getArea().getId()),
+                                new ValidationParameter("areaTypeCode", area.getAreaType().getCode()));
+                    } else {
+                        String addressString = addressesRegistry.stream()
+                                .filter(r -> Objects.equals(r.getGlobalIdNsi(), a.getAddress().getGlobalId()))
+                                .map(AddressRegistry::getAddressString)
+                                .findFirst()
+                                .orElse(a.getAddress().getAddress());
+                        validation.error(AreaErrorReason.ADDRESS_ALREADY_SERVICED_NSI, new ValidationParameter("addressString", addressString));
+                    }
+                });
+            }
         });
 
         if (!validation.isSuccess()) {
@@ -1239,7 +1240,7 @@ public class AreaServiceImpl implements AreaService {
         addressesRegistry = areaHelper.filterDistinctAddressesByGlobalId(addressesRegistry);
 
         // 6
-        List <Addresses> addresses = algorithms.checkAddressFLKV3(addressesRegistry, validation);
+        List<Addresses> addresses = algorithms.checkAddressFLKV3(addressesRegistry, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);

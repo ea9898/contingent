@@ -277,7 +277,7 @@ public class AddAreaAddressTest {
         Fault fault = assertThrows(Fault.class, () -> areaPTv3.addAreaAddress(request));
 
 //        Assertions.assertEquals("Адрес город Москва, Дом Нескольких уже обслуживается данным участком.", fault.getMessage());
-        Assertions.assertEquals(1, ((ru.mos.emias.system.v1.faults.BusinessFault)fault.getFaultInfo()).getMessages().getMessages().size());
+        Assertions.assertEquals(1, ((ru.mos.emias.system.v1.faults.BusinessFault) fault.getFaultInfo()).getMessages().getMessages().size());
     }
 
     @Test
@@ -299,7 +299,13 @@ public class AddAreaAddressTest {
         Fault fault = assertThrows(Fault.class, () -> areaPTv3.addAreaAddress(requestMain));
 
         Assertions.assertNotNull(fault.getMessage());
+        Assertions.assertEquals(2, ((ru.mos.emias.system.v1.faults.BusinessFault) fault.getFaultInfo()).getMessages().getMessages().size());
 
+        Assertions.assertEquals("E018", ((ru.mos.emias.system.v1.faults.BusinessFault) fault.getFaultInfo()).getMessages().getMessages().get(0).getCode());
+        Assertions.assertEquals("Адрес -801 уже обслуживается участком с ИД 114012649. Адрес, включенный в территорию обслуживания участка, не должен входить в территорию обслуживания другого участка с ИД типа участка 20", ((ru.mos.emias.system.v1.faults.BusinessFault) fault.getFaultInfo()).getMessages().getMessages().get(0).getMessage());
+
+        Assertions.assertEquals("E018", ((ru.mos.emias.system.v1.faults.BusinessFault) fault.getFaultInfo()).getMessages().getMessages().get(1).getCode());
+        Assertions.assertEquals("Адрес -800 уже обслуживается участком с ИД 175715882. Адрес, включенный в территорию обслуживания участка, не должен входить в территорию обслуживания другого участка с ИД типа участка 20", ((ru.mos.emias.system.v1.faults.BusinessFault) fault.getFaultInfo()).getMessages().getMessages().get(1).getMessage());
     }
 
     private AddAreaAddressRequest addAreaRequest(String filePath) throws SOAPException, JAXBException, IOException {
@@ -308,7 +314,5 @@ public class AddAreaAddressTest {
         Unmarshaller unmarshaller = JAXBContext.newInstance(AddAreaAddressRequest.class).createUnmarshaller();
 
         return (AddAreaAddressRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
-
     }
-
 }
