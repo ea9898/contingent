@@ -100,7 +100,8 @@ public enum AreaErrorReason implements ErrorReason {
     SPECIALIZATION_IS_NOT_SPECIFIED("UE111", "Для должности мед. работника в справочнике номенклатуры должностей не указана специализация"),
     SPECIALIZATION_CODE_IS_NOT_DEFINED("UE112", "Для ИД специализации мед. работника %s не определён код специализации или он заархивирован"),
     ADDRESSES_WITH_GLOBAL_ID_NOT_FOUND_IN_NSI2("UE113", "Адрес с global_id %s не найден в НСИ.2"),
-    IT_IS_ALLOWED_ENTER_ONE_MORE_THAN_ONE_ADDRESS("UE114", "Для поиска участка по адресообразующему элементу допускается вводить не более одного адреса")
+    IT_IS_ALLOWED_ENTER_ONE_MORE_THAN_ONE_ADDRESS("UE114", "Для поиска участка по адресообразующему элементу допускается вводить не более одного адреса"),
+    SEARCH_AREA_NOT_MOSCOW_ADDRESS("UE115", "Указан адрес не в московском регионе")
     ;
 
     private final String description;

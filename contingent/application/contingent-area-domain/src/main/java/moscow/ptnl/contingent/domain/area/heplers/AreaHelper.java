@@ -50,6 +50,8 @@ import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
 import moscow.ptnl.util.CollectionsUtil;
 import moscow.ptnl.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
@@ -80,6 +82,8 @@ import java.util.stream.Stream;
 @Component
 @Transactional
 public class AreaHelper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AreaHelper.class);
 
     private static final Long PRIMARY_AREA_TYPE_CLASS = 1L;
     private static final Long DEPENDENT_AREA_TYPE_CLASS = 2L;
@@ -423,11 +427,13 @@ public class AreaHelper {
                 try {
                     nsiFormResponseMapper.transformAndMergeEntity(document, address);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    LOG.error("Unknown NSI transformer error", e);
                 }
                 if (address.getAoLevel().equals("1")) {
                     throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
                             new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
+                } if (!Objects.equals(address.getRegionCode(), settingService.getPar46())) {
+                    throw new ContingentException(AreaErrorReason.SEARCH_AREA_NOT_MOSCOW_ADDRESS);
                 } else {
                     foundAddresses.add(address);
                 }

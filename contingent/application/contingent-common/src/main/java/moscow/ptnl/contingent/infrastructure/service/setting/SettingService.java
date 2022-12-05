@@ -77,6 +77,8 @@ public interface SettingService {
     String PAR_44 = "area_types_is_check_double_main_employees";
     /** Типы участков у которых может быть более одного основного МР */
     String PAR_45 = "area_types_double_main_employees_enable";
+    /** Код региона г. Москва в адресном реестре НСИ2 */
+    String PAR_46 = "moscow.region.code";
 
     /**
      * Свойство извлекается из кэша.
@@ -132,4 +134,6 @@ public interface SettingService {
     List<Long> getPar44();
 
     List<Long> getPar45();
+
+    String getPar46();
 }
