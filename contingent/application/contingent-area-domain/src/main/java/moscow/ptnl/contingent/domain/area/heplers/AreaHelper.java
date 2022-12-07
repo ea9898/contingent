@@ -420,13 +420,8 @@ public class AreaHelper {
             // 4.1.1 Система по address.globalIdNsi для адреса, не найденного на шаге 4.1, вызывает метод
             // searchByGlobalId (сервис FormService НСИ.2)
             for (Long id : notFoundId) {
-                Document document = null;
-                try {
-                    document = nsiFormServiceHelper.searchByGlobalId(127, id, null);
-                } catch (Exception e) {
-
-                }
-
+                Document document;
+                document = nsiFormServiceHelper.searchByGlobalId(127, id, null);
 
                 // ЕСЛИ адрес не найден, ТО формируется ошибка С_УУ_159
                 if (document == null) {

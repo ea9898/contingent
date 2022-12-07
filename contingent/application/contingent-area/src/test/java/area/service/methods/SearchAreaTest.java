@@ -239,7 +239,7 @@ public class SearchAreaTest {
 
     @Test
     @Sql(scripts = {"/sql/areaTypeClass.sql", "/sql/searchArea2538.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void searchArea() throws SOAPException, IOException, JAXBException {
+    public void searchArea() throws SOAPException, IOException, JAXBException, ContingentException {
         SearchAreaAddress searchAreaAddress = new SearchAreaAddress();
         searchAreaAddress.setAoLevel("7");
         searchAreaAddress.setGlobalIdNsi(-999990077L);
@@ -254,7 +254,6 @@ public class SearchAreaTest {
         Unmarshaller unmarshaller = JAXBContext.newInstance(SearchAreaRequest.class).createUnmarshaller();
 
         SearchAreaRequest request = (SearchAreaRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
-        SearchAreaResponse response = assertDoesNotThrow(() -> areaPTv3.searchArea(request));
 
         Throwable exception = assertThrows(ContingentException.class, () -> areaServiceDomain.searchArea(
                 request.getAreaTypeClassCode(), request.getMoId(), request.getMuIds(), request.getAreaTypeCodes(),
@@ -262,7 +261,6 @@ public class SearchAreaTest {
                 Collections.singletonList(searchAreaAddress), false, PR, true));
 
         assertEquals("Адрес с global_id -999990077 не найден в НСИ.2", exception.getMessage());
-        Assertions.assertEquals(1, response.getResult().getAreas().size());
     }
 
     @Test
@@ -274,13 +272,11 @@ public class SearchAreaTest {
         Unmarshaller unmarshaller = JAXBContext.newInstance(SearchAreaRequest.class).createUnmarshaller();
 
         SearchAreaRequest request = (SearchAreaRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
-        SearchAreaResponse response = assertDoesNotThrow(() -> areaPTv3.searchArea(request));
 
-//        Throwable exception = assertThrows(Fault.class, () -> areaPTv3.searchArea(request));
-//        Assertions.assertNotNull(exception);
-//        Assertions.assertEquals("Адрес с global_id -100 не найден в НСИ.2", exception.getMessage());
+        Throwable exception = assertThrows(Fault.class, () -> areaPTv3.searchArea(request));
+        Assertions.assertNotNull(exception);
+        Assertions.assertEquals("Некорректный уровень адреса 1", exception.getMessage());
 
-        Assertions.assertEquals(1, response.getResult().getAreas().size());
     }
 
     @Test // ЕСЛИ адрес найден И его уровень aolevel =1, ТО система формирует ошибку С_УУ_107
