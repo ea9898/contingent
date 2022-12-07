@@ -216,10 +216,10 @@ public class Algorithms {
     }
 
     // Поиск участков по адресу (для метода К_УУ_13) (А_УУ_16)
-    public List<AreaAddress> searchAreaByAddressV3(Long moId, AreaType areaTypeCode, Addresses addressRegistryTypes, Validation validation) {
+    public List<AreaAddress> searchAreaByAddressV3(Long moId, AreaType areaTypeCode, Addresses addressRegistryTypes, boolean isFullSearch, Validation validation) {
         List<AreaAddress> areaAddresses = areaAddressRepository.getActiveAreaAddressesV3(moId, areaTypeCode, addressRegistryTypes);
 
-        if (!areaAddresses.isEmpty()) {
+        if (!areaAddresses.isEmpty() && !isFullSearch) {
             return areaAddresses;
         }
 

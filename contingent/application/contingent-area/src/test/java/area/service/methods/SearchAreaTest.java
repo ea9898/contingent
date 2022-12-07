@@ -276,6 +276,10 @@ public class SearchAreaTest {
         SearchAreaRequest request = (SearchAreaRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
         SearchAreaResponse response = assertDoesNotThrow(() -> areaPTv3.searchArea(request));
 
+//        Throwable exception = assertThrows(Fault.class, () -> areaPTv3.searchArea(request));
+//        Assertions.assertNotNull(exception);
+//        Assertions.assertEquals("Адрес с global_id -100 не найден в НСИ.2", exception.getMessage());
+
         Assertions.assertEquals(1, response.getResult().getAreas().size());
     }
 

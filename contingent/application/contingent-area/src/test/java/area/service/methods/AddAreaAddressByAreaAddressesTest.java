@@ -92,7 +92,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -120,7 +120,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -146,7 +146,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -170,7 +170,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -192,7 +192,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -243,7 +243,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -271,7 +271,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -297,7 +297,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -321,7 +321,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -343,7 +343,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -392,7 +392,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -418,7 +418,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -442,7 +442,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -464,7 +464,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -513,7 +513,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -537,7 +537,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -559,7 +559,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -607,7 +607,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -629,7 +629,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());
@@ -676,7 +676,7 @@ public class AddAreaAddressByAreaAddressesTest extends service.BaseTest {
 
         Validation validation = new Validation();
 
-        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, validation);
+        List<AreaAddress> areaAddresses = algorithms.searchAreaByAddressV3(1L, areaType,  addresses, false, validation);
 
         assertEquals(1, areaAddresses.size());
         assertEquals(1L, areaAddresses.get(0).getId().longValue());

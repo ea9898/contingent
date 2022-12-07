@@ -958,7 +958,7 @@ public class AreaServiceImpl implements AreaService {
 
         // 8
         checkAddressFLKV.forEach(address -> {
-            List<AreaAddress> searchAreaByAddressV3 = algorithms.searchAreaByAddressV3(area.getMoId(), area.getAreaType(), address, validation);
+            List<AreaAddress> searchAreaByAddressV3 = algorithms.searchAreaByAddressV3(area.getMoId(), area.getAreaType(), address, false, validation);
             // Алгоритм вернул несколько значений AREA_ADDRESSES.AREA_ID И
             // Хотя бы одно из значений (AREA_ADDRESSES.AREA_ID) = ИД участка из входных параметров
             if (searchAreaByAddressV3.size() > 1 && searchAreaByAddressV3.stream().map(i -> i.getArea().getId()).findAny().get().equals(area.getId())) {
@@ -1302,7 +1302,8 @@ public class AreaServiceImpl implements AreaService {
                                      List<Long> servicedMuIds, Integer number, String description, Boolean isArchived, List<MedicalEmployee> medicalEmployees,
                                      List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch, PageRequest paging,
                                      boolean loadServicedMUs) throws ContingentException {
-        //2
+
+        //2 Система проверяет что, передан хотя бы один из входных параметров поиска, иначе возвращает ошибку
         if (UserContextHolder.getContractVersion() > 1) {
             areaHelper.checkSearchParametersV2(areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile, servicedMuIds,
                     number, description, isArchived, medicalEmployees, searchAreaAddresses);
@@ -1310,7 +1311,9 @@ public class AreaServiceImpl implements AreaService {
             areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
                     isArchived, medicalEmployees, searchAreaAddresses);
         }
-        //3
+
+        //3 Если передан признак "Искать по точному совпадению адресов" = Ложь, то Система проверяет, что передан только один адрес.
+        // Иначе возвращает ошибку
         areaHelper.checkSearchAreaInaccurateAddress(isExactAddressMatch, searchAreaAddresses);
 
         //4
@@ -1358,18 +1361,17 @@ public class AreaServiceImpl implements AreaService {
         //5.3
         if (foundedAddresses != null && !foundedAddresses.isEmpty()) {
             List<AreaAddress> areaAddresses = new ArrayList<>();
-            //5.3.2
-            if (isExactAddressMatch == null || isExactAddressMatch || foundedAddresses.stream().allMatch(addr -> "8".equals(addr.getAoLevel()))) {
+            //5.3.1 Поиск по точному совпадению адресов  (выполняется, если параметр «Искать по точному совпадению адресов» = Истина или не передан)
+            if (isExactAddressMatch == null || Boolean.TRUE.equals(isExactAddressMatch)) {
                 areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).collect(Collectors.toList()));
-            } else {
-                //5.3.3
+            }
+            if (Boolean.FALSE.equals(isExactAddressMatch)) {
+                //5.3.2 Поиск по пересечению адресов (выполняется, если параметр «Искать по точному совпадению адресов» = Ложь
                 //По алгоритму из п4.2 здесь должен быть только один адрес
                 Addresses address = foundedAddresses.get(0);
-
-                if (!"8".equals(address.getAoLevel())) {
-                    areaAddresses = algorithms.searchAreaByAddressV3(null, null, address, null);
-                }
+                areaAddresses = algorithms.searchAreaByAddressV3(null, null, address, true, null);
             }
+
             Set<Long> idAreasSet = areaAddresses.stream().map(item -> item.getArea().getId()).collect(Collectors.toSet());
             if (areas != null) {
                 areas = areas.stream().filter(area -> idAreasSet.contains(area.getId())).collect(Collectors.toList());

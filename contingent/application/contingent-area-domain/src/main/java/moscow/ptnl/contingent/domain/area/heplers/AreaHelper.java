@@ -409,30 +409,38 @@ public class AreaHelper {
     public List<Addresses> checkSearchAreaAddresses(Boolean exactAddressMatch, List<SearchAreaAddress> addresses) throws ContingentException {
         List<Long> listGlobalIdNsi = addresses.stream().map(SearchAreaAddress::getGlobalIdNsi).collect(Collectors.toList());
 
-        // 4.1.1
+        // 4.1 Система ищет записи в БД по address.globalIdNsi
         List<Addresses> foundAddresses = addressesRepository.findAddresses(listGlobalIdNsi);
-
-        if (foundAddresses.stream().anyMatch(addr -> addr.getAoLevel() != null && addr.getAoLevel().equals("1"))) {
-            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
-                    new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
-        }
-
         Set<Long> foundIds = foundAddresses.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());
-        if (Boolean.FALSE.equals(exactAddressMatch) || addresses.isEmpty()) {
-            List<Long> notFoundId = listGlobalIdNsi.stream().filter(id -> !foundIds.contains(id)).collect(Collectors.toList());
-            //4.1.2
+
+        // Если все адреса найдены в БД или признак "Искать по точному совпадению адресов" = Истина ТО переход на ФЛК адресов (шаг 4.2)
+        List<Long> notFoundId = listGlobalIdNsi.stream().filter(id -> !foundIds.contains(id)).collect(Collectors.toList());
+        if (!Boolean.TRUE.equals(exactAddressMatch) || !notFoundId.isEmpty()) {
+
+            // 4.1.1 Система по address.globalIdNsi для адреса, не найденного на шаге 4.1, вызывает метод
+            // searchByGlobalId (сервис FormService НСИ.2)
             for (Long id : notFoundId) {
-                Document document = nsiFormServiceHelper.searchByGlobalId(127, id, null);
+                Document document = null;
+                try {
+                    document = nsiFormServiceHelper.searchByGlobalId(127, id, null);
+                } catch (Exception e) {
+
+                }
+
+
+                // ЕСЛИ адрес не найден, ТО формируется ошибка С_УУ_159
+                if (document == null) {
+                    throw new ContingentException(AreaErrorReason.ADDRESSES_WITH_GLOBAL_ID_NOT_FOUND_IN_NSI2);
+                }
                 Addresses address = new Addresses();
                 try {
                     nsiFormResponseMapper.transformAndMergeEntity(document, address);
                 } catch (IllegalAccessException e) {
                     LOG.error("Unknown NSI transformer error", e);
                 }
-                if (address.getAoLevel().equals("1")) {
-                    throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
-                            new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
-                } if (!Objects.equals(address.getRegionCode(), settingService.getPar46())) {
+
+                // ЕСЛИ  REGION_CODE <> moscow.region.code ТО формируется ошибку С_УУ_162
+                if (!Objects.equals(address.getRegionCode(), settingService.getPar46())) {
                     throw new ContingentException(AreaErrorReason.SEARCH_AREA_NOT_MOSCOW_ADDRESS);
                 } else {
                     foundAddresses.add(address);
@@ -440,11 +448,25 @@ public class AreaHelper {
             }
         }
 
-        //4.2
+        //4.2 ЕСЛИ не удалось определить ни одного адреса, ТО переход на шаг 7 с результатом "Пусто"
+        if (addresses.isEmpty()) {
+            return null;
+        }
+
+        // ЕСЛИ хотя бы один адрес имеет уровень aolevel =1, ТО переход на шаг 7 с ошибкой С_УУ_107
+        if (foundAddresses.stream().anyMatch(addr -> addr.getAoLevel() != null && addr.getAoLevel().equals("1"))) {
+            throw new ContingentException(AreaErrorReason.INCORRECT_ADDRESS_LEVEL,
+                    new ValidationParameter("aoLevel", AddressLevelType.MOSCOW.getLevel()));
+        }
+
+        // ЕСЛИ передано более одного адреса и хотя бы один из них имеет уровень addressRegistryBaseType.aolevel <> 8
+        // ТО переход на шаг 7 с ошибкой С_УУ_160
         if (!(addresses.size() == 1 || (!foundAddresses.isEmpty() && foundAddresses.stream().allMatch(addr -> addr.getAoLevel().equals("8"))))) {
             throw new ContingentException(AreaErrorReason.IT_IS_ALLOWED_ENTER_ONE_MORE_THAN_ONE_ADDRESS);
         }
 
+        // ЕСЛИ удалось определить адрес (адреса) и ни по одному из них не получено ошибки,
+        // ТО система "запоминает" адреса, переход на следующий шаг
         return foundAddresses;
     }
 

@@ -102,6 +102,12 @@ import ru.mos.emias.formproduct.formservice.v1.types.SubscribeFormRequest;
 import ru.mos.emias.formproduct.formservice.v1.types.SubscribeFormResponse;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+
 /**
  *
  * @author mkachalov
@@ -146,32 +152,32 @@ public class MockConfiguration {
         return new FormServicePortType() {
             @Override
             public GetFormsResponse getForms(GetFormsRequest body, UserContext userContext) throws Fault {
-                return null;
+                return new GetFormsResponse();
             }
 
             @Override
             public GetFieldsByFormIdResponse getFieldsByFormId(GetFieldsByFormIdRequest body, UserContext userContext) throws Fault {
-                return null;
+                return new GetFieldsByFormIdResponse();
             }
 
             @Override
             public PhpSphinxSearchFromGlobalIdResponse searchByGlobalId(PhpSphinxSearchFromGlobalIdRequest body, UserContext userContext) throws Fault {
-                return null;
+                return new PhpSphinxSearchFromGlobalIdResponse();
             }
 
             @Override
             public PhpSphinxSearchResponse searchByText(PhpSphinxSearchRequest body, UserContext userContext) throws Fault {
-                return null;
+                return new PhpSphinxSearchResponse();
             }
 
             @Override
             public SubscribeFormResponse subscription(SubscribeFormRequest body, UserContext userContext) throws Fault {
-                return null;
+                return new SubscribeFormResponse();
             }
 
             @Override
             public PhpSphinxSearchFromGlobalIdXsdResponse generateXsdEntity(PhpSphinxSearchFromGlobalIdXsdRequest body, UserContext userContext) throws Fault {
-                return null;
+                return new PhpSphinxSearchFromGlobalIdXsdResponse();
             }
         };
     }
