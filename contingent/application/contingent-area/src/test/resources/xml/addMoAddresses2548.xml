@@ -1,0 +1,54 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:user="http://emias.mos.ru/system/v1/userContext/" xmlns:typ="http://emias.mos.ru/contingent2/area/v3/types/" xmlns:v3="http://emias.mos.ru/contingent2/address/v3/" xmlns:v31="http://emias.mos.ru/contingent2/core/v3/">
+    <soap:Header>
+        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+            <wsse:UsernameToken wsu:Id="UsernameToken-3">
+                <wsse:Username>autotest</wsse:Username>
+            </wsse:UsernameToken>
+        </wsse:Security>
+        <user:userContext>
+            <user:systemName>UPK</user:systemName>
+            <user:userName>autotest</user:userName>
+            <user:userRoleId>10</user:userRoleId>
+            <!--Optional:-->
+            <user:isUserRoleSystemWide>0</user:isUserRoleSystemWide>
+            <user:userRights>
+                <!--Zero or more repetitions:-->
+                <user:userRightId>320021</user:userRightId>
+            </user:userRights>
+            <user:jobExecutionId>1</user:jobExecutionId>
+            <!--Optional:-->
+            <user:hostIp>192.168.0.0</user:hostIp>
+            <!--Optional:-->
+            <user:hostName>serv_test</user:hostName>
+        </user:userContext>
+    </soap:Header>
+    <soap:Body>
+        <typ:addMoAddressRequest>
+            <typ:moId>200001003712</typ:moId>
+            <typ:areaTypeCode>20</typ:areaTypeCode>
+            <typ:orderId>422</typ:orderId>
+            <!--1 or more repetitions:-->
+            <typ:address globalIdNsi="-9999999251" aoLevel="25">
+                <v3:addressString>город Москва, Муниципальный округ Рандомный</v3:addressString>
+                <v3:region id="1111">
+                    <v3:name>Москва</v3:name>
+                </v3:region>
+                <!--Optional:-->
+                <v3:regionOMKTE id="1111" code="1111">
+                    <v3:name>Регион ОМКТЕ</v3:name>
+                </v3:regionOMKTE>
+                <!--Optional:-->
+                <!--Optional:-->
+                <v3:areaOMKTE id="2222" code="2222">
+                    <v3:name>Район ОМКТЕ</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Фулл район</v3:full>
+                        <!--Optional:-->
+                        <v3:short>Шорт район</v3:short>
+                    </v3:type>
+                </v3:areaOMKTE>
+            </typ:address>
+        </typ:addMoAddressRequest>
+    </soap:Body>
+</soap:Envelope>

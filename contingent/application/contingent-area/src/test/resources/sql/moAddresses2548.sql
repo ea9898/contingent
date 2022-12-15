@@ -1,0 +1,7 @@
+INSERT INTO address_allocation_orders (id, number, name, date, ouz, create_date, update_date, archived) VALUES (422, '-555', 'Autotest', '2022-12-15 00:00:00.000000', 'Autotest2', '2022-12-15 12:10:23.150000', '2022-12-15 12:10:26.115000', 0);
+INSERT INTO address_allocation_orders (id, number, name, date, ouz, create_date, update_date, archived) VALUES (416, '-555', 'Autotest', '2022-12-15 00:00:00.000000', 'Autotest2', '2022-12-15 12:10:23.150000', '2022-12-15 12:10:26.115000', 0);
+
+INSERT INTO area_types_class (code, title, archived, global_id, update_date, source) VALUES (1, 'Первичный класс участков', 0, 125723193, '2022-09-29 04:57:19.375000', 'push');
+INSERT INTO area_types_kind (code, title, archived, global_id, update_date, source) VALUES (1, 'Мягко-ассоциированный участок', 0, 125694438, '2022-09-29 04:57:19.679000', 'push');
+
+INSERT INTO area_type (code, title, area_type_kind_code, area_type_class_code, head_finance, attach_by_medical_reason, has_service_territory, attach_by_request, mpgu_available, area_count_limit_code, gender_code, residents_bind_rate, age_min, age_max, age_m_min, age_m_max, age_w_min, age_w_max, archived, global_id, update_date, source) VALUES (20, 'Педиатрический', 1, 1, 1, 0, 1, 1, 1, 1, null, 1200, 0, 17, null, null, null, null, 0, 125694882, '2022-10-03 09:45:39.974000', 'push');

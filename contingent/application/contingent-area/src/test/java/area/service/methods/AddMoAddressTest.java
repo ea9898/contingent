@@ -26,7 +26,22 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.mos.emias.contingent2.area.v3.AreaPT;
+import ru.mos.emias.contingent2.area.v3.Fault;
+import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressRequest;
+import ru.mos.emias.contingent2.area.v3.types.AddMoAddressRequest;
+import ru.mos.emias.contingent2.area.v3.types.AddMoAddressResponse;
+
 import javax.sql.DataSource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPConstants;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +57,9 @@ public class AddMoAddressTest {
 
     @Autowired
     private AreaService areaService;
+
+    @Autowired
+    private AreaPT areaPTv3;
 
     @BeforeAll
     public static void init(@Qualifier("contingentDataSource") DataSource dataSource) throws LiquibaseException, SQLException {
@@ -215,5 +233,28 @@ public class AddMoAddressTest {
         List<Long> addMoAddress = areaService.addMoAddress(1, areaTypeCode, 1, addressRegistryList, false);
         assertNotNull(addMoAddress);
         assertEquals(4, addMoAddress.size());
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/moAddresses2548.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void addMoAddresses2548() throws ContingentException, SOAPException, JAXBException, IOException {
+
+        AddMoAddressRequest request = addMoAddressRequest("xml/addMoAddresses2548.xml");
+        AddMoAddressResponse addMoAddressResponse = assertDoesNotThrow(() -> areaPTv3.addMoAddress(request));
+        assertNotNull(addMoAddressResponse.getMoAddressIds());
+
+        AddMoAddressRequest request1 = addMoAddressRequest("xml/addMoAddresses2548_1.xml");
+        Fault fault = assertThrows(Fault.class, () -> areaPTv3.addMoAddress(request1));
+
+        assertEquals("Адрес город Москва, Административный округ Рандомный уже обслуживается МО с ИД 200001003712", fault.getMessage());
+    }
+
+
+    private AddMoAddressRequest addMoAddressRequest(String filePath) throws SOAPException, JAXBException, IOException {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
+        SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, inputStream);
+        Unmarshaller unmarshaller = JAXBContext.newInstance(AddMoAddressRequest.class).createUnmarshaller();
+
+        return (AddMoAddressRequest) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
     }
 }

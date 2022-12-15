@@ -10,7 +10,56 @@ import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.Transformer;
 import moscow.ptnl.contingent.area.transform.UserContextMapper;
 import moscow.ptnl.contingent.area.transform.UserContextMapperImpl;
+import moscow.ptnl.contingent.area.transform.v1.AddMedicalEmployeeMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddMedicalEmployeeMapperImpl;
+import moscow.ptnl.contingent.area.transform.v1.AddressAllocationOrderMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddressAllocationOrderMapperImpl;
+import moscow.ptnl.contingent.area.transform.v1.AddressBaseTypeMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddressBaseTypeMapperImpl;
+import moscow.ptnl.contingent.area.transform.v1.AddressRegistryToAddressRegistryBaseMapper;
+import moscow.ptnl.contingent.area.transform.v1.AddressRegistryToAddressRegistryBaseMapperImpl;
+import moscow.ptnl.contingent.area.transform.v1.AreaBriefMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaDnMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaDnMedicalEmployeeMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaMedicalEmployeeMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaTypeShortMapper;
+import moscow.ptnl.contingent.area.transform.v1.AreaTypeShortMapperImpl;
+import moscow.ptnl.contingent.area.transform.v1.ChangeMedicalEmployeeMapper;
+import moscow.ptnl.contingent.area.transform.v1.GetMuAvailableAreaTypesResponseMapper;
+import moscow.ptnl.contingent.area.transform.v1.MoAddressMapper;
+import moscow.ptnl.contingent.area.transform.v1.SearchAreaAddressMapper;
+import moscow.ptnl.contingent.area.transform.v1.SearchAreaAddressMapperImpl;
+import moscow.ptnl.contingent.area.transform.v1.SearchMuByAreaAddressMapper;
 import moscow.ptnl.contingent.area.transform.v1.SoapCustomMapper;
+import moscow.ptnl.contingent.area.transform.v1.SoapExceptionMapper;
+import moscow.ptnl.contingent.area.transform.v2.AddMedicalEmployeeMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AddMedicalEmployeeMapperV2Impl;
+import moscow.ptnl.contingent.area.transform.v2.AddressAllocationOrder2MapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AddressAllocationOrder2MapperV2Impl;
+import moscow.ptnl.contingent.area.transform.v2.AddressAllocationOrderMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AddressAllocationOrderMapperV2Impl;
+import moscow.ptnl.contingent.area.transform.v2.AddressBaseTypeMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AddressBaseTypeMapperV2Impl;
+import moscow.ptnl.contingent.area.transform.v2.AddressRegistryToAddressRegistryBaseMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AddressRegistryToAddressRegistryBaseMapperV2Impl;
+import moscow.ptnl.contingent.area.transform.v2.AreaAddressMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AreaBriefMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AreaBriefMapperV2Impl;
+import moscow.ptnl.contingent.area.transform.v2.AreaDnMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AreaMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AreaMedicalEmployeeMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AreaTypeShortMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.AreaTypeShortMapperV2Impl;
+import moscow.ptnl.contingent.area.transform.v2.CodeNameTypeMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.GetAreaHistoryMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.MoAddressAllocationMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.MoAddressInfoMapper;
+import moscow.ptnl.contingent.area.transform.v2.MoAddressMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.SearchAreaAddressMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.SearchAreaAddressMapperV2Impl;
+import moscow.ptnl.contingent.area.transform.v2.SearchMuByAreaAddressMapperV2;
+import moscow.ptnl.contingent.area.transform.v2.SoapCustomMapperV2;
 import moscow.ptnl.contingent.area.transform.v3.AddMedicalEmployeeMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AddMedicalEmployeeMapperV3Impl;
 import moscow.ptnl.contingent.area.transform.v3.AddressRegistryToAddressRegistryBaseMapperV3;
@@ -33,8 +82,6 @@ import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3Impl;
 import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
-import moscow.ptnl.contingent.area.transform.v3.SoapExceptionMapper;
-import moscow.ptnl.contingent.domain.AreaErrorReason;
 import moscow.ptnl.contingent.domain.area.MappingDomainServiceImpl;
 import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.NsiFormResponseMapperImpl;
@@ -52,7 +99,6 @@ import moscow.ptnl.contingent.domain.area.heplers.MedicalEmployeeHelper;
 import moscow.ptnl.contingent.domain.area.repository.HistoryEventRepository;
 import moscow.ptnl.contingent.domain.area.heplers.NsiFormServiceHelper;
 import moscow.ptnl.contingent.domain.area.transform.AddressMapperImpl;
-import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingServiceImpl;
 import moscow.ptnl.contingent.service.esu.EsuHelperServiceImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
@@ -102,6 +148,7 @@ import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchRequest;
 import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchResponse;
 import ru.mos.emias.formproduct.formservice.v1.types.SubscribeFormRequest;
 import ru.mos.emias.formproduct.formservice.v1.types.SubscribeFormResponse;
+import ru.mos.emias.system.v1.faults.BusinessFault;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
 import javax.xml.bind.JAXBContext;
@@ -165,6 +212,9 @@ public class MockConfiguration {
             public PhpSphinxSearchFromGlobalIdResponse searchByGlobalId(PhpSphinxSearchFromGlobalIdRequest body, UserContext userContext) throws Fault {
                 PhpSphinxSearchFromGlobalIdResponse search = new PhpSphinxSearchFromGlobalIdResponse();
                 if (body.getGlobalId() == -999990077) {
+                    throw new Fault("Адрес не найден");
+                }
+                if (body.getGlobalId() == 67186498) {
                     throw new Fault("Адрес не найден");
                 }
 
@@ -340,15 +390,19 @@ public class MockConfiguration {
     }
 
     @Bean
-    public SoapBaseExceptionMapper mapper() {
-        return new SoapExceptionMapper();
-    }
+    public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.Fault> mapper() { return new SoapExceptionMapper(); }
 
-    @MockBean
-    public ru.mos.emias.contingent2.area.AreaPT areaPT;
+    @Bean
+    public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v3.Fault> mapperv3() { return new moscow.ptnl.contingent.area.transform.v3.SoapExceptionMapper(); }
 
-    @MockBean
-    public ru.mos.emias.contingent2.area.v2.AreaPT areaPTv2;
+    @Bean
+    public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v2.Fault> mapperv2() { return new moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper(); }
+
+    @Bean
+    public ru.mos.emias.contingent2.area.AreaPT areaPT() { return new moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl(); }
+
+    @Bean
+    public ru.mos.emias.contingent2.area.v2.AreaPT areaPTv2() { return new moscow.ptnl.contingent.area.ws.v2.AreaServiceImpl(); }
 
     @Bean
     public UserContextMapper userContextMapper() {
@@ -361,9 +415,24 @@ public class MockConfiguration {
     }
 
     @Bean
+    public SoapCustomMapper soapCustomMapper() { return new SoapCustomMapper(); }
+
+    @Bean
+    public SoapCustomMapperV2 soapCustomMapperV2apper() { return new SoapCustomMapperV2(); }
+
+    @Bean
+    public AddressAllocationOrderMapper addressAllocationOrderMapper() { return new AddressAllocationOrderMapperImpl(); }
+
+    @Bean
+    public AddressAllocationOrderMapperV2 addressAllocationOrderMapperV2() { return new AddressAllocationOrderMapperV2Impl(); }
+
+    @Bean
     public MoMuService moMuService() {
         return new MoMuServiceImpl();
     }
+
+    @Bean
+    public MoAddressMapperV2 moAddressMapperV2() { return new MoAddressMapperV2(); }
 
     @Bean
     public AreaMapperV3 areaMapperV3() {
@@ -371,9 +440,21 @@ public class MockConfiguration {
     }
 
     @Bean
+    public AreaMapperV2 areaMapperV2() { return new AreaMapperV2(); }
+
+    @Bean
+    public AreaMapper areaMapper() { return new AreaMapper(); }
+
+    @Bean
     public AreaTypeShortMapperV3 areaTypeShortMapperV3() {
         return new AreaTypeShortMapperV3Impl();
     }
+
+    @Bean
+    public AreaTypeShortMapperV2 areaTypeShortMapperV2() { return new AreaTypeShortMapperV2Impl(); }
+
+    @Bean
+    public AreaTypeShortMapper areaTypeShortMapper() { return new AreaTypeShortMapperImpl(); }
 
     @Bean
     public AreaMedicalEmployeeMapperV3 areaMedicalEmployeeMapperV3() {
@@ -381,9 +462,24 @@ public class MockConfiguration {
     }
 
     @Bean
+    public AreaMedicalEmployeeMapperV2 areaMedicalEmployeeMapperV2() { return new AreaMedicalEmployeeMapperV2(); }
+
+    @Bean
+    public AreaMedicalEmployeeMapper areaMedicalEmployeeMapper() { return new AreaMedicalEmployeeMapper(); }
+
+    @Bean
+    public MoAddressMapper moAddressMapper() { return new MoAddressMapper(); }
+
+    @Bean
+    public AddressBaseTypeMapper addressBaseTypeMapper() { return new AddressBaseTypeMapperImpl(); }
+
+    @Bean
     public CodeNameTypeMapperV3 codeNameTypeMapperV3() {
         return new CodeNameTypeMapperV3();
     }
+
+    @Bean
+    public CodeNameTypeMapperV2 codeNameTypeMapperV2() { return new CodeNameTypeMapperV2(); }
 
     @Bean
     public MuAvailableAreaTypes2Mapper muAvailableAreaTypes2Mapper() {
@@ -396,9 +492,18 @@ public class MockConfiguration {
     }
 
     @Bean
+    public AreaBriefMapperV2 areaBriefMapperV2() { return new AreaBriefMapperV2Impl(); }
+
+    @Bean
     public SearchAreaAddressMapperV3 searchAreaAddressMapperV3() {
         return new SearchAreaAddressMapperV3Impl();
     }
+
+    @Bean
+    public SearchAreaAddressMapperV2 searchAreaAddressMapperV2() { return new SearchAreaAddressMapperV2Impl(); }
+
+    @Bean
+    public SearchAreaAddressMapper searchAreaAddressMapper() { return new SearchAreaAddressMapperImpl(); }
 
     @Bean
     public MuAvailableAreaTypesInMoMapper muAvailableAreaTypesInMoMapper() {
@@ -411,14 +516,38 @@ public class MockConfiguration {
     }
 
     @Bean
+    public GetAreaHistoryMapperV2 getAreaHistoryMapperV2() { return new GetAreaHistoryMapperV2(); }
+
+    @Bean
     public AddMedicalEmployeeMapperV3 addMedicalEmployeeMapperV3() {
         return new AddMedicalEmployeeMapperV3Impl();
     }
 
     @Bean
+    public AddMedicalEmployeeMapperV2 addMedicalEmployeeMapperV2() { return new AddMedicalEmployeeMapperV2Impl(); }
+
+    @Bean
+    public AddMedicalEmployeeMapper addMedicalEmployeeMapper() { return new AddMedicalEmployeeMapperImpl(); }
+
+    @Bean
     public ChangeMedicalEmployeeMapperV3 changeMedicalEmployeeMapperV3() {
         return new ChangeMedicalEmployeeMapperV3Impl();
     }
+
+    @MockBean
+    public ChangeMedicalEmployeeMapper changeMedicalEmployeeMapper;
+
+    @MockBean
+    public GetMuAvailableAreaTypesResponseMapper getMuAvailableAreaTypesResponseMapper;
+
+    @MockBean
+    public AreaBriefMapper areaBriefMapper;
+
+    @MockBean
+    public SearchMuByAreaAddressMapper searchMuByAreaAddressMapper;
+
+    @MockBean
+    public SearchMuByAreaAddressMapperV2 searchMuByAreaAddressMapperV2;
 
     @Bean
     public AddressRegistryToAddressRegistryBaseMapperV3 addressRegistryToAddressRegistryBaseMapperV3() {
@@ -426,15 +555,45 @@ public class MockConfiguration {
     }
 
     @Bean
+    public AddressRegistryToAddressRegistryBaseMapperV2 addressRegistryToAddressRegistryBaseMapperV2() { return new AddressRegistryToAddressRegistryBaseMapperV2Impl(); }
+
+    @Bean
+    public AddressRegistryToAddressRegistryBaseMapper addressRegistryToAddressRegistryBaseMapper() { return new AddressRegistryToAddressRegistryBaseMapperImpl(); }
+
+    @Bean
     public AreaDnMapperV3 areaDnMapperV3() {
         return new AreaDnMapperV3();
     }
 
+    @Bean
+    public AreaDnMapperV2 areaDnMapperV2() { return new AreaDnMapperV2(); }
+
+    @Bean
+    public AreaDnMapper areaDnMapper() { return new AreaDnMapper(); }
+
+    @Bean
+    public AddressAllocationOrder2MapperV2 addressAllocationOrder2MapperV2() { return new AddressAllocationOrder2MapperV2Impl(); }
+
+    @Bean
+    public MoAddressInfoMapper moAddressInfoMapper() { return new MoAddressInfoMapper(); }
+
+    @Bean
+    public MoAddressAllocationMapperV2 moAddressAllocationMapperV2() { return new MoAddressAllocationMapperV2(); }
+
+    @Bean
+    public AreaDnMedicalEmployeeMapper areaDnMedicalEmployeeMapper() { return new AreaDnMedicalEmployeeMapper(); }
+
     @MockBean
     public moscow.ptnl.contingent.area.transform.v1.PagingOptionsMapper pagingOptionsMapper;
 
-    @MockBean
-    public SoapVersioningMapper soapVersioningMapper;
+    @Bean
+    public SoapVersioningMapper soapVersioningMapper() { return new SoapVersioningMapper(); }
+
+    @Bean
+    public AreaAddressMapperV2 areaAddressMapperV2() { return new AreaAddressMapperV2(); }
+
+    @Bean
+    public AddressBaseTypeMapperV2 addressBaseTypeMapperV2() { return new AddressBaseTypeMapperV2Impl(); }
 
     @MockBean
     public Transformer transformer;
