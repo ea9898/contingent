@@ -149,8 +149,6 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             predicates.add(addressesJoin.get(Addresses_.cityCode.getName()).isNull());
         }
 
-
-
         return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
     }
 
@@ -247,8 +245,6 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull());
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()));
-        predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
-        predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
     }
@@ -393,7 +389,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "2")
                             )
-                            )
+                    )
             );
         };
 
@@ -478,11 +474,11 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                     criteriaBuilder.or(
                             moId == null ? getPredicateMoAddressAoLevelFullFind4(addresses, addressesJoin, criteriaBuilder) :
 
-                            criteriaBuilder.and(
-                                    addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
-                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
-                                    criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
-                            ),
+                                    criteriaBuilder.and(
+                                            addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                                            criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "25")
+                                    ),
                             criteriaBuilder.and(
                                     addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
                                     criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode()),
@@ -526,15 +522,11 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    moId == null ? getPredicateMoAddressAoLevelFullFind2(addresses, addressesJoin, criteriaBuilder) :
-                            criteriaBuilder.conjunction(),
                     criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
-                    moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
                     root.get(MoAddress_.endDate.getName()).isNull(),
-                    criteriaBuilder.and(
-                            addressesJoin.get(Addresses_.regionTeCode.getName()).isNotNull(),
-                            criteriaBuilder.equal(addressesJoin.get(Addresses_.regionTeCode.getName()), addresses.getRegionTeCode())
-                    )
+
+                    moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
+                    moId == null ? getPredicateMoAddressAoLevelFullFind2(addresses, addressesJoin, criteriaBuilder) : criteriaBuilder.disjunction()
             );
         };
 

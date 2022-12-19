@@ -120,15 +120,15 @@ public class Algorithms {
     // Поиск территорий обслуживания МО по адресу (А_УУ_15)
     public List<Long> searchServiceDistrictMOByAddressV33(AreaType areaType, Long globalIdNsi) {
 
-        // 1
+        // 1 Система ищет в таблице MO_ADDRESSES записи
         List<MoAddress> moAddressByGlobalId = moAddressRepository.getActiveMoAddressByGlobalIdAndAreaTypeCode(globalIdNsi, areaType.getCode());
 
-        // 3
+        // 3 Алгоритм возвращает уникальные значения ИД МО (MO_ADDRESSES.MO_ID)
         if (!moAddressByGlobalId.isEmpty()) {
             return moAddressByGlobalId.stream().map(MoAddress::getMoId).distinct().collect(Collectors.toList());
         }
 
-        // 2
+        // 2 Система осуществляет поиск переменных из таблицы ADDRESSES по globalIdNsi
         Optional<Addresses> addressesByGlobalIdNsi = addressesRepository.findAddressesByGlobalIdNsi(globalIdNsi);
 
         Addresses addresses;
