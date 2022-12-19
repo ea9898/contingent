@@ -54,6 +54,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
@@ -306,6 +307,18 @@ public class AddAreaAddressTest {
 
         Assertions.assertEquals("E018", ((ru.mos.emias.system.v1.faults.BusinessFault) fault.getFaultInfo()).getMessages().getMessages().get(1).getCode());
         Assertions.assertEquals("Адрес -800 уже обслуживается участком с ИД 175715882. Адрес, включенный в территорию обслуживания участка, не должен входить в территорию обслуживания другого участка с ИД типа участка 20", ((ru.mos.emias.system.v1.faults.BusinessFault) fault.getFaultInfo()).getMessages().getMessages().get(1).getMessage());
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/area_type.sql", "/sql/addAreaAddressTest2549.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void addAreaAddressTest2549() throws SOAPException, IOException, JAXBException {
+        AddAreaAddressRequest request2 = addAreaRequest("xml/addAreaAddress2549.xml");
+        AddAreaAddressResponse response2 = assertDoesNotThrow(() -> areaPTv3.addAreaAddress(request2));
+        assertNotNull(response2.getAreaAddressIds());
+
+        AddAreaAddressRequest request3 = addAreaRequest("xml/addAreaAddress2549_1.xml");
+        Fault fault = assertThrows(Fault.class, () -> areaPTv3.addAreaAddress(request3));
+        assertEquals("Адрес город Москва, Элемент планировочной структуры Рандомный уже обслуживается данным участком", fault.getMessage());
     }
 
     private AddAreaAddressRequest addAreaRequest(String filePath) throws SOAPException, JAXBException, IOException {
