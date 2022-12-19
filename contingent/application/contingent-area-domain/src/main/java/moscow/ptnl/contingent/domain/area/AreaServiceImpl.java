@@ -947,7 +947,7 @@ public class AreaServiceImpl implements AreaService {
                 first.ifPresent(moAddress -> findMoAddress.put(address.getGlobalId(), moAddress));
             } else {
                 validation.error(AreaErrorReason.ADDRESS_NOT_SERVICED_MO_NSI,
-                        new ValidationParameter("address", address.getAddress()),
+                        new ValidationParameter("addressString", address.getAddress()),
                         new ValidationParameter("moId", area.getMoId()));
             }
         });
