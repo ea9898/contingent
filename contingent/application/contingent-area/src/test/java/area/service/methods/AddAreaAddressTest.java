@@ -318,7 +318,7 @@ public class AddAreaAddressTest {
 
         AddAreaAddressRequest request3 = addAreaRequest("xml/addAreaAddress2549_1.xml");
         Fault fault = assertThrows(Fault.class, () -> areaPTv3.addAreaAddress(request3));
-        assertEquals("Адрес город Москва, Элемент планировочной структуры Рандомный уже обслуживается данным участком", fault.getMessage());
+        assertEquals("Адрес город Москва, Улица Рандомная уже обслуживается данным участком.", fault.getMessage());
     }
 
     private AddAreaAddressRequest addAreaRequest(String filePath) throws SOAPException, JAXBException, IOException {

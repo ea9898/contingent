@@ -145,6 +145,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
         predicates.add(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull());
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()));
         predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.aoLevel.getName()), "65"));
+
         if (addresses.getPlanCode() != null) {
             predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode.getName()), addresses.getPlanCode()));
         } else {
@@ -313,7 +314,15 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
             addEndDateMoIdAreaTypePredicates(root, criteriaBuilder, predicates, moId, areaTypeCode);
 
             predicates.add(criteriaBuilder.or(
-                    getPredicateAreaAddressCheckedAoLevel65(addresses, addressesJoin, criteriaBuilder),
+                    criteriaBuilder.and(
+                            addressesJoin.get(Addresses_.areaCodeOmkTe.getName()).isNotNull(),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.areaCodeOmkTe.getName()), addresses.getAreaCodeOmkTe()),
+                            addressesJoin.get(Addresses_.planCode.getName()).isNotNull(),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.planCode.getName()), addresses.getPlanCode()),
+                            addressesJoin.get(Addresses_.placeCode.getName()).isNotNull(),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.placeCode.getName()), addresses.getPlaceCode()),
+                            criteriaBuilder.equal(addressesJoin.get(Addresses_.cityCode.getName()), addresses.getCityCode())
+                    ),
                     getPredicateAreaAddressCheckedAoLevel6(addresses, addressesJoin, criteriaBuilder),
                     getPredicateAreaAddressCheckedAoLevel4(addresses, addressesJoin, criteriaBuilder),
                     criteriaBuilder.and(
