@@ -2,6 +2,7 @@ package moscow.ptnl.contingent.area.service.interceptor;
 
 import moscow.ptnl.contingent.domain.area.EsuHelperService;
 import moscow.ptnl.contingent.domain.area.heplers.AreaHelper;
+import moscow.ptnl.contingent.domain.esu.EsuOutput;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.domain.esu.event.annotation.LogESU;
 import java.lang.reflect.Method;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.esu.event.AreaInfoEvent;
@@ -63,7 +65,7 @@ public class LogESUInterceptor {
         String methodName = annotation.methodName().isEmpty() ? method.getName() : annotation.methodName();
         
         final Object result = joinPoint.proceed();
-        
+
         if (annotation.type().isAssignableFrom(AreaInfoEvent.class)) {
             if (Boolean.TRUE.equals(settingService.getPar4())) {
                 List<Long> areaIds = getAreaId(annotation, method, methodName, args, result);
@@ -73,7 +75,7 @@ public class LogESUInterceptor {
                 }
                 
                 areaRepository.getEntityManager().flush(); //актуализируем данные при не завершенной транзакции
-                
+
                 for (Long areaId : areaIds) {
                     Optional<Area> area = areaRepository.findById(areaId);
 
@@ -81,7 +83,6 @@ public class LogESUInterceptor {
                         throw new IllegalArgumentException("сущность с идентификатором " + areaId + " не найдена");
                     }
                     Area areaObject = area.get();
-                    
                     if (areaHelper.isAreaPrimary(areaObject)) {
                         esuHelperService.sendAreaInfoEvent(areaObject, methodName);
                     }
@@ -90,7 +91,7 @@ public class LogESUInterceptor {
         } else {
             throw new RuntimeException("не поддерживаемый тип события");
         }
-        
+
         return result;
     }
     

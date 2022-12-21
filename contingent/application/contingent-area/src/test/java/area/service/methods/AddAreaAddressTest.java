@@ -2,6 +2,7 @@ package area.service.methods;
 
 import area.service.MockConfiguration;
 import area.service.PersistenceConfiguration;
+import javafx.util.Callback;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -10,7 +11,11 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
+import moscow.ptnl.contingent.domain.esu.EsuInput;
+import moscow.ptnl.contingent.domain.esu.EsuOutput;
 import moscow.ptnl.contingent.error.ContingentException;
+import moscow.ptnl.contingent.repository.esu.EsuInputCRUDRepository;
+import moscow.ptnl.contingent.repository.esu.EsuOutputCRUDRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,6 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import ru.mos.emias.contingent2.address.v3.AddressRegistryBaseType;
 import ru.mos.emias.contingent2.address.v3.AreaOMKTE;
 import ru.mos.emias.contingent2.address.v3.Building;
@@ -37,6 +43,7 @@ import ru.mos.emias.contingent2.area.v3.AreaPT;
 import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressResponse;
 
+import javax.ejb.Timeout;
 import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -49,13 +56,22 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -68,6 +84,12 @@ public class AddAreaAddressTest {
 
     @Autowired
     private AreaPT areaPTv3;
+
+    @Autowired
+    private EsuOutputCRUDRepository esuOutputRepository;
+
+    @Autowired
+    private EsuInputCRUDRepository esuInputRepository;
 
     @BeforeAll
     public static void init(@Qualifier("contingentDataSource") DataSource dataSource) throws LiquibaseException, SQLException {
@@ -319,6 +341,47 @@ public class AddAreaAddressTest {
         AddAreaAddressRequest request3 = addAreaRequest("xml/addAreaAddress2549_1.xml");
         Fault fault = assertThrows(Fault.class, () -> areaPTv3.addAreaAddress(request3));
         assertEquals("Адрес город Москва, Улица Рандомная уже обслуживается данным участком.", fault.getMessage());
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/area_type.sql", "/sql/addAreaAddressTest2558.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void addAreaAddressTest2558() throws Throwable {
+
+        AddAreaAddressRequest request = addAreaRequest("xml/addAreaAddress2558.xml");
+        AddAreaAddressResponse response = assertDoesNotThrow(() -> areaPTv3.addAreaAddress(request));
+        assertNotNull(response.getAreaAddressIds());
+
+        final boolean[] asyncExecuted = {false};
+        final Throwable[] asyncThrowable = {null};
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<EsuOutput> listEsuOut = esuOutputRepository.findAll();
+                    CompletableFuture<List<EsuOutput>> completableFuture = CompletableFuture.completedFuture(listEsuOut);
+                    assertEquals(1, completableFuture.get().size());
+                    fail();
+                } catch (Throwable throwable) {
+                    asyncThrowable[0] = throwable;
+                } finally {
+                    synchronized (asyncExecuted) {
+                        asyncExecuted[0] = true;
+                        asyncExecuted.notify();
+                    }
+                }
+            }
+        }).start();
+
+        synchronized (asyncExecuted) {
+            while (!asyncExecuted[0]) {
+                asyncExecuted.wait();
+            }
+        }
+
+        if (asyncThrowable[0] != null) {
+            throw asyncThrowable[0];
+        }
     }
 
     private AddAreaAddressRequest addAreaRequest(String filePath) throws SOAPException, JAXBException, IOException {

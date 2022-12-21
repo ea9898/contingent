@@ -1017,7 +1017,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"})
+    @LogESU(type = AreaInfoEvent.class, parameters = {"areaId"}, methodName = "addAreaAddress")
     public List<Long> addAreaAddressV3(Long areaId, List<AddressRegistry> addressesRegistry, boolean limitAddress) throws ContingentException {
         return addAreaAddressInternalV3(areaId, addressesRegistry, limitAddress);
     }
