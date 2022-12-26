@@ -1,6 +1,7 @@
 package area.service.methods;
 
 import area.service.MockConfiguration;
+import area.service.MockEsuService;
 import area.service.PersistenceConfiguration;
 import javafx.util.Callback;
 import liquibase.Liquibase;
@@ -14,12 +15,14 @@ import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.domain.esu.EsuInput;
 import moscow.ptnl.contingent.domain.esu.EsuOutput;
 import moscow.ptnl.contingent.error.ContingentException;
+import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import moscow.ptnl.contingent.repository.esu.EsuInputCRUDRepository;
 import moscow.ptnl.contingent.repository.esu.EsuOutputCRUDRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -72,6 +75,8 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -90,6 +95,9 @@ public class AddAreaAddressTest {
 
     @Autowired
     private EsuInputCRUDRepository esuInputRepository;
+
+    @Autowired
+    private EsuService esuService;
 
     @BeforeAll
     public static void init(@Qualifier("contingentDataSource") DataSource dataSource) throws LiquibaseException, SQLException {
@@ -351,37 +359,14 @@ public class AddAreaAddressTest {
         AddAreaAddressResponse response = assertDoesNotThrow(() -> areaPTv3.addAreaAddress(request));
         assertNotNull(response.getAreaAddressIds());
 
-        final boolean[] asyncExecuted = {false};
-        final Throwable[] asyncThrowable = {null};
+        MockEsuService receiveService = (MockEsuService) esuService;
+        Assertions.assertFalse(receiveService.getMessages().isEmpty());
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<EsuOutput> listEsuOut = esuOutputRepository.findAll();
-                    CompletableFuture<List<EsuOutput>> completableFuture = CompletableFuture.completedFuture(listEsuOut);
-                    assertEquals(1, completableFuture.get().size());
-                    fail();
-                } catch (Throwable throwable) {
-                    asyncThrowable[0] = throwable;
-                } finally {
-                    synchronized (asyncExecuted) {
-                        asyncExecuted[0] = true;
-                        asyncExecuted.notify();
-                    }
-                }
+        receiveService.getMessages().forEach(esuOutput -> {
+            if (esuOutput.getMessage().contains("174712126")) {
+                assertTrue(esuOutput.getMessage().contains(">addAreaAddress<"));
             }
-        }).start();
-
-        synchronized (asyncExecuted) {
-            while (!asyncExecuted[0]) {
-                asyncExecuted.wait();
-            }
-        }
-
-        if (asyncThrowable[0] != null) {
-            throw asyncThrowable[0];
-        }
+        });
     }
 
     private AddAreaAddressRequest addAreaRequest(String filePath) throws SOAPException, JAXBException, IOException {

@@ -1,0 +1,64 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:user="http://emias.mos.ru/system/v1/userContext/" xmlns:typ="http://emias.mos.ru/contingent2/area/v3/types/" xmlns:v3="http://emias.mos.ru/contingent2/address/v3/" xmlns:v31="http://emias.mos.ru/contingent2/core/v3/">
+    <soap:Header>
+        <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+            <wsse:UsernameToken wsu:Id="UsernameToken-3">
+                <wsse:Username>autotest</wsse:Username>
+            </wsse:UsernameToken>
+        </wsse:Security>
+        <user:userContext>
+            <user:systemName>UPK/UPK</user:systemName>
+            <user:userName>autotest</user:userName>
+            <user:userRoleId>10</user:userRoleId>
+            <!--Optional:-->
+            <user:isUserRoleSystemWide>false</user:isUserRoleSystemWide>
+            <user:userRights>
+                <!--Zero or more repetitions:-->
+                <user:userRightId>320013</user:userRightId>
+            </user:userRights>
+            <user:jobExecutionId>100</user:jobExecutionId>
+            <!--Optional:-->
+            <user:hostIp>192.168.0.0</user:hostIp>
+            <!--Optional:-->
+            <user:hostName>serv_test</user:hostName>
+        </user:userContext>
+    </soap:Header>
+    <soap:Body>
+        <typ:addAreaAddressRequest>
+            <typ:areaId>174712126</typ:areaId>
+            <!--1 or more repetitions:-->
+            <typ:address globalIdNsi="96363140" aoLevel="8">
+                <v3:addressString>город Москва, улица Парковая 13-я, дом 28А, строение 1</v3:addressString>
+                <v3:region id="67200856">
+                    <v3:name>Москва</v3:name>
+                </v3:region>
+                <!--Optional:-->
+                <v3:regionOMKTE id="0400" code="0400">
+                    <v3:name>Восточный</v3:name>
+                </v3:regionOMKTE>
+                <!--Optional:-->
+                <v3:areaOMKTE code="0416">
+                    <v3:name>Северное Измайлово</v3:name>
+                    <!--Optional:-->
+                </v3:areaOMKTE>
+                <v3:street code="2211">
+                    <v3:name>Парковая 13-я</v3:name>
+                    <!--Optional:-->
+                    <v3:type>
+                        <v3:full>Улица</v3:full>
+                        <!--Optional:-->
+                        <v3:short>ул</v3:short>
+                    </v3:type>
+                    <!--Optional:-->
+                    <v3:codeOMKUM>019950</v3:codeOMKUM>
+                    <!--Optional:-->
+                    <v3:codeBTI>196144</v3:codeBTI>
+                </v3:street>
+                <v3:building>
+                    <v3:house>
+                        <v3:name>28А</v3:name>
+                    </v3:house>
+                </v3:building>
+            </typ:address>
+        </typ:addAreaAddressRequest>
+    </soap:Body>
+</soap:Envelope>
