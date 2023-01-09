@@ -3,7 +3,6 @@ package moscow.ptnl.contingent.nsi.domain.annotation;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -186,8 +185,14 @@ public class MapToNsiHelper {
             return null;
         }
         if (value instanceof String) {
-            String result = (String) value;
-            return (result.isEmpty()) ? null : "1".equals(result);
+            String result = ((String) value).trim();
+            if (result.isEmpty()) {
+                return null;
+            } else if ("1".equals(result)) {
+                return true;
+            } else {
+                return Boolean.parseBoolean(result);
+            }
         }
         throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
     }
