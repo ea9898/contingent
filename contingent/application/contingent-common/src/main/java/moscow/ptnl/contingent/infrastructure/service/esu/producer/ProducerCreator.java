@@ -28,13 +28,15 @@ public class ProducerCreator {
      * @param producerId
      * @param requestTimeoutMs "request.timeout.ms"
      */
-    private ProducerCreator(String bootstrapServers, String producerId, int requestTimeoutMs) {
+    private ProducerCreator(String bootstrapServers, String producerId, int requestTimeoutMs, Integer maxRequestSize) {
         if (requestTimeoutMs < 20000) {
             LOG.warn("request.timeout.ms имеет значение [" + requestTimeoutMs + "], что меньше рекомендованного 60000 мс и меньше минимально возможного 20000 мс");
         }
         
         this.builder = new EsuProducerBuilder(bootstrapServers, producerId, requestTimeoutMs);
-        this.builder.withCustomProperty("enable.idempotence", false)
+        this.builder
+                .withMaxRequestSize(maxRequestSize)
+                .withCustomProperty("enable.idempotence", false)
                 //An upper bound on the time to report success or failure after a call to send() returns.
                 //Задается в соответствии с формулой (request.timeout.ms + linger.ms) * retries
                 .withCustomProperty("delivery.timeout.ms", requestTimeoutMs + LINGER_MS)
@@ -44,8 +46,8 @@ public class ProducerCreator {
                 .withCustomProperty("linger.ms", LINGER_MS);
     }
     
-    public static ProducerCreator create(String bootstrapServers, String producerId, int timeoutMs) {
-        ProducerCreator creator = new ProducerCreator(bootstrapServers, producerId, timeoutMs);
+    public static ProducerCreator create(String bootstrapServers, String producerId, int timeoutMs, Integer maxRequestSize) {
+        ProducerCreator creator = new ProducerCreator(bootstrapServers, producerId, timeoutMs, maxRequestSize);
         return creator;
     }
     
@@ -53,7 +55,8 @@ public class ProducerCreator {
         ProducerCreator creator = new ProducerCreator(
                 properties.getBootstrapServers(), 
                 properties.getProducerId(), 
-                properties.getDeliveryTimeout()
+                properties.getDeliveryTimeout(),
+                properties.getMaxRequestSize()
         );
         creator.logServers = properties.getLogServers();
         creator.metricMessageProduct = properties.getLogProducerId();

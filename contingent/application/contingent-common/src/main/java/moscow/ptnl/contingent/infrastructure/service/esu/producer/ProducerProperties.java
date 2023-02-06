@@ -18,6 +18,8 @@ public interface ProducerProperties {
      * @return мсек
      */
     Integer getDeliveryTimeout();
+
+    Integer getMaxRequestSize();
     
     /**
      * Разрешить логирование метрик.
@@ -45,5 +47,7 @@ public interface ProducerProperties {
     default String getLogProducerId() {
         return null;
     }
+
+
     
 }
