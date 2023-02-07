@@ -572,8 +572,8 @@ public class AreaHelper {
     public void checkAutoAssignForAttachment(AreaType areaType, Boolean autoAssignForAttachment,
                                              Boolean attachByMedicalReason, Validation validation) {
         if (Boolean.TRUE.equals(autoAssignForAttachment)) {
-            if (areaType.getMpguAvailable() != null
-                    && !Boolean.TRUE.equals(areaType.getMpguAvailable())) {
+            if (areaType.getMpguAvailable() == null ||
+                    Boolean.FALSE.equals(areaType.getMpguAvailable())) {
                 validation.error(AreaErrorReason.CANT_SET_AUTO_ASSIGN_FOR_ATTACHMENT,
                         new ValidationParameter("areaTypeTitle", areaType.getTitle()));
             }
