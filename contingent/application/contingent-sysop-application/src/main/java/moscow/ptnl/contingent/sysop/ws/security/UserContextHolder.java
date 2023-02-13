@@ -47,7 +47,7 @@ public class UserContextHolder {
         if (context != null) {
             REQUEST_CONTEXT.set(context);
         } else {
-            REQUEST_CONTEXT.remove();;
+            REQUEST_CONTEXT.remove();
         }
     }
 }

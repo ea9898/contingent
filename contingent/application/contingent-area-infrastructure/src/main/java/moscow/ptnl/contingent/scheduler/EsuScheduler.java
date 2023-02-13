@@ -1,6 +1,5 @@
 package moscow.ptnl.contingent.scheduler;
 
-import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.concurrent.Executor;
 import moscow.ptnl.contingent.domain.trigger.TriggerName;
+import moscow.ptnl.contingent.esu.service.EsuService;
 import moscow.ptnl.contingent.infrastructure.service.trigger.TriggerService;
 import org.springframework.context.annotation.Lazy;
 

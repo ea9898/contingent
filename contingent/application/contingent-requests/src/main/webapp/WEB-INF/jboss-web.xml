@@ -1,4 +1,0 @@
-<!DOCTYPE xml>
-<jboss-web>
-    <context-root>requests</context-root>
-</jboss-web>

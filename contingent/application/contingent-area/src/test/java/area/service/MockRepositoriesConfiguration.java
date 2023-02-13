@@ -9,7 +9,6 @@ import moscow.ptnl.contingent.nsi.domain.repository.MappingPositionCodeToOtherPo
 import moscow.ptnl.contingent.nsi.domain.repository.SpecializationRepository;
 import moscow.ptnl.contingent.nsi.repository.MappingPositionCodeToOtherPositionCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionSuppCRUDRepository;
-import moscow.ptnl.contingent.nsi.repository.SpecializationCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopMsgCRUDRepository;
 import moscow.ptnl.contingent.repository.SysopMsgParamCRUDRepository;
@@ -48,7 +47,7 @@ import moscow.ptnl.contingent.sysop.repository.SysopRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  *

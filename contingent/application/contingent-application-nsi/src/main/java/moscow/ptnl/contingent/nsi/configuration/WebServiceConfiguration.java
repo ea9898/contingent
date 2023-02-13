@@ -2,43 +2,17 @@ package moscow.ptnl.contingent.nsi.configuration;
 
 import moscow.ptnl.contingent.nsi.ws.NsiAdminWebServiceImpl;
 import moscow.ptnl.contingent.nsi.ws.security.UserContextInterceptor;
-import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
-import javax.xml.ws.Endpoint;
+import jakarta.xml.ws.Endpoint;
 import org.apache.cxf.jaxws.EndpointImpl;
-import org.apache.cxf.ext.logging.LoggingFeature;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @Configuration
-@ComponentScan(basePackages = "moscow.ptnl",
-        //Из area-infrastructure нам надо только репозитории, остальное исключаем
-        excludeFilters = { @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.area.*"),
-                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.esuInputTasks.*"),
-                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.scheduler.*"),
-                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.service.*")})
 public class WebServiceConfiguration  {
-
-    @Bean
-    LoggingFeature loggingFeature() {
-        LoggingFeature loggingFeature = new LoggingFeature();
-        loggingFeature.setLimit(-1);
-        return loggingFeature;
-    }
-
-    @Bean(name = Bus.DEFAULT_BUS_ID)
-    SpringBus springBus(LoggingFeature loggingFeature) {
-        SpringBus bus = new SpringBus();
-        bus.setFeatures(new ArrayList<>(Arrays.asList(loggingFeature)));
-        return bus;
-    }
 
     @Bean
     public Endpoint TestServiceV1(@Qualifier(moscow.ptnl.contingent.nsi.ws.NsiWebServiceImpl.SERVICE_NAME)

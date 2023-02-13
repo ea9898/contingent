@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
-import moscow.ptnl.contingent.infrastructure.service.EsuService;
+import moscow.ptnl.contingent.esu.service.EsuService;
 import moscow.ptnl.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

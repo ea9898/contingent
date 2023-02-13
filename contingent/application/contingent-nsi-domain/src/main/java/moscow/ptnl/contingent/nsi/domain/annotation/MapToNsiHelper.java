@@ -9,14 +9,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Id;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import moscow.ptnl.contingent.PersistenceConstraint;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import org.slf4j.Logger;
@@ -184,7 +184,9 @@ public class MapToNsiHelper {
         if (value == null) {
             return null;
         }
-        if (value instanceof String) {
+        if (value instanceof Boolean) {
+            return (Boolean) value;
+        } else if (value instanceof String) {
             String result = ((String) value).trim();
             if (result.isEmpty()) {
                 return null;

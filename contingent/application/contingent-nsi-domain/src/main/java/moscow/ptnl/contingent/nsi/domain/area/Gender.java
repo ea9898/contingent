@@ -1,16 +1,15 @@
 package moscow.ptnl.contingent.nsi.domain.area;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.Size;
+import jakarta.persistence.Cacheable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import moscow.ptnl.contingent.domain.Keyable;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
@@ -58,6 +57,7 @@ public class Gender implements Serializable, NsiExternalEntity {
         this.code = code;
     }
 
+    @Override
     public Long getGlobalId() {
         return globalId;
     }
@@ -74,10 +74,12 @@ public class Gender implements Serializable, NsiExternalEntity {
         this.title = title;
     }
 
+    @Override
     public Boolean getArchived() {
         return archived;
     }
 
+    @Override
     public void setArchived(Boolean archived) {
         this.archived = archived;
     }

@@ -15,9 +15,8 @@ import service.BaseTest;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.jgroups.util.Util.assertEquals;
-import static org.jgroups.util.Util.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class A_YY_3_Test extends BaseTest {
 

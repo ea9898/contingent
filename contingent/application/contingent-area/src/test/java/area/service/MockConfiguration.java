@@ -122,8 +122,8 @@ import moscow.ptnl.contingent.transform.MainEmployeesMapper;
 import moscow.ptnl.contingent.transform.ReplacementEmployeesMapper;
 import moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration;
 import moscow.ptnl.contingent.area.endpoint.ESUEventEndpoint;
-import moscow.ptnl.contingent.infrastructure.service.EsuService;
 import moscow.ptnl.contingent.domain.area.HistoryService;
+import moscow.ptnl.contingent.esu.service.EsuService;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -148,14 +148,8 @@ import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchRequest;
 import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchResponse;
 import ru.mos.emias.formproduct.formservice.v1.types.SubscribeFormRequest;
 import ru.mos.emias.formproduct.formservice.v1.types.SubscribeFormResponse;
-import ru.mos.emias.system.v1.faults.BusinessFault;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author mkachalov

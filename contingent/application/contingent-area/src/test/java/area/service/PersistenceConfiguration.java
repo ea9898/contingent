@@ -2,7 +2,7 @@ package area.service;
 
 import java.util.Properties;
 import java.util.ResourceBundle;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -10,17 +10,17 @@ import org.apache.wss4j.dom.message.WSSecHeader;
 import org.apache.wss4j.dom.message.WSSecUsernameToken;
 import org.w3c.dom.Element;
 
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPFactory;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPFactory;
 import java.util.List;
 
 public class SecurityHeaderGenerator extends AbstractSoapInterceptor {
 
 //	private final static Logger LOG = LoggerFactory.getLogger(SecurityHeaderGenerator.class);
 
-	private String upkLogin;
+    private final String upkLogin;
 
-	private String nsiUserName;
+    private final String nsiUserName;
 
     public SecurityHeaderGenerator(String upkLogin, String nsiUserName) {
         super(Phase.PRE_PROTOCOL);

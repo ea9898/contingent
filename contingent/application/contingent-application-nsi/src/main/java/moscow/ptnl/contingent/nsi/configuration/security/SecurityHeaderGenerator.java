@@ -10,8 +10,8 @@ import org.apache.wss4j.dom.message.WSSecHeader;
 import org.apache.wss4j.dom.message.WSSecUsernameToken;
 import org.w3c.dom.Element;
 
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPFactory;
+import jakarta.xml.soap.SOAPElement;
+import jakarta.xml.soap.SOAPFactory;
 import java.util.List;
 
 public class SecurityHeaderGenerator extends AbstractSoapInterceptor {

@@ -1,18 +1,15 @@
 package moscow.ptnl.contingent.area.configuration;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import moscow.ptnl.contingent.area.ws.interceptor.SoapVersionInterceptor;
 import javax.xml.namespace.QName;
-import javax.xml.ws.Endpoint;
+import jakarta.xml.ws.Endpoint;
 
 import moscow.ptnl.contingent.area.ws.v1.AreaCompositeServiceImpl;
 import moscow.ptnl.metrics.MetricsInterceptorService;
 import moscow.ptnl.soap.log.SoapLogInterceptorService;
 import moscow.ptnl.contingent.security.UserContextHolder;
 import moscow.ptnl.contingent.area.service.interceptor.UserContextInterceptor;
-import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
-import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,8 +28,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * @author m.kachalov
  */
 @Configuration
-@ComponentScan(basePackages = "moscow.ptnl")
-@EnableAsync
 public class WebServiceConfiguration {
 
     private static final String AREA_SERVICE_NAMESPACE = "http://emias.mos.ru/contingent2/area/";
@@ -49,20 +44,6 @@ public class WebServiceConfiguration {
     @Autowired
     @Qualifier(EventChannelsConfiguration.SOAP_LOG_EVENT_CHANNEL_NAME)
     private MessageChannel soapLogChannel;
-
-    @Bean(name = Bus.DEFAULT_BUS_ID)
-    SpringBus springBus(LoggingFeature loggingFeature) {
-        SpringBus bus = new SpringBus();
-        bus.setFeatures(new ArrayList<>(Arrays.asList(loggingFeature)));
-        return bus;
-    }
-    
-    @Bean
-    LoggingFeature loggingFeature() {
-        LoggingFeature loggingFeature = new LoggingFeature();          
-        loggingFeature.setLimit(-1); //The default is 48 * 1024 https://redmine.ptnl.moscow/issues/30432
-        return loggingFeature;
-    }    
     
     @Bean
     UserContextInterceptor credentialsValidator() { 

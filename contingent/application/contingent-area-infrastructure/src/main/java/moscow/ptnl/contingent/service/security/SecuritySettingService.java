@@ -1,17 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package moscow.ptnl.contingent.service.security;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import moscow.ptnl.contingent.security.setting.AuthService;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import org.slf4j.Logger;
@@ -31,7 +26,7 @@ public class SecuritySettingService {
     
     private static final Logger LOG = LoggerFactory.getLogger(SecuritySettingService.class);
     
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
     
     private Map<String, AuthService> settings;
     
@@ -40,7 +35,7 @@ public class SecuritySettingService {
 
     public SecuritySettingService() {
         this.mapper = new ObjectMapper();
-        this.mapper.registerModule(new JaxbAnnotationModule());
+        this.mapper.registerModule(new JakartaXmlBindAnnotationModule());
     }
     
     @PostConstruct

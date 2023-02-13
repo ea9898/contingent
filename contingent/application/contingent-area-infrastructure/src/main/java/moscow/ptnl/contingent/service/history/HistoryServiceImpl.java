@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.service.history;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import javax.persistence.Transient;
+import jakarta.persistence.Transient;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.HISTORY_EVENT_CHANNEL_NAME;
 
 import moscow.ptnl.contingent.domain.area.HistoryService;

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import ru.mos.emias.formproduct.formservice.v1.Fault;
 import ru.mos.emias.formproduct.formservice.v1.FormServicePortType;
 import ru.mos.emias.formproduct.formservice.v1.types.PhpSphinxSearchFromGlobalIdRequest;
 import ru.mos.emias.system.v1.usercontext.UserContext;

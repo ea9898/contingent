@@ -1,9 +1,9 @@
 package moscow.ptnl.contingent.sysop.ws.security;
 
-public final class WebServiceConstants {
+public interface WebServiceConstants {
 
     // элементы SOAP заголовков
-    public static final String USERCONTEXT_EXT_NS = "http://emias.mos.ru/system/v1/userContext/";
-    public static final String USERCONTEXT_TN = "userContext";
+    String USERCONTEXT_EXT_NS = "http://emias.mos.ru/system/v1/userContext/";
+    String USERCONTEXT_TN = "userContext";
 
 }

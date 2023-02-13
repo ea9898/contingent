@@ -29,11 +29,11 @@ import moscow.ptnl.contingent.domain.area.entity.Addresses_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 import moscow.ptnl.contingent.repository.CommonSpecification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)

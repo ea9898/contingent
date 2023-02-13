@@ -28,18 +28,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.mos.emias.contingent2.area.v3.AreaPT;
 import ru.mos.emias.contingent2.area.v3.Fault;
-import ru.mos.emias.contingent2.area.v3.types.AddAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.AddMoAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.AddMoAddressResponse;
 
 import javax.sql.DataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.SOAPConstants;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.soap.MessageFactory;
+import jakarta.xml.soap.SOAPConstants;
+import jakarta.xml.soap.SOAPException;
+import jakarta.xml.soap.SOAPMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;

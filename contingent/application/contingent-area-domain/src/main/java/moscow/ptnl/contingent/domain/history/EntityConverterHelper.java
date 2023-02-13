@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.StringJoiner;
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 import moscow.ptnl.util.CollectionsUtil;
 import moscow.ptnl.util.Strings;
 import org.slf4j.Logger;

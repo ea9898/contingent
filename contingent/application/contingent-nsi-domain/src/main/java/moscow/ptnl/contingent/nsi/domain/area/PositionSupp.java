@@ -4,8 +4,8 @@ import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -56,6 +56,7 @@ public class PositionSupp implements Serializable, NsiExternalEntity {
         this.code = code;
     }
 
+    @Override
     public Long getGlobalId() {
         return globalId;
     }

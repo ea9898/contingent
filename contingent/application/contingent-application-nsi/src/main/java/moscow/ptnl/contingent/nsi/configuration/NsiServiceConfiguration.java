@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.mos.emias.nsiproduct.nsiserviceasyncfasad.v1.NsiServiceAsyncFasadPortType;
 
-import javax.xml.ws.soap.SOAPBinding;
+import jakarta.xml.ws.soap.SOAPBinding;
 
 @Configuration
 public class NsiServiceConfiguration {

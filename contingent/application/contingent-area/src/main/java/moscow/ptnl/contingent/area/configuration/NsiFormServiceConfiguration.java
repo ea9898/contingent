@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import ru.mos.emias.formproduct.formservice.v1.FormServicePortType;
 
-import javax.xml.ws.soap.SOAPBinding;
+import jakarta.xml.ws.soap.SOAPBinding;
 
 @Configuration
 @PropertySource("classpath:application.properties")

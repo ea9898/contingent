@@ -2,32 +2,27 @@ package moscow.ptnl.contingent.area.configuration;
 
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.jvm.DiskSpaceMetrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.CollectorRegistry;
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.util.stream.Collectors;
-import javax.management.MBeanServer;
-import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import jakarta.servlet.Servlet;
 import moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl;
 import moscow.ptnl.metrics.bind.JvmBufferPoolMetrics;
-import ru.mos.emias.metrics.jvm.SDJvmThreadMetrics;
 import moscow.ptnl.metrics.bind.ProcessMemoryMetrics;
 import moscow.ptnl.metrics.bind.ServiceMetrics;
 import moscow.ptnl.metrics.bind.SystemMetrics;
-import moscow.ptnl.metrics.bind.WildFlyDataSourceMetrics;
-import moscow.ptnl.metrics.bind.WildFlyUndertowMetrics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import moscow.ptnl.metrics.servlet.MetricsServlet;
 import ru.mos.emias.metrics.SDNamingConvention;
 import ru.mos.emias.metrics.jvm.SDClassLoaderMetrics;
 import ru.mos.emias.metrics.jvm.SDJvmGcMetrics;
 import ru.mos.emias.metrics.jvm.SDJvmMemoryMetrics;
+import ru.mos.emias.metrics.jvm.SDJvmThreadMetrics;
 
 /**
  *
@@ -40,7 +35,7 @@ public class MetricsConfiguration {
         
     @Bean
     public PrometheusMeterRegistry meterRegistry() {
-        PrometheusMeterRegistry meterRegistry = 
+        PrometheusMeterRegistry meterRegistry =
                 new PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM);
         meterRegistry.config().namingConvention(new SDNamingConvention());
         
@@ -57,46 +52,24 @@ public class MetricsConfiguration {
         new ProcessMemoryMetrics().bindTo(meterRegistry);
         
         new SystemMetrics().bindTo(meterRegistry);
-        
-        new DiskSpaceMetrics(new File("/")).bindTo(meterRegistry);
-                       
-        /*
-        new ClassLoaderMetrics().bindTo(meterRegistry);
-                
-        new JvmMemoryMetrics().bindTo(meterRegistry);
-                
-        new ProcessorMetrics().bindTo(meterRegistry);
-        
-        new ProcessThreadMetrics().bindTo(meterRegistry);
-        */
-        
+
         return meterRegistry;
     }
-    
+
     @Bean
-    public WildFlyDataSourceMetrics dataSourceMetrics(MeterRegistry registry, MBeanServer mBeanServer, ObjectProvider<DataSource> dataSources) {
-        WildFlyDataSourceMetrics metrics = new WildFlyDataSourceMetrics(mBeanServer, dataSources.stream().collect(Collectors.toList()).toArray(new DataSource[0]));
-        metrics.bindTo(registry);
-        return metrics;
+    public ServletRegistrationBean<Servlet> metricsServletRegistrationBean(PrometheusMeterRegistry service) {
+        MetricsServlet metricsServlet = new MetricsServlet(service);
+        ServletRegistrationBean<Servlet> regBeen = new ServletRegistrationBean<>(metricsServlet,
+                "/metrics");
+        regBeen.setLoadOnStartup(4);
+
+        return regBeen;
     }
-    
-    @Bean
-    public WildFlyUndertowMetrics undertowMetrics(MeterRegistry registry, MBeanServer mBeanServer) {
-        WildFlyUndertowMetrics metrics = new WildFlyUndertowMetrics(mBeanServer);
-        metrics.bindTo(registry);
-        return metrics;
-    }
-        
+
     @Bean
     public ServiceMetrics serviceMetrics(MeterRegistry registry) {
         ServiceMetrics metrics = new ServiceMetrics(AreaServiceImpl.class);
         metrics.bindTo(registry);
         return metrics;
     }
-    
-    @Bean
-    public MBeanServer mBeanServer() {
-        return ManagementFactory.getPlatformMBeanServer();
-    }    
-        
 }

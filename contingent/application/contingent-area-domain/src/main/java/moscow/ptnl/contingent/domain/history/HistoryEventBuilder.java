@@ -14,7 +14,7 @@ import moscow.ptnl.contingent.security.Principal;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 
-import javax.persistence.Table;
+import jakarta.persistence.Table;
 
 /**
  * Вспомогательный класс для удобного формирования события, публикуемого в

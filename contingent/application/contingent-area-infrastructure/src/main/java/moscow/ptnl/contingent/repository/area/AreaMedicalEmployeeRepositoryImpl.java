@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import moscow.ptnl.contingent.repository.CommonSpecification;
 
-import javax.persistence.criteria.*;
+import jakarta.persistence.criteria.*;
 
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)

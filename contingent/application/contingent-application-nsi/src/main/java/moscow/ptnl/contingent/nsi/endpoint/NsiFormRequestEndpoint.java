@@ -16,10 +16,8 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
-import javax.xml.ws.soap.SOAPFaultException;
 
 import java.util.Queue;
-import java.util.Set;
 
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.*;
 

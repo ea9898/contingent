@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <artifactId>common-trigger</artifactId>
+    <groupId>moscow.ptnl.contingent</groupId>
+    <packaging>jar</packaging>
+
+    <name>contingent-common-trigger</name>
+
+    <parent>
+        <groupId>moscow.ptnl.contingent</groupId>
+        <artifactId>contingent-common</artifactId>
+        <relativePath>../pom.xml</relativePath>
+        <version>3.3.0</version>
+    </parent>
+    
+    <dependencies>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>common-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>common-infrastructure</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>${api.javaee}</version>
+        </dependency>
+    </dependencies>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

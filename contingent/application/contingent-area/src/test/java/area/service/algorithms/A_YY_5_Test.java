@@ -5,10 +5,10 @@ import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent2.area.info.AreaInfoEvent;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import service.BaseTest;
 
-import static org.jgroups.util.Util.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class A_YY_5_Test extends BaseTest {

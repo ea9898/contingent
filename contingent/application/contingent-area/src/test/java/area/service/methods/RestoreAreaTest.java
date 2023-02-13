@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import area.service.MockRepositoriesConfiguration;
 import moscow.ptnl.contingent.domain.area.AreaService;
@@ -19,9 +19,8 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
-import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
-import moscow.ptnl.contingent.infrastructure.service.EsuService;
+import moscow.ptnl.contingent.esu.service.EsuService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import moscow.ptnl.contingent.repository.settings.SettingsRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;

@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
 public class UserContextInterceptor extends AbstractSoapInterceptor {

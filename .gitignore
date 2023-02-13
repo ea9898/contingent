@@ -103,3 +103,5 @@ contingent/application/contingent-nsi/pushaccepter_jar/target/
 /contingent/application/contingent-metrics/target/
 /contingent/application/contingent-attachment-application/target
 target
+nbactions.xml
+nb-configuration.xml

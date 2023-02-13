@@ -58,9 +58,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.transaction.Transactional;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -2,21 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
     <parent>
         <artifactId>contingent</artifactId>
         <groupId>moscow.ptnl.contingent</groupId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <groupId>moscow.ptnl.contingent</groupId>
-    <artifactId>attachment-domain</artifactId>
+    <artifactId>contingent-attachment-domain</artifactId>
+    
     <dependencies>
         <dependency>
-            <groupId>ru.mos.emias.errors</groupId>
-            <artifactId>emias-errors</artifactId>
-            <version>1.0.6</version>
-            <scope>compile</scope>
+            <groupId>moscow.ptnl.contingent</groupId>
+            <artifactId>common-policy</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

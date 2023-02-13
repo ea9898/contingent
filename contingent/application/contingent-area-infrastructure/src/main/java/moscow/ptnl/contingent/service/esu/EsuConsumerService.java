@@ -1,6 +1,5 @@
 package moscow.ptnl.contingent.service.esu;
 
-import moscow.ptnl.contingent.infrastructure.service.EsuProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.management.IntrospectionException;
-import javax.management.MalformedObjectNameException;
-import javax.management.ReflectionException;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import moscow.ptnl.contingent.esu.EsuProperties;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import org.springframework.scheduling.annotation.Scheduled;
 import ru.mos.emias.esu.lib.consumer.EsuConsumerBuilder;
@@ -75,12 +72,11 @@ public class EsuConsumerService {
         );
         
         topics.forEach(name -> {
-            Optional<Consumer> c = createConsumer(name, esuConsumerDatabaseProcessor);
-            if (c.isPresent()) {
-                Consumer consumer = c.get();
-                consumers.put(name, consumer);
+            Optional<Consumer> consumer = createConsumer(name, esuConsumerDatabaseProcessor);
+            consumer.ifPresent(c -> {
+                consumers.put(name, c);
                 LOG.info("Создан подписчик топика: {}", name);
-            }
+            });
         });        
     }
 

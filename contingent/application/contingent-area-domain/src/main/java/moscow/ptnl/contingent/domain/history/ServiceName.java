@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.domain.history;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 /**
  *
@@ -31,7 +31,7 @@ public enum ServiceName {
         return null;
     }
     
-    @javax.persistence.Converter
+    @jakarta.persistence.Converter
     public static class Converter implements AttributeConverter<ServiceName, String> {
 
         @Override
