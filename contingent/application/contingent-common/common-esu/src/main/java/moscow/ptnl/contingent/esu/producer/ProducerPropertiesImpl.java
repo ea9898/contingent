@@ -30,6 +30,9 @@ public class ProducerPropertiesImpl implements ProducerProperties {
     @Value("${esu.log.producer.metric.message.product:}")
     private String metricMessageProduct; //идентификатор продукта для логирования
 
+    @Value("${esu.max.request.size}")
+    private Integer maxRequestSize;
+
     @Override
     public String getBootstrapServers() {
         return bootstrapServers;
@@ -59,5 +62,7 @@ public class ProducerPropertiesImpl implements ProducerProperties {
     public String getLogProducerId() {
         return metricMessageProduct;
     }
-    
+
+    @Override
+    public Integer getMaxRequestSize() { return maxRequestSize; }
 }
