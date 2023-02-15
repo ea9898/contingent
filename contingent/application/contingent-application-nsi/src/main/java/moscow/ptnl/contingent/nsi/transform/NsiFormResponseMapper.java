@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.nsi.transform;
 import com.google.common.base.Strings;
 
 import moscow.ptnl.util.XMLUtil;
+import moscow.ptnl.contingent.nsi.domain.helper.NsiMapperUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,7 +155,7 @@ public class NsiFormResponseMapper {
                         .map(Node::getTextContent)
                         .map(Strings::emptyToNull)
                         .filter(Objects::nonNull)
-                        .map(NsiFormResponseMapper::valueToString)
+                        .map(NsiMapperUtil::valueToString)
                         .distinct()
                         .collect(Collectors.joining(";"))
                 : valueNode.getTextContent();
@@ -178,73 +179,6 @@ public class NsiFormResponseMapper {
 
     private <T> T cast(Object value, Class<T> fieldType) {
         //если поле простого типа
-        switch (fieldType.getSimpleName()) {
-            case "String":
-                return fieldType.cast(valueToString(value));
-            case "Long":
-                return fieldType.cast(valueToLong(value));
-            case "Integer":
-                return fieldType.cast(valueToInteger(value));
-            case "Boolean":
-                return fieldType.cast(valueToBoolean(value));
-            case "LocalDate":
-                return fieldType.cast(valueToLocalDate(value));
-            default:
-                throw new IllegalArgumentException("не поддерживаемый тип поля для сущности: [" + fieldType.getSimpleName() +"]");
-        }
-    }
-
-    private static String valueToString(Object value) {
-        if (value == null) {
-            return null;
-        }
-        String result = value.toString();
-        return (result.isEmpty()) ? null : result;
-    }
-
-    private static Long valueToLong(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof BigDecimal) {
-            return ((BigDecimal) value).longValue();
-        } else if (value instanceof String) {
-            return Long.parseLong((String) value);
-        }
-        throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
-    }
-
-    private static Integer valueToInteger(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof BigDecimal) {
-            return ((BigDecimal) value).intValue();
-        } else if (value instanceof String) {
-            return Integer.parseInt((String) value);
-        }
-        throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
-    }
-
-    private static Boolean valueToBoolean(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof String) {
-            String result = (String) value;
-            return (result.isEmpty()) ? null : "1".equals(result);
-        }
-        throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
-    }
-
-    private static LocalDate valueToLocalDate(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof String) {
-            String result = (String) value;
-            return LocalDateTime.parse(result, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")).toLocalDate();
-        }
-        throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
+        return NsiMapperUtil.castSimpleType(value, fieldType);        
     }
 }
