@@ -106,6 +106,17 @@ public class MapToNsiHelper {
         }
         
         //если поле простого типа
+        return castSimpleType(value, fieldType);
+    }
+    
+    /**
+     * 
+     * @param <T>
+     * @param value
+     * @param fieldType
+     * @return 
+     */
+    public static <T> T castSimpleType(Object value, Class<T> fieldType) {
         switch (fieldType.getSimpleName()) {
             case "String":
                 return fieldType.cast(valueToString(value));
@@ -148,7 +159,7 @@ public class MapToNsiHelper {
         }
     }
     
-    private static String valueToString(Object value) {
+    public static String valueToString(Object value) {
         if (value == null) {
             return null;
         }
