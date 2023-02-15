@@ -3,7 +3,7 @@ package moscow.ptnl.contingent.nsi.transform;
 import com.google.common.base.Strings;
 
 import moscow.ptnl.util.XMLUtil;
-import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsiHelper;
+import moscow.ptnl.contingent.nsi.domain.helper.NsiMapperUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,7 +155,7 @@ public class NsiFormResponseMapper {
                         .map(Node::getTextContent)
                         .map(Strings::emptyToNull)
                         .filter(Objects::nonNull)
-                        .map(MapToNsiHelper::valueToString)
+                        .map(NsiMapperUtil::valueToString)
                         .distinct()
                         .collect(Collectors.joining(";"))
                 : valueNode.getTextContent();
@@ -179,6 +179,6 @@ public class NsiFormResponseMapper {
 
     private <T> T cast(Object value, Class<T> fieldType) {
         //если поле простого типа
-        return MapToNsiHelper.castSimpleType(value, fieldType);        
+        return NsiMapperUtil.castSimpleType(value, fieldType);        
     }
 }

@@ -245,6 +245,8 @@ public interface AreaService {
      * @param moId
      * @param muIds
      * @param areaTypeCodes
+     * @param areaTypeProfile
+     * @param servicedMuIds
      * @param number
      * @param description
      * @param isArchived
@@ -252,6 +254,7 @@ public interface AreaService {
      * @param searchAreaAddresses
      * @param isExactAddressMatch
      * @param paging
+     * @param loadServicedMUs
      * @return
      * @throws ContingentException
      */

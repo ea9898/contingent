@@ -7,7 +7,8 @@ import ru.mos.emias.nsiproduct.core.v1.EhdCatalogRow;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsiHelper;
+import moscow.ptnl.contingent.nsi.domain.helper.MapToNsiHelper;
+import moscow.ptnl.contingent.nsi.domain.helper.NsiMapperUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +50,9 @@ public class NsiEntityMapper {
         try {
             T target = clazz.newInstance();
 
-            Optional<NsiTablesEnum> defaultTable = MapToNsiHelper.getNsiTableFromClass(clazz);
+            Optional<NsiTablesEnum> defaultTable = NsiMapperUtil.getNsiTableFromClass(clazz);
 
-            MapToNsiHelper.getNsiAnnotatedFields(clazz).forEach((field, annotation) -> {
+            NsiMapperUtil.getNsiAnnotatedFields(clazz).forEach((field, annotation) -> {
                 NsiTablesEnum table = !NsiTablesEnum.UNKNOWN.equals(annotation.table()) 
                         ? annotation.table() 
                         : defaultTable.orElse(NsiTablesEnum.UNKNOWN);
@@ -59,7 +60,7 @@ public class NsiEntityMapper {
                     throw new IllegalStateException("не удалось определить имя таблицы НСИ для поля: [" + field.getName() + "]");
                 }
 
-                String parameterName = MapToNsiHelper.getNsiFieldName(field, annotation);            
+                String parameterName = NsiMapperUtil.getNsiFieldName(field, annotation);            
                 Integer tableCode = table.getCode();
 
                 Object value = getValue(row, parameterName, tableCode);
