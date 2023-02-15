@@ -3,78 +3,72 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    <artifactId>metrics</artifactId>
+    <artifactId>common-metrics</artifactId>
     <groupId>moscow.ptnl.contingent</groupId>
     <packaging>jar</packaging>
 
-    <name>contingent-metrics</name>
-    <url>http://maven.apache.org</url>
+    <name>contingent-common-metrics</name>
 
     <parent>
        <groupId>moscow.ptnl.contingent</groupId>
-       <artifactId>contingent</artifactId>
+       <artifactId>contingent-common</artifactId>
        <relativePath>../pom.xml</relativePath>
-        <version>3.2.1</version>
+        <version>3.3.0</version>
     </parent>
-
-    <properties>
-        <prometheus.version>0.8.0</prometheus.version>
-        <micrometer.version>1.3.1</micrometer.version>
-    </properties>
     
     <dependencies> 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${api.servlet}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${api.slf4j}</version>
-            <!-- Ð˜ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÐ¼ Ð»Ð¾Ð³ÐµÑ€ Ð²ÑÑ‚Ñ€Ð¾ÐµÐ½Ð½Ñ‹Ð¹ Ð² wildfly -->
-            <scope>${slf4j.scope}</scope>
         </dependency>      
-        <!-- ÐœÐµÑ‚Ñ€Ð¸ÐºÐ¸ CONTINGENT2-514 -->
+        <!-- Ìåòðèêè CONTINGENT2-514 -->
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient</artifactId>
-            <version>${prometheus.version}</version>
         </dependency>
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_servlet</artifactId>
-            <version>${prometheus.version}</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
-            <version>${micrometer.version}</version>
         </dependency>        
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-            <version>${micrometer.version}</version>
         </dependency>
-        <!-- Ñ‡Ñ‚ÐµÐ½Ð¸Ðµ Ð¸Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ð¸ Ð¾ Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐµ Ð² *nix -->
+        <!-- ÷òåíèå èíôîðìàöèè î ïðîöåññå â *nix -->
         <dependency>
             <groupId>io.github.mweirauch</groupId>
             <artifactId>micrometer-jvm-extras</artifactId>
-            <version>0.2.0</version>
+            <version>0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.1.10.RELEASE</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.9.3</version>
-            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+            <version>${api.javaee}</version>
         </dependency>
     </dependencies>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

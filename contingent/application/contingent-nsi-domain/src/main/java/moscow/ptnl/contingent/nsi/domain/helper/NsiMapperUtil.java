@@ -10,14 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Id;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import moscow.ptnl.contingent.PersistenceConstraint;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 
@@ -65,11 +57,11 @@ public class NsiMapperUtil {
     }
     
     /**
-     *
+     * 
      * @param <T>
      * @param value
      * @param fieldType
-     * @return
+     * @return 
      */
     public static <T> T castSimpleType(Object value, Class<T> fieldType) {
         switch (fieldType.getSimpleName()) {
@@ -126,8 +118,7 @@ public class NsiMapperUtil {
         }
         if (value instanceof Boolean) {
             return (Boolean) value;
-        }
-        if (value instanceof String) {
+        } else if (value instanceof String) {
             String result = ((String) value).trim();
             if (result.isEmpty()) {
                 return null;
@@ -152,8 +143,8 @@ public class NsiMapperUtil {
         }
         throw new IllegalArgumentException("не поддерживаемый тип: [" + value.getClass().getName() + "]");
     }
-
-
+    
+    
     public static boolean isEntity(Class<?> type) {
         Entity e = type.getAnnotation(Entity.class);
         return e != null;

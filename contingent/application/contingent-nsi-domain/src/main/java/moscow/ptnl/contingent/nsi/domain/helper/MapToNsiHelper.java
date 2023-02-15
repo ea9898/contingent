@@ -1,13 +1,13 @@
 package moscow.ptnl.contingent.nsi.domain.helper;
 
 import java.lang.reflect.Field;
-import javax.persistence.EntityManager;
-import javax.persistence.Id;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Id;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import moscow.ptnl.contingent.PersistenceConstraint;
 import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 import org.slf4j.Logger;
