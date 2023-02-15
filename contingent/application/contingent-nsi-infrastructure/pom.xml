@@ -4,20 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    
+    <name>nsi-infrastructure</name>
 
     <groupId>moscow.ptnl.contingent</groupId>
     <artifactId>nsi-infrastructure</artifactId>
-    <packaging>jar</packaging>
-    
+
     <parent>
          <artifactId>contingent</artifactId>
          <groupId>moscow.ptnl.contingent</groupId>
-         <version>3.3.0</version>
+         <version>3.2.1</version>
          <relativePath>../pom.xml</relativePath>
     </parent>
-    
-    <name>contingent-nsi-infrastructure</name>
+
+    <packaging>jar</packaging>
+    <url>http://maven.apache.org</url>
 
     <dependencies>
         <dependency>
@@ -26,29 +26,40 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>moscow.ptnl.contingent</groupId>
-            <artifactId>common-infrastructure</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>${api.slf4j}</version>
+            <scope>${slf4j.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
+            <version>${spring.data}</version>
+            <scope>${artefact.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
+            <version>${spring.data}</version>
+            <scope>${artefact.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${api.javaee}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>${artefact.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-core</artifactId>
+            <version>${spring.integration.version}</version>
+            <scope>${artefact.scope}</scope>
         </dependency>        
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -58,23 +69,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
+            <version>${spring.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 </project>

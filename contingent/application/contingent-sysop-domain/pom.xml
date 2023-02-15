@@ -2,55 +2,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
     <parent>
         <artifactId>contingent</artifactId>
         <groupId>moscow.ptnl.contingent</groupId>
-        <version>3.3.0</version>
+        <version>3.2.1</version>
     </parent>
-    
+    <modelVersion>4.0.0</modelVersion>
+    <name>contingent-sysop-domain</name>
+
     <groupId>moscow.ptnl.contingent</groupId>
     <artifactId>sysop-domain</artifactId>
-    <packaging>jar</packaging>
-    
-    <name>contingent-sysop-domain</name>
 
     <dependencies>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
-            <artifactId>common-domain</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>moscow.ptnl.contingent</groupId>
-            <artifactId>common-policy</artifactId>
+            <artifactId>common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>${api.slf4j}</version>
+            <scope>${slf4j.scope}</scope>
         </dependency>
         <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>${artefact.scope}</scope>
         </dependency>
         <dependency>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${api.javaee}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
-    
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 </project>

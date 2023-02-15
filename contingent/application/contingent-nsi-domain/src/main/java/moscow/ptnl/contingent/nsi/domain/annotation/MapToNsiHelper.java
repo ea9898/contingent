@@ -186,7 +186,8 @@ public class MapToNsiHelper {
         }
         if (value instanceof Boolean) {
             return (Boolean) value;
-        } else if (value instanceof String) {
+        }
+        if (value instanceof String) {
             String result = ((String) value).trim();
             if (result.isEmpty()) {
                 return null;

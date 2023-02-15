@@ -713,48 +713,51 @@ public class AreaServiceImpl implements AreaService {
         //7.1
         List<AreaMedicalEmployees> allEmployees = new ArrayList<>(areaEmployeesDb);
         Map<AreaMedicalEmployees, AreaMedicalEmployees> changesAme = areaHelper.applyChanges(allEmployees, changeEmployeesCorrectInput);
-        areaHelper.addNew(allEmployees, addEmployeesInput, area);
-        areaHelper.checkDatesNotInterceptWithSamePosition(
-                allEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation); // отфитровываем ошибочно назначенные работников из проверки
 
-        //7.2
-        List<AreaMedicalEmployees> mainEmployees =
-                areaEmployeesDb.stream().filter(empl -> !empl.getReplacement()).collect(Collectors.toList());
-        areaHelper.applyChanges(mainEmployees, changeEmployeesCorrectInput);
-        areaHelper.addNew(mainEmployees, addEmployeesInput.stream()
-                .filter(empl -> !empl.isReplacement()).collect(Collectors.toList()), area);
-        if (area.getAreaType() != null && area.getAreaType().getAreaTypeKind() != null &&
-                area.getAreaType().getAreaTypeKind().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) {
-            // 7.2
-            if (settingService.getPar45().isEmpty() || !settingService.getPar45().contains(area.getAreaType().getCode())) {
-                areaHelper.checkMainEmployeesOverlappingDates(
-                        mainEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation);
+        if (!addEmployeesInput.isEmpty() || !changeEmployeesCorrectInput.isEmpty()) { // дальше нечего проверять, переходим на п.8.
+            areaHelper.addNew(allEmployees, addEmployeesInput, area);
+            areaHelper.checkDatesNotInterceptWithSamePosition(
+                    allEmployees.stream().filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation); // отфитровываем ошибочно назначенные работников из проверки
+
+            //7.2
+            List<AreaMedicalEmployees> mainEmployees =
+                    areaEmployeesDb.stream().filter(empl -> !empl.getReplacement()).collect(Collectors.toList());
+            areaHelper.applyChanges(mainEmployees, changeEmployeesCorrectInput);
+            areaHelper.addNew(mainEmployees, addEmployeesInput.stream()
+                    .filter(empl -> !empl.isReplacement()).collect(Collectors.toList()), area);
+            if (area.getAreaType() != null && area.getAreaType().getAreaTypeKind() != null &&
+                    area.getAreaType().getAreaTypeKind().getCode() == AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) {
+                // 7.2
+                if (settingService.getPar45().isEmpty() || !settingService.getPar45().contains(area.getAreaType().getCode())) {
+                    areaHelper.checkMainEmployeesOverlappingDates(mainEmployees.stream()
+                            .filter(me -> me.getError() == null || !me.getError()).collect(Collectors.toList()), validation);
+                }
+                //7.3
+                if (!settingService.getPar44().isEmpty() && settingService.getPar44().contains(area.getAreaType().getCode())) {
+                    areaHelper.checkMainEmployeesUniqueness(area, mainEmployees, changedEmployeeIds, validation);
+                }
+                //7.4
+                areaHelper.checkTempDutyEmployees(changeEmployeesCorrectInput, addEmployeesInput, areaEmployeesDb, validation);
+                //7.5
+                areaHelper.checkTempDutyEmployeesUniqueness(area, allEmployees, changedEmployeeIds, validation);
             }
-            //7.3
-            if (!settingService.getPar44().isEmpty() && settingService.getPar44().contains(area.getAreaType().getCode())) {
-                areaHelper.checkMainEmployeesUniqueness(area, mainEmployees, changedEmployeeIds, validation);
-            }
-            //7.4
-            areaHelper.checkTempDutyEmployees(changeEmployeesCorrectInput, addEmployeesInput, areaEmployeesDb, validation);
-            //7.5
-            areaHelper.checkTempDutyEmployeesUniqueness(area, allEmployees, changedEmployeeIds, validation);
-        }
-        //7.6
-        if (area.getAreaType() != null &&
-                area.getAreaType().getAreaTypeKind() != null &&
-                (area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) ||
-                        area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode()))) {
-            //7.6.1.
-            List<Period> periodsWithoutMainEmpl = areaHelper.getPeriodsWithoutMainEmployee(mainEmployees);
-            if (periodsWithoutMainEmpl.size() > 0) {
-                //7.6.2.
-                List<AreaMedicalEmployees> replacementEmployees = areaEmployeesDb.stream()
-                        .filter(AreaMedicalEmployees::getReplacement).collect(Collectors.toList());
-                areaHelper.applyChanges(replacementEmployees, changeEmployeesCorrectInput);
-                areaHelper.addNew(replacementEmployees, addEmployeesInput.stream()
-                        .filter(AddMedicalEmployee::isReplacement).collect(Collectors.toList()), area);
-                replacementEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate, nullsFirst(naturalOrder())));
+            //7.6
+            if (area.getAreaType() != null &&
+                    area.getAreaType().getAreaTypeKind() != null &&
+                    (area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) ||
+                            area.getAreaType().getAreaTypeKind().getCode().equals(AreaTypeKindEnum.TREATMENT_ROOM_ASSOCIATED.getCode()))) {
+                //7.6.1.
+                List<Period> periodsWithoutMainEmpl = areaHelper.getPeriodsWithoutMainEmployee(mainEmployees);
+                if (periodsWithoutMainEmpl.size() > 0) {
+                    //7.6.2.
+                    List<AreaMedicalEmployees> replacementEmployees = areaEmployeesDb.stream()
+                            .filter(AreaMedicalEmployees::getReplacement).collect(Collectors.toList());
+                    areaHelper.applyChanges(replacementEmployees, changeEmployeesCorrectInput);
+                    areaHelper.addNew(replacementEmployees, addEmployeesInput.stream()
+                            .filter(AddMedicalEmployee::isReplacement).collect(Collectors.toList()), area);
+                    replacementEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate, nullsFirst(naturalOrder())));
 //                areaHelper.checkReplacementWithoutMain(periodsWithoutMainEmpl, replacementEmployees, validation); https://jira.emias.mos.ru/browse/CONTINGENT2-643
+                }
             }
         }
 

@@ -57,6 +57,9 @@ public class EsuConsumerService {
     @Value("${esu.consumer.topic.dn.event}")
     private String dnEventInformerTopicName;
 
+    @Value("${esu.max.request.size}")
+    private Integer maxRequestSize;
+
     @Autowired(required = false)
     private EsuProperties esuProperties;
 
@@ -217,7 +220,8 @@ public class EsuConsumerService {
                         .withProcessor(processor) // Объект класса, унаследованного от EsuConsumerMessageProcessor. NOT THREAD SAFE
                         .withPollingInterval(esuProperties.getPollingInterval()) // Интервал между запросами в Kafka в мс (по-умолчанию 300)
                         .withPollingTimeout(esuProperties.getPollingTimeout()) // Таймаут чтения сообщений из Kafka в мс (по-умолчанию 300)
-                        .withCustomErrorProducerProperties(new EsuErrorProducerPropertiesBuilder().withRequestTimeout(esuProperties.getProducerTimeout()).build())  // Таймаут продюсера, при отправке сообщений в топик ConsumerErrors
+//                        .withCustomErrorProducerProperties(new EsuErrorProducerPropertiesBuilder().withRequestTimeout(esuProperties.getProducerTimeout()).build())  // Таймаут продюсера, при отправке сообщений в топик ConsumerErrors
+                        .withMaxRequestSize(maxRequestSize)
                         /*
                             Боремся с ошибкой:
                             Commit cannot be completed since the group has already rebalanced and assigned the partitions to another member
@@ -233,6 +237,7 @@ public class EsuConsumerService {
                     new EsuLogProducerPropertiesBuilder(esuProperties.getLogServers(), esuProperties.getMetricMessageProduct())
                             .enabled(esuProperties.isLogEnabled())
                             .withProduct(esuProperties.getMetricMessageProduct())
+                            .withMaxRequestSize(maxRequestSize)
                             .build()
             );
         }
