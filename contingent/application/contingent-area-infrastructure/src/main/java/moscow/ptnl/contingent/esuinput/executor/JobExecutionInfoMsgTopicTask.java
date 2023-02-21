@@ -1,5 +1,6 @@
-package moscow.ptnl.contingent.esuInputTasks;
+package moscow.ptnl.contingent.esuinput.executor;
 
+import moscow.ptnl.contingent.esuinput.EsuInputTaskHelper;
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.MoAvailableAreaTypes;
@@ -11,7 +12,6 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
 import moscow.ptnl.contingent.nsi.domain.area.Specialization;
-import moscow.ptnl.contingent.nsi.domain.area.SpecializationEnum;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeSpecializationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
@@ -36,15 +36,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.batch.BaseTopicExecutor;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * К_УУ_ЕСУ_2
+ * К_УУ_ЕСУ_2.
  */
 @Component
-@Qualifier("jobExecutionInfoMsgTopicTask")
-public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfoMsg> {
+@Qualifier(JobExecutionInfoMsgTopicTask.TASK_NAME)
+public class JobExecutionInfoMsgTopicTask extends BaseTopicExecutor<JobExecutionInfoMsg> {
+    
+    public static final String TASK_NAME = "jobExecutionInfoMsgTopicTask1";
 
     private static final String XSD_PATH = "META-INF/xsd/esu/jobExecutionInfoMsg.xsd";
 
@@ -310,5 +313,10 @@ public class JobExecutionInfoMsgTopicTask extends BaseTopicTask<JobExecutionInfo
         areaMedicalEmployeeCRUDRepository.save(medicalEmployee);
 
         return medicalEmployee;
+    }
+
+    @Override
+    public String getBeanName() {
+        return JobExecutionInfoMsgTopicTask.TASK_NAME;
     }
 }

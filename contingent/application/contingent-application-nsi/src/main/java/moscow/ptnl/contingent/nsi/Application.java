@@ -14,8 +14,10 @@ import org.springframework.context.annotation.FilterType;
 @SpringBootApplication()
 @ComponentScan(basePackages = "moscow.ptnl",
         //Из area-infrastructure нам надо только репозитории, остальное исключаем
-        excludeFilters = { @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.area.*"),
-                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.esuInputTasks.*"),
+        excludeFilters = { 
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.area.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.batch.*"),
+                @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.esuinput.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.scheduler.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "moscow.ptnl.contingent.service.*")})
 public class Application extends SpringBootServletInitializer {

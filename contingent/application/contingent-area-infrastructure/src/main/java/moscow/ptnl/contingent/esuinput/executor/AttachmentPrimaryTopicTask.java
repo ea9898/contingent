@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.esuInputTasks;
+package moscow.ptnl.contingent.esuinput.executor;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
@@ -16,18 +16,21 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import moscow.ptnl.contingent.esuinput.AttachToDependentAreaEventMapper;
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
+import moscow.ptnl.contingent.batch.BaseTopicExecutor;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * К_УУ_ЕСУ_4
+ * К_УУ_ЕСУ_4.
  * Формирование топика «Создать прикрепление к зависимому участку»
  */
 @Component
-@Qualifier("attachmentPrimaryTopicTask")
-public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatientEvent> {
+@Qualifier(AttachmentPrimaryTopicTask.TASK_NAME)
+public class AttachmentPrimaryTopicTask extends BaseTopicExecutor<AttachPrimaryPatientEvent> {
 
+    public static final String TASK_NAME = "attachmentPrimaryTopicTask";
 
     @Value("${esu.consumer.topic.primary.area.attachment}")
     private String attachmentPrimaryMsgTopicName;
@@ -97,5 +100,10 @@ public class AttachmentPrimaryTopicTask extends BaseTopicTask<AttachPrimaryPatie
         } else {
             throw new RuntimeException("Участок " + event.getPrimaryAreaId() + " не найден");
         }
+    }
+
+    @Override
+    public String getBeanName() {
+        return AttachmentPrimaryTopicTask.TASK_NAME;
     }
 }

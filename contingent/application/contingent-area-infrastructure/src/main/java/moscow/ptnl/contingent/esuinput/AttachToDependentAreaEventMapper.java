@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.esuInputTasks;
+package moscow.ptnl.contingent.esuinput;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;

@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.esuInputTasks;
+package moscow.ptnl.contingent.batch;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,20 +10,13 @@ import moscow.ptnl.contingent.repository.esu.EsuInputRepository;
 import moscow.ptnl.util.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -34,11 +27,12 @@ import moscow.ptnl.util.XMLUtil;
 /**
  * Базовый класс обработчика входящих сообщений ЕСУ.
  * 
+ * @param <T>
  */
 @PropertySource("classpath:application-esu.properties")
-abstract class BaseTopicTask<T> implements Tasklet {
+public abstract class BaseTopicExecutor<T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BaseTopicExecutor.class);
 
     @Autowired
     private EsuInputRepository esuInputRepository;
@@ -50,14 +44,11 @@ abstract class BaseTopicTask<T> implements Tasklet {
     private String consumerGroupId;
 
     private final Class<T> typeClass;
-
     private final String xsdPath;
-
     private final String host;
-
     private final ObjectMapper jsonMapper;
 
-    BaseTopicTask(String xsdPath, Class<T> typeClass) {
+    protected BaseTopicExecutor(String xsdPath, Class<T> typeClass) {
         this.xsdPath = xsdPath;
         this.typeClass = typeClass;
         this.host = CommonUtils.getHostName();
@@ -65,13 +56,9 @@ abstract class BaseTopicTask<T> implements Tasklet {
         this.jsonMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
         this.jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
-
-    @Override
+    
     @Transactional(propagation = Propagation.REQUIRED)
-    final public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        LocalDateTime time = LocalDateTime.now();
-        LOG.info(typeClass.getSimpleName() + " task start");
-
+    public void execute() {
         String personalTopic = getTopicName() + "." + consumerGroupId;
         List<EsuInput> messages = esuInputRepository.findByTopic(getTopicName(), personalTopic).getContent();
 
@@ -92,7 +79,7 @@ abstract class BaseTopicTask<T> implements Tasklet {
                     //Завершаем выполнение потока
                     futureUpdate.cancel(true);
                 }
-                return RepeatStatus.FINISHED;
+                return;
             }
         }
         for (EsuInput message : messages) {
@@ -130,10 +117,6 @@ abstract class BaseTopicTask<T> implements Tasklet {
                 updateStatus(message, status, eventId, errorMessage);
             }
         }
-
-        LOG.info(typeClass.getSimpleName() + " task done in " + Duration.between(time, LocalDateTime.now()));
-
-        return RepeatStatus.FINISHED;
     }
 
     protected abstract String getEventId(T event);
@@ -145,6 +128,12 @@ abstract class BaseTopicTask<T> implements Tasklet {
     public abstract void processMessage(T event);
 
     public abstract String getTopicName();
+    
+    /**
+     * Имя бина (квалифаер) реализующего логику обработки. 
+     * @return 
+     */
+    public abstract String getBeanName();
 
     private T convertEventXml(String message) {
         try {

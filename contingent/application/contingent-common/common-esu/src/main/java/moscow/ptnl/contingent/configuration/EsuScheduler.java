@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.scheduler;
+package moscow.ptnl.contingent.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

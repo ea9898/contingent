@@ -1,32 +1,34 @@
-package moscow.ptnl.contingent.esuInputTasks;
+package moscow.ptnl.contingent.esuinput.executor;
 
 import moscow.ptnl.contingent.domain.area.entity.Area;
 import moscow.ptnl.contingent.domain.esu.EsuEventBuilder;
-import moscow.ptnl.contingent.domain.esu.event.input.DnEventInformer;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.util.XMLGregorianCalendarMapper;
-import moscow.ptnl.contingent2.rmr.event.dn.DnAttach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
-
 import static moscow.ptnl.contingent.area.configuration.EventChannelsConfiguration.ESU_EVENT_CHANNEL_NAME;
+import moscow.ptnl.contingent.batch.BaseTopicExecutor;
+import moscow.ptnl.contingent2.rmr.event.dn.DnAttach;
+import moscow.ptnl.contingent2.rmr.event.dn.DnEventInformer;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * К_УУ_ЕСУ_6
+ * К_УУ_ЕСУ_6.
  * Формирование сообщения для ЕСУ «Уведомление о постановке и снятии с ДН»
  */
-@Component
-@Qualifier("dnEventInformerTask")
-public class DNEventInformerJsonTask extends BaseTopicTask<DnEventInformer> {
+//@Component
+//@Qualifier(DNEventInformerTask.TASK_NAME)
+@Deprecated
+public class DNEventInformerTask extends BaseTopicExecutor<DnEventInformer> {
+    
+    public static final String TASK_NAME = "dnEventInformerTask";
 
     @Value("${esu.consumer.topic.dn.event}")
     private String dnEventReceived;
@@ -40,13 +42,10 @@ public class DNEventInformerJsonTask extends BaseTopicTask<DnEventInformer> {
     @Autowired @Qualifier(ESU_EVENT_CHANNEL_NAME)
     private MessageChannel esuChannel;
 
-    public DNEventInformerJsonTask() {
-        super(null, DnEventInformer.class);
-    }
+    private static final String XSD_PATH = "META-INF/xsd/esu/dn.attach.xsd";
 
-    @Override
-    protected boolean isMessageTypeJson() {
-        return true;
+    public DNEventInformerTask() {
+        super(null, DnEventInformer.class);
     }
 
     @Override
@@ -64,7 +63,7 @@ public class DNEventInformerJsonTask extends BaseTopicTask<DnEventInformer> {
     public void processMessage(DnEventInformer event) {
 
         if ("create".equals(event.getOperationType()) && event.getNewResults() != null) {
-            DnEventInformer.Results param = event.getNewResults().get(0);
+            DnEventInformer.NewResults param = event.getNewResults();
             List<Area> areas = areaRepository.findAreas(
                     AreaTypeKindEnum.PERSONAL.getCode(), false, Long.valueOf(param.getJobId()));
             if (areas.isEmpty()) {
@@ -94,7 +93,12 @@ public class DNEventInformerJsonTask extends BaseTopicTask<DnEventInformer> {
                     .setEventObject(dnAttach)
                     .buildMessage());
         } else {
-            throw new RuntimeException("Отсутствуют или некорректные данные для обработки");
+            throw new RuntimeException("Отсутствуют данные для обработки");
         }
+    }
+
+    @Override
+    public String getBeanName() {
+        return DNEventInformerTask.TASK_NAME;
     }
 }
