@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 import moscow.ptnl.contingent.repository.CommonSpecification;
 import org.slf4j.Logger;
@@ -165,12 +166,12 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                                     cb.lessThan(subRoot.get(AreaMedicalEmployees_.endDate), now),
                                     cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate), now.minusDays(daysForSelect)),
                                     cb.greaterThanOrEqualTo(cb.function("DATE", LocalDate.class, subRoot.get(AreaMedicalEmployees_.endDate)),
-                                            cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName())))),
+                                    cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName())))),
                             cb.and(
                                     cb.lessThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.startDate), now),
                                     cb.greaterThan(subRoot.get(AreaMedicalEmployees_.startDate), now.minusDays(daysForSelect)),
                                     cb.greaterThanOrEqualTo(cb.function("DATE", LocalDate.class, subRoot.get(AreaMedicalEmployees_.startDate)),
-                                            cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName()))))
+                                    cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName()))))
                     ),
                     cb.or(
                             cb.isNull(subRoot.get(AreaMedicalEmployees_.isError)),
@@ -179,7 +180,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
             ));
             return cb.and(
                     cb.exists(sub.select(subRoot)),
-                    cb.equal(areaTypeJoin.get(AreaType_.areaTypeClass), AreaTypeClassEnum.PRIMARY.getClazz())
+                    cb.equal(areaTypeJoin.get(AreaType_.areaTypeClass).get(AreaTypeClass_.code), AreaTypeClassEnum.PRIMARY.getClazz())
             );
         };
         return areaCRUDRepository.findAll(specification);
