@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.configuration;
+package moscow.ptnl.contingent.esu.configuration;
 
 import java.util.HashMap;
 import java.util.Map;

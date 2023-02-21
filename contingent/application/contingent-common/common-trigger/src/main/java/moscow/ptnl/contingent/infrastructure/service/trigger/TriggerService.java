@@ -67,12 +67,16 @@ public class TriggerService {
         try {
             Boolean result = false;
             //2. Система записывает статус работы триггера, обновляя запись в таблице TRG_STATUS
-            taskAction = asyncRunService.run(() -> triggerStatusHelper.setRunOnStatus(trigger));
+            taskAction = asyncRunService.run(
+                    () -> triggerStatusHelper.setRunOnStatus(trigger)
+            );
 
             if (taskAction.get(60, TimeUnit.SECONDS))
                 try {
                     //3. Выполняем триггер (в отдельной транзакции с прерыванием по таймауту)
-                    taskAction = asyncRunService.run(() -> triggerAction.action(trigger));
+                    taskAction = asyncRunService.run(
+                            () -> triggerAction.action(trigger)
+                    );
                     result = taskAction.get(executionTimeLimit, TimeUnit.MINUTES);
                 } finally {
                     //Меняем статус триггера на "не запущен"

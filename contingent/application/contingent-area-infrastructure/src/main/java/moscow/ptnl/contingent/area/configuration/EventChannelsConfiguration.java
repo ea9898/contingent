@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.area.configuration;
 
-import static moscow.ptnl.contingent.configuration.EventChannelsConfiguration.QUEUE_LENGTH;
+import static moscow.ptnl.contingent.esu.configuration.EventChannelsConfiguration.QUEUE_LENGTH;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

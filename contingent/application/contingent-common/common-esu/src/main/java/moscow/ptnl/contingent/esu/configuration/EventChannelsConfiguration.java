@@ -1,4 +1,4 @@
-package moscow.ptnl.contingent.configuration;
+package moscow.ptnl.contingent.esu.configuration;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

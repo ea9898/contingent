@@ -8,8 +8,6 @@ import moscow.ptnl.contingent.infrastructure.service.setting.SettingService;
 import moscow.ptnl.contingent.infrastructure.service.trigger.TriggerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
@@ -21,7 +19,6 @@ import java.util.List;
  * Триггер формирования топика AreaInfo для участков с МР с окончившимся сроком действия
  */
 @Component
-@PropertySource("classpath:application-esu-trigger.properties")
 public class AreaInfoSendTrigger implements Runnable {
 
     @Autowired
@@ -45,8 +42,7 @@ public class AreaInfoSendTrigger implements Runnable {
     /**
      * Периодический запуск триггера
      */
-    @Scheduled(cron = "${area-info.sync.k1.cron.rule}")
-    public void triggerScheduler() {
+    public void schedule() {
         triggerService.startTrigger(TriggerName.trigger_synch_areainfo_k1);
     }
 

@@ -1,6 +1,6 @@
 package moscow.ptnl.contingent.nsi.configuration;
 
-import static moscow.ptnl.contingent.configuration.EventChannelsConfiguration.QUEUE_LENGTH;
+import static moscow.ptnl.contingent.esu.configuration.EventChannelsConfiguration.QUEUE_LENGTH;
 import static moscow.ptnl.contingent.nsi.configuration.Constraint.*;
 
 import org.slf4j.Logger;

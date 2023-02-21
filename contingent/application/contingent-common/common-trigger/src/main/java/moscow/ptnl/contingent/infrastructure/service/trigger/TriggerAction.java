@@ -105,7 +105,7 @@ public class TriggerAction {
             }
             
             pageNumber++;
-        } while (page.hasNext());
+        } while (page != null && page.hasNext());
         
         LOG.info("Триггер удалил {} записей из ESU_INPUT за {} мсек", deleted, (System.currentTimeMillis() - startTime));        
         return true;
