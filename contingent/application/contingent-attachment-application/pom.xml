@@ -261,7 +261,7 @@
         </dependency>
         <dependency>
             <groupId>moscow.ptnl.contingent</groupId>
-            <artifactId>attachment-domain</artifactId>
+            <artifactId>contingent-attachment-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

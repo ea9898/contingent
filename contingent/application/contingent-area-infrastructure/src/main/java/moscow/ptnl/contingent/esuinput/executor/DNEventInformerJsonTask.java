@@ -25,8 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
  * К_УУ_ЕСУ_6.
  * Формирование сообщения для ЕСУ «Уведомление о постановке и снятии с ДН»
  */
-@Component
-@Qualifier(DNEventInformerJsonTask.TASK_NAME)
+//@Component
+//@Qualifier(DNEventInformerJsonTask.TASK_NAME)
 public class DNEventInformerJsonTask extends BaseTopicExecutor<DnEventInformer> {
     
     public static final String TASK_NAME = "dnEventInformerTask";

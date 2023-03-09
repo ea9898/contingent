@@ -10,4 +10,112 @@
 
     <include file="batch.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="CONTINGENT2-2620-1" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'AttachmentPrimary.run.begin-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <delete tableName="AD_CONFIG">
+            <where>code='AttachmentPrimary.run.begin-date'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2620-2" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'AttachmentPrimary.run.end-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <delete tableName="AD_CONFIG">
+            <where>code='AttachmentPrimary.run.end-date'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2620-3" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'AttachmentPrimary.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <delete tableName="AD_CONFIG">
+            <where>code='AttachmentPrimary.run.mode'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2620-4" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'DNEventInformer.run.begin-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <delete tableName="AD_CONFIG">
+            <where>code='DNEventInformer.run.begin-date'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2620-5" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'DNEventInformer.run.end-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <delete tableName="AD_CONFIG">
+            <where>code='DNEventInformer.run.end-date'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2620-6" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'DNEventInformer.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <delete tableName="AD_CONFIG">
+            <where>code='DNEventInformer.run.mode'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2620-7" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'JEMsg.run.begin-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <delete tableName="AD_CONFIG">
+            <where>code='JEMsg.run.begin-date'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2620-8" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'JEMsg.run.end-date'</sqlCheck>
+            </and>
+        </preConditions>
+        <delete tableName="AD_CONFIG">
+            <where>code='JEMsg.run.end-date'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2620-9" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="1">select count(*) from AD_CONFIG where code = 'JEMsg.run.mode'</sqlCheck>
+            </and>
+        </preConditions>
+        <delete tableName="AD_CONFIG">
+            <where>code='JEMsg.run.mode'</where>
+        </delete>
+    </changeSet>
+
 </databaseChangeLog>

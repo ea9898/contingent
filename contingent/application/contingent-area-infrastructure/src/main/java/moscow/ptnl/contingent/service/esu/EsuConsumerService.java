@@ -48,12 +48,6 @@ public class EsuConsumerService {
     @Autowired
     private EsuConsumerDatabaseProcessor esuConsumerDatabaseProcessor;
 
-    @Value("${esu.consumer.topic.primary.area.attachment}")
-    private String primaryAreaAttachmentTopicName;
-
-    @Value("${esu.consumer.topic.job.execution.info.msg}")
-    private String jobExecutionInfoMsgTopicName;
-
     @Value("${esu.consumer.topic.dn.event}")
     private String dnEventInformerTopicName;
 
@@ -69,9 +63,7 @@ public class EsuConsumerService {
     @PostConstruct
     public void subscribeTopics() {
         List<String> topics = Arrays.asList(
-                jobExecutionInfoMsgTopicName, //К_УУ_ЕСУ_1
-                primaryAreaAttachmentTopicName, //К_УУ_ЕСУ_3
-                dnEventInformerTopicName //К_УУ_ЕСУ_5
+//                dnEventInformerTopicName //К_УУ_ЕСУ_5 // Оставлено в качестве примера для чтения из топиков
         );
         
         topics.forEach(name -> {
