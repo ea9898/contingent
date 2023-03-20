@@ -79,12 +79,16 @@
 
     <repositories>
         <repository>
-            <id>1</id>
-            <url>https://mvnrepository.com/artifact</url>
-        </repository>
-        <repository>
             <id>ptnl-release</id>
             <url>http://artifactory.ptnl.moscow/artifactory/libs-release</url>
+        </repository>
+        <repository>
+            <id>dit-release</id>
+            <url>https://artifactory.emias.mos.ru/artifactory/libs-release</url>
+        </repository>
+        <repository>
+            <id>shibboleth-release</id>
+            <url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
         </repository>
     </repositories>
 
