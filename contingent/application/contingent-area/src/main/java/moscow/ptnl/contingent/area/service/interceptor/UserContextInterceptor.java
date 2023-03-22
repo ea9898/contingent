@@ -6,11 +6,15 @@ import moscow.ptnl.contingent.security.UserContextHolder;
 import moscow.ptnl.contingent.security.WebServiceConstants;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
+import org.apache.cxf.databinding.DataReader;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
+import org.apache.cxf.service.Service;
+import org.apache.cxf.service.model.ServiceModelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import ru.mos.emias.system.v1.usercontext.UserContext;
 
 import javax.xml.bind.JAXBContext;
@@ -23,6 +27,7 @@ import org.slf4j.LoggerFactory;
 public class UserContextInterceptor extends AbstractSoapInterceptor {
     
     private final static Logger LOG = LoggerFactory.getLogger(UserContextInterceptor.class);
+    private static final QName USER_CONTEXT_HEADER_TYPE = new QName("http://emias.mos.ru/system/v1/userContext/", "userContext");
 
     private final String namespace;
 
@@ -41,19 +46,24 @@ public class UserContextInterceptor extends AbstractSoapInterceptor {
                 new QName(WebServiceConstants.USERCONTEXT_EXT_NS,
                         WebServiceConstants.USERCONTEXT_TN));
 
-        UserContext userContext = new UserContext();
+        Service service = ServiceModelUtil.getService(soapMessage.getExchange());
+        DataReader<Node> dataReader = service.getDataBinding().createReader(Node.class);
+        final UserContext userContext = (UserContext) dataReader.read(USER_CONTEXT_HEADER_TYPE, (Node) userContextInfoHeader.getObject(), UserContext.class);
 
-        if (userContextInfoHeader != null) {
-            Element elem = (Element) userContextInfoHeader.getObject();
-            try {
-                // По-хорошему нужно добавить валидацию по xsd схеме
-                final JAXBContext context = JAXBContext.newInstance(UserContext.class);
-                final Unmarshaller unmarshaller = context.createUnmarshaller();
-                userContext = (UserContext) unmarshaller.unmarshal(elem);
-            } catch (JAXBException e) {
-                LOG.error("Ошибка получения парсинга пользовательского контекста", e);
-            }
-        }
+//
+//        UserContext userContext = new UserContext();
+//
+//        if (userContextInfoHeader != null) {
+//            Element elem = (Element) userContextInfoHeader.getObject();
+//            try {
+//                // По-хорошему нужно добавить валидацию по xsd схеме
+//                final JAXBContext context = JAXBContext.newInstance(UserContext.class);
+//                final Unmarshaller unmarshaller = context.createUnmarshaller();
+//                userContext = (UserContext) unmarshaller.unmarshal(elem);
+//            } catch (JAXBException e) {
+//                LOG.error("Ошибка получения парсинга пользовательского контекста", e);
+//            }
+//        }
 
         // На всякий случай, контекст может быть не задан, а в БД поле имени пользователя обязательное
         if (userContext.getUserName() == null) { userContext.setUserName("Не задано");}
