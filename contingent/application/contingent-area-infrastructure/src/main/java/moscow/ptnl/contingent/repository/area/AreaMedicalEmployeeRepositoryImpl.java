@@ -33,7 +33,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdSpec(long areaId) {
         return (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area.getName()), areaId);
+            criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area.getName()).get(Area_.id.getName()), areaId);
     }
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdsSpec(List<Long> areaIds) {
