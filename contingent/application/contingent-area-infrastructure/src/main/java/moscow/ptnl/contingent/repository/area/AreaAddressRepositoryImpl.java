@@ -207,7 +207,7 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
 
         // AREAS.AREA_TYPE_CODE = areaTypeCode (соединение AREAS.ID = AREA_ADDRESSES.area_id), если передан
         if (areaTypeCode != null) {
-            predicates.add(cb.equal(areaJoin.get(Area_.areaType.getName()), areaTypeCode.getCode()));
+            predicates.add(cb.equal(areaJoin.get(Area_.areaType.getName()), areaTypeCode));
         }
         // AREAS.MO_ID = moId, если передан
         if (moId != null) {

@@ -89,7 +89,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
             return criteriaBuilder.and(
                     criteriaBuilder.equal(addressesJoin.get(Addresses_.globalId.getName()), globalId),
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     criteriaBuilder.or(
                             criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
                             root.get(MoAddress_.endDate.getName()).isNull()
@@ -104,7 +104,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
             return criteriaBuilder.and(
                     criteriaBuilder.equal(addressesJoin.get(Addresses_.globalId.getName()), globalId),
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType),
                     root.get(MoAddress_.endDate.getName()).isNull());
         };
         return moAddressPagingAndSortingRepository.findAll(moAddressSpecification);
@@ -116,7 +116,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
                     root.get(MoAddress_.endDate.getName()).isNull(),
                     criteriaBuilder.equal(addressesJoin.get(Addresses_.globalId.getName()), addresses.getGlobalId())
@@ -335,7 +335,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
                     root.get(MoAddress_.endDate.getName()).isNull(),
 
@@ -368,7 +368,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
                     root.get(MoAddress_.endDate.getName()).isNull(),
 
@@ -402,7 +402,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
                     root.get(MoAddress_.endDate.getName()).isNull(),
 
@@ -434,7 +434,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
                     root.get(MoAddress_.endDate.getName()).isNull(),
 
@@ -467,7 +467,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
                     root.get(MoAddress_.endDate.getName()).isNull(),
 
@@ -497,7 +497,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
                     root.get(MoAddress_.endDate.getName()).isNull(),
 
@@ -522,7 +522,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     root.get(MoAddress_.endDate.getName()).isNull(),
 
                     moId == null ? criteriaBuilder.conjunction() : criteriaBuilder.equal(root.get(MoAddress_.moId.getName()), moId),
@@ -626,7 +626,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                             criteriaBuilder.equal(addressesJoin.get(Addresses_.globalId.getName()), globalId),
                             criteriaBuilder.notEqual(addressesJoin.get(Addresses_.aoLevel.getName()), aoLevel)
                     ),
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     criteriaBuilder.or(
                             criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
                             criteriaBuilder.isNull(root.get(MoAddress_.endDate.getName()))
