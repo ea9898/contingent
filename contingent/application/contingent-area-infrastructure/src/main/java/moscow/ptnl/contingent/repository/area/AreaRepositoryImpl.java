@@ -210,7 +210,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
             Join<Area, AreaType> areaTypeJoin = root.join(Area_.areaType, JoinType.LEFT);
             return criteriaBuilder.and(
                     areaTypeClassCode == null ? criteriaBuilder.conjunction() :
-                            criteriaBuilder.equal(areaTypeJoin.get(AreaType_.areaTypeClass), areaTypeClassCode),
+                            criteriaBuilder.equal(areaTypeJoin.get(AreaType_.areaTypeClass).get(AreaTypeClass_.code), areaTypeClassCode),
                     moId == null ? criteriaBuilder.conjunction() :
                             criteriaBuilder.equal(root.get(Area_.moId), moId),
                     muIds == null || muIds.isEmpty() ? criteriaBuilder.conjunction() :
