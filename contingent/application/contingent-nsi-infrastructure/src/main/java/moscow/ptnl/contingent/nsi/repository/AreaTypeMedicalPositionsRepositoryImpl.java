@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.nsi.repository;
 
+import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeMedicalPositionsRepository;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class AreaTypeMedicalPositionsRepositoryImpl extends BaseRepository imple
     @Override
     public List<AreaTypeMedicalPositions> getPositionsByAreaType(long areaTypeId) {
         Specification<AreaTypeMedicalPositions> specification = (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(AreaTypeMedicalPositions_.areaType), areaTypeId);
+                criteriaBuilder.equal(root.get(AreaTypeMedicalPositions_.areaType).get(AreaType_.code), areaTypeId);
         return areaTypeMedicalPositionsCRUDRepository.findAll(specification);
     }
 }
