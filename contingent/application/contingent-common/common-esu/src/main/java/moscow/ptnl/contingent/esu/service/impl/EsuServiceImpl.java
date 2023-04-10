@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import ru.mos.emias.esu.lib.producer.EsuProducer;
+
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -42,24 +43,25 @@ public class EsuServiceImpl implements EsuService {
 
     private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    @Autowired @Lazy
+    @Autowired
+    @Lazy
     private EsuProducer esuProducer;
 
     @Autowired
     private EsuOutputCRUDRepository esuOutputCRUDRepository;
-    
+
     @Autowired
     private EsuOutputRepository esuOutputRepository;
-        
+
     @Value("${esu.producer.produce.timeout}")
     private Integer producerRequestTimeout;
-    
+
     @Autowired
     private AsyncEsuExecutor asyncEsuExecutor;
 
     @Autowired
     private TransactionRunService transactionRunner;
-    
+
     @Autowired
     private SettingService settingService;
 
@@ -81,7 +83,7 @@ public class EsuServiceImpl implements EsuService {
     @Override
     public boolean saveAndPublishToESU(String topicName, Object event) {
         LOG.debug("create message for topic: {}", topicName);
-        
+
         try {
             //Запускаем в отдельной транзакции
             Pair<Long, String> result = transactionRunner.run(() -> {
@@ -95,21 +97,23 @@ public class EsuServiceImpl implements EsuService {
 
                 String message = ESUEventHelper.toESUMessage(event, esuOutput.getId());
                 LOG.debug(message);
-                esuOutputRepository.updateMessage(esuOutput.getId(), message, ESUEventHelper.resolveMethodName(event));
-
+                esuOutput.setMessage(message);
+                esuOutput.setMethod(ESUEventHelper.resolveMethodName(event));
+                esuOutputCRUDRepository.save(esuOutput);
                 return Pair.of(esuOutput.getId(), message);
             }).get();
-            
+
             if (isProducerOn()) {
                 //здесь нужна асинхронность, чтобы не блокировать базу
                 asyncEsuExecutor.publishToESU(this, result.getFirst(), topicName, result.getSecond());
             }
-            
+
             return true;
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             LOG.error("ошибка при создании события для ЕСУ", e);
         }
-        
+
         return false;
     }
 
@@ -129,10 +133,10 @@ public class EsuServiceImpl implements EsuService {
     /**
      * Блокирующий метод публикации в ЕСУ.
      * Этот метод нужно вызывать только с учетом статуса {@value SettingService.PAR_30}.
-     * 
+     *
      * @param recordId
      * @param publishTopic
-     * @param message 
+     * @param message
      */
     @Override
     public void publishToESU(final Long recordId, final String publishTopic, final String message) {
@@ -144,7 +148,7 @@ public class EsuServiceImpl implements EsuService {
             future = transactionRunner.run(() -> {
                 try {
                     return esuProducer.publish(publishTopic, message);
-                } catch (Exception e){
+                } catch (Exception e) {
                     LOG.error("ошибка при публикации данных в ЕСУ", e);
                 }
                 return null;
@@ -157,7 +161,7 @@ public class EsuServiceImpl implements EsuService {
         } catch (Throwable e) {
             LOG.error("Публикация данных в ЕСУ прервана", e);
         }
-        
+
         try {
             if (esuAnswer == null) {
                 esuOutputRepository.updateStatus(recordId, EsuStatusType.INPROGRESS, EsuStatusType.UNSUCCESS, host);
@@ -181,15 +185,15 @@ public class EsuServiceImpl implements EsuService {
             esuOutputRepository.updateStatus(recordId, EsuStatusType.INPROGRESS, EsuStatusType.UNSUCCESS, host);
         }
     }
-    
+
     private static LocalDateTime toLocalDateTime(long timestamp) {
         return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp / 1000), ZoneOffset.systemDefault());
     }
-    
+
     /**
      * Позволяет запускать поток выполнения как демон.
-     * 
-     * @return 
+     *
+     * @return
      */
     private static ExecutorService getPublishThreadExecutor() {
         final ThreadFactory threadFactory = (Runnable r) -> {
@@ -200,15 +204,15 @@ public class EsuServiceImpl implements EsuService {
         };
         return Executors.newFixedThreadPool(1, threadFactory);
     }
-    
+
     private boolean isProducerOn() {
         //глобальная настройка отправки во все топиков
         boolean runMode = Boolean.TRUE.equals((Boolean) settingService.getSettingProperty(SettingService.PAR_30, true));
         if (!runMode) {
             LOG.warn("Отправка в топики отключена в настройке {}", SettingService.PAR_30);
-            return false; 
+            return false;
         }
-        
+
         return true;
     }
 }
