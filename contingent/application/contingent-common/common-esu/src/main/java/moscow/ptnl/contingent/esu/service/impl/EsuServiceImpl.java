@@ -99,7 +99,7 @@ public class EsuServiceImpl implements EsuService {
                 LOG.debug(message);
                 esuOutput.setMessage(message);
                 esuOutput.setMethod(ESUEventHelper.resolveMethodName(event));
-                esuOutputCRUDRepository.save(esuOutput);
+                esuOutputCRUDRepository.saveAndFlush(esuOutput);
                 return Pair.of(esuOutput.getId(), message);
             }).get();
 
@@ -175,7 +175,7 @@ public class EsuServiceImpl implements EsuService {
                     esuOutput.setSentTime(toLocalDateTime(esuAnswer.getTimestamp()));
                     esuOutput.setStatus(EsuStatusType.SUCCESS);
                     esuOutput.setHost(host);
-                    esuOutputCRUDRepository.save(esuOutput);
+                    esuOutputCRUDRepository.saveAndFlush(esuOutput);
                 } else {
                     LOG.warn("не найдено событие в ESU_OUTPUT с идентификатором: {}", recordId);
                 }

@@ -1,5 +1,7 @@
 package moscow.ptnl.contingent.repository.esu;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import moscow.ptnl.contingent.domain.esu.EsuStatusType;
 import moscow.ptnl.contingent.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
@@ -110,22 +112,23 @@ public class EsuOutputRepositoryImpl extends BaseRepository implements EsuOutput
     }
     
     @Override
-    public void updateMessage(Long id, String message, String method) {
+    public boolean updateMessage(Long id, String message, String method) {
         if (id == null)
             throw new IllegalArgumentException("идентификатор записи не может быть null");
         
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        EntityManager em = getEntityManager();
+        em.flush();
+        em.clear();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
         
-        CriteriaUpdate<EsuOutput> updateCriteria = criteriaBuilder.createCriteriaUpdate(EsuOutput.class);
-        Root<EsuOutput> template = updateCriteria.from(EsuOutput.class);
+        CriteriaUpdate<EsuOutput> update = cb.createCriteriaUpdate(EsuOutput.class);
+        Root<EsuOutput> root = update.from(EsuOutput.class);
         
-        updateCriteria
-                .set(template.get(EsuOutput_.message), message)
-                .set(template.get(EsuOutput_.method), method)
-                .where(criteriaBuilder.equal(template.get(EsuOutput_.id), id));
+        update.set(root.get(EsuOutput_.message), message);
+        update.set(root.get(EsuOutput_.method), method);
+        update.where(cb.equal(root.get(EsuOutput_.id), id));
         
-        entityManager
-            .createQuery(updateCriteria)
-            .executeUpdate();
+        Query query = em.createQuery(update);
+        return query.executeUpdate() > 0;
     }
 }

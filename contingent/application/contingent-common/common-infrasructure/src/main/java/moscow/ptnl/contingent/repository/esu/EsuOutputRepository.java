@@ -26,6 +26,7 @@ public interface EsuOutputRepository {
      * @param ids
      * @param fromStatus первоначальное значение статуса (учитывается в услрвии)
      * @param toStatus новое значение статуса
+     * @param hostName
      */
     void updateStatus(List<Long> ids, EsuStatusType fromStatus, EsuStatusType toStatus, String hostName);
     
@@ -35,6 +36,7 @@ public interface EsuOutputRepository {
      * @param id
      * @param fromStatus первоначальное значение статуса (учитывается в услрвии)
      * @param toStatus новое значение статуса
+     * @param hostName
      */
     void updateStatus(Long id, EsuStatusType fromStatus, EsuStatusType toStatus, String hostName);
     
@@ -43,6 +45,8 @@ public interface EsuOutputRepository {
      * 
      * @param id
      * @param message 
+     * @param method 
+     * @return успешность изменения (неуспешно при отсутствии записи)
      */
-    void updateMessage(Long id, String message, String method);
+    boolean updateMessage(Long id, String message, String method);
 }
