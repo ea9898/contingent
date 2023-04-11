@@ -1366,7 +1366,7 @@ public class AreaServiceImpl implements AreaService {
             List<AreaAddress> areaAddresses = new ArrayList<>();
             //5.3.1 Поиск по точному совпадению адресов  (выполняется, если параметр «Искать по точному совпадению адресов» = Истина или не передан)
             if (isExactAddressMatch == null || Boolean.TRUE.equals(isExactAddressMatch)) {
-                areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).collect(Collectors.toList()));
+                areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).filter(Objects::nonNull).collect(Collectors.toList()));
             }
             if (Boolean.FALSE.equals(isExactAddressMatch)) {
                 //5.3.2 Поиск по пересечению адресов (выполняется, если параметр «Искать по точному совпадению адресов» = Ложь
