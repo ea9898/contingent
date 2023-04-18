@@ -1126,7 +1126,7 @@ public class AreaServiceImpl implements AreaService {
     public void archiveArea(long areaId) throws ContingentException {
         Validation validation = new Validation();
 
-        // 1. 2.
+        // 2. 3.
         Area area = areaHelper.checkAndGetArea(areaId, validation, true);
 
         if (!validation.isSuccess()) {
@@ -1135,7 +1135,7 @@ public class AreaServiceImpl implements AreaService {
 
         Area oldArea = historyHelper.clone(area);
 
-        // 3.
+        // 4.
         if (area != null && Boolean.TRUE.equals(area.getAutoAssignForAttach())) {
             validation.error(AreaErrorReason.AREA_IS_AUTO_ATTACH, new ValidationParameter("areaId", areaId));
         }
@@ -1143,20 +1143,20 @@ public class AreaServiceImpl implements AreaService {
             throw new ContingentException(validation);
         }
 
-        // 4. Система исключает адреса обслуживаня из участка, если указаны
+        // 5. Система исключает адреса обслуживаня из участка, если указаны
         areaHelper.delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
 
-        // 5. Система исключает МР из участка, если указаны
+        // 6. Система исключает МР из участка, если указаны
         if (area.getActualMedicalEmployees() != null && !area.getActualMedicalEmployees().isEmpty()) {
             areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
         }
 
-        // 6. Система для данного участка меняет статус на «Архивный»
+        // 7. Система для данного участка меняет статус на «Архивный»
         area.setArchived(true);
         area.setUpdateDate(LocalDateTime.now());
         areaRepository.save(area);
 
-        // 7.
+        // 8.
         //if (areaHelper.isAreaPrimary(area)) {
         //    esuHelperService.sendAreaInfoEvent(area, "archiveArea");
         //}

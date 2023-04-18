@@ -1056,6 +1056,7 @@ public class AreaHelper {
                 areaMedicalEmployeeRepository.delete(a);
             } else {
                 a.setEndDate(LocalDate.now().minusDays(1));
+                a.setUpdateDate(LocalDateTime.now());
             }
         });
     }
