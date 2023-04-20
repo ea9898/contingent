@@ -54,29 +54,25 @@ public class MedicalEmployeeHelper {
 
     public void checkChangeMedicalEmployee(ChangeMedicalEmployee inputEmployee, long areaId,
                                            List<AreaMedicalEmployees> areaEmployeesDb, Validation validation) {
-        Optional<AreaMedicalEmployees> employee = areaEmployeesDb.stream().filter(
-                empl -> empl.getId().equals(inputEmployee.getAssignmentId())).findFirst();
-        AreaMedicalEmployees emplDb = null;
-        if (!employee.isPresent()) {
+        LocalDate now = LocalDate.now();
+        //5.1
+        if (inputEmployee.getEndDate() != null && inputEmployee.getEndDate().isBefore(now)) {
+            validation.error(AreaErrorReason.EMPLOYEE_END_DATE_INCORRECT);
+        }
+        //5.2
+        Optional<AreaMedicalEmployees> employee = areaEmployeesDb.stream()
+                .filter(empl -> empl.getId().equals(inputEmployee.getAssignmentId()))
+                .filter(e -> e.getEndDate() == null || !e.getEndDate().isBefore(now))
+                .filter(e -> Objects.equals(e.getArea().getId(), areaId))
+                .findFirst();
+        AreaMedicalEmployees emplDb = employee.orElse(null);
+
+        if (employee.isEmpty()) {
             validation.error(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
                     new ValidationParameter("assignmentId", inputEmployee.getAssignmentId()));
-        } else {
-            emplDb = employee.get();
-            //5.1
-            if (inputEmployee.getEndDate() != null && inputEmployee.getEndDate().isBefore(LocalDate.now())
-                    || employee.get().getArea().getId() != areaId) {
-                validation.error(AreaErrorReason.EMPLOYEE_NOT_RELATED_TO_AREA,
-                        new ValidationParameter("assignmentId", inputEmployee.getAssignmentId()));
-            }
         }
-
         if (inputEmployee.isIsError() == null || !inputEmployee.isIsError()) {
-            //5.2.1
-//            if (inputEmployee.getEndDate() == null && inputEmployee.getStartDate() == null) {
-//                validation.error(AreaErrorReason.NOTHING_TO_CHANGE);
-//            }
-
-            //5.2.1
+            //5.3.1
             LocalDate startDate = inputEmployee.getStartDate() != null ? inputEmployee.getStartDate()
                     : emplDb != null ? emplDb.getStartDate() : null;
             LocalDate endDate = inputEmployee.getEndDate() != null ? inputEmployee.getEndDate()
@@ -86,7 +82,7 @@ public class MedicalEmployeeHelper {
                         new ValidationParameter("endDate", endDate),
                         new ValidationParameter("startDate", startDate));
             }
-            //5.2.2
+            //5.3.2
             if (Boolean.TRUE.equals(inputEmployee.getTempDuty()) &&
                     emplDb != null && !Boolean.TRUE.equals(emplDb.getReplacement())) {
                 validation.error(AreaErrorReason.NOT_REPLACEMENT_EMPLOYEE);
@@ -95,28 +91,29 @@ public class MedicalEmployeeHelper {
     }
 
     public void checkAddMedicalEmployee(AddMedicalEmployee inputEmployee, AreaType areaType, Validation validation) {
-        List<AreaTypeSpecializations> areaTypeSpecializations = areaTypeSpecializationsRepository.findByAreaTypeCode(areaType);
         //6.1
+        if (inputEmployee.getEndDate().isBefore(LocalDate.now())) {
+            validation.error(AreaErrorReason.EMPLOYEE_END_DATE_INCORRECT);
+        }
+        //6.2
         if (Boolean.TRUE.equals(inputEmployee.getTempDuty()) && !inputEmployee.isReplacement()) {
             validation.error(AreaErrorReason.NOT_REPLACEMENT_EMPLOYEE);
         }
-        //6.2
+        //6.4
         if (inputEmployee.getStartDate().isBefore(LocalDate.now())) {
             validation.error(AreaErrorReason.START_DATE_IN_PAST,
                     new ValidationParameter("startDate", inputEmployee.getStartDate()));
         }
-
-        //6.3
         if (inputEmployee.getEndDate() != null && inputEmployee.getStartDate().isAfter(inputEmployee.getEndDate())) {
             validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
                     new ValidationParameter("endDate", inputEmployee.getEndDate()),
                     new ValidationParameter("startDate", inputEmployee.getStartDate()));
         }
-
-        //6.4
+        //6.5
+        List<AreaTypeSpecializations> areaTypeSpecializations = areaTypeSpecializationsRepository.findByAreaTypeCode(areaType);
         final List<PositionCode> positionsCode = new ArrayList<>();
         boolean positionCodeFromSUPP = Strings.isNumberWith4Digits(inputEmployee.getPositionCode());
-        //6.4.1.
+        //6.5.1.
         if (positionCodeFromSUPP) {
             //ЕСЛИ код должности медработника числовой (= медработник ведется в СУПП)
             List<MappingPositionCodeToOtherPosition> mappingPositions =
@@ -137,7 +134,7 @@ public class MedicalEmployeeHelper {
                     new ValidationParameter("positionCode", inputEmployee.getPositionCode()));
 
         }
-        //6.4.2.
+        //6.5.2.
         final List<PositionNom> positionsNom = positionsCode.isEmpty() ? Collections.emptyList() :
                 positionNomRepository.findByPositionCodeIds(positionsCode.stream()
                         .map(PositionCode::getGlobalId)
@@ -149,7 +146,7 @@ public class MedicalEmployeeHelper {
             validation.error(AreaErrorReason.SPECIALIZATION_IS_NOT_SPECIFIED,
                     new ValidationParameter("positionCode", inputEmployee.getPositionCode()));
         }
-        //6.5
+        //6.6
         List<String> specializations = positionsNom.stream()
                 .map(PositionNom::getSpecialization)
                 .filter(Objects::nonNull)
@@ -165,7 +162,7 @@ public class MedicalEmployeeHelper {
                             .map(i -> i.getGlobalId().toString())
                             .collect(Collectors.joining(", "))));
         }
-        //6.6
+        //6.7
         if (areaTypeSpecializations.stream().filter(item -> item.getArchived() != null && item.getArchived().equals(Boolean.FALSE))
                 .noneMatch(ats -> specializations.contains(ats.getSpecializationCode()))) {
 
@@ -186,7 +183,7 @@ public class MedicalEmployeeHelper {
                             .map(Specialization::getTitle)
                             .collect(Collectors.joining(", "))));
         }
-        //6.7
+        //6.8
         List<AreaTypeMedicalPositions> positions = areaTypeMedicalPositionsRepository.getPositionsByAreaType(areaType.getCode());
 
         if (!positions.isEmpty() && positions.stream().noneMatch(p -> positionsCode.stream()
