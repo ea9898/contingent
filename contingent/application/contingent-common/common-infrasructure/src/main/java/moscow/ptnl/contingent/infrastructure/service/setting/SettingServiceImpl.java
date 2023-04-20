@@ -136,4 +136,10 @@ public class SettingServiceImpl implements SettingService {
     public String getPar46() {
         return getSettingProperty(PAR_46);
     }
+
+    @Override
+    public Boolean getPar47() {
+        Long param = getSettingProperty(Par47);
+        return param == null ? null : param.equals(1L);
+    }
 }
