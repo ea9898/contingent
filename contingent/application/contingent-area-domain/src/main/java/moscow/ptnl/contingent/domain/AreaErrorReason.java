@@ -103,6 +103,7 @@ public enum AreaErrorReason implements ErrorReason {
     IT_IS_ALLOWED_ENTER_ONE_MORE_THAN_ONE_ADDRESS("UE114", "Для поиска участка по адресообразующему элементу допускается вводить не более одного адреса"),
     SEARCH_AREA_NOT_MOSCOW_ADDRESS("UE115", "Указан адрес не в московском регионе"),
     EMPLOYEE_END_DATE_INCORRECT("UE116", "Дата окончания назначения МР не может быть меньше текущей даты"),
+    ALLOW_ONLY_ONE_AREA_FOR_AUTO("UE117", "Запрещено иметь более одно участка с признаком «Назначать автоматически для прикрепления» = True, поэтому требуется изменить признак на «Назначать автоматически для прикрепления» = False для участка с ИД %s и названием \"%s\""),
     ;
 
     private final String description;

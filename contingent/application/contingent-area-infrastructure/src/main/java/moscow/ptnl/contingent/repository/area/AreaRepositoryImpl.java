@@ -187,7 +187,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     @Override
-    public List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean actual) {
+    public List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean autoAssignForAttach, Boolean actual) {
         Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.and(
                         moId == null ? criteriaBuilder.conjunction() :
@@ -198,6 +198,8 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                                 criteriaBuilder.equal(root.get(Area_.number.getName()), number),
                         areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :                                
                                 criteriaBuilder.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes), //root.get(Area_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
+                        autoAssignForAttach == null ? criteriaBuilder.conjunction() :
+                                criteriaBuilder.equal(root.get(Area_.autoAssignForAttach.getName()), autoAssignForAttach),
                         actual == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.archived.getName()), !actual));
         return areaCRUDRepository.findAll(specification);
@@ -254,7 +256,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
 
     @Override
     public List<Area> findAreas(Long moId, Long muId, Long areaTypeCode, Integer number, Boolean actual) {
-        return findAreas(moId, muId, Collections.singletonList(areaTypeCode), number, actual);
+        return findAreas(moId, muId, Collections.singletonList(areaTypeCode), number, null, actual);
     }
 
     @Override

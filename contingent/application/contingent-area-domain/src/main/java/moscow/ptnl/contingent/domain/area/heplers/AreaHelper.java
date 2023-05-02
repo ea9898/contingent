@@ -569,7 +569,8 @@ public class AreaHelper {
         }
     }
 
-    public void checkAutoAssignForAttachment(AreaType areaType, Boolean autoAssignForAttachment,
+    public void checkAutoAssignForAttachment(AreaType areaType, Long muId,
+                                             Boolean autoAssignForAttachment,
                                              Boolean attachByMedicalReason, Validation validation) {
         if (Boolean.TRUE.equals(autoAssignForAttachment)) {
             if (areaType.getMpguAvailable() == null ||
@@ -579,6 +580,15 @@ public class AreaHelper {
             }
             if (Boolean.TRUE.equals(attachByMedicalReason)) {
                 validation.error(AreaErrorReason.AREA_FLAGS_INCORRECT);
+            }
+            if (muId != null) {
+                List<Area> autoAssignAreas = areaRepository.findAreas(null, muId, Collections.singletonList(areaType.getCode()),
+                        null, true, true);
+                if (autoAssignAreas != null && !autoAssignAreas.isEmpty()) {
+                    validation.error(AreaErrorReason.ALLOW_ONLY_ONE_AREA_FOR_AUTO,
+                            new ValidationParameter("area_id", autoAssignAreas.get(0).getId()),
+                            new ValidationParameter("area_name", autoAssignAreas.get(0).getDescription()));
+                }
             }
         }
     }

@@ -237,7 +237,7 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
         // 10
-        areaHelper.checkAutoAssignForAttachment(areaType, autoAssignForAttachment, attachByMedicalReason, validation);
+        areaHelper.checkAutoAssignForAttachment(areaType, muId, autoAssignForAttachment, attachByMedicalReason, validation);
 
         // 11
         areaHelper.checkAttachByMedicalReason(areaType, attachByMedicalReason, validation);
@@ -393,7 +393,7 @@ public class AreaServiceImpl implements AreaService {
         }
 
         //15
-        List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, true);
+        List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, null,true);
 
         //16
         if (primAreas != null && !primAreas.isEmpty()) {
@@ -445,7 +445,7 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.checkPolicyTypesDel(area, policyTypesDel, validation);
 
         // 6
-        areaHelper.checkAutoAssignForAttachment(area.getAreaType(), autoAssignForAttachment, attachByMedicalReason, validation);
+        areaHelper.checkAutoAssignForAttachment(area.getAreaType(), area.getMuId(), autoAssignForAttachment, attachByMedicalReason, validation);
 
         // 7
         areaHelper.checkAttachByMedicalReason(area.getAreaType(), attachByMedicalReason, validation);
@@ -614,7 +614,7 @@ public class AreaServiceImpl implements AreaService {
             // 15.
             if (!primaryAreaTypeCodesAddIds.isEmpty()) {
                 // 15.1.
-                List<Area> primAreasAdd = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesAddIds, null, true);
+                List<Area> primAreasAdd = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesAddIds, null, null, true);
 
                 // 15.2.
                 if (primAreasAdd != null && !primAreasAdd.isEmpty()) {
@@ -628,7 +628,7 @@ public class AreaServiceImpl implements AreaService {
             // 16.
             if (!primaryAreaTypeCodesDelIds.isEmpty()) {
                 // 16.1.
-                List<Area> primAreasDel = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesDelIds, null, true);
+                List<Area> primAreasDel = areaRepository.findAreas(area.getMoId(), area.getMuId(), primaryAreaTypeCodesDelIds, null, null, true);
                 // 16.2.
                 if (primAreasDel != null && !primAreasDel.isEmpty()) {
                     esuHelperService.sendAttachOnAreaChangeEvent(
