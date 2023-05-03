@@ -79,6 +79,8 @@ public interface SettingService {
     String PAR_45 = "area_types_double_main_employees_enable";
     /** Код региона г. Москва в адресном реестре НСИ2 */
     String PAR_46 = "moscow.region.code";
+    String Par47 = "is_check_mo_address_cross";
+    /** Включение проверки для запрета распределения адреса к МО, если он уже обслуживается другим МО */
 
     /**
      * Свойство извлекается из кэша.
@@ -136,4 +138,6 @@ public interface SettingService {
     List<Long> getPar45();
 
     String getPar46();
+
+    Boolean getPar47();
 }

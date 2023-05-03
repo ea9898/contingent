@@ -118,4 +118,27 @@
         </delete>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2608" author="sevgeniy" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+                <sqlCheck expectedResult="0">select count(*) from AD_CONFIG where CODEDOC = 'PAR_47'</sqlCheck>
+            </and>
+        </preConditions>
+        <comment>Включение проверки для запрета распределения адреса к МО, если он уже обслуживается другим МО</comment>
+        <insert tableName="AD_CONFIG">
+            <column name="CODE" value="is_check_mo_address_cross"/>
+            <column name="CODEDOC" value="PAR_47"/>
+            <column name="DESCRIPTION" value="Включение проверки для запрета распределения адреса к МО, если он уже обслуживается другим МО"/>
+            <column name="TYPE" value="1" />
+            <column name="VAL" value="1"/>
+            <column name="LAST_CHANGE" valueDate="now()"/>
+        </insert>
+        <rollback>
+            <delete tableName="AD_CONFIG">
+                <where>CODE='PAR_47'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
