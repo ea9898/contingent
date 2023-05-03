@@ -161,7 +161,7 @@ public class CreateDependentAreaTest {
             createdArea[0].setId(1L);
             return args[0];
         }).when(areaRepository).save(any());
-        doReturn(Collections.singletonList(areaPrimary1)).when(areaRepository).findAreas(moId, null, Collections.singletonList(areaTypePrimCode), null, true);
+        doReturn(Collections.singletonList(areaPrimary1)).when(areaRepository).findAreas(moId, null, Collections.singletonList(areaTypePrimCode), null, null,true);
         //create inOrder object passing any mocks that need to be verified in order
         InOrder order = Mockito.inOrder(areaHelper);
         Long id = assertDoesNotThrow(() -> areaServiceDomain.createDependentArea(moId, null, number, areaTypeDepCode, Collections.singletonList(areaTypePrimCode),

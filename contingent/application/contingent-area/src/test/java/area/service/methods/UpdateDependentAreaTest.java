@@ -194,7 +194,7 @@ public class UpdateDependentAreaTest {
         doReturn(Optional.of(areaTypeRelations)).when(areaTypeRelationsRepository).getByDependentAndPrimaryAreaTypes(areaTypeDependent, areaTypePrimary2);
         doReturn(Collections.singletonList(policyType1)).when(policyTypeRepository).findByIds(Collections.singletonList(policyTypeCode));
         doReturn(Optional.of(areaDep1)).when(areaRepository).findById(areaDep1.getId());
-        doReturn(Collections.singletonList(areaPrimary1)).when(areaRepository).findAreas(areaPrimary1.getMoId(), areaPrimary1.getMuId(), Arrays.asList(areaTypePrimCode), null, true);
+        doReturn(Collections.singletonList(areaPrimary1)).when(areaRepository).findAreas(areaPrimary1.getMoId(), areaPrimary1.getMuId(), Arrays.asList(areaTypePrimCode), null, null, true);
         doReturn(Collections.singletonList(areaDep1.getPrimaryAreaTypes().iterator().next())).when(areaToAreaTypeRepository).findAreaTypesByAreaAndTypeCode(areaDep1, Collections.singletonList(areaTypePrimCode));
         //create inOrder object passing any mocks that need to be verified in order
         InOrder order = Mockito.inOrder(areaHelper);

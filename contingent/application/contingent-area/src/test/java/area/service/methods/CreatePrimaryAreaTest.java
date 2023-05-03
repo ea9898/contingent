@@ -134,7 +134,7 @@ public class CreatePrimaryAreaTest {
             order.verify(areaHelper).checkAreaExistsInMU(isNull(), eq(moId), eq(areaTypePrimary1), eq(number), isNull(), any(Validation.class));
             order.verify(areaHelper).checkPolicyTypesIsOMS(eq(Collections.singletonList(policyType)), any(Validation.class));
             order.verify(areaHelper).checkAreaTypeAgeSetups(eq(areaTypePrimary1), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), any(Validation.class));
-            order.verify(areaHelper).checkAutoAssignForAttachment(eq(areaTypePrimary1), eq(true), eq(false), any(Validation.class));
+            order.verify(areaHelper).checkAutoAssignForAttachment(eq(areaTypePrimary1), null, eq(true), eq(false), any(Validation.class));
             order.verify(areaHelper).checkAttachByMedicalReason(eq(areaTypePrimary1), eq(false), any(Validation.class));
 
             assertEquals(id, Long.valueOf(1L));
