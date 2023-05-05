@@ -36,22 +36,27 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
             criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area.getName()).get(Area_.id.getName()), areaId);
     }
 
-    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdsSpec(List<Long> areaIds) {
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmployeesByAreaIdsSpec(List<Long> areaIds) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.in(root.get(AreaMedicalEmployees_.area.getName()).get(Area_.id.getName())).value(areaIds); //root.get(AreaMedicalEmployees_.area).in(areaIds);
                 
     }
 
-    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByJobsIdsSpec(List<Long> jobIds) {
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmployeesByJobsIdsSpec(List<Long> jobIds) {
         return CommonSpecification.in(AreaMedicalEmployees_.medicalEmployeeJobId, jobIds);
         //return (root, criteriaQuery, criteriaBuilder) ->
         //        root.get(AreaMedicalEmployees_.medicalEmployeeJobId).in(jobIds);
     }
 
-    private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesBySnilsSpec(List<String> snils) {
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmployeesBySnilsSpec(List<String> snils) {
         return CommonSpecification.in(AreaMedicalEmployees_.snils, snils);
         //return (root, criteriaQuery, criteriaBuilder) ->
         //        root.get(AreaMedicalEmployees_.snils).in(snils);
+    }
+
+    private Specification<AreaMedicalEmployees> findAreasMedicalEmployeesBySubdivisionId(Long subdivisionId) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(AreaMedicalEmployees_.subdivisionId), subdivisionId);
     }
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesNotError() {
@@ -162,18 +167,21 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     }
 
     @Override
-    public List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils) {
+    public List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils, Long subdivisionId) {
         Specification<AreaMedicalEmployees> specification = findAreasMedicalEmplyeesNotError();
         specification = specification.and(actualEmployeesSpec());
 
         if (areaIds != null && !areaIds.isEmpty()) {
-            specification = specification.and(findAreasMedicalEmplyeesByAreaIdsSpec(areaIds));
+            specification = specification.and(findAreasMedicalEmployeesByAreaIdsSpec(areaIds));
         }
         if (jobIds != null && !jobIds.isEmpty()) {
-            specification = specification.and(findAreasMedicalEmplyeesByJobsIdsSpec(jobIds));
+            specification = specification.and(findAreasMedicalEmployeesByJobsIdsSpec(jobIds));
         }
         if (snils != null && !snils.isEmpty()) {
-            specification = specification.and(findAreasMedicalEmplyeesBySnilsSpec(snils));
+            specification = specification.and(findAreasMedicalEmployeesBySnilsSpec(snils));
+        }
+        if (subdivisionId != null) {
+            specification = specification.and(findAreasMedicalEmployeesBySubdivisionId(subdivisionId));
         }
         return areaMedicalEmployeeCRUDRepository.findAll(specification)
             .stream().map(AreaMedicalEmployees::getArea).distinct().collect(Collectors.toList());

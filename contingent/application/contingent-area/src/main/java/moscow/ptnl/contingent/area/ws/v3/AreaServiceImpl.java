@@ -526,7 +526,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     public SearchAreaResponse searchArea(SearchAreaRequest body) throws Fault {
         try {
             Page<AreaInfo> areas = areaServiceDomain.searchArea(body.getAreaTypeClassCode(), body.getMoId(),
-                    body.getMuIds() == null ? Collections.emptyList() : body.getMuIds(),
+                    body.getMuIds() == null ? Collections.emptyList() : body.getMuIds(), body.getSubdivisionId(),
                     body.getAreaTypeCodes() == null ? Collections.emptyList() : body.getAreaTypeCodes(),
                     null, body.getMuService() != null ? body.getMuService().getMuIds() : Collections.emptyList(),
                     body.getNumber(), body.getDescription(), body.isIsArchived(),

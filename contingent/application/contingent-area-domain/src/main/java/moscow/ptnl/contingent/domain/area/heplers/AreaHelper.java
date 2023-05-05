@@ -391,11 +391,11 @@ public class AreaHelper {
         }
     }
 
-    public void checkSearchParametersV2(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+    public void checkSearchParametersV2(Long areaTypeClassCode, Long moId, List<Long> muIds, Long subdivisionId, List<Long> areaTypeCodes,
                                         Long areaTypeProfile, List<Long> servicedMuIds, Integer number, String description,
                                         Boolean isArchived, List<MedicalEmployee> medicalEmployees, List<SearchAreaAddress> addresses) throws ContingentException {
         if (areaTypeClassCode == null && moId == null && muIds.isEmpty() && areaTypeCodes.isEmpty() && areaTypeProfile == null && number == null
-                && description == null && isArchived == null && medicalEmployees.isEmpty() && addresses.isEmpty() && servicedMuIds.isEmpty()) {
+                && description == null && isArchived == null && medicalEmployees.isEmpty() && addresses.isEmpty() && servicedMuIds.isEmpty() && subdivisionId == null) {
             throw new ContingentException(AreaErrorReason.NO_SEARCH_PARAMETERS);
         }
     }

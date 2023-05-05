@@ -612,6 +612,7 @@
                 <xs:element name="areaTypeClassCode" type="xs:long" minOccurs="0"/>
                 <xs:element name="moId" type="xs:long" minOccurs="0"/>
                 <xs:element name="muId" type="xs:long" maxOccurs="unbounded" minOccurs="0"/>
+                <xs:element name="subdivisionId" type="xs:long" minOccurs="0"/>
                 <xs:element name="areaTypeCode" type="xs:long" maxOccurs="unbounded" minOccurs="0"/>
                 <xs:element name="number" type="restr:int5digits" minOccurs="0"/>
                 <xs:element name="description" type="xs:string" minOccurs="0"/>

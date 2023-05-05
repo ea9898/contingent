@@ -1303,14 +1303,14 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes, Long areaTypeProfile,
+    public Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, Long subdivisionId, List<Long> areaTypeCodes, Long areaTypeProfile,
                                      List<Long> servicedMuIds, Integer number, String description, Boolean isArchived, List<MedicalEmployee> medicalEmployees,
                                      List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch, PageRequest paging,
                                      boolean loadServicedMUs) throws ContingentException {
 
         //2 Система проверяет что, передан хотя бы один из входных параметров поиска, иначе возвращает ошибку
         if (UserContextHolder.getContractVersion() > 1) {
-            areaHelper.checkSearchParametersV2(areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile, servicedMuIds,
+            areaHelper.checkSearchParametersV2(areaTypeClassCode, moId, muIds, subdivisionId, areaTypeCodes, areaTypeProfile, servicedMuIds,
                     number, description, isArchived, medicalEmployees, searchAreaAddresses);
         } else {
             areaHelper.checkSearchParameters(areaTypeClassCode, moId, muIds, areaTypeCodes, number, description,
@@ -1341,7 +1341,7 @@ public class AreaServiceImpl implements AreaService {
                     servicedMuIds, number, description, isArchived);
         }
         //5.2
-        if ((areas == null || !areas.isEmpty()) && !medicalEmployees.isEmpty()) {
+        if ((areas == null || !areas.isEmpty()) && (!medicalEmployees.isEmpty() || subdivisionId != null)) {
             List<Long> jobIds = medicalEmployees.stream()
                     .map(MedicalEmployee::getMedicalEmployeeJobId)
                     .filter(Objects::nonNull)
@@ -1353,13 +1353,13 @@ public class AreaServiceImpl implements AreaService {
 
             if (areas != null && areas.size() > 1000) {
                 //Чтобы не передавать в SELECT .. IN () слишком много ID
-                List<Long> foundAreaIds = areaMedicalEmployeeRepository.findAreas(null, jobIds, snilsCodes).stream()
+                List<Long> foundAreaIds = areaMedicalEmployeeRepository.findAreas(null, jobIds, snilsCodes, subdivisionId).stream()
                         .map(Area::getId)
                         .collect(Collectors.toList());
                 areas = areas.stream().filter(area -> foundAreaIds.contains(area.getId())).collect(Collectors.toList());
             } else {
                 areas = areaMedicalEmployeeRepository.findAreas(areas == null ? null : areas.stream().map(Area::getId).collect(Collectors.toList()),
-                        jobIds, snilsCodes);
+                        jobIds, snilsCodes, subdivisionId);
             }
         }
 

@@ -258,7 +258,38 @@ public interface AreaService {
      * @return
      * @throws ContingentException
      */
-    Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+    default Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+                              Long areaTypeProfile, List<Long> servicedMuIds, Integer number, String description,
+                              Boolean isArchived, List<MedicalEmployee> medicalEmployees,
+                              List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch,
+                              PageRequest paging, boolean loadServicedMUs) throws ContingentException {
+        return searchArea(areaTypeClassCode, moId, muIds, null, areaTypeCodes,
+                areaTypeProfile, servicedMuIds, number, description, isArchived, medicalEmployees,
+                searchAreaAddresses, isExactAddressMatch, paging, loadServicedMUs);
+    }
+
+    /**
+     * (К_УУ_25) Предоставление списка участков
+     * Просмотр списка участков обслуживания
+     * @param areaTypeClassCode
+     * @param moId
+     * @param muIds
+     * @param subdivisionId
+     * @param areaTypeCodes
+     * @param areaTypeProfile
+     * @param servicedMuIds
+     * @param number
+     * @param description
+     * @param isArchived
+     * @param medicalEmployees
+     * @param searchAreaAddresses
+     * @param isExactAddressMatch
+     * @param paging
+     * @param loadServicedMUs
+     * @return
+     * @throws ContingentException
+     */
+    Page<AreaInfo> searchArea(Long areaTypeClassCode, Long moId, List<Long> muIds, Long subdivisionId, List<Long> areaTypeCodes,
                               Long areaTypeProfile, List<Long> servicedMuIds, Integer number, String description,
                               Boolean isArchived, List<MedicalEmployee> medicalEmployees,
                               List<SearchAreaAddress> searchAreaAddresses, Boolean isExactAddressMatch,

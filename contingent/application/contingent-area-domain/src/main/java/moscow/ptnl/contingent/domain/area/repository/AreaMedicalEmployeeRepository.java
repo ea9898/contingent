@@ -28,7 +28,7 @@ public interface AreaMedicalEmployeeRepository {
 
     List<Area> findAreasByEmployee(long jobId);
 
-    List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils);
+    List<Area> findAreas(List<Long> areaIds, List<Long> jobIds, List<String> snils, Long subdivisionId);
 
     List<AreaMedicalEmployees> findAllById(List<Long> ids);
 
