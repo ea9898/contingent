@@ -6,8 +6,8 @@ INSERT INTO POSITION_CODE
              CONSTANT_TITLE,
              UPDATE_DATE)
 VALUES
-('test1', 111, 'type', 0, 'test 1', sysdate()),
-('test2', 222, 'type', 1, 'test 2', sysdate())
+('test1', 111, 'type', 0, 'test 1', CURRENT_DATE),
+('test2', 222, 'type', 1, 'test 2', CURRENT_DATE)
 ;
 INSERT INTO POSITION_NOM
             (GLOBAL_ID,
@@ -17,8 +17,8 @@ INSERT INTO POSITION_NOM
              SPECIALIZATION_ID,
              UPDATE_DATE)
 VALUES
-(11, 'test_1', 111, TO_DATE('02-04-2018', 'DD-MM-YYYY'), 1, sysdate()),
-(22, 'test_2', 222, TO_DATE('02-04-2018', 'DD-MM-YYYY'), 2, sysdate())
+(11, 'test_1', 111, TO_DATE('02-04-2018', 'DD-MM-YYYY'), 1, CURRENT_DATE),
+(22, 'test_2', 222, TO_DATE('02-04-2018', 'DD-MM-YYYY'), 2, CURRENT_DATE)
 ;
 INSERT INTO AREA_TYPE_MEDICAL_POSITIONS
             (GLOBAL_ID,
@@ -27,8 +27,8 @@ INSERT INTO AREA_TYPE_MEDICAL_POSITIONS
              ARCHIVED,
              UPDATE_DATE)
 VALUES
-(1, 10, 'test1', 0, sysdate()),
-(2, 10, 'test2', 0, sysdate())
+(1, 10, 'test1', 0, CURRENT_DATE),
+(2, 10, 'test2', 0, CURRENT_DATE)
 ;
 INSERT INTO POSITION_SUPP
             (GLOBAL_ID,
@@ -37,7 +37,7 @@ INSERT INTO POSITION_SUPP
              PARENT_ID,
              UPDATE_DATE)
 VALUES
-(111222, '135', 'short title 1', NULL, sysdate())
+(111222, '135', 'short title 1', NULL, CURRENT_DATE)
 ;
 INSERT INTO MAPPING_POSITIONCODE_TO_OTHERPOSITION
             (GLOBAL_ID,
@@ -46,6 +46,6 @@ INSERT INTO MAPPING_POSITIONCODE_TO_OTHERPOSITION
              PS_GLOBAL_ID,
              UPDATE_DATE)
 VALUES
-(13, 111, 12345, 111222, sysdate())
+(13, 111, 12345, 111222, CURRENT_DATE)
 ;
 ALTER SEQUENCE seq_area_medical_employee RESTART WITH 100;

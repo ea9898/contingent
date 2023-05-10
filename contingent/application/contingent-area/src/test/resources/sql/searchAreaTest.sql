@@ -52,11 +52,11 @@ INSERT INTO AREAS
              CREATE_DATE,
              UPDATE_DATE)
 VALUES
-(2, 204, 100, 10, 123, 0, 0, 'Description area 2', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate()),
-(4, 204, 100, 10, 234, 0, 0, 'Description area 4', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate()),
-(8, 204, 100, 20, 238, 0, 0, 'Description area 8', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate()),
-(10, 136, 100, 20, 240, 0, 0, 'Description area 10', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate()),
-(12, 136, 100, 20, 242, 0, 0, 'Description area 12', 0, NULL, NULL, NULL, NULL, NULL, NULL, sysdate(), sysdate())
+(2, 204, 100, 10, 123, 0, 0, 'Description area 2', 0, NULL, NULL, NULL, NULL, NULL, NULL, CURRENT_DATE, CURRENT_DATE),
+(4, 204, 100, 10, 234, 0, 0, 'Description area 4', 0, NULL, NULL, NULL, NULL, NULL, NULL, CURRENT_DATE, CURRENT_DATE),
+(8, 204, 100, 20, 238, 0, 0, 'Description area 8', 0, NULL, NULL, NULL, NULL, NULL, NULL, CURRENT_DATE, CURRENT_DATE),
+(10, 136, 100, 20, 240, 0, 0, 'Description area 10', 0, NULL, NULL, NULL, NULL, NULL, NULL, CURRENT_DATE, CURRENT_DATE),
+(12, 136, 100, 20, 242, 0, 0, 'Description area 12', 0, NULL, NULL, NULL, NULL, NULL, NULL, CURRENT_DATE, CURRENT_DATE)
 ;
 
 INSERT INTO AREA_MU_SERVICE
@@ -86,11 +86,11 @@ INSERT INTO AREA_MEDICAL_EMPLOYEES
              UPDATE_DATE,
              SUBDIVISION_ID)
 VALUES
-(1, 123, 2, 0, sysdate(), NULL, 'snilscode1', '234', sysdate(), sysdate(), 1),
-(2, 234, 4, 1, sysdate(), NULL, 'snilscode2', '345', sysdate(), sysdate(), 1),
-(3, 235, 8, 0, sysdate(), NULL, 'snilscode3', '346', sysdate(), sysdate(), 1),
-(4, 236, 10, 0, TO_DATE('02-04-2018', 'DD-MM-YYYY'), TO_DATE('02-04-2019', 'DD-MM-YYYY'), 'snilscode4', '347', sysdate(), sysdate(), 1),
-(5, 237, 12, 0, TO_DATE('02-04-2018', 'DD-MM-YYYY'), TO_DATE('02-04-2040', 'DD-MM-YYYY'), 'snilscode5', '348', sysdate(), sysdate(), 1)
+(1, 123, 2, 0, CURRENT_DATE, NULL, 'snilscode1', '234', CURRENT_DATE, CURRENT_DATE, 1),
+(2, 234, 4, 1, CURRENT_DATE, NULL, 'snilscode2', '345', CURRENT_DATE, CURRENT_DATE, 1),
+(3, 235, 8, 0, CURRENT_DATE, NULL, 'snilscode3', '346', CURRENT_DATE, CURRENT_DATE, 1),
+(4, 236, 10, 0, TO_DATE('02-04-2018', 'DD-MM-YYYY'), TO_DATE('02-04-2019', 'DD-MM-YYYY'), 'snilscode4', '347', CURRENT_DATE, CURRENT_DATE, 1),
+(5, 237, 12, 0, TO_DATE('02-04-2018', 'DD-MM-YYYY'), TO_DATE('02-04-2040', 'DD-MM-YYYY'), 'snilscode5', '348', CURRENT_DATE, CURRENT_DATE, 1)
 ;
 
 INSERT INTO ADDRESSES
@@ -101,8 +101,8 @@ INSERT INTO ADDRESSES
              UPDATE_DATE,
              REGION_TE_ID)
 VALUES
-(-1, 111, 'Addr 1', sysdate(), sysdate(), 1),
-(-2, 222, 'Addr 2', sysdate(), sysdate(), 2)
+(-1, 111, 'Addr 1', CURRENT_DATE, CURRENT_DATE, 1),
+(-2, 222, 'Addr 2', CURRENT_DATE, CURRENT_DATE, 2)
 ;
 
 INSERT INTO AREA_ADDRESSES
@@ -113,8 +113,8 @@ INSERT INTO AREA_ADDRESSES
              CREATE_DATE,
              UPDATE_DATE)
 VALUES
-(3, 2, sysdate(), -1, sysdate(), sysdate()),
-(4, 4, sysdate(), -2, sysdate(), sysdate())
+(3, 2, CURRENT_DATE, -1, CURRENT_DATE, CURRENT_DATE),
+(4, 4, CURRENT_DATE, -2, CURRENT_DATE, CURRENT_DATE)
 ;
 
 INSERT INTO SPECIALIZATION
@@ -125,8 +125,8 @@ INSERT INTO SPECIALIZATION
              UPDATE_DATE,
              SOURCE)
 VALUES
-(49, 'SPEC 1', 0, 1, sysdate(), 's'),
-(76, 'SPEC 2', 0, 2, sysdate(), 's')
+(49, 'SPEC 1', 0, 1, CURRENT_DATE, 's'),
+(76, 'SPEC 2', 0, 2, CURRENT_DATE, 's')
 ;
 
 INSERT INTO AREA_TYPE_SPECIALIZATIONS
@@ -137,6 +137,6 @@ INSERT INTO AREA_TYPE_SPECIALIZATIONS
              UPDATE_DATE,
              SOURCE)
 VALUES
-(123, 10, 49, 0, sysdate(), 's'),
-(124, 20, 76, 0, sysdate(), 's')
+(123, 10, 49, 0, CURRENT_DATE, 's'),
+(124, 20, 76, 0, CURRENT_DATE, 's')
 ;
