@@ -92,7 +92,7 @@ public class MedicalEmployeeHelper {
 
     public void checkAddMedicalEmployee(AddMedicalEmployee inputEmployee, AreaType areaType, Validation validation) {
         //6.1
-        if (inputEmployee.getEndDate().isBefore(LocalDate.now())) {
+        if (inputEmployee.getEndDate() != null && inputEmployee.getEndDate().isBefore(LocalDate.now())) {
             validation.error(AreaErrorReason.EMPLOYEE_END_DATE_INCORRECT);
         }
         //6.2
