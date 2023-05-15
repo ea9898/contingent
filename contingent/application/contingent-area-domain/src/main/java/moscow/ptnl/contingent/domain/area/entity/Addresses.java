@@ -145,7 +145,7 @@ public class Addresses implements Serializable {
     @Column(name = "PLACE_TYPENAME_SHORT")
     private String placeTypeNameShort;
 
-    @Size(max = 3)
+    @Size(max = 4)
     @Column(name = "PLANCODE")
     private String planCode;
 
