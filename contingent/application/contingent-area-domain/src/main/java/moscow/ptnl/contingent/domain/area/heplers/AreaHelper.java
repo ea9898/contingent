@@ -586,8 +586,8 @@ public class AreaHelper {
                         null, true, true);
                 if (autoAssignAreas != null && !autoAssignAreas.isEmpty()) {
                     validation.error(AreaErrorReason.ALLOW_ONLY_ONE_AREA_FOR_AUTO,
-                            new ValidationParameter("area_id", autoAssignAreas.get(0).getId()),
-                            new ValidationParameter("area_name", autoAssignAreas.get(0).getDescription()));
+                            new ValidationParameter("areaId", autoAssignAreas.get(0).getId()),
+                            new ValidationParameter("areaName", autoAssignAreas.get(0).getDescription()));
                 }
             }
         }
