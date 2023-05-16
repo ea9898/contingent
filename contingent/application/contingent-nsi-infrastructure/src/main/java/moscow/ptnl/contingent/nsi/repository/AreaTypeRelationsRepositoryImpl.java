@@ -25,7 +25,7 @@ public class AreaTypeRelationsRepositoryImpl implements AreaTypeRelationsReposit
                 criteriaBuilder.and(
                         criteriaBuilder.equal(root.get(AreaTypeRelations_.dependentAreaType), dependentAreaType),
                         criteriaBuilder.equal(root.get(AreaTypeRelations_.primaryAreaType), primaryAreaType),
-                        criteriaBuilder.isFalse(root.get(AreaTypeRelations_.archived))
+                        criteriaBuilder.notEqual(root.get(AreaTypeRelations_.archived), true)
                 );
 
         return areaTypeRelationsCRUDRepository.findOne(specification);
