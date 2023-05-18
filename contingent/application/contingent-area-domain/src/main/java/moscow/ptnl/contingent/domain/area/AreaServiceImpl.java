@@ -469,7 +469,7 @@ public class AreaServiceImpl implements AreaService {
         area.setAttachByMedicalReason(attachByMedicalReason == null ? area.getAttachByMedicalReason() : attachByMedicalReason);
         area.setDescription(description == null ? area.getDescription() : description);
         area.setUpdateDate(LocalDateTime.now());
-        areaHelper.resetAutoAssignForAttachment(area);
+//        areaHelper.resetAutoAssignForAttachment(area);
         areaRepository.save(area);
 
         // 10

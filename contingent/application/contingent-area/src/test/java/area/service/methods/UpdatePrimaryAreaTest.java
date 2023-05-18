@@ -155,7 +155,7 @@ public class UpdatePrimaryAreaTest {
             order.verify(areaHelper).checkAutoAssignForAttachment(eq(areaTypePrimary1), null, eq(true), eq(false), any(Validation.class));
             order.verify(areaHelper).checkAttachByMedicalReason(eq(areaTypePrimary1), eq(false), any(Validation.class));
             order.verify(areaHelper).checkAreaTypeAgeSetups(eq(areaTypePrimary1), eq(2), eq(12), isNull(), isNull(), isNull(), isNull(), any(Validation.class));
-            order.verify(areaHelper).resetAutoAssignForAttachment(eq(areaPrimary1));
+//            order.verify(areaHelper).resetAutoAssignForAttachment(eq(areaPrimary1));
             order.verify(areaHelper).saveAndDeleteAreaPolicyTypes(eq(areaPrimary1), eq(Arrays.asList()), eq(Arrays.asList(policyType1)));
             //получаем сообщения
             MockEsuService receiveService = (MockEsuService) esuService;
