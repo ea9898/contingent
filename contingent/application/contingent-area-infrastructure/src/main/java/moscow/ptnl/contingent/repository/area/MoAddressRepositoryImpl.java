@@ -74,7 +74,7 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
             root.fetch(MoAddress_.address, JoinType.INNER);
 
             return criteriaBuilder.and(
-                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()), areaType.getCode()),
+                    criteriaBuilder.equal(root.get(MoAddress_.areaType.getName()).get(AreaType_.code.getName()), areaType.getCode()),
                     criteriaBuilder.or(
                             criteriaBuilder.greaterThanOrEqualTo(root.get(MoAddress_.endDate.getName()), LocalDate.now()),
                             root.get(MoAddress_.endDate.getName()).isNull()
