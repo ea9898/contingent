@@ -44,7 +44,7 @@ public interface AreaAddressPagingAndSortingRepository extends PagingAndSortingR
             "JOIN aad.area ar " +
             "WHERE " +
             "  (aad.endDate IS NULL OR aad.endDate > :endDate) " +
-            "  AND ad.id IN (:addressIds) " +
+            "  AND ad.id IN :addressIds " +
             "  AND (:areaTypeCodes IS NULL OR ar.areaType.code IN :areaTypeCodes) " +
             "  AND ar.archived = false " +
             "  GROUP BY ar.moId, ar.muId"
