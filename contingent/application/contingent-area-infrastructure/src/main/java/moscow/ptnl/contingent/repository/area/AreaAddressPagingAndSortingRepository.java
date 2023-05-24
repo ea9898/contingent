@@ -22,11 +22,12 @@ public interface AreaAddressPagingAndSortingRepository extends PagingAndSortingR
     @Query("SELECT new moscow.ptnl.contingent.domain.area.model.area.MoMuPair(ar.moId, ar.muId) FROM AreaAddress aad " +
             "JOIN aad.address ad " +
             "JOIN aad.area ar " +
+            "JOIN ar.areaType at " +
             "WHERE " +
             "  (:regionOMKTECode IS NOT NULL AND ad.regionTeCode = :regionOMKTECode " +
             "    OR :regionOMKTECode IS NULL AND (ad.areaCodeOmkTe = :areaCodeOmkTe OR ad.regionTeCode = :regionTeCode AND ad.aoLevel = :aoLevelRegionTe) " +
             "  ) AND (aad.endDate IS NULL OR aad.endDate > :endDate) " +
-            "  AND (:areaTypeCodes IS NULL OR ar.areaType.code IN :areaTypeCodes) " +
+            "  AND (:areaTypeCodes IS NULL OR at.code IN :areaTypeCodes) " +
             "  AND ar.archived = false " +
             "  GROUP BY ar.moId, ar.muId"
     )
@@ -42,10 +43,11 @@ public interface AreaAddressPagingAndSortingRepository extends PagingAndSortingR
             "FROM AreaAddress aad " +
             "JOIN aad.address ad " +
             "JOIN aad.area ar " +
+            "JOIN ar.areaType at " +
             "WHERE " +
             "  (aad.endDate IS NULL OR aad.endDate > :endDate) " +
             "  AND ad.id IN :addressIds " +
-            "  AND (:areaTypeCodes IS NULL OR ar.areaType.code IN :areaTypeCodes) " +
+            "  AND (:areaTypeCodes IS NULL OR at.code IN :areaTypeCodes) " +
             "  AND ar.archived = false " +
             "  GROUP BY ar.moId, ar.muId"
     )
