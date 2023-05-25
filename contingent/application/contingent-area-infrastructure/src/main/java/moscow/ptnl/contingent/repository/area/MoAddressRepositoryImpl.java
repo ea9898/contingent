@@ -689,9 +689,9 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                     orderDate == null ? builder.conjunction() :
                             builder.equal(root.get(MoAddress_.addressAllocationOrder).get(AddressAllocationOrders_.date), orderDate),
                     builder.or(
-                            buildAllocationOrderPredicate(builder, root.get(MoAddress_.addressAllocationOrder),
+                            buildAllocationOrderPredicate(builder, moAddressAddressAllocationOrdersJoin,
                                     orderName, orderNumber, orderOuz, orderCreateDate),
-                            buildAllocationOrderPredicate(builder, root.get(MoAddress_.addressRejectOrder),
+                            buildAllocationOrderPredicate(builder, moAddressAddressRejectAllocationOrdersJoin,
                                     orderName, orderNumber, orderOuz, orderCreateDate)
                     )
             );
@@ -700,21 +700,21 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
                 moAddressPagingAndSortingRepository.findAll(specification, paging);
     }
 
-    private Predicate buildAllocationOrderPredicate(CriteriaBuilder builder, Path<AddressAllocationOrders> root,
+    private Predicate buildAllocationOrderPredicate(CriteriaBuilder builder, Join<MoAddress, AddressAllocationOrders> joinOrders,
                                                     String orderName, String orderNumber, String orderOuz, LocalDate orderCreateDate) {
         List<Predicate> predicates = new ArrayList<>();
 
         if (StringUtils.hasText(orderNumber)) {
-            predicates.add(builder.equal(root.get(AddressAllocationOrders_.number), orderNumber));
+            predicates.add(builder.equal(joinOrders.get(AddressAllocationOrders_.number), orderNumber));
         }
         if (orderCreateDate != null) {
-            predicates.add(builder.equal(builder.function("DATE", LocalDate.class, root.get(AddressAllocationOrders_.createDate)), orderCreateDate));
+            predicates.add(builder.equal(builder.function("DATE", LocalDate.class, joinOrders.get(AddressAllocationOrders_.createDate)), orderCreateDate));
         }
         if (StringUtils.hasText(orderName)) {
-            predicates.add(builder.like(builder.lower(root.get(AddressAllocationOrders_.name)), "%" + orderName.toLowerCase() + "%"));
+            predicates.add(builder.like(builder.lower(joinOrders.get(AddressAllocationOrders_.name)), "%" + orderName.toLowerCase() + "%"));
         }
         if (StringUtils.hasText(orderOuz)) {
-            predicates.add(builder.like(builder.lower(root.get(AddressAllocationOrders_.ouz)), "%" + orderOuz.toLowerCase() + "%"));
+            predicates.add(builder.like(builder.lower(joinOrders.get(AddressAllocationOrders_.ouz)), "%" + orderOuz.toLowerCase() + "%"));
         }
         return predicates.isEmpty() ? builder.conjunction() : builder.and(predicates.toArray(new Predicate[0]));
     }
