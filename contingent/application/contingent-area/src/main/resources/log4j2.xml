@@ -70,12 +70,14 @@
             <AppenderRef ref="Console" level="error" />
         </Root>
         <Logger name="org.springframework.integration" level="info"/>
+        <Logger name="org.apache.cxf.services" level="warn"/>
+        <Logger name="moscow.ptnl.metrics.TreeCallStackLogger" level="warn"/>
 
-        <AsyncLogger name="moscow.ptnl.metrics.TreeCallStackLogger" level="info">
+        <AsyncLogger name="moscow.ptnl.metrics.TreeCallStackLogger" level="info" additivity="false">
             <AppenderRef ref="metrics" level="info" />
         </AsyncLogger>
 
-        <AsyncLogger name="org.apache.cxf.services" level="info">
+        <AsyncLogger name="org.apache.cxf.services" level="info" additivity="false">
             <AppenderRef ref="soap" level="info" />
         </AsyncLogger>
 
