@@ -13,13 +13,13 @@
         <expiry>
             <ttl unit="seconds">300</ttl>
         </expiry>
-        <heap unit="MB">64</heap>
+        <heap unit="entries">10000</heap>
     </cache>
 
     <cache-template name="default">
         <expiry>
             <ttl unit="seconds">300</ttl>
         </expiry>
-        <heap unit="MB">64</heap>
+        <heap unit="entries">10000</heap>
     </cache-template>
 </config>
