@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -112,6 +113,9 @@ public class MoAddressRepositoryImpl extends BaseRepository implements MoAddress
 
     @Override
     public List<MoAddress> getActiveMoAddressByGlobalIdV3(AreaType areaType, Long moId, Addresses addresses) {
+        if (addresses.getGlobalId() == null) {
+            return Collections.emptyList();
+        }
         Specification<MoAddress> moAddressSpecification = (root, criteriaQuery, criteriaBuilder) -> {
             Join<MoAddress, Addresses> addressesJoin = root.join(MoAddress_.address, JoinType.INNER);
 

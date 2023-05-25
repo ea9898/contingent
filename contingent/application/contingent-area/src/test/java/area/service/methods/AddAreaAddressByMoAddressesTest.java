@@ -81,6 +81,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         addresses.setId(17062L);
         addresses.setStreetCode("1686");
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setPlaceCode("000");
         addresses.setPlanCode("0000");
         addresses.setCityCode("002");
@@ -112,9 +113,11 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         Addresses addresses = new Addresses();
         addresses.setId(17063L);
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setPlaceCode("000");
         addresses.setPlanCode("0000");
         addresses.setCityCode("002");
+        addresses.setStreetCode("1686");
         addresses.setAoLevel("8");
 
         AreaType areaType = new AreaType();
@@ -142,8 +145,10 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         Addresses addresses = new Addresses();
         addresses.setId(17064L);
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setPlaceCode("000");
         addresses.setCityCode("002");
+        addresses.setStreetCode("1686");
         addresses.setAoLevel("8");
 
         AreaType areaType = new AreaType();
@@ -169,7 +174,9 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel8AoLevel4() {
         Addresses addresses = new Addresses();
         addresses.setId(17065L);
+        addresses.setStreetCode("1686");
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setCityCode("002");
         addresses.setAoLevel("8");
 
@@ -195,7 +202,9 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel8AoLevel25() {
         Addresses addresses = new Addresses();
         addresses.setId(17066L);
+        addresses.setStreetCode("1686");
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setAoLevel("8");
 
         AreaType areaType = new AreaType();
@@ -219,6 +228,8 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel8AoLevel2() {
         Addresses addresses = new Addresses();
         addresses.setId(17067L);
+        addresses.setStreetCode("1686");
+        addresses.setAreaCodeOmkTe("0212");
         addresses.setRegionTeCode("0800");
         addresses.setAoLevel("8");
 
@@ -245,6 +256,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel7AoLevel65() {
         Addresses addresses = new Addresses();
         addresses.setId(17062L);
+        addresses.setRegionTeCode("0800");
         addresses.setAreaCodeOmkTe("0212");
         addresses.setPlaceCode("000");
         addresses.setPlanCode("0000");
@@ -275,6 +287,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel7AoLevel6() {
         Addresses addresses = new Addresses();
         addresses.setId(17063L);
+        addresses.setRegionTeCode("0800");
         addresses.setAreaCodeOmkTe("0212");
         addresses.setPlaceCode("000");
         addresses.setCityCode("002");
@@ -303,6 +316,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel7AoLevel4() {
         Addresses addresses = new Addresses();
         addresses.setId(17064L);
+        addresses.setRegionTeCode("0800");
         addresses.setAreaCodeOmkTe("0212");
         addresses.setCityCode("002");
         addresses.setAoLevel("7");
@@ -330,6 +344,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         Addresses addresses = new Addresses();
         addresses.setId(17065L);
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setAoLevel("7");
 
         AreaType areaType = new AreaType();
@@ -353,6 +368,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel7AoLevel2() {
         Addresses addresses = new Addresses();
         addresses.setId(17067L);
+        addresses.setAreaCodeOmkTe("0212");
         addresses.setRegionTeCode("0800");
         addresses.setAoLevel("7");
 
@@ -382,6 +398,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         addresses.setAreaCodeOmkTe("0212");
         addresses.setPlaceCode("000");
         addresses.setCityCode("002");
+        addresses.setRegionTeCode("0800");
         addresses.setAoLevel("65");
 
         AreaType areaType = new AreaType();
@@ -409,6 +426,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         addresses.setId(17053L);
         addresses.setAreaCodeOmkTe("0212");
         addresses.setCityCode("002");
+        addresses.setRegionTeCode("0800");
         addresses.setAoLevel("65");
 
         AreaType areaType = new AreaType();
@@ -434,6 +452,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         Addresses addresses = new Addresses();
         addresses.setId(17054L);
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setAoLevel("65");
 
         AreaType areaType = new AreaType();
@@ -457,6 +476,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel65AoLevel2() {
         Addresses addresses = new Addresses();
         addresses.setId(17067L);
+        addresses.setAreaCodeOmkTe("0212");
         addresses.setRegionTeCode("0800");
         addresses.setAoLevel("65");
 
@@ -485,6 +505,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         addresses.setId(17055L);
         addresses.setCityCode("002");
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setAoLevel("6");
 
         AreaType areaType = new AreaType();
@@ -511,6 +532,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         Addresses addresses = new Addresses();
         addresses.setId(17070L);
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setAoLevel("6");
 
         AreaType areaType = new AreaType();
@@ -534,6 +556,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel6AoLevel2() {
         Addresses addresses = new Addresses();
         addresses.setId(17071L);
+        addresses.setAreaCodeOmkTe("0212");
         addresses.setRegionTeCode("0800");
         addresses.setAoLevel("6");
 
@@ -561,6 +584,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
         Addresses addresses = new Addresses();
         addresses.setId(17073L);
         addresses.setAreaCodeOmkTe("0212");
+        addresses.setRegionTeCode("0800");
         addresses.setAoLevel("4");
 
         AreaType areaType = new AreaType();
@@ -584,6 +608,7 @@ public class AddAreaAddressByMoAddressesTest extends service.BaseTest {
     public void addAreaAddressesByMoAddressesAoLevel4AoLevel2() {
         Addresses addresses = new Addresses();
         addresses.setId(17075L);
+        addresses.setAreaCodeOmkTe("0212");
         addresses.setRegionTeCode("0800");
         addresses.setAoLevel("4");
 
