@@ -687,10 +687,10 @@ public class A_YY_6_Test {
             setCode("111");
         }});
         newAddress.setRegionOMKTE(new RegionOMKTE() {{
-            setCode("123456");
+            setCode("1234");
         }});
         newAddress.setAreaOMKTE(new AreaOMKTE() {{
-            setCode("654321");
+            setCode("6543");
         }});
         newAddress.setAddressString("test");
 

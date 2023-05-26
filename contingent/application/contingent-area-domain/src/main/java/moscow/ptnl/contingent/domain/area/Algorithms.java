@@ -466,6 +466,7 @@ public class Algorithms {
     public List<Addresses> checkAddressFLKV3(List<AddressRegistry> addresses, Validation validation) {
         List<Addresses> addressesExistedList = addressesRepository.findAddresses(addresses.stream()
                 .map(AddressRegistry::getGlobalIdNsi)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList()));
 
         Set<Long> globalIdExisted = addressesExistedList.stream().map(Addresses::getGlobalId).collect(Collectors.toSet());
