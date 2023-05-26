@@ -15,6 +15,8 @@
             <AppenderRef ref="Console" level="debug" />
         </Root>
 
+        <Logger name="org.apache.kafka.clients.NetworkClient" level="info" />
+
     </Loggers>
 
 </Configuration>

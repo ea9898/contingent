@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import moscow.ptnl.contingent.domain.area.entity.Addresses_;
@@ -101,13 +102,16 @@ public class AreaAddressRepositoryImpl extends BaseRepository implements AreaAdd
     }
 
     @Override
-    public List<AreaAddress> getActiveAreaAddressesV3(Long moId, AreaType areaTypeCode, Addresses globalIdNsi) {
+    public List<AreaAddress> getActiveAreaAddressesV3(Long moId, AreaType areaTypeCode, Addresses address) {
+        if (address.getGlobalId() == null) {
+            return Collections.emptyList();
+        }
         Specification<AreaAddress> specification = (root, criteriaQuery, criteriaBuilder) -> {
             Join<AreaAddress, Addresses> addressesJoin = root.join(AreaAddress_.address, JoinType.INNER);
 
             List<Predicate> predicates = new ArrayList<>();
             addEndDateMoIdAreaTypePredicates(root, criteriaBuilder, predicates, moId, areaTypeCode);
-            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.globalId.getName()), globalIdNsi.getGlobalId()));
+            predicates.add(criteriaBuilder.equal(addressesJoin.get(Addresses_.globalId.getName()), address.getGlobalId()));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
 
