@@ -2,17 +2,20 @@ package area.service.methods;
 
 import area.service.MockConfiguration;
 import area.service.PersistenceConfiguration;
+
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.FileSystemResourceAccessor;
+
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
 import moscow.ptnl.contingent.domain.area.model.area.MedicalEmployee;
 import moscow.ptnl.contingent.domain.area.model.area.SearchAreaAddress;
 import moscow.ptnl.contingent.error.ContingentException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,15 +29,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+
 import ru.mos.emias.contingent2.area.v3.AreaPT;
 import ru.mos.emias.contingent2.area.v3.types.SearchAreaResponse;
 import ru.mos.emias.contingent2.area.v3.Fault;
 import ru.mos.emias.contingent2.area.v3.types.SearchAreaRequest;
 
 import javax.sql.DataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.soap.MessageFactory;
 import jakarta.xml.soap.SOAPConstants;
 import jakarta.xml.soap.SOAPException;
@@ -277,7 +281,7 @@ public class SearchAreaTest {
 
     @Test // ЕСЛИ адрес найден И его уровень aolevel =1, ТО система формирует ошибку С_УУ_107
     @Sql(scripts = {"/sql/area_type.sql", "/sql/searchArea2539.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void searchArea2539() throws SOAPException, JAXBException, IOException {
+    public void searchArea2539() throws SOAPException, jakarta.xml.bind.JAXBException, IOException {
         SearchAreaRequest request = soapToObject("xml/searchArea2539.xml");
         SearchAreaResponse response = assertDoesNotThrow(() -> areaPTv3.searchArea(request));
 
@@ -299,7 +303,7 @@ public class SearchAreaTest {
         Assertions.assertEquals(1, response.getResult().getAreas().size());
     }
 
-    private SearchAreaRequest soapToObject(String filePath) throws SOAPException, JAXBException, IOException {
+    private SearchAreaRequest soapToObject(String filePath) throws SOAPException, IOException, jakarta.xml.bind.JAXBException {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath);
         SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage(null, inputStream);
         Unmarshaller unmarshaller = JAXBContext.newInstance(SearchAreaRequest.class).createUnmarshaller();

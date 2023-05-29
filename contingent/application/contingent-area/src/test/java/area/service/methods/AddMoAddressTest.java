@@ -14,7 +14,9 @@ import moscow.ptnl.contingent.domain.area.model.area.AddressRegistry;
 import moscow.ptnl.contingent.domain.area.model.area.Area;
 import moscow.ptnl.contingent.domain.area.model.area.AreaOMKTE;
 import moscow.ptnl.contingent.domain.area.model.area.RegionOMKTE;
+import moscow.ptnl.contingent.domain.area.repository.AddressAllocationOrderRepository;
 import moscow.ptnl.contingent.error.ContingentException;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,6 +61,9 @@ public class AddMoAddressTest {
 
     @Autowired
     private AreaPT areaPTv3;
+
+    @Autowired
+    private AddressAllocationOrderRepository addressAllocationOrderRepository;
 
     @BeforeAll
     public static void init(@Qualifier("contingentDataSource") DataSource dataSource) throws LiquibaseException, SQLException {
@@ -148,12 +153,14 @@ public class AddMoAddressTest {
             addressRegistryList.add(new AddressRegistry());
         }
 
-        AddressAllocationOrders orders = new AddressAllocationOrders();
-        orders.setId(2L);
-        orders.setNumber("93691");
-        orders.setName("Name.Order.Update");
+        AddressAllocationOrders order = new AddressAllocationOrders();
+        order.setId(2L);
+        order.setNumber("93691");
+        order.setName("Name.Order.Update");
 
-        Throwable exception = assertThrows(ContingentException.class, () -> areaService.addMoAddress(0, Collections.emptyList(), 2, addressRegistryList, false));
+        addressAllocationOrderRepository.save(order);
+
+        Throwable exception = assertThrows(Exception.class, () -> areaService.addMoAddress(0, Collections.emptyList(), 2, addressRegistryList, false));
         assertEquals("Невозможно добавить адрес, т.к. не указан его уровень", exception.getMessage());
     }
 

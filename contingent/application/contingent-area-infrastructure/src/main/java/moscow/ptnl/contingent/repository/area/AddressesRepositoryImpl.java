@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.util.StringUtils;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -34,12 +36,11 @@ public class AddressesRepositoryImpl extends BaseRepository implements Addresses
     @Override
     public List<Addresses> findAddresses(List<Long> nsiGlobalIds, String aoLevel) {
         Specification<Addresses> specification = (Specification<Addresses>) (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.and(
-                    criteriaBuilder.in(root.get(Addresses_.globalId.getName())).value(nsiGlobalIds),//root.get(Addresses_.globalId).in(nsiGlobalIds),
-                    aoLevel == null
-                            ? criteriaBuilder.conjunction()
-                            : criteriaBuilder.equal(root.get(Addresses_.aoLevel), aoLevel)
-            );
+                StringUtils.hasLength(aoLevel) ? criteriaBuilder.and(
+                        criteriaBuilder.in(root.get(Addresses_.globalId.getName())).value(nsiGlobalIds),
+                        criteriaBuilder.equal(root.get(Addresses_.aoLevel), aoLevel)
+                )
+                : criteriaBuilder.in(root.get(Addresses_.globalId.getName())).value(nsiGlobalIds);
         return addressesCRUDRepository.findAll(specification);
     }
 

@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -315,17 +316,19 @@ public class AreaServiceHelperTest {
     @Test
     void checkAutoAssignForAttachment() {
         Validation validation = new Validation();
-        Throwable exception = assertThrows(ContingentException.class, () -> {
+        ContingentException exception = assertThrows(ContingentException.class, () -> {
             areaHelper.checkAutoAssignForAttachment(areaTypeDependent1, null, true, true, validation);
             throwValidation(validation);
         });
-        assertEquals(exception.getMessage(), "Для участка не может быть одновременно установлены признаки «Назначать для автоматического прикрепления» и «Необходимость медицинских показаний»");
+        assertTrue(exception.getValidation().getMessages().stream().anyMatch(m -> Objects.equals(m.getMessage(),
+                "Для участка не может быть одновременно установлены признаки «Назначать для автоматического прикрепления» и «Необходимость медицинских показаний»")));
         validation.reset();
         exception = assertThrows(ContingentException.class, () -> {
             areaHelper.checkAutoAssignForAttachment(areaTypePrimary1, null, true, false, validation);
             throwValidation(validation);
         });
-        assertEquals(exception.getMessage(), "Невозможно установить признак для автоматического прикрепления, т.к. для данного типа участка (Терапевтический) не разрешено прикрепление через МПГУ");
+        assertTrue(exception.getValidation().getMessages().stream().anyMatch(m -> Objects.equals(m.getMessage(),
+                "Невозможно установить признак для автоматического прикрепления, т.к. для данного типа участка (Терапевтический) не разрешено прикрепление через МПГУ")));
         validation.reset();
         assertDoesNotThrow(() -> areaHelper.checkAutoAssignForAttachment(areaTypePrimary1, null, false, true, validation));
         assertDoesNotThrow(() -> areaHelper.checkAutoAssignForAttachment(areaTypeDependent1, null, true, false, validation));
