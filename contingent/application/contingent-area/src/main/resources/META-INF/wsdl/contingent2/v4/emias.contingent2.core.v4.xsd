@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://emias.mos.ru/contingent2/core/v3/"
+<xs:schema xmlns="http://emias.mos.ru/contingent2/core/v4/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://emias.mos.ru/contingent2/core/v3/"
-           xmlns:tns="http://emias.mos.ru/contingent2/core/v3/"
-           xmlns:address="http://emias.mos.ru/contingent2/address/v3/"
+           targetNamespace="http://emias.mos.ru/contingent2/core/v4/"
+           xmlns:tns="http://emias.mos.ru/contingent2/core/v4/"
+           xmlns:address="http://emias.mos.ru/contingent2/address/v4/"
            xmlns:restr="http://emias.mos.ru/restriction/types/core/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
     <xs:include schemaLocation="../../emias/v1_2/emias.core.v1.xsd"/>
 
-    <xs:import schemaLocation="emias.contingent2.address.v3.xsd" namespace="http://emias.mos.ru/contingent2/address/v3/" />
+    <xs:import schemaLocation="emias.contingent2.address.v4.xsd" namespace="http://emias.mos.ru/contingent2/address/v4/" />
     <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="../v1/emias.restriction.types.core.xsd"/>
 
     <xs:complexType name="CodeNameType">
@@ -534,6 +534,36 @@
             <xs:element name="allocationOrder" type="tns:Order" minOccurs="0" />
             <xs:element name="rejectOrder" type="tns:Order" minOccurs="0" />
             <xs:element name="areaAddressInfo" type="tns:AreaAddressInfo" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="HistoryEvent">
+        <xs:annotation>
+            <xs:documentation>Событие на участке</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="eventType" type="xs:string" />
+            <xs:element name="updateDate" type="xs:dateTime" />
+            <xs:element name="userLogin" type="xs:string" />
+            <xs:element name="userJobId" type="xs:long" />
+            <xs:element name="objectType" type="xs:string" />
+            <xs:element name="objectId" type="xs:long" />
+
+            <xs:element name="changeData">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="attributeValues" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="attributeName" type="xs:string" />
+                                    <xs:element name="oldValue" type="xs:string" minOccurs="0" />
+                                    <xs:element name="newValue" type="xs:string" minOccurs="0" />
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 

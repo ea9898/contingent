@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:tns="http://emias.mos.ru/contingent2/area/v3/types/"
+<xs:schema xmlns:tns="http://emias.mos.ru/contingent2/area/v4/types/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:core="http://emias.mos.ru/contingent2/core/v3/"
-           xmlns:address="http://emias.mos.ru/contingent2/address/v3/"
+           xmlns:core="http://emias.mos.ru/contingent2/core/v4/"
+           xmlns:address="http://emias.mos.ru/contingent2/address/v4/"
            xmlns:restr="http://emias.mos.ru/restriction/types/core/"
-           targetNamespace="http://emias.mos.ru/contingent2/area/v3/types/"
+           targetNamespace="http://emias.mos.ru/contingent2/area/v4/types/"
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
-    <xs:import namespace="http://emias.mos.ru/contingent2/core/v3/" schemaLocation="emias.contingent2.core.v3.xsd"/>
-    <xs:import schemaLocation="emias.contingent2.address.v3.xsd" namespace="http://emias.mos.ru/contingent2/address/v3/" />
+    <xs:import namespace="http://emias.mos.ru/contingent2/core/v4/" schemaLocation="emias.contingent2.core.v4.xsd"/>
+    <xs:import schemaLocation="emias.contingent2.address.v4.xsd" namespace="http://emias.mos.ru/contingent2/address/v4/" />
     <xs:import namespace="http://emias.mos.ru/restriction/types/core/" schemaLocation="../v1/emias.restriction.types.core.xsd"/>
 
     <!--lists of entities-->
@@ -1013,6 +1013,34 @@
                             <xs:extension base="core:PagingResults">
                                 <xs:sequence>
                                     <xs:element name="addressInfo" type="core:AddressInfo" minOccurs="0" maxOccurs="unbounded" />
+                                </xs:sequence>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaHistoryRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="areaId" type="core:ID" />
+                <xs:element ref="core:pagingOptions" minOccurs="0"/>
+                <xs:element ref="core:options" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getAreaHistoryResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="result">
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="core:PagingResults">
+                                <xs:sequence>
+                                    <xs:element name="event" type="core:HistoryEvent" minOccurs="0" maxOccurs="unbounded" />
                                 </xs:sequence>
                             </xs:extension>
                         </xs:complexContent>

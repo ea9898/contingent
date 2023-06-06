@@ -7,64 +7,65 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import ru.mos.emias.contingent2.core.v3.HistoryEvent;
-import ru.mos.emias.contingent2.core.v3.HistoryEvent.ChangeData.AttributeValues;
+//import ru.mos.emias.contingent2.core.v3.HistoryEvent;
+//import ru.mos.emias.contingent2.core.v3.HistoryEvent.ChangeData.AttributeValues;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-@Mapper(componentModel = "spring")
+// После реализации 4-й версии нужно удалить
+//@Mapper(componentModel = "spring")
 public interface GetAreaHistoryMapperV3 {
 
     GetAreaHistoryMapperV3 MAPPER = Mappers.getMapper(GetAreaHistoryMapperV3.class);
 
-    @Mappings({
-            @Mapping(target = "eventType", expression = "java( mapEventType(entity) )"),
-            @Mapping(target = "updateDate", source = "updateDate"),
-            @Mapping(target = "userLogin", expression = "java( mapUserLogin(entity))"),
-            @Mapping(target = "userJobId", expression = "java( mapUserJobId(entity) )"),
-            @Mapping(target = "objectType", expression = "java( mapObjectType(entity) )"),
-            @Mapping(target = "objectId", expression = "java( mapObjectId(entity) )"),
-            @Mapping(target = "changeData", expression = "java( mapChangeData(entity) )")
-    })
-    HistoryEvent entityToDtoTransform(AreaOrEmployeeEvent entity);
+//    @Mappings({
+//            @Mapping(target = "eventType", expression = "java( mapEventType(entity) )"),
+//            @Mapping(target = "updateDate", source = "updateDate"),
+//            @Mapping(target = "userLogin", expression = "java( mapUserLogin(entity))"),
+//            @Mapping(target = "userJobId", expression = "java( mapUserJobId(entity) )"),
+//            @Mapping(target = "objectType", expression = "java( mapObjectType(entity) )"),
+//            @Mapping(target = "objectId", expression = "java( mapObjectId(entity) )"),
+//            @Mapping(target = "changeData", expression = "java( mapChangeData(entity) )")
+//    })
+//    HistoryEvent entityToDtoTransform(AreaOrEmployeeEvent entity);
 
-    default HistoryEvent.ChangeData mapChangeData(AreaOrEmployeeEvent entity) {
-        List<AttributeValues> values = new ArrayList<>();
+//    default HistoryEvent.ChangeData mapChangeData(AreaOrEmployeeEvent entity) {
+//        List<AttributeValues> values = new ArrayList<>();
+//
+//        if (entity.getObjType().intValue() == 1) {
+//            addAttributeValue("startDate", entity.getStartDateOld(), entity.getStartDateNew(), values);
+//            addAttributeValue("endDate", entity.getEndDateOld(), entity.getEndDateNew(), values);
+//            addAttributeValue("isError", entity.getIsErrorOld(), entity.getIsErrorNew(), values);
+//            addAttributeValue("tempDutyStartDate", entity.getTempDutyStartDateOld(), entity.getTempDutyStartDateNew(), values);
+//            addAttributeValue("replacement", entity.getReplacementOld(), entity.getReplacementNew(), values);
+//        }
+//        if (entity.getObjType().intValue() == 2) {
+//            addAttributeValue("description", entity.getDescriptionOld(), entity.getDescriptionNew(), values);
+//            addAttributeValue("number", entity.getNumberOld(), entity.getNumberNew(), values);
+//            addAttributeValue("createDate", entity.getCreateDateOld(), entity.getCreateDateNew(), values);
+//            addAttributeValue("archived", entity.getArchivedOld(), entity.getArchivedNew(), values);
+//        }
+//        if (!values.isEmpty()) {
+//            HistoryEvent.ChangeData changeData = new HistoryEvent.ChangeData();
+//            changeData.getAttributeValues().addAll(values);
+//            return changeData;
+//        } else {
+//            return null;
+//        }
+//    }
 
-        if (entity.getObjType().intValue() == 1) {
-            addAttributeValue("startDate", entity.getStartDateOld(), entity.getStartDateNew(), values);
-            addAttributeValue("endDate", entity.getEndDateOld(), entity.getEndDateNew(), values);
-            addAttributeValue("isError", entity.getIsErrorOld(), entity.getIsErrorNew(), values);
-            addAttributeValue("tempDutyStartDate", entity.getTempDutyStartDateOld(), entity.getTempDutyStartDateNew(), values);
-            addAttributeValue("replacement", entity.getReplacementOld(), entity.getReplacementNew(), values);
-        }
-        if (entity.getObjType().intValue() == 2) {
-            addAttributeValue("description", entity.getDescriptionOld(), entity.getDescriptionNew(), values);
-            addAttributeValue("number", entity.getNumberOld(), entity.getNumberNew(), values);
-            addAttributeValue("createDate", entity.getCreateDateOld(), entity.getCreateDateNew(), values);
-            addAttributeValue("archived", entity.getArchivedOld(), entity.getArchivedNew(), values);
-        }
-        if (!values.isEmpty()) {
-            HistoryEvent.ChangeData changeData = new HistoryEvent.ChangeData();
-            changeData.getAttributeValues().addAll(values);
-            return changeData;
-        } else {
-            return null;
-        }
-    }
-
-    default void addAttributeValue(String attributeName, String oldValue, String newValue, List<AttributeValues> values) {
-        if (Objects.nonNull(oldValue) || Objects.nonNull(newValue)) { // выводим в случае если одно из значений не нулевое
-            AttributeValues value = new AttributeValues();
-            value.setAttributeName(attributeName);
-            value.setOldValue(oldValue);
-            value.setNewValue(newValue);
-            values.add(value);
-        }
-    }
+//    default void addAttributeValue(String attributeName, String oldValue, String newValue, List<AttributeValues> values) {
+//        if (Objects.nonNull(oldValue) || Objects.nonNull(newValue)) { // выводим в случае если одно из значений не нулевое
+//            AttributeValues value = new AttributeValues();
+//            value.setAttributeName(attributeName);
+//            value.setOldValue(oldValue);
+//            value.setNewValue(newValue);
+//            values.add(value);
+//        }
+//    }
 
     default String mapEventType(AreaOrEmployeeEvent entity) {
         if (entity.getObjType().intValue() == 1) { // area_medical_employee

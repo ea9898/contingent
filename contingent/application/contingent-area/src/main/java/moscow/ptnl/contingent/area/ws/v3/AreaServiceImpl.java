@@ -79,8 +79,6 @@ import ru.mos.emias.contingent2.area.v3.types.GetAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetAreaByIdResponse;
-import ru.mos.emias.contingent2.area.v3.types.GetAreaHistoryRequest;
-import ru.mos.emias.contingent2.area.v3.types.GetAreaHistoryResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAddressRequest;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAddressResponse;
 import ru.mos.emias.contingent2.area.v3.types.GetMoAddressTotalRequest;
@@ -121,7 +119,6 @@ import ru.mos.emias.contingent2.area.v3.types.UpdateOrderRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdateOrderResponse;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaRequest;
 import ru.mos.emias.contingent2.area.v3.types.UpdatePrimaryAreaResponse;
-import ru.mos.emias.contingent2.core.v3.HistoryEvent;
 import ru.mos.emias.contingent2.core.v3.MuService;
 
 import java.util.ArrayList;
@@ -378,26 +375,26 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured(faultClass = Fault.class) @Metrics
-    public GetAreaHistoryResponse getAreaHistory(GetAreaHistoryRequest body) throws Fault {
-        try {
-            GetAreaHistoryResponse response = new GetAreaHistoryResponse();
-            response.setResult(new GetAreaHistoryResponse.Result());
-            Page<AreaOrEmployeeEvent> results = areaServiceDomain.getAreaHistory3(body.getAreaId(),
-                    soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(GetAreaHistorySorting.class)));
-
-            if (!results.isEmpty()) {
-                response.getResult().getEvents().addAll(results.stream()
-                        .map(getAreaHistoryMapper::entityToDtoTransform)
-                        .filter(event -> Objects.nonNull(event.getChangeData()) && !event.getChangeData().getAttributeValues().isEmpty())
-                        .collect(Collectors.toList()));
-            }
-             soapCustomMapper.mapPagingResults(response.getResult(), results);
-            return response;
-        } catch (Exception ex) {
-            throw exceptionMapper.mapException(ex);
-        }
-    }
+//    @Override @EMIASSecured(faultClass = Fault.class) @Metrics // После создания 4-й версии нужно удалить
+//    public GetAreaHistoryResponse getAreaHistory(GetAreaHistoryRequest body) throws Fault {
+//        try {
+//            GetAreaHistoryResponse response = new GetAreaHistoryResponse();
+//            response.setResult(new GetAreaHistoryResponse.Result());
+//            Page<AreaOrEmployeeEvent> results = areaServiceDomain.getAreaHistory3(body.getAreaId(),
+//                    soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(GetAreaHistorySorting.class)));
+//
+//            if (!results.isEmpty()) {
+//                response.getResult().getEvents().addAll(results.stream()
+//                        .map(getAreaHistoryMapper::entityToDtoTransform)
+//                        .filter(event -> Objects.nonNull(event.getChangeData()) && !event.getChangeData().getAttributeValues().isEmpty())
+//                        .collect(Collectors.toList()));
+//            }
+//             soapCustomMapper.mapPagingResults(response.getResult(), results);
+//            return response;
+//        } catch (Exception ex) {
+//            throw exceptionMapper.mapException(ex);
+//        }
+//    }
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaAddressResponse getAreaAddress(GetAreaAddressRequest body) throws Fault {

@@ -65,9 +65,9 @@
 
     <Loggers>
         <!-- LOG everything at X level -->
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="server" level="info" />
-            <AppenderRef ref="Console" level="error" />
+            <AppenderRef ref="Console" level="debug" />
         </Root>
         <Logger name="org.springframework.integration" level="info"/>
         <Logger name="org.apache.cxf.services" level="warn"/>
