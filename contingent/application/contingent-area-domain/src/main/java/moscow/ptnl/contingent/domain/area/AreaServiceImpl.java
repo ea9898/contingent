@@ -738,8 +738,6 @@ public class AreaServiceImpl implements AreaService {
                 }
                 //7.4
                 areaHelper.checkTempDutyEmployees(changeEmployeesCorrectInput, addEmployeesInput, areaEmployeesDb, validation);
-                //7.5
-                areaHelper.checkTempDutyEmployeesUniqueness(area, allEmployees, changedEmployeeIds, validation);
             }
             //7.6
             if (area.getAreaType() != null &&

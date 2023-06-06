@@ -74,7 +74,7 @@ import moscow.ptnl.contingent.area.transform.v3.AreaTypeShortMapperV3Impl;
 import moscow.ptnl.contingent.area.transform.v3.ChangeMedicalEmployeeMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.ChangeMedicalEmployeeMapperV3Impl;
 import moscow.ptnl.contingent.area.transform.v3.CodeNameTypeMapperV3;
-import moscow.ptnl.contingent.area.transform.v3.GetAreaHistoryMapperV3;
+//import moscow.ptnl.contingent.area.transform.v3.GetAreaHistoryMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2MapperImpl;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;

@@ -141,4 +141,18 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2712-1" author="ddryuchin" labels="3.3.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_MEDICAL_EMPLOYEES" columnName="EMPLOYEE_CATEGORY"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_MEDICAL_EMPLOYEES">
+            <column name="EMPLOYEE_CATEGORY" type="BIGINT" remarks="Категория МР" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_MEDICAL_EMPLOYEES" columnName="EMPLOYEE_CATEGORY"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

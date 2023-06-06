@@ -13,7 +13,7 @@ import moscow.ptnl.contingent.area.transform.v3.AreaBriefMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaDnMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.AreaMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.ChangeMedicalEmployeeMapperV3;
-import moscow.ptnl.contingent.area.transform.v3.GetAreaHistoryMapperV3;
+//import moscow.ptnl.contingent.area.transform.v3.GetAreaHistoryMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypes2Mapper;
 import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3;
@@ -178,8 +178,8 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Autowired
     private MuAvailableAreaTypesInMoMapper muAvailableAreaTypesInMoMapper;
 
-    @Autowired
-    private GetAreaHistoryMapperV3 getAreaHistoryMapper;
+//    @Autowired
+//    private GetAreaHistoryMapperV3 getAreaHistoryMapper;
 
     @Autowired
     private AddMedicalEmployeeMapperV3 addMedicalEmployeeMapper;

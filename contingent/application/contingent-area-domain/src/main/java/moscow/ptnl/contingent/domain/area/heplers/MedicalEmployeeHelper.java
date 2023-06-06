@@ -82,11 +82,6 @@ public class MedicalEmployeeHelper {
                         new ValidationParameter("endDate", endDate),
                         new ValidationParameter("startDate", startDate));
             }
-            //5.3.2
-            if (Boolean.TRUE.equals(inputEmployee.getTempDuty()) &&
-                    emplDb != null && !Boolean.TRUE.equals(emplDb.getReplacement())) {
-                validation.error(AreaErrorReason.NOT_REPLACEMENT_EMPLOYEE);
-            }
         }
     }
 
@@ -95,15 +90,7 @@ public class MedicalEmployeeHelper {
         if (inputEmployee.getEndDate() != null && inputEmployee.getEndDate().isBefore(LocalDate.now())) {
             validation.error(AreaErrorReason.EMPLOYEE_END_DATE_INCORRECT);
         }
-        //6.2
-        if (Boolean.TRUE.equals(inputEmployee.getTempDuty()) && !inputEmployee.isReplacement()) {
-            validation.error(AreaErrorReason.NOT_REPLACEMENT_EMPLOYEE);
-        }
         //6.4
-        if (inputEmployee.getStartDate().isBefore(LocalDate.now())) {
-            validation.error(AreaErrorReason.START_DATE_IN_PAST,
-                    new ValidationParameter("startDate", inputEmployee.getStartDate()));
-        }
         if (inputEmployee.getEndDate() != null && inputEmployee.getStartDate().isAfter(inputEmployee.getEndDate())) {
             validation.error(AreaErrorReason.START_DATE_IS_AFTER_END_DATE,
                     new ValidationParameter("endDate", inputEmployee.getEndDate()),

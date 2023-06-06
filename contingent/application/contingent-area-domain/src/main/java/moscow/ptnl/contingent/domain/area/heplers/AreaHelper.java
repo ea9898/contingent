@@ -635,15 +635,9 @@ public class AreaHelper {
                 continue;
             }
             ChangeMedicalEmployee changeEmpl = optionalChangeEmpl.get();
-            if (changeEmpl.getStartDate() != null) {
-                empl.setStartDate(changeEmpl.getStartDate());
-            }
 
             if (changeEmpl.getEndDate() != null) {
                 empl.setEndDate(changeEmpl.getEndDate());
-            }
-            if (Objects.nonNull(changeEmpl.getTempDuty())) {
-                empl.setTempDutyStartDate(Boolean.TRUE.equals(changeEmpl.getTempDuty()) ? LocalDate.now() : null);
             }
             empl.setUpdateDate(LocalDateTime.now());
             if (Objects.nonNull(changeEmpl.isIsError())) {
@@ -842,16 +836,14 @@ public class AreaHelper {
             medicalEmployees.setMedicalEmployeeJobId(empl.getMedicalEmployeeJobInfoId());
             medicalEmployees.setArea(area);
             medicalEmployees.setReplacement(empl.isReplacement());
-            medicalEmployees.setStartDate(empl.getStartDate());
+            medicalEmployees.setEmployeeCategory(empl.isReplacement() ? 2L : 0L);
+            medicalEmployees.setStartDate(LocalDate.now());
             medicalEmployees.setEndDate(empl.getEndDate());
             medicalEmployees.setSnils(empl.getSnils());
             if (!Strings.isNumberWith4Digits(empl.getPositionCode())) {
                 medicalEmployees.setPositionCode(empl.getPositionCode());
             } else {
                 medicalEmployees.setPositionCodeSupp(Long.parseLong(empl.getPositionCode()));
-            }
-            if (Boolean.TRUE.equals(empl.getTempDuty())) {
-                medicalEmployees.setTempDutyStartDate(LocalDate.now());
             }
             medicalEmployees.setCreateDate(LocalDateTime.now());
             medicalEmployees.setUpdateDate(LocalDateTime.now());

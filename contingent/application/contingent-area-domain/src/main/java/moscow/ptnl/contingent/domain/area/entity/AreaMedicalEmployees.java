@@ -93,6 +93,10 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean isError;
 
+    @LogIt
+    @Column(name = "EMPLOYEE_CATEGORY")
+    private Long employeeCategory;
+
     public AreaMedicalEmployees() {
     }
 
@@ -221,6 +225,11 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     public Boolean getError() { return isError; }
 
     public void setError(Boolean error) { isError = error; }
+
+    public Long getEmployeeCategory() { return employeeCategory; }
+
+    public void setEmployeeCategory(Long employeeCategory) { this.employeeCategory = employeeCategory; }
+
 
     @Override
     public boolean equals(Object obj) {
