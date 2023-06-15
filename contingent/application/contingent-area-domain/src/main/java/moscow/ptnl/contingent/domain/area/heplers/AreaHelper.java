@@ -636,6 +636,10 @@ public class AreaHelper {
             }
             ChangeMedicalEmployee changeEmpl = optionalChangeEmpl.get();
 
+            if (changeEmpl.getStartDate() != null) {
+                empl.setStartDate(changeEmpl.getStartDate());
+            }
+
             if (changeEmpl.getEndDate() != null) {
                 empl.setEndDate(changeEmpl.getEndDate());
             }
@@ -837,7 +841,7 @@ public class AreaHelper {
             medicalEmployees.setArea(area);
             medicalEmployees.setReplacement(empl.isReplacement());
             medicalEmployees.setEmployeeCategory(empl.isReplacement() ? 2L : 0L);
-            medicalEmployees.setStartDate(LocalDate.now());
+            medicalEmployees.setStartDate(empl.getStartDate());
             medicalEmployees.setEndDate(empl.getEndDate());
             medicalEmployees.setSnils(empl.getSnils());
             if (!Strings.isNumberWith4Digits(empl.getPositionCode())) {
