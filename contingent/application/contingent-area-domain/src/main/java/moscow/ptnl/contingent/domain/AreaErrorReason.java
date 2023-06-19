@@ -104,6 +104,9 @@ public enum AreaErrorReason implements ErrorReason {
     SEARCH_AREA_NOT_MOSCOW_ADDRESS("UE115", "Указан адрес не в московском регионе"),
     EMPLOYEE_END_DATE_INCORRECT("UE116", "Дата окончания назначения МР не может быть меньше текущей даты"),
     ALLOW_ONLY_ONE_AREA_FOR_AUTO("UE117", "Запрещено иметь более одно участка с признаком «Назначать автоматически для прикрепления» = True, поэтому требуется изменить признак на «Назначать автоматически для прикрепления» = False для участка с ИД %s и названием \"%s\""),
+    REASON_FOR_SITE_CLOSURE_NOT_FOUND("UE118", "Причина закрытия участка с кодом %s не найдена в системе."),
+    MR_CAN_BE_MAIN_ONE_IN_ONE_AREA("UE119", "МР %s уже является основным на участке %s. МР может быть основным только на одном участке вне зависимости от типа."),
+    DESTINATION_INTERVALS_MUST_NOT_OVERLAP("UE120", "Интервалы назначения основного МР ИД %s и МР ВРИО ИД %s не должны пересекаться на текущем участке")
     ;
 
     private final String description;

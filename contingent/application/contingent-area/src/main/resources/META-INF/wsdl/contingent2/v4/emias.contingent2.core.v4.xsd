@@ -129,8 +129,7 @@
             <xs:element name="medicalEmployeeJobId" type="xs:long" />
             <xs:element name="snils" type="restr:stringLimit20" />
             <xs:element name="position" type="tns:PositionNomClinic" minOccurs="0" />
-            <xs:element name="tempDutyStartDate" type="xs:date" minOccurs="0" />
-            <xs:element name="isReplacement" type="xs:boolean" />
+            <xs:element name="employeeCategory" type="xs:int" maxOccurs="1" />
             <xs:element name="startDate" type="xs:date" minOccurs="0" />
             <xs:element name="endDate" type="xs:date" minOccurs="0" />
         </xs:sequence>
@@ -141,10 +140,12 @@
             <xs:element name="moId" type="xs:long" />
             <xs:element name="muId" type="xs:long" minOccurs="0" />
             <xs:element name="number" type="restr:int5digits" minOccurs="0" />
+            <xs:element name="specialNumber" type="xs:string" minOccurs="0" />
             <xs:element name="description" type="xs:string" minOccurs="0" />
             <xs:element name="areaType" type="tns:AreaTypeShort" />
             <xs:element name="areaTypeClass" type="tns:AreaTypeClass" />
             <xs:element name="areaTypeKind" type="tns:AreaTypeKind" />
+            <xs:element name="areaTypeCategory" type="xs:int" />
             <xs:element name="muService" type="tns:MuService" minOccurs="0" />
             <xs:element name="ageMin" type="xs:int" minOccurs="0" />
             <xs:element name="ageMax" type="xs:int" minOccurs="0" />
@@ -162,6 +163,9 @@
                 </xs:complexType>
             </xs:element>
             <xs:element name="dateCreated" type="xs:date" />
+            <xs:element name="attFinalLimit" type="xs:int" minOccurs="0" />
+            <xs:element name="attInfoLimit" type="xs:int" minOccurs="0" />
+            <xs:element name="residentsBindRate" type="xs:int" minOccurs="0" />
             <xs:element name="archive" type="xs:boolean" />
             <xs:element name="medicalEmployees" minOccurs="0">
                 <xs:complexType>
@@ -232,8 +236,7 @@
                             <xs:complexType>
                                 <xs:sequence>
                                     <xs:element name="medicalEmployeeJobInfoId" type="xs:long" />
-                                    <xs:element name="tempDutyStartDate" type="xs:date" minOccurs="0" />
-                                    <xs:element name="isReplacement" type="xs:boolean" />
+                                    <xs:element name="employeeCategory" type="xs:long" maxOccurs="1" />
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
@@ -261,9 +264,23 @@
             <xs:element name="snils" type="restr:stringLimit20"/>
             <xs:element name="positionCode" type="xs:string"/>
             <xs:element name="subdivisionId" type="xs:long"/>
-            <xs:element name="isTempDuty" type="xs:boolean" minOccurs="0"/>
-            <xs:element name="isReplacement" type="xs:boolean"/>
             <xs:element name="startDate" type="xs:date"/>
+            <xs:element name="employeeCategory" type="xs:long" maxOccurs="1" />
+            <xs:element name="endDate" type="xs:date" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AddEmployee">
+        <xs:annotation>
+            <xs:documentation>Добавление МР на участок</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="jobId" type="xs:long" maxOccurs="1" />
+            <xs:element name="snils" type="restr:stringLimit20" maxOccurs="1" />
+            <xs:element name="positionCode" type="xs:string" maxOccurs="1" />
+            <xs:element name="subdivisionId" type="xs:long" maxOccurs="1" />
+            <xs:element name="employeeCategory" type="xs:long" maxOccurs="1" />
+            <xs:element name="startDate" type="xs:date" maxOccurs="1" />
             <xs:element name="endDate" type="xs:date" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
@@ -542,7 +559,16 @@
             <xs:documentation>Событие на участке</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="eventType" type="xs:string" />
+
+            <xs:element name="eventTypeInfo" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="eventTypeId" type="xs:long" maxOccurs="1" />
+                        <xs:element name="eventTypeName" type="xs:string" maxOccurs="1" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
             <xs:element name="updateDate" type="xs:dateTime" />
             <xs:element name="userLogin" type="xs:string" />
             <xs:element name="userJobId" type="xs:long" />
@@ -578,6 +604,50 @@
                     <xs:sequence>
                         <xs:element name="muId" type="tns:ID" />
                         <xs:element name="areaTypes" type="tns:AreaTypeShort" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ChangeMainEmployee">
+        <xs:annotation>
+            <xs:documentation>Замена основного МР (ВРИО)</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="oldEmployee" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="jobId" type="xs:long" maxOccurs="1" />
+                        <xs:element name="isError" type="xs:long" minOccurs="0" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="newEmployee" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="jobId" type="xs:long" maxOccurs="1" />
+                        <xs:element name="snils" type="xs:string" maxOccurs="1" />
+                        <xs:element name="positionCode" type="xs:string" maxOccurs="1" />
+                        <xs:element name="subdivisionId" type="xs:long" maxOccurs="1" />
+                        <xs:element name="employeeCategory" type="xs:long" maxOccurs="1" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DelEmployee">
+        <xs:annotation>
+            <xs:documentation>Удаление МР</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="oldEmployee" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="jobId" type="xs:long" maxOccurs="1" />
+                        <xs:element name="isError" type="xs:long" minOccurs="0" />
+                        <xs:element name="endDate" type="xs:date" maxOccurs="1" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
