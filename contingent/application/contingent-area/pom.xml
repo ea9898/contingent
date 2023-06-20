@@ -251,6 +251,13 @@
                                         <extraarg>-verbose</extraarg>
                                     </extraargs>
                                 </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/META-INF/wsdl/contingent2/v4/emias.contingent2.v4.wsdl</wsdl>
+                                    <serviceName>AreaService_v4</serviceName>
+                                    <extraargs>
+                                        <extraarg>-verbose</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
                             </wsdlOptions>
                         </configuration>
                         <goals>
