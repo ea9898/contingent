@@ -237,8 +237,13 @@
     <xs:element name="setAreaEmployeeResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="assignmentId" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="fault" type="core:Fault" minOccurs="0"/>
+                <xs:element name="result" fixed="true">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:boolean"/>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
