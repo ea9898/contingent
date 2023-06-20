@@ -130,7 +130,7 @@
             <xs:element name="snils" type="restr:stringLimit20" />
             <xs:element name="position" type="tns:PositionNomClinic" minOccurs="0" />
             <xs:element name="employeeCategory" type="xs:int" maxOccurs="1" />
-            <xs:element name="startDate" type="xs:date" minOccurs="0" />
+            <xs:element name="startDate" type="xs:date" maxOccurs="1" />
             <xs:element name="endDate" type="xs:date" minOccurs="0" />
         </xs:sequence>
     </xs:complexType>
@@ -145,7 +145,7 @@
             <xs:element name="areaType" type="tns:AreaTypeShort" />
             <xs:element name="areaTypeClass" type="tns:AreaTypeClass" />
             <xs:element name="areaTypeKind" type="tns:AreaTypeKind" />
-            <xs:element name="areaTypeCategory" type="xs:int" />
+            <xs:element name="areaTypeCategory" type="xs:int" minOccurs="0" />
             <xs:element name="muService" type="tns:MuService" minOccurs="0" />
             <xs:element name="ageMin" type="xs:int" minOccurs="0" />
             <xs:element name="ageMax" type="xs:int" minOccurs="0" />
@@ -171,6 +171,7 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="medicalEmployee" type="tns:MedicalEmployee" maxOccurs="unbounded" />
+                        <xs:element name="replacementCount" type="xs:long" minOccurs="0" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>

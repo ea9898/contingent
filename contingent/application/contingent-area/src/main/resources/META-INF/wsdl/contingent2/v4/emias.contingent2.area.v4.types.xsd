@@ -222,7 +222,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="setMedicalEmployeeOnAreaRequest">
+    <xs:element name="setAreaEmployeeRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long"/>
@@ -234,7 +234,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="setMedicalEmployeeOnAreaResponse">
+    <xs:element name="setAreaEmployeeResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="assignmentId" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>
@@ -365,7 +365,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="xs:long" />
-                <xs:element name="reasonCloseId" type="xs:long" minOccurs="0" />
+                <xs:element name="reasonCloseId" type="xs:long" maxOccurs="unbounded" minOccurs="0" />
                 <xs:element ref="core:options" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
