@@ -236,7 +236,7 @@
                             <xs:complexType>
                                 <xs:sequence>
                                     <xs:element name="medicalEmployeeJobInfoId" type="xs:long" />
-                                    <xs:element name="employeeCategory" type="xs:long" maxOccurs="1" />
+                                    <xs:element name="employeeCategory" type="xs:int" maxOccurs="1" />
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
@@ -265,7 +265,7 @@
             <xs:element name="positionCode" type="xs:string"/>
             <xs:element name="subdivisionId" type="xs:long"/>
             <xs:element name="startDate" type="xs:date"/>
-            <xs:element name="employeeCategory" type="xs:long" maxOccurs="1" />
+            <xs:element name="employeeCategory" type="xs:int" maxOccurs="1" />
             <xs:element name="endDate" type="xs:date" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
@@ -279,7 +279,7 @@
             <xs:element name="snils" type="restr:stringLimit20" maxOccurs="1" />
             <xs:element name="positionCode" type="xs:string" maxOccurs="1" />
             <xs:element name="subdivisionId" type="xs:long" maxOccurs="1" />
-            <xs:element name="employeeCategory" type="xs:long" maxOccurs="1" />
+            <xs:element name="employeeCategory" type="xs:int" maxOccurs="1" />
             <xs:element name="startDate" type="xs:date" maxOccurs="1" />
             <xs:element name="endDate" type="xs:date" minOccurs="0"/>
         </xs:sequence>
@@ -630,7 +630,7 @@
                         <xs:element name="snils" type="xs:string" maxOccurs="1" />
                         <xs:element name="positionCode" type="xs:string" maxOccurs="1" />
                         <xs:element name="subdivisionId" type="xs:long" maxOccurs="1" />
-                        <xs:element name="employeeCategory" type="xs:long" maxOccurs="1" />
+                        <xs:element name="employeeCategory" type="xs:int" maxOccurs="1" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
