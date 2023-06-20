@@ -1320,14 +1320,34 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.checkSearchAreaInaccurateAddress(isExactAddressMatch, searchAreaAddresses);
 
         //4
+        List<Area> areas = new ArrayList<>();
+
         List<Addresses> foundedAddresses = null;
         if (searchAreaAddresses != null && !searchAreaAddresses.isEmpty()) {
             foundedAddresses = areaHelper.checkSearchAreaAddresses(isExactAddressMatch, searchAreaAddresses);
         }
+        if (foundedAddresses != null && !foundedAddresses.isEmpty()) {
+            List<AreaAddress> areaAddresses = new ArrayList<>();
+            //5.3.1 Поиск по точному совпадению адресов (выполняется, если параметр «Искать по точному совпадению адресов» = Истина или не передан)
+            if (isExactAddressMatch == null || Boolean.TRUE.equals(isExactAddressMatch)) {
+                areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).filter(Objects::nonNull).collect(Collectors.toList()));
+            }
+            if (Boolean.FALSE.equals(isExactAddressMatch)) {
+                //5.3.2 Поиск по пересечению адресов (выполняется, если параметр «Искать по точному совпадению адресов» = Ложь
+                //По алгоритму из п4.2 здесь должен быть только один адрес
+                Addresses address = foundedAddresses.get(0);
+                areaAddresses = algorithms.searchAreaByAddressV3(null, null, address, true, null);
+            }
+
+            if (!areaAddresses.isEmpty()) {
+                areas = areaAddresses.stream().map(AreaAddress::getArea).collect(Collectors.toList());
+            }
+        }
+
 
         //5 Система выполняет поиск участков по переданным входным параметрам (логическое И шагов 5.1, 5.2, 5.3, 5.4):
         //5.1
-        List<Area> areas = null;
+
 
         boolean noSearchAreas = StringUtils.isEmpty(areaTypeClassCode) && StringUtils.isEmpty(moId) && CollectionUtils.isEmpty(muIds) &&
                 CollectionUtils.isEmpty(areaTypeCodes) && areaTypeProfile == null && CollectionUtils.isEmpty(servicedMuIds) &&
@@ -1335,7 +1355,8 @@ public class AreaServiceImpl implements AreaService {
 
         if (!noSearchAreas) {
             //Только если есть критерии поиска для запроса
-            areas = areaRepository.findAreas(areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile,
+            areas = areaRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
+                    areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile,
                     servicedMuIds, number, description, isArchived);
         }
         //5.2
@@ -1362,15 +1383,16 @@ public class AreaServiceImpl implements AreaService {
         }
 
         //5.3
+/*
         if (foundedAddresses != null && !foundedAddresses.isEmpty()) {
             List<AreaAddress> areaAddresses = new ArrayList<>();
-            //5.3.1 Поиск по точному совпадению адресов (выполняется, если параметр «Искать по точному совпадению адресов» = Истина или не передан)
+//            5.3.1 Поиск по точному совпадению адресов (выполняется, если параметр «Искать по точному совпадению адресов» = Истина или не передан)
             if (isExactAddressMatch == null || Boolean.TRUE.equals(isExactAddressMatch)) {
                 areaAddresses = areaAddressRepository.findAreaAddressByAddressIds(foundedAddresses.stream().map(Addresses::getId).filter(Objects::nonNull).collect(Collectors.toList()));
             }
             if (Boolean.FALSE.equals(isExactAddressMatch)) {
-                //5.3.2 Поиск по пересечению адресов (выполняется, если параметр «Искать по точному совпадению адресов» = Ложь
-                //По алгоритму из п4.2 здесь должен быть только один адрес
+//                5.3.2 Поиск по пересечению адресов (выполняется, если параметр «Искать по точному совпадению адресов» = Ложь
+//                По алгоритму из п4.2 здесь должен быть только один адрес
                 Addresses address = foundedAddresses.get(0);
                 areaAddresses = algorithms.searchAreaByAddressV3(null, null, address, true, null);
             }
@@ -1382,8 +1404,9 @@ public class AreaServiceImpl implements AreaService {
                 areas = areaAddresses.stream().map(AreaAddress::getArea).collect(Collectors.toList());
             }
         }
+*/
 
-        // 5.4 фильтруется в
+//         5.4 фильтруется в
         // moscow/ptnl/contingent/domain/area/AreaServiceImpl.java:1322
 
         int totalSize = areas.size();

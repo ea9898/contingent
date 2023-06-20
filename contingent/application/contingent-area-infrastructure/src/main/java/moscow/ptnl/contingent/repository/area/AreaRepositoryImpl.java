@@ -206,11 +206,13 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     @Override
-    public List<Area> findAreas(Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
+    public List<Area> findAreas(List<Long> areaIds, Long areaTypeClassCode, Long moId, List<Long> muIds, List<Long> areaTypeCodes,
                                 Long areaTypeProfile, List<Long> servicedMuIds, Integer number, String description, Boolean archived) {
         Specification<Area> specification = (root, criteriaQuery, criteriaBuilder) -> {
             Join<Area, AreaType> areaTypeJoin = root.join(Area_.areaType, JoinType.LEFT);
             return criteriaBuilder.and(
+                    areaIds == null || areaIds.isEmpty() ? criteriaBuilder.conjunction() :
+                            criteriaBuilder.in(root.get(Area_.id.getName())).value(areaIds),
                     areaTypeClassCode == null ? criteriaBuilder.conjunction() :
                             criteriaBuilder.equal(areaTypeJoin.get(AreaType_.areaTypeClass).get(AreaTypeClass_.code), areaTypeClassCode),
                     moId == null ? criteriaBuilder.conjunction() :
