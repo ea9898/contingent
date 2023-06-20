@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="CONTINGENT2-2718-1" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREAS" columnName="special_number"/>
+                <columnExists tableName="AREAS" columnName="att_final_limit"/>
+                <columnExists tableName="AREAS" columnName="att_info_limit"/>
+                <columnExists tableName="AREAS" columnName="reason_close_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREAS">
+            <column name="special_number" type="VARCHAR2" remarks="Специальный номер онкоучастка"/>
+            <column name="att_final_limit" type="BIGINT"
+                    remarks="Лимит прикреплений - количество прикрепленных пациентов, при достижении которого прикрепление к данному участку более не возможно"/>
+            <column name="att_info_limit" type="BIGINT"
+                    remarks="Пограничный лимит прикреплений - количество прикрепленных пациентов, при достижении которого на UI выдается предупреждение"/>
+            <column name="reason_close_id" type="BIGINT" remarks="Идентификатор причины закрытия участка"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREAS" columnName="special_number"/>
+            <dropColumn tableName="AREAS" columnName="att_final_limit"/>
+            <dropColumn tableName="AREAS" columnName="att_info_limit"/>
+            <dropColumn tableName="AREAS" columnName="reason_close_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2718-2" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="JL_HISTORY" columnName="event_type_id"/>
+                <columnExists tableName="JL_HISTORY" columnName="operation_link_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="JL_HISTORY">
+            <column name="event_type_id" type="BIGINT"
+                    remarks="Ссылка на запись в справочнике истории событий на участке EVENT_TYPES. Применимо к изменениям участков."/>
+        </addColumn>
+
+        <addColumn tableName="JL_HISTORY">
+            <column name="operation_link_id" type="BIGINT"
+                    remarks="ИД общей операции. Заполняется только методом setAreaEmployee при смене (формировании блока changeMainEmployee) основного/ВРИО МР."/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="JL_HISTORY" columnName="event_type_id"/>
+            <dropColumn tableName="JL_HISTORY" columnName="operation_link_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2718-3" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_EVENT_TYPE_ID"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="event_type_id"
+                                 baseTableName="JL_HISTORY"
+                                 constraintName="FK_EVENT_TYPE_ID"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="EVENT_TYPES"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="JL_HISTORY" constraintName="event_type_id"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2718-5" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="EVENT_TYPES"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы EVENT_TYPES</comment>
+        <createTable tableName="EVENT_TYPES" remarks="Типы событий на участке">
+            <column name="ID" type="NUMBER" remarks="ИД записи">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(255)" remarks="Наименование типа события.">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="EVENT_TYPES"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2718-6" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="MEDICAL_ORGANISATIONS_ONKO"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы MEDICAL_ORGANISATIONS_ONKO</comment>
+        <createTable tableName="MEDICAL_ORGANISATIONS_ONKO"
+                     remarks="Медицинские организации в онкологии - справочник НСИ2">
+            <column name="global_id" type="NUMBER(19)" remarks="Глобальный идентификатор">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="id" type="NUMBER(38)" remarks="Идентификатор записи">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_rmu" type="NUMBER(38)" remarks="Идентификатор РМУ (СКУУ/СУПП)"/>
+            <column name="id_smvr2" type="NUMBER(38)" remarks="Идентификатор СВМР2"/>
+            <column name="name" type="VARCHAR2(255)" remarks="Наименование медицинской организации">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR2(255)" remarks="Тип медицинской организации">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mo_id" type="NUMBER(38)" remarks="Идентификатор головной МО"/>
+            <column name="code_onco_area" type="VARCHAR2(4)" remarks="Код онкоучастка (МУ)"/>
+            <column name="archived" type="BIGINT"
+                    remarks="Признак архивности записи в справочнике. По умолчанию заполняется 0.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="TIMESTAMP(6)" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source" type="VARCHAR2" remarks="Источник обновления"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="MEDICAL_ORGANISATIONS_ONKO"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2718-7" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="AREA_CLOSE_REASONS"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы AREA_CLOSE_REASONS</comment>
+        <createTable tableName="AREA_CLOSE_REASONS" remarks="Причины закрытия участка - справочник НСИ2">
+            <column name="global_id" type="BIGINT" remarks="Глобал ИД в справочнике">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="reason_close_name" type="VARCHAR2(255)" remarks="Причина закрытия участка">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="NUMBER(4)" remarks="Код закрытия">
+                <constraints nullable="false"/>
+            </column>
+            <column name="archived" type="BIGINT" remarks="Признак архивности.">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="TIMESTAMP(6)" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source" type="VARCHAR2" remarks="Источник обновления"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="AREA_CLOSE_REASONS"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2718-8" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="SPECIALIZATION" columnName="doc_speciality_code"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="SPECIALIZATION">
+            <column name="doc_speciality_code" type="varchar(50)"
+                    remarks="Должности из справочника в СУПП = POSITION_SUPP.CODE"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="SPECIALIZATION" columnName="doc_speciality_code"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2718-9" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="DOC_SPECIALITY_CODE"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="DOC_SPECIALITY_CODE"
+                                 baseTableName="SPECIALIZATION"
+                                 constraintName="FK_DOC_SPECIALITY_CODE"
+                                 referencedColumnNames="CODE"
+                                 referencedTableName="POSITION_SUPP"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="SPECIALIZATION" constraintName="FK_DOC_SPECIALITY_CODE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2718-10" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_REASON_CLOSE_ID"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="REASON_CLOSE_ID"
+                                 baseTableName="AREAS"
+                                 constraintName="FK_REASON_CLOSE_ID"
+                                 referencedColumnNames="GLOBAL_ID"
+                                 referencedTableName="AREA_CLOSE_REASONS"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="AREAS" constraintName="REASON_CLOSE_ID"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
