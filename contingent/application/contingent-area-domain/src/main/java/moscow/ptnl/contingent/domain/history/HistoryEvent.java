@@ -9,6 +9,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +17,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
+import moscow.ptnl.contingent.nsi.domain.area.EventTypes;
+import moscow.ptnl.contingent.nsi.domain.area.PositionSupp;
 
 /**
  *
@@ -41,6 +46,13 @@ public class HistoryEvent implements Serializable {
     
     @Column(name = "OBJECT_ID") @NotNull
     private String objectId;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id")
+    @Size(max = 50)
+    private EventTypes eventTypeId;
+
+    @Column(name = "OPERATION_LINK_ID")
+    private Long operationLinkId;
 
     @Column(name = "CHANGE_DATE") @NotNull
     private LocalDateTime changeDate;
@@ -147,6 +159,22 @@ public class HistoryEvent implements Serializable {
 
     public void setRequestId(String requestId) {
         this.requestId = requestId;
+    }
+
+    public EventTypes getEventTypeId() {
+        return eventTypeId;
+    }
+
+    public void setEventTypeId(EventTypes eventTypeId) {
+        this.eventTypeId = eventTypeId;
+    }
+
+    public Long getOperationLinkId() {
+        return operationLinkId;
+    }
+
+    public void setOperationLinkId(Long operationLinkId) {
+        this.operationLinkId = operationLinkId;
     }
 
     public Set<HistoryEventValue> getValues() {

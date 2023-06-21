@@ -3,6 +3,7 @@ package moscow.ptnl.contingent.domain.area.entity;
 import moscow.ptnl.contingent.domain.converter.BooleanIntegerConverter;
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.domain.history.converter.AreaTypeFieldConverter;
+import moscow.ptnl.contingent.nsi.domain.area.AreaCloseReasons;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.domain.history.ServiceName;
 import moscow.ptnl.contingent.domain.history.meta.Journalable;
@@ -62,9 +63,21 @@ public class Area implements Serializable {
     private Integer number;
 
     @LogIt
+    @Column(name = "SPECIAL_NUMBER")
+    private String specialNumber;
+
+    @LogIt
     @Column(name = "IS_AUTO_ASSIGN_FOR_ATTACH")
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean autoAssignForAttach;
+
+    @LogIt
+    @Column(name = "ATT_FINAL_LIMIT")
+    private Integer attFinalLimit;
+
+    @LogIt
+    @Column(name = "ATT_INFO_LIMIT")
+    private Integer attInfoLimit;
 
     @LogIt
     @Column(name = "ARCHIVED")
@@ -132,6 +145,10 @@ public class Area implements Serializable {
     @LogIt
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaMuService> areaMuServices = new HashSet<>();
+
+    @LogIt
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "globalId")
+    private AreaCloseReasons reasonCloseId;
 
     public Area() {
     }
@@ -345,6 +362,38 @@ public class Area implements Serializable {
 
     public void setAreaMuServices(Set<AreaMuService> areaMuServices) {
         this.areaMuServices = areaMuServices;
+    }
+
+    public String getSpecialNumber() {
+        return specialNumber;
+    }
+
+    public void setSpecialNumber(String specialNumber) {
+        this.specialNumber = specialNumber;
+    }
+
+    public Integer getAttFinalLimit() {
+        return attFinalLimit;
+    }
+
+    public void setAttFinalLimit(Integer attFinalLimit) {
+        this.attFinalLimit = attFinalLimit;
+    }
+
+    public Integer getAttInfoLimit() {
+        return attInfoLimit;
+    }
+
+    public void setAttInfoLimit(Integer attInfoLimit) {
+        this.attInfoLimit = attInfoLimit;
+    }
+
+    public AreaCloseReasons getReasonCloseId() {
+        return reasonCloseId;
+    }
+
+    public void setReasonCloseId(AreaCloseReasons reasonCloseId) {
+        this.reasonCloseId = reasonCloseId;
     }
 
     public Set<AreaMuService> getActualAreaMuServices() {

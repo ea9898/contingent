@@ -4,12 +4,16 @@ import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import moscow.ptnl.contingent.domain.converter.BooleanStrictIntegerConverter;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
@@ -37,6 +41,11 @@ public class Specialization implements Serializable, NsiExternalEntity {
     @Column(name = "CODE")
     @MapToNsi
     private String code;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "globalId")
+    @Size(max = 50)
+    @MapToNsi
+    private PositionSupp docSpecialityCode;
 
     @Column(name = "ARCHIVED", nullable = false)
     @Convert(converter = BooleanStrictIntegerConverter.class)
@@ -82,6 +91,14 @@ public class Specialization implements Serializable, NsiExternalEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public PositionSupp getDocSpecialityCode() {
+        return docSpecialityCode;
+    }
+
+    public void setDocSpecialityCode(PositionSupp docSpecialityCode) {
+        this.docSpecialityCode = docSpecialityCode;
     }
 
     @Override

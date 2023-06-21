@@ -94,7 +94,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     private Boolean isError;
 
     @LogIt
-    @Column(name = "EMPLOYEE_CATEGORY")
+    @Column(name = "EMPLOYEE_CATEGORY", nullable = false)
     private Long employeeCategory;
 
     public AreaMedicalEmployees() {
