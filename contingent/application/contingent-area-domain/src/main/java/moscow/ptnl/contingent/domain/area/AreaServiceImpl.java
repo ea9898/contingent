@@ -1357,7 +1357,7 @@ public class AreaServiceImpl implements AreaService {
 
         if (!noSearchAreas) {
             //Только если есть критерии поиска для запроса
-            areas = areaRepository.findAreas(areas.stream().map(Area::getId).collect(Collectors.toList()),
+            areas = areaRepository.findAreas(areas != null ? areas.stream().map(Area::getId).collect(Collectors.toList()) : null,
                     areaTypeClassCode, moId, muIds, areaTypeCodes, areaTypeProfile,
                     servicedMuIds, number, description, isArchived);
         }
