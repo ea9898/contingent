@@ -1,5 +1,6 @@
 package moscow.ptnl.contingent.nsi.domain.area;
 
+import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 import org.hibernate.annotations.Proxy;
 
 import java.io.Serializable;
@@ -15,14 +18,14 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "MEDICAL_ORGANISATIONS_ONKO")
+@Cacheable
 @Proxy(lazy=false)
-@SequenceGenerator(name = "SEQ_MEDICAL_ORGANISATIONS_ONKO", sequenceName = "SEQ_MEDICAL_ORGANISATIONS_ONKO", allocationSize=1)
+@MapToNsi(table = NsiTablesEnum.MEDICAL_ORGANISATIONS_ONKO)
 public class MedicalOrganisationsOnko implements Serializable {
 
     private static final long serialVersionUID = -817912141605672226L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="SEQ_MEDICAL_ORGANISATIONS_ONKO")
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
     @Size(max = 19)
     private Long globalId;
