@@ -1320,7 +1320,7 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.checkSearchAreaInaccurateAddress(isExactAddressMatch, searchAreaAddresses);
 
         //4
-        List<Area> areas = new ArrayList<>();
+        List<Area> areas = null;
 
         List<Addresses> foundedAddresses = null;
         if (searchAreaAddresses != null && !searchAreaAddresses.isEmpty()) {
@@ -1341,6 +1341,8 @@ public class AreaServiceImpl implements AreaService {
 
             if (!areaAddresses.isEmpty()) {
                 areas = areaAddresses.stream().map(AreaAddress::getArea).collect(Collectors.toList());
+            } else {
+                areas = new ArrayList<>();
             }
         }
 
