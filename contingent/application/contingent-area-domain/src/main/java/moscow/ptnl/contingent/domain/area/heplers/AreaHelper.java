@@ -1188,13 +1188,11 @@ public class AreaHelper {
 
         String code = codeOncoArea.get().getCodeOncoArea();
         String specialNumberPattern = code + "-" + areaTypeCode + "-";
-        Optional<Area> area = areaRepository.findLastAreaBySpecialNumber(specialNumberPattern);
+        List<Area> area = areaRepository.findLastAreaBySpecialNumber(specialNumberPattern);
         long number = 1L;
 
-        if (area.isPresent()) {
-            String lastSpecialNumber = area.get().getSpecialNumber();
-            String lastNumber = lastSpecialNumber.split("-")[2];
-            number = Long.parseLong(lastNumber) + 1;
+        if (!area.isEmpty()) {
+            number = area.stream().mapToLong(item -> Long.parseLong(item.getSpecialNumber().split("-")[2])).max().getAsLong() + 1;
         }
 
         newSpecialNumber = specialNumberPattern + number;

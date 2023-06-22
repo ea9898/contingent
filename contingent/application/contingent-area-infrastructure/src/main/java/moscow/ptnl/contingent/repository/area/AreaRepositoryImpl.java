@@ -259,8 +259,8 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     @Override
-    public Optional<Area> findLastAreaBySpecialNumber(String pattern) {
-        return areaCRUDRepository.findOne(
+    public List<Area> findLastAreaBySpecialNumber(String pattern) {
+        return areaCRUDRepository.findAll(
                 (Specification<Area>) (root, query, criteriaBuilder) ->
                         criteriaBuilder.like(root.get(Area_.SPECIAL_NUMBER), pattern + "%")
         );

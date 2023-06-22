@@ -35,6 +35,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -504,8 +505,12 @@ public class AreaServiceHelperTest {
         medicalOrganisationsOnko.setCodeOncoArea("123");
         Area area = new Area();
         area.setSpecialNumber("123-567-1");
+
+        List<Area> areas = new ArrayList<>();
+        areas.add(area);
+
         doReturn(Optional.of(medicalOrganisationsOnko)).when(medicalOrganisationsOnkoRepository).findByMoId(medicalOrganisationsOnko.getMoId());
-        doReturn(Optional.of(area)).when(areaRepository).findLastAreaBySpecialNumber("123-567-");
+        doReturn(areas).when(areaRepository).findLastAreaBySpecialNumber("123-567-");
 
         String newSpecialNumber = null;
         try {
@@ -513,7 +518,6 @@ public class AreaServiceHelperTest {
         } catch (ContingentException e) {
             throw new RuntimeException(e);
         }
-
         assertEquals("123-567-2", newSpecialNumber);
     }
 

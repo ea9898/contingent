@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManager;
 @NoRepositoryBean
 public interface AreaRepository {
 
-    Optional<Area> findLastAreaBySpecialNumber(String pattern);
+    List<Area> findLastAreaBySpecialNumber(String pattern);
 
     List<Area> findAreas(Long moId, Long muId, Long areaTypeCode, Integer number, Boolean actual);
 
