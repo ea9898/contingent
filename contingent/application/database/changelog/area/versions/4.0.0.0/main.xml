@@ -207,4 +207,38 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2718-11" author="ddryuchin" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="AREA_TYPE" columnName="area_type_category"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="AREA_TYPE">
+            <column name="area_type_category" type="bigint"
+                    remarks="Категория типа участка"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="AREA_TYPE" columnName="area_type_category"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="CONTINGENT2-2736-1" author="ddryuchin" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="AD_CONFIG"/>
+            </and>
+        </preConditions>
+        <comment>Настройка безопасности методов web-сервиса</comment>
+        <loadUpdateData
+                encoding="UTF-8"
+                file="changelog/area/versions/4.0.0.0/files/security.config.20.csv"
+                quotchar=""
+                separator="#"
+                tableName="AD_CONFIG"
+                primaryKey="code">
+            <column name="code" type="STRING"/>
+            <column name="val" type="STRING"/>
+        </loadUpdateData>
+    </changeSet>
+
 </databaseChangeLog>
