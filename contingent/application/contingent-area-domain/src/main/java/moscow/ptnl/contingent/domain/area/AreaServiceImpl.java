@@ -182,44 +182,48 @@ public class AreaServiceImpl implements AreaService {
     public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, List<Long> policyTypesIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
                                   boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
-        return createPrimaryAreaInternal(moId, muId, number, areaTypeCode, null, policyTypesIds, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description).getId();
+        return createPrimaryAreaInternal(moId, muId, number, areaTypeCode, null, policyTypesIds, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, null, null, attachByMedicalReason, description).getId();
     }
 
     @Override
     @LogESU(type = AreaInfoEvent.class, useResult = true)
     public Long createPrimaryArea(long moId, Long muId, Integer number, Long areaTypeCode, Long areaTypeProfileCode, List<Long> policyTypesIds,
                                   Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                  boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
-        return createPrimaryAreaInternal(moId, muId, number, areaTypeCode, areaTypeProfileCode, policyTypesIds, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attachByMedicalReason, description).getId();
+                                  boolean autoAssignForAttachment, Integer attInfoLimit, Integer attFinalLimit, Boolean attachByMedicalReason, String description) throws ContingentException {
+        return createPrimaryAreaInternal(moId, muId, number, areaTypeCode, areaTypeProfileCode, policyTypesIds, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, autoAssignForAttachment, attInfoLimit, attFinalLimit, attachByMedicalReason, description).getId();
     }
 
     @Override
     public Area createPrimaryAreaInternal(long moId, Long muId, Integer number, Long areaTypeCode, Long areaTypeProfileCode, List<Long> policyTypesIds,
                                           Integer ageMin, Integer ageMax, Integer ageMinM, Integer ageMaxM, Integer ageMinW, Integer ageMaxW,
-                                          boolean autoAssignForAttachment, Boolean attachByMedicalReason, String description) throws ContingentException {
+                                          boolean autoAssignForAttachment, Integer attInfoLimit, Integer attFinalLimit, Boolean attachByMedicalReason, String description) throws ContingentException {
         Validation validation = new Validation();
 
-        // 1
+        // 2
         List<AreaType> areaTypeList = areaHelper.checkAndGetAreaTypesExist(Collections.singletonList(areaTypeCode), validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+
         AreaType areaType = areaTypeList.get(0);
-        // 2
+        // 3
         areaHelper.checkAreaTypeIsPrimary(areaType, validation);
 
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
-        // 3
-        areaHelper.checkEmptyMuId(muId, areaType);
+
         // 4
-        areaHelper.checkAreaTypeAvailable(moId, muId, areaType, validation);
+        areaHelper.checkEmptyMuId(muId, areaType);
+
         // 5
-        areaHelper.checkAreaTypeCountLimits(moId, muId, areaType, validation);
+        areaHelper.checkAreaTypeAvailable(moId, muId, areaType, validation);
 
         // 6
+        areaHelper.checkAreaTypeCountLimits(moId, muId, areaType, validation);
+
+        // 7
         if (areaType.getAreaTypeKind() != null &&
                 Objects.equals(areaType.getAreaTypeKind().getCode(), AreaTypeKindEnum.MILDLY_ASSOCIATED.getCode()) &&
                 (Strings.isNullOrEmpty(description) || number == null ||
@@ -227,19 +231,19 @@ public class AreaServiceImpl implements AreaService {
             validation.error(AreaErrorReason.SOFT_RELATED_AREA_MUST_BE_FILLED);
         }
 
-        // 7
+        // 8
         areaHelper.checkAreaExistsInMU(muId, moId, areaType, number, null, validation);
 
-        // 8
+        // 9
         areaHelper.checkPolicyTypesIsOMS(policyTypesIds, validation);
 
-        // 9
+        // 10.1, 10.2
         areaHelper.checkAreaTypeAgeSetups(areaType, ageMin, ageMax, ageMinM, ageMaxM, ageMinW, ageMaxW, validation);
 
-        // 10
+        // 11.1, 11.3
         areaHelper.checkAutoAssignForAttachment(areaType, muId, autoAssignForAttachment, attachByMedicalReason, validation);
 
-        // 11
+        // 11.2
         areaHelper.checkAttachByMedicalReason(areaType, attachByMedicalReason, validation);
 
         List<AreaTypeProfile> areaTypeProfiles = Collections.emptyList();
@@ -254,10 +258,18 @@ public class AreaServiceImpl implements AreaService {
                 }
             }
         }
+
         if (!validation.isSuccess()) {
             throw new ContingentException(validation);
         }
+
         // 13
+        String specialNumber = null;
+        if (areaType.getAreaTypeCategory() == 1) {
+            specialNumber = areaHelper.specialNumber(muId, areaType.getCode());
+        }
+
+        // 14
         Area area = Area.builder()
                 .moId(moId)
                 .muId(muId)
@@ -265,6 +277,9 @@ public class AreaServiceImpl implements AreaService {
                 .areaTypeProfile(areaTypeProfiles.isEmpty() ? null : areaTypeProfiles.get(0))
                 .number(number)
                 .autoAssignForAttach(autoAssignForAttachment)
+                .specialNumber(specialNumber)
+                .attInfoLimit(attInfoLimit)
+                .attFinalLimit(attFinalLimit)
                 .archived(false)
                 .description(description)
                 .attachByMedicalReason(attachByMedicalReason)
@@ -278,7 +293,7 @@ public class AreaServiceImpl implements AreaService {
                 .build();
         areaRepository.save(area);
 
-        // 14
+        // 15
         List<PolicyType> policyTypes = policyTypeRepository.findByIds(policyTypesIds);
         List<AreaPolicyTypes> areaPolicyTypes = policyTypes.stream().map(policyType ->
                 new AreaPolicyTypes(area, policyType)).collect(Collectors.toList());
@@ -393,7 +408,7 @@ public class AreaServiceImpl implements AreaService {
         }
 
         //15
-        List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, null,true);
+        List<Area> primAreas = areaRepository.findAreas(moId, muId, primaryAreaTypeCodesIds, null, null, true);
 
         //16
         if (primAreas != null && !primAreas.isEmpty()) {
@@ -1256,7 +1271,7 @@ public class AreaServiceImpl implements AreaService {
                     if (moAddress != null && !moAddress.isEmpty()) {
                         validation.error(AreaErrorReason.ADDRESS_ALREADY_EXISTS,
                                 new ValidationParameter("address", addr.getAddress()),
-    //                            new ValidationParameter("moId", moAddress.stream().map(MoAddress::getMoId).distinct().map(String::valueOf).collect(Collectors.joining(","))));
+                                //                            new ValidationParameter("moId", moAddress.stream().map(MoAddress::getMoId).distinct().map(String::valueOf).collect(Collectors.joining(","))));
                                 new ValidationParameter("moId", moAddress.stream().map(String::valueOf).collect(Collectors.joining(","))));
                     }
                 });

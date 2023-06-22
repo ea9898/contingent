@@ -42,11 +42,13 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeCountLimitEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKindEnum;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeProfile;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
+import moscow.ptnl.contingent.nsi.domain.area.MedicalOrganisationsOnko;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyTypeEnum;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeProfileRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.MedicalOrganisationsOnkoRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.PositionCodeRepository;
 import moscow.ptnl.util.CollectionsUtil;
 import moscow.ptnl.util.Strings;
@@ -61,6 +63,7 @@ import org.w3c.dom.Document;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.transaction.Transactional;
+
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -141,6 +144,9 @@ public class AreaHelper {
     @Lazy
     private NsiFormResponseMapper nsiFormResponseMapper;
 
+    @Autowired
+    private MedicalOrganisationsOnkoRepository medicalOrganisationsOnkoRepository;
+
     public List<AreaType> checkAndGetAreaTypesExist(List<Long> areaTypes, Validation validation) {
         List<AreaType> result = new ArrayList<>();
 
@@ -195,12 +201,12 @@ public class AreaHelper {
                 .collect(Collectors.groupingBy(MuAvailableAreaTypes::getAreaType));
 
         found.forEach((t, a) -> validation.error(AreaErrorReason.CANT_DELETE_AREA_TYPE,
-                new ValidationParameter("areaTypeCode", t.getCode()),
-                new ValidationParameter("muId", a.stream()
-                        .map(MuAvailableAreaTypes::getMuId)
-                        .map(String::valueOf)
-                        .distinct()
-                        .collect(Collectors.joining(", ")))
+                        new ValidationParameter("areaTypeCode", t.getCode()),
+                        new ValidationParameter("muId", a.stream()
+                                .map(MuAvailableAreaTypes::getMuId)
+                                .map(String::valueOf)
+                                .distinct()
+                                .collect(Collectors.joining(", ")))
                 )
         );
     }
@@ -890,9 +896,9 @@ public class AreaHelper {
 
     public List<Period> getPeriodsWithoutMainEmployee(List<AreaMedicalEmployees> mainEmployees) {
         mainEmployees = mainEmployees.stream().filter(empl -> empl.getStartDate() != null
-                && !(empl.getStartDate().isBefore(LocalDate.now().plusDays(1))
-                && empl.getEndDate() != null
-                && empl.getEndDate().isBefore(LocalDate.now().plusDays(1))))
+                        && !(empl.getStartDate().isBefore(LocalDate.now().plusDays(1))
+                        && empl.getEndDate() != null
+                        && empl.getEndDate().isBefore(LocalDate.now().plusDays(1))))
                 .collect(Collectors.toList());
         mainEmployees.sort(Comparator.comparing(AreaMedicalEmployees::getStartDate));
         List<Period> periodsWithoutMainEmpl = new ArrayList<>();
@@ -1168,5 +1174,31 @@ public class AreaHelper {
                 .filter(a -> !Boolean.TRUE.equals(a.getHasServiceTerritory()))
                 .forEach(a -> validation.error(AreaErrorReason.AREA_TYPE_DO_NOT_SERVES_TERRITORY,
                         new ValidationParameter("areaTypeCode", a.getCode())));
+    }
+
+    // (А_УУ_21) Формирование номера онкоучастка
+    public String specialNumber(Long muId, Long areaTypeCode) throws ContingentException {
+        Optional<MedicalOrganisationsOnko> codeOncoArea = medicalOrganisationsOnkoRepository.findByMoId(muId);
+        String newSpecialNumber = null;
+
+        if (codeOncoArea.isEmpty()) {
+            throw new ContingentException(AreaErrorReason.MO_CANNOT_BE_CREATED_ONCO_AREA,
+                    new ValidationParameter("moId",muId));
+        }
+
+        String code = codeOncoArea.get().getCodeOncoArea();
+        String specialNumberPattern = code + "-" + areaTypeCode + "-";
+        Optional<Area> area = areaRepository.findLastAreaBySpecialNumber(specialNumberPattern);
+        long number = 1L;
+
+        if (area.isPresent()) {
+            String lastSpecialNumber = area.get().getSpecialNumber();
+            String lastNumber = lastSpecialNumber.split("-")[2];
+            number = Long.parseLong(lastNumber) + 1;
+        }
+
+        newSpecialNumber = specialNumberPattern + number;
+
+        return newSpecialNumber;
     }
 }

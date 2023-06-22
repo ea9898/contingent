@@ -12,6 +12,8 @@ import jakarta.persistence.EntityManager;
 @NoRepositoryBean
 public interface AreaRepository {
 
+    Optional<Area> findLastAreaBySpecialNumber(String pattern);
+
     List<Area> findAreas(Long moId, Long muId, Long areaTypeCode, Integer number, Boolean actual);
 
     List<Area> findAreas(Long moId, Long muId, List<Long> areaTypeCodes, Integer number, Boolean autoAssignForAttach, Boolean actual);

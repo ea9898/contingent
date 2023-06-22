@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeProfileRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.MappingPositionCodeToOtherPositionRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.MedicalOrganisationsOnkoRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.SpecializationRepository;
 import moscow.ptnl.contingent.nsi.repository.MappingPositionCodeToOtherPositionCRUDRepository;
 import moscow.ptnl.contingent.nsi.repository.PositionSuppCRUDRepository;
@@ -73,6 +74,9 @@ public class MockRepositoriesConfiguration {
 
     @MockBean
     public AreaRepository areaRepository;
+
+    @MockBean
+    public MedicalOrganisationsOnkoRepository medicalOrganisationsOnkoRepository;
     
     @MockBean
     public AreaTypesCRUDRepository areaTypesCRUDRepository;

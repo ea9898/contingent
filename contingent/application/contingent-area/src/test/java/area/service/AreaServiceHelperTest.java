@@ -12,11 +12,13 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
+import moscow.ptnl.contingent.nsi.domain.area.MedicalOrganisationsOnko;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.error.ContingentException;
 import moscow.ptnl.contingent.error.Validation;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypeRelationsRepository;
 import moscow.ptnl.contingent.nsi.domain.repository.AreaTypesRepository;
+import moscow.ptnl.contingent.nsi.domain.repository.MedicalOrganisationsOnkoRepository;
 import moscow.ptnl.contingent.repository.area.AreaCRUDRepository;
 import moscow.ptnl.contingent.domain.area.repository.AreaRepository;
 import moscow.ptnl.contingent.domain.area.repository.MoAvailableAreaTypesRepository;
@@ -40,11 +42,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
-@ContextConfiguration(classes= {MockConfiguration.class, MockRepositoriesConfiguration.class})
+@ContextConfiguration(classes = {MockConfiguration.class, MockRepositoriesConfiguration.class})
 public class AreaServiceHelperTest {
 
     @Autowired
@@ -55,6 +58,9 @@ public class AreaServiceHelperTest {
 
     @Autowired
     public AreaRepository areaRepository;
+
+    @Autowired
+    public MedicalOrganisationsOnkoRepository medicalOrganisationsOnkoRepository;
 
     @Autowired
     public MoAvailableAreaTypesRepository moAvailableAreaTypesRepository;
@@ -189,6 +195,7 @@ public class AreaServiceHelperTest {
         areaHelper.checkAreaTypeIsPrimary(areaTypeDependent1, validation);
         assertFalse(validation.isSuccess());
     }
+
 
     @Test
     void checkAreaTypeIsDependent() {
@@ -353,17 +360,17 @@ public class AreaServiceHelperTest {
         assertDoesNotThrow(() -> areaHelper.checkAttachByMedicalReason(areaTypePrimary1, true, validation));
         assertDoesNotThrow(() -> areaHelper.checkAttachByMedicalReason(areaTypeDependent1, null, validation));
     }
-    
+
     @Test
     void checkAreaParametersForUpdate() {
         Validation validation = new Validation();
         Throwable exception = assertThrows(ContingentException.class, () -> {
             areaHelper.checkAreaParametersForUpdate(null, null, null, null, null, null, null, null, null, null, null, null, validation);
             throwValidation(validation);
-        }); 
+        });
         assertEquals(exception.getMessage(), AreaErrorReason.NOTHING_TO_CHANGE.getDescription());
         validation.reset();
-        
+
         assertDoesNotThrow(() -> {
             areaHelper.checkAreaParametersForUpdate(1, null, null, null, null, null, null, null, null, null, null, null, validation);
             throwValidation(validation);
@@ -413,7 +420,7 @@ public class AreaServiceHelperTest {
             throwValidation(validation);
         });
     }
-    
+
     @Test
     void checkAreaParametersForUpdateChanged() {
         doReturn(Collections.singletonList(areaPolicyType)).when(areaPolicyTypesRepository).findAll(areaPrimary1, Arrays.asList(policyType1));
@@ -421,37 +428,93 @@ public class AreaServiceHelperTest {
         Validation validation = new Validation();
         Throwable exception = assertThrows(ContingentException.class, () -> {
             areaHelper.checkAreaParametersForUpdateChanged(
-                areaPrimary1, areaPrimary1.getNumber(), 
-                Arrays.asList(policyType1), Arrays.asList(policyType2), 
-                areaPrimary1.getAgeMin(), areaPrimary1.getAgeMax(), areaPrimary1.getAgeMMin(), areaPrimary1.getAgeMMax(), 
-                areaPrimary1.getAgeWMin(), areaPrimary1.getAgeWMax(), areaPrimary1.getAutoAssignForAttach(), areaPrimary1.getAttachByMedicalReason(), 
-                areaPrimary1.getDescription(), validation);
+                    areaPrimary1, areaPrimary1.getNumber(),
+                    Arrays.asList(policyType1), Arrays.asList(policyType2),
+                    areaPrimary1.getAgeMin(), areaPrimary1.getAgeMax(), areaPrimary1.getAgeMMin(), areaPrimary1.getAgeMMax(),
+                    areaPrimary1.getAgeWMin(), areaPrimary1.getAgeWMax(), areaPrimary1.getAutoAssignForAttach(), areaPrimary1.getAttachByMedicalReason(),
+                    areaPrimary1.getDescription(), validation);
             throwValidation(validation);
         });
         assertEquals(exception.getMessage(), AreaErrorReason.NOTHING_TO_CHANGE.getDescription());
         validation.reset();
-        
+
         //есть типы для удаления
         assertDoesNotThrow(() -> {
             areaHelper.checkAreaParametersForUpdateChanged(
-                areaPrimary1, areaPrimary1.getNumber(), 
-                Arrays.asList(policyType1), Arrays.asList(policyType1, policyType2), 
-                areaPrimary1.getAgeMin(), areaPrimary1.getAgeMax(), areaPrimary1.getAgeMMin(), areaPrimary1.getAgeMMax(), 
-                areaPrimary1.getAgeWMin(), areaPrimary1.getAgeWMax(), areaPrimary1.getAutoAssignForAttach(), areaPrimary1.getAttachByMedicalReason(), 
-                areaPrimary1.getDescription(), validation);
+                    areaPrimary1, areaPrimary1.getNumber(),
+                    Arrays.asList(policyType1), Arrays.asList(policyType1, policyType2),
+                    areaPrimary1.getAgeMin(), areaPrimary1.getAgeMax(), areaPrimary1.getAgeMMin(), areaPrimary1.getAgeMMax(),
+                    areaPrimary1.getAgeWMin(), areaPrimary1.getAgeWMax(), areaPrimary1.getAutoAssignForAttach(), areaPrimary1.getAttachByMedicalReason(),
+                    areaPrimary1.getDescription(), validation);
             throwValidation(validation);
         });
-        
+
         //есть типы для добавления
         assertDoesNotThrow(() -> {
             areaHelper.checkAreaParametersForUpdateChanged(
-                areaPrimary1, areaPrimary1.getNumber(), 
-                Arrays.asList(policyType1, policyType2), Arrays.asList(policyType1), 
-                areaPrimary1.getAgeMin(), areaPrimary1.getAgeMax(), areaPrimary1.getAgeMMin(), areaPrimary1.getAgeMMax(), 
-                areaPrimary1.getAgeWMin(), areaPrimary1.getAgeWMax(), areaPrimary1.getAutoAssignForAttach(), areaPrimary1.getAttachByMedicalReason(), 
-                areaPrimary1.getDescription(), validation);
+                    areaPrimary1, areaPrimary1.getNumber(),
+                    Arrays.asList(policyType1, policyType2), Arrays.asList(policyType1),
+                    areaPrimary1.getAgeMin(), areaPrimary1.getAgeMax(), areaPrimary1.getAgeMMin(), areaPrimary1.getAgeMMax(),
+                    areaPrimary1.getAgeWMin(), areaPrimary1.getAgeWMax(), areaPrimary1.getAutoAssignForAttach(), areaPrimary1.getAttachByMedicalReason(),
+                    areaPrimary1.getDescription(), validation);
             throwValidation(validation);
         });
+    }
+
+    @Test
+    public void testSpecialNumber1() {
+        MedicalOrganisationsOnko medicalOrganisationsOnko = new MedicalOrganisationsOnko();
+        medicalOrganisationsOnko.setMoId(1L);
+        medicalOrganisationsOnko.setCodeOncoArea("123");
+        doReturn(Optional.of(medicalOrganisationsOnko)).when(medicalOrganisationsOnkoRepository).findByMoId(medicalOrganisationsOnko.getMoId());
+
+        String newSpecialNumber = null;
+        try {
+            newSpecialNumber = areaHelper.specialNumber(1L, 567L);
+        } catch (ContingentException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertEquals("123-567-1", newSpecialNumber);
+    }
+
+    @Test
+    public void testSpecialNumber2() {
+
+        MedicalOrganisationsOnko medicalOrganisationsOnko = new MedicalOrganisationsOnko();
+        medicalOrganisationsOnko.setMoId(1L);
+        medicalOrganisationsOnko.setCodeOncoArea("123");
+        doReturn(Optional.of(medicalOrganisationsOnko)).when(medicalOrganisationsOnkoRepository).findByMoId(medicalOrganisationsOnko.getMoId());
+
+
+        String newSpecialNumber = null;
+        try {
+            newSpecialNumber = areaHelper.specialNumber(2L, 567L);
+        } catch (ContingentException e) {
+            assertEquals(1, e.getValidation().getMessages().size());
+            assertEquals("UE135", e.getValidation().getMessages().get(0).getCode());
+        }
+        assertNull(newSpecialNumber);
+    }
+
+    @Test
+    public void testSpecialNumber3() {
+        MedicalOrganisationsOnko medicalOrganisationsOnko = new MedicalOrganisationsOnko();
+        medicalOrganisationsOnko.setMoId(1L);
+        medicalOrganisationsOnko.setCodeOncoArea("123");
+        Area area = new Area();
+        area.setSpecialNumber("123-567-1");
+        doReturn(Optional.of(medicalOrganisationsOnko)).when(medicalOrganisationsOnkoRepository).findByMoId(medicalOrganisationsOnko.getMoId());
+        doReturn(Optional.of(area)).when(areaRepository).findLastAreaBySpecialNumber("123-567-");
+
+        String newSpecialNumber = null;
+        try {
+            newSpecialNumber = areaHelper.specialNumber(1L, 567L);
+        } catch (ContingentException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertEquals("123-567-2", newSpecialNumber);
     }
 
     private void throwValidation(Validation validation) throws ContingentException {

@@ -35,6 +35,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
+
 import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass_;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType_;
 import moscow.ptnl.contingent.repository.CommonSpecification;
@@ -49,14 +51,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Repository
-@Transactional(propagation=Propagation.MANDATORY)
+@Transactional(propagation = Propagation.MANDATORY)
 public class AreaRepositoryImpl extends BaseRepository implements AreaRepository {
-    
+
     private final static Logger LOG = LoggerFactory.getLogger(AreaRepositoryImpl.class);
 
     @Autowired
     private DataSource dataSource;
-    
+
     @Autowired
     private AreaCRUDRepository areaCRUDRepository;
 
@@ -78,7 +80,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     private Specification<Area> searchByAreaTypeCodesSpec(List<Long> areaTypeCodes) {
-        return  (root, criteriaQuery, cb) -> cb.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes);
+        return (root, criteriaQuery, cb) -> cb.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes);
         //return (root, criteriaQuery, cb) -> root.get(Area_.areaType.getName()).in(areaTypeCodes);
     }
 
@@ -94,12 +96,12 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                     cb.equal(subRoot.get(AreaMedicalEmployees_.area.getName()), root.get(Area_.id.getName())),
                     cb.equal(subRoot.get(AreaMedicalEmployees_.replacement.getName()), false),
                     cb.or(
-                        cb.isNull(subRoot.get(AreaMedicalEmployees_.endDate)),
-                        cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate.getName()), LocalDate.now())
+                            cb.isNull(subRoot.get(AreaMedicalEmployees_.endDate)),
+                            cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate.getName()), LocalDate.now())
                     ),
                     cb.or(
-                        cb.isNull(subRoot.get(AreaMedicalEmployees_.isError)),
-                        cb.equal(subRoot.get(AreaMedicalEmployees_.isError), false)
+                            cb.isNull(subRoot.get(AreaMedicalEmployees_.isError)),
+                            cb.equal(subRoot.get(AreaMedicalEmployees_.isError), false)
                     )
             )).select(subRoot));
         };
@@ -166,12 +168,12 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                                     cb.lessThan(subRoot.get(AreaMedicalEmployees_.endDate), now),
                                     cb.greaterThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.endDate), now.minusDays(daysForSelect)),
                                     cb.greaterThanOrEqualTo(cb.function("DATE", LocalDate.class, subRoot.get(AreaMedicalEmployees_.endDate)),
-                                    cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName())))),
+                                            cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName())))),
                             cb.and(
                                     cb.lessThanOrEqualTo(subRoot.get(AreaMedicalEmployees_.startDate), now),
                                     cb.greaterThan(subRoot.get(AreaMedicalEmployees_.startDate), now.minusDays(daysForSelect)),
                                     cb.greaterThanOrEqualTo(cb.function("DATE", LocalDate.class, subRoot.get(AreaMedicalEmployees_.startDate)),
-                                    cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName()))))
+                                            cb.function("DATE", LocalDate.class, root.get(Area_.updateDate.getName()))))
                     ),
                     cb.or(
                             cb.isNull(subRoot.get(AreaMedicalEmployees_.isError)),
@@ -196,7 +198,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                                 criteriaBuilder.equal(root.get(Area_.muId.getName()), muId),
                         number == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.number.getName()), number),
-                        areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :                                
+                        areaTypeCodes == null || areaTypeCodes.isEmpty() ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.in(root.get(Area_.areaType.getName()).get(AreaType_.code.getName())).value(areaTypeCodes), //root.get(Area_.areaType.getName()).get(AreaType_.code.getName()).in(areaTypeCodes),
                         autoAssignForAttach == null ? criteriaBuilder.conjunction() :
                                 criteriaBuilder.equal(root.get(Area_.autoAssignForAttach.getName()), autoAssignForAttach),
@@ -243,7 +245,7 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
         CriteriaQuery<Area> criteria = criteriaBuilder.createQuery(Area.class);
         //CriteriaQuery<Tuple> criteria = criteriaBuilder.createTupleQuery();
         Root<AreaMedicalEmployees> root = criteria.from(AreaMedicalEmployees.class);
-        Join<AreaMedicalEmployees, Area> areaJoin  = root.join(AreaMedicalEmployees_.area, JoinType.LEFT);
+        Join<AreaMedicalEmployees, Area> areaJoin = root.join(AreaMedicalEmployees_.area, JoinType.LEFT);
         Join<Area, AreaType> areaTypeJoin = areaJoin.join(Area_.areaType, JoinType.LEFT);
         //criteria.select(criteriaBuilder.tuple(areaJoin.get(Area_.id), areaJoin.get(Area_.moId)));
         criteria.select(areaJoin);
@@ -254,6 +256,14 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
                         criteriaBuilder.equal(root.get(AreaMedicalEmployees_.medicalEmployeeJobId), medicalEmployeeJobInfo))
         );
         return entityManager.createQuery(criteria).getResultList();
+    }
+
+    @Override
+    public Optional<Area> findLastAreaBySpecialNumber(String pattern) {
+        return areaCRUDRepository.findOne(
+                (Specification<Area>) (root, query, criteriaBuilder) ->
+                        criteriaBuilder.like(root.get(Area_.SPECIAL_NUMBER), pattern + "%")
+        );
     }
 
     @Override
@@ -374,7 +384,9 @@ public class AreaRepositoryImpl extends BaseRepository implements AreaRepository
     }
 
     @Override
-    public Optional<Area> findById(Long areaId) { return areaCRUDRepository.findById(areaId); }
+    public Optional<Area> findById(Long areaId) {
+        return areaCRUDRepository.findById(areaId);
+    }
 
     @Override
     public Area save(Area area) {

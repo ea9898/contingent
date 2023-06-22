@@ -464,7 +464,22 @@ public class Area implements Serializable {
             area.setNumber(number);
             return this;
         }
-        
+
+        public Builder specialNumber(String specialNumber) {
+            area.setSpecialNumber(specialNumber);
+            return this;
+        }
+
+        public Builder attInfoLimit(Integer attInfoLimit) {
+            area.setAttInfoLimit(attInfoLimit);
+            return this;
+        }
+
+        public Builder attFinalLimit(Integer attFinalLimit) {
+            area.setAttFinalLimit(attFinalLimit);
+            return this;
+        }
+
         public Builder autoAssignForAttach(Boolean autoAssignForAttach) {
             area.setAutoAssignForAttach(autoAssignForAttach);
             return this;

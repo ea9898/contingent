@@ -600,7 +600,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             Long id = areaServiceDomain.createPrimaryArea(body.getMoId(), body.getMuId(), body.getNumber(), body.getAreaTypeCode(),
                     body.getAreaTypeProfileCode(), body.getPolicyTypes() == null ? new ArrayList<>() : body.getPolicyTypes().getPolicyTypeCodes(),
                     body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
-                    body.isAutoAssignForAttachment(), body.isAttachByMedicalReason(), body.getDescription());
+                    body.isAutoAssignForAttachment(), null, null, body.isAttachByMedicalReason(), body.getDescription());
 
             response.setId(id);
             return response;
