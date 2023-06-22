@@ -28,37 +28,46 @@ public class MedicalOrganisationsOnko implements Serializable {
     @Id
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
     @Size(max = 19)
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     @Column(name = "ID", nullable = false)
     @Size(max = 38)
+    @MapToNsi
     private Long id;
 
     @Column(name = "ID_RMU")
     @Size(max = 38)
+    @MapToNsi("ID_RMU")
     private Long idRmu;
 
     @Column(name = "ID_SMVR2")
     @Size(max = 38)
+    @MapToNsi("ID_SVMR2")
     private Long id_smvr2;
 
     @Column(name = "NAME", nullable = false)
     @Size(max = 255)
+    @MapToNsi
     private String name;
 
     @Column(name = "TYPE", nullable = false)
     @Size(max = 255)
+    @MapToNsi
     private String type;
 
     @Column(name = "MO_ID")
     @Size(max = 38)
+    @MapToNsi("MO_ID")
     private Long moId;
 
     @Column(name = "CODE_ONCO_AREA")
     @Size(max = 4)
+    @MapToNsi("CODE_ONCO_AREA")
     private String codeOncoArea;
 
     @Column(name = "ARCHIVED", nullable = false)
+    @MapToNsi
     private Long archived;
 
     @Column(name = "UPDATE_DATE", nullable = false)

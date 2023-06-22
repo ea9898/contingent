@@ -6,6 +6,7 @@ import moscow.ptnl.contingent.nsi.domain.NsiActionsEnum;
 import moscow.ptnl.contingent.nsi.domain.NsiExternalEntity;
 import moscow.ptnl.contingent.nsi.domain.NsiPushEventConstraint;
 import moscow.ptnl.contingent.nsi.domain.NsiTablesEnum;
+import moscow.ptnl.contingent.nsi.domain.area.AreaCloseReasons;
 import moscow.ptnl.contingent.nsi.domain.area.AreaType;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeClass;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeKind;
@@ -15,6 +16,7 @@ import moscow.ptnl.contingent.nsi.domain.area.AreaTypeRelations;
 import moscow.ptnl.contingent.nsi.domain.area.AreaTypeSpecializations;
 import moscow.ptnl.contingent.nsi.domain.area.Gender;
 import moscow.ptnl.contingent.nsi.domain.area.MappingPositionCodeToOtherPosition;
+import moscow.ptnl.contingent.nsi.domain.area.MedicalOrganisationsOnko;
 import moscow.ptnl.contingent.nsi.domain.area.PolicyType;
 import moscow.ptnl.contingent.nsi.domain.area.PositionCode;
 import moscow.ptnl.contingent.nsi.domain.area.PositionNom;
@@ -93,6 +95,12 @@ public class PushAccepterImpl extends PushAccepter {
                 break;
             case MAPPING_POSITIONCODE_TO_OTHERPOSITION:
                 pushEventEntity = entityMapper.mapTyped(pack, MappingPositionCodeToOtherPosition.class);
+                break;
+            case AREA_CLOSE_REASONS:
+                pushEventEntity = entityMapper.mapTyped(pack, AreaCloseReasons.class);
+                break;
+            case MEDICAL_ORGANISATIONS_ONKO:
+                pushEventEntity = entityMapper.mapTyped(pack, MedicalOrganisationsOnko.class);
                 break;
         }
         if (pushEventEntity == null) {

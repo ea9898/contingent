@@ -29,6 +29,26 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="CONTINGENT2-2718-5" author="sevgeniy" labels="4.0.0.0">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="EVENT_TYPES"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы EVENT_TYPES</comment>
+        <createTable tableName="EVENT_TYPES" remarks="Типы событий на участке">
+            <column name="ID" type="NUMBER" remarks="ИД записи">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(255)" remarks="Наименование типа события.">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="EVENT_TYPES"/>
+        </rollback>
+    </changeSet>
+
     <changeSet id="CONTINGENT2-2718-2" author="sevgeniy" labels="4.0.0.0">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -64,26 +84,6 @@
                                  referencedTableName="EVENT_TYPES"/>
         <rollback>
             <dropForeignKeyConstraint baseTableName="JL_HISTORY" constraintName="event_type_id"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="CONTINGENT2-2718-5" author="sevgeniy" labels="4.0.0.0">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="EVENT_TYPES"/>
-            </not>
-        </preConditions>
-        <comment>Создание таблицы EVENT_TYPES</comment>
-        <createTable tableName="EVENT_TYPES" remarks="Типы событий на участке">
-            <column name="ID" type="NUMBER" remarks="ИД записи">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="NAME" type="VARCHAR2(255)" remarks="Наименование типа события.">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <rollback>
-            <dropTable tableName="EVENT_TYPES"/>
         </rollback>
     </changeSet>
 

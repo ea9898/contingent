@@ -124,6 +124,11 @@ public class Area implements Serializable {
     private Integer ageWMax;
 
     @LogIt
+    @JoinColumn(name = "REASON_CLOSE_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AreaCloseReasons reasonCloseId;
+
+    @LogIt
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
@@ -145,10 +150,6 @@ public class Area implements Serializable {
     @LogIt
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "area")
     private Set<AreaMuService> areaMuServices = new HashSet<>();
-
-    @LogIt
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "globalId")
-    private AreaCloseReasons reasonCloseId;
 
     public Area() {
     }

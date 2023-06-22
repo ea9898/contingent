@@ -115,6 +115,12 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
     private MappingPositionCodeToOtherPositionCRUDRepository mappingPositionCodeToOtherPositionCRUDRepository;
 
     @Autowired
+    private MedicalOrganisationsOnkoCRUDRepository medicalOrganisationsOnkoCRUDRepository;
+
+    @Autowired
+    private AreaCloseReasonsCRUDRepository areaCloseReasonsCRUDRepository;
+
+    @Autowired
     private AreaService areaServiceDomain;
 
     @Autowired
@@ -227,6 +233,14 @@ public class NsiAdminWebServiceImpl implements AdminServicePortType {
                     List<MappingPositionCodeToOtherPosition> mappingPositionCodeToOtherPositions =
                             entityMapper.mapTypedList(rows, MappingPositionCodeToOtherPosition.class);
                     saveAll(mappingPositionCodeToOtherPositionCRUDRepository, mappingPositionCodeToOtherPositions, true);
+                    break;
+                case AREA_CLOSE_REASONS:
+                    List<AreaCloseReasons> areaCloseReasons = entityMapper.mapTypedList(rows, AreaCloseReasons.class);
+                    saveAll(areaCloseReasonsCRUDRepository, areaCloseReasons, true);
+                    break;
+                case MEDICAL_ORGANISATIONS_ONKO:
+                    List<MedicalOrganisationsOnko> medicalOrganisationsOnko = entityMapper.mapTypedList(rows, MedicalOrganisationsOnko.class);
+                    saveAll(medicalOrganisationsOnkoCRUDRepository, medicalOrganisationsOnko, true);
                     break;
             }
         } catch (Exception e) {

@@ -27,17 +27,21 @@ public class AreaCloseReasons implements Serializable {
 
     @Id
     @Column(name = "GLOBAL_ID", unique = true, nullable = false)
+    @MapToNsi("GLOBAL_ID")
     private Long globalId;
 
     @Column(name = "REASON_CLOSE_NAME", nullable = false)
     @Size(max = 255)
+    @MapToNsi("REASON_CLOSE_NAME")
     private String reasonCloseName;
 
     @Column(name = "CODE", nullable = false)
     @Size(max = 4)
+    @MapToNsi
     private Long code;
 
     @Column(name = "ARCHIVED", nullable = false)
+    @MapToNsi
     private Long archived;
 
     @Column(name = "UPDATE_DATE", nullable = false)

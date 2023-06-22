@@ -13,6 +13,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -47,8 +49,8 @@ public class HistoryEvent implements Serializable {
     @Column(name = "OBJECT_ID") @NotNull
     private String objectId;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id")
-    @Size(max = 50)
+    @JoinColumn(name = "EVENT_TYPE_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
     private EventTypes eventTypeId;
 
     @Column(name = "OPERATION_LINK_ID")

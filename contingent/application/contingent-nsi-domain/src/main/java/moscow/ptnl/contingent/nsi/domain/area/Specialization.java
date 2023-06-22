@@ -6,7 +6,8 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
@@ -42,9 +43,9 @@ public class Specialization implements Serializable, NsiExternalEntity {
     @MapToNsi
     private String code;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "globalId")
-    @Size(max = 50)
-    @MapToNsi
+    @JoinColumn(name = "DOC_SPECIALITY_CODE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapToNsi(value = "DOC_SPECIALITY_CODE", findEntityByField = "globalId")
     private PositionSupp docSpecialityCode;
 
     @Column(name = "ARCHIVED", nullable = false)
