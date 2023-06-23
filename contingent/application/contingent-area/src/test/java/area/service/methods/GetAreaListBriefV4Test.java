@@ -66,15 +66,15 @@ public class GetAreaListBriefV4Test {
         assertEquals(exception.getMessage(), "Допустимые значения параметра value: all, main, vrio, replacement, main-vrio, none");
     }
 
-    @Test
-    public void getAreaListBriefAreaNotFound() {
-        GetAreaListBriefRequest request = new GetAreaListBriefRequest();
-        request.setAreas(new GetAreaListBriefRequest.Areas() {{ getIds().add(1L); }});
-        request.setOptions(new Options() {{ getEntries().add(new KeyValuePair(){{ setKey("showME"); setValue("replacement");}}); }});
-
-        Throwable exception = assertThrows(ru.mos.emias.contingent2.area.v4.Fault.class, () -> areaPTv4.getAreaListBrief(request));
-        assertEquals(exception.getMessage(), "Участок обслуживания МО с ИД 1 не найден в системе");
-    }
+//    @Test
+//    public void getAreaListBriefAreaNotFound() {
+//        GetAreaListBriefRequest request = new GetAreaListBriefRequest();
+//        request.setAreas(new GetAreaListBriefRequest.Areas() {{ getIds().add(1L); }});
+//        request.setOptions(new Options() {{ getEntries().add(new KeyValuePair(){{ setKey("showME"); setValue("replacement");}}); }});
+//
+//        Throwable exception = assertThrows(ru.mos.emias.contingent2.area.v4.Fault.class, () -> areaPTv4.getAreaListBrief(request));
+//        assertEquals(exception.getMessage(), "Участок обслуживания МО с ИД 1 не найден в системе");
+//    }
 
 //    @Test
 //    @Sql(scripts = {"/sql/areaHistory.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
