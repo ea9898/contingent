@@ -81,6 +81,7 @@ import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3Impl;
 import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
+import moscow.ptnl.contingent.area.transform.v4.SoapCustomMapperV4;
 import moscow.ptnl.contingent.domain.area.MappingDomainServiceImpl;
 import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.NsiFormResponseMapperImpl;
@@ -383,13 +384,21 @@ public class MockConfiguration {
     }
 
     @Bean
+    public ru.mos.emias.contingent2.area.v4.AreaPT areaPTv4() {
+        return new moscow.ptnl.contingent.area.ws.v4.AreaServiceImpl();
+    }
+
+    @Bean
     public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.Fault> mapper() { return new SoapExceptionMapper(); }
+
+    @Bean
+    public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v2.Fault> mapperv2() { return new moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper(); }
 
     @Bean
     public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v3.Fault> mapperv3() { return new moscow.ptnl.contingent.area.transform.v3.SoapExceptionMapper(); }
 
     @Bean
-    public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v2.Fault> mapperv2() { return new moscow.ptnl.contingent.area.transform.v2.SoapExceptionMapper(); }
+    public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v4.Fault> mapperv4() { return new moscow.ptnl.contingent.area.transform.v4.SoapExceptionMapper(); }
 
     @Bean
     public ru.mos.emias.contingent2.area.AreaPT areaPT() { return new moscow.ptnl.contingent.area.ws.v1.AreaServiceImpl(); }
@@ -405,6 +414,11 @@ public class MockConfiguration {
     @Bean
     public SoapCustomMapperV3 soapCustomMapperV3() {
         return new SoapCustomMapperV3();
+    }
+
+    @Bean
+    public SoapCustomMapperV4 soapCustomMapperV4() {
+        return new SoapCustomMapperV4();
     }
 
     @Bean
