@@ -18,7 +18,7 @@
             </not>
         </preConditions>
         <addColumn tableName="AREAS">
-            <column name="special_number" type="VARCHAR2" remarks="Специальный номер онкоучастка"/>
+            <column name="special_number" type="VARCHAR2(255)" remarks="Специальный номер онкоучастка"/>
             <column name="att_final_limit" type="BIGINT"
                     remarks="Лимит прикреплений - количество прикрепленных пациентов, при достижении которого прикрепление к данному участку более не возможно"/>
             <column name="att_info_limit" type="BIGINT"
