@@ -223,8 +223,14 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public CreatePrimaryAreaResponse createPrimaryArea(CreatePrimaryAreaRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV3.createPrimaryArea(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v3.types.CreatePrimaryAreaRequest())),
-                    new CreatePrimaryAreaResponse());
+            ru.mos.emias.contingent2.area.v4.types.CreatePrimaryAreaResponse response = new ru.mos.emias.contingent2.area.v4.types.CreatePrimaryAreaResponse();
+            Long id = areaServiceDomain.createPrimaryArea(body.getMoId(), body.getMuId(), body.getNumber(), body.getAreaTypeCode(),
+                    body.getAreaTypeCode(), body.getPolicyTypes() == null ? new ArrayList<>() : body.getPolicyTypes().getPolicyTypeCodes(),
+                    body.getAgeMin(), body.getAgeMax(), body.getAgeMinM(), body.getAgeMaxM(), body.getAgeMinW(), body.getAgeMaxW(),
+                    body.isAutoAssignForAttachment(), body.getAttInfoLimit(), body.getAttInfoLimit(), body.isAttachByMedicalReason(), body.getDescription());
+
+            response.setId(id);
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);
