@@ -24,7 +24,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mos.emias.contingent2.area.v4.AreaPT;
+import ru.mos.emias.contingent2.area.v4.Fault;
 import ru.mos.emias.contingent2.area.v4.types.GetAreaListBriefRequest;
+import ru.mos.emias.contingent2.area.v4.types.GetAreaListBriefResponse;
 import ru.mos.emias.contingent2.core.v4.KeyValuePair;
 import ru.mos.emias.contingent2.core.v4.Options;
 
@@ -66,15 +68,26 @@ public class GetAreaListBriefV4Test {
         assertEquals(exception.getMessage(), "Допустимые значения параметра value: all, main, vrio, replacement, main-vrio, none");
     }
 
-//    @Test
-//    public void getAreaListBriefAreaNotFound() {
-//        GetAreaListBriefRequest request = new GetAreaListBriefRequest();
-//        request.setAreas(new GetAreaListBriefRequest.Areas() {{ getIds().add(1L); }});
-//        request.setOptions(new Options() {{ getEntries().add(new KeyValuePair(){{ setKey("showME"); setValue("replacement");}}); }});
-//
-//        Throwable exception = assertThrows(ru.mos.emias.contingent2.area.v4.Fault.class, () -> areaPTv4.getAreaListBrief(request));
-//        assertEquals(exception.getMessage(), "Участок обслуживания МО с ИД 1 не найден в системе");
-//    }
+    @Test
+    public void getAreaListBriefEmptyResult() throws Fault {
+        GetAreaListBriefRequest request = new GetAreaListBriefRequest();
+        request.setAreas(new GetAreaListBriefRequest.Areas() {{ getIds().add(1L); }});
+        request.setOptions(new Options() {{ getEntries().add(new KeyValuePair(){{ setKey("showME"); setValue("replacement");}}); }});
+
+        GetAreaListBriefResponse response = areaPTv4.getAreaListBrief(request);
+        assertEquals(0, response.getResult().getAreas().size());
+    }
+
+    @Test
+    @Sql(scripts = {"/sql/area_type.sql", "/sql/getAreaListBrief2729.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void getAreaListBriefShowMEAll() throws Fault {
+        GetAreaListBriefRequest request = new GetAreaListBriefRequest();
+        request.setAreas(new GetAreaListBriefRequest.Areas() {{ getIds().add(17411941153L); }});
+        request.setOptions(new Options() {{ getEntries().add(new KeyValuePair(){{ setKey("showME"); setValue("all");}}); }});
+
+        GetAreaListBriefResponse response = areaPTv4.getAreaListBrief(request);
+        assertEquals(1, response.getResult().getAreas().size());
+    }
 
 //    @Test
 //    @Sql(scripts = {"/sql/areaHistory.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)

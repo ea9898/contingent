@@ -81,6 +81,9 @@ import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3Impl;
 import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
+import moscow.ptnl.contingent.area.transform.v4.AreaBriefMapperV4;
+import moscow.ptnl.contingent.area.transform.v4.AreaBriefMapperV4Impl;
+import moscow.ptnl.contingent.area.transform.v4.CodeNameTypeMapperV4;
 import moscow.ptnl.contingent.area.transform.v4.SoapCustomMapperV4;
 import moscow.ptnl.contingent.domain.area.MappingDomainServiceImpl;
 import moscow.ptnl.contingent.area.service.NsiFormServiceHelperImpl;
@@ -497,6 +500,12 @@ public class MockConfiguration {
     public AreaBriefMapperV3 areaBriefMapperV3() {
         return new AreaBriefMapperV3Impl();
     }
+
+    @Bean
+    public AreaBriefMapperV4 areaBriefMapperV4() { return new AreaBriefMapperV4Impl(); }
+
+    @Bean
+    public CodeNameTypeMapperV4 codeNameTypeMapperV4() { return new CodeNameTypeMapperV4(); }
 
     @Bean
     public AreaBriefMapperV2 areaBriefMapperV2() { return new AreaBriefMapperV2Impl(); }
