@@ -76,7 +76,11 @@ public class GetAreaByIdTest {
         }
         Assertions.assertNotNull(response);
         Assertions.assertEquals("111", response.getResult().getSpecialNumber());
-//        Assertions.assertNotNull(response);
-//        Assertions.assertNotNull(response);
+        Assertions.assertEquals(333, response.getResult().getAttFinalLimit());
+        Assertions.assertEquals(444, response.getResult().getAttInfoLimit());
+        Assertions.assertEquals(0, response.getResult().getMedicalEmployees().getMedicalEmployees().get(0).getEmployeeCategory());
+//        Assertions.assertEquals(1 response.getResult().getMedicalEmployees().getReplacementCount());
+//        Assertions.assertEquals(222, response.getResult().getAreaTypeCategory());
+//        Assertions.assertEquals(555, response.getResult().getResidentsBindRate());
     }
 }

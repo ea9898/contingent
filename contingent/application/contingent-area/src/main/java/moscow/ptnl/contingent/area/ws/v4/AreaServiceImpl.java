@@ -259,11 +259,6 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
-//            return versioningMapper.map(areaServiceV4.getAreaById(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v4.types.GetAreaByIdRequest())),
-//                    new GetAreaByIdResponse());
-
-//            return versioningMapper.map(areaServiceV3.getAreaById(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v3.types.GetAreaByIdRequest())),
-//                    new GetAreaByIdResponse());
             AreaInfo area = areaServiceDomain.getAreaByIdV2(body.getAreaId());
             ru.mos.emias.contingent2.area.v4.types.GetAreaByIdResponse response = new ru.mos.emias.contingent2.area.v4.types.GetAreaByIdResponse();
             response.setResult(areaMapper.entityToDtoTransform(area));

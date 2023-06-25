@@ -648,6 +648,4 @@ public class MockConfiguration {
 
     @MockBean
     public MedicalOrganisationsOnkoRepository medicalOrganisationsOnkoRepository;
-
-
 }
