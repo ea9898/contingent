@@ -4,6 +4,7 @@ import moscow.ptnl.contingent.area.transform.OptionEnum;
 import moscow.ptnl.contingent.area.transform.SoapBaseExceptionMapper;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
+import moscow.ptnl.contingent.area.transform.v4.AreaMapperV4;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
@@ -135,6 +136,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     private ru.mos.emias.contingent2.area.v3.AreaPT areaServiceV3;
 
     @Autowired
+    private ru.mos.emias.contingent2.area.v4.AreaPT areaServiceV4;
+
+    @Autowired
     private SoapCustomMapperV3 soapCustomMapper;
 
     @Autowired
@@ -142,6 +146,10 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private MoMuService moMuServiceDomain;
+
+    @Autowired
+    private AreaMapperV4 areaMapper;
+
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public InitiateAddMoAddressResponse initiateAddMoAddress(InitiateAddMoAddressRequest body) throws Fault {
@@ -251,8 +259,15 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
     public GetAreaByIdResponse getAreaById(GetAreaByIdRequest body) throws Fault {
         try {
-            return versioningMapper.map(areaServiceV3.getAreaById(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v3.types.GetAreaByIdRequest())),
-                    new GetAreaByIdResponse());
+//            return versioningMapper.map(areaServiceV4.getAreaById(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v4.types.GetAreaByIdRequest())),
+//                    new GetAreaByIdResponse());
+
+//            return versioningMapper.map(areaServiceV3.getAreaById(versioningMapper.map(body, new ru.mos.emias.contingent2.area.v3.types.GetAreaByIdRequest())),
+//                    new GetAreaByIdResponse());
+            AreaInfo area = areaServiceDomain.getAreaByIdV2(body.getAreaId());
+            ru.mos.emias.contingent2.area.v4.types.GetAreaByIdResponse response = new ru.mos.emias.contingent2.area.v4.types.GetAreaByIdResponse();
+            response.setResult(areaMapper.entityToDtoTransform(area));
+            return response;
         }
         catch (Exception ex) {
             throw exceptionMapper.mapException(ex);

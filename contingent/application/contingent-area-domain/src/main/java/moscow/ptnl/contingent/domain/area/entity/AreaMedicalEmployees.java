@@ -95,7 +95,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
 
     @LogIt
     @Column(name = "EMPLOYEE_CATEGORY", nullable = false)
-    private Long employeeCategory;
+    private int employeeCategory;
 
     public AreaMedicalEmployees() {
     }
@@ -226,9 +226,9 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
 
     public void setError(Boolean error) { isError = error; }
 
-    public Long getEmployeeCategory() { return employeeCategory; }
+    public int getEmployeeCategory() { return employeeCategory; }
 
-    public void setEmployeeCategory(Long employeeCategory) { this.employeeCategory = employeeCategory; }
+    public void setEmployeeCategory(int employeeCategory) { this.employeeCategory = employeeCategory; }
 
 
     @Override
