@@ -13,7 +13,7 @@
        <groupId>moscow.ptnl.contingent</groupId>
        <artifactId>contingent-common</artifactId>
        <relativePath>../pom.xml</relativePath>
-        <version>3.3.0</version>
+        <version>4.0.0</version>
     </parent>
     
     <dependencies> 
@@ -21,7 +21,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>      
-        <!-- Метрики CONTINGENT2-514 -->
+        <!-- пїЅпїЅпїЅпїЅпїЅпїЅпїЅ CONTINGENT2-514 -->
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient</artifactId>
@@ -38,7 +38,7 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
-        <!-- чтение информации о процессе в *nix -->
+        <!-- пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ *nix -->
         <dependency>
             <groupId>io.github.mweirauch</groupId>
             <artifactId>micrometer-jvm-extras</artifactId>

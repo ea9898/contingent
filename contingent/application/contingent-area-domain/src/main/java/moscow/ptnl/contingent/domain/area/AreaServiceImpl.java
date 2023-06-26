@@ -1180,7 +1180,7 @@ public class AreaServiceImpl implements AreaService {
         //}
         // 13
         employeesOld.forEach(e -> historyHelper.sendHistory(e, employeesNew.get(e.getId()), AreaMedicalEmployees.class,
-                historyHelper.getEventTypeByEmployeeCategory(e.getEmployeeCategory())));
+                historyHelper.getEventTypeByEmployeeCategory((long) e.getEmployeeCategory())));
         // 14
         historyHelper.sendHistory(oldArea, area, Area.class, 2L);
 

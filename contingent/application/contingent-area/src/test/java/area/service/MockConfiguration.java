@@ -643,10 +643,7 @@ public class MockConfiguration {
 
     @MockBean
     private AreaAddressMapper areaAddressMapper;
-    @Bean
-    public ru.mos.emias.contingent2.area.v4.AreaPT areaPTv4() {
-        return new moscow.ptnl.contingent.area.ws.v4.AreaServiceImpl();
-    }
+
     @Bean
     public AreaMapperV4 areaMapperV4() {
         return new AreaMapperV4();
@@ -662,13 +659,4 @@ public class MockConfiguration {
         return new AreaTypeShortMapperImplV4();
     }
 
-    @Bean
-    public CodeNameTypeMapperV4 codeNameTypeMapperV4() {
-        return new CodeNameTypeMapperV4();
-    }
-    @Bean
-    public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v4.Fault> mapperv4() { return new moscow.ptnl.contingent.area.transform.v4.SoapExceptionMapper(); }
-
-    @MockBean
-    public MedicalOrganisationsOnkoRepository medicalOrganisationsOnkoRepository;
 }

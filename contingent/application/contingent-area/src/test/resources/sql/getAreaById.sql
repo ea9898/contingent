@@ -112,3 +112,5 @@ INSERT INTO area_addresses (
             create_date,
             update_date)
 VALUES (1, 2, 1, 17074, null, null, TO_TIMESTAMP('2020-09-24 11:42:27.668000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null);
+
+INSERT INTO medical_organisations_onko (global_id, id, id_rmu, id_smvr2, name, type, mo_id, code_onco_area, archived, update_date, source) VALUES (1111, 1, 1, 1, 'тест', '1', 1, '123', 0, '2023-06-26 13:02:21.000000', 'test');

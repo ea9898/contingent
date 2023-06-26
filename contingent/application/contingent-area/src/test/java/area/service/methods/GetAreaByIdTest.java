@@ -61,11 +61,6 @@ public class GetAreaByIdTest {
     @Test
     @Sql(scripts = {"/sql/getAreaById.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void test1() {
-        MedicalOrganisationsOnko medicalOrganisationsOnko = new MedicalOrganisationsOnko();
-        medicalOrganisationsOnko.setMoId(1L);
-        medicalOrganisationsOnko.setCodeOncoArea("123");
-        doReturn(Optional.of(medicalOrganisationsOnko)).when(medicalOrganisationsOnkoRepository).findByMoId(medicalOrganisationsOnko.getMoId());
-
         GetAreaByIdRequest request = new GetAreaByIdRequest();
         request.setAreaId(1);
         GetAreaByIdResponse response = null;

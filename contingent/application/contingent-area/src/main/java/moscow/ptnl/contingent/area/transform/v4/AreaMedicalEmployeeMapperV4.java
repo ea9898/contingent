@@ -24,7 +24,7 @@ public class AreaMedicalEmployeeMapperV4 implements Transform<MedicalEmployee, A
         employee.setId(entityObject.getId());
         employee.setMedicalEmployeeJobId(entityObject.getMedicalEmployeeJobId());
         employee.setSnils(entityObject.getSnils());
-        employee.setEmployeeCategory(entityObject.getEmployeeCategory());
+        employee.setEmployeeCategory(entityObject.getEmployeeCategory().intValue());
         employee.setStartDate(entityObject.getStartDate());
         employee.setEndDate(entityObject.getEndDate());
 

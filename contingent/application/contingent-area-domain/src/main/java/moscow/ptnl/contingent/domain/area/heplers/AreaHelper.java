@@ -846,7 +846,7 @@ public class AreaHelper {
             medicalEmployees.setMedicalEmployeeJobId(empl.getMedicalEmployeeJobInfoId());
             medicalEmployees.setArea(area);
             medicalEmployees.setReplacement(empl.isReplacement());
-            medicalEmployees.setEmployeeCategory(empl.isReplacement() ? 2 : 0);
+            medicalEmployees.setEmployeeCategory(empl.isReplacement() ? 2L : 0L);
             medicalEmployees.setStartDate(empl.getStartDate());
             medicalEmployees.setEndDate(empl.getEndDate());
             medicalEmployees.setSnils(empl.getSnils());
