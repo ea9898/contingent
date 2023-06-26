@@ -133,7 +133,7 @@ public class AreaType extends CodeName implements Serializable, NsiExternalEntit
     private String source;
 
     @Column(name = "AREA_TYPE_CATEGORY")
-    private Long areaTypeCategory;
+    private Integer areaTypeCategory;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "areaType")
     private Set<AreaTypeSpecializations> areaTypeSpecializations;
@@ -351,11 +351,11 @@ public class AreaType extends CodeName implements Serializable, NsiExternalEntit
         this.areaTypeProfiles = areaTypeProfiles;
     }
 
-    public Long getAreaTypeCategory() {
+    public Integer getAreaTypeCategory() {
         return areaTypeCategory;
     }
 
-    public void setAreaTypeCategory(Long areaTypeCategory) {
+    public void setAreaTypeCategory(Integer areaTypeCategory) {
         this.areaTypeCategory = areaTypeCategory;
     }
 

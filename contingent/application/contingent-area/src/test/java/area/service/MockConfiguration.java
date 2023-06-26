@@ -81,6 +81,11 @@ import moscow.ptnl.contingent.area.transform.v3.MuAvailableAreaTypesInMoMapper;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3;
 import moscow.ptnl.contingent.area.transform.v3.SearchAreaAddressMapperV3Impl;
 import moscow.ptnl.contingent.area.transform.v3.SoapCustomMapperV3;
+import moscow.ptnl.contingent.area.transform.v4.AreaMapperV4;
+import moscow.ptnl.contingent.area.transform.v4.AreaMedicalEmployeeMapperV4;
+import moscow.ptnl.contingent.area.transform.v4.AreaTypeShortMapperImplV4;
+import moscow.ptnl.contingent.area.transform.v4.AreaTypeShortMapperV4;
+import moscow.ptnl.contingent.area.transform.v4.CodeNameTypeMapperV4;
 import moscow.ptnl.contingent.area.transform.v4.AreaBriefMapperV4;
 import moscow.ptnl.contingent.area.transform.v4.AreaBriefMapperV4Impl;
 import moscow.ptnl.contingent.area.transform.v4.CodeNameTypeMapperV4;
@@ -103,6 +108,7 @@ import moscow.ptnl.contingent.domain.area.repository.HistoryEventRepository;
 import moscow.ptnl.contingent.domain.area.heplers.NsiFormServiceHelper;
 import moscow.ptnl.contingent.domain.area.transform.AddressMapperImpl;
 import moscow.ptnl.contingent.infrastructure.service.setting.SettingServiceImpl;
+import moscow.ptnl.contingent.nsi.domain.repository.MedicalOrganisationsOnkoRepository;
 import moscow.ptnl.contingent.service.esu.EsuHelperServiceImpl;
 import moscow.ptnl.contingent.area.service.HistoryServiceHelperImpl;
 import moscow.ptnl.contingent.area.transform.v1.AreaAddressMapper;
@@ -637,5 +643,32 @@ public class MockConfiguration {
 
     @MockBean
     private AreaAddressMapper areaAddressMapper;
+    @Bean
+    public ru.mos.emias.contingent2.area.v4.AreaPT areaPTv4() {
+        return new moscow.ptnl.contingent.area.ws.v4.AreaServiceImpl();
+    }
+    @Bean
+    public AreaMapperV4 areaMapperV4() {
+        return new AreaMapperV4();
+    }
 
+    @Bean
+    public AreaMedicalEmployeeMapperV4 areaMedicalEmployeeMapperV4() {
+        return new AreaMedicalEmployeeMapperV4();
+    }
+
+    @Bean
+    public AreaTypeShortMapperV4 areaTypeShortMapperV4() {
+        return new AreaTypeShortMapperImplV4();
+    }
+
+    @Bean
+    public CodeNameTypeMapperV4 codeNameTypeMapperV4() {
+        return new CodeNameTypeMapperV4();
+    }
+    @Bean
+    public SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v4.Fault> mapperv4() { return new moscow.ptnl.contingent.area.transform.v4.SoapExceptionMapper(); }
+
+    @MockBean
+    public MedicalOrganisationsOnkoRepository medicalOrganisationsOnkoRepository;
 }
