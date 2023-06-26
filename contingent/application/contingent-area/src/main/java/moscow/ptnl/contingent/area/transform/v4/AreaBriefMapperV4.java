@@ -62,6 +62,8 @@ public abstract class AreaBriefMapperV4 {
         AreaBrief.MedicalEmployees employees = new AreaBrief.MedicalEmployees();
         employees.getMedicalEmployees().addAll(actualMe.stream()
                 .map(this::entityToDtoTransform)
+                .sorted(Comparator.comparing(AreaBrief.MedicalEmployees.MedicalEmployee::getEmployeeCategory))
+                .sorted(Comparator.comparing(AreaBrief.MedicalEmployees.MedicalEmployee::getMedicalEmployeeJobInfoId))
                 .collect(Collectors.toList()));
 
         return employees;

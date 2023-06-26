@@ -281,7 +281,7 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
             response.setResult(new GetAreaListBriefResponse.Result());
             PageRequest pageRequest = soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(GetAreaListBriefSorting.class));
             GetAreaListBriefOptions.ShowMeValues showMeOption = (GetAreaListBriefOptions.ShowMeValues) options.get(GetAreaListBriefOptions.SHOW_ME);
-            Page<AreaInfo> areas = areaServiceDomain.getAreaListBriefV4(body.getAreas().getIds(), showMeOption.getShowParam(), pageRequest);
+            Page<AreaInfo> areas = areaServiceDomain.getAreaListBriefV4(body.getAreas().getIds(), showMeOption != null ? showMeOption.getShowParam() : "main-vrio", pageRequest);
             soapCustomMapper.mapPagingResults(response.getResult(), areas);
 
             if (!areas.isEmpty()) {

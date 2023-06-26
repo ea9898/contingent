@@ -20,7 +20,7 @@ public interface AreaMedicalEmployeeRepository {
 
     List<AreaMedicalEmployees> getEmployeesReplacementActualByAreaId(long areaId);
 
-    Map<Area, List<AreaMedicalEmployees>> getEmployeesByAreaIds(List<Area> areas);
+    Map<Area, List<AreaMedicalEmployees>> getEmployeesByAreaIds(List<Area> areas, String showME);
 
     List<AreaMedicalEmployees> findEmployees(long jobId, Boolean replacement);
 

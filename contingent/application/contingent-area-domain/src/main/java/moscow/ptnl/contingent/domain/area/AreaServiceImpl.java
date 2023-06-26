@@ -1440,7 +1440,7 @@ public class AreaServiceImpl implements AreaService {
                 .skip(paging.getPageNumber() * paging.getPageSize()).limit(paging.getPageSize())
                 .map(AreaInfo::new).collect(Collectors.toList());
 
-        Map<Area, List<AreaMedicalEmployees>> mapMedicalEmployees = areaMedicalEmployeeRepository.getEmployeesByAreaIds(areaInfos.stream().map(AreaInfo::getArea).collect(Collectors.toList()));
+        Map<Area, List<AreaMedicalEmployees>> mapMedicalEmployees = areaMedicalEmployeeRepository.getEmployeesByAreaIds(areaInfos.stream().map(AreaInfo::getArea).collect(Collectors.toList()), null);
 
         areaInfos.forEach(ai -> {
             // Добавление работников
@@ -1594,8 +1594,18 @@ public class AreaServiceImpl implements AreaService {
     public Page<AreaInfo> getAreaListBriefV4(List<Long> areaIds, String showMe, PageRequest paging) throws ContingentException {
         Page<Area> areas = getAreaListBrief(areaIds, paging);
 
+        Map<Area, List<AreaMedicalEmployees>> mapMedicalEmployees;
+
+        if (!"none".equals(showMe)) {
+            mapMedicalEmployees = areaMedicalEmployeeRepository.getEmployeesByAreaIds(
+                    areas.stream().collect(Collectors.toList()), showMe);
+        } else {
+            mapMedicalEmployees = new HashMap<>();
+        }
+
         return new PageImpl<>(areas.stream().map(a -> {
-            return new AreaInfo(a, /*new ArrayList<>(employees)*/null, null, new ArrayList<>(a.getActualAreaMuServices()));
+            Set<AreaMedicalEmployees> employees = mapMedicalEmployees.get(a) != null ? new HashSet<>(mapMedicalEmployees.get(a)) : new HashSet<>();
+            return new AreaInfo(a, new ArrayList<>(employees), null, new ArrayList<>(a.getActualAreaMuServices()));
         }).collect(Collectors.toList()), paging, areas.getTotalElements());
     }
 

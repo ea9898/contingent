@@ -33,13 +33,13 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreaIdSpec(long areaId) {
         return (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area.getName()).get(Area_.id.getName()), areaId);
+                criteriaBuilder.equal(root.get(AreaMedicalEmployees_.area.getName()).get(Area_.id.getName()), areaId);
     }
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmployeesByAreaIdsSpec(List<Long> areaIds) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.in(root.get(AreaMedicalEmployees_.area.getName()).get(Area_.id.getName())).value(areaIds); //root.get(AreaMedicalEmployees_.area).in(areaIds);
-                
+
     }
 
     private Specification<AreaMedicalEmployees> findAreasMedicalEmployeesByJobsIdsSpec(List<Long> jobIds) {
@@ -67,19 +67,41 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
                 );
     }
 
+    private Specification<AreaMedicalEmployees> showMedicalEmployeeSpec(String showME) {
+        if (showME == null || showME.equals("all")) {
+            return (root, criteriaQuery, criteriaBuilder) ->
+                    criteriaBuilder.conjunction();
+        }
+
+        List<Long> employeeCategories = new ArrayList<>();
+
+
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            switch (showME) {
+                case "main-vrio" -> employeeCategories.addAll(List.of(0L, 1L));
+                case "main" -> employeeCategories.add(0L);
+                case "vrio" -> employeeCategories.add(1L);
+                case "replacement" -> employeeCategories.add(2L);
+            }
+
+            return
+                    criteriaBuilder.in(root.get(AreaMedicalEmployees_.employeeCategory.getName())).value(employeeCategories);
+        };
+    }
+
     private Specification<AreaMedicalEmployees> findAreasMedicalEmplyeesByAreasSpec(List<Area> areas) {
         List<Long> areasIds = areas.stream().map(a -> a.getId()).collect(Collectors.toList());
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.in(root.get(AreaMedicalEmployees_.area.getName()).get(Area_.id.getName())).value(areasIds);
-                //root.get(AreaMedicalEmployees_.area).in(areas);
+        //root.get(AreaMedicalEmployees_.area).in(areas);
     }
 
     private Specification<AreaMedicalEmployees> actualEmployeesSpec() {
         return (root, criteriaQuery, criteriaBuilder) ->
-            criteriaBuilder.or(
-                criteriaBuilder.isNull(root.get(AreaMedicalEmployees_.endDate)),
-                criteriaBuilder.greaterThanOrEqualTo(root.get(AreaMedicalEmployees_.endDate.getName()), LocalDate.now())
-            );
+                criteriaBuilder.or(
+                        criteriaBuilder.isNull(root.get(AreaMedicalEmployees_.endDate)),
+                        criteriaBuilder.greaterThanOrEqualTo(root.get(AreaMedicalEmployees_.endDate.getName()), LocalDate.now())
+                );
     }
 
     private Specification<AreaMedicalEmployees> mainEmployeesSpec() {
@@ -119,14 +141,15 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
     }
 
     @Override
-    public Map<Area, List<AreaMedicalEmployees>> getEmployeesByAreaIds(List<Area> areas) {
+    public Map<Area, List<AreaMedicalEmployees>> getEmployeesByAreaIds(List<Area> areas, String showME) {
         if (areas.isEmpty()) {
             return new HashMap<>();
         }
         return areaMedicalEmployeeCRUDRepository.findAll(
-                findAreasMedicalEmplyeesByAreasSpec(areas)
-                .and(actualEmployeesSpec())
-                .and(findAreasMedicalEmplyeesNotError()))
+                        findAreasMedicalEmplyeesByAreasSpec(areas)
+                                .and(actualEmployeesSpec())
+                                .and(findAreasMedicalEmplyeesNotError())
+                                .and(showMedicalEmployeeSpec(showME)))
                 .stream().collect(Collectors.groupingBy(AreaMedicalEmployees::getArea, Collectors.toList()));
     }
 
@@ -184,7 +207,7 @@ public class AreaMedicalEmployeeRepositoryImpl extends BaseRepository implements
             specification = specification.and(findAreasMedicalEmployeesBySubdivisionId(subdivisionId));
         }
         return areaMedicalEmployeeCRUDRepository.findAll(specification)
-            .stream().map(AreaMedicalEmployees::getArea).distinct().collect(Collectors.toList());
+                .stream().map(AreaMedicalEmployees::getArea).distinct().collect(Collectors.toList());
     }
 
     @Override
