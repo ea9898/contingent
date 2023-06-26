@@ -1,0 +1,116 @@
+package moscow.ptnl.contingent.area.transform.v4;
+
+import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.factory.Mappers;
+import ru.mos.emias.contingent2.core.v4.HistoryEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Mapper(componentModel = "spring")
+public interface GetAreaHistoryMapperV4 {
+
+    GetAreaHistoryMapperV4 MAPPER = Mappers.getMapper(GetAreaHistoryMapperV4.class);
+
+    @Mappings({
+//            @Mapping(target = "eventType", expression = "java( mapEventType(entity) )"),
+            @Mapping(target = "updateDate", source = "updateDate"),
+            @Mapping(target = "userLogin", expression = "java( mapUserLogin(entity))"),
+            @Mapping(target = "userJobId", expression = "java( mapUserJobId(entity) )"),
+            @Mapping(target = "objectType", expression = "java( mapObjectType(entity) )"),
+            @Mapping(target = "objectId", expression = "java( mapObjectId(entity) )"),
+            @Mapping(target = "changeData", expression = "java( mapChangeData(entity) )")
+    })
+    HistoryEvent entityToDtoTransform(AreaOrEmployeeEvent entity);
+
+    default HistoryEvent.ChangeData mapChangeData(AreaOrEmployeeEvent entity) {
+        List<HistoryEvent.ChangeData.AttributeValues> values = new ArrayList<>();
+
+        if (entity.getObjType().intValue() == 1) {
+            addAttributeValue("startDate", entity.getStartDateOld(), entity.getStartDateNew(), values);
+            addAttributeValue("endDate", entity.getEndDateOld(), entity.getEndDateNew(), values);
+            addAttributeValue("isError", entity.getIsErrorOld(), entity.getIsErrorNew(), values);
+            addAttributeValue("tempDutyStartDate", entity.getTempDutyStartDateOld(), entity.getTempDutyStartDateNew(), values);
+            addAttributeValue("replacement", entity.getReplacementOld(), entity.getReplacementNew(), values);
+        }
+        if (entity.getObjType().intValue() == 2) {
+            addAttributeValue("description", entity.getDescriptionOld(), entity.getDescriptionNew(), values);
+            addAttributeValue("number", entity.getNumberOld(), entity.getNumberNew(), values);
+            addAttributeValue("createDate", entity.getCreateDateOld(), entity.getCreateDateNew(), values);
+            addAttributeValue("archived", entity.getArchivedOld(), entity.getArchivedNew(), values);
+        }
+        if (!values.isEmpty()) {
+            HistoryEvent.ChangeData changeData = new HistoryEvent.ChangeData();
+            changeData.getAttributeValues().addAll(values);
+            return changeData;
+        } else {
+            return null;
+        }
+    }
+
+    default void addAttributeValue(String attributeName, String oldValue, String newValue, List<HistoryEvent.ChangeData.AttributeValues> values) {
+        if (Objects.nonNull(oldValue) || Objects.nonNull(newValue)) { // выводим в случае если одно из значений не нулевое
+            HistoryEvent.ChangeData.AttributeValues value = new HistoryEvent.ChangeData.AttributeValues();
+            value.setAttributeName(attributeName);
+            value.setOldValue(oldValue);
+            value.setNewValue(newValue);
+            values.add(value);
+        }
+    }
+
+    default String mapEventType(AreaOrEmployeeEvent entity) {
+        if (entity.getObjType().intValue() == 1) { // area_medical_employee
+            if (entity.getStartDateNew() != null && entity.getStartDateOld() == null) {
+                return "create";
+            } else if (entity.getEndDateNew() != null) {
+                return "delete";
+            }
+            return "update";
+        } else if (entity.getObjType().intValue() == 2) { // area
+            if (entity.getStartDateOld() == null && entity.getCreateDateNew() != null) {
+                return "create";
+            } else if ("true".equalsIgnoreCase(entity.getArchivedNew())) {
+                return "delete";
+            }
+            return "update";
+        }
+        return null;
+    }
+
+    default Long mapObjectId(AreaOrEmployeeEvent entity) {
+        if (entity.getObjType().intValue() == 2) {
+            return entity.getObjectId().longValue();
+        } else if (entity.getObjType().intValue() == 1) {
+            return entity.getMedicalEmployeeJobId().longValue();
+        }
+        return null;
+    }
+
+    default String mapObjectType(AreaOrEmployeeEvent entity) {
+        if (entity.getObjType().intValue() == 2) {
+            return "AREA";
+        } else if (entity.getObjType().intValue() == 1) {
+            return "AREA_ME_JOB_ID";
+        }
+        return null;
+    }
+
+    default Long mapUserJobId(AreaOrEmployeeEvent entity) {
+        if (entity.getUserJobId() == null || entity.getUserJobId().longValue() == 0 || entity.getUserJobId().longValue() == 1) {
+            return 0L;
+        }
+        return entity.getUserJobId().longValue();
+    }
+
+    default String mapUserLogin(AreaOrEmployeeEvent entity) {
+        if (entity.getUserJobId() == null || entity.getUserJobId().longValue() == 0 || entity.getUserJobId().longValue() == 1) {
+            return "Нет данных";
+        }
+        return entity.getUserLogin();
+    }
+
+}

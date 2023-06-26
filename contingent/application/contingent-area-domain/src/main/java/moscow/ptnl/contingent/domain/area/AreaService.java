@@ -436,4 +436,6 @@ public interface AreaService {
     AreaHistory getAreaHistory(long areaId, PageRequest paging) throws ContingentException;
 
     Page<AreaOrEmployeeEvent> getAreaHistory3(long areaId, PageRequest paging) throws ContingentException;
+
+    Page<AreaOrEmployeeEvent> getAreaHistory4(long areaId, PageRequest paging) throws ContingentException;
 }

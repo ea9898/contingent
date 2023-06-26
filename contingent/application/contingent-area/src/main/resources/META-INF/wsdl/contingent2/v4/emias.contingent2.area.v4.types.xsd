@@ -1037,7 +1037,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="getAreaHistoryRequest">
+    <xs:element name="getOncoAreaHistoryRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="areaId" type="core:ID" />
@@ -1047,7 +1047,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="getAreaHistoryResponse">
+    <xs:element name="getOncoAreaHistoryResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="result">

@@ -1812,4 +1812,31 @@ public class AreaServiceImpl implements AreaService {
         //4.
         return historyEventRepository.findAreaAndEmployeeEvents(areaId, paging);
     }
+
+    @Override
+    public Page<AreaOrEmployeeEvent> getAreaHistory4(long areaId, PageRequest paging) throws ContingentException {
+        Validation validation = new Validation();
+        //2.
+        areaHelper.checkMaxPage(paging, validation);
+        areaHelper.checkPaging(paging, validation);
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+        //3.
+        Area area = areaRepository.findById(areaId).orElse(null);
+
+        // Система выполняет поиск участка, по входному параметру ИД участка в БД.
+        // Участок найден, иначе возвращает ошибку
+        if (area == null) {
+            validation.error(AreaErrorReason.AREA_NOT_FOUND, new ValidationParameter("areaId", areaId));
+        }
+
+        if (!validation.isSuccess()) {
+            throw new ContingentException(validation);
+        }
+
+        //4.
+        return historyEventRepository.findAreaAndEmployeeEvents(areaId, paging);
+    }
 }

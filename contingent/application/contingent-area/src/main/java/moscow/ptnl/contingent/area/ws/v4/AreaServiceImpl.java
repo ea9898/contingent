@@ -5,13 +5,16 @@ import moscow.ptnl.contingent.area.transform.SoapBaseExceptionMapper;
 import moscow.ptnl.contingent.area.transform.SoapVersioningMapper;
 import moscow.ptnl.contingent.area.transform.v1.model.sorting.GetAreaListBriefSorting;
 import moscow.ptnl.contingent.area.transform.v3.AreaBriefMapperV3;
+import moscow.ptnl.contingent.area.transform.v3.model.sorting.GetAreaHistorySorting;
 import moscow.ptnl.contingent.area.transform.v4.AreaBriefMapperV4;
+import moscow.ptnl.contingent.area.transform.v4.GetAreaHistoryMapperV4;
 import moscow.ptnl.contingent.area.transform.v4.SoapCustomMapperV4;
 import moscow.ptnl.contingent.area.transform.v4.model.options.GetAreaListBriefOptions;
 import moscow.ptnl.contingent.area.ws.BaseService;
 import moscow.ptnl.contingent.domain.area.AreaService;
 import moscow.ptnl.contingent.domain.area.MoMuService;
 import moscow.ptnl.contingent.domain.area.model.area.AreaInfo;
+import moscow.ptnl.contingent.domain.area.model.area.AreaOrEmployeeEvent;
 import moscow.ptnl.contingent.security.annotation.EMIASSecured;
 import moscow.ptnl.metrics.Metrics;
 import org.apache.cxf.annotations.SchemaValidation;
@@ -55,8 +58,8 @@ import ru.mos.emias.contingent2.area.v4.types.GetAreaAddressRequest;
 import ru.mos.emias.contingent2.area.v4.types.GetAreaAddressResponse;
 import ru.mos.emias.contingent2.area.v4.types.GetAreaByIdRequest;
 import ru.mos.emias.contingent2.area.v4.types.GetAreaByIdResponse;
-import ru.mos.emias.contingent2.area.v4.types.GetAreaHistoryRequest;
-import ru.mos.emias.contingent2.area.v4.types.GetAreaHistoryResponse;
+import ru.mos.emias.contingent2.area.v4.types.GetOncoAreaHistoryRequest;
+import ru.mos.emias.contingent2.area.v4.types.GetOncoAreaHistoryResponse;
 import ru.mos.emias.contingent2.area.v4.types.GetAreaListBriefRequest;
 import ru.mos.emias.contingent2.area.v4.types.GetAreaListBriefResponse;
 import ru.mos.emias.contingent2.area.v4.types.GetMoAddressRequest;
@@ -111,6 +114,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -128,6 +132,9 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
 
     @Autowired
     private SoapBaseExceptionMapper<ru.mos.emias.contingent2.area.v4.Fault> exceptionMapper;
+
+    @Autowired
+    private GetAreaHistoryMapperV4 getAreaHistoryMapper;
 
     @Autowired
     private SoapVersioningMapper versioningMapper;
@@ -330,14 +337,27 @@ public class AreaServiceImpl extends BaseService implements AreaPT {
         }
     }
 
-    @Override @EMIASSecured(faultClass = Fault.class) @Metrics // После создания 4-й версии нужно удалить
-    public GetAreaHistoryResponse getAreaHistory(GetAreaHistoryRequest body) throws Fault {
-//        try {
-//
-//        } catch (Exception ex) {
-//            throw exceptionMapper.mapException(ex);
-//        }
-        throw new RuntimeException("Not implemented yet");
+    @Override
+    public GetOncoAreaHistoryResponse getOncoAreaHistory(GetOncoAreaHistoryRequest body) throws Fault {
+        try {
+            GetOncoAreaHistoryResponse response = new GetOncoAreaHistoryResponse();
+            response.setResult(new GetOncoAreaHistoryResponse.Result());
+            Page<AreaOrEmployeeEvent> results = areaServiceDomain.getAreaHistory4(body.getAreaId(),
+                    soapCustomMapper.mapPagingOptions(body.getPagingOptions(), EnumSet.allOf(GetAreaHistorySorting.class)));
+
+            if (!results.isEmpty()) {
+                response.getResult().getEvents().addAll(results.stream()
+                        .map(getAreaHistoryMapper::entityToDtoTransform)
+                        .filter(event -> Objects.nonNull(event.getChangeData()) && !event.getChangeData().getAttributeValues().isEmpty())
+                        .toList());
+            }
+
+            soapCustomMapper.mapPagingResults(response.getResult(), results);
+
+            return response;
+        } catch (Exception ex) {
+            throw exceptionMapper.mapException(ex);
+        }
     }
 
     @Override @EMIASSecured(faultClass = Fault.class) @Metrics
