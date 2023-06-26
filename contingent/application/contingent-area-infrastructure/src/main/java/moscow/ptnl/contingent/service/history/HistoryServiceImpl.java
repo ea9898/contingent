@@ -38,7 +38,8 @@ public class HistoryServiceImpl implements HistoryService {
     private final FieldConverter defaultConverter = new DefaultConverter();
 
     @Override
-    public <T> void write(String requestUuid, String methodName, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException {
+    public <T> void write(String requestUuid, String methodName, Principal principal, T oldObject, T newObject, Class<T> cls,
+                          Long eventTypeId, Long operationLinkId) throws RuntimeException {
         if (principal == null) {
             throw new IllegalArgumentException("нет данных о пользователе вызвавшем метод");
         }
@@ -77,7 +78,9 @@ public class HistoryServiceImpl implements HistoryService {
                 .setPrincipal(principal)
                 .setMethodName(methodName)
                 .setRequestUUID(requestUuid)
-                .setServiceName(serviceName);
+                .setServiceName(serviceName)
+                .setEventTypeId(eventTypeId)
+                .setOperationLinkId(operationLinkId);
         
         //обходим поля объекта и ищем проаннотированные
         for (Field f : cls.getDeclaredFields()) {

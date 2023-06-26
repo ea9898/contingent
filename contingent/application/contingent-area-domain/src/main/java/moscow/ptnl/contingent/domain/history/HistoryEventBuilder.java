@@ -10,6 +10,7 @@ import moscow.ptnl.contingent.domain.area.entity.AreaAddress;
 import moscow.ptnl.contingent.domain.area.entity.AreaMedicalEmployees;
 import moscow.ptnl.contingent.domain.area.entity.AreaMuService;
 import moscow.ptnl.contingent.domain.area.entity.MoAddress;
+import moscow.ptnl.contingent.nsi.domain.area.EventTypes;
 import moscow.ptnl.contingent.security.Principal;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
@@ -100,6 +101,17 @@ public class HistoryEventBuilder {
 
     public HistoryEventBuilder setRequestUUID(String uuid) {
         event.setRequestId(uuid);
+        return this;
+    }
+
+    public HistoryEventBuilder setEventTypeId(Long eventTypeId) {
+        event.setEventType(eventTypeId == null ? null :
+                new EventTypes() {{ setId(eventTypeId); }});
+        return this;
+    }
+
+    public HistoryEventBuilder setOperationLinkId(Long operationLinkId) {
+        event.setOperationLinkId(operationLinkId);
         return this;
     }
 

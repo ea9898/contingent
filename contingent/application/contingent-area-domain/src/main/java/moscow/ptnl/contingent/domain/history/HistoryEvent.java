@@ -19,10 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import moscow.ptnl.contingent.nsi.domain.annotation.MapToNsi;
 import moscow.ptnl.contingent.nsi.domain.area.EventTypes;
-import moscow.ptnl.contingent.nsi.domain.area.PositionSupp;
 
 /**
  *
@@ -51,7 +48,7 @@ public class HistoryEvent implements Serializable {
 
     @JoinColumn(name = "EVENT_TYPE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private EventTypes eventTypeId;
+    private EventTypes eventType;
 
     @Column(name = "OPERATION_LINK_ID")
     private Long operationLinkId;
@@ -163,12 +160,12 @@ public class HistoryEvent implements Serializable {
         this.requestId = requestId;
     }
 
-    public EventTypes getEventTypeId() {
-        return eventTypeId;
+    public EventTypes getEventType() {
+        return eventType;
     }
 
-    public void setEventTypeId(EventTypes eventTypeId) {
-        this.eventTypeId = eventTypeId;
+    public void setEventType(EventTypes eventType) {
+        this.eventType = eventType;
     }
 
     public Long getOperationLinkId() {

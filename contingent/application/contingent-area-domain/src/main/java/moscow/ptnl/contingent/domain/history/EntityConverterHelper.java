@@ -254,11 +254,21 @@ public final class EntityConverterHelper {
         return col1.containsAll(col2);
     }
 
-    public static Method getSetterMethod(Class objectType, Field f) {
+    public static Method getSetterMethod(Class<?> objectType, Field f) {
         String methodName = null;
         try {
             methodName = "set" + f.getName().substring(0, 1).toUpperCase() + f.getName().substring(1);
-            return objectType.getMethod(methodName, f.getType());
+
+            try {
+                return objectType.getMethod(methodName, f.getType());
+            }
+            catch (NoSuchMethodException ex) {
+                if (f.getName().startsWith("is")) {
+                    methodName = "set" + f.getName().substring(2, 3).toUpperCase() + f.getName().substring(3);
+                    return objectType.getMethod(methodName, f.getType());
+                }
+                throw ex;
+            }
         } catch (Exception e) {
             LOG.error("Отсутствует метод: " + methodName + " в классе: " + objectType.getName(), e);
             throw new RuntimeException(e);

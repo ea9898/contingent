@@ -17,12 +17,12 @@ public class HistoryServiceHelperImpl implements HistoryServiceHelper {
         return historyService.clone(object);
     }
 
-    public <T> void sendHistory(T oldObject, T newObject, Class<T> cls) {
+    public <T> void sendHistory(T oldObject, T newObject, Class<T> cls, Long eventTypeId, Long operationLinkId) {
 
         historyService.write(
                 UserContextHolder.getRequestId(), 
                 UserContextHolder.getMethodName(), 
                 UserContextHolder.getPrincipal(), 
-                oldObject, newObject, cls);
+                oldObject, newObject, cls, eventTypeId, operationLinkId);
     }
 }

@@ -1060,17 +1060,22 @@ public class AreaHelper {
         return area;
     }
 
+    public Map<Long, AreaMedicalEmployees> delAreaMedicalEmployees(List<AreaMedicalEmployees> employees) {
+        Map<Long, AreaMedicalEmployees> employeesNew = new HashMap<>();
+        LocalDate now = LocalDate.now();
 
-    public void delAreaMedicalEmployees(List<AreaMedicalEmployees> employees) {
         employees.stream().filter(me -> me.getError() == null || !me.getError()).forEach(a -> {
-            if (a.getStartDate().equals(LocalDate.now())) {
-                a.setEndDate(LocalDate.now().minusDays(1)); // что б МР не попадали в актуальные при отправке в ЕСУ
-                areaMedicalEmployeeRepository.delete(a);
+            if (a.getStartDate().isBefore(LocalDate.now())) {
+                a.setEndDate(now.minusDays(1));
             } else {
-                a.setEndDate(LocalDate.now().minusDays(1));
-                a.setUpdateDate(LocalDateTime.now());
+                a.setStartDate(now);
+                a.setEndDate(now);
+                a.setError(true);
             }
+            a.setUpdateDate(LocalDateTime.now());
+            employeesNew.put(a.getId(), a);
         });
+        return employeesNew;
     }
 
     /*

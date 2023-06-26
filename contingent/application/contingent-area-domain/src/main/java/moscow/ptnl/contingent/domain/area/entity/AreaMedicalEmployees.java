@@ -46,7 +46,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
 
-    @LogIt(trigger = LogTrigger.ALWAYS)
+    @LogIt
     @Column(name = "IS_REPLACEMENT", nullable = false)
     @Convert(converter = BooleanIntegerConverter.class)
     private Boolean replacement;
@@ -72,7 +72,7 @@ public class AreaMedicalEmployees implements Serializable, Cloneable {
     @Column(name = "POSITION_CODE_SUPP")
     private Long positionCodeSupp;
 
-    @LogIt(trigger = LogTrigger.ALWAYS)
+    @LogIt
     @Column(name = "TEMP_DUTY_START_DATE")
     private LocalDate tempDutyStartDate;
 

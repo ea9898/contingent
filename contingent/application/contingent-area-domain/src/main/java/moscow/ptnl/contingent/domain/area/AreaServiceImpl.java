@@ -300,7 +300,7 @@ public class AreaServiceImpl implements AreaService {
         areaPolicyTypesRepository.saveAll(areaPolicyTypes);
 
         // 16
-        historyHelper.sendHistory(null, area, Area.class);
+        historyHelper.sendHistory(null, area, Area.class, 1L);
 
         return area;
     }
@@ -1160,11 +1160,16 @@ public class AreaServiceImpl implements AreaService {
         areaHelper.delAreaAddresses(new ArrayList<>(area.getActualAreaAddresses()));
 
         // 6. Система исключает МР из участка, если указаны
-        if (area.getActualMedicalEmployees() != null && !area.getActualMedicalEmployees().isEmpty()) {
-            areaHelper.delAreaMedicalEmployees(new ArrayList<>(area.getActualMedicalEmployees()));
+        Set<AreaMedicalEmployees> actualMedicalEmployees = area.getActualMedicalEmployees();
+        List<AreaMedicalEmployees> employeesOld = Collections.emptyList();
+        Map<Long, AreaMedicalEmployees> employeesNew = new HashMap<>();
+
+        if (actualMedicalEmployees != null && !actualMedicalEmployees.isEmpty()) {
+            employeesOld = actualMedicalEmployees.stream().map(historyHelper::clone).toList();
+            employeesNew.putAll(areaHelper.delAreaMedicalEmployees(new ArrayList<>(actualMedicalEmployees)));
         }
 
-        // 7. Система для данного участка меняет статус на «Архивный»
+        // 9. Система для данного участка меняет статус на «Архивный»
         area.setArchived(true);
         area.setUpdateDate(LocalDateTime.now());
         areaRepository.save(area);
@@ -1173,9 +1178,11 @@ public class AreaServiceImpl implements AreaService {
         //if (areaHelper.isAreaPrimary(area)) {
         //    esuHelperService.sendAreaInfoEvent(area, "archiveArea");
         //}
-
-        // 9
-        historyHelper.sendHistory(oldArea, area, Area.class);
+        // 13
+        employeesOld.forEach(e -> historyHelper.sendHistory(e, employeesNew.get(e.getId()), AreaMedicalEmployees.class,
+                historyHelper.getEventTypeByEmployeeCategory(e.getEmployeeCategory())));
+        // 14
+        historyHelper.sendHistory(oldArea, area, Area.class, 2L);
 
     }
 

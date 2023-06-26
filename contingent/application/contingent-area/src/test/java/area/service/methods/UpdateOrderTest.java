@@ -39,7 +39,7 @@ public class UpdateOrderTest extends BaseTest {
         order.setArchived(false);
         order.setCreateDate(LocalDateTime.now());
         orders.add(new AddressAllocationOrders());
-        lenient().doNothing().when(historyService).write(any(), any(), any(), any(), any(), any());
+        lenient().doNothing().when(historyService).write(any(), any(), any(), any(), any(), any(), any(), any());
         lenient().doReturn(Optional.of(order)).when(addressAllocationOrderRepository).findById(2L);
     }
 

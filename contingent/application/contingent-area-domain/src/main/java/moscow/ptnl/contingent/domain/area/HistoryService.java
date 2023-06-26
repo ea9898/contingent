@@ -31,8 +31,11 @@ public interface HistoryService {
      * @param principal заполняется как UserContextHolder.getPrincipal()
      * @param oldObject
      * @param newObject
-     * @throws RuntimeException 
+     * @param eventTypeId ИД типа события на участке
+     * @param operationLinkId Идентификатор общей операции. Заполняется при смене (удалении старого и добавлении нового) МР в одном запросе.
+     * @throws RuntimeException
      */
-    <T> void write(String requestUuid, String methodName, Principal principal, T oldObject, T newObject, Class<T> cls) throws RuntimeException;
+    <T> void write(String requestUuid, String methodName, Principal principal, T oldObject, T newObject, Class<T> cls,
+                   Long eventTypeId, Long operationLinkId) throws RuntimeException;
         
 }
